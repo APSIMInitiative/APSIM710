@@ -46,6 +46,7 @@
       </StageBasedInterpolation>
       <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+        <PriorityOrgan type="text" description="Organs that recieve priority for biomass partitioning">Root</PriorityOrgan>
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
@@ -269,14 +270,17 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
         </PhaseLookup>
         <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
-            <XY>0 0</XY>
+            <XY>0 1</XY>
             <XY>8 1</XY>
             <XY>25 1</XY>
-            <XY>40 0</XY>
+            <XY>40 1</XY>
           </XYPairs>
         </AirTemperatureFunction>
         <Constant name="MaxDailyNUptake">
           <Value>6.0</Value>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0</Value>
         </Constant>
         <PhaseLookup name="MaximumNConc">
           <PhaseLookupValue name="Vegetative">
@@ -299,7 +303,7 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
 
 - Additionally we make respiration rate seasonal. As a consequence, more biomass desapears in spring/summer than in autumn (for the same temperature being experienced)</Memo>
           <Constant name="RespMaxAt20C">
-            <Value type="text" description="Value">0.035</Value>
+            <Value type="text" description="Value">0.025</Value>
           </Constant>
           <ExpressionFunction name="Q10Adj">
             <Expression type="text" description="Math Expression">1.8^((Root.SoilTemp.Value-20)/10)</Expression>
@@ -307,7 +311,7 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <LinearInterpolationFunction name="SeasAdj">
             <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
             <XYPairs>
-              <XY>10 0.005</XY>
+              <XY>10 0.002</XY>
               <XY>16.5 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
@@ -331,14 +335,14 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
                 <Value type="text" description="Value">0</Value>
               </Constant>
               <Constant name="IfTrue">
-                <Value type="text" description="Value">0.4</Value>
+                <Value type="text" description="Value">0.45</Value>
               </Constant>
               <LinearInterpolationFunction name="BaseFraction">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10 0.1</XY>
-                  <XY>16.5 0.5</XY>
-                  <XY>24 0.5</XY>
+                  <XY>16.5 0.45</XY>
+                  <XY>24 0.45</XY>
                 </XYPairs>
               </LinearInterpolationFunction>
             </LessThanFunction>
@@ -348,14 +352,6 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <Depth type="text" description="Soil depth(mm)">10</Depth>
           <Memo>We've implemented that to retrieve Soil temperature. Attention on which module is being used. In New Zealand the .NET soil temperature module performs really well, better than the one from soilN.</Memo>
         </SoilTemperatureDepthFunction>
-        <PhaseLookup name="MinimumNConc" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc">
-          <PhaseLookupValue name="Vegetative" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Vegetative">
-            <Constant name="Function" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Vegetative/Function" />
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Reproductive" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Reproductive">
-            <Constant name="Function" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Reproductive/Function" />
-          </PhaseLookupValue>
-        </PhaseLookup>
         <CompositeBiomass name="Live">
           <Property>Root.LayerLive[]</Property>
         </CompositeBiomass>
@@ -364,12 +360,12 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
         </CompositeBiomass>
       </Root>
       <SimpleLeaf name="Leaf">
-        <Height>800</Height>
-        <LAI>6</LAI>
-        <LAIDead>0</LAIDead>
-        <Frgr>1.0</Frgr>
-        <K>0.5</K>
-        <KDead>0.5</KDead>
+        <Height type="text" description="Height">800</Height>
+        <LAI type="text" description="LAI">6</LAI>
+        <LAIDead type="text" description="LAIDead">0</LAIDead>
+        <Frgr type="text" description="Frgr">1.0</Frgr>
+        <K type="text" description="K">0.81</K>
+        <KDead type="text" description="KDead">0.81</KDead>
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <RUEModel name="Photosynthesis">
@@ -394,7 +390,7 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
-              <XY>0 0</XY>
+              <XY>0 1</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
@@ -402,7 +398,7 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <LinearInterpolationFunction name="FW">
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
-              <XY>0 0</XY>
+              <XY>0 1</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
@@ -415,7 +411,7 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
               <Start type="text" description="Start">Emergence</Start>
               <End type="text" description="End">Flowering</End>
               <Constant name="Function">
-                <Value type="text" description="Value">1.00</Value>
+                <Value type="text" description="Value">1.60</Value>
               </Constant>
             </PhaseLookupValue>
             <PhaseLookupValue name="Regrowth">
@@ -497,23 +493,29 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <XY>10 1</XY>
           <XY>50 1</XY>
         </XYPairs>
-        <PartitionFractionDemandFunction name="DMDemand">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
           <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
 		</Memo>
           <LinearInterpolationFunction name="PartitionFraction">
             <XProperty type="text" description="XProperty">AboveGround.Wt</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
-              <XY>1 0.6</XY>
-              <XY>2 0.4</XY>
-              <XY>5 0.3</XY>
+              <XY>0 0.7</XY>
+              <XY>25 0.7</XY>
+              <XY>50 0.54</XY>
+              <XY>100 0.42</XY>
+              <XY>200 0.34</XY>
+              <XY>300 0.32</XY>
+              <XY>400 0.3</XY>
+              <XY>700 0.28</XY>
             </XYPairs>
-            <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+            <Memo>Simple allometry as per Lemaire's framework (see Teixeira et al 2009 Crop &amp; Pasture)</Memo>
           </LinearInterpolationFunction>
         </PartitionFractionDemandFunction>
       </SimpleLeaf>
       <GenericAboveGroundOrgan name="Stem">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">0</Value>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
@@ -541,22 +543,6 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <Value type="text" description="Value">0</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <MultiplyFunction name="DMDemandFunction1">
-          <Memo>Multiplies the values of the children of this node</Memo>
-          <VariableReference name="NodesAppearing">
-            <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
-            <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
-          </VariableReference>
-          <VariableReference name="Branches">
-            <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
-            <Memo>Returns the value of a nominated internal Plant2 numerical variable
-</Memo>
-          </VariableReference>
-          <Constant name="PotentialInternodeWt">
-            <Value type="text" description="Value">.03</Value>
-          </Constant>
-        </MultiplyFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
         </Constant>
@@ -568,13 +554,25 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
 5. DMRetranslocationFactor.  Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.
 6. StructuralFraction.  Derault value is 1 which means all biomass partitioned to this organ is put into the structrual pool.  If you wish this organ to have NonStructural DM that can be retranslocated set this to a value lower than 1 (between 0 - 1). Also note that making structural fraction less then 1 may influence the biomass partitioning to this organ because biomass is only partitioned to NonStructural Pools after the DM demand from other pools has been met.
          </Memo>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
-        <Constant name="DMDemandFunction">
-          <Value type="text" description="Value">1</Value>
-        </Constant>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+          <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
+		</Memo>
+          <LinearInterpolationFunction name="PartitionFraction">
+            <XProperty type="text" description="XProperty">AboveGround.Wt</XProperty>
+            <XYPairs>
+              <XY>0 0.3</XY>
+              <XY>100 0.4</XY>
+              <XY>200 0.6</XY>
+              <XY>500 0.7</XY>
+            </XYPairs>
+            <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+          </LinearInterpolationFunction>
+        </PartitionFractionDemandFunction>
       </GenericAboveGroundOrgan>
       <GenericAboveGroundOrgan name="Pod">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
         </Constant>
@@ -586,18 +584,18 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <Value type="text" description="Value">0</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <Constant name="MinimumNConc" shortcut="/lucerne2/Model/Plant/Pod/MaximumNConc" />
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
         </Constant>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
         <PartitionFractionDemandFunction name="DMDemandFunction">
           <StageBasedInterpolation name="PartitionFraction">
             <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation RGFlowering    EndRegrowth</Stages>
             <Values type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Values>
           </StageBasedInterpolation>
         </PartitionFractionDemandFunction>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0.0</Value>
+        </Constant>
       </GenericAboveGroundOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">
