@@ -253,7 +253,12 @@ extern "C" void DLLEXPORT STDCALL apsimQueryRaw(const char *e, int *numReturned,
    char *buf = (char *) *returned;
    for (unsigned int i = 0; i <  resultArray.size(); i++)
    {
-      strcpy(buf, resultArray[i].name.c_str()); buf += strlen(buf) + 1;
+   	  std::string fqn;
+   	  if (resultArray[i].name.find('.') >= 0) 
+   	    fqn  = resultArray[i].name ;
+   	  else  
+   	    fqn  = resultArray[i].owner + "." + resultArray[i].name ;
+      strcpy(buf, fqn.c_str()); buf += strlen(buf) + 1;
       strcpy(buf, resultArray[i].ddml.c_str()); buf += strlen(buf) + 1;
    }
 }

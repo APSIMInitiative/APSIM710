@@ -16,10 +16,10 @@ RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --van
 RINSIDEINCL := 		$(shell echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RINSIDELIBS := 		$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RCPPFLAGS := 		-Wall $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CPPFLAGS)
-RCXXFLAGS := 		$(RCP.\RMakeCmd.batPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" -I $(APSIM)/Model $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
-RLDFLAGS = $(RRLDFLAGS) 
-RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS)
-RCXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
+RCXXFLAGS := 		$(RCPPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" -I $(APSIM)/Model $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
+RLDFLAGS =  $(RRLDFLAGS) 
+RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS) 
+RCXX := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
 RLD := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
 
 # Stuff for REmbedder.cpp here
