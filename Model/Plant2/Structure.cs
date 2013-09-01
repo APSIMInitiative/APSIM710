@@ -26,9 +26,9 @@ public class Structure
     public Function HeightModel = null;
     [Link(NamePath = "BranchingRate")]
     public Function Branching = null;
-    [Link(NamePath = "ShadeInducedBranchMortality")]
+    [Link(NamePath = "ShadeInducedBranchMortality", IsOptional= true)]
     public Function ShadeInducedBranchMortality = null;
-    [Link(NamePath = "DroughtInducedBranchMortality")]
+    [Link(NamePath = "DroughtInducedBranchMortality", IsOptional = true)]
     public Function DroughtInducedBranchMortality = null;
     [Link(NamePath = "PlantMortality", IsOptional = true)]
     public Function PlantMortality = null;

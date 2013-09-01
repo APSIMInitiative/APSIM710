@@ -53,7 +53,7 @@ public class LeafCohort
     public Function CriticalNConcFunction = null;
     [Link(NamePath = "DMRetranslocationFactor", IsOptional = true)]
     public Function DMRetranslocationFactorFunction = null;
-    [Link(NamePath = "ShadeInducedSenescenceRate")]
+    [Link(NamePath = "ShadeInducedSenescenceRate", IsOptional = true)]
     public Function ShadeInducedSenescenceRateFunction = null;
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
     public Function DroughtInducedSenAcceleration = null;
@@ -515,7 +515,7 @@ public class LeafCohort
             InitialNConc = InitialNConcFunction.Value;
         //if (Area > MaxArea)  FIXMEE HEB  This error trap should be activated but throws errors in chickpea so that needs to be fixed first.
         //    throw new Exception("Initial Leaf area is greater that the Maximum Leaf Area.  Check set up of initial leaf area values to make sure they are not to large and check MaxArea function and CellDivisionStressFactor Function to make sure the values they are returning will not be too small.");
-        Age = Area / MaxArea * GrowthDuration;
+        Age = Area / MaxArea * GrowthDuration; //FIXME.  The size function is not linear so this does not give an exact starting age.  Should re-arange the the size function to return age for a given area to initialise age on appearance.
         LiveArea = Area * CohortPopulation;
         Live.StructuralWt = LiveArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin)/2) * StructuralFraction;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
@@ -576,6 +576,7 @@ public class LeafCohort
             DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
 
             CoverAbove = Leaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
+            if (ShadeInducedSenescenceRateFunction != null)
             ShadeInducedSenRate = ShadeInducedSenescenceRateFunction.Value;
             SenescedFrac = FractionSenescing(_ThermalTime, PropnStemMortality);
   
@@ -796,7 +797,7 @@ public class LeafCohort
     /// <returns>(mm2 leaf/cohort position/m2 soil/day)</returns>
     virtual public double PotentialAreaGrowthFunction(double TT)
     {
-        double BranchNo = Structure.TotalStemPopn - Structure.MainStemPopn;
+        double BranchNo = Structure.TotalStemPopn - Structure.MainStemPopn;  //Fixme, this line appears redundant
         double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age); //mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
         double growth = CohortPopulation * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
         return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
@@ -845,7 +846,8 @@ public class LeafCohort
             double FracSenShade = 0;
             if (LiveArea > 0)
             {
-                FracSenShade = Math.Min(MaxLiveArea * (ShadeInducedSenRate + StemMortality), LiveArea) / LiveArea;
+                FracSenShade = Math.Min(MaxLiveArea * ShadeInducedSenRate, LiveArea) / LiveArea;
+                FracSenShade += StemMortality;
             }
             
             return Math.Max(FracSenAge, FracSenShade);
