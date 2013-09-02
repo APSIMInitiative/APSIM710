@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3127" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3141" name="simulations">
   <folder name="Expt324">
     <simulation name="Expt324N0">
       <metfile name="met">
@@ -1192,8 +1192,12 @@ endif
     <Graph name="CumulativeYield">
       <Legend>
         <CheckedTitles>Predicted, CumYield,Expt324N0</CheckedTitles>
+        <CheckedTitles>Predicted, CumYield,Expt324N1</CheckedTitles>
+        <CheckedTitles>Predicted, CumYield,Expt324N2</CheckedTitles>
         <CheckedTitles>Predicted, CumYield,Expt324N3</CheckedTitles>
         <CheckedTitles>Observed, CumYieldPHa,Expt324N0</CheckedTitles>
+        <CheckedTitles>Observed, CumYieldPHa,Expt324N1</CheckedTitles>
+        <CheckedTitles>Observed, CumYieldPHa,Expt324N2</CheckedTitles>
         <CheckedTitles>Observed, CumYieldPHa,Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
@@ -1955,12 +1959,12 @@ endif</text>
               <double>0.4</double>
             </OC>
             <FBiom>
+              <double>0.08</double>
+              <double>0.06</double>
               <double>0.04</double>
-              <double>0.03</double>
-              <double>0.015</double>
-              <double>0.01</double>
-              <double>0.01</double>
-              <double>0.01</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
             </FBiom>
             <FInert>
               <double>0.18</double>
@@ -3189,16 +3193,16 @@ endif</text>
                 <double>0.23</double>
               </LL>
               <KL>
-                <double>0.1</double>
-                <double>0.06</double>
-                <double>0.05</double>
                 <double>0.04</double>
-                <double>0.03</double>
-                <double>0.03</double>
-                <double>0.03</double>
-                <double>0.03</double>
-                <double>0.03</double>
-                <double>0.03</double>
+                <double>0.04</double>
+                <double>0.02</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
               </KL>
               <XF>
                 <double>1</double>
@@ -3279,9 +3283,9 @@ endif</text>
               <double>0.01</double>
             </FBiom>
             <FInert>
-              <double>0.1</double>
-              <double>0.15</double>
-              <double>0.5</double>
+              <double>0.05</double>
+              <double>0.07</double>
+              <double>0.18</double>
               <double>0.8</double>
               <double>0.99</double>
               <double>0.99</double>
@@ -3412,6 +3416,7 @@ endif</text>
             <variable>Frond17Area</variable>
             <variable>RelativeDevelopmentalRateValue</variable>
             <variable>nit_tot()</variable>
+            <variable>carbon_tot()</variable>
             <variable>oc(1)</variable>
             <variable>oc(2)</variable>
             <variable>oc(3)</variable>
@@ -4178,12 +4183,12 @@ endif</text>
     </Graph>
     <Graph name="NFixation">
       <Legend>
-        <CheckedTitles> Expt212N0</CheckedTitles>
-        <CheckedTitles> {Checkpoint} Expt212N0</CheckedTitles>
-        <CheckedTitles> Expt212N1</CheckedTitles>
-        <CheckedTitles> {Checkpoint} Expt212N1</CheckedTitles>
-        <CheckedTitles> Expt212N2</CheckedTitles>
-        <CheckedTitles> {Checkpoint} Expt212N2</CheckedTitles>
+        <CheckedTitles> Cumulative UnderstoryNFixation, Expt212N0</CheckedTitles>
+        <CheckedTitles> Cumulative UnderstoryNFixation, Expt212N1</CheckedTitles>
+        <CheckedTitles> Cumulative UnderstoryNFixation, Expt212N2</CheckedTitles>
+        <CheckedTitles> NO3(), Expt212N0</CheckedTitles>
+        <CheckedTitles> NO3(), Expt212N1</CheckedTitles>
+        <CheckedTitles> NO3(), Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4192,6 +4197,7 @@ endif</text>
         </colour>
         <X>Date</X>
         <Y>Cumulative UnderstoryNFixation</Y>
+        <YRight>NO3()</YRight>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
@@ -4275,9 +4281,12 @@ endif</text>
     </Graph>
     <Graph name="Total Soil N">
       <Legend>
-        <CheckedTitles> Expt212N0</CheckedTitles>
-        <CheckedTitles> Expt212N1</CheckedTitles>
-        <CheckedTitles> Expt212N2</CheckedTitles>
+        <CheckedTitles> nit_tot(), Expt212N0</CheckedTitles>
+        <CheckedTitles> nit_tot(), Expt212N1</CheckedTitles>
+        <CheckedTitles> nit_tot(), Expt212N2</CheckedTitles>
+        <CheckedTitles> carbon_tot(), Expt212N0</CheckedTitles>
+        <CheckedTitles> carbon_tot(), Expt212N1</CheckedTitles>
+        <CheckedTitles> carbon_tot(), Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4286,6 +4295,7 @@ endif</text>
         </colour>
         <X>Date</X>
         <Y>nit_tot()</Y>
+        <Y>carbon_tot()</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
@@ -4302,6 +4312,22 @@ endif</text>
         </colour>
         <X>Date</X>
         <Y>biom_c(1)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="CNRatio">
+      <Legend>
+        <CheckedTitles> Expt212N0</CheckedTitles>
+        <CheckedTitles> Expt212N1</CheckedTitles>
+        <CheckedTitles> Expt212N2</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>carbon_tot()</X>
+        <Y>nit_tot()</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
