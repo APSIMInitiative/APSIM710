@@ -10,9 +10,12 @@ class SimpleLeaf : BaseOrgan, AboveGround
     [Link(IsOptional = true)]
     Structure structure = null;
 
+ 
+ 
     private double _WaterAllocation;
     private double EP = 0;
     private double PEP = 0;
+    private double NShortage = 0;   //if an N Shoratge how Much;
 
     [Event]
     public event NewPotentialGrowthDelegate NewPotentialGrowth;
@@ -41,6 +44,11 @@ class SimpleLeaf : BaseOrgan, AboveGround
     [Link(IsOptional = true)]
     public Function CoverFunction = null;
     [Link(IsOptional = true)]
+    public Function NitrogenDemandSwitch = null;
+    [Link(IsOptional = true)]
+    protected Function NConc = null;
+
+    [Link(IsOptional = true)]
     public Function LaiFunction = null;
     [Link(IsOptional = true)]
     public RUEModel Photosynthesis = null;
@@ -48,7 +56,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
 
 
     [Param]
-    private double K = 0;                      // Extinction Coefficient (Green)
+    private double K = 0.5;                      // Extinction Coefficient (Green)
     [Param]
     private double KDead = 0;                  // Extinction Coefficient (Dead)
     public double DeltaBiomass = 1;
@@ -296,6 +304,85 @@ class SimpleLeaf : BaseOrgan, AboveGround
         Live.Clear();
         Dead.Clear();
     }
+
+
+    public override double NDemand
+    {
+        get
+        {
+         if (NitrogenDemandSwitch == null) //Default of 1 means demand is always truned on!!!!
+             return 0;
+         if (NitrogenDemandSwitch.Value == 0)
+             return 0;
+         if (NConc == null)
+             throw new Exception("Lacking N conc");
+
+          double NDeficit = Math.Max(0.0, NConc.Value * (Live.Wt + DeltaBiomass) - Live.N);
+            return NDeficit;
+        }
+    }
+
+  /*  public override void DoActualGrowth()
+    {
+        // Need to limiet potential growth if low on N and water
+
+     return;
+    }
+    */
+  
+    
+    public override NAllocationType NAllocation
+    {
+        set
+        {
+            if (NDemand == 0)
+                if (value.Allocation == 0) { }//All OK
+                else
+                    throw new Exception("Invalid allocation of N");
+
+            if (value.Allocation == 0.0)
+            { }// do nothing
+            else
+            {
+                double NSupplyValue = value.Allocation;
+               
+                if ((NSupplyValue > 0))
+                {
+                    //What do we need to meat demand;
+                    double ReqN = NDemand;
+
+                    if (ReqN == NSupplyValue)
+                    {
+                        // All OK add and leave
+                        NShortage = 0;
+
+
+                        Live.StructuralN += ReqN;
+                        Live.MetabolicN += 0;//Then partition N to Metabolic
+                        Live.NonStructuralN += 0;
+                         return;
+
+                    }
+
+                    if (NSupplyValue > ReqN)
+                        throw new Exception("N allocated to Leaf left over after allocation");
+
+                    //Thorecticaly only option left
+                    if (NSupplyValue < ReqN)
+                    {
+                        NShortage = ReqN - NSupplyValue;
+                        Live.StructuralN += NSupplyValue;
+                        Live.MetabolicN += 0;//Then partition N to Metabolic
+                        Live.NonStructuralN += 0;
+                        return;
+                    }
+
+                 throw new Exception("UnKnown Leaf N allocation problem");
+                }
+            }
+        }
+    }
+
 
 }
    

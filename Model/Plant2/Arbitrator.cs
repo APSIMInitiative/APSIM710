@@ -367,7 +367,7 @@ public class Arbitrator
             NDemandOrgan[i] = Organs[i].NDemand;
             NSupplyType NSupply = Organs[i].NSupply;
             NReallocationSupply[i] = NSupply.Reallocation;
-            NUptakeSupply[i] = NSupply.Uptake;
+             NUptakeSupply[i] = NSupply.Uptake;
             NFixationSupply[i] = NSupply.Fixation;
             NRetranslocationSupply[i] = NSupply.Retranslocation;
             NReallocation[i] = 0;

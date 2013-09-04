@@ -32,6 +32,7 @@ public class Structure
     public Function DroughtInducedBranchMortality = null;
     [Link(NamePath = "PlantMortality", IsOptional = true)]
     public Function PlantMortality = null;
+
     #endregion
 
     #region Class Parameter Fields

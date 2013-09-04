@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.5-r3113" name="MCSP">
+<Type version="36" creator="Apsim 7.5-r3108" name="MCSP">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -28,6 +28,13 @@
   <Model>
     <Plant>
       <CropType type="text" description="CropType">Barley</CropType>
+      <Population>
+        <Constant name="DensityFunction">
+          <Value type="text" description="Value">600</Value>
+        </Constant>
+        <Memo>Need a population for the root component
+</Memo>
+      </Population>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Sowing Germination Emergence Expanding Vegetative Maturity PostMaturity</Stages>
         <Values type="text" description="Values">1           2      3         4          5     6   7</Values>
@@ -215,14 +222,41 @@ Thus change the duration rate for the cultivar</Memo>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <Constant name="MaximumNConc">
-          <Value type="text" description="Value">0.012</Value>
-          <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
-        </Constant>
-        <Constant name="MinimumNConc">
+        <Constant name="NConc">
           <Value type="text" description="Value">0.008</Value>
           <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
         </Constant>
+        <PhaseLookup name="NitrogenDemandSwitch">
+          <PhaseLookupValue name="PreErmergence">
+            <Start type="text" description="Start">Sowing</Start>
+            <End type="text" description="End">Emergence</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
+          <PhaseLookupValue name="Expanding">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Vegetative</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Senescence">
+            <Start type="text" description="Start">Vegetative</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant>
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Mature">
+            <Start type="text" description="Start">Maturity</Start>
+            <End type="text" description="End">PostMaturity</End>
+            <Constant>
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
       </SimpleLeaf>
       <CompositeBiomass name="Total">
         <Property>Organs[].Live</Property>
