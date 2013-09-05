@@ -31,6 +31,11 @@ public class SoluteType
 	/// </summary>
 	public double[] SoluteAmount;
 
+    /// <summary>
+    /// The amount of solute in each layer (ppm)
+    /// </summary>
+    public double[] SoluteAmountppm;
+
 	/// <summary>
 	/// The variation in solute amount due to diffusion
 	/// </summary>
@@ -75,7 +80,8 @@ public class SoluteType
 		SetSoluteName();
 
 		// Initialise and set the initial solute amount
-		SoluteAmount = ThisSolute.Amount_kgha();
+        SoluteAmount = ThisSolute.Amount_kgha();
+        SoluteAmountppm = ThisSolute.Amount_mgkg();
 
 		// Initilise the solute transfomed arrays
 		SoluteAdsorbed = new double[SoluteAmount.Length];
@@ -99,10 +105,13 @@ public class SoluteType
 	/// Gets and update the new values for solute amount
 	/// </summary>
 	/// <param name="Amount">The new values</param>
-	public void NewSoluteAmount(double[] Amount)
+    public void NewSoluteAmount(double[] Amount, double[] Amountppm)
 	{
-		for (int Layer = 0; Layer < Amount.Length; Layer++)
-			SoluteAmount[Layer] = Amount[Layer];
+        for (int Layer = 0; Layer < Amount.Length; Layer++)
+        {
+            SoluteAmount[Layer] = Amount[Layer];
+            SoluteAmountppm[Layer] = Amountppm[Layer];
+        }
 	}
 
 	/// <summary>
@@ -157,6 +166,9 @@ public class SoluteType
 
 	#endregion
 
+    public virtual void MakeSoluteDiffusionEffective()
+    { }
+
 	public virtual void MakeSoluteDegradationEffective()
 	{}
 }
@@ -200,19 +212,39 @@ public class Type_tracer : SoluteType
 
 	#endregion
 
-	#region Outputs for this solute
+    #region Procedure to handle solute Diffusion
 
-	[Output("tracer")]
+    public override void MakeSoluteDiffusionEffective()
+    {
+        SoluteChangedType SoluteChanges = new SoluteChangedType();
+        SoluteChanges.Sender = "SoluteDiffusion";
+        SoluteChanges.SoluteName = Name;
+        SoluteChanges.SoluteUnits = "kg/ha";
+        SoluteChanges.DeltaSolute = deltaSoluteDiffusion;
+        SoluteChanged.Invoke(SoluteChanges);
+    }
+        
+    #endregion
+
+    #region Outputs for this solute
+
+    [Output("tracer")]
 	[Units("kg/ha")]
 	[Description("amount of Tracer in each soil layer")]
 	public double[] tracer
 	{ get { return SoluteAmount; } }
 
-	[Output("DegradationFraction_tracer")]
-	[Units("%")]
-	[Description("fraction of Tracer that has been transformed")]
-	private double[] DegradationFraction_tracer
-	{ get { return fractionSoluteTransformation; } }
+    [Output("tracerppm")]
+    [Units("mg/kg")]
+    [Description("amount of Tracer in each soil layer")]
+    public double[] tracerppm
+    { get { return SoluteAmountppm; } }
+
+    [Output("Diffusion_tracer")]
+	[Units("kg/ha")]
+	[Description("amount of Tracer transported by diffusion")]
+    private double[] Diffusion_tracer
+    { get { return deltaSoluteDiffusion; } }
 
 	[Output("Degradation_tracer")]
 	[Units("kg/ha")]
@@ -260,6 +292,20 @@ public class Type_UreaseInhibitor : SoluteType
 
     #endregion
 
+    #region Procedure to handle solute Diffusion
+
+    public override void MakeSoluteDiffusionEffective()
+    {
+        SoluteChangedType SoluteChanges = new SoluteChangedType();
+        SoluteChanges.Sender = "SoluteDiffusion";
+        SoluteChanges.SoluteName = Name;
+        SoluteChanges.SoluteUnits = "kg/ha";
+        SoluteChanges.DeltaSolute = deltaSoluteDiffusion;
+        SoluteChanged.Invoke(SoluteChanges);
+    }
+
+    #endregion
+
     #region Procedure to handle solute degradation
 
     /// <summary>
@@ -298,11 +344,17 @@ public class Type_UreaseInhibitor : SoluteType
     public double[] UreaseInhibitor
     { get { return SoluteAmount; } }
 
-    [Output("DegradationFraction_UreaseInhibitor")]
-    [Units("%")]
-    [Description("fraction of UreaseInhibitor that has been transformed")]
-    private double[] DegradationFraction_UreaseInhibitor
-    { get { return fractionSoluteTransformation; } }
+    [Output("UreaseInhibitorppm")]
+    [Units(",g/kg")]
+    [Description("amount of UreaseInhibitor in each soil layer")]
+    public double[] UreaseInhibitorppm
+    { get { return SoluteAmountppm; } }
+
+    [Output("Diffusion_UreaseInhibitor")]
+    [Units("kg/ha")]
+    [Description("amount of UreaseInhibitor transported by diffusion")]
+    private double[] Diffusion_UreaseInhibitor
+    { get { return deltaSoluteDiffusion; } }
 
     [Output("Degradation_UreaseInhibitor")]
     [Units("kg/ha")]
@@ -356,6 +408,20 @@ public class Type_NitrificationInhibitor : SoluteType
 
     #endregion
 
+    #region Procedure to handle solute Diffusion
+
+    public override void MakeSoluteDiffusionEffective()
+    {
+        SoluteChangedType SoluteChanges = new SoluteChangedType();
+        SoluteChanges.Sender = "SoluteDiffusion";
+        SoluteChanges.SoluteName = Name;
+        SoluteChanges.SoluteUnits = "kg/ha";
+        SoluteChanges.DeltaSolute = deltaSoluteDiffusion;
+        SoluteChanged.Invoke(SoluteChanges);
+    }
+
+    #endregion
+
     #region Procedure to handle solute degradation
 
     /// <summary>
@@ -394,11 +460,17 @@ public class Type_NitrificationInhibitor : SoluteType
     public double[] NitrificationInhibitor
     { get { return SoluteAmount; } }
 
-    [Output("DegradationFraction_NitrificationInhibitor")]
-    [Units("%")]
-    [Description("fraction of NitrificationInhibitor that has been transformed")]
-    private double[] DegradationFraction_NitrificationInhibitor
-    { get { return fractionSoluteTransformation; } }
+    [Output("NitrificationInhibitorppm")]
+    [Units("mg/kg")]
+    [Description("amount of NitrificationInhibitor in each soil layer")]
+    public double[] NitrificationInhibitorppm
+    { get { return SoluteAmountppm; } }
+
+    [Output("Diffusion_NitrificationInhibitor")]
+    [Units("kg/ha")]
+    [Description("amount of NitrificationInhibitor transported by diffusion")]
+    private double[] Diffusion_NitrificationInhibitor
+    { get { return deltaSoluteDiffusion; } }
 
     [Output("Degradation_NitrificationInhibitor")]
     [Units("kg/ha")]
@@ -452,6 +524,20 @@ public class Type_Cl : SoluteType
 
     #endregion
 
+    #region Procedure to handle solute Diffusion
+
+    public override void MakeSoluteDiffusionEffective()
+    {
+        SoluteChangedType SoluteChanges = new SoluteChangedType();
+        SoluteChanges.Sender = "SoluteDiffusion";
+        SoluteChanges.SoluteName = Name;
+        SoluteChanges.SoluteUnits = "kg/ha";
+        SoluteChanges.DeltaSolute = deltaSoluteDiffusion;
+        SoluteChanged.Invoke(SoluteChanges);
+    }
+
+    #endregion
+
     #region Outputs for this solute
 
     [Output("Cl")]
@@ -460,11 +546,17 @@ public class Type_Cl : SoluteType
     public double[] cl
     { get { return SoluteAmount; } }
 
-    [Output("DegradationFraction_Cl")]
-    [Units("%")]
-    [Description("fraction of Cl that has been transformed")]
-    private double[] DegradationFraction_Cl
-    { get { return fractionSoluteTransformation; } }
+    [Output("clppm")]
+    [Units("mg/kg")]
+    [Description("amount of Cl in each soil layer")]
+    public double[] clppm
+    { get { return SoluteAmountppm; } }
+
+    [Output("Diffusion_cl")]
+    [Units("kg/ha")]
+    [Description("amount of Cl transported by diffusion")]
+    private double[] Diffusion_Cl
+    { get { return deltaSoluteDiffusion; } }
 
     [Output("Degradation_Cl")]
     [Units("kg/ha")]
@@ -512,6 +604,20 @@ public class Type_dcd : SoluteType
 
 	#endregion
 
+    #region Procedure to handle solute Diffusion
+
+    public override void MakeSoluteDiffusionEffective()
+    {
+        SoluteChangedType SoluteChanges = new SoluteChangedType();
+        SoluteChanges.Sender = "SoluteDiffusion";
+        SoluteChanges.SoluteName = Name;
+        SoluteChanges.SoluteUnits = "kg/ha";
+        SoluteChanges.DeltaSolute = deltaSoluteDiffusion;
+        SoluteChanged.Invoke(SoluteChanges);
+    }
+
+    #endregion
+
 	#region Procedure to handle solute degradation
 
 	/// <summary>
@@ -550,11 +656,17 @@ public class Type_dcd : SoluteType
 	public double[] dcd
 	{ get { return SoluteAmount; } }
 
-	[Output("DegradationFraction_dcd")]
-	[Units("%")]
-	[Description("fraction of dcd that has been transformed")]
-	private double[] DegradationFraction_dcd
-	{ get { return fractionSoluteTransformation; } }
+    [Output("dcdppm")]
+    [Units("mg/kg")]
+    [Description("amount of dcd in each soil layer")]
+    public double[] dcdppm
+    { get { return SoluteAmountppm; } }
+
+    [Output("Diffusion_dcd")]
+    [Units("kg/ha")]
+    [Description("amount of dcd transported by diffusion")]
+    private double[] Diffusion_dcd
+    { get { return deltaSoluteDiffusion; } }
 
 	[Output("Degradation_dcd")]
 	[Units("kg/ha")]

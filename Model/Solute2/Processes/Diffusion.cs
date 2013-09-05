@@ -21,12 +21,12 @@ public class SoluteDiffusion
 	/// <summary>
 	/// The solute's diffusivity in water, for each layer (mm2/day)
 	/// </summary>
-	private double[] DiffusivityCoefficient;
+	private double DiffusivityCoefficient;
 	[Param()]
 	[Output()]
 	[Units("mm^2/day")]
-	[Description("The solute's diffusivity in water, for each layer")]
-	public double[] MolecularDiffusivity
+	[Description("The solute's diffusivity in water")]
+	public double MolecularDiffusivity
 	{
 		get { return DiffusivityCoefficient; }
 		set { DiffusivityCoefficient = value; }
@@ -36,7 +36,24 @@ public class SoluteDiffusion
 	/// The thickness of each soil layer (mm)
 	/// </summary>
 	[Input()]
-	private double[] dlayer = null;
+    public double[] dlayer = null;
+
+    /// <summary>
+    /// The thickness of each soil layer (mm)
+    /// </summary>
+    [Input()]
+    public double[] sat = null;
+
+    /// <summary>
+    /// The thickness of each soil layer (mm)
+    /// </summary>
+    [Input()]
+    public double[] sw = null;
+
+    /// <summary>
+    /// The amount of solute moved via diffusion
+    /// </summary>
+    public double[] SoluteFlux;
 
 	#endregion
 
@@ -46,21 +63,14 @@ public class SoluteDiffusion
 	[EventHandler()]
 	public void OnInitialised()
 	{
-		// Check that the there are values for all layers, will ignore extra values.
-		// We will do this by setting the size of the diffusivity array equal to the size of the soil,
-		//  it will thus set to zero the diffusivity in any layer to which the value was not given
-		if (DiffusivityCoefficient.Length < dlayer.Length)
-			Console.WriteLine("  - Diffusivity values were not supplied for all layers, these will be assumed zero");
-		else if (DiffusivityCoefficient.Length > dlayer.Length)
-			Console.WriteLine("  - Diffusivity values were supplied in excess of number of layers, these will be ignored");
-
-		Array.Resize(ref DiffusivityCoefficient, dlayer.Length);
-	}
+        // Initialise the internal variables
+        SoluteFlux = new double[dlayer.Length];
+    }
 
 	/// <summary>
 	/// Get the variation of solute content for each layer due to diffusion
 	/// </summary>
-	public virtual double[] deltaSoluteDiffused()
+	public virtual double[] deltaSoluteDiffused(double[] Amount)
 	{
 		double[] SoluteMoved = new double[dlayer.Length];
 		return SoluteMoved;
@@ -69,4 +79,36 @@ public class SoluteDiffusion
 
 #region Derived methods for computing the diffusion of solute
 
+public class SoluteDiffusion_MillingtonQuirk : SoluteDiffusion
+{
+
+    public override double[] deltaSoluteDiffused(double[] amount)
+    {
+        DoDiffusion(amount);
+        return SoluteFlux;
+    }
+
+
+    public void DoDiffusion(double[] SoluteAmount)
+    {
+
+        double Tortuosity = 1.0;
+        // Compute solute flux in the soil. Uses Fick's law
+        for (int Layer = 0; Layer < dlayer.Length; Layer++)
+        {
+            // Get the values for tortuosity 
+            Tortuosity = Math.Pow(sw[Layer] / sat[Layer], 2);
+
+            // Compute the flux
+            if (Layer < dlayer.Length - 1)
+            {
+                double avgThickness = (dlayer[Layer] + dlayer[Layer + 1]) / 2;
+                double SoluteGradient = (SoluteAmount[Layer] - SoluteAmount[Layer + 1]) / avgThickness;
+                SoluteFlux[Layer] = MolecularDiffusivity * Tortuosity * sw[Layer] * SoluteGradient;
+            }
+            else
+                SoluteFlux[Layer] = 0.0;
+        }
+    }
+}
 #endregion

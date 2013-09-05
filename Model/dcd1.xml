@@ -1,9 +1,10 @@
-<Type name ="dcd1">
+<Type version="36" creator="Apsim 7.5-r3113" name="dcd1">
   <Metadata>
     <UItype>CSUserInterface.GenericUI</UItype>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-    <Documentation></Documentation>
+    <Documentation>
+    </Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\Solute2-32.png</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\Solute2-16.png</SmallIcon>
     <dll>%apsim%\Model\Solute2.dll</dll>
@@ -15,8 +16,8 @@
       <drop>factor</drop>
     </drops>
     <ApsimToSim>
-      <component name= "[InstanceName]" executable= "[dll]">
-        <executable name="[dll]" version="1.0"/>
+      <component name="[InstanceName]" executable="[dll]">
+        <executable name="[dll]" version="1.0" />
         <initdata>
           [Model]
           [dcd1.innerxml]
@@ -26,16 +27,16 @@
   </Metadata>
   <Model>
     <Solute>
-		<!-- This parameterisation defines a dcd-type solute, where all the basic functions are set as a constant value -->
-      <Type_dcd name="SoluteType" description="Defines the outputs that will be given to APSIM"/>
+      <!-- This parameterisation defines a dcd-type solute, where all the basic functions are set as a constant value -->
+      <Type_dcd name="SoluteType" description="Defines the outputs that will be given to APSIM" />
       <MolecularWeight description="The molecular weight of the solute (g/mol)">1.00</MolecularWeight>
       <InitialContent description="The amount of solute at the beginning of the simulation (mg solute/kg soil)">
         <double>0.0</double>
         <double>0.0</double>
         <double>0.0</double>
       </InitialContent>
-      <UpperBound description="The maximum value for the solute amount (mol/kg)">1000.0</UpperBound>
-      <LowerBound description="The minimum value for the solute amount (mol/kg)">0.0</LowerBound>
+      <MaximumConcentration description="The maximum value for the solute amount (mol/kg)">1000.0</MaximumConcentration>
+      <MinimumConcentration description="The minimum value for the solute amount (mol/kg)">0.0</MinimumConcentration>
       <ToleranceValue description="The tolerance level for values above or below the bounds (mol/kg)">0.00001</ToleranceValue>
       <SoluteDegradation name="SoluteDegradation" description="Specify the approach and parameters to compute solute degradation">
         <PotentialDegradationRate description="The degradation rate at optimum conditions (%/day)">5.0</PotentialDegradationRate>
@@ -56,7 +57,7 @@
         <InhibitionAction name="InhibitionAction" description="Specify the approach and parameters to compute inhibition effect">
           <sif_UserDefinedValue description="A constant value to be used as inhibition factor (0-1)">1.0</sif_UserDefinedValue>
         </InhibitionAction>
-      </SoluteInhibition>        
+      </SoluteInhibition>
     </Solute>
   </Model>
 </Type>

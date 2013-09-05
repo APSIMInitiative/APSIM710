@@ -27,7 +27,7 @@ public partial class Solute
 	public double MolecularWeight
 	{ get; set; }
 
-	private double[] _InitialContent;
+	private double[] MyInitialContent;
 	/// <summary>
 	/// The initial content of the solute (mg solute/kg soil)
 	/// </summary>
@@ -37,8 +37,8 @@ public partial class Solute
 	[Description("The initial solute content")]
 	private double[] InitialContent
 	{
-		get { return _InitialContent; }
-		set { _InitialContent = value; }
+		get { return MyInitialContent; }
+		set { MyInitialContent = value; }
 	}
 
 	/// <summary>
@@ -46,7 +46,7 @@ public partial class Solute
 	/// </summary>
 	[Param()]
 	[Units("mol/kg")]
-	private double UpperBound
+	private double MaximumConcentration
 	{ get; set; }
 	
 	/// <summary>
@@ -54,7 +54,7 @@ public partial class Solute
 	/// </summary>
 	[Param()]
 	[Units("mol/kg")]
-	private double LowerBound
+	private double MinimumConcentration
 	{ get; set; }
 
 	/// <summary>
@@ -124,6 +124,12 @@ public partial class Solute
 	[Event]
 	public event NewSoluteDelegate NewSolute;
 
+    /// <summary>
+    /// Event used to send mass flows to sysbal
+    /// </summary>
+    [Event]
+    public event ExternalMassFlowDelegate ExternalMassFlowSolute;
+
 	#endregion
 
 	#region Internal variables
@@ -167,16 +173,16 @@ public partial class Solute
 			Amount = new double[dlayer.Length];
 
 			// verify that initial content is given to all layers, if not will assume they are zero
-			if (_InitialContent.Length < dlayer.Length)
+			if (MyInitialContent.Length < dlayer.Length)
 				Console.WriteLine("  - Values for solute amount were not supplied for all layers, these will be assumed zero");
-			else if (_InitialContent.Length > dlayer.Length)
+			else if (MyInitialContent.Length > dlayer.Length)
 				Console.WriteLine("  - Values for solute amount were supplied in excess of number of layers, these will be ignored");
 
-			Array.Resize(ref _InitialContent, dlayer.Length);
+			Array.Resize(ref MyInitialContent, dlayer.Length);
 
 			// Set initial solute content
-			for (int Layer = 0; Layer < dlayer.Length; Layer++)
-				Amount[Layer] = _InitialContent[Layer] * MolecularWeight / 1000;  // converted from ppm to mol/kg
+            for (int Layer = 0; Layer < dlayer.Length; Layer++)
+                Amount[Layer] = MyInitialContent[Layer] / (MolecularWeight * 1000);  // convert from ppm to mol/kg
 		}
 	}
 
@@ -226,6 +232,7 @@ public partial class Solute
 	/// <param name="SoluteChanges">Data about solute changes (name and amount)</param>
 	private void changeSoluteAmount(SoluteChangedType SoluteChanges)
 	{
+        double convFactor = 0.0;
 		for (int Layer = 0; Layer < dlayer.Length; Layer++)
 		{
 			if (SoluteChanges.DeltaSolute[Layer] != 0.0)
@@ -235,12 +242,13 @@ public partial class Solute
 				switch (SoluteChanges.SoluteUnits.ToLower())
 				{
 					case "kg/ha":
-						DeltaAmount = SoluteChanges.DeltaSolute[Layer] * 100 / (dlayer[Layer] * bd[Layer]);	// convert to ppm
-						DeltaAmount = DeltaAmount * MolecularWeight / 1000;		// convert to mol/kg
+                        convFactor = 10 * MolecularWeight * dlayer[Layer] * bd[Layer];
+						DeltaAmount = SoluteChanges.DeltaSolute[Layer] / convFactor;		// convert to mol/kg
 						break;
 					case "ppm":
 					case "mg/kg":
-						DeltaAmount = SoluteChanges.DeltaSolute[Layer] * MolecularWeight / 1000;	// convert to mol/kg
+                        convFactor = 1000 * MolecularWeight;
+						DeltaAmount = SoluteChanges.DeltaSolute[Layer] / convFactor;	// convert to mol/kg
 						break;
 					case "mol/kg":
 						DeltaAmount = SoluteChanges.DeltaSolute[Layer];		// already correct
@@ -251,17 +259,17 @@ public partial class Solute
 				double Result = Amount[Layer] + DeltaAmount;
 
 				// Check bounds
-				if (Result < LowerBound - ToleranceValue)
+				if (Result < MinimumConcentration - ToleranceValue)
 					throw new Exception("Attempt to set the value of " + SoluteType.Name + "to a value below its lower bound");
-				else if (Result > UpperBound + ToleranceValue)
+				else if (Result > MaximumConcentration + ToleranceValue)
 					throw new Exception("Attempt to set the value of " + SoluteType.Name + "to a value above its upper bound");
 				else
-					Amount[Layer] = Math.Max(LowerBound, Math.Min(UpperBound, Result));
+					Amount[Layer] = Math.Max(MinimumConcentration, Math.Min(MaximumConcentration, Result));
 			}
 		}
 
 		// Update values in SoluteType
-		SoluteType.NewSoluteAmount(Amount_kgha());
+        SoluteType.NewSoluteAmount(Amount_kgha(), Amount_mgkg());
 	}
 
 	/// <summary>
@@ -288,8 +296,11 @@ public partial class Solute
 		//  case positive, get the values and pass on for outputing
 		if (SoluteAdsorption != null)
 			SoluteType.AdsorptionAmount(SoluteAdsorption.SoluteAdsorbed());
-		if (SoluteDiffusion != null)
-			SoluteType.NewDiffusionAmount(SoluteDiffusion.deltaSoluteDiffused());
+        if (SoluteDiffusion != null)
+        {
+            SoluteType.NewDiffusionAmount(SoluteDiffusion.deltaSoluteDiffused(Amount_kgha()));
+            SoluteType.MakeSoluteDiffusionEffective();
+        }
 		if (SoluteDegradation != null)
 		{
 			double[] DegradationFraction = SoluteDegradation.fractionDegradation();
@@ -355,7 +366,7 @@ public partial class Solute
 
 		for (int Layer = 0; Layer < dlayer.Length; Layer++)
 		{
-			convFactor = 10 * dlayer[Layer] * bd[Layer] / MolecularWeight;	// converts from mol/kg to kg/ha
+            convFactor = 10 * MolecularWeight * dlayer[Layer] * bd[Layer];	// converts from mol/kg to kg/ha
 			Result[Layer] = Amount[Layer] * convFactor;
 		}
 		return Result;
@@ -371,7 +382,7 @@ public partial class Solute
 		// Check whether amount has been initialised
 		CheckInitialAmount();
 
-		double convFactor = 10.0 * bd[Layer] * dlayer[Layer] / MolecularWeight;	// converts from mol/kg to kg/ha
+        double convFactor = 10.0 * MolecularWeight * bd[Layer] * dlayer[Layer];	// converts from mol/kg to kg/ha
 		return Amount[Layer] * convFactor;
 	}
 
@@ -393,7 +404,7 @@ public partial class Solute
 
 		for (int Layer = 0; Layer < dlayer.Length; Layer++)
 		{
-			convFactor = 1000 / MolecularWeight;	// converts from mol/kg to mg/kg
+			convFactor = 1000 * MolecularWeight;	// converts from mol/kg to mg/kg
 			Result[Layer] = Amount[Layer] * convFactor;
 		}
 		return Result;
@@ -409,7 +420,7 @@ public partial class Solute
 		// Check whether amount has been initialised
 		CheckInitialAmount();
 
-		double convFactor = 1000 / MolecularWeight;	// converts from mol/kg to mg/kg
+		double convFactor = 1000 * MolecularWeight;	// converts from mol/kg to mg/kg
 		return Amount[Layer] * convFactor;
 	}
 
