@@ -238,7 +238,6 @@ internal class FactoryProperty : Instance, ApsimType
     //private List<ReflectedField> ChildFields;
     private ReflectedType Property;
     private ApsimType Data;
-    protected TDDMLValue DDMLValue;
 
     public bool IsParam;
     public bool IsInput;
@@ -401,10 +400,7 @@ internal class FactoryProperty : Instance, ApsimType
     // --------------------------------------------------------------------
     public void setValue(TTypedValue src)
     {
-        if (DDMLValue != null)
-        {
-            Data.unpack(src); //assign the compatible value
-        }
+        Data.unpack(src); //assign the compatible value
     }
     public virtual uint memorySize()
     {
@@ -412,12 +408,7 @@ internal class FactoryProperty : Instance, ApsimType
     }
     public virtual String DDML()
     {
-        if (DDMLValue == null)
-            DDMLValue = new TDDMLValue("<type/>", "");
-        //need to ensure that the units for this property are set correctly
-        DDMLValue.setUnits(Units);
-        DDMLValue.Name = OutputName;
-        return DDMLValue.getText(DDMLValue, -1, 0);
+		return(sDDML);
     }
     // --------------------------------------------------------------------
     /// <summary>
@@ -428,7 +419,6 @@ internal class FactoryProperty : Instance, ApsimType
     // --------------------------------------------------------------------
     public FactoryProperty(ReflectedType Property, XmlNode Parent)
     {
-        DDMLValue = null;
         IsParam = false;
         IsInput = false;
         IsOutput = false;
@@ -445,13 +435,11 @@ internal class FactoryProperty : Instance, ApsimType
         this.OutputName = FQN;
 
         Data = GetFieldWrapper(Property.Typ);
-        //use a local ddmlvalue so that the property ddml can be 
         if (Data != null)
             sDDML = Data.DDML();
         else
-            sDDML = "";
-        if (sDDML.Length > 0)
-            DDMLValue = new TDDMLValue(sDDML, "");
+            sDDML = "<type/>";
+
         regIndex = -1;
 
         foreach (Object Attr in Property.MetaData)
@@ -511,7 +499,13 @@ internal class FactoryProperty : Instance, ApsimType
             else if (D != null)
                 Description = D.ToString();
         }
-    }
+		if (Units != "") 
+		{
+		  TDDMLValue DDMLValue = new TDDMLValue(sDDML, "");
+		  DDMLValue.setUnits(Units);
+          sDDML = DDMLValue.asDDML();
+		}
+	}
 
     private ApsimType GetFieldWrapper(Type type)
     {
