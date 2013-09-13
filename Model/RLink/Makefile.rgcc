@@ -22,17 +22,20 @@ RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS)
 RCXX := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
 RLD := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
 
+RDataTypes.h RDataTypesEmbedded.h: ../DataTypes/Datatypes.xml RDataTypes.macro
+	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml RDataTypes.macro
+
 # Stuff for REmbedder.cpp here
 ../REmbed.dll: REmbedder.o RDataTypesEmbedded.o dllProcAddressWrapper.o libRLink.a
-	$(RLD) $(RLDFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o dllProcAddressWrapper.o $(RLDFLAGS) libRLink.a $(RLDLIBS)
+	$(RLD) $(RLDFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o dllProcAddressWrapper.o $(RLDFLAGS) libRLink.a $(RLDLIBS) -lstdc++
 
 ../REmbed.so: REmbedder.o RDataTypesEmbedded.o 
 	$(RLD) $(RLDFLAGS) -shared -s -o $@ REmbedder.o  RDataTypesEmbedded.o $(RLDLIBS)
 
-REmbedder.o: REmbedder.cpp 
+REmbedder.o: REmbedder.cpp REmbedder.h RDataTypes.h 
 	$(RCXX) -fPIC -c $(RCXXFLAGS) $(RCXXFLAGS)  REmbedder.cpp 
 
-RDataTypesEmbedded.o: RDataTypesEmbedded.cpp
+RDataTypesEmbedded.o: RDataTypes.h RDataTypesEmbedded.cpp RDataTypesEmbedded.h
 	$(RCXX) -fPIC -c $(RCXXFLAGS) $(RCXXFLAGS)  RDataTypesEmbedded.cpp 
 
 dllProcAddressWrapper.o: dllProcAddressWrapper.cpp

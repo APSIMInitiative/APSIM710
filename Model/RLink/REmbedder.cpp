@@ -3,6 +3,7 @@
 // pass c++ classes as arguments - the name mangling and memory managers are incompatible.
 // It requires RTools (from CRAN) to compile.
 
+#include <iostream>
 #include <unistd.h>
 #include <RInside.h>
 #include <General/platform.h>
@@ -19,10 +20,21 @@ void apsimSubscribe( std::string eventName, std::string type, std::string handle
   apsimSubscribeRaw( eventName.c_str(), type.c_str(), handler.c_str() );
   }
 
-void apsimExpose( std::string eventName, std::string units)
+void apsimExpose( std::string varName, std::string units, SEXP value)
   {
-  // FIXME - need to find the type and size of variable and expose it with correct ddml
-  apsimExposeRaw( eventName.c_str(), units.c_str() );
+  Rcpp::Function f = Rcpp::Function("class");
+  std::string className = Rcpp::as<std::string>( f(value));
+  Rcpp::Function g = Rcpp::Function("length");
+  int argLength = Rcpp::as<int>( g(value));
+
+  if (className == "numeric" )
+  	if (	argLength> 1) { className = "doubleArray";} else {className = "double";}
+  else if (className == "character")
+  	if (	argLength> 1) { className = "stringArray";} else {className = "string";}
+  else if (argLength > 1)
+  	className += std::string("[") + static_cast<std::ostringstream*>( &(std::ostringstream() << argLength) )->str() + "]"; // Let the other end take care of it..
+  
+  apsimExposeRaw( varName.c_str(), units.c_str(), className.c_str());
   }
 
 SEXP apsimQuery( std::string pattern )
@@ -48,7 +60,7 @@ RCPP_MODULE(apsim){
   function( "subscribe",&apsimSubscribe, List::create( _["eventName"], _["type"], _["handler"]), "Subscribe to an apsim event" ) ;
   function( "get",      &apsimGet, List::create( _["variableName"]),                       "Get an apsim variable" ) ;
   function( "set",      &apsimSet, List::create( _["variableName"], _["variableValue"] ),  "Set an apsim variable" ) ;
-  function( "expose",   &apsimExpose, List::create( _["variableName"] , _["units"] = "" ), "Expose an R variable to apsim" ) ;
+  function( "expose",   &apsimExpose, List::create( _["variableName"] , _["units"] = "", _["value"] = 0 ), "Expose an R variable to apsim" ) ;
   function( "query",    &apsimQuery, List::create( _["pattern"] ),                         "Query apsim for a module or variable" ) ;
   function( "fatal",    &apsimFatalError, List::create( _["message"] ),                    "Signal a fatal apsim error" ) ;
 }
@@ -151,6 +163,31 @@ extern "C" bool DLLEXPORT EmbeddedR_GetVector(const char *variable, char *result
         strncpy(ptr, stringrep, elemwidth);
         ptr[elemwidth-1] = '\0';
         ptr += elemwidth;
+        (*numReturned)++;
+        }
+    return true;
+    }
+  catch(std::exception& ex) {
+    std::cout << "R Exception getting " << variable << ":" << ex.what() << std::endl;
+    std::string msg = ptrR->parseEval("geterrmessage()");
+    std::cout << msg << std::endl; std::cout.flush();
+  }
+  return false;
+}
+
+extern "C" bool DLLEXPORT EmbeddedR_GetVectorDouble(const char *variable, double *result,
+                                    unsigned int resultlen, unsigned int *numReturned)
+{
+  *numReturned = 0;
+  if (ptrR == NULL)
+     return false;
+  try
+    {
+    Rcpp::NumericVector resultVec = (*ptrR)[variable];
+    double *ptr = result;
+    for (int i = 0; i < resultVec.size() && ptr  < result + sizeof(double) * resultlen; i++, ptr++)
+        {
+        *ptr = resultVec[i];
         (*numReturned)++;
         }
     return true;

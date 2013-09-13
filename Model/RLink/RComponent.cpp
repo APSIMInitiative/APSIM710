@@ -46,11 +46,13 @@ typedef bool (*B_CHAR_FN)(const char*);
 typedef bool (*B_CHAR2_FN)(void *, const char*, const char*);
 typedef bool (*B_VOIDPTR_FN)(void *);
 typedef bool (*B_VEC_FN)(const char*, char *, unsigned int, unsigned int, unsigned int *);
+typedef bool (*B_VECDBL_FN)(const char*, double *, unsigned int, unsigned int *);
 typedef bool (*B_2CHAR_FN)(const char*, char*, int);
 
 B_CHAR2_FN   R_StartFn;
 B_CHAR_FN    R_EvalCharFn;
 B_VEC_FN     R_GetVecFn;
+B_VECDBL_FN  R_GetVecDblFn;
 B_2CHAR_FN   R_EvalCharSimpleFn;
 
 #ifdef __WIN32__
@@ -114,7 +116,21 @@ void RGetVector(const char *s, std::vector<std::string> &result)
 	 }
    delete [] buffer;
 }
+void RGetVectorDouble(const char *s, std::vector<double> &result)
+{
+   result.clear();
 
+   double *buffer = new double [2048];
+   unsigned int numReturned = 0;
+   if (R_GetVecDblFn != NULL) R_GetVecDblFn (s, buffer, 2048 , &numReturned);
+   result.resize(numReturned);
+   double *ptr = buffer;
+   for (unsigned int i = 0; i < numReturned; i++, ptr++)
+	   result[i] = *ptr;
+
+   delete [] buffer;
+
+}
 // Evaluate something and return as concantenated string
 std::string SimpleREval(const char *s)
 {
@@ -276,6 +292,7 @@ void RComponent::oneTimeInit(void)
 
     if (NULL == (R_EvalCharFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_Eval");
     if (NULL == (R_GetVecFn = (B_VEC_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVector"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_GetVector");
+    if (NULL == (R_GetVecDblFn = (B_VECDBL_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVectorDouble"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_GetVector");
     if (NULL == (R_EvalCharSimpleFn = (B_2CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SimpleCharEval"))) throw runtime_error("R Embedding DLL missing symbol EmbeddedR_SimpleCharEval");
 
     // write copyright notice(s).
@@ -330,7 +347,7 @@ void RComponent::onInit2(void)
           apsimAPI.write(variables[i]);
           if (units[i] != "") apsimAPI.write(" (" + units[i] + ")");
           apsimAPI.write("\n");
-          expose(variables[i], units[i]);
+          expose(variables[i], units[i], "stringArray");
 		  }
       }
    // find the apsim variables we want before every event
@@ -380,11 +397,26 @@ void RComponent::onError(void)
    }
 
 // Allow apsim to read (and/ or write) one of our variables.
-void RComponent::expose(const std::string &variableName, const std::string &units)
+void RComponent::expose(const std::string &variableName, const std::string &units, const std::string &datatype)
    {
-   apsimAPI.exposeFunction2(variableName, units, "",
-                           StringArrayFunction2(variableName, &RComponent::respondToGet),
-                           StringArrayFunction2(variableName, &RComponent::respondToSet));
+   if (datatype == "stringArray") 
+      apsimAPI.exposeFunction2(variableName, units, "",
+                               StringArrayFunction2(variableName, &RComponent::respondToGetStringArray),
+                               StringArrayFunction2(variableName, &RComponent::respondToSetStringArray));
+   else if (datatype == "string") 
+      apsimAPI.exposeFunction2(variableName, units, "",
+                               StringFunction2(variableName, &RComponent::respondToGetString),
+                               StringFunction2(variableName, &RComponent::respondToSetString));
+   else if (datatype == "doubleArray") 
+      apsimAPI.exposeFunction2(variableName, units, "",
+                               DoubleArrayFunction2(variableName, &RComponent::respondToGetDoubleArray),
+                               DoubleArrayFunction2(variableName, &RComponent::respondToSetDoubleArray));
+   else if (datatype == "double") 
+      apsimAPI.exposeFunction2(variableName, units, "",
+                               DoubleFunction2(variableName, &RComponent::respondToGetDouble),
+                               DoubleFunction2(variableName, &RComponent::respondToSetDouble));
+   else 
+   	  throw std::runtime_error("Unknown R datatype '" + datatype + "'");
    }
 
 // Deal with an event coming from the system to us
@@ -406,18 +438,43 @@ void RComponent::onRuleCallback(const std::string &s)
 // ------------------------------------------------------------------
 // Return a variable to caller. Everything is a string.
 // ------------------------------------------------------------------
-void RComponent::respondToGet(const std::string &variableName, std::vector<std::string> &result)
+void RComponent::respondToGetStringArray(const std::string &variableName, std::vector<std::string> &result)
    {
    RComponent *old = currentRComponent; currentRComponent = this;
    result.clear();
    RGetVector(variableName.c_str(), result);
    currentRComponent = old;
    }
+void RComponent::respondToGetString(const std::string &variableName, std::string &result)
+   {
+   RComponent *old = currentRComponent; currentRComponent = this;
+   std::vector<std::string>  buffer;
+   RGetVector(variableName.c_str(), buffer);
+   if (buffer.size() > 0) 
+     result = buffer[0];
+   currentRComponent = old;
+   }
+void RComponent::respondToGetDoubleArray(const std::string &variableName, std::vector<double> &result)
+   {
+   RComponent *old = currentRComponent; currentRComponent = this;
+   result.clear();
+   RGetVectorDouble(variableName.c_str(), result);
+   currentRComponent = old;
+   }
+void RComponent::respondToGetDouble(const std::string &variableName, double &result)
+   {
+   RComponent *old = currentRComponent; currentRComponent = this;
+   std::vector<double>  buffer;
+   RGetVectorDouble(variableName.c_str(), buffer);
+   if (buffer.size() > 0) 
+     result = buffer[0];
+   currentRComponent = old;
+   }
 
 // ------------------------------------------------------------------
 // Set the value of a variable for the specified variable name.
 // ------------------------------------------------------------------
-void RComponent::respondToSet(const std::string &variableName, std::vector<std::string> &value)
+void RComponent::respondToSetStringArray(const std::string &variableName, std::vector<std::string> &value)
    {
    RComponent *old = currentRComponent; currentRComponent = this;
    string cmd = variableName;
@@ -446,6 +503,53 @@ void RComponent::respondToSet(const std::string &variableName, std::vector<std::
    currentRComponent = old;
    }
 
+void RComponent::respondToSetDoubleArray(const std::string &variableName, std::vector<double> &value)
+   {
+   RComponent *old = currentRComponent; currentRComponent = this;
+   string cmd = variableName;
+   cmd += "<-";
+   if (value.size() > 1)
+      {
+      cmd += "c(";
+      for (std::vector<double>::iterator p = value.begin(); p != value.end(); p++)
+	      {
+	      if (p != value.begin()) cmd += ",";
+        cmd += *p;
+	      }
+      cmd += ")";
+      }
+   else
+      {
+	    cmd += value[0];
+      }
+   REvalQ(cmd.c_str());
+   currentRComponent = old;
+   }
+
+void RComponent::respondToSetString(const std::string &variableName, std::string &value)
+   {
+   RComponent *old = currentRComponent; currentRComponent = this;
+   string cmd = variableName;
+   cmd += "<-";
+   if (isNumeric(value))
+	     cmd += value;
+   else
+       cmd += "'" + value + "'";
+   REvalQ(cmd.c_str());
+   currentRComponent = old;
+   }
+
+void RComponent::respondToSetDouble(const std::string &variableName, double &value)
+   {
+   RComponent *old = currentRComponent; currentRComponent = this;
+   string cmd = variableName;
+   cmd += "<-";
+   cmd += value;
+   REvalQ(cmd.c_str());
+   currentRComponent = old;
+   }
+
+
 void RComponent::importVariables(void)
 {
   for (Name2RuleMap::iterator p = apsimVariables.begin(); p != apsimVariables.end(); p++)
@@ -453,7 +557,7 @@ void RComponent::importVariables(void)
 	 vector<string> resultArray;
      apsimAPI.get(p->first, "", 1, resultArray);
 	 if (resultArray.size() > 0)
-	    respondToSet(p->second, resultArray);
+	    respondToSetStringArray(p->second, resultArray);
 	 }
 }
 

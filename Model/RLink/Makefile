@@ -13,12 +13,12 @@ PROJECTTYPE = dll
 ifeq ($(PLATFORM),WIN32VS)
   OBJEXT = obj
   DLLEXT = dll
-  R_HOME = /R-3.0.1
-  REXE:=$(shell $(R_HOME)/bin/R.exe --version)
+  R_HOME = d:/R-3.0.1
+  REXE:=$(shell $(R_HOME)\bin\R.exe --version)
   ifeq ($(REXE),)
     R_MAKE=echo
   else
-    R_MAKE=.\RMakeCmd.bat
+    R_MAKE=RMakeCmd.bat
   endif
 endif
 

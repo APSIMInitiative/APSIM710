@@ -32,10 +32,16 @@ class RComponent
       virtual void onInit2(void);
       void subscribe(const std::string &event, const std::string &type, const std::string &handler );
       void onRuleCallback(const std::string &);
-      void expose(const std::string &variableName,const std::string &units);
+      void expose(const std::string &variableName,const std::string &units, const std::string &type);
 
-      void respondToGet(const std::string &variableName, std::vector<std::string> &result);
-      void respondToSet(const std::string &variableName, std::vector<std::string> &value);
+      void respondToGetStringArray(const std::string &variableName, std::vector<std::string> &result);
+      void respondToSetStringArray(const std::string &variableName, std::vector<std::string> &value);
+      void respondToGetDoubleArray(const std::string &variableName, std::vector<double> &result);
+      void respondToSetDoubleArray(const std::string &variableName, std::vector<double> &value);
+      void respondToGetString(const std::string &variableName, std::string &result);
+      void respondToSetString(const std::string &variableName, std::string &value);
+      void respondToGetDouble(const std::string &variableName, double &result);
+      void respondToSetDouble(const std::string &variableName, double &value);
       void fatal(const std::string &message);
 
       ScienceAPI2& apsimAPI;

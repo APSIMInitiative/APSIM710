@@ -62,7 +62,7 @@ extern "C" void DLLEXPORT STDCALL apsimSetCharacter(const char *e, int numSet, c
 extern "C" void DLLEXPORT STDCALL apsimPublishNull(const char *e);
 extern "C" void DLLEXPORT onApsimNullEvent(const char *handler);
 extern "C" void DLLEXPORT STDCALL apsimSubscribeRaw(const char *e, const char *t, const char *h);
-extern "C" void DLLEXPORT STDCALL apsimExposeRaw(const char *e, const char *units);
+extern "C" void DLLEXPORT STDCALL apsimExposeRaw(const char *e, const char *units, const char *className);
 extern "C" void DLLEXPORT STDCALL apsimQueryRaw(const char *e, int *numReturned, void **returned);
 extern "C" void DLLEXPORT STDCALL apsimFatalErrorRaw(const char *msg);
 extern "C" void DLLEXPORT STDCALL apsimFree(void *a);
@@ -199,6 +199,17 @@ extern RComponent *currentRComponent;
 extern "C" void DLLEXPORT STDCALL apsimPublishNull(const char *e) {
   if (currentRComponent) currentRComponent->apsimAPI.publish(std::string(e));
 }
+#if 0
+[foreach types.builtin]
+extern "C" void DLLEXPORT STDCALL apsimExpose[builtin.cpptype](const char *name, const char *units, [builtin.cpptype] *dummy) {
+  if (currentRComponent) currentRComponent->apsimAPI.exposeFunction2(std::string(name),std::string(units), 
+                                f1,f2);
+}
+      virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
+                                  boost::function2<void, const std::string &, [builtin.cpptype]&> getter,
+                                  boost::function2<void, const std::string &, [builtin.cpptype]&> setter) = 0;
+[endfor]
+#endif
 
 [foreach types.type]
 extern "C" void DLLEXPORT STDCALL apsimPublish[type.name](const char *e, R[type.name]Type *payload) {
@@ -207,6 +218,14 @@ extern "C" void DLLEXPORT STDCALL apsimPublish[type.name](const char *e, R[type.
  if (currentRComponent) currentRComponent->apsimAPI.publish(std::string(e), *converted);
  delete converted;
 }
+
+#if 0
+extern "C" void DLLEXPORT STDCALL apsimExpose[type.name](const char *name, const char *units, R[type.name]Type *junk) {
+ [type.name]Type * dummy = NULL;
+ if (currentRComponent) currentRComponent->apsimAPI.exposeFunction2(std::string(name),std::string(units), 
+                                f1,f2);
+}
+#endif
 
 extern "C" void DLLEXPORT * STDCALL apsimGet[type.name](const char *e) {
    [type.name]Type * gotten = new [type.name]Type;
@@ -237,8 +256,8 @@ extern "C" void DLLEXPORT STDCALL apsimSubscribeRaw(const char *e, const char *t
    if (currentRComponent) currentRComponent->subscribe(std::string(e), std::string(t), std::string(h));
 }
 
-extern "C" void DLLEXPORT STDCALL apsimExposeRaw(const char *e, const char *t) {
-   if (currentRComponent) currentRComponent->expose(std::string(e), std::string(t));
+extern "C" void DLLEXPORT STDCALL apsimExposeRaw(const char *name, const char *units, const char *className) {
+   if (currentRComponent) currentRComponent->expose(std::string(name), std::string(units), std::string(className));
 }
 
 extern "C" void DLLEXPORT STDCALL apsimQueryRaw(const char *e, int *numReturned, void **returned) {
@@ -796,7 +815,7 @@ EXPORTS
   apsimSet[type.name] = _apsimSet[type.name]@8
  [endfor]
   apsimSubscribeRaw@12 = _apsimSubscribeRaw@12
-  apsimExposeRaw@8 = _apsimExposeRaw@8
+  apsimExposeRaw@12 = _apsimExposeRaw@12
   apsimQueryRaw@12 = _apsimQueryRaw@12
   apsimFatalErrorRaw@4 = _apsimFatalErrorRaw@4
   apsimfatalerrorraw = _apsimFatalErrorRaw@4
