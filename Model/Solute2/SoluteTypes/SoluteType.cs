@@ -234,10 +234,10 @@ public class Type_tracer : SoluteType
 	public double[] tracer
 	{ get { return SoluteAmount; } }
 
-    [Output("tracerppm")]
+    [Output("tracer_ppm")]
     [Units("mg/kg")]
     [Description("amount of Tracer in each soil layer")]
-    public double[] tracerppm
+    public double[] tracer_ppm
     { get { return SoluteAmountppm; } }
 
     [Output("Diffusion_tracer")]
@@ -344,10 +344,10 @@ public class Type_UreaseInhibitor : SoluteType
     public double[] UreaseInhibitor
     { get { return SoluteAmount; } }
 
-    [Output("UreaseInhibitorppm")]
+    [Output("UreaseInhibitor_ppm")]
     [Units(",g/kg")]
     [Description("amount of UreaseInhibitor in each soil layer")]
-    public double[] UreaseInhibitorppm
+    public double[] UreaseInhibitor_ppm
     { get { return SoluteAmountppm; } }
 
     [Output("Diffusion_UreaseInhibitor")]
@@ -460,10 +460,10 @@ public class Type_NitrificationInhibitor : SoluteType
     public double[] NitrificationInhibitor
     { get { return SoluteAmount; } }
 
-    [Output("NitrificationInhibitorppm")]
+    [Output("NitrificationInhibitor_ppm")]
     [Units("mg/kg")]
     [Description("amount of NitrificationInhibitor in each soil layer")]
-    public double[] NitrificationInhibitorppm
+    public double[] NitrificationInhibitor_ppm
     { get { return SoluteAmountppm; } }
 
     [Output("Diffusion_NitrificationInhibitor")]
@@ -546,10 +546,10 @@ public class Type_Cl : SoluteType
     public double[] cl
     { get { return SoluteAmount; } }
 
-    [Output("clppm")]
+    [Output("cl_ppm")]
     [Units("mg/kg")]
     [Description("amount of Cl in each soil layer")]
-    public double[] clppm
+    public double[] cl_ppm
     { get { return SoluteAmountppm; } }
 
     [Output("Diffusion_cl")]
@@ -656,10 +656,10 @@ public class Type_dcd : SoluteType
 	public double[] dcd
 	{ get { return SoluteAmount; } }
 
-    [Output("dcdppm")]
+    [Output("dcd_ppm")]
     [Units("mg/kg")]
     [Description("amount of dcd in each soil layer")]
-    public double[] dcdppm
+    public double[] dcd_ppm
     { get { return SoluteAmountppm; } }
 
     [Output("Diffusion_dcd")]

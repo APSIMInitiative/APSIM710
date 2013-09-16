@@ -29,11 +29,11 @@ public partial class Solute
 
 	private double[] MyInitialContent;
 	/// <summary>
-	/// The initial content of the solute (mg solute/kg soil)
+	/// The initial content of the solute (kg solute/ha)
 	/// </summary>
 	[Param()]
 	[Output()]
-	[Units("mg/kg")]
+	[Units("kg/ha")]
 	[Description("The initial solute content")]
 	private double[] InitialContent
 	{
@@ -181,8 +181,12 @@ public partial class Solute
 			Array.Resize(ref MyInitialContent, dlayer.Length);
 
 			// Set initial solute content
+            double convFactor = 0;
             for (int Layer = 0; Layer < dlayer.Length; Layer++)
-                Amount[Layer] = MyInitialContent[Layer] / (MolecularWeight * 1000);  // convert from ppm to mol/kg
+            {
+                convFactor = 10 * MolecularWeight * dlayer[Layer] * bd[Layer];
+                Amount[Layer] = MyInitialContent[Layer] / convFactor;       // convert from kg/ha to mol/kg
+            }
 		}
 	}
 
@@ -285,6 +289,13 @@ public partial class Solute
 		SoluteData.solutes = solute_names;
 		NewSolute.Invoke(SoluteData);
 	}
+
+    [EventHandler()]
+    public void OnNewSolute(NewSoluteType SoluteData)
+    {
+        double test = 0.0;
+    }
+
 
 	/// <summary>
 	/// Calculations for each time-step 

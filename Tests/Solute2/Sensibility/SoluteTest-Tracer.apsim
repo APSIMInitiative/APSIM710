@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3142" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3147" name="simulations">
   <simulation name="Solute2Test-Tracer">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
@@ -7,28 +7,49 @@
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
     </metfile>
-    <summaryfile />
     <memo name="Info">
 ========================================================================
       Generic tests for solute2 - tracer
 ========================================================================
 
 
-  - Basic simulation description:
-    - Bare soil
-    - Generic soil - Silt Loam
-    - Artificial constant weather
-    - 0kgN/ha in a year
-    - 1ppm of tracer in top 3 layers at start
-    - Tracer applied 10 kgN/ha
+  » This simulation uses a tracer solute:
+    + No interactions with soil, except leaching
+    + No transformations in the solute
+    + Diffusion computed by SWIM
 
 
-   - This simulation uses a tracer solute:
-     . No interactions with soil, except leaching
-     . No transformations in the solute
- </memo>
-    <area name="paddock">
-      <folder name="Manager folder">
+  » Basic simulation description:
+    + Bare soil
+    + Generic soil - Silt Loam
+    + Artificial mild temperate weather
+    + 1 kg/ha of tracer in top layer at start
+    + Tracer applied 10 kg/ha, on a deep layer (1250mm)
+
+
+  » Expected behaviour:
+    + All outputs should have a numeric value (can be zero)
+    + Before the addition of tracer at deep layer:
+      - The total amount of tracer in the soil should be constant
+      - No noticiable leaching
+      - Redistribution of initial solute from the surface downwards in the soil profile
+    + After the addition of tracer:
+      - Total solute amount spikes up and soon start to decrease
+      - Leaching starts soon after application
+      - Redistribution at depth is mostly downwards, but goes also upwards
+
+» Variations:
+    + Increasing the initial concentration in the top layer to 10 kg/ha:
+      - No changes in total solute prior to deep layer addition, as no leaching occurs
+      - Redistribution at surface follows similar trend as before, but changes are a bit faster (greater gradient)
+
+    + Adding the tracer at a depth smaller than 1000mm:
+      - No noticiable leaching for depth smaller than 990mm
+      - Redistribution floows similar pattern as before
+</memo>
+    <summaryfile />
+    <area name="Paddock">
+      <folder name="ManagerFolder">
         <manager2 name="Apply_Tracer">
           <ui>
             <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
@@ -147,11 +168,11 @@ End Class
       </micromet>
       <tracer2 name="Tracer">
         <Dummy1 type="category" description="Initial content of Tracer in the soil" />
-        <InitialContent type="text" description="  Amount of Tracer for each layer (mg/kg):">1.0  1.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0</InitialContent>
+        <InitialContent type="text" description="  Amount of Tracer for each layer (kg/ha):">1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0 0.0  0.0</InitialContent>
         <Dummy2 type="category" description="Solute diffusivity" />
         <MolecularDiffusivity type="text" description="  Diffusivity of Tracer in water (mm2/day):">0.0</MolecularDiffusivity>
       </tracer2>
-      <surfaceom name="surface organic matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
         <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
         <mass type="text" description="Initial surface residue (kg/ha)">200</mass>
@@ -211,17 +232,12 @@ End Class
           <variable>sw_dep() as SoilWaterContent format 2</variable>
           <variable>TracerAdded format 2</variable>
           <variable>Tracer() format 3</variable>
-          <variable>tracer format 3</variable>
           <variable>Leach_tracer format 3</variable>
-          <variable>flow_tracer(1)</variable>
-          <variable>flow_tracer(2)</variable>
-          <variable>flow_tracer(3)</variable>
-          <variable>flow_tracer(4)</variable>
-          <variable>flow_tracer(5)</variable>
-          <variable>Degradation_tracer</variable>
-          <variable>Diffusion_tracer</variable>
           <variable>InitialContent</variable>
-          <variable>tracerppm</variable>
+          <variable>tracer format 3</variable>
+          <variable>flow_tracer</variable>
+          <variable>Diffusion_tracer</variable>
+          <variable>tracer_ppm</variable>
           <variable>dlayer</variable>
         </variables>
         <events name="Reporting Frequency">
@@ -259,9 +275,9 @@ End Class
             <CheckedTitles> Cumulative Leach_tracer</CheckedTitles>
             <CheckedTitles> Cumulative flow_tracer(1)</CheckedTitles>
             <CheckedTitles> Cumulative flow_tracer(2)</CheckedTitles>
-            <CheckedTitles> Cumulative flow_tracer(3)</CheckedTitles>
-            <CheckedTitles> Cumulative flow_tracer(4)</CheckedTitles>
-            <CheckedTitles> Cumulative flow_tracer(5)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_tracer(28)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_tracer(29)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_tracer(30)</CheckedTitles>
           </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
@@ -273,9 +289,9 @@ End Class
             <Y>Cumulative Leach_tracer</Y>
             <Y>Cumulative flow_tracer(1)</Y>
             <Y>Cumulative flow_tracer(2)</Y>
-            <Y>Cumulative flow_tracer(3)</Y>
-            <Y>Cumulative flow_tracer(4)</Y>
-            <Y>Cumulative flow_tracer(5)</Y>
+            <Y>Cumulative flow_tracer(28)</Y>
+            <Y>Cumulative flow_tracer(29)</Y>
+            <Y>Cumulative flow_tracer(30)</Y>
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
@@ -284,9 +300,9 @@ End Class
             <CheckedTitles> tracer,   1/01/2000</CheckedTitles>
             <CheckedTitles> tracer,   10/01/2000</CheckedTitles>
             <CheckedTitles> tracer,   31/01/2000</CheckedTitles>
-            <CheckedTitles> tracerppm,   1/01/2000</CheckedTitles>
-            <CheckedTitles> tracerppm,   10/01/2000</CheckedTitles>
-            <CheckedTitles> tracerppm,   31/01/2000</CheckedTitles>
+            <CheckedTitles> tracer_ppm,   1/01/2000</CheckedTitles>
+            <CheckedTitles> tracer_ppm,   10/01/2000</CheckedTitles>
+            <CheckedTitles> tracer_ppm,   31/01/2000</CheckedTitles>
           </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
@@ -295,7 +311,7 @@ End Class
             <colour>
             </colour>
             <XTop>tracer</XTop>
-            <XTop>tracerppm</XTop>
+            <XTop>tracer_ppm</XTop>
             <GDDepth name="Depth">
               <AllXOnTopAxis>Yes</AllXOnTopAxis>
               <Date>1/1/2000</Date>

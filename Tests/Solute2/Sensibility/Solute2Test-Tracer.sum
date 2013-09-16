@@ -19,7 +19,7 @@ Paddock:
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component                     "SWIM2ui2" = %apsim%\Model\SWIM2.dll
    Component             "SoilTemperature2" = %apsim%\Model\SoilTemp2.dll
-   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                 "SoilNitrogen" = %apsim%\Model\SoilNitrogen.dll
    Component                       "Tracer" = %apsim%\Model\Solute2.dll
    Component                 "Apply_Tracer" = %apsim%\Model\Manager2.dll
@@ -55,17 +55,12 @@ Paddock:
         sw_dep() as SoilWaterContent format 2
         TracerAdded format 2
         Tracer() format 3
-        tracer format 3
         Leach_tracer format 3
-        flow_tracer(1)
-        flow_tracer(2)
-        flow_tracer(3)
-        flow_tracer(4)
-        flow_tracer(5)
-        Degradation_tracer
-        Diffusion_tracer
         InitialContent
-        tracerppm
+        tracer format 3
+        flow_tracer
+        Diffusion_tracer
+        tracer_ppm
         dlayer
 
      Output file = Solute2Test-Tracer Outputs.out
@@ -227,7 +222,7 @@ Paddock:
 ------- soiltemp Initialisation -----------------------------------------------
      Initialising :
 
-------- surface organic matter Initialisation ---------------------------------
+------- SurfaceOrganicMatter Initialisation -----------------------------------
      
          - Reading constants
      
@@ -345,9 +340,9 @@ Paddock:
            Layer        Amount
                     (ppm)   (kg/ha)
           --------------------------
-              1       1.0     0.05
-              2       1.0     0.10
-              3       1.0     0.10
+              1      19.2     1.00
+              2       0.0     0.00
+              3       0.0     0.00
               4       0.0     0.00
               5       0.0     0.00
               6       0.0     0.00
@@ -377,7 +372,7 @@ Paddock:
              30       0.0     0.00
              31       0.0     0.00
           --------------------------
-           Totals             0.26
+           Totals             1.00
           --------------------------
 
 
