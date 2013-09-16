@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.5-r3108" name="MCSP">
+<Type version="36" creator="Apsim 7.5-r3138" name="MCSP">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -36,7 +36,7 @@
 </Memo>
       </Population>
       <StageBasedInterpolation name="StageCode">
-        <Stages type="text" description="Stages">Sowing Germination Emergence Expanding Vegetative Maturity PostMaturity</Stages>
+        <Stages type="text" description="Stages">Sowing Germination Emergence StartReproductive EndReproductive Maturity PostMaturity</Stages>
         <Values type="text" description="Values">1           2      3         4          5     6   7</Values>
       </StageBasedInterpolation>
       <Root>
@@ -129,18 +129,6 @@
         </XYPairs>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <SigmoidFunction name="PotentialBiomass">
-          <Xmax type="text" description="Xmax">8000</Xmax>
-          <Xo type="text" description="Xo">700</Xo>
-          <b type="text" description="b">90</b>
-          <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
-          <AccumulateFunction name="AccumulatedThermalTime" shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime">
-            <Memo shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime/Memo" />
-            <VariableReference shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime/VariableReference">
-              <Memo shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime/VariableReference/Memo" />
-            </VariableReference>
-          </AccumulateFunction>
-        </SigmoidFunction>
         <PartitionFractionDemandFunction name="DMDemandFunction">
           <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
@@ -160,7 +148,7 @@
           <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
           <PhaseLookupValue name="Expanding">
             <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">Vegetative</End>
+            <End type="text" description="End">EndReproductive</End>
             <SigmoidFunction name="SigCoverFunction">
               <Xmax type="text" description="Xmax">1</Xmax>
               <Xo type="text" description="Xo">540</Xo>
@@ -175,13 +163,13 @@
             </SigmoidFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="Senescence">
-            <Start type="text" description="Start">Vegetative</Start>
+            <Start type="text" description="Start">EndReproductive</Start>
             <End type="text" description="End">Maturity</End>
             <MultiplyFunction name="TotalCoverLoss">
               <Memo>Amount of sencesnce
 </Memo>
               <OnEventFunction name="MaxCoverFunction">
-                <SetEvent type="text" description="SetEvent">Vegetative</SetEvent>
+                <SetEvent type="text" description="SetEvent">EndReproductive</SetEvent>
                 <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
                 <Constant name="PreEventValue">
                   <Value type="text" description="Value">0</Value>
@@ -207,9 +195,9 @@ Thus change the duration rate for the cultivar</Memo>
                       <Value type="text" description="Value">300</Value>
                     </Constant>
                   </DivideFunction>
-                  <InPhaseTemperatureFunction>
+                  <InPhaseTtFunction>
                     <Memo>A link phenology returns the current phase duration </Memo>
-                  </InPhaseTemperatureFunction>
+                  </InPhaseTtFunction>
                 </MultiplyFunction>
               </SubtractFunction>
             </MultiplyFunction>
@@ -237,13 +225,13 @@ Thus change the duration rate for the cultivar</Memo>
           <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
           <PhaseLookupValue name="Expanding">
             <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">Vegetative</End>
+            <End type="text" description="End">EndReproductive</End>
             <Constant name="Function">
               <Value type="text" description="Value">1</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Senescence">
-            <Start type="text" description="Start">Vegetative</Start>
+            <Start type="text" description="Start">EndReproductive</Start>
             <End type="text" description="End">Maturity</End>
             <Constant>
               <Value type="text" description="Value">1</Value>
@@ -257,6 +245,48 @@ Thus change the duration rate for the cultivar</Memo>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
+        <SigmoidFunction2 name="PotentialBiomass">
+          <Xo type="text" description="Xo">1080</Xo>
+          <b type="text" description="b">216</b>
+          <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
+          <AccumulateFunction name="XValue" shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime">
+            <Memo shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime/Memo" />
+            <VariableReference shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime/VariableReference">
+              <Memo shortcut="/MCSP/Model/Plant/Phenology/AccumulatedThermalTime/VariableReference/Memo" />
+            </VariableReference>
+          </AccumulateFunction>
+          <DivideFunction name="Ymax">
+            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+            <MultiplyFunction name="Numerator">
+              <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+              <VariableReference>
+                <VariableName type="text" description="Variable Name">ExpectedYield.Value</VariableName>
+                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+              </VariableReference>
+              <VariableReference name="VariableReference1">
+                <VariableName type="text" description="Variable Name">ProductDMProportion.Value</VariableName>
+                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+              </VariableReference>
+            </MultiplyFunction>
+            <MultiplyFunction name="Denominator">
+              <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+              <VariableReference>
+                <VariableName type="text" description="Variable Name">HarvestIndex.Value</VariableName>
+                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+              </VariableReference>
+              <SubtractFunction>
+                <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+                <Constant>
+                  <Value type="text" description="Value">1</Value>
+                </Constant>
+                <VariableReference>
+                  <VariableName type="text" description="Variable Name">RootProportion.Value</VariableName>
+                  <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                </VariableReference>
+              </SubtractFunction>
+            </MultiplyFunction>
+          </DivideFunction>
+        </SigmoidFunction2>
       </SimpleLeaf>
       <CompositeBiomass name="Total">
         <Property>Organs[].Live</Property>
@@ -289,26 +319,27 @@ Thus change the duration rate for the cultivar</Memo>
           <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
           <PhaseLookupValue name="Expanding">
             <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">Vegetative</End>
+            <End type="text" description="End">EndReproductive</End>
             <PartitionFractionDemandFunction name="DMDemandFunc">
               <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
 		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
 		</Memo>
-              <Constant name="PartitionFraction">
-                <Value type="text" description="Value">0</Value>
-              </Constant>
+              <LinearInterpolationFunction name="PartitionFraction">
+                <XProperty type="text" description="XProperty">Leaf.PotentialBiomass.Ymax.Value</XProperty>
+                <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+                <XYPairs shortcut="/MCSP/Model/Plant/HarvestIndex/XYPairs" />
+              </LinearInterpolationFunction>
             </PartitionFractionDemandFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="ProductGrowth">
-            <Start type="text" description="Start">Vegetative</Start>
+            <Start type="text" description="Start">EndReproductive</Start>
             <End type="text" description="End">Maturity</End>
-            <PartitionFractionDemandFunction name="DMDemandFunc">
-              <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
-		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
-		</Memo>
-              <Constant name="PartitionFraction">
-                <Value type="text" description="Value">.8</Value>
-              </Constant>
+            <PartitionFractionDemandFunction name="DMDemandFunc" shortcut="/MCSP/Model/Plant/Product/DMDemandFunction/Expanding/DMDemandFunc">
+              <Memo shortcut="/MCSP/Model/Plant/Product/DMDemandFunction/Expanding/DMDemandFunc/Memo" />
+              <LinearInterpolationFunction name="PartitionFraction" shortcut="/MCSP/Model/Plant/Product/DMDemandFunction/Expanding/DMDemandFunc/PartitionFraction">
+                <Memo shortcut="/MCSP/Model/Plant/Product/DMDemandFunction/Expanding/DMDemandFunc/PartitionFraction/Memo" />
+                <XYPairs shortcut="/MCSP/Model/Plant/Product/DMDemandFunction/Expanding/DMDemandFunc/PartitionFraction/XYPairs" />
+              </LinearInterpolationFunction>
             </PartitionFractionDemandFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="Senescence">
@@ -377,7 +408,7 @@ Thus change the duration rate for the cultivar</Memo>
         </EmergingPhase>
         <GenericPhase name="CanopyExpanding">
           <Start type="text" description="Start">Emergence</Start>
-          <End type="text" description="End">Expanding</End>
+          <End type="text" description="End">StartReproductive</End>
           <Constant name="Target">
             <Value type="text" description="Value">1000</Value>
           </Constant>
@@ -387,8 +418,8 @@ Thus change the duration rate for the cultivar</Memo>
           </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="YieldIncreasing">
-          <Start type="text" description="Start">Expanding</Start>
-          <End type="text" description="End">Vegetative</End>
+          <Start type="text" description="Start">StartReproductive</Start>
+          <End type="text" description="End">EndReproductive</End>
           <Constant name="Target">
             <Value type="text" description="Value">600</Value>
           </Constant>
@@ -397,8 +428,8 @@ Thus change the duration rate for the cultivar</Memo>
             <Memo shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/Memo" />
           </AirTemperatureFunction>
         </GenericPhase>
-        <GenericPhase name="ReadyForHarvest">
-          <Start type="text" description="Start">Vegetative</Start>
+        <GenericPhase name="Maturing">
+          <Start type="text" description="Start">EndReproductive</Start>
           <End type="text" description="End">Maturity</End>
           <Constant name="Target">
             <Value type="text" description="Value">600</Value>
@@ -408,9 +439,20 @@ Thus change the duration rate for the cultivar</Memo>
             <Memo shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/Memo" />
           </AirTemperatureFunction>
         </GenericPhase>
-        <EndPhase name="PostHarvest">
+        <GenericPhase name="Harvesting">
           <Start type="text" description="Start">Maturity</Start>
           <End type="text" description="End">PostMaturity</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">600</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/MCSP/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/XYPairs" />
+            <Memo shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/Memo" />
+          </AirTemperatureFunction>
+        </GenericPhase>
+        <EndPhase name="PostHarvest">
+          <Start type="text" description="Start">PostMaturity</Start>
+          <End type="text" description="End">Unused</End>
           <AirTemperatureFunction name="ThermalTime" shortcut="/MCSP/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/XYPairs" />
             <Memo shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/Memo" />
@@ -426,19 +468,40 @@ Thus change the duration rate for the cultivar</Memo>
           </VariableReference>
         </AccumulateFunction>
       </Phenology>
+      <Constant name="ExpectedYield">
+        <Value type="text" description="Value">800</Value>
+      </Constant>
+      <LinearInterpolationFunction name="HarvestIndex">
+        <XProperty type="text" description="XProperty">ExpectedYield.Value</XProperty>
+        <XYPairs>
+          <XY>0 0.14</XY>
+          <XY>696 0.46</XY>
+          <XY>1392 0.78</XY>
+        </XYPairs>
+        <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+      </LinearInterpolationFunction>
+      <Constant name="RootProportion">
+        <Value type="text" description="Value">0.1</Value>
+      </Constant>
+      <Constant name="ProductDMProportion">
+        <Value type="text" description="Value">0.87</Value>
+      </Constant>
     </Plant>
     <Cultivar name="Dash">
       <Construct>Plant</Construct>
     </Cultivar>
     <Cultivar name="GenericBarley">
       <Construct type="text" description="Construct">Plant</Construct>
-      <Override name="Leaf.PotentialBiomass">
-        <Xmax type="text" description="Xmax">19000</Xmax>
-        <Xo type="text" description="Xo">1080</Xo>
-        <b type="text" description="b">216</b>
-      </Override>
     </Cultivar>
     <Cultivar name="GenericFieldPea">
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Leaf.PotentialBiomass">
+        <Xmax type="text" description="Xmax">17000</Xmax>
+        <Xo type="text" description="Xo">1100</Xo>
+        <b type="text" description="b">200</b>
+      </Override>
+    </Cultivar>
+    <Cultivar name="GenericWheat">
       <Construct type="text" description="Construct">Plant</Construct>
       <Override name="Leaf.PotentialBiomass">
         <Xmax type="text" description="Xmax">17000</Xmax>
@@ -454,12 +517,60 @@ Thus change the duration rate for the cultivar</Memo>
         <b type="text" description="b">200</b>
       </Override>
     </Cultivar>
-    <Cultivar name="GenericWheat">
+    <Cultivar name="LongPotato">
       <Construct type="text" description="Construct">Plant</Construct>
       <Override name="Leaf.PotentialBiomass">
-        <Xmax type="text" description="Xmax">17000</Xmax>
-        <Xo type="text" description="Xo">1100</Xo>
-        <b type="text" description="b">200</b>
+        <Xmax type="text" description="Xmax">19000</Xmax>
+        <Xo type="text" description="Xo">1500</Xo>
+        <b type="text" description="b">300</b>
+      </Override>
+      <Override name="Leaf.DMDemandFunction.PartitionFraction">
+        <Value type="text" description="Value">0.2</Value>
+      </Override>
+      <Override name="Leaf.NConc">
+        <Value type="text" description="Value">0.01</Value>
+      </Override>
+      <Override name="Leaf.CoverFunction.Expanding.SigCoverFunction">
+        <Xmax type="text" description="Xmax">1</Xmax>
+        <Xo type="text" description="Xo">690</Xo>
+        <b type="text" description="b">120</b>
+      </Override>
+      <Override name="Leaf.CoverFunction.Senescence.TotalCoverLoss.LossOfCover.PCLoss.SenescenceRate.Duration">
+        <Value type="text" description="Value">600</Value>
+      </Override>
+      <Override name="Phenology.Emerging">
+        <ShootLag type="text" description="Time lag before linear coleoptile growth starts">2.0</ShootLag>
+        <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">1</ShootRate>
+      </Override>
+      <Override name="Phenology.CanopyExpanding.Target">
+        <Value type="text" description="Value">300</Value>
+      </Override>
+      <Override name="Phenology.YieldIncreasing.Target">
+        <Value type="text" description="Value">1000</Value>
+      </Override>
+      <Override name="Phenology.Maturing.Target">
+        <Value type="text" description="Value">700</Value>
+      </Override>
+      <Override name="Product.DMDemandFunction.Expanding.DMDemandFunc.PartitionFraction">
+        <Value type="text" description="Value">0.95</Value>
+      </Override>
+      <Override name="Product.WaterContent">
+        <Value type="text" description="Value">0.22</Value>
+      </Override>
+      <Override name="Product.DMDemandFunction.ProductGrowth.DMDemandFunc.PartitionFraction">
+        <Value type="text" description="Value">1.0</Value>
+      </Override>
+      <Override name="Product.MaximumNConc">
+        <Value type="text" description="Value">0.02</Value>
+      </Override>
+      <Override name="Product.MinimumNConc">
+        <Value type="text" description="Value">0.018</Value>
+      </Override>
+      <Override name="Root">
+        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00 </xf>
+      </Override>
+      <Override name="Root.MaxDailyNUptake">
+        <Value type="text" description="Value">20</Value>
       </Override>
     </Cultivar>
   </Model>

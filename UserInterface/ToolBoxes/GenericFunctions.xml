@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3113" name="GenericFunctions">
+<folder version="36" creator="Apsim 7.5-r3138" name="GenericFunctions">
   <Variable>
     <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
     <Memo>Returns the value of a nominated internal Plant.NET numerical variable
@@ -82,9 +82,9 @@ General Format:
 
 </Memo>
   </ExternalVariable>
-  <InPhaseTemperatureFunction>
+  <InPhaseTtFunction>
     <Memo>A link phenology returns the current phase duration </Memo>
-  </InPhaseTemperatureFunction>
+  </InPhaseTtFunction>
   <LessThanFunction>
     <VariableReference>
       <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
@@ -171,6 +171,12 @@ General Format:
     <b type="text" description="b">1.0</b>
     <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
   </SigmoidFunction>
+  <SigmoidFunction2>
+    <Xmax type="text" description="Xmax">1.0</Xmax>
+    <Xo type="text" description="Xo">1.0</Xo>
+    <b type="text" description="b">1.0</b>
+    <Memo>Takes the value of the child as the x value and returns the y value from a sigmoid of the form y = Xmax * 1/1+exp(-(x-Xo)/b)</Memo>
+  </SigmoidFunction2>
   <SoilTemperatureDepthFunction>
     <Depth type="text" description="Soil depth(mm)">10</Depth>
     <Memo>Return soil temperature (oC) from a specified soil profile layer.</Memo>
@@ -196,4 +202,8 @@ General Format:
     </XYPairs>
     <Memo>This Function calculates a mean dail temperature from Max and Min weighted toward Max according to the specified MaximumTemperatureWeighting factor.  This is then passed into the XY matrix as the x property and the function returns the y value</Memo>
   </WeightedTemperatureFunction>
+  <VariableReference>
+    <VariableName type="text" description="Variable Name">lucerne2.LeafLAI</VariableName>
+    <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+  </VariableReference>
 </folder>
