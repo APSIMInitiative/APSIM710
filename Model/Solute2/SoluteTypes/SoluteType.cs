@@ -130,8 +130,13 @@ public class SoluteType
 	/// <param name="Amount">The diffusion values</param>
 	public void NewDiffusionAmount(double[] Amount)
 	{
-		for (int Layer = 0; Layer < Amount.Length; Layer++)
-			deltaSoluteDiffusion[Layer] = Amount[Layer];
+        for (int Layer = 0; Layer < Amount.Length; Layer++)
+        {
+            if (Layer == 0)
+                deltaSoluteDiffusion[Layer] = -Amount[Layer];
+            else
+                deltaSoluteDiffusion[Layer] = Amount[Layer - 1] - Amount[Layer];
+        }
 	}
 
 	/// <summary>
@@ -184,7 +189,7 @@ public class Type_tracer : SoluteType
 	/// Set the name of this solute
 	/// </summary>
 	public override void SetSoluteName()
-	{ Name = "Tracer"; }
+	{ Name = "tracer"; }
 
 	#region Procedure to handle set dlt_solute
 
@@ -264,7 +269,7 @@ public class Type_UreaseInhibitor : SoluteType
     /// Set the name of this solute
     /// </summary>
     public override void SetSoluteName()
-    { Name = "UreaseInhibitor"; }
+    { Name = "ureaseinhibitor"; }
 
     #region Procedure to handle set dlt_solute
 
@@ -380,7 +385,7 @@ public class Type_NitrificationInhibitor : SoluteType
     /// Set the name of this solute
     /// </summary>
     public override void SetSoluteName()
-    { Name = "NitrificationInhibitor"; }
+    { Name = "nitrificationinhibitor"; }
 
     #region Procedure to handle set dlt_solute
 
@@ -496,7 +501,7 @@ public class Type_Cl : SoluteType
     /// Set the name of this solute
     /// </summary>
     public override void SetSoluteName()
-    { Name = "Cl"; }
+    { Name = "cl"; }
 
     #region Procedure to handle set dlt_solute
 
@@ -540,7 +545,7 @@ public class Type_Cl : SoluteType
 
     #region Outputs for this solute
 
-    [Output("Cl")]
+    [Output("cl")]
     [Units("kg/ha")]
     [Description("amount of Cl in each soil layer")]
     public double[] cl

@@ -91,23 +91,32 @@ public class SoluteDiffusion_MillingtonQuirk : SoluteDiffusion
 
     public void DoDiffusion(double[] SoluteAmount)
     {
-
-        double Tortuosity = 1.0;
-        // Compute solute flux in the soil. Uses Fick's law
-        for (int Layer = 0; Layer < dlayer.Length; Layer++)
+        // Compute solute flux in the soil. Based on Fick's law
+        // Solute amount given in kg/ha
+        if (MolecularDiffusivity > 0.0)
         {
-            // Get the values for tortuosity 
-            Tortuosity = Math.Pow(sw[Layer] / sat[Layer], 2);
-
-            // Compute the flux
-            if (Layer < dlayer.Length - 1)
+            for (int Layer = 0; Layer < dlayer.Length; Layer++)
             {
-                double avgThickness = (dlayer[Layer] + dlayer[Layer + 1]) / 2;
-                double SoluteGradient = (SoluteAmount[Layer] - SoluteAmount[Layer + 1]) / avgThickness;
-                SoluteFlux[Layer] = MolecularDiffusivity * Tortuosity * sw[Layer] * SoluteGradient;
+                if (Layer < dlayer.Length - 1)
+                {
+                    // Get the solute amount in kg/mm3
+                    double Solute1 = SoluteAmount[Layer] / (dlayer[Layer] * sw[Layer] * 10E+10);
+                    double Solute2 = SoluteAmount[Layer + 1] / (dlayer[Layer + 1] * sw[Layer + 1] * 10E+10);
+                    // Get the solute gradient
+                    double avgThickness = (dlayer[Layer] + dlayer[Layer + 1]) / 2;
+                    double SoluteGradient = (Solute1 - Solute2) / avgThickness;
+
+                    // Get tortuosity and water content
+                    double avgSWC = (sw[Layer] + sw[Layer + 1]) / 2;
+                    double Tortuosity = (Math.Pow(sw[Layer] / sat[Layer], 2) + Math.Pow(sw[Layer + 1] / sat[Layer + 1], 2)) / 2;
+
+                    // Compute flux
+                    SoluteFlux[Layer] = MolecularDiffusivity * Tortuosity * avgSWC * SoluteGradient;
+                    SoluteFlux[Layer] *= 10E+10;    // convert from mm2 to ha
+                }
+                else
+                    SoluteFlux[Layer] = 0.0;
             }
-            else
-                SoluteFlux[Layer] = 0.0;
         }
     }
 }

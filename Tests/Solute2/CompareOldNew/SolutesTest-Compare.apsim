@@ -1,16 +1,18 @@
-<folder version="36" creator="Apsim 7.5-r3147" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3148" name="simulations">
   <memo name="Info">
 ========================================================================
 
       Generic tests for solute2 - Comparison between old and new models, 
 
         &gt;&gt;  Using Cl, as Solute module (old Fortran code) or as Solute2 (.NET version)
-        &gt;&gt; Comparison using SoilWat or SWIM2
+        &gt;&gt;  Comparison using SoilWat or SWIM2
 
 ========================================================================
 
 
-  note: results between paddocks in the same simulations should be equal or very near (minor diffs might exist due to differences between the languages)</memo>
+  NOTES:
+    - Results between paddocks in the same simulation should be equal or very near (minor diffs might exist due to differences between the languages)
+    - Comparison between simulations are not valid as the soil descriptions are not for the same soil type, they were taken arbitrarily</memo>
   <simulation name="SolutesTest-Compare(SoilWat)">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
@@ -19,7 +21,6 @@
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
     </metfile>
-    <summaryfile />
     <memo name="Info">
 ========================================================================
       Generic tests for solute2 - Comparison between old and new models, using Cl
@@ -42,14 +43,16 @@
      - No transformations in the solute
      - Solute diffusion computed by solute models
  
- &gt;&gt; NOTE: 
- The variable diffusion_Cl will not be numeric in Paddock1, as the Solute module does not output this variable, The values will be numeric for Paddock2.</memo>
+  &gt;&gt; NOTE: 
+    - The variable diffusion_Cl will not be numeric in Paddock1, as the Solute module does not output this variable, The values will be numeric for Paddock2.
+</memo>
+    <summaryfile />
     <area name="Paddock1">
       <folder name="ManagerFolder">
         <manager2 name="ApplyOldSolute">
           <ui>
             <Dummy0 type="category" description="Apply a given solute to the soil" />
-            <ApplySolute_name type="text" description="  Name of the solute to apply:">Cl</ApplySolute_name>
+            <ApplySolute_name type="text" description="  Name of the solute to apply:">cl</ApplySolute_name>
             <Dummy1 type="category" description="When and how often to apply" />
             <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
             <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
@@ -191,7 +194,7 @@ End Class
       </micromet>
       <Solute name="Cl">
         <solute_names type="text" description="Name of this solute:">Cl</solute_names>
-        <d0 type="text" description="Solute diffusivity in water (mm2/d)">0.0</d0>
+        <d0 type="text" description="Solute diffusivity in water (mm2/d)">108</d0>
         <layers type="text" description="Solute in each layer (kg/ha)">1.0  1.0  10  0.0  0.0</layers>
       </Solute>
       <surfaceom name="SurfaceOrganicMatter">
@@ -1170,7 +1173,7 @@ End Class
           <variable>Leach_Cl format 3</variable>
           <variable>flow_Cl format 5</variable>
           <variable>Cl_ppm</variable>
-          <variable>Diffusion_Cl</variable>
+          <variable>Diffusion_Cl format 7</variable>
           <variable>dlayer</variable>
         </variables>
         <events name="Reporting Frequency">
@@ -1255,7 +1258,7 @@ End Class
         <manager2 name="ApplySolute">
           <ui>
             <Dummy0 type="category" description="Apply a given solute to the soil" />
-            <ApplySolute_name type="list" listvalues="Tracer,NitrificationInhibitor,UreaseInhibitor,Cl,dcd" description="  Name of the solute to apply:">Cl</ApplySolute_name>
+            <ApplySolute_name type="list" listvalues="Tracer,NitrificationInhibitor,UreaseInhibitor,cl,dcd" description="  Name of the solute to apply:">cl</ApplySolute_name>
             <Dummy1 type="category" description="When and how often to apply" />
             <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
             <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
@@ -1407,7 +1410,7 @@ End Class
         <Dummy1 type="category" description="Initial solute content in the soil" />
         <InitialContent type="text" description="  Amount of Cl for each layer (kg/ha):">1.0  1.0  10  0.0  0.0</InitialContent>
         <Dummy2 type="category" description="Solute diffusivity" />
-        <MolecularDiffusivity type="text" description="  Diffusivity of Cl in water (mm2/day):">0.0</MolecularDiffusivity>
+        <MolecularDiffusivity type="text" description="  Diffusivity of Cl in water (mm2/day):">108</MolecularDiffusivity>
       </Cl2>
       <Soil name="MediumTextureSoil" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil">
         <Analysis shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/Analysis" />
@@ -1442,11 +1445,27 @@ End Class
         </Graph>
       </outputfile>
     </area>
+    <Graph name="Compare(Totals)">
+      <Legend>
+        <CheckedTitles> SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
     <Graph name="Compare(L1)">
       <Legend>
         <CheckedTitles> Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
         <CheckedTitles> Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
         <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1464,6 +1483,7 @@ End Class
         <CheckedTitles> Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
         <CheckedTitles> Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
         <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1507,8 +1527,8 @@ End Class
      - No transformations in the solute
      - Solute diffusion computed by SWIM
  
- &gt;&gt; NOTE: 
- The variable diffusion_Cl will not be numeric in Paddock1, as the Solute module does not output this variable, The values will be all zero for Paddock2 as the diffusivity in Solute2 was set to zero
+   &gt;&gt; NOTE: 
+    - The variable diffusion_Cl will not be numeric in Paddock1, as the Solute module does not output this variable, The values will be all zero for Paddock2 as the diffusivity in Solute2 was set to zero
 </memo>
     <summaryfile />
     <area name="Paddock1">
@@ -1516,7 +1536,7 @@ End Class
         <manager2 name="ApplyOldSolute">
           <ui>
             <Dummy0 type="category" description="Apply a given solute to the soil" />
-            <ApplySolute_name type="text" description="  Name of the solute to apply:">Cl</ApplySolute_name>
+            <ApplySolute_name type="text" description="  Name of the solute to apply:">cl</ApplySolute_name>
             <Dummy1 type="category" description="When and how often to apply" />
             <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
             <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
@@ -1792,12 +1812,10 @@ End Class
         </Graph>
         <Graph name="Depth">
           <Legend>
-            <CheckedTitles> SolutesTest-Compare Paddock2 Outputs,   1/01/2000</CheckedTitles>
-            <CheckedTitles> SolutesTest-Compare Paddock2 Outputs,   10/01/2000</CheckedTitles>
-            <CheckedTitles> SolutesTest-Compare Paddock2 Outputs,   31/01/2000</CheckedTitles>
-            <CheckedTitles> {Checkpoint} SolutesTest-Compare Paddock2 Outputs,   1/01/2000</CheckedTitles>
-            <CheckedTitles> {Checkpoint} SolutesTest-Compare Paddock2 Outputs,   10/01/2000</CheckedTitles>
-            <CheckedTitles> {Checkpoint} SolutesTest-Compare Paddock2 Outputs,   31/01/2000</CheckedTitles>
+            <CheckedTitles>   1/01/2000</CheckedTitles>
+            <CheckedTitles>   10/01/2000</CheckedTitles>
+            <CheckedTitles>   20/01/2000</CheckedTitles>
+            <CheckedTitles>   31/01/2000</CheckedTitles>
           </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
@@ -1810,6 +1828,7 @@ End Class
               <AllXOnTopAxis>Yes</AllXOnTopAxis>
               <Date>1/1/2000</Date>
               <Date>10/1/2000</Date>
+              <Date>20/1/2000</Date>
               <Date>31/1/2000</Date>
               <GDApsimFileReader name="ApsimFileReader" />
             </GDDepth>
@@ -1822,7 +1841,7 @@ End Class
         <manager2 name="ApplySolute">
           <ui>
             <Dummy0 type="category" description="Apply a given solute to the soil" />
-            <ApplySolute_name type="list" listvalues="Tracer,NitrificationInhibitor,UreaseInhibitor,Cl,dcd" description="  Name of the solute to apply:">Cl</ApplySolute_name>
+            <ApplySolute_name type="list" listvalues="Tracer,NitrificationInhibitor,UreaseInhibitor,cl,dcd" description="  Name of the solute to apply:">cl</ApplySolute_name>
             <Dummy1 type="category" description="When and how often to apply" />
             <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
             <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
@@ -2005,6 +2024,21 @@ End Class
         </Graph>
       </outputfile>
     </area>
+    <Graph name="Compare(Totals)">
+      <Legend>
+        <CheckedTitles> SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
     <Graph name="Compare(L1)">
       <Legend>
         <CheckedTitles> Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>

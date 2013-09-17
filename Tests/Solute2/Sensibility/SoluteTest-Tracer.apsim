@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3147" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3148" name="simulations">
   <simulation name="Solute2Test-Tracer">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
@@ -38,7 +38,7 @@
       - Leaching starts soon after application
       - Redistribution at depth is mostly downwards, but goes also upwards
 
-» Variations:
+  » Variations:
     + Increasing the initial concentration in the top layer to 10 kg/ha:
       - No changes in total solute prior to deep layer addition, as no leaching occurs
       - Redistribution at surface follows similar trend as before, but changes are a bit faster (greater gradient)
@@ -141,7 +141,7 @@ Public Class Script
             ' send delta_solute to apsim
             Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
             SoluteChanges.Sender = "Manager: Apply_Tracer"
-            SoluteChanges.SoluteName = "Tracer"
+            SoluteChanges.SoluteName = "tracer"
             SoluteChanges.SoluteUnits = "kg/ha"
             SoluteChanges.DeltaSolute = delta_solute
             RaiseEvent SoluteChanged(SoluteChanges)
@@ -168,7 +168,7 @@ End Class
       </micromet>
       <tracer2 name="Tracer">
         <Dummy1 type="category" description="Initial content of Tracer in the soil" />
-        <InitialContent type="text" description="  Amount of Tracer for each layer (kg/ha):">1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0 0.0  0.0</InitialContent>
+        <InitialContent type="text" description="  Amount of Tracer for each layer (kg/ha):">1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0</InitialContent>
         <Dummy2 type="category" description="Solute diffusivity" />
         <MolecularDiffusivity type="text" description="  Diffusivity of Tracer in water (mm2/day):">0.0</MolecularDiffusivity>
       </tracer2>

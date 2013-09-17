@@ -121,8 +121,9 @@ public partial class Solute
 	/// <summary>
 	/// Event used to advertise this solute to the APSIM world
 	/// </summary>
-	[Event]
-	public event NewSoluteDelegate NewSolute;
+    [Event]
+	public event NewSoluteDelegate new_solute;
+//    public event NewSoluteDelegate NewSolute;  // this seems to work only with .net components
 
     /// <summary>
     /// Event used to send mass flows to sysbal
@@ -264,9 +265,9 @@ public partial class Solute
 
 				// Check bounds
 				if (Result < MinimumConcentration - ToleranceValue)
-					throw new Exception("Attempt to set the value of " + SoluteType.Name + "to a value below its lower bound");
+					throw new Exception("Attempt to set the value of " + SoluteType.Name + " to a value below its lower bound");
 				else if (Result > MaximumConcentration + ToleranceValue)
-					throw new Exception("Attempt to set the value of " + SoluteType.Name + "to a value above its upper bound");
+					throw new Exception("Attempt to set the value of " + SoluteType.Name + " to a value above its upper bound");
 				else
 					Amount[Layer] = Math.Max(MinimumConcentration, Math.Min(MaximumConcentration, Result));
 			}
@@ -287,15 +288,8 @@ public partial class Solute
 
 		NewSoluteType SoluteData = new NewSoluteType();
 		SoluteData.solutes = solute_names;
-		NewSolute.Invoke(SoluteData);
+		new_solute.Invoke(SoluteData);
 	}
-
-    [EventHandler()]
-    public void OnNewSolute(NewSoluteType SoluteData)
-    {
-        double test = 0.0;
-    }
-
 
 	/// <summary>
 	/// Calculations for each time-step 
