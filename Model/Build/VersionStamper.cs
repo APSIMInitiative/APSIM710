@@ -66,6 +66,14 @@ class VersionStamper
             Out.WriteLine("set BUILD_NUMBER=" + RevisionNumber.ToString());
             Out.Close();
 
+            // Write the VersionInfo.sh
+            Out = new StreamWriter("VersionInfo.sh");
+            Out.WriteLine("@echo off");
+            Out.WriteLine("export MAJOR_VERSION=" + Major.ToString());
+            Out.WriteLine("export MINOR_VERSION=" + Minor.ToString());
+            Out.WriteLine("export BUILD_NUMBER=" + RevisionNumber.ToString());
+            Out.Close();
+
             // Write the VersionInfo.cs
             Out = new StreamWriter("VersionInfo.cs");
             Out.WriteLine("using System.Reflection;");
