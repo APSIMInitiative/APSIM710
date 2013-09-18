@@ -174,11 +174,11 @@
           <Start>FlagLeaf</Start>
           <End>Flowering</End>
           <Constant name="Target">
-            <Value type="text" description="Value">50</Value>
+            <Value type="text" description="Value">100</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
-        <GenericPhase name="EarlyGrainFilling">
+        <GenericPhase name="GrainDevelopment">
           <Start>Flowering</Start>
           <End>StartGrainFill</End>
           <Constant name="Target">
@@ -275,7 +275,8 @@
             <XProperty>StageCode.Value</XProperty>
             <XYPairs>
               <XY>3 20</XY>
-              <XY>4.5 100</XY>
+              <XY>4 20</XY>
+              <XY>4.8 100</XY>
               <XY>6 1100</XY>
               <XY>7 1200</XY>
             </XYPairs>
@@ -298,9 +299,9 @@
                 <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
                 <XYPairs>
                   <XY>3 0</XY>
-                  <XY>4 1</XY>
-                  <XY>20 1</XY>
-                  <XY>21 1</XY>
+                  <XY>4 0.85</XY>
+                  <XY>20 0.85</XY>
+                  <XY>21 0.85</XY>
                 </XYPairs>
               </LinearInterpolationFunction>
             </PhaseLookupValue>
@@ -337,8 +338,8 @@
               <XYPairs>
                 <XY>0 0</XY>
                 <XY>0.98 0</XY>
-                <XY>0.99 0.08</XY>
-                <XY>1 0.08</XY>
+                <XY>0.99 0.1</XY>
+                <XY>1 0.1</XY>
               </XYPairs>
             </LinearInterpolationFunction>
           </PhaseLookupValue>
@@ -437,7 +438,7 @@
           <Stages type="text" description="Stages">Germination Emergence VernalisationSaturation TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
           <Values type="text" description="Values">0.022           0.022          0.022                             0.022             0.022      0.022       0.022            0.022          0.022    0.022</Values>
         </StageBasedInterpolation>
-        <PhaseLookup name="NFillingRate">
+        <PhaseLookup name="NFillingRate1">
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
             <End>Maturity</End>
@@ -497,6 +498,54 @@
             <XY>35 0.0015</XY>
           </XYPairs>
         </AirTemperatureFunction>
+        <AirTemperatureFunction name="NFillingRate">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>25 5.5E-05</XY>
+            <XY>30 5.5E-05</XY>
+            <XY>35 5.5E-05</XY>
+          </XYPairs>
+        </AirTemperatureFunction>
+        <PhaseLookup name="DMDemandFunction">
+          <PhaseLookupValue name="Grainfilling">
+            <Start type="text" description="Start">StartGrainFill</Start>
+            <End type="text" description="End">EndGrainFill</End>
+            <MinimumFunction>
+              <MultiplyFunction name="Demand">
+                <VariableReference name="GrainNumber">
+                  <VariableName type="text" description="Variable Name">Grain.NumberFunction.Value</VariableName>
+                </VariableReference>
+                <AirTemperatureFunction name="FillingRate">
+                  <XYPairs>
+                    <XY>0 0</XY>
+                    <XY>26 0.0015</XY>
+                    <XY>30 0.0015</XY>
+                    <XY>35 0.0015</XY>
+                  </XYPairs>
+                </AirTemperatureFunction>
+              </MultiplyFunction>
+              <MultiplyFunction name="Capacity">
+                <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                <SubtractFunction name="IndividualGrainCapacity">
+                  <Constant name="MaximumGrainSize">
+                    <Value type="text" description="Value">0.042</Value>
+                  </Constant>
+                  <DivideFunction name="CurrentSize">
+                    <VariableReference name="Wt">
+                      <VariableName type="text" description="Variable Name">Grain.Live.Wt</VariableName>
+                    </VariableReference>
+                    <VariableReference name="GrainNumber">
+                      <VariableName type="text" description="Variable Name">Grain.NumberFunction.Value</VariableName>
+                    </VariableReference>
+                  </DivideFunction>
+                </SubtractFunction>
+                <VariableReference name="GrainNumber">
+                  <VariableName type="text" description="Variable Name">Grain.NumberFunction.Value</VariableName>
+                </VariableReference>
+              </MultiplyFunction>
+            </MinimumFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
       </ReproductiveOrgan>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -547,9 +596,10 @@
         <LinearInterpolationFunction name="PartitionFraction">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
-            <XY>0 0</XY>
-            <XY>4.1 0.2</XY>
-            <XY>5 0.1</XY>
+            <XY>0 0.1</XY>
+            <XY>4.1 0.1</XY>
+            <XY>6 0.1</XY>
+            <XY>6.5 0.01</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <PhaseLookup name="RootFrontVelocity">
@@ -615,7 +665,7 @@
         </ArrayBiomass>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
-            <Value type="text" description="Value">1.5</Value>
+            <Value type="text" description="Value">1.2</Value>
           </Constant>
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
@@ -637,7 +687,7 @@
           <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
+              <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
@@ -645,7 +695,7 @@
           <LinearInterpolationFunction name="FW">
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
+              <XY>0 0</XY>
               <XY>0.3 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
@@ -712,14 +762,14 @@
         <LinearInterpolationFunction name="CellDivisionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
-            <XY>0.9 1</XY>
+            <XY>0.5 0.1</XY>
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
-            <XY>0.3 1</XY>
+            <XY>0.3 0</XY>
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
@@ -762,7 +812,7 @@
         <Constant name="MinimumNConc">
           <Value type="text" description="Value">.01</Value>
         </Constant>
-        <AddFunction name="xDroughtInducedSenAcceleration">
+        <AddFunction name="DroughtInducedSenAcceleration">
           <Memo>Sum the values of the children of this node</Memo>
           <Constant name="One">
             <Value type="text" description="Value">1</Value>
@@ -784,8 +834,8 @@
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
           <XProperty>Structure.MainStemNodeNo</XProperty>
           <XYPairs>
-            <XY>1 100000</XY>
-            <XY>9 100000</XY>
+            <XY>1 40000</XY>
+            <XY>9 40000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SpecificLeafAreaMin">
@@ -796,7 +846,7 @@
           </XYPairs>
         </LinearInterpolationFunction>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">.7</Value>
+          <Value type="text" description="Value">.5</Value>
         </Constant>
         <Constant name="NonStructuralFraction">
           <Value type="text" description="Value">0</Value>
@@ -822,10 +872,13 @@
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
         </Constant>
+        <Constant name="DMReallocationFactor">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
       </Leaf>
       <GenericAboveGroundOrgan name="Husk">
         <PopulationBasedDemandFunction name="DMDemandFunction">
-          <StartStage type="text" description="StartStage">5.2</StartStage>
+          <StartStage type="text" description="StartStage">6.2</StartStage>
           <GrowthDuration type="text" description="GrowthDuration">120</GrowthDuration>
           <MaximumOrganWt type="text" description="MaximumOrganWt">.133</MaximumOrganWt>
           <PhaseLookup name="ThermalTime">
@@ -888,9 +941,9 @@
       </GenericAboveGroundOrgan>
       <GenericAboveGroundOrgan name="Rachis">
         <PopulationBasedDemandFunction name="DMDemandFunction">
-          <StartStage type="text" description="StartStage">5</StartStage>
+          <StartStage type="text" description="StartStage">6.2</StartStage>
           <GrowthDuration type="text" description="GrowthDuration">300</GrowthDuration>
-          <MaximumOrganWt type="text" description="MaximumOrganWt">.1</MaximumOrganWt>
+          <MaximumOrganWt type="text" description="MaximumOrganWt">.08</MaximumOrganWt>
           <PhaseLookup name="ThermalTime">
             <PhaseLookupValue name="SoilTemperature">
               <Start type="text" description="Start">Sowing</Start>
@@ -958,7 +1011,7 @@
       </GenericAboveGroundOrgan>
       <GenericAboveGroundOrgan name="Peduncle">
         <PopulationBasedDemandFunction name="DMDemandFunction">
-          <StartStage type="text" description="StartStage">5</StartStage>
+          <StartStage type="text" description="StartStage">6</StartStage>
           <GrowthDuration type="text" description="GrowthDuration">300</GrowthDuration>
           <MaximumOrganWt type="text" description="MaximumOrganWt">.1</MaximumOrganWt>
           <PhaseLookup name="ThermalTime">
@@ -1037,8 +1090,37 @@
          </Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
+        <MinimumFunction name="DMDemandFunction">
+          <MultiplyFunction name="NodeNumberLimitedDemand">
+            <LinearInterpolationFunction name="SpecificStemDensityMax">
+              <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+              <XYPairs>
+                <XY>3 0</XY>
+                <XY>4.5 0.0005</XY>
+                <XY>6 0.3</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+            <VariableReference name="DeltaNodes">
+              <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
+            </VariableReference>
+            <VariableReference name="Stems">
+              <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
+            </VariableReference>
+          </MultiplyFunction>
+          <MultiplyFunction name="HeightLimitedDemand">
+            <Constant name="SpecificStemLengthMax">
+              <Value type="text" description="Value">.0022</Value>
+            </Constant>
+            <VariableReference name="DeltaHeight">
+              <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
+            </VariableReference>
+            <VariableReference name="Stems">
+              <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
+            </VariableReference>
+          </MultiplyFunction>
+        </MinimumFunction>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">.8</Value>
+          <Value type="text" description="Value">.7</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
         </Constant>
         <LinearInterpolationFunction name="MaximumNConc">
@@ -1072,35 +1154,6 @@
           <Value type="text" description="Value">.5</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <MinimumFunction name="DMDemandFunction">
-          <MultiplyFunction name="HeightConstrainedPotential">
-            <LinearInterpolationFunction name="PotentialInternodeWt">
-              <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-              <XYPairs>
-                <XY>3 0</XY>
-                <XY>4.5 0.0005</XY>
-                <XY>6 0.3</XY>
-              </XYPairs>
-            </LinearInterpolationFunction>
-            <VariableReference name="NodesAppearing">
-              <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
-            </VariableReference>
-            <VariableReference name="Branches">
-              <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
-            </VariableReference>
-          </MultiplyFunction>
-          <MultiplyFunction name="WidthConstrainedPotential">
-            <Constant name="SpecificStemLengthMax">
-              <Value type="text" description="Value">.0022</Value>
-            </Constant>
-            <VariableReference name="Branches">
-              <VariableName type="text" description="Variable Name">Structure.TotalStemPopn</VariableName>
-            </VariableReference>
-            <VariableReference name="DeltaHeight">
-              <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
-            </VariableReference>
-          </MultiplyFunction>
-        </MinimumFunction>
       </GenericAboveGroundOrgan>
       <Summary />
       <StageBasedInterpolation name="StageCode">
@@ -1130,7 +1183,7 @@
         <Property>Organs[].Dead</Property>
       </CompositeBiomass>
       <CompositeBiomass name="HeadLive">
-        <Property type="text" description="Property">Grain.Live Floret.Live</Property>
+        <Property type="text" description="Property">Grain.Live Husk.Live Rachis.Live</Property>
       </CompositeBiomass>
       <CompositeBiomass name="StemLive">
         <Property type="text" description="Property">Internodes.Live Peduncle.Live</Property>

@@ -463,7 +463,7 @@ public class LeafCohort
             if (value > 0.0)
             {
                 NonStructuralWtReallocated = Math.Min(LeafStartNonStructuralDMReallocationSupply, value); //Reallocate nonstructural first
-                MetabolicWtReallocated = Math.Max(0.0, value - LeafStartNonStructuralDMReallocationSupply); //Then reallocate metabolic DM
+                MetabolicWtReallocated = Math.Max(0.0, value - LeafStartMetabolicDMReallocationSupply); //Then reallocate metabolic DM
                 Live.NonStructuralWt -= NonStructuralWtReallocated;
                 Live.MetabolicWt -= MetabolicWtReallocated;
             }
@@ -648,7 +648,7 @@ public class LeafCohort
             else _ThermalTime = TT;
 
             //Growing leaf area after DM allocated
-            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
+            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;  //Fixme.  Live.Nonstructural should probably be included in DM supply for leaf growth also
             double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea);
             LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
 
@@ -697,11 +697,11 @@ public class LeafCohort
 
 
 
-            Live.MetabolicWt -= (MetabolicWtSenescing);
-            Live.MetabolicWt = Math.Max(0.0, Live.MetabolicWt);
+            //Live.MetabolicWt -= (MetabolicWtSenescing);
+            //Live.MetabolicWt = Math.Max(0.0, Live.MetabolicWt);
             //Dead.MetabolicWt += (MetabolicWtSenescing);
             //RFZ
-            //Live.MetabolicWt -= Math.Max(0.0,MetabolicWtSenescing - MetabolicWtReallocated);
+            Live.MetabolicWt -= Math.Max(0.0,MetabolicWtSenescing - MetabolicWtReallocated);
             Dead.MetabolicWt += Math.Max(0.0, MetabolicWtSenescing - MetabolicWtReallocated);
 
 

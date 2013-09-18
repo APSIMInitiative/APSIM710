@@ -26,6 +26,8 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     protected Function MaximumNConc = null;
     [Link]
     protected Function MinimumNConc = null;
+    [Link(IsOptional = true)]
+    protected Function DMDemandFunction = null;
  #endregion
 
  #region Class Fields
@@ -152,15 +154,22 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-                Number = NumberFunction.Value;
-            if (Number > 0)
+            if (DMDemandFunction != null)
             {
+                return DMDemandFunction.Value;
+            }
+            else
+            {
+              Number = NumberFunction.Value;
+              if (Number > 0)
+              {
                 double demand = Number * FillingRate.Value;
                 // Ensure filling does not exceed a maximum size
                 return Math.Min(demand, (MaximumSize - Live.Wt / Number) * Number);
-            }
-            else
+              }
+              else
                 return 0;
+            }
        }
     }
     public override double DMPotentialAllocation
