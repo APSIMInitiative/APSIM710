@@ -37,6 +37,8 @@ namespace CSUserInterface
             OurComponent = Controller.ApsimData.Find(NodePath);
 
             ApsimFile.Component SoilComponent = OurComponent;
+
+            panel1.Visible = SoilComponent.Type.ToLower() == "soil";
             while (SoilComponent.Type.ToLower() != "soil" && SoilComponent.Parent != null)
                 SoilComponent = SoilComponent.Parent;
 
@@ -153,7 +155,7 @@ namespace CSUserInterface
                     }
                     if (Property.IsDefined(typeof(ModelAttributes.UILargeText), false))
                     {
-                        Grid.Rows[Row].Height = 150;
+                        Grid.Rows[Row].Height = 140;
                         DataGridViewTextBoxCell DataSourceCell = Grid.Rows[Row].Cells[1] as DataGridViewTextBoxCell;
                         DataSourceCell.Style.WrapMode = DataGridViewTriState.True;
                         DataSourceCell.MaxInputLength = 5000;
@@ -232,6 +234,31 @@ namespace CSUserInterface
             else
                 return Convert.ToDouble(DataGridViewCell.FormattedValue);
         }
+
+        /// <summary>
+        /// User has clicked the check button - display any errors found in soil.
+        /// </summary>
+        private void CheckButton_Click(object sender, EventArgs e)
+        {
+            OnSave();
+            bool inSimulation = false;
+            OurComponent = Controller.ApsimData.Find(NodePath);
+            ApsimFile.Component parent = OurComponent.Parent;
+            while (parent != null && !inSimulation)
+            {
+                if (parent.Type.ToLower() == "simulation")
+                    inSimulation = true;
+                parent = parent.Parent;
+            }
+
+            //string Msg = Soil.Check(Configuration.Instance.ApplicationName != "ApsimUI");
+            string Msg = Soil.Check(!inSimulation);
+            if (Msg == "")
+                MessageBox.Show("No errors found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show(Msg, "Soil Errors", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
 
 
     }

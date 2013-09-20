@@ -35,7 +35,6 @@ namespace CSUserInterface
             this.TopPanel = new System.Windows.Forms.Panel();
             this.Grid = new UIBits.EnhancedGrid();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.CheckButton = new System.Windows.Forms.Button();
             this.ManageCropsButton = new System.Windows.Forms.Button();
             this.Label = new System.Windows.Forms.Label();
             this.Splitter = new System.Windows.Forms.Splitter();
@@ -118,25 +117,12 @@ namespace CSUserInterface
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.CheckButton);
             this.panel1.Controls.Add(this.ManageCropsButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(275, 40);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(380, 31);
             this.panel1.TabIndex = 28;
-            // 
-            // CheckButton
-            // 
-            this.CheckButton.Image = ((System.Drawing.Image)(resources.GetObject("CheckButton.Image")));
-            this.CheckButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CheckButton.Location = new System.Drawing.Point(131, 4);
-            this.CheckButton.Name = "CheckButton";
-            this.CheckButton.Size = new System.Drawing.Size(119, 23);
-            this.CheckButton.TabIndex = 29;
-            this.CheckButton.Text = "Check soil";
-            this.CheckButton.UseVisualStyleBackColor = true;
-            this.CheckButton.Click += new System.EventHandler(this.CheckButtonClick);
             // 
             // ManageCropsButton
             // 
@@ -377,7 +363,6 @@ namespace CSUserInterface
         private System.Windows.Forms.ToolStripMenuItem NH4ppm;
         private System.Windows.Forms.ToolStripMenuItem NH4kgha;
         private SoilPropertyUI Properties;
-        private System.Windows.Forms.Button CheckButton;
 
     }
 

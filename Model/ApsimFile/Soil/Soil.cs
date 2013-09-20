@@ -1336,6 +1336,8 @@ namespace ApsimFile
         /// </summary>
         public double[] SWMapped(double[] Values, double[] Thicknesses, double[] ToThickness)
         {
+            if (Values == null)
+               return new double[0];
             if (Thicknesses == ToThickness)
                 return Values;
 
@@ -1671,12 +1673,15 @@ namespace ApsimFile
             const double specific_bd = 2.65; // (g/cc)
             string Msg = "";
 
-            // Check the summer / winter dates.
-            DateTime Temp;
-            if (!DateTime.TryParse(SoilWater.SummerDate, out Temp))
-                Msg += "Invalid summer date of: " + SoilWater.SummerDate + "\r\n";
-            if (!DateTime.TryParse(SoilWater.WinterDate, out Temp))
-                Msg += "Invalid winter date of: " + SoilWater.WinterDate + "\r\n";
+            if (SoilWater != null)
+            {
+                // Check the summer / winter dates.
+                DateTime Temp;
+                if (!DateTime.TryParse(SoilWater.SummerDate, out Temp))
+                    Msg += "Invalid summer date of: " + SoilWater.SummerDate + "\r\n";
+                if (!DateTime.TryParse(SoilWater.WinterDate, out Temp))
+                    Msg += "Invalid winter date of: " + SoilWater.WinterDate + "\r\n";
+            }
 
             foreach (string Crop in CropNames)
             {
