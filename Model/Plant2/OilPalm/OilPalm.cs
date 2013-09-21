@@ -34,6 +34,10 @@ public class OilPalm
     double interception = 0.0;
 
     [Param]
+    double UnderstoryCoverMax = 0.0;
+    [Param]
+    double UnderstoryLegumeFraction = 0;
+
     double Ndemand = 0.0;
     [Output]
     double RootDepth = 0.0;
@@ -102,6 +106,8 @@ public class OilPalm
     [Output]
     double HarvestYield = 0.0;
     [Output]
+    double HarvestFFB = 0.0;
+    [Output]
     double HarvestBunchSize = 0.0;
 
     [Output]
@@ -159,6 +165,8 @@ public class OilPalm
     public Function StemToFrondFraction = null;
     [Link]
     public Function FlowerAbortionFraction = null;
+    [Link]
+    public Function BunchFailureFraction = null;
     [Link]
     public Function KNO3 = null;
     [Link]
@@ -353,13 +361,21 @@ public class OilPalm
             Bunches[B + 1].FemaleFraction *= AF;
         }
 
+        // Bunch failure stage occurs around frond 21 over 1 plastochron
+        B = Fronds.Count - 21;
+        if (B > 0)
+        {
+            double BFF = (1 - BunchFailureFraction.Value);
+            Bunches[B].FemaleFraction *= BFF;
+        }
+
     }
 
     private void DoGenderDetermination()
     {
         // Main abortion stage occurs 25 plastochroons before spear leaf over 9 plastochrons
         // NH Try 20 as this allows for 26 per year and harvest at 32 - ie 26*2 - 32
-        int B = Fronds.Count + 25;
+        int B = 53; //Fronds.Count + 20;
         Bunches[B-4].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B-3].FemaleFraction *= (1.0 - FFFStressImpact.Value);
         Bunches[B-2].FemaleFraction *= (1.0 - FFFStressImpact.Value);
@@ -476,8 +492,8 @@ public class OilPalm
         DoRootGrowth(RootGrowth);
 
         double[] BunchDMD = new double[Bunches.Count];
-        for (int i = 0; i < 2; i++)
-            BunchDMD[i] = BunchSizeMax.Value/(2*FrondAppRate.Value/DeltaT)*Fn * Population*Bunches[i].FemaleFraction*BunchOilConversionFactor.Value;
+        for (int i = 0; i < 6; i++)
+            BunchDMD[i] = BunchSizeMax.Value/(6*FrondAppRate.Value/DeltaT)*Fn * Population*Bunches[i].FemaleFraction*BunchOilConversionFactor.Value;
         double TotBunchDMD = MathUtility.Sum(BunchDMD);
 
         double[] FrondDMD = new double[Fronds.Count];
@@ -497,7 +513,7 @@ public class OilPalm
         if (Age > 10 && Fr < 1)
         { }
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 6; i++)
             Bunches[i].Mass += BunchDMD[i] * Fr / Population / BunchOilConversionFactor.Value;
         if (DltDM > 0)
            ReproductiveGrowthFraction = TotBunchDMD * Fr / DltDM;
@@ -547,12 +563,14 @@ public class OilPalm
         {
             HarvestBunches = Bunches[0].FemaleFraction;
             HarvestYield = Bunches[0].Mass * Population / (1.0 - RipeBunchWaterContent.Value) ;
+            HarvestFFB = HarvestYield / 100;
             HarvestBunchSize = Bunches[0].Mass / (1.0 - RipeBunchWaterContent.Value) / Bunches[0].FemaleFraction;
             if (Harvesting != null)
                 Harvesting.Invoke();
             // Now rezero these outputs - they can only be output non-zero on harvesting event.
             HarvestBunches = 0.0;
             HarvestYield = 0.0;
+            HarvestFFB = 0.0;
             HarvestBunchSize = 0.0;
 
 
@@ -958,7 +976,8 @@ public class OilPalm
 
     private void DoUnderstoryWaterBalance()
     {
-        UnderstoryCoverGreen = 0.40 * (1 - cover_green);
+
+        UnderstoryCoverGreen = UnderstoryCoverMax * (1 - cover_green);
         UnderstoryPEP = eo * UnderstoryCoverGreen * (1 - cover_green);
 
         MyPaddock.Get("Soil Water.sw_dep", out sw_dep);  //need to get latest copy of swdep because OP will have taken water up.
@@ -986,8 +1005,10 @@ public class OilPalm
     }
     private void DoUnderstoryNBalance()
     {
-        double UnderstoryNdemand = UnderstoryDltDM * 10 * 0.021;
-        UnderstoryNFixation = Math.Max(0.0, UnderstoryNdemand * .44);
+        double LegumeNdemand = UnderstoryDltDM * UnderstoryLegumeFraction * 10 * 0.021;
+        double NonLegumeNdemand = UnderstoryDltDM * (1-UnderstoryLegumeFraction) * 10 * 0.005;
+        double UnderstoryNdemand = LegumeNdemand + NonLegumeNdemand;
+        UnderstoryNFixation = Math.Max(0.0, LegumeNdemand * .44);
 
         MyPaddock.Get("Soil Nitrogen.no3", out no3);
 
@@ -1003,13 +1024,48 @@ public class OilPalm
         {
             UnderstoryNUptake[j] = UnderstoryPotNUptake[j] * Fr;
             no3[j] = no3[j] - UnderstoryNUptake[j];
-
         }
         if (!MyPaddock.Set("Soil Nitrogen.no3", no3))
             throw new Exception("Unable to set no3");
 
+        //UnderstoryNFixation += UnderstoryNdemand - MathUtility.Sum(UnderstoryNUptake);
+
         //NFixation = Math.Max(0.0, Ndemand - MathUtility.Sum(NUptake));
 
+    }
+
+    [Output]
+    public double DefoliationFraction
+    {
+        get
+        {
+            return 0;
+        }
+        set
+        {
+            FrondType Loss = new FrondType();
+            foreach (FrondType F in Fronds)
+            {
+                Loss.Mass+=F.Mass*value;
+                Loss.N += F.N * value;
+
+                F.Mass = F.Mass * (1.0 - value);
+                F.N = F.N * (1.0 - value);
+                F.Area = F.Area * (1.0 - value);
+            }
+
+
+            // Now publish today's losses
+            BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+            BiomassRemovedData.crop_type = "OilPalm";
+            BiomassRemovedData.dm_type = new string[1] { "fronds" };
+            BiomassRemovedData.dlt_crop_dm = new float[1] { (float)(Loss.Mass * SowingData.Population*10.0) };
+            BiomassRemovedData.dlt_dm_n = new float[1] { (float)(Loss.N * SowingData.Population*10.0) };
+            BiomassRemovedData.dlt_dm_p = new float[1] { 0 };
+            BiomassRemovedData.fraction_to_residue = new float[1] { 0 };
+            BiomassRemoved.Invoke(BiomassRemovedData);
+            
+        }
     }
 
         [Output]

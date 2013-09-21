@@ -41,7 +41,8 @@
        <cover_tot>0.9</cover_tot>
        <crop_type>oilpalm</crop_type>
        <height>10000.</height>
-       <ndemand>0.</ndemand>
+       <UnderstoryCoverMax>[OilPalm.UnderstoryCoverGreen]</UnderstoryCoverMax>
+       <UnderstoryLegumeFraction>[OilPalm.UnderstoryLegumeFraction]</UnderstoryLegumeFraction>
        <InterceptionFraction>0.0</InterceptionFraction>
        <InitialRootDepth>300</InitialRootDepth>
        <MaximumRootDepth>5000</MaximumRootDepth>
@@ -103,7 +104,7 @@
          </XYPairs>
          <Memo>Gives the size of individual leaves when they are fully
          expanded (mm2) NOTE: Used during expansion and so is 17 leaves (>1y) before you measure it.</Memo>
-       </SplineInterpolationFunction>
+       </SplineInterpolationFunction>      
        <LinearInterpolationFunction name="BunchSizeMax">
          <XProperty type="text" description="XProperty">Age</XProperty>
          <XYPairs>
@@ -196,6 +197,14 @@
           </XYPairs>
           <Memo></Memo>
         </LinearInterpolationFunction>        
+       <LinearInterpolationFunction name="BunchFailureFraction">
+          <XProperty type="text" description="XProperty">CarbonStress</XProperty>
+          <XYPairs>
+            <XY>0.0 0.15</XY>
+            <XY>1.0 0.0</XY>
+          </XYPairs>
+          <Memo></Memo>
+        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="DirectExtinctionCoeff">
          <XProperty type="text" description="XProperty">Population</XProperty>
          <XYPairs>
@@ -232,6 +241,34 @@
     </OilPalm>
     <Cultivar name="Dami">
       <Construct>OilPalm</Construct>
-    </Cultivar>
+       <SplineInterpolationFunction name="FrondMaxArea">
+         <XProperty type="text" description="XProperty">Age</XProperty>
+         <XYPairs>
+           <XY>0 0.1</XY>
+           <XY>2 1.0 </XY>
+           <XY>4.5 7</XY>
+           <XY>8.5 12</XY>
+           <XY>14 14</XY>
+         </XYPairs>
+         <Memo>Gives the size of individual leaves when they are fully
+         expanded (mm2) NOTE: Used during expansion and so is 17 leaves (>1y) before you measure it.</Memo>
+       </SplineInterpolationFunction>
+
+      </Cultivar>
+    <Cultivar name="SuperFamily">
+      <Construct>OilPalm</Construct>
+       <SplineInterpolationFunction name="FrondMaxArea">
+         <XProperty type="text" description="XProperty">Age</XProperty>
+         <XYPairs>
+           <XY>0 0.1</XY>
+           <XY>2 0.9 </XY>
+           <XY>4.5 0.63</XY>
+           <XY>8.5 10.8</XY>
+           <XY>14 12.6</XY>
+         </XYPairs>
+         <Memo>Gives the size of individual leaves when they are fully
+         expanded (mm2) NOTE: Used during expansion and so is 17 leaves (>1y) before you measure it.</Memo>
+       </SplineInterpolationFunction>      
+    </Cultivar>    
     </Model>
 </Type>

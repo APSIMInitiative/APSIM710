@@ -14,7 +14,8 @@ Title                  = Expt212N2
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                 "AnnualOutput" = %apsim%\Model\Report.dll
+   Component                "MonthlyOutput" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -25,6 +26,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "OilPalm" = %apsim%\Model\Plant2.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -46,65 +48,41 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Tests\Validation\OilPalm\Hargy.met
 
-------- Outputfile Initialisation ---------------------------------------------
+------- AnnualOutput Initialisation -------------------------------------------
      Output frequency:
-        post
+        end_year
      Output variables:
+        year
+        dd/mm/yyyy as Date
+        OilPalm.Age
+        AnnualYield
+        CumulativeFrondNumber
+        AnnualBunches
+        AnnualRain
+        AnnualEo
+        AnnualNPP
+
+     Output file = Expt212N2 AnnualOutput.out
+     Format = normal
+
+------- MonthlyOutput Initialisation ------------------------------------------
+     Output frequency:
+        end_month
+     Output variables:
+        year
         dd/mm/yyyy as Date
         Age
-        year
-        Plant_Status
-        StemMass
-        FrondMass
+        Month
+        MonthlyPalmBunches
+        MonthlyPalmYield
+        MonthlyPalmBunchSize
         LAI
-        CumFronds
-        FrondNumber
-        CumulativeFrondNumber
-        StructureMainStemNodeNo
-        Interception
-        cover_green
-        PEP
-        EP
-        sw_dep()
-        PotSWUptake()
-        SWUptake()
-        FW
-        Fn
-        DltDM
-        RootDepth
-        CumulativeBunchNumber
-        CumBunches
-        CumulativeYield
-        CumYield
-        SLA
-        ReproductiveGrowthFraction
-        CarbonStress
-        RootMass
-        FrondNConc
-        RootNConc
-        StemNConc
-        BunchNConc
-        PlantN
-        FrondN
-        StemN
-        RootN
-        BunchN
-        surfaceom_wt
-        surfaceom_cover
-        UnderstoryNFixation
-        NO3()
-        NH4()
-        Frond17Area
-        RelativeDevelopmentalRateValue
-        nit_tot()
+        Stemmass
+        oc(1-3)
         carbon_tot()
-        oc(1)
-        oc(2)
-        oc(3)
-        biom_c(1)
-        DiffuseLightFraction
+        nit_tot()
 
-     Output file = Expt212N2.out
+     Output file = Expt212N2 MonthlyOutput.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -220,16 +198,16 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  100.  0.050  0.300  0.540  0.620  0.540  0.700  0.613  0.800
-          100.-  300.  0.050  0.400  0.610  0.670  0.610  0.750  0.340  0.800
-          300.-  600.  0.050  0.230  0.430  0.520  0.430  1.200  0.048  0.800
-          600.-  900.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.800
-          900.- 1200.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.800
-         1200.- 2000.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.300
-         2000.- 2500.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
-         2500.- 3000.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
-         3000.- 3500.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
-         3500.- 4000.  0.050  0.230  0.430  0.520  0.430  1.200  0.000  0.000
+            0.-  100.  0.050  0.300  0.540  0.680  0.540  0.700  0.613  0.800
+          100.-  300.  0.050  0.400  0.610  0.680  0.610  0.750  0.340  0.800
+          300.-  600.  0.050  0.230  0.430  0.510  0.430  1.200  0.048  0.800
+          600.-  900.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.800
+          900.- 1200.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.800
+         1200.- 2000.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.300
+         2000.- 2500.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.000
+         2500.- 3000.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.000
+         3000.- 3500.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.000
+         3500.- 4000.  0.050  0.230  0.430  0.510  0.430  1.200  0.000  0.000
         ---------------------------------------------------------------------
      
      
@@ -240,18 +218,18 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  100.      30.00      24.00      24.00       8.00
-          100.-  300.      80.00      42.00      42.00      12.00
-          300.-  600.      69.00      60.00      60.00      27.00
-          600.-  900.      69.00      60.00      60.00      27.00
-          900.- 1200.      69.00      60.00      60.00      27.00
-         1200.- 2000.     184.00     160.00     160.00      72.00
-         2000.- 2500.     115.00     100.00     100.00      45.00
-         2500.- 3000.     115.00     100.00     100.00      45.00
-         3000.- 3500.     115.00     100.00     100.00      45.00
-         3500.- 4000.     115.00     100.00     100.00      45.00
+            0.-  100.      30.00      24.00      24.00      14.00
+          100.-  300.      80.00      42.00      42.00      14.00
+          300.-  600.      69.00      60.00      60.00      24.00
+          600.-  900.      69.00      60.00      60.00      24.00
+          900.- 1200.      69.00      60.00      60.00      24.00
+         1200.- 2000.     184.00     160.00     160.00      64.00
+         2000.- 2500.     115.00     100.00     100.00      40.00
+         2500.- 3000.     115.00     100.00     100.00      40.00
+         3000.- 3500.     115.00     100.00     100.00      40.00
+         3500.- 4000.     115.00     100.00     100.00      40.00
           ---------------------------------------------------------
-               Totals     961.00     806.00     806.00     353.00
+               Totals     961.00     806.00     806.00     324.00
           ---------------------------------------------------------
      
      
@@ -296,6 +274,15 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mass =     63000.00
+             exceeds upper limit of    20000.00
+     Component name: paddock.surface organic matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
      
      
      
@@ -304,7 +291,8 @@ Paddock:
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          OilPalm   Oilpalm      24000.0 10560.0   301.7     0.0   1.000     0.0
+          OilPalm   Oilpalm      24000.0 10560.0   270.8     0.0   0.992     0.0
+          OilPalmSteoilpalmstem  63000.0 27720.0   191.2     0.0   0.270     0.0
          ----------------------------------------------------------------------
      
                       Effective Cover from Surface Materials =   1.0
@@ -324,6 +312,7 @@ Paddock:
      
      
         - Reading Constants
+     Using standard soil mineralisation for soil type Volcanic Ash
      
      
      
@@ -336,16 +325,16 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.30  3.80  217.00    0.00    0.00
-             2     6.55  2.40   30.00    0.00    0.00
-             3     6.80  0.35    5.00    0.00    0.00
-             4     6.80  0.25    5.00    0.00    0.00
-             5     6.80  0.25    0.00    0.00    0.00
-             6     6.80  0.25    6.00    1.20    0.00
-             7     6.80  0.25    6.00    1.20    0.00
-             8     6.80  0.25    6.00    1.20    0.00
-             9     6.80  0.25    6.00    1.20    0.00
-            10     6.80  0.25    6.00    1.20    0.00
+             1     6.30  5.30  217.00    0.00    0.00
+             2     6.55  4.15   30.00    0.00    0.00
+             3     6.80  2.60    5.00    0.00    0.00
+             4     6.80  2.33    5.00    0.00    0.00
+             5     6.80  2.20    0.00    0.00    0.00
+             6     6.80  2.20    6.00    1.20    0.00
+             7     6.80  2.20    6.00    1.20    0.00
+             8     6.80  2.20    6.00    1.20    0.00
+             9     6.80  2.20    6.00    1.20    0.00
+            10     6.80  2.20    6.00    1.20    0.00
           ------------------------------------------------
            Totals              287.00    6.00    0.00
           ------------------------------------------------
@@ -360,19 +349,27 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      24728.1  2472.8  1871.9   234.0   286.7     9.6
-             2      35291.8  3529.2   708.2    88.5   246.7     8.2
-             3      12575.0  1257.5    25.0     3.1   197.0     6.6
-             4       8999.1   899.9     0.9     0.1   157.3     5.2
-             5       8999.1   899.9     0.9     0.1   125.6     4.2
-             6      23997.6  2399.8     2.4     0.3    68.9     2.3
-             7      14998.5  1499.9     1.5     0.2    47.4     1.6
-             8      14998.5  1499.9     1.5     0.2    32.6     1.1
-             9      14998.5  1499.9     1.5     0.2    22.4     0.7
-            10      14998.5  1499.9     1.5     0.2    15.4     0.5
+             1      35451.1  3545.1  1648.9   206.1   286.7     9.6
+             2      60870.8  6087.1  1379.2   172.4   246.7     8.2
+             3      93385.3  9338.5   214.7    26.8   197.0     6.6
+             4      83948.1  8394.8    39.9     5.0   157.3     5.2
+             5      79192.2  7919.2     7.8     1.0   125.6     4.2
+             6     211179.1 21117.9    20.9     2.6    68.9     2.3
+             7     131986.9 13198.7    13.1     1.6    47.4     1.6
+             8     131986.9 13198.7    13.1     1.6    32.6     1.1
+             9     131986.9 13198.7    13.1     1.6    22.4     0.7
+            10     131986.9 13198.7    13.1     1.6    15.4     0.5
           ---------------------------------------------------------
-           Totals  174584.9 17458.5  2615.1   326.9  1200.0    40.0
+           Totals 1091974.3109197.4  3363.8   420.5  1200.0    40.0
           ---------------------------------------------------------
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        sum of HarvestYield on harvesting from AnnualOutput.reported to now as AnnualYield
+        sum of HarvestBunches on harvesting from AnnualOutput.reported to now as AnnualBunches
+        sum of rain on post from AnnualOutput.reported to now as AnnualRain
+        sum of eo on post from AnnualOutput.reported to now as AnnualEo
+        sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : ppsm = 0.01400
      Manager sending message :- oilpalm sow  population = 0.01400, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
