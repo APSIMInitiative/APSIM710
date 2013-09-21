@@ -1,32 +1,45 @@
-<folder version="36" creator="Apsim 7.5-r3148" name="simulations">
-  <simulation name="SoluteTest-NitInhibitor">
+<folder version="36" creator="Apsim 7.5-r3152" name="simulations">
+  <simulation name="Solute2Test-NitrificationInhibitor">
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">31/01/2000</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/05/2000</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">15/06/2000</end_date>
     </clock>
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
     </metfile>
-    <summaryfile />
     <memo name="Info">
 ========================================================================
-      From RCichota  - generic tests for solute and inhibitor
+      Generic tests for NitrificationInhibitor (an implementation of Solute2)
 ========================================================================
 
 
-  - Basic simulation description:
-    - Rotational grazing on mixed pasture
-    - Generic soil - Silt Loam
-    - Artificial constant weather
-    - 200kgN/ha in a year, in 10 applications
-    - Urine deposition of 500 kgN/ha
+  » Basic simulation description:
+    + Rotational grazing on mixed pasture
+    + Generic soil - Silt Loam
+    + Artificial mild temperate weather
+    + 100kgN/ha applied in the beginning of the simulation
+    + Inhibitor (10kgDCD/ha) applied in paddocks 2 an 3, in different dates
 
 
-   - This simulation uses a tracer solute:
-     . No interactions with soil, except leaching
-     . No transformation in the solute
+  » Expected behaviour:
+    + All outputs should have a numeric value (can be zero)
+    + All outputs related to 'nitrificatoninhibitor' should be zero in paddock1
+    + The application if inhibitor should slow down the conversion of NH4 into NO3 and the closer to the application of urea the larger the effect, so:
+      - Amount of NH4 should remain high longer in paddock2, lower in paddock3, lowest in paddock1
+      - Amount of NO3 in oposite order (paddock1&gt;paddock3&gt;paddock2)
+      - Very little variations in urea amounts and on plant growth
+      - Very little noticiable leaching at the bottom of the soil
+      - Considerable effect on shallower layers (paddock2&lt;paddock3&lt;paddock1)
+
+  » Variations:
+    + changing the period of simulation:
+      - No changes in trends, but the effect of inhibitor is more limited in summer (higher temperatures lead to higher degradation rates)
+    + changing the amount of inhibitor:
+      - The effect of inhibitor increases if amount applied increases (more NH4 in paddodck2, but small effect only in paddck3 as nitrfication is already underway)
+      - The effect decreases if inhibitor amount is reduced (again the effect is greater in paddock2)
  </memo>
-    <area name="paddock">
+    <summaryfile />
+    <area name="Paddock1-NoInhibitor">
       <BrT name="brt">
         <InitialContent type="text" description="Type initial content for dcd:">50  0  0</InitialContent>
       </BrT>
@@ -521,122 +534,165 @@ Public Class Script
 End Class
 </text>
         </manager2>
-        <manager2 name="Apply_NitrifInhibitor">
+        <manager2 name="ApplyInhibitor">
           <ui>
-            <Dummy1 type="category" description="Date to start applications (dd/mm/yyyy):" />
-            <ApplyInhibitor_StartDate type="ddmmmdate" description="Date to start applications (dd/mm/yyyy):">06/01/2000</ApplyInhibitor_StartDate>
-            <ApplyInhibitor_EndDate type="ddmmmdate" description="Date to end applications (dd/mm/yyyy):">31/12/2100</ApplyInhibitor_EndDate>
-            <ApplyInhibitor_Interval type="text" description="Type the interval between applications (days):">1461</ApplyInhibitor_Interval>
-            <ApplyInhibitor_Amount2Add type="text" description="Type the amount of inhibitor to apply ((kg/ha):">10</ApplyInhibitor_Amount2Add>
-            <ApplyInhibitor_Depth type="text" description="Type the depth to apply inhibitor (mm):">1</ApplyInhibitor_Depth>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="list" listvalues="tracer,nitrificationinhibitor,ureaseinhibitor,cl,dcd" description="  Name of the solute to apply:">nitrificationinhibitor</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">04/05/2001</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2100</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">1461</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">10</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
           </ui>
           <text>Imports System
 Imports ModelFramework
 
-'This manager applies a nitrification inhibitor at the amount and depth specified (it also can repeat the application periodically)
-' RCichota, last update: 23/Jul/2013
+' This manager applies a given amount of solute to the soil. It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
 
-Public Class Script
+'--&gt;  Last uptaded in: 17/Sep/2013 ..................
+
+
+Public Class Script 
    
    'Parameter variables:
-   &lt;param&gt; Private ApplyInhibitor_StartDate As String
-   &lt;param&gt; Private ApplyInhibitor_EndDate As String
-   &lt;param&gt; Private ApplyInhibitor_Interval As Integer
-   &lt;param&gt; Private ApplyInhibitor_Amount2Add As Single
-   &lt;param&gt; Private ApplyInhibitor_Depth As Single
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
    
+   'Events to raise
    &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
 
    'Variables read from other modules
-   &lt;Input&gt; Private today As DateTime
-   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
 
    'Output variables
-   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public NitInhibitorAdded As Single       'The amount of inhibitor added
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
 
    'Internal variables
-   Private StartDate As DateTime                   'The date when applications start (in date format)
-   Private EndDate As DateTime                     'The date when applications finish (in date format)
-   Private TimeAfterApplication As Integer         'Number of days after a urine application
-   Private SoilDepth As Single                     'The soil depth (mm)
-   Private Layer2Apply As Integer                  'The layer at which inhibitor will be applied
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
 
-   &lt;EventHandler()&gt; Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
 
       'Put the dates into date format:
-      StartDate = Date.Parse(ApplyInhibitor_StartDate)
-      EndDate = Date.Parse(ApplyInhibitor_EndDate)
-              
-      'Computes the layer at which NitInhibitor will be applied
-      Dim DepthFromSurface As Single = 0
-      For z As Integer = 0 To dlayer.length - 1
-         If DepthFromSurface &lt;= ApplyInhibitor_Depth Then Layer2Apply = z
-         DepthFromSurface = DepthFromSurface + dlayer(z)
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
       Next
       
-      console.WriteLine(" NitInhibitorAdded to be applied at " &amp; ApplyInhibitor_Depth.ToString() &amp; " mm depth, layer " &amp; (Layer2Apply + 1).ToString())
 
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim delta_solute As Double()
-      Dim canApplyInhibitor As Boolean = False
-      
       'Re-set variables
-      ReDim delta_solute(dlayer.Length - 1)
-      NitInhibitorAdded = 0
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
 
-      'Decide whether it is time to apply inhibitor:
-      If today &gt;= StartDate And today &lt;= EndDate Then
-         If today = StartDate Then
-            canApplyInhibitor = True
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
          Else
-            If TimeAfterApplication &gt;= ApplyInhibitor_Interval Then
-               canApplyInhibitor = True
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
             Else
                TimeAfterApplication = TimeAfterApplication + 1
-               NitInhibitorAdded = 0
+               SoluteAdded = 0
             End If
          End If
-         
-         If canApplyInhibitor Then
-            
-            'fill the delta_solute array
-            For z As Integer=0 To dlayer.Length - 1
-               delta_solute(z) = 0.0
-            Next
-            delta_solute(Layer2Apply) = CDbl(ApplyInhibitor_Amount2Add)
-            NitInhibitorAdded += ApplyInhibitor_Amount2Add
-         
-            ' send delta_solute to apsim
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
             Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
-            SoluteChanges.Sender = "Manager: Apply_NitrifInhibitor"
-            SoluteChanges.SoluteName = "nitrificationinhibitor"
+            SoluteChanges.Sender = "Manager: ApplySolute"
+            SoluteChanges.SoluteName = ApplySolute_name
             SoluteChanges.SoluteUnits = "kg/ha"
             SoluteChanges.DeltaSolute = delta_solute
             RaiseEvent SoluteChanged(SoluteChanges)
 
-            TimeAfterApplication = 1
-
-            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), Apply_NitrifInhibitor:")
-            Console.WriteLine("     NitInhibitor being applied. " + NitInhibitorAdded.ToString + "kg/ha added at depth " + ApplyInhibitor_Depth.ToString + "mm")
-            
-         End If         
-      End If                  
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplySolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+         End If
+      End If            
+      
    End Sub
 
 End Class
-    </text>
+ </text>
         </manager2>
         <operations name="Operations">
           <operation condition="start_of_day">
-            <date>5-Jan</date>
-            <action>fertiliser apply amount = 50, depth = 1 (mm), type = urea_n</action>
+            <date>5-May</date>
+            <action>fertiliser apply amount = 50 (kg/ha), depth = 1 (mm), type = urea_n</action>
           </operation>
           <operation condition="start_of_day">
-            <date>5-Jan</date>
-            <action>fertiliser apply amount = 50, depth = 6 (mm), type = urea_n</action>
+            <date>5-May</date>
+            <action>fertiliser apply amount = 50 (kg/ha), depth = 6 (mm), type = urea_n</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
           </operation>
         </operations>
       </folder>
@@ -666,19 +722,19 @@ End Class
         <Dummy1 type="category" description="Initial content of NitrificationInhibitor in the soil" />
         <InitialContent type="text" description="  Amount of NitrificationInhibitor for each layer (kg/ha):">0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0</InitialContent>
         <Dummy2 type="category" description="NitrificationInhibitor effect function - Michaelis-Menten function" />
-        <sif_kMichaelisMenten type="text" description="The Michaelis-Menten factor - NitrificationInhibitor concentration for half inhibition effect (ppm):">1.275</sif_kMichaelisMenten>
+        <sif_kMichaelisMenten type="text" description="The Michaelis-Menten factor - NitrificationInhibitor concentration for half inhibition effect (ppm):">1.553</sif_kMichaelisMenten>
         <Dummy3 type="category" description="NitrificationInhibitor degradation functions" />
-        <PotentialDegradationRate type="text" description="Degradation rate for NitrificationInhibitor at optimum conditions (%/day):">7.5</PotentialDegradationRate>
-        <stf_TemperatureAtOptimum type="text" description="The value of temperature at optimum conditions (oC):">30</stf_TemperatureAtOptimum>
-        <stf_FactorValueAtZeroDegrees type="text" description="The value for temperature effect at zero degrees (0-1):">0.05</stf_FactorValueAtZeroDegrees>
-        <stf_ExponentValue type="text" description="The exponent value for the temperature effect function (approx. 1-5):">25</stf_ExponentValue>
-        <swf_xValues type="text" description="The values for the x-axis of the moisture effect - modified water content (0-3):">0.0  1.0  1.1  1.3  1.8  2.0  2.5  3.0</swf_xValues>
-        <swf_yValues type="text" description="The values for the y-axis for the moisture effect - relative effect (0-1):">0.0  0.0  0.3  1.0  1.0  0.4  0.1  0.1</swf_yValues>
-        <phf_xValues type="text" description="The values for the x-axis of the pH effect - soil pH:">0.0  3.5  5.5  8.0  9.0  14.0</phf_xValues>
+        <PotentialDegradationRate type="text" description="Degradation rate for NitrificationInhibitor at optimum conditions (%/day):">12.9</PotentialDegradationRate>
+        <stf_TemperatureAtOptimum type="text" description="The value of temperature at optimum conditions (oC):">28</stf_TemperatureAtOptimum>
+        <stf_FactorValueAtZeroDegrees type="text" description="The value for temperature effect at zero degrees (0-1):">0.035</stf_FactorValueAtZeroDegrees>
+        <stf_ExponentValue type="text" description="The exponent value for the temperature effect function (approx. 1-5):">159</stf_ExponentValue>
+        <swf_xValues type="text" description="The values for the x-axis of the moisture effect - modified water content (0-3):">0.0  0.8  1.0  1.4  2.0  3.0</swf_xValues>
+        <swf_yValues type="text" description="The values for the y-axis for the moisture effect - relative effect (0-1):">0.0  0.0  0.1  1.0  1.0  0.5</swf_yValues>
+        <phf_xValues type="text" description="The values for the x-axis of the pH effect - soil pH:">0.0  3.5  5.0  8.0  9.5  14.0</phf_xValues>
         <phf_yValues type="text" description="The values for the y-axis for the pH effect - relative effect (0-1):">0.0  0.0  1.0  1.0  0.0   0.0</phf_yValues>
-        <scf_kMichaelisMenten type="text" description="The Michaelis-Menten factor for carbon effect - Soil carbon content for half effect (%):">0.1</scf_kMichaelisMenten>
+        <scf_kMichaelisMenten type="text" description="The Michaelis-Menten factor for carbon effect - Soil carbon content for half effect (%):">0.11</scf_kMichaelisMenten>
       </NitrificationInhibitor2>
-      <surfaceom name="surface organic matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
         <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
         <mass type="text" description="Initial surface residue (kg/ha)">200</mass>
@@ -783,8 +839,8 @@ End Class
         <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
       </AgPasture>
       <outputfile name="Outputs">
-        <filename output="yes">SoluteTest-NitInhibitor Outputs.out</filename>
-        <title>SoluteTest-NitInhibitor Outputs</title>
+        <filename output="yes">Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs.out</filename>
+        <title>Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs</title>
         <variables name="Variables">
           <variable>dd/mmm/yyyy as Date</variable>
           <variable>day as DoY</variable>
@@ -800,15 +856,16 @@ End Class
           <variable>Leach_NitrificationInhibitor format 3</variable>
           <variable>Degradation_NitrificationInhibitor() format 3</variable>
           <variable>fertiliser as FertiliserN format 2</variable>
-          <variable>NitInhibitorAdded as NitrificationInhibitorAdded</variable>
+          <variable>SoluteAdded as NitrificationInhibitorAdded</variable>
           <variable>PlantFixedN as FixedN format 2</variable>
           <variable>dlt_urea_hydrol() as HydrolisedN format 2</variable>
           <variable>nitrification() as NitrifiedN format 2</variable>
           <variable>dnit() as DenitrifiedN format 2</variable>
-          <variable>emission_nh3() as VolatilisedN format 2</variable>
           <variable>leach_urea as LeachedUrea format 2</variable>
           <variable>leach_nh4 as LeachedNH4 format 2</variable>
           <variable>leach_no3 as LeachedNO3 format 2</variable>
+          <variable>flow_no3(7) as NO3Leach(10cm)</variable>
+          <variable>flow_no3(11) as NO3Leach(20cm)</variable>
           <variable>removed_n as removedN format 2</variable>
           <variable>n2o_atm() as N2Oemissions format 3</variable>
           <variable>urea() as UreaTotal format 2</variable>
@@ -821,7 +878,11 @@ End Class
           <variable>TotalPlantN as PlantN format 2</variable>
           <variable>removed_dm as RemovedDM</variable>
           <variable>TotalPlantWt as PastureDM</variable>
-          <variable>CloverContent as CloverContent</variable>
+          <variable>flow_nitrificationinhibitor(1)</variable>
+          <variable>flow_nitrificationinhibitor(5)</variable>
+          <variable>degradation_nitrificationinhibitor(1)</variable>
+          <variable>degradation_nitrificationinhibitor(5)</variable>
+          <variable>NitrificationInhibitor(18) format 3</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>end_day</event>
@@ -848,97 +909,6 @@ End Class
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="NInputs">
-          <Legend>
-            <CheckedTitles> FertiliserN</CheckedTitles>
-            <CheckedTitles> FixedN</CheckedTitles>
-          </Legend>
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>Date</X>
-            <Y>FertiliserN</Y>
-            <Y>UrineN</Y>
-            <Y>FixedN</Y>
-            <GDApsimFileReader name="ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="Leach">
-          <Legend>
-            <CheckedTitles> Cumulative LeachedUrea</CheckedTitles>
-            <CheckedTitles> Cumulative LeachedNH4</CheckedTitles>
-            <CheckedTitles> Cumulative LeachedNO3</CheckedTitles>
-          </Legend>
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>Date</X>
-            <Y>Cumulative LeachedUrea</Y>
-            <Y>Cumulative LeachedNH4</Y>
-            <Y>Cumulative LeachedNO3</Y>
-            <Y>Cumulative DCDleached</Y>
-            <GDApsimFileReader name="ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="Gaseous">
-          <Legend>
-            <CheckedTitles> SoluteTest-Tracer2 Outputs</CheckedTitles>
-          </Legend>
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>Date</X>
-            <Y>Cumulative DenitrifiedN</Y>
-            <Y>Cumulative VolatilisedN</Y>
-            <GDApsimFileReader name="ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="MineralN">
-          <Legend>
-            <CheckedTitles> UreaTotal</CheckedTitles>
-            <CheckedTitles> NH4Total</CheckedTitles>
-            <CheckedTitles> NO3Total</CheckedTitles>
-          </Legend>
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <Y>UreaTotal</Y>
-            <Y>NH4Total</Y>
-            <Y>NO3Total</Y>
-            <X>Date</X>
-            <GDApsimFileReader name="ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="OrganicN">
-          <Legend>
-            <CheckedTitles> FOM_N</CheckedTitles>
-            <CheckedTitles> Biom_N</CheckedTitles>
-            <CheckedTitles> SurfaceOM_N</CheckedTitles>
-            <CheckedTitles> PlantN</CheckedTitles>
-            <CheckedTitles> Hum_N</CheckedTitles>
-          </Legend>
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <Y>FOM_N</Y>
-            <Y>Biom_N</Y>
-            <Y>SurfaceOM_N</Y>
-            <YRight>Hum_N</YRight>
-            <Y>PlantN</Y>
-            <X>Date</X>
-            <GDApsimFileReader name="ApsimFileReader" />
-          </Plot>
-        </Graph>
         <Graph name="Yield">
           <Legend>
             <CheckedTitles> RemovedDM</CheckedTitles>
@@ -955,25 +925,613 @@ End Class
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="Solute">
-          <Legend>
-            <CheckedTitles> NitrificationInhibitor()</CheckedTitles>
-            <CheckedTitles> Cumulative Leach_NitrificationInhibitor</CheckedTitles>
-            <CheckedTitles> Cumulative Degradation_NitrificationInhibitor()</CheckedTitles>
-          </Legend>
-          <Plot>
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>Date</X>
-            <Y>NitrificationInhibitor()</Y>
-            <Y>Cumulative Leach_NitrificationInhibitor</Y>
-            <Y>Cumulative Degradation_NitrificationInhibitor()</Y>
-            <GDApsimFileReader name="ApsimFileReader" />
-          </Plot>
-        </Graph>
+        <GraphReport name="GraphReport-N">
+          <Graph name="Inputs">
+            <Legend>
+              <CheckedTitles> FertiliserN</CheckedTitles>
+              <CheckedTitles> FixedN</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>FertiliserN</Y>
+              <Y>UrineN</Y>
+              <Y>FixedN</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Outputs">
+            <Legend>
+              <CheckedTitles> Cumulative LeachedUrea</CheckedTitles>
+              <CheckedTitles> Cumulative LeachedNH4</CheckedTitles>
+              <CheckedTitles> Cumulative LeachedNO3</CheckedTitles>
+              <CheckedTitles> Cumulative DenitrifiedN</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>Cumulative LeachedUrea</Y>
+              <Y>Cumulative LeachedNH4</Y>
+              <Y>Cumulative LeachedNO3</Y>
+              <Y>Cumulative DCDleached</Y>
+              <Y>Cumulative DenitrifiedN</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="MineralN">
+            <Legend>
+              <CheckedTitles> UreaTotal</CheckedTitles>
+              <CheckedTitles> NH4Total</CheckedTitles>
+              <CheckedTitles> NO3Total</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <Y>UreaTotal</Y>
+              <Y>NH4Total</Y>
+              <Y>NO3Total</Y>
+              <X>Date</X>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicN">
+            <Legend>
+              <CheckedTitles> FOM_N</CheckedTitles>
+              <CheckedTitles> Biom_N</CheckedTitles>
+              <CheckedTitles> SurfaceOM_N</CheckedTitles>
+              <CheckedTitles> PlantN</CheckedTitles>
+              <CheckedTitles> Hum_N</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <Y>FOM_N</Y>
+              <Y>Biom_N</Y>
+              <Y>SurfaceOM_N</Y>
+              <YRight>Hum_N</YRight>
+              <Y>PlantN</Y>
+              <X>Date</X>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+        </GraphReport>
+        <GraphReport name="GraphReport-Inhib">
+          <Graph name="Totals">
+            <Legend>
+              <CheckedTitles> NitrificationInhibitor()</CheckedTitles>
+              <CheckedTitles> Cumulative Leach_NitrificationInhibitor</CheckedTitles>
+              <CheckedTitles> Cumulative Degradation_NitrificationInhibitor()</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>NitrificationInhibitor()</Y>
+              <Y>Cumulative Leach_NitrificationInhibitor</Y>
+              <Y>Cumulative Degradation_NitrificationInhibitor()</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Layer(1)">
+            <Legend>
+              <CheckedTitles> NitrificationInhibitor(1)</CheckedTitles>
+              <CheckedTitles> Cumulative flow_nitrificationinhibitor(1)</CheckedTitles>
+              <CheckedTitles> Cumulative degradation_nitrificationinhibitor(1)</CheckedTitles>
+              <CheckedTitles> NitrificationInhibitor(18)</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>NitrificationInhibitor(1)</Y>
+              <Y>Cumulative flow_nitrificationinhibitor(1)</Y>
+              <Y>Cumulative degradation_nitrificationinhibitor(1)</Y>
+              <Y>NitrificationInhibitor(18)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Layer(5)">
+            <Legend>
+              <CheckedTitles> NitrificationInhibitor(5)</CheckedTitles>
+              <CheckedTitles> Cumulative flow_nitrificationinhibitor(5)</CheckedTitles>
+              <CheckedTitles> Cumulative degradation_nitrificationinhibitor(5)</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>NitrificationInhibitor(5)</Y>
+              <Y>Cumulative flow_nitrificationinhibitor(5)</Y>
+              <Y>Cumulative degradation_nitrificationinhibitor(5)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+        </GraphReport>
       </outputfile>
     </area>
+    <area name="Paddock2-WithInhibitor1" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor">
+      <folder name="Manager folder" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Manager folder">
+        <manager2 name="Cut rotation for AgPasture" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Manager folder/Cut rotation for AgPasture" />
+        <manager2 name="ApplyInhibitor">
+          <ui>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="list" listvalues="tracer,nitrificationinhibitor,ureaseinhibitor,cl,dcd" description="  Name of the solute to apply:">nitrificationinhibitor</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">04/05/2000</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2100</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">1461</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">10</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+' This manager applies a given amount of solute to the soil. It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
+
+'--&gt;  Last uptaded in: 17/Sep/2013 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
+   
+   'Events to raise
+   &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
+
+   'Internal variables
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
+
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
+      Next
+      
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'Re-set variables
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
+
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
+         Else
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               SoluteAdded = 0
+            End If
+         End If
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
+            Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
+            SoluteChanges.Sender = "Manager: ApplySolute"
+            SoluteChanges.SoluteName = ApplySolute_name
+            SoluteChanges.SoluteUnits = "kg/ha"
+            SoluteChanges.DeltaSolute = delta_solute
+            RaiseEvent SoluteChanged(SoluteChanges)
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplySolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+            Console.WriteLine("TimeAfterApplication " + TimeAfterApplication.ToString())
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+ </text>
+        </manager2>
+        <operations name="Operations" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Manager folder/Operations" />
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Micromet" />
+      <irrigation name="Irrigation" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Irrigation" />
+      <fertiliser shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/fertiliser" />
+      <NitrificationInhibitor2 name="NitrificationInhibitor" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/NitrificationInhibitor" />
+      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SurfaceOrganicMatter" />
+      <SWIM2ui2 shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SWIM2ui2">
+        <ini name="Ini_SWIM2" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SWIM2ui2/Ini_SWIM2" />
+      </SWIM2ui2>
+      <SoilNitrogen shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SoilNitrogen" />
+      <SoilTemperature2 shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SoilTemperature2" />
+      <AgPasture shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/AgPasture" />
+      <outputfile name="Outputs" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs">
+        <filename output="yes">Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs.out</filename>
+        <title>Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs</title>
+        <variables name="Variables" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Reporting Frequency" />
+        <Graph name="Rain-Drainage" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Rain-Drainage">
+          <Plot name="Predicted" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Rain-Drainage/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Rain-Drainage/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Yield">
+          <Plot name="Predicted" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Yield/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Yield/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <GraphReport name="GraphReport-N" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N">
+          <Graph name="Inputs" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Inputs">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Inputs/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Inputs/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Outputs" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Outputs">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Outputs/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Outputs/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="MineralN" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/MineralN">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/MineralN/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/MineralN/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicN" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/OrganicN">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/OrganicN/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/OrganicN/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+        </GraphReport>
+        <GraphReport name="GraphReport-Inhib" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib">
+          <Graph name="Totals" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Totals">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Totals/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Totals/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Layer(1)" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(1)">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(1)/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(1)/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Layer(5)" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(5)">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(5)/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(5)/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+        </GraphReport>
+      </outputfile>
+    </area>
+    <area name="Paddock3-WithInhibitor2" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor">
+      <folder name="Manager folder" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Manager folder">
+        <manager2 name="Cut rotation for AgPasture" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Manager folder/Cut rotation for AgPasture" />
+        <manager2 name="ApplyInhibitor">
+          <ui>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="list" listvalues="tracer,nitrificationinhibitor,ureaseinhibitor,cl,dcd" description="  Name of the solute to apply:">nitrificationinhibitor</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">11/05/2000</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2100</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">1461</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">10</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+' This manager applies a given amount of solute to the soil. It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
+
+'--&gt;  Last uptaded in: 17/Sep/2013 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
+   
+   'Events to raise
+   &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
+
+   'Internal variables
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
+
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
+      Next
+      
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'Re-set variables
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
+
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
+         Else
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               SoluteAdded = 0
+            End If
+         End If
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
+            Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
+            SoluteChanges.Sender = "Manager: ApplySolute"
+            SoluteChanges.SoluteName = ApplySolute_name
+            SoluteChanges.SoluteUnits = "kg/ha"
+            SoluteChanges.DeltaSolute = delta_solute
+            RaiseEvent SoluteChanged(SoluteChanges)
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplySolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+            Console.WriteLine("TimeAfterApplication " + TimeAfterApplication.ToString())
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+ </text>
+        </manager2>
+        <operations name="Operations" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Manager folder/Operations" />
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Micromet" />
+      <irrigation name="Irrigation" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Irrigation" />
+      <fertiliser shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/fertiliser" />
+      <NitrificationInhibitor2 name="NitrificationInhibitor" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/NitrificationInhibitor" />
+      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SurfaceOrganicMatter" />
+      <SWIM2ui2 shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SWIM2ui2">
+        <ini name="Ini_SWIM2" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SWIM2ui2/Ini_SWIM2" />
+      </SWIM2ui2>
+      <SoilNitrogen shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SoilNitrogen" />
+      <SoilTemperature2 shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/SoilTemperature2" />
+      <AgPasture shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/AgPasture" />
+      <outputfile name="Outputs" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs">
+        <filename output="yes">Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs.out</filename>
+        <title>Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs</title>
+        <variables name="Variables" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Reporting Frequency" />
+        <Graph name="Rain-Drainage" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Rain-Drainage">
+          <Plot name="Predicted" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Rain-Drainage/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Rain-Drainage/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Yield" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Yield">
+          <Plot name="Predicted" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Yield/Predicted">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/Yield/Predicted/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <GraphReport name="GraphReport-N" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N">
+          <Graph name="Inputs" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Inputs">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Inputs/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Inputs/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Outputs" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Outputs">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Outputs/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/Outputs/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="MineralN" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/MineralN">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/MineralN/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/MineralN/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicN" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/OrganicN">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/OrganicN/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-N/OrganicN/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+        </GraphReport>
+        <GraphReport name="GraphReport-Inhib" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib">
+          <Graph name="Totals" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Totals">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Totals/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Totals/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Layer(1)" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(1)">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(1)/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(1)/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Layer(5)" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(5)">
+            <Plot shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(5)/Plot">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Solute2Test-NitrificationInhibitor/Paddock1-NoInhibitor/Outputs/GraphReport-Inhib/Layer(5)/Plot/ApsimFileReader" />
+            </Plot>
+          </Graph>
+        </GraphReport>
+      </outputfile>
+    </area>
+    <Graph name="MineralN">
+      <Legend>
+        <CheckedTitles> UreaTotal, Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs</CheckedTitles>
+        <CheckedTitles> UreaTotal, Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs</CheckedTitles>
+        <CheckedTitles> UreaTotal, Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs</CheckedTitles>
+        <CheckedTitles> NH4Total, Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs</CheckedTitles>
+        <CheckedTitles> NH4Total, Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs</CheckedTitles>
+        <CheckedTitles> NH4Total, Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs</CheckedTitles>
+        <CheckedTitles> NO3Total, Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs</CheckedTitles>
+        <CheckedTitles> NO3Total, Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs</CheckedTitles>
+        <CheckedTitles> NO3Total, Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>UreaTotal</Y>
+        <Y>NH4Total</Y>
+        <Y>NO3Total</Y>
+        <X>Date</X>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="NLeach">
+      <Legend>
+        <CheckedTitles> Cumulative NO3Leach(10cm), Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative NO3Leach(10cm), Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative NO3Leach(10cm), Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative NO3Leach(20cm), Solute2Test-NitrificationInhibitor Paddock1-NoInhibitor Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative NO3Leach(20cm), Solute2Test-NitrificationInhibitor Paddock2-WithInhibitor1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative NO3Leach(20cm), Solute2Test-NitrificationInhibitor Paddock3-WithInhibitor2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cumulative NO3Leach(10cm)</Y>
+        <Y>Cumulative NO3Leach(20cm)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
   </simulation>
 </folder>
