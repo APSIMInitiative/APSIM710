@@ -46,6 +46,7 @@ namespace CSUserInterface
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(SoilComponent.FullXMLNoShortCuts());
 
+            RelativeToCombo.Items.Clear();
             RelativeToCombo.Items.Add("ll15");
             RelativeToCombo.Items.AddRange(Soil.Water.CropNames);
         }
