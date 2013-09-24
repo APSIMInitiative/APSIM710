@@ -423,8 +423,8 @@ namespace Actions
 			if (F.ShowDialog() == DialogResult.OK) {
 				XmlNode NewXmlNode = ConToApsim.Converter.Go(F.FileName);
 				if ((NewXmlNode != null)) {
-					Controller.ApsimData = new ApsimFile.ApsimFile(NewXmlNode.OuterXml);
-				}
+                    Controller.ApsimData.New(NewXmlNode.OuterXml);
+                }
 			}
 		}
 
