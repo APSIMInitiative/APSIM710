@@ -108,7 +108,9 @@ namespace CSUserInterface
             gridManager.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             foreach (DataGridViewColumn col in gridManager.Columns)
             {
-                col.Width = col.GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                int prefWidth = col.GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                if (prefWidth > col.MinimumWidth)
+                    col.Width = prefWidth;
                 col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             }
             if (gridManager.Columns.Count > 3)

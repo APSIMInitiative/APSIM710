@@ -55,12 +55,16 @@ namespace CSUserInterface
 
 			// Size the grid columns sensibly
 			StartOfDayGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-			StartOfDayGrid.Columns[0].Width = StartOfDayGrid.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true) * 2;
+                        int prefWidth = StartOfDayGrid.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                        if (prefWidth > StartOfDayGrid.Columns[0].MinimumWidth)
+			    StartOfDayGrid.Columns[0].Width = prefWidth * 2;
 			StartOfDayGrid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 			StartOfDayGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 			StartOfDayGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 			EndOfDayGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-			EndOfDayGrid.Columns[0].Width = EndOfDayGrid.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true) * 2;
+                        prefWidth = EndOfDayGrid.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                        if (prefWidth > EndOfDayGrid.Columns[0].MinimumWidth)
+			    EndOfDayGrid.Columns[0].Width = prefWidth * 2;
 			EndOfDayGrid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 			EndOfDayGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 			EndOfDayGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;

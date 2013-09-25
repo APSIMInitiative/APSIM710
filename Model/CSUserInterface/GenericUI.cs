@@ -113,7 +113,7 @@ namespace CSUserInterface
             Grid.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             int prefWidth = Grid.Columns[4].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
-            if (prefWidth > 2)
+            if (prefWidth > Grid.Columns[4].MinimumWidth)
                 Grid.Columns[4].MinimumWidth = prefWidth;
             Grid.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders);
 
@@ -488,7 +488,7 @@ namespace CSUserInterface
 			}
 			Grid.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             int prefWidth = Grid.Columns[4].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
-            if (prefWidth > 2)
+            if (prefWidth > Grid.Columns[4].MinimumWidth)
                 Grid.Columns[4].MinimumWidth = prefWidth;
 
 			Grid.CurrentCell = Grid.Rows[CurrentRow].Cells[CurrentCol];
