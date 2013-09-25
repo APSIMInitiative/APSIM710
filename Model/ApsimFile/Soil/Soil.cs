@@ -1797,33 +1797,48 @@ namespace ApsimFile
                                + "\r\n";
             }
 
-            if (OC.Length == 0)
-                throw new Exception("Cannot find OC values in soil");
-
-            for (int layer = 0; layer != Water.Thickness.Length; layer++)
+            if (OC == null || OC.Length == 0)
             {
-                int RealLayerNumber = layer + 1;
-                if (OC[layer] == MathUtility.MissingValue)
-                    Msg += "OC value missing"
-                             + " in layer " + RealLayerNumber.ToString() + "\r\n";
+                Msg += "Cannot find OC values for soil\r\n";
+            }
+            else
+            {
+                for (int layer = 0; layer != Water.Thickness.Length; layer++)
+                {
+                    int RealLayerNumber = layer + 1;
+                    if (OC[layer] == MathUtility.MissingValue)
+                        Msg += "OC value missing"
+                                 + " in layer " + RealLayerNumber.ToString() + "\r\n";
 
-                else if (MathUtility.LessThan(OC[layer], 0.01, 3))
-                    Msg += "OC value of " + OC[layer].ToString("f3")
-                                  + " in layer " + RealLayerNumber.ToString() + " is less than 0.01"
-                                  + "\r\n";
+                    else if (MathUtility.LessThan(OC[layer], 0.01, 3))
+                        Msg += "OC value of " + OC[layer].ToString("f3")
+                                      + " in layer " + RealLayerNumber.ToString() + " is less than 0.01"
+                                      + "\r\n";
+                }
+            }
 
-                if (PH[layer] == MathUtility.MissingValue)
-                    Msg += "PH value missing"
-                             + " in layer " + RealLayerNumber.ToString() + "\r\n";
+            if (PH == null || PH.Length == 0)
+            {
+                Msg += "Cannot find pH values for soil\r\n";
+            }
+            else
+            {
+                for (int layer = 0; layer != Water.Thickness.Length; layer++)
+                {
+                    int RealLayerNumber = layer + 1;
+                    if (PH[layer] == MathUtility.MissingValue)
+                        Msg += "pH value missing"
+                                 + " in layer " + RealLayerNumber.ToString() + "\r\n";
 
-                else if (MathUtility.LessThan(PH[layer], 3.5, 3))
-                    Msg += "PH value of " + PH[layer].ToString("f3")
-                                  + " in layer " + RealLayerNumber.ToString() + " is less than 3.5"
-                                  + "\r\n";
-                else if (MathUtility.GreaterThan(PH[layer], 11, 3))
-                    Msg += "PH value of " + PH[layer].ToString("f3")
-                                  + " in layer " + RealLayerNumber.ToString() + " is greater than 11"
-                                  + "\r\n";
+                    else if (MathUtility.LessThan(PH[layer], 3.5, 3))
+                        Msg += "pH value of " + PH[layer].ToString("f3")
+                                      + " in layer " + RealLayerNumber.ToString() + " is less than 3.5"
+                                      + "\r\n";
+                    else if (MathUtility.GreaterThan(PH[layer], 11, 3))
+                        Msg += "pH value of " + PH[layer].ToString("f3")
+                                      + " in layer " + RealLayerNumber.ToString() + " is greater than 11"
+                                      + "\r\n";
+                }
             }
 
             if (!IgnoreStartingWaterN)
