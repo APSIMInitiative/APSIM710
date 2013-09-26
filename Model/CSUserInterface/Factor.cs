@@ -108,9 +108,15 @@ namespace CSUserInterface
             gridManager.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             foreach (DataGridViewColumn col in gridManager.Columns)
             {
-                int prefWidth = col.GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
-                if (prefWidth > col.MinimumWidth)
-                    col.Width = prefWidth;
+                // It would be clearer to use the Column.GetPreferredWidth function, but this is
+                // broken on Mono (always returns 0), so instead we can temporarily let the column
+                // auto-size itself, get it's width, then turn off auto-sizing and apply the width.
+                // We don't want to leave auto-sizing on, since that disables the user's ability
+                // to resize the columns
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                int w = col.Width;
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                col.Width = w;
                 col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             }
             if (gridManager.Columns.Count > 3)

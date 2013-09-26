@@ -55,16 +55,23 @@ namespace CSUserInterface
 
 			// Size the grid columns sensibly
 			StartOfDayGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-                        int prefWidth = StartOfDayGrid.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
-                        if (prefWidth > StartOfDayGrid.Columns[0].MinimumWidth)
-			    StartOfDayGrid.Columns[0].Width = prefWidth * 2;
+            // It would be clearer to use the Column.GetPreferredWidth function, but this is
+			// broken on Mono (always returns 0), so instead we can temporarily let the column
+			// auto-size itself, get it's width, then turn off auto-sizing and apply the width.
+			// We don't want to leave auto-sizing on, since that disables the user's ability
+            // to resize the columns
+            StartOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            int w = StartOfDayGrid.Columns[0].Width;
+            StartOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			StartOfDayGrid.Columns[0].Width = w * 2;
 			StartOfDayGrid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 			StartOfDayGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 			StartOfDayGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 			EndOfDayGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-                        prefWidth = EndOfDayGrid.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
-                        if (prefWidth > EndOfDayGrid.Columns[0].MinimumWidth)
-			    EndOfDayGrid.Columns[0].Width = prefWidth * 2;
+            EndOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            w = EndOfDayGrid.Columns[0].Width;
+            EndOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			EndOfDayGrid.Columns[0].Width = w * 2;
 			EndOfDayGrid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 			EndOfDayGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 			EndOfDayGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
