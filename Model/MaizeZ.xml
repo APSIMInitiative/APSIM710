@@ -97,7 +97,7 @@
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      STAGE DEPENDENT RUE
+      STAGE DEPENDENT RUE  
       sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
       stage_code       = 1   2   3    4     5     6    7    8     9     10    11   12
       -->
@@ -162,6 +162,7 @@
       -->
     <aX0 type="text" description="Largest leaf multiplier">0.63</aX0>
     <aMaxA type="text" description="Largest Leaf Area">930</aMaxA>
+    <bellCurveParams type="text" description="Leaf Curve Params">-0.009 -0.2 0.0006 -0.43</bellCurveParams>
     <leaf_no_correction description="corrects for other growing leaves">2.0</leaf_no_correction>
     <!-- ______________________________________________________________________________
       SPECIFIC LEAF AREA - SLA
@@ -178,10 +179,10 @@
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       __________________________________________________________________________________________________________-
       ROOTING DEPTH
-      stage_name       sow  ger  eme  juv    fi   flag    fl  st_gf end_gf   mat  hv_rpe  end_crop
-      stage_code      = 1    2    3    4      5     6     7    8      9      10   11   12
+      stage_name    sow  ger  eme  juv    fi   flag    fl  st_gf end_gf   mat  hv_rpe  end_crop
+      stage_code   = 1   2    3    4      5     6     7    8      9      10   11   12
       -->
-    <root_depth_rate>0  10    15    33     33    33    33   0      0       0    0    0</root_depth_rate>
+    <root_depth_rate>0 33    33    33     33    33    33   0      0       0    0    0</root_depth_rate>
     <!-- x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
       -->
     <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
@@ -270,9 +271,9 @@
     <rachisDilnNSlope>0.005</rachisDilnNSlope>
     <rachisDilnNInt>-0.00052</rachisDilnNInt>
     <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	  The following cob parameters have been calculated by Saeid during his visit to UQ in 2010 using Angelo data.
-	  However, they are not being used in the new maize model as there is not a separate cob component and thus no
-	  subroutine for partitioning of carbo and N to this organ. It is included in stem. Rooms for future work.
+	  The following cob parameters have been calculated by Saeid during his visit to UQ in 2010 using Angelo data. 
+	  However, they are not being used in the new maize model as there is not a separate cob component and thus no 
+	  subroutine for partitioning of carbo and N to this organ. It is included in stem. Rooms for future work. 
 	  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	  <initialCobNConc>0.000</initialCobNConc>
         <targetCobNConc>0.023</targetCobNConc>
@@ -428,8 +429,10 @@
     <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
     <y_height units="mm" description="plant canopy height">0  2000</y_height>
     <canopy_height_max>3000.0</canopy_height_max>
-    <x_co2_te_modifier>350.0</x_co2_te_modifier>
-    <y_co2_te_modifier>1.0</y_co2_te_modifier>
+    <!-- CO2 effects on Transpiration Efficiency
+    -->
+    <x_co2_te_modifier units="ppm co2">0  350  700   1000</x_co2_te_modifier>
+    <y_co2_te_modifier>0  1.0  1.37  1.69</y_co2_te_modifier>
     <!-- ****************************************************************************************************
              PARAMETERS  - CULTIVAR-SPECIFIC VALUES
              ****************************************************************************************************
@@ -450,8 +453,8 @@
     <dekalb_xl82 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
           -->
-      <tt_emerg_to_endjuv description="(oC)">211 </tt_emerg_to_endjuv>
-      <tt_endjuv_to_init units="oC">0</tt_endjuv_to_init>
+      <tt_emerg_to_endjuv description="(oC)">100 </tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">161</tt_endjuv_to_init>
       <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
       <photoperiod_slope description="(oC/hour)">41.0</photoperiod_slope>
@@ -462,56 +465,38 @@
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
       <GNmax>600</GNmax>
-      <potKernelWt>260</potKernelWt>
+      <potKernelWt>300</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </dekalb_xl82>
     <katumani cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
           -->
-      <tt_emerg_to_endjuv description="135 ! 125 in CM-KEN (oC)">285</tt_emerg_to_endjuv>
-      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <tt_emerg_to_endjuv description="(oC)">50</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">100.0</tt_endjuv_to_init>
       <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
-      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <photoperiod_slope units="oC/hour">15.0</photoperiod_slope>
       <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
-      <tt_flower_to_start_grain description="70 !  170 (oC)">120 </tt_flower_to_start_grain>
-      <tt_flower_to_maturity description="660 in CM-KEN (oC)">660 </tt_flower_to_maturity>
+      <tt_flower_to_start_grain description="(oC)">120 </tt_flower_to_start_grain>
+      <tt_flower_to_maturity description="(oC)">660 </tt_flower_to_maturity>
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>450</GNmax>
-      <potKernelWt>260</potKernelWt>
+      <GNmax>340</GNmax>
+      <potKernelWt>300</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
+      <aX0 type="text" description="Largest leaf multiplier">0.72</aX0>
+      <bellCurveParams type="text" description="Leaf Curve Params">-0.0126 -0.2071 0.000365 -0.4381</bellCurveParams>
     </katumani>
-    <makueni cultivar="yes">
-      <!-- ___ PHENOLOGY ____________________________________________________________________________________
-          -->
-      <tt_emerg_to_endjuv description=" (oC)">150</tt_emerg_to_endjuv>
-      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
-      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
-      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
-      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
-      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
-      <tt_flower_to_maturity description=" (oC)">900 </tt_flower_to_maturity>
-      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
-      <!-- ___ Grain Parameters _____________________________________________________________________________
-          -->
-      <GNmax>480</GNmax>
-      <potKernelWt>260</potKernelWt>
-      <!-- ___ Other ________________________________________________________________________________________
-          -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
-    </makueni>
     <usa_18leaf cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
           -->
-      <tt_emerg_to_endjuv description=" (oC)">220</tt_emerg_to_endjuv>
-      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <tt_emerg_to_endjuv description=" (oC)">100</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">180.0</tt_endjuv_to_init>
       <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
       <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
@@ -521,11 +506,11 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>610</GNmax>
-      <potKernelWt>260</potKernelWt>
+      <GNmax>540</GNmax>
+      <potKernelWt>300</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
       <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
     </usa_18leaf>
@@ -547,7 +532,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
       <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
     </Pioneer_3237>
@@ -588,7 +573,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
       <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
     </Pioneer_3527>
@@ -610,7 +595,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </Pioneer_3153>
     <Hycorn_424 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -630,7 +615,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </Hycorn_424>
     <hybred511 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -650,7 +635,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </hybred511>
     <hybred614 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -670,7 +655,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </hybred614>
     <Pioneer_6875 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -686,11 +671,11 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>610</GNmax>
-      <potKernelWt>260</potKernelWt>
+      <GNmax>550</GNmax>
+      <potKernelWt>350</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
       <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
     </Pioneer_6875>
@@ -708,31 +693,31 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>540</GNmax>
-      <potKernelWt>260</potKernelWt>
+      <GNmax>520</GNmax>
+      <potKernelWt>280</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </hycorn_9>
     <Barker cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
           -->
-      <tt_emerg_to_endjuv description=" (oC)">248</tt_emerg_to_endjuv>
-      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <tt_emerg_to_endjuv description=" (oC)">100</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">210.0</tt_endjuv_to_init>
       <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
-      <photoperiod_slope units="oC/hour">56.0</photoperiod_slope>
+      <photoperiod_slope units="oC/hour">27.3</photoperiod_slope>
       <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
       <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
       <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>610</GNmax>
-      <potKernelWt>260</potKernelWt>
+      <GNmax>550</GNmax>
+      <potKernelWt>350</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
       <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
     </Barker>
@@ -754,7 +739,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sargeant>
     <qk_694 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -774,7 +759,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </qk_694>
     <hycorn_40 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -794,7 +779,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
       <leaf_no_dead_const>-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope>0.00042</leaf_no_dead_slope>
     </hycorn_40>
@@ -816,7 +801,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </hycorn_50>
     <gh_5009 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -832,11 +817,11 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>500</GNmax>
+      <GNmax>600</GNmax>
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </gh_5009>
     <gh_5019wx cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -852,11 +837,11 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
       <!-- ___ Grain Parameters _____________________________________________________________________________
           -->
-      <GNmax>470</GNmax>
+      <GNmax>600</GNmax>
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </gh_5019wx>
     <!-- *******************************************
              *** Zimbabwe and Malawi maize varieties ***
@@ -888,7 +873,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </NSCM_41>
     <sc401 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -908,7 +893,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sc401>
     <r201 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -928,7 +913,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </r201>
     <!--  ***********************************************************
               *********** early-medium maturing varieties ***************
@@ -952,7 +937,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sc501>
     <sr52 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -972,7 +957,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sr52>
     <r215 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -992,7 +977,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </r215>
     <mh18 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1012,7 +997,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </mh18>
     <CG4141 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1032,7 +1017,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </CG4141>
     <!--  **********************************************************
               *********** medium-late maturing varieties ***************
@@ -1056,7 +1041,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </mh12>
     <mh16 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1076,7 +1061,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </mh16>
     <mh17 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1096,7 +1081,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </mh17>
     <mh19 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1116,7 +1101,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </mh19>
     <sc601 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1136,7 +1121,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sc601>
     <sc625 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1156,7 +1141,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sc625>
     <sc623 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1176,7 +1161,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sc623>
     <mwi_local cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1196,7 +1181,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </mwi_local>
     <M602 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1216,7 +1201,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </M602>
     <!--  ***************************************************
               *********** late maturing varieties ***************
@@ -1240,7 +1225,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </sc709>
     <c19leaf cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1260,7 +1245,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </c19leaf>
     <C33a63 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1280,7 +1265,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </C33a63>
     <Zhongdan2 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1300,7 +1285,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </Zhongdan2>
     <pan6479 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1320,7 +1305,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </pan6479>
     <pan6671 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1340,7 +1325,7 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </pan6671>
     <cresemillas cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
@@ -1360,28 +1345,9 @@
       <potKernelWt>260</potKernelWt>
       <!-- ___ Other ________________________________________________________________________________________
           -->
-      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.60  1.60  1.60   0    0</rue>
     </cresemillas>
-    <DEA cultivar="yes">
-      <!-- ___ PHENOLOGY ____________________________________________________________________________________
-          -->
-      <tt_emerg_to_endjuv description=" (oC)">100</tt_emerg_to_endjuv>
-      <tt_endjuv_to_init units="oC">140.0</tt_endjuv_to_init>
-      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
-      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
-      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
-      <tt_flower_to_start_grain description=" (oC)">170</tt_flower_to_start_grain>
-      <tt_flower_to_maturity description=" (oC)">700</tt_flower_to_maturity>
-      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
-      <!-- ___ Grain Parameters _____________________________________________________________________________
-          -->
-      <GNmax>600</GNmax>
-      <potKernelWt>260</potKernelWt>
-      <!-- ___ Other ________________________________________________________________________________________
-          -->
-    </DEA>
-    <Hicorn53 cultivar="yes">
+    <Hycorn53 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
           -->
       <tt_emerg_to_endjuv description=" (oC)">100</tt_emerg_to_endjuv>
@@ -1401,7 +1367,7 @@
           -->
       <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
       <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.00034</leaf_no_dead_slope>
-    </Hicorn53>
+    </Hycorn53>
     <c79 cultivar="yes">
       <!-- ___ PHENOLOGY ____________________________________________________________________________________
           -->
