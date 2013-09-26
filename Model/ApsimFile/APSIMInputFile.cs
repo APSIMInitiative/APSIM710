@@ -166,7 +166,11 @@ namespace ApsimFile
                 if (CheckHeadingsExist)
                 {
                     for (int w = 0; w != ColumnTypes.Length; w++)
-                        Data.Columns.Add(new DataColumn(Headings[w], ColumnTypes[w]));
+                    {
+                        // Column names must be unique
+                        if (!Data.Columns.Contains(Headings[w]))
+                            Data.Columns.Add(new DataColumn(Headings[w], ColumnTypes[w]));
+                    }
                 }
                 DataRow NewMetRow = Data.NewRow();
                 object[] Values = ConvertWordsToObjects(Words, ColumnTypes);
@@ -174,7 +178,7 @@ namespace ApsimFile
                 for (int w = 0; w != Words.Count; w++)
                 {
                     int TableColumnNumber = NewMetRow.Table.Columns.IndexOf(Headings[w]);
-                    NewMetRow[TableColumnNumber] = Values[TableColumnNumber];
+                    NewMetRow[TableColumnNumber] = Values[w];
                 }
                 Data.Rows.Add(NewMetRow);
                 CheckHeadingsExist = false;
