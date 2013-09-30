@@ -781,19 +781,18 @@ public partial class SoilNitrogen
 		// data passed with this event:
 		//.Sender: the name of the module that raised this event
 		//.DepositionType: the type of deposition:
-        //  - Homogeneous: No patch is created, add stuff as given to all patches. It is the default;
+        //  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
         //  - ToSpecificPatch: No patch is created, add stuff to given patches;
 		//		(recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
-        //  - NewSinglePatch: create new patch based on an existing patch, add stuff to created patch;
-		//		(recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0])
-        //  - NewOverlappingPatch: create new patches base on a series of existing patches, add stuff to created patches;
-        //      (recipient patches are given using index or name; patches are only created is area is larger than a minimum (minPatchArea);
-        //        new areas are propertional to existing patches; if existing area (sum of all recipient patches) is smaller than new patch area, and error is raised)
-        //  - OverlapAllPatches: create new patch(es), overlaps with all existing patches, add stuff to created patches;
+        //  - ToNewPatch: create new patch based on an existing patch, add stuff to created patch;
+		//		- recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0];
+        //      - patches are only created is area is larger than a minimum (minPatchArea);
+        //      - new areas are proportional to existing patches;
+        //  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
 		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
 		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
 		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
-		//.PatchArea: the relative area of the patch (0-1)
+		//.AreaFraction: the relative area of the patch (0-1)
         //.PatchName: the name(s) of the patch)es) being created
 		//.Water: amount of water to add per layer (mm), not handled here
 		//.Urea: amount of urea to add per layer (kgN/ha)
@@ -803,48 +802,39 @@ public partial class SoilNitrogen
         //.POX: amount of POx to add per layer (kgP/ha)
         //.SO4: amount of SO4 to add per layer (kgS/ha)
         //.Ashalk: ash amount to add per layer (mol/ha)
-        //.FOM_C.Pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
-        //.FOM_C.Pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
-        //.FOM_C.Pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
-        //.FOM_N.Pool1: amount of nitrogen in fom_pool1 to add per layer (kgN/ha)
-        //.FOM_N.Pool2: amount of nitrogen in fom_pool2 to add per layer (kgN/ha)
-        //.FOM_N.Pool3: amount of nitrogen in fom_pool3 to add per layer (kgN/ha)
+        //.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  - if present, the entry for pools will be ignored
+        //.FOM_C_pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
+        //.FOM_C_pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
+        //.FOM_C_pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
+        //.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
 
-		double totalUrea = SumDoubleArray(PatchtoAdd.Urea);
 		List<int> PatchesToAddStuff = new List<int>();
 
-        if ((PatchtoAdd.DepositionType.ToLower() == "NewSinglePatch".ToLower()) ||
-            (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower()) ||
-            (PatchtoAdd.DepositionType.ToLower() == "OverlapAllPatches".ToLower()))
+        if ((PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower()) ||
+            (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower()))
         { // New patch(es) will be added
             AddNewCNPatch(PatchtoAdd); 
         }
         else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
         {  // add stuff to selected patches, no new patch will be created
-           
+
             // 1. get the list of patch id's to which stuff will be added
-                int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
-                // 2. create the list of patches receiving stuff
-                for (int i = 0; i < PatchIDs.Length; i++)
-                    PatchesToAddStuff.Add(PatchIDs[i]);
-                // 3. add the stuff to patches listed
-                AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+            int[] PatchIDs = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
+            // 2. create the list of patches receiving stuff
+            for (int i = 0; i < PatchIDs.Length; i++)
+                PatchesToAddStuff.Add(PatchIDs[i]);
+            // 3. add the stuff to patches listed
+            AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
         }
         else
-            // add urine to all existing patches, no new patch will be created
-            // 1. check whether N is being added, if not skip this
-            if (totalUrea > EPSILON)
-            {
-                // 2. Add deltaUrea to each patch
-                for (int k = 0; k < Patch.Count; k++)
-                    Patch[k].dlt_urea = PatchtoAdd.Urea;
+        {  // add urine to all existing patches, no new patch will be created
 
-                // 1. create the list of patches receiving stuff (all)
-                for (int k = 0; k < Patch.Count; k++)
-                    PatchesToAddStuff.Add(k);
-                // 2. add the stuff to patches listed
-                AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
-            }
+            // 1. create the list of patches receiving stuff (all)
+            for (int k = 0; k < Patch.Count; k++)
+                PatchesToAddStuff.Add(k);
+            // 2. add the stuff to patches listed
+            AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+        }
 	}
 
 

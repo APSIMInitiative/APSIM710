@@ -87,7 +87,8 @@ public partial class SoilNitrogen
 					else if (layer >= value.Length)
 					{
 						// not all values were supplied, assume minimum
-						value[layer] = g.urea_min[layer];
+                        Array.Resize(ref value, value.Length + 1);
+                        value[layer] = g.urea_min[layer];
 					}
 					else
 					{
@@ -119,7 +120,8 @@ public partial class SoilNitrogen
 					else if (layer >= value.Length)
 					{
 						// not all values were supplied, assume minimum
-						value[layer] = g.nh4_min[layer];
+                        Array.Resize(ref value, value.Length + 1);
+                        value[layer] = g.nh4_min[layer];
 					}
 					else
 					{
@@ -149,19 +151,20 @@ public partial class SoilNitrogen
 						Console.WriteLine(" Attempt to assign no3 value to a non-existent soil layer - extra values will be ignored");
 						break;
 					}
-					else if (layer >= value.Length)
-					{
-						// not all values were supplied, assume minimum
-						value[layer] = g.no3_min[layer];
-					}
-					else
-					{
-						// a value was supplied, check whether it is valid (positive and within bounds)
-						bool IsVariableOK = CheckNegativeValues(no3[layer], layer, "no3");
-						if (!IsVariableOK)
-							no3[layer] = g.no3_min[layer];
-						IsVariableOK = CheckVariableBounds(ref no3[layer], layer, "no3", g.no3_min[layer], 10000, false);
-					}
+                    else if (layer >= value.Length)
+                    {
+                        // not all values were supplied, assume minimum
+                        Array.Resize(ref value, value.Length + 1);
+                        value[layer] = g.no3_min[layer];
+                    }
+                    else
+                    {
+                        // a value was supplied, check whether it is valid (positive and within bounds)
+                        bool IsVariableOK = CheckNegativeValues(no3[layer], layer, "no3");
+                        if (!IsVariableOK)
+                            no3[layer] = g.no3_min[layer];
+                        IsVariableOK = CheckVariableBounds(ref no3[layer], layer, "no3", g.no3_min[layer], 10000, false);
+                    }
 					_no3[layer] = value[layer];
 				}
 			}
@@ -278,7 +281,9 @@ public partial class SoilNitrogen
 			{
 				for (int layer = 0; layer < value.Length; ++layer)
 				{
-					bool IsVariableOK = CheckNegativeValues(fom_n[layer], layer, "fom_n");
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_org_n", -10000.0, 10000.0, false);
+                    fom_n[layer] += value[layer];                    
+                    IsVariableOK = CheckNegativeValues(fom_n[layer], layer, "fom_n");
 					if (!IsVariableOK)
 						fom_n[layer] = 0.0;
 					IsVariableOK = CheckVariableBounds(ref fom_n[layer], layer, "fom_n", 0.0, 100000, false);
@@ -292,7 +297,9 @@ public partial class SoilNitrogen
 			{
 				for (int layer = 0; layer < value.Length; ++layer)
 				{
-					bool IsVariableOK = CheckNegativeValues(fom_c_pool1[layer], layer, "fom_c_pool1");
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_org_pool1", -100000.0, 100000.0, false);
+                    fom_c_pool1[layer] += value[layer];
+                     IsVariableOK = CheckNegativeValues(fom_c_pool1[layer], layer, "fom_c_pool1");
 					if (!IsVariableOK)
 						fom_c_pool1[layer] = 0.0;
 					IsVariableOK = CheckVariableBounds(ref fom_c_pool1[layer], layer, "fom_c_pool1", 0.0, 1000000, false);
@@ -306,7 +313,9 @@ public partial class SoilNitrogen
 			{
 				for (int layer = 0; layer < value.Length; ++layer)
 				{
-					bool IsVariableOK = CheckNegativeValues(fom_c_pool2[layer], layer, "fom_c_pool2");
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_org_pool2", -100000.0, 100000.0, false);
+                    fom_c_pool2[layer] += value[layer];
+                    IsVariableOK = CheckNegativeValues(fom_c_pool2[layer], layer, "fom_c_pool2");
 					if (!IsVariableOK)
 						fom_c_pool2[layer] = 0.0;
 					IsVariableOK = CheckVariableBounds(ref fom_c_pool2[layer], layer, "fom_c_pool2", 0.0, 1000000, false);
@@ -320,7 +329,9 @@ public partial class SoilNitrogen
 			{
 				for (int layer = 0; layer < value.Length; ++layer)
 				{
-					bool IsVariableOK = CheckNegativeValues(fom_c_pool3[layer], layer, "fom_c_pool3");
+                    bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_org_pool3", -100000.0, 100000.0, false);
+                    fom_c_pool3[layer] += value[layer];
+					 IsVariableOK = CheckNegativeValues(fom_c_pool3[layer], layer, "fom_c_pool3");
 					if (!IsVariableOK)
 						fom_c_pool3[layer] = 0.0;
 					IsVariableOK = CheckVariableBounds(ref fom_c_pool3[layer], layer, "fom_c_pool3", 0.0, 1000000, false);

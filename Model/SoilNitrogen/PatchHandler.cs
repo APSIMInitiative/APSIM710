@@ -21,19 +21,18 @@ public partial class SoilNitrogen
         // Data passed from OnAddSoilCNPatch event:
         //.Sender: the name of the module that raised this event
         //.DepositionType: the type of deposition:
-        //  - Homogeneous: No patch is created, add stuff as given to all patches. It is the default;
+        //  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
         //  - ToSpecificPatch: No patch is created, add stuff to given patches;
         //		(recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
-        //  - NewSinglePatch: create new patch based on an existing patch, add stuff to created patch;
-        //		(recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0])
-        //  - NewOverlappingPatch: create new patches base on a series of existing patches, add stuff to created patches;
-        //      (recipient patches are given using index or name; patches are only created is area is larger than a minimum (minPatchArea);
-        //        new areas are propertional to existing patches; if existing area (sum of all recipient patches) is smaller than new patch area, and error is raised)
-        //  - OverlapAllPatches: create new patch(es), overlaps with all existing patches, add stuff to created patches;
+        //  - ToNewPatch: create new patch based on an existing patch, add stuff to created patch;
+        //		- recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0];
+        //      - patches are only created is area is larger than a minimum (minPatchArea);
+        //      - new areas are proportional to existing patches;
+        //  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
         //		(new patches are created only if their area is larger than a minimum (minPatchArea))
         //.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
         //.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
-        //.PatchArea: the relative area of the patch (0-1)
+        //.AreaFraction: the relative area of the patch (0-1)
         //.PatchName: the name(s) of the patch)es) being created
 
         List<int> PatchesToDelete = new List<int>();
@@ -43,19 +42,13 @@ public partial class SoilNitrogen
         // get the list of id's of patches which are affected by this addition, and the area affected
         int[] PatchIDs = new int[1];
         double AreaAffected = 0;
-        if (PatchtoAdd.DepositionType.ToLower() == "NewSinglePatch".ToLower())
-        {  // only one patch is affected
-            int[] allPatchIds = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
-            PatchIDs[0] = allPatchIds[0];
-            AreaAffected = Patch[PatchIDs[0]].RelativeArea;
-        }
-        else if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatch".ToLower())
+        if (PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower())
         {  // check which patches are affected
             PatchIDs = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
             for (int i = 0; i < PatchIDs.Length; i++)
                 AreaAffected += Patch[PatchIDs[i]].RelativeArea;
         }
-        else if (PatchtoAdd.DepositionType.ToLower() == "OverlapAllPatches".ToLower())
+        else if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower())
         {  // all patches are affected
             PatchIDs = new int[Patch.Count];
             for (int k = 0; k < Patch.Count; k++)
@@ -64,18 +57,18 @@ public partial class SoilNitrogen
         }
 
         // check that total area of affected patches is larger than new patch area
-        if (AreaAffected < PatchtoAdd.PatchArea)
+        if (AreaAffected < PatchtoAdd.AreaFraction)
         {
             // Existing area is smaller than new patch area, cannot continue
             throw new Exception(" Cannot create new patch, area of selected patches (" + AreaAffected.ToString("#0.00#")
-                               + ") is smaller than area of new patch(" + PatchtoAdd.PatchArea.ToString("#0.00#") + ")");
+                               + ") is smaller than area of new patch(" + PatchtoAdd.AreaFraction.ToString("#0.00#") + ")");
         }
         else
         {  // check the area for each patch
             for (int i = 0; i < PatchIDs.Length; i++)
             {
                 double OldPatch_OldArea = Patch[PatchIDs[i]].RelativeArea;
-                double NewPatch_NewArea = PatchtoAdd.PatchArea * (OldPatch_OldArea / AreaAffected);
+                double NewPatch_NewArea = PatchtoAdd.AreaFraction * (OldPatch_OldArea / AreaAffected);
                 double OldPatch_NewArea = OldPatch_OldArea - NewPatch_NewArea;
                 if (NewPatch_NewArea < MinimumPatchArea)
                 {  // area to create is too small, patch will not be created
@@ -98,9 +91,9 @@ public partial class SoilNitrogen
                     // create new patch based on old one - uses SplitPatch, the original one will be deleted later
                     SplitPatch(PatchIDs[i]);
                     int k = Patch.Count - 1;
-                    if (PatchtoAdd.PatchArea > 0)
+                    if (PatchtoAdd.AreaFraction > 0)
                     {  // a name was supplied
-                        Patch[k].PatchName = PatchtoAdd.PatchArea + "_" + i.ToString();
+                        Patch[k].PatchName = PatchtoAdd.AreaFraction + "_" + i.ToString();
                     }
                     else
                     {  // use default naming
@@ -115,9 +108,9 @@ public partial class SoilNitrogen
                     Patch[PatchIDs[i]].RelativeArea = OldPatch_NewArea;
                     int k = Patch.Count - 1;
                     Patch[k].RelativeArea = NewPatch_NewArea;
-                    if (PatchtoAdd.PatchArea > 0)
+                    if (PatchtoAdd.PatchName.Length > 0)
                     {  // a name was supplied
-                        Patch[k].PatchName = PatchtoAdd.PatchArea + "_" + i.ToString();
+                        Patch[k].PatchName = PatchtoAdd.AreaFraction + "_" + i.ToString();
                     }
                     else
                     {  // use default naming
@@ -137,7 +130,9 @@ public partial class SoilNitrogen
         AddStuffToPatches(PatchesJustAdded, PatchtoAdd);
 
         // delete the patches in excess
-        DeletePatches(PatchesToDelete);
+        if (PatchesToDelete.Count > 0)
+            DeletePatches(PatchesToDelete);
+
     }
 
     /// <summary>
@@ -404,7 +399,7 @@ public partial class SoilNitrogen
     /// <param name="StuffToAdd">The values of the variables to add (supplied as deltas)</param>
     private void AddStuffToPatches(List<int> PatchesToAdd, AddSoilCNPatchType StuffToAdd)
     {
-        // Data passed from OnAddSoilCNPatch event:
+        // Data passed from OnAddSoilCNPatch event - these are all considered deltas:
         //.Water: amount of water to add per layer (mm), not handled here
         //.Urea: amount of urea to add per layer (kgN/ha)
         //.Urea: amount of urea to add (per layer) - Do we need other N forms?
@@ -413,33 +408,38 @@ public partial class SoilNitrogen
         //.POX: amount of POx to add per layer (kgP/ha)
         //.SO4: amount of SO4 to add per layer (kgS/ha)
         //.Ashalk: ash amount to add per layer (mol/ha)
-        //.FOM_C.Pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
-        //.FOM_C.Pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
-        //.FOM_C.Pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
-        //.FOM_N.Pool1: amount of nitrogen in fom_pool1 to add per layer (kgN/ha)
-        //.FOM_N.Pool2: amount of nitrogen in fom_pool2 to add per layer (kgN/ha)
-        //.FOM_N.Pool3: amount of nitrogen in fom_pool3 to add per layer (kgN/ha)
+        //.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  -  If present, the pools will be ignored
+        //.FOM_C_Pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
+        //.FOM_C_Pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
+        //.FOM_C_Pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
+        //.FOM_N: amount of nitrogen in fom to add per layer (kgN/ha)
 
-        for (int i = PatchesToAdd.Count; i >= 0; i--)
+        for (int i = PatchesToAdd.Count-1; i >= 0; i--)
         {
-            if (StuffToAdd.Urea != null)
-                Patch[PatchesToAdd[i]].urea = StuffToAdd.Urea;
-            if (StuffToAdd.NH4 != null)
-                Patch[PatchesToAdd[i]].nh4 = StuffToAdd.NH4;
-            if (StuffToAdd.NO3 != null)
-                Patch[PatchesToAdd[i]].no3 = StuffToAdd.NO3;
-            if (StuffToAdd.FOM_C != null)
-                Patch[PatchesToAdd[i]].fom_c_pool1 = StuffToAdd.FOM_C.Pool1;
-            if (StuffToAdd.FOM_C.Pool2 != null)
-                Patch[PatchesToAdd[i]].fom_c_pool2 = StuffToAdd.FOM_C.Pool2;
-            if (StuffToAdd.FOM_C.Pool3 != null)
-                Patch[PatchesToAdd[i]].fom_c_pool3 = StuffToAdd.FOM_C.Pool3;
-            if (StuffToAdd.FOM_N.Pool1 != null)
-                Patch[PatchesToAdd[i]].fom_n_pool1 = StuffToAdd.FOM_N.Pool1;
-            if (StuffToAdd.FOM_N.Pool2 != null)
-                Patch[PatchesToAdd[i]].fom_n_pool2 = StuffToAdd.FOM_N.Pool2;
-            if (StuffToAdd.FOM_N.Pool3 != null)
-                Patch[PatchesToAdd[i]].fom_n_pool3 = StuffToAdd.FOM_N.Pool3;
+            if ((StuffToAdd.Urea != null) && (StuffToAdd.Urea.Sum()>0))
+                Patch[PatchesToAdd[i]].dlt_urea = StuffToAdd.Urea;
+            if ((StuffToAdd.NH4 != null) && (StuffToAdd.NH4.Sum() > 0))
+                Patch[PatchesToAdd[i]].dlt_nh4 = StuffToAdd.NH4;
+            if ((StuffToAdd.NO3 != null) && (StuffToAdd.NO3.Sum() > 0))
+                Patch[PatchesToAdd[i]].dlt_no3 = StuffToAdd.NO3;
+            if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C.Sum() > 0))
+            {
+                Patch[PatchesToAdd[i]].dlt_org_c_pool1 = StuffToAdd.FOM_C;
+                Patch[PatchesToAdd[i]].dlt_org_c_pool2 = StuffToAdd.FOM_C;
+                Patch[PatchesToAdd[i]].dlt_org_c_pool3 = StuffToAdd.FOM_C;
+            }
+            else
+            {
+                if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C_pool1.Sum() > 0))
+                    Patch[PatchesToAdd[i]].dlt_org_c_pool1 = StuffToAdd.FOM_C_pool1;
+                if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C_pool2.Sum() > 0))
+                    Patch[PatchesToAdd[i]].dlt_org_c_pool2 = StuffToAdd.FOM_C_pool2;
+                if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C_pool3.Sum() > 0))
+                    Patch[PatchesToAdd[i]].dlt_org_c_pool3 = StuffToAdd.FOM_C_pool3;
+            }
+
+            if ((StuffToAdd.FOM_N != null) && (StuffToAdd.FOM_N.Sum() > 0))
+                Patch[PatchesToAdd[i]].dlt_org_n = StuffToAdd.FOM_N;
         }
 
     }

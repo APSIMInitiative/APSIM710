@@ -931,11 +931,11 @@
    <!-- used to send data to SoilNitrogen, which will add CNPatches if appropriate -->
    <type name="AddSoilCNPatch">
       <field name="Sender"             unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
-      <field name="DepositionType"     unit="-"      kind="string"   array="F"  descr="Homogeneous,ToSpecificPatch,NewSinglePatch,NewOverlappingPatch,OverlapAllPatches"/>
+      <field name="DepositionType"     unit="-"      kind="string"   array="F"  descr="ToAllPaddock,ToSpecificPatch,ToNewPatch,NewOverlappingPatches"/>
       <field name="AffectedPatches_nm" unit="-"      kind="string"   array="T"  descr="the name of patches affected by new patch"/>
       <field name="AffectedPatches_id" unit="-"      kind="integer4" array="T"  descr="the id of patches affected by new patch"/>
-      <field name="PatchArea"          unit="0-1"    kind="double"   array="F"  descr="relative area (fraction) of new patch es"/>
-      <field name="PatchName"          unit="-"      kind="string"   array="F"  descr="base name of new patch es"/>
+      <field name="AreaFraction"       unit="0-1"    kind="double"   array="F"  descr="relative area (fraction) of new patches"/>
+      <field name="PatchName"          unit="-"      kind="string"   array="F"  descr="base name of new patches"/>
       <field name="Water"              unit="mm"     kind="double"   array="T"  descr="amount of water to add per layer"/>
       <field name="Urea"               unit="kgN/ha" kind="double"   array="T"  descr="amount of urea to add per layer"/>
       <field name="NH4"                unit="kgN/ha" kind="double"   array="T"  descr="amount of ammonium to add per layer"/>
@@ -943,16 +943,11 @@
       <field name="POX"                unit="kgP/ha" kind="double"   array="T"  descr="amount of POx to add per layer"/>
       <field name="SO4"                unit="kgS/ha" kind="double"   array="T"  descr="amount of SO4 to add per layer"/>
       <field name="AshAlk"             unit="mol/ha" kind="double"   array="T"  descr="ash amount to add per layer"/>
-      <field name="FOM_C" descr="amounts of carbon to add, for each fresh organic mater pool">
-		   <field name="Pool1"           unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon in pool1 to add per layer"/>
-		   <field name="Pool2"           unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon in pool2 to add per layer"/>
-		   <field name="Pool3"           unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon in pool3 to add per layer"/>
-		</field>
-      <field name="FOM_N" descr="amounts of nitrogen to add, for each fresh organic mater pool">
-		   <field name="Pool1"           unit="kgN/ha" kind="double"   array="T"  descr="amount of nitrogen in pool1 to add per layer"/>
-		   <field name="Pool2"           unit="kgN/ha" kind="double"   array="T"  descr="amount of nitrogen in pool2 to add per layer"/>
-		   <field name="Pool3"           unit="kgN/ha" kind="double"   array="T"  descr="amount of nitrogen in pool3 to add per layer"/>
-		</field>
+	   <field name="FOM_C"           	unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon to add as FOM per layer"/>
+	   <field name="FOM_C_pool1"        unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon in pool1 to add per layer"/>
+	   <field name="FOM_C_pool2"        unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon in pool2 to add per layer"/>
+	   <field name="FOM_C_pool3"        unit="kgC/ha" kind="double"   array="T"  descr="amount of carbon in pool3 to add per layer"/>
+	   <field name="FOM_N"           	unit="kgN/ha" kind="double"   array="T"  descr="amount of nitrogen to add as FOM per layer"/>
    </type>
 
 
@@ -960,7 +955,8 @@
    <type name="MergeSoilCNPatch">
       <field name="Sender"             unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
       <field name="AffectedPatches_nm" unit="-"      kind="string"   array="T"  descr="the name of patches that will be merged"/>
-      <field name="AffectedPatches_id" unit="-"      kind="integer4" array="T"  descr="the id of patches that will be merge"/>
+      <field name="AffectedPatches_id" unit="-"      kind="integer4" array="T"  descr="the id of patches that will be merged"/>
+      <field name="MergeAll"           unit="-"      kind="boolean"  array="F"  descr="define whether all patches will be merged"/>
    </type>
 
    <!--!!!!! Inhibition of soil process  !!!!!!!!!!!!!!!!!!!!!!-->
