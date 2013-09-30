@@ -1,0 +1,626 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Sim29-SoilNitrogen_Pasture+Hum+FOM+SurfOM+N+Urea
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component       "Cut or graze AgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component  "MediumSedimentarySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component "MediumSedimentarySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2000
+     Simulation end date   = 31/07/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- Report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 7
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        totaln as PlantN format 5
+        TotalPlantN as PastureN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 7
+        leach_no3 as LeachedNO3 format 7
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal  format 5
+        biomass as PlantBiomass format 5
+        es as Evaporation format 5
+        ep as Transpiration format 5
+        WaterUptake as pTranspiration format 5
+        drain as Drain format 7
+        dlayer format 5
+        no3 format 10
+        nh4 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st as SoilTemperature format 7
+        sw_dep format 3
+
+     Output file = Sim29-SoilNitrogen_Pasture+Hum+FOM+SurfOM+N+Urea Report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+          20-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Mar  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- Cut or graze AgPasture Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     days_after_cut = 21 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     harvested_dm =0
+     harvested_n = 0
+     removed_dm = 0.0
+     removed_n = 0.0
+     return_dm = 0.0
+     return_n = 0.0
+     growthratecalc = 0
+     n_conc_total = 0
+     
+     SECTION:- start_of_day
+     if today >= date('01/01/1900') and today <= date('31/12/2100') then
+        preharvest_dm = agpasture.stemwt + agpasture.leafwt
+        preharvest_n = agpasture.stemn + agpasture.leafn
+        harvested_dm = 0.0
+        harvested_n = 0.0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0.0
+        n_conc_removed = 0.0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 21 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2000 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1500 then
+           agpasture graze type = 'residue', amount = 1500
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           days_after_cut = 0
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0.0
+              n_on_urine = return_n - n_on_dung
+              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : days_after_cut = 20.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- MediumSedimentarySoil Water Initialisation ----------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.200  0.220  0.400  0.500  0.360  1.200  0.762  0.400 25.000
+          150.-  300.  0.200  0.210  0.390  0.490  0.370  1.200  0.190  0.300 20.000
+          300.-  600.  0.200  0.200  0.380  0.480  0.380  1.250  0.048  0.250 20.000
+          600.-  900.  0.190  0.190  0.370  0.470  0.370  1.300  0.000  0.250 20.000
+          900.- 1200.  0.180  0.180  0.360  0.460  0.360  1.350  0.000  0.300 20.000
+         1200.- 1500.  0.170  0.170  0.350  0.450  0.350  1.400  0.000  0.300 20.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.00      21.00      27.00      15.00
+          150.-  300.      31.50      24.00      27.00      15.00
+          300.-  600.      60.00      54.00      54.00      30.00
+          600.-  900.      57.00      54.00      54.00      30.00
+          900.- 1200.      54.00      54.00      54.00      30.00
+         1200.- 1500.      51.00      54.00      54.00      30.00
+          ---------------------------------------------------------
+               Totals     286.50     261.00     270.00     150.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        4.00 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- MediumSedimentarySoil Nitrogen Initialisation -------------------------
+
+        - Reading/checking parameters
+           - Using Generic medium sedimentary soil soil mineralisation specification
+           - Soil temperature calculated internally
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.00    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      52995.7  4239.7  1004.3   125.5   156.2     5.2
+             2      26748.5  2139.9   251.5    31.4   115.7     3.9
+             3      18659.9  1492.8    90.1    11.3    63.5     2.1
+             4       9735.5   778.8    14.5     1.8    34.9     1.2
+             5       4048.0   323.8     2.0     0.3    19.1     0.6
+             6       4199.9   336.0     0.1     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  116387.6  9311.0  1362.4   170.3   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 64.72500
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
+9/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -5.33507138467115E-09 will be reset to minimum value
+9/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -3.74975925865328E-08 will be reset to minimum value
+9/01/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -4.61969844600674E-08 will be reset to minimum value
+9/01/2000 - Attempt to change no3[3] in Patch[base] to a value below the lower limit
+  The value -1.28363056850489E-08 will be reset to minimum value
+9/01/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -3.58940610567515E-09 will be reset to minimum value
+10/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.16767001518059E-09 will be reset to minimum value
+11/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.88173560067284E-09 will be reset to minimum value
+12/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.63049881876753E-09 will be reset to minimum value
+12/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.05479250334106E-09 will be reset to minimum value
+14/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.84207202111619E-09 will be reset to minimum value
+14/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -2.05343046733031E-09 will be reset to minimum value
+15/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -8.07237193756194E-09 will be reset to minimum value
+15/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -3.31385088814251E-09 will be reset to minimum value
+15/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.69150252832262E-09 will be reset to minimum value
+16/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -9.09407893434633E-09 will be reset to minimum value
+17/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.01057666679338E-08 will be reset to minimum value
+17/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -2.41897407660119E-09 will be reset to minimum value
+17/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.2771506907594E-09 will be reset to minimum value
+18/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.23583843159025E-09 will be reset to minimum value
+18/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -2.25632260097974E-09 will be reset to minimum value
+19/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -8.74775707426778E-09 will be reset to minimum value
+20 January 2000(Day of year=20), OperationsSchedule: 
+      Sending apply message to fertiliser
+20 January 2000(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+22 January 2000(Day of year=22), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 33.96765 (kg/ha), n = 1.16165 (kg/ha), cpr = 0
+31/01/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.92288454550871E-08 will be reset to minimum value
+31/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -3.21013812754067E-09 will be reset to minimum value
+1/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.42348616122479E-09 will be reset to minimum value
+1/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -2.37672978520287E-09 will be reset to minimum value
+3/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.23579077526692E-08 will be reset to minimum value
+7/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.0483114792903E-09 will be reset to minimum value
+8/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.00834646083104E-09 will be reset to minimum value
+11/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.11956302006888E-08 will be reset to minimum value
+12 February 2000(Day of year=43), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 30.18676 (kg/ha), n = 1.03075 (kg/ha), cpr = 0
+12/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.53027127081096E-09 will be reset to minimum value
+14/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.28482493825189E-09 will be reset to minimum value
+17/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.52846335588208E-09 will be reset to minimum value
+18/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.75655666401209E-09 will be reset to minimum value
+20/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.48250503539948E-09 will be reset to minimum value
+24/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -9.04787084143877E-09 will be reset to minimum value
+25/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.0770525860071E-09 will be reset to minimum value
+27/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.57189294808435E-09 will be reset to minimum value
+27/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.51829584321694E-09 will be reset to minimum value
+28/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -9.77437292215555E-09 will be reset to minimum value
+29/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.65597833362563E-09 will be reset to minimum value
+1/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.0784451248691E-09 will be reset to minimum value
+1/03/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.18803434451253E-09 will be reset to minimum value
+3/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.49473508412623E-09 will be reset to minimum value
+3/03/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.47475250067419E-09 will be reset to minimum value
+4 March 2000(Day of year=64), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 19.77484 (kg/ha), n = 0.55584 (kg/ha), cpr = 0
+6/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.26825730420543E-09 will be reset to minimum value
+9/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.31258662219958E-09 will be reset to minimum value
+9/03/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.30277498511244E-09 will be reset to minimum value
+11/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.46547673785369E-09 will be reset to minimum value
+12/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.43461212090912E-09 will be reset to minimum value
+13/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -8.50009129749196E-09 will be reset to minimum value
+13/03/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.60129917659013E-09 will be reset to minimum value
+15/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.8532859675543E-09 will be reset to minimum value
+18/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.28130756005262E-09 will be reset to minimum value
+20/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.3067591453364E-09 will be reset to minimum value
+21/03/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.34531778772651E-09 will be reset to minimum value
+22/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.9231059218744E-09 will be reset to minimum value
+22/03/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.70222446554957E-09 will be reset to minimum value
+24/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.56716636784604E-09 will be reset to minimum value
+25 March 2000(Day of year=85), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.87103 (kg/ha), n = 0.40241 (kg/ha), cpr = 0
+26/03/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.36889118096395E-09 will be reset to minimum value
+29/03/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.83404283163824E-09 will be reset to minimum value
+30 March 2000(Day of year=90), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 March 2000(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 April 2000(Day of year=106), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.64099 (kg/ha), n = 0.48854 (kg/ha), cpr = 0
+20/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.16931028538004E-09 will be reset to minimum value
+20/04/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.37717188347652E-09 will be reset to minimum value
+20/04/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -2.95350085499635E-08 will be reset to minimum value
+20/04/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -1.48065847360712E-08 will be reset to minimum value
+22/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.06125180602213E-09 will be reset to minimum value
+23/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.47361606040297E-09 will be reset to minimum value
+24/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.87822326925114E-09 will be reset to minimum value
+26/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.46999173891815E-09 will be reset to minimum value
+28/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.22809545708169E-09 will be reset to minimum value
+29/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.09832681838284E-09 will be reset to minimum value
+1/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.84606263609055E-09 will be reset to minimum value
+1/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.716649628003E-09 will be reset to minimum value
+3/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.45407902227579E-09 will be reset to minimum value
+3/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.41399988939916E-09 will be reset to minimum value
+4/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.08289141279528E-09 will be reset to minimum value
+6 May 2000(Day of year=127), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 11.47565 (kg/ha), n = 0.36949 (kg/ha), cpr = 0
+6/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -7.33979940714669E-09 will be reset to minimum value
+8/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.10213843501828E-09 will be reset to minimum value
+10/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.54962750753951E-09 will be reset to minimum value
+16/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.82366843637772E-09 will be reset to minimum value
+17/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.58247488030172E-09 will be reset to minimum value
+18/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.78461351252324E-09 will be reset to minimum value
+21/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.15533216221908E-09 will be reset to minimum value
+22/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.77926415057384E-09 will be reset to minimum value
+23/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.69483868342979E-09 will be reset to minimum value
+25/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.03651104155622E-09 will be reset to minimum value
+26/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.99733745998421E-09 will be reset to minimum value
+27 May 2000(Day of year=148), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.63229 (kg/ha), n = 0.25711 (kg/ha), cpr = 0
+27/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -7.38996569493722E-09 will be reset to minimum value
+27/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.79220967233551E-09 will be reset to minimum value
+28/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.02748690805621E-09 will be reset to minimum value
+29/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.5761318777896E-09 will be reset to minimum value
+30/05/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.83310580603724E-09 will be reset to minimum value
+31/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.8401665170571E-09 will be reset to minimum value
+1/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.3715348301524E-09 will be reset to minimum value
+2/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.20424023530852E-09 will be reset to minimum value
+2/06/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.06500225305339E-09 will be reset to minimum value
+3/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.72879299554074E-09 will be reset to minimum value
+3/06/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.053189570277E-09 will be reset to minimum value
+4/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.79002551512231E-09 will be reset to minimum value
+7/06/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.0978867120981E-09 will be reset to minimum value
+8/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.55164081372794E-09 will be reset to minimum value
+9/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.95162702665286E-09 will be reset to minimum value
+10/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.22562998428455E-09 will be reset to minimum value
+10/06/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.19650727520293E-09 will be reset to minimum value
+12/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.43859243909128E-09 will be reset to minimum value
+16/06/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.67674306278598E-09 will be reset to minimum value
+17 June 2000(Day of year=169), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 7.27896 (kg/ha), n = 0.20466 (kg/ha), cpr = 0
+4/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.03613892413301E-09 will be reset to minimum value
+5/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.71121534944907E-09 will be reset to minimum value
+6/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.71687840280865E-09 will be reset to minimum value
+7/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.70177732963894E-09 will be reset to minimum value
+8 July 2000(Day of year=190), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 5.73065 (kg/ha), n = 0.15671 (kg/ha), cpr = 0
+10/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.70056915718797E-09 will be reset to minimum value
+11/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.92828768178044E-09 will be reset to minimum value
+15/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.93231466885757E-09 will be reset to minimum value
+17/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.23933443957536E-09 will be reset to minimum value
+18/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.00692640336852E-09 will be reset to minimum value
+21/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.61004057203296E-09 will be reset to minimum value
+22/07/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.60827102971373E-09 will be reset to minimum value
+29 July 2000(Day of year=211), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 4.83496 (kg/ha), n = 0.13114 (kg/ha), cpr = 0
+31 July 2000(Day of year=213), clock: 
+     Simulation is terminating due to end criteria being met.
+
