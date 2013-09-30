@@ -1145,6 +1145,8 @@ public class Root1 : BaseOrgan1, BelowGround
     private void UpdateWaterAndNBalance()
     {
         NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
+        NitrogenUptake.Sender = "Plant";
+        NitrogenUptake.SenderType = "Plant";
         NitrogenUptake.DeltaNO3 = MathUtility.Multiply_Value(dlt_no3gsm, Conversions.gm2kg / Conversions.sm2ha);
         NitrogenUptake.DeltaNH4 = MathUtility.Multiply_Value(dlt_nh4gsm, Conversions.gm2kg / Conversions.sm2ha);
         Util.Debug("Root.NitrogenUptake.DeltaNO3=%f", MathUtility.Sum(NitrogenUptake.DeltaNO3));

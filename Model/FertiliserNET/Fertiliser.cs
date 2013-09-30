@@ -114,6 +114,7 @@ public class Fertiliser
 
                         NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
                         NitrogenChanges.Sender = "Fertiliser";
+                        NitrogenChanges.SenderType = "Fertiliser";
                         NitrogenChanges.DeltaUrea = new double[dlayer.Length];
                         NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
                         NitrogenChanges.DeltaNO3 = new double[dlayer.Length];

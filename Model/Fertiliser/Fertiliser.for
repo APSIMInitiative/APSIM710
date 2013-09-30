@@ -322,7 +322,7 @@ c     include   'fertiliz.inc'
 
                ! Send a NitrogenChanged event to the system
                NchgData%Sender = 'Fertiliser'
-               NchgData%SenderType = ''
+               NchgData%SenderType = 'Fertiliser'
                call publish('NitrogenChanged', NchgData)
 
                massBalanceChange%PoolClass = "soil"

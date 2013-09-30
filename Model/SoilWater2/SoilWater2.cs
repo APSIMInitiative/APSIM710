@@ -1527,6 +1527,7 @@ public class SoilWater
 
         NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
         NitrogenChanges.Sender = "SoilWater2";
+        NitrogenChanges.SenderType = "WaterModule";
         NitrogenChanges.DeltaUrea = new double[dlayer.Length];
         NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
         NitrogenChanges.DeltaNO3 = new double[dlayer.Length];

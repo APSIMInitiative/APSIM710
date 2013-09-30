@@ -1056,6 +1056,8 @@ Public Class Script
             Dim NitrogenChanges As NitrogenChangedType
             NitrogenChanges = New NitrogenChangedType()
             
+				NitrogenChanges.Sender = "UrinePatchApply"
+				NitrogenChanges.SenderType = "Manager"
             NitrogenChanges.DeltaUrea = delta_urea
             SoilNModule.NitrogenChanged(NitrogenChanges)
             
@@ -1167,7 +1169,6 @@ Public Class Script
    &lt;param&gt; Private CritRain2 As Single                'Critial rainfall. Above this no volatilisation occurs
     
    'Events to be raised:
-   '//   Event NitrogenChanged As NitrogenChangedDelegate
    &lt;[Event]()&gt; Public Event NitrogenChanged As NitrogenChangedDelegate
 
    'Variables read from other modules
@@ -1459,6 +1460,8 @@ Public Class Script
       
       'send the delta nh4 to soil
       Dim NitrogenChanges As NitrogenChangedType = New NitrogenChangedType
+		NitrogenChanges.Sender = "nh3_volatilisation"
+		NitrogenChanges.SenderType = "Manager"
       NitrogenChanges.DeltaNH4 = delta_nh4
       NitrogenChanges.DeltaNO3 = New Double() {}
       RaiseEvent NitrogenChanged(NitrogenChanges)
@@ -3064,6 +3067,8 @@ Public Class Script
             Dim NitrogenChanges As NitrogenChangedType
             NitrogenChanges = New NitrogenChangedType()
             
+				NitrogenChanges.Sender = "UrinePatchApply"
+				NitrogenChanges.SenderType = "Manager"
             NitrogenChanges.DeltaUrea = delta_urea
             SoilNModule.NitrogenChanged(NitrogenChanges)
             
@@ -3977,6 +3982,8 @@ Public Class Script
             Dim NitrogenChanges As NitrogenChangedType
             NitrogenChanges = New NitrogenChangedType()
             
+				NitrogenChanges.Sender = "UrinePatchApply"
+				NitrogenChanges.SenderType = "Manager"
             NitrogenChanges.DeltaUrea = delta_urea
             SoilNModule.NitrogenChanged(NitrogenChanges)
             

@@ -850,6 +850,7 @@ public partial class SurfaceOM
 
             NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
             NitrogenChanges.Sender = "SurfaceOrganicMatter";
+            NitrogenChanges.SenderType = "SurfaceOrganicMatter";
             NitrogenChanges.DeltaNH4 = new double[dlayer.Length];
             NitrogenChanges.DeltaNO3 = new double[dlayer.Length];
             NitrogenChanges.DeltaUrea = new double[dlayer.Length];

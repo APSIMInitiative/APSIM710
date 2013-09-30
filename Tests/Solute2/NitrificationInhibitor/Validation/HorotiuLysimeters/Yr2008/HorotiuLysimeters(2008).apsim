@@ -1020,6 +1020,8 @@ Public Class Script
             Dim NitrogenChanges As NitrogenChangedType
             NitrogenChanges = New NitrogenChangedType()
             
+				NitrogenChanges.Sender = "UrinePatchApply"
+				NitrogenChanges.SenderType = "Manager"
             NitrogenChanges.DeltaUrea = delta_urea
             SoilNModule.NitrogenChanged(NitrogenChanges)
             
@@ -1422,6 +1424,8 @@ Public Class Script
       
       'send the delta nh4 to soil
       Dim NitrogenChanges As NitrogenChangedType = New NitrogenChangedType
+		NitrogenChanges.Sender = "nh3_volatilisation"
+		NitrogenChanges.SenderType = "Manager"
       NitrogenChanges.DeltaNH4 = delta_nh4
       NitrogenChanges.DeltaNO3 = New Double() {}
       RaiseEvent ChangeSoilNitrogen(NitrogenChanges)     

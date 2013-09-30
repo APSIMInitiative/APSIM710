@@ -2782,6 +2782,8 @@ public class AgPasture
     {
         //Uptake from the root_zone
         NitrogenChangedType NUptake = new NitrogenChangedType();
+        NUptake.Sender = "AgPasture";
+        NUptake.SenderType = "Plant";
         NUptake.DeltaNO3 = new double[dlayer.Length];
         NUptake.DeltaNH4 = new double[dlayer.Length];
 

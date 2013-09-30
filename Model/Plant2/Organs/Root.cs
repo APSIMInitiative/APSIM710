@@ -510,6 +510,8 @@ public class Root : BaseOrgan, BelowGround
             _Nuptake = value.Uptake_gsm;
             double Uptake = value.Uptake_gsm / kgha2gsm;
             NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
+            NitrogenUptake.Sender = "Plant2";
+            NitrogenUptake.SenderType = "Plant";
             NitrogenUptake.DeltaNO3 = new double[dlayer.Length];
             NitrogenUptake.DeltaNH4 = new double[dlayer.Length];
 
