@@ -10,6 +10,7 @@ module Registrations
       integer :: surfaceom_removed
       integer :: decomposed
       integer :: externalmassflow
+      integer :: nitrogenchanged
       integer :: tillage
       integer :: add_surfaceom
       integer :: sysinit
@@ -50,8 +51,8 @@ module Registrations
          id%dummy = add_reg(respondToGetReg, 'cf', floatTypeDDML, '0-1', '')
          id%dummy = add_reg(respondToGetReg, 'leaching_fr', floatTypeDDML, '0-1', '')
          id%dummy = add_reg(respondToGetReg, 'surface_organic_matter', intTypeDDML, '', '')
-		 id%dummy = add_reg(respondToGetReg, 'carbonbalance', floatTypeDDML, '', 'Carbon Balance')
-		 id%dummy = add_reg(respondToGetReg, 'nitrogenbalance', floatTypeDDML, '', 'Nitrogen Balance')
+		   id%dummy = add_reg(respondToGetReg, 'carbonbalance', floatTypeDDML, '', 'Carbon Balance')
+		   id%dummy = add_reg(respondToGetReg, 'nitrogenbalance', floatTypeDDML, '', 'Nitrogen Balance')
          id%potentialresiduedecompositioncalculated = add_registration(eventReg, 'potentialresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
          id%surfaceorganicmatterstate = add_registration(eventReg, 'surfaceorganicmatterstate', SurfaceOrganicMatterTypeDDML, '')
          id%IncorpFOMPool = add_registration(eventReg, 'IncorpFOMPool', FOMPoolTypeDDML, '')
@@ -60,6 +61,7 @@ module Registrations
          id%surfaceom_removed = add_registration(eventReg, 'surfaceom_removed', ApsimVariantTypeDDML, '')
          id%decomposed = add_registration(eventReg, 'decomposed', nullTypeDDML, '')
          id%externalmassflow = add_registration(eventReg, 'externalmassflow', ExternalMassFlowTypeDDML, '')
+         id%nitrogenchanged = add_registration(eventReg, 'nitrogenchanged', NitrogenChangedTypeDDML, '')			
          id%tillage = add_registration(respondToEventReg, 'tillage', TillageTypeDDML, '')
          id%add_surfaceom = add_registration(respondToEventReg, 'add_surfaceom', ApsimVariantTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')

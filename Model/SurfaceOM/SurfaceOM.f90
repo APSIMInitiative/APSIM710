@@ -1118,6 +1118,8 @@ subroutine surfom_Leach (leach_rain)
       real    po4_incorp(max_layer)
       integer deepest_layer
 
+      type (NitrogenChangedType) :: NchgData  ! structure holding NitrogenChanged data
+
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
@@ -1139,8 +1141,22 @@ subroutine surfom_Leach (leach_rain)
    ! If neccessary, Send the mineral N & P leached to the Soil N&P modules
    if(no3_incorp(1) .gt. 0.0 .OR. nh4_incorp(1) .gt. 0.0 .OR. po4_incorp(1) .gt. 0.0) then
        deepest_layer = count_of_real_vals (g%dlayer, max_layer)
-       call set_real_array (unknown_module, 'dlt_no3','(kg/ha)', no3_incorp,deepest_layer)
-       call set_real_array (unknown_module, 'dlt_nh4','(kg/ha)', nh4_incorp,deepest_layer)
+		 
+		 ! Changes added by RCichota, use NitrogenChanged to modify N amounts
+		 ! 1- Fill the array data
+		 NchgData%num_DeltaNH4 = deepest_layer
+       NchgData%DeltaNH4 = nh4_incorp
+       NchgData%num_DeltaNO3 = deepest_layer
+       NchgData%DeltaNO3 = no3_incorp
+		 ! 2- Send a NitrogenChanged event to the system
+       NchgData%Sender = 'SurfaceOM'
+       NchgData%SenderType = 'SurfaceOrganicMatter'
+       call publish_NitrogenChanged(id%NitrogenChanged, NchgData)
+
+		 ! old code:
+       !call set_real_array (unknown_module, 'dlt_no3','(kg/ha)', no3_incorp,deepest_layer)
+       !call set_real_array (unknown_module, 'dlt_nh4','(kg/ha)', nh4_incorp,deepest_layer)
+		 
        if ( g%phosphorus_aware ) then
           call set_real_array (unknown_module, 'dlt_labile_p','(kg/ha)', po4_incorp,deepest_layer)
        else
