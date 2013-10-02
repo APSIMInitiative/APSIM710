@@ -224,6 +224,10 @@ class BobMain
               Value = System.Environment.GetEnvironmentVariable(VariableName);
               if (Value == null)
                   Value = System.Environment.GetEnvironmentVariable(VariableName, EnvironmentVariableTarget.User);
+              // Special case - on Bob, we want HostSuffix to be replaced with an empty string, 
+              // but on Windows you can't set an environment variable to have the value of empty string
+              if (Value == null && VariableName == "HostSuffix")
+                  Value = "";
           }
 
           if (Value != null)
