@@ -23,6 +23,7 @@ module Registrations
       integer :: process
       integer :: post
       integer :: WaterUptakesCalculated
+      integer :: NitrogenChanged
       integer :: RunoffEvent
       integer :: CohortWaterDemand
    end type IDsType
@@ -40,6 +41,7 @@ module Registrations
          id%post_swim_timestep = add_registration(eventReg, 'post_swim_timestep', nullTypeDDML, '')
          id%new_profile = add_registration(eventReg, 'new_profile', NewProfileTypeDDML, '')
          id%WaterUptakesCalculated = add_registration(eventReg, 'WaterUptakesCalculated', WaterUptakesCalculatedTypeDDML, '')
+         id%NitrogenChanged = add_registration(eventReg, 'NitrogenChanged', NitrogenChangedTypeDDML, '')
          id%RunoffEvent = add_registration(eventReg, 'RunoffEvent', RunoffEventTypeDDML, '')
 
          ! Events to which we subscribe

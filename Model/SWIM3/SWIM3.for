@@ -3599,8 +3599,19 @@ c      eqr0  = 0.d0
       double precision solute_n(0:M)   ! solute concn in layers(kg/ha)
       double precision dlt_solute_n(0:M)   ! solute concn in layers(kg/ha)
       character string*100
+      type(NitrogenChangedType) :: ndata   ! structure holding NitrogenChanged data
+      real dlt_solute_s(0:p%n)             ! solute concn in layers(kg/ha) - single precision
 
 *- Implementation Section ----------------------------------
+
+      ! initialise the NitrogenChanged data to zero
+      call fill_real_array(dlt_solute_s, 0.0, p%n+1)
+      ndata%num_deltaurea = p%n+1
+      ndata%deltaurea = dlt_solute_s
+      ndata%num_deltanh4 = p%n+1
+      ndata%deltanh4 = dlt_solute_s
+      ndata%num_deltano3 = p%n+1
+      ndata%deltano3 = dlt_solute_s
 
       do 100 solnum = 1, p%num_solutes
          do 50 node=0,p%n
@@ -3637,11 +3648,11 @@ c      eqr0  = 0.d0
      :               ,p%solute_names(solnum)
      :               (:lastnb(p%solute_names(solnum)))
      :               ,'(',node,') = ',Ctot
-            call fatal_error(err_internal,
-     :            '-ve value for solute concentration' 
-     :            //new_line//string)
+               call fatal_error(err_internal,
+     :               '-ve value for solute concentration' 
+     :               //new_line//string)
 
-            Ctot = 0d0
+               Ctot = 0d0
 
             else
                ! Ctot is positive
@@ -3660,19 +3671,37 @@ c      eqr0  = 0.d0
             ! finished testing - assign value to array element
             solute_n(node) = Ctot
             dlt_solute_n(node) = Ctot - g%cslstart(solnum,node)
+            dlt_solute_s(node) = real(dlt_solute_n(node))
 
    50    continue
 
-
-         call Set_double_array (
-     :           g%solute_owners(solnum),
-     :           'dlt_'//p%solute_names(solnum),
-     :           '(kg/ha)',
-     :           dlt_solute_n(0),
-     :           p%n+1)
+         ! Added by RCichota - using NitrogenChanged event to modify dlt_N's
+         if (p%solute_names(solnum) .eq. 'urea') then
+            ndata%num_deltaurea = p%n+1
+            ndata%deltaurea = dlt_solute_s
+         elseif (p%solute_names(solnum) .eq. 'nh4') then
+            ndata%num_deltanh4 = p%n+1
+            ndata%deltanh4 = dlt_solute_s
+         elseif (p%solute_names(solnum) .eq. 'no3') then
+            ndata%num_deltano3 = p%n+1
+            ndata%deltano3 = dlt_solute_s
+         else
+            call Set_double_array (
+     :              g%solute_owners(solnum),
+     :              'dlt_'//p%solute_names(solnum),
+     :              '(kg/ha)',
+     :              dlt_solute_n(0),
+     :              p%n+1)
+         endif
 
   100 continue
-      return
+
+      ! Send a NitrogenChanged event to the system
+      ndata%sender = 'SWIM'
+      ndata%sendertype = 'WaterModule'
+      call publish_NitrogenChanged(ID%NitrogenChanged, ndata)
+
+	   return
       end subroutine
 
 
