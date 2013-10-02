@@ -41,7 +41,7 @@ RComponent.$(OBJEXT): RComponent.cpp RComponent.h RDataTypes.h
 
 RDataTypes.$(OBJEXT): RDataTypes.cpp RDataTypes.h
 
-RDataTypes.cpp RDataTypes.h RDataTypesEmbedded.cpp RDataTypesEmbedded.h RLink.def: ../DataTypes/Datatypes.xml RDataTypes.macro
+RComponent.h RDataTypes.cpp RDataTypes.h RDataTypesEmbedded.cpp RDataTypesEmbedded.h RLink.def: ../DataTypes/Datatypes.xml RDataTypes.macro
 	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml RDataTypes.macro
 
 REmbedder.o: REmbedder.cpp REmbedder.h 
