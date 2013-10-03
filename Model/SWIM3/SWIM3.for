@@ -3600,17 +3600,17 @@ c      eqr0  = 0.d0
       double precision dlt_solute_n(0:M)   ! solute concn in layers(kg/ha)
       character string*100
       type(NitrogenChangedType) :: ndata   ! structure holding NitrogenChanged data
-      real dlt_solute_s(0:p%n)             ! solute concn in layers(kg/ha) - single precision
+      double precision dlt_solute_s(0:M-1) ! solute concn in layers(kg/ha)
 
 *- Implementation Section ----------------------------------
 
       ! initialise the NitrogenChanged data to zero
-      call fill_real_array(dlt_solute_s, 0.0, p%n+1)
-      ndata%num_deltaurea = p%n+1
+      dlt_solute_s(:) = 0d0
+      ndata%num_deltaurea = 0
       ndata%deltaurea = dlt_solute_s
-      ndata%num_deltanh4 = p%n+1
+      ndata%num_deltanh4 = 0
       ndata%deltanh4 = dlt_solute_s
-      ndata%num_deltano3 = p%n+1
+      ndata%num_deltano3 = 0
       ndata%deltano3 = dlt_solute_s
 
       do 100 solnum = 1, p%num_solutes
@@ -3671,7 +3671,7 @@ c      eqr0  = 0.d0
             ! finished testing - assign value to array element
             solute_n(node) = Ctot
             dlt_solute_n(node) = Ctot - g%cslstart(solnum,node)
-            dlt_solute_s(node) = real(dlt_solute_n(node))
+            dlt_solute_s(node) = dlt_solute_n(node)
 
    50    continue
 
