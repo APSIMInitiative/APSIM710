@@ -347,7 +347,11 @@ public class JobScheduler
                         if (Macros.ContainsKey(VariableName))
                             Value = Macros[VariableName];
                     }
-                }
+                    // Special case - on Bob, we want HostSuffix to be replaced with an empty string, 
+                    // but on Windows you can't set an environment variable to have the value of empty string
+                    if (Value == null && String.Compare(VariableName, "HostSuffix", true) == 0)
+                       Value = "";
+                    }
 
                 if (Value != null)
                 {
