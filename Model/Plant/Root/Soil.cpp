@@ -726,7 +726,7 @@ void Soil::UpdateOtherVariables(string uptake_source)
          }
       protocol::NitrogenChangedType NChanged;
       NChanged.Sender = plant.Name();
-      NChanged.SenderType = "";
+      NChanged.SenderType = "Plant";
       NChanged.DeltaNO3 = dltNO3KgHa;
       NChanged.DeltaNH4 = dltNH4KgHa;
       NChanged.DeltaUrea = dltUrea;
