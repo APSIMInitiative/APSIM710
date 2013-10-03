@@ -261,8 +261,12 @@ public partial class SoilNitrogen
 					{
 						// a value was supplied, check whether it is valid
 						bool IsVariableOK = CheckVariableBounds(ref value[layer], layer, "dlt_no3", -2000.0, 2000.0, false);
-						_no3[layer] += value[layer];
-						IsVariableOK = CheckNegativeValues(_no3[layer], layer, "no3");
+                        
+                        if (_no3[layer]+value[layer] < g.no3_min[layer])
+                            IsVariableOK = false;
+                        
+                        _no3[layer] += value[layer];
+                        IsVariableOK = CheckNegativeValues(_no3[layer], layer, "no3");
 						if (!IsVariableOK)
 							_no3[layer] = g.no3_min[layer];
 						IsVariableOK = CheckVariableBounds(ref _no3[layer], layer, "no3", g.no3_min[layer], 10000, false);

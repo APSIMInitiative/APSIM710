@@ -688,18 +688,22 @@ public partial class SoilNitrogen
 		//     Send deltas to each patch, if delta comes from soil or plant then the values are modified (partioned)
 		//      based on N content. If sender is any other module then values are passed to patches as they come
 
-		string module = NitrogenChanges.Sender.ToLower();
-		if (module == "soilwat" || module == "agpasture" || module == "plant")
+		string module = NitrogenChanges.SenderType.ToLower();
+        if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
 		{
 			// values supplied by a module from which a different treatment for each patch is required,
-			//  they will be partitioned according to the N content in each patch
-
-			// 1- consider urea:
+            //  they will be partitioned according to the N content in each patch, following:
+            //  - If module is Plant (uptake): partition is based on the relative concentration, at each layer, of all patches
+            //  - If module is WaterModule (leaching):
+            //        . if is removal (negative): partition is equal to a plant uptake
+            //        . if is incoming leaching: partition is based on relative concentration on the layer and above
+            
+            // 1- consider urea:
 			if (hasValues(NitrogenChanges.DeltaUrea, EPSILON))
 			{
-				// send incoming dlt to be partitioned amongst patches
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea", NPartitionApproach);
-				// 1.1- send dlt's to each patch
+				// 1.1-send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea", NPartitionApproach.ToLower());
+				// 1.2- send dlt's to each patch
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_urea = newDelta[k];
 			}
@@ -707,9 +711,9 @@ public partial class SoilNitrogen
 			// 2- consider nh4:
 			if (hasValues(NitrogenChanges.DeltaNH4, EPSILON))
 			{
-				// send incoming dlt to be partitioned amongst patches
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "nh4", NPartitionApproach);
-				// 2.1- send dlt's to each patch
+                // 2.1- send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "nh4", NPartitionApproach.ToLower());
+				// 2.2- send dlt's to each patch
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_nh4 = newDelta[k];
 			}
@@ -717,9 +721,9 @@ public partial class SoilNitrogen
 			// 3- consider no3:
 			if (hasValues(NitrogenChanges.DeltaNO3, EPSILON))
 			{
-				// send incoming dlt to be partitioned amongst patches
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "no3", NPartitionApproach);
-				// 3.1- send dlt's to each patch
+				// 3.1- send incoming dlt to be partitioned amongst patches
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "no3", NPartitionApproach.ToLower());
+				// 3.2- send dlt's to each patch
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_no3 = newDelta[k];
 			}

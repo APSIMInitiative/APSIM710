@@ -269,13 +269,14 @@ public partial class SoilNitrogen
             {  // at least one name was selected, check value and get id
                 for (int pName = 0; pName < NamesToCheck.Length; pName++)
                 {
+                    int IDtoAdd = -1;
                     for (int k = 0; k < Patch.Count; k++)
                     {
                         if (NamesToCheck[pName] == Patch[k].PatchName)
                         {  // found the patch, check for replicates
                             if (SelectedIDs.Count < 1)
                             { // this is the first patch, store the id
-                                SelectedIDs.Add(k);
+                                IDtoAdd = k;
                                 k = Patch.Count;
                             }
                             else
@@ -289,20 +290,26 @@ public partial class SoilNitrogen
                                     }
                                     else
                                     {  // store the id
-                                        SelectedIDs.Add(k);
+                                        IDtoAdd = k;
                                         i = SelectedIDs.Count;
                                         k = Patch.Count;
                                     }
                                 }
                             }
                         }
-                        else
-                        {  // name passed did not correspond to any patch
-                            Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year="
-                                + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
-                            Console.WriteLine("  the patch name '" + NamesToCheck[pName] + "' did not correspond to any existing patch."
-                                + " Patch will be ignored.");
-                        }
+                        // else
+                        // do nothing, continue looking for next name
+                    }
+                    if (IDtoAdd >= 0)
+                    { // a patch was found
+                        SelectedIDs.Add(IDtoAdd);
+                    }
+                    else
+                    {  // name passed did not correspond to any patch
+                        Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year="
+                            + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddPatch:");
+                        Console.WriteLine("  the patch name '" + NamesToCheck[pName] + "' did not correspond to any existing patch."
+                            + " Patch will be ignored.");
                     }
                 }
             }
@@ -310,13 +317,14 @@ public partial class SoilNitrogen
             {  // at least one ID was selected, check value
                 for (int pId = 0; pId < IDsToCheck.Length; pId++)
                 {
+                    int IDtoAdd = -1;
                     for (int k = 0; k < Patch.Count; k++)
                     {
                         if (IDsToCheck[pId] == k)
                         {  // found the patch, check for replicates
                             if (SelectedIDs.Count < 1)
                             { // this is the first patch, store the id
-                                SelectedIDs.Add(k);
+                                IDtoAdd = k;
                                 k = Patch.Count;
                             }
                             else
@@ -330,20 +338,26 @@ public partial class SoilNitrogen
                                     }
                                     else
                                     {  // store the id
-                                        SelectedIDs.Add(k);
+                                        IDtoAdd = k;
                                         i = SelectedIDs.Count;
                                         k = Patch.Count;
                                     }
                                 }
                             }
                         }
-                        else
-                        {  // id passed did not correspond to any patch
-                            Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString()
-                                + "), SoilNitrogen.AddPatch:");
-                            Console.WriteLine("  the patch id '" + IDsToCheck[pId] + "' did not correspond to any existing patch."
-                                + " Patch will be ignored.");
-                        }
+                        // else
+                        // do nothing, continue looking for next ID
+                    }
+                    if (IDtoAdd >= 0)
+                    { // a patch was found
+                        SelectedIDs.Add(IDtoAdd);
+                    }
+                    else
+                    {  // id passed did not correspond to any patch
+                        Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year=" + Clock.Today.DayOfYear.ToString()
+                            + "), SoilNitrogen.AddPatch:");
+                        Console.WriteLine("  the patch id '" + IDsToCheck[pId] + "' did not correspond to any existing patch."
+                            + " Patch will be ignored.");
                     }
                 }
             }
@@ -447,10 +461,10 @@ public partial class SoilNitrogen
     /// <summary>
     /// calculate how the dlt's (C and N) are partitioned amongst patches
     /// </summary>
-    /// <param name="incoming">The dlt to be partioned amongst patches</param>
+    /// <param name="incomingDelta">The dlt to be partioned amongst patches</param>
     /// <param name="SoluteName">The solute or pool that is changing</param>
     /// <returns>The values of dlt for each existing patch</returns>
-    private double[][] partitionDelta(double[] incoming, string SoluteName, string PartitionType)
+    private double[][] partitionDelta(double[] incomingDelta, string SoluteName, string PartitionType)
     {
         // 1- initialise the result to zero
         double[][] result = new double[Patch.Count][];
@@ -478,17 +492,6 @@ public partial class SoilNitrogen
                         throw new Exception(" The solute" + SoluteName
                             + " is not recognised by SoilNitrogen -  solute partition");
                 }
-
-                //alreadyThere[k] = new double[dlayer.Length];
-                //if (SoluteName == "urea")
-                //    for (int layer = 0; layer < dlayer.Length; layer++)
-                //        alreadyThere[k][layer] = Patch[k].urea[layer];
-                //else if (SoluteName == "nh4")
-                //    for (int layer = 0; layer < dlayer.Length; layer++)
-                //        alreadyThere[k][layer] = Patch[k].nh4[layer];
-                //else if (SoluteName == "no3")
-                //    for (int layer = 0; layer < dlayer.Length; layer++)
-                //        alreadyThere[k][layer] = Patch[k].no3[layer];
             }
 
             // 3- calculations are done for each layer 
@@ -496,17 +499,26 @@ public partial class SoilNitrogen
             {
                 // 3.1- compute the total solute amount, over all patches
                 double totalSolute = 0.0;
-                if (PartitionType == "BasedOnLayerConcentration")
-                //if ((PartitionType == "BasedOnLayerConcentration") || (PartitionType == "BasedOnConcentrationAndDelta" & incoming[layer]<=0))
+                double[] patchSolute = new double[Patch.Count];
+                if ((PartitionType == "BasedOnLayerConcentration".ToLower()) ||
+                    (PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] <= 0))
+
                 {
                     for (int k = 0; k < Patch.Count; k++)
+                    {
                         totalSolute += alreadyThere[k][layer] * Patch[k].RelativeArea;
+                        patchSolute[k] += alreadyThere[k][layer];
+                    }
                 }
-                else if ((PartitionType == "BasedOnSoilConcentration") || (PartitionType == "BasedOnConcentrationAndDelta" & incoming[layer] > 0))
+                else if ((PartitionType == "BasedOnSoilConcentration".ToLower()) ||
+                         (PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] > 0))
                 {
                     for (int k = 0; k < Patch.Count; k++)
                         for (int z = layer; z >= 0; z--)
+                        {
                             totalSolute += alreadyThere[k][z] * Patch[k].RelativeArea;
+                            patchSolute[k] += alreadyThere[k][z];
+                        }
                 }
 
                 // 3.2- calculations for each patch
@@ -515,16 +527,18 @@ public partial class SoilNitrogen
                     // 3.2.1- compute the weights (based on existing solute amount)
                     double weight = 1.0;
                     if (totalSolute > 0)
-                        weight = alreadyThere[k][layer] / totalSolute;
+                        weight = patchSolute[k] / totalSolute;
 
                     // 3.2.2- partition the dlt's for each patch
-                    result[k][layer] = incoming[layer] * weight;
+                    result[k][layer] = incomingDelta[layer] * weight;
+                    if (result[k][0] < -0.72 && Clock.Today.DayOfYear > 53)
+                        weight += 0.0;
                 }
             }
         }
         catch (Exception e)
         {
-            throw new Exception(" problem with " + SoluteName + "- " + e.ToString());
+            throw new Exception(" problems with partitioning " + SoluteName + "- " + e.ToString());
         }
         return result;
     }

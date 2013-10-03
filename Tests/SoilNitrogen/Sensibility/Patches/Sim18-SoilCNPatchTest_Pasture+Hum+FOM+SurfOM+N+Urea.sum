@@ -1,0 +1,1157 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Sim18-SoilCNPatchTest_Pasture+Hum+FOM+SurfOM+N+Urea
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                  "SumPaddocks" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component           "CutGraze_AgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component  "MediumSedimentarySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component "MediumSedimentarySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                     "AddPatch" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component           "CutGraze_AgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component  "MediumSedimentarySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component "MediumSedimentarySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+Paddock:
+   Component                       "Report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                     "AddUrine" = %apsim%\Model\Operations.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component           "CutGraze_AgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component  "MediumSedimentarySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component "MediumSedimentarySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2000
+     Simulation end date   = 28/02/2000
+     Time step =           = 1440 (mins)
+
+------- Report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea_p1() as UreaTotal1 format 3
+        urea_p2() as UreaTotal2 format 3
+        nh4_p1() as NH4Total1 format 3
+        nh4_p2() as NH4Total2 format 3
+        no3_p1() as NO3Total1 format 3
+        no3_p2() as NO3Total2 format 3
+        surfaceom_n_p1 as SurfaceOM_N1 format 2
+        surfaceom_n_p2 as SurfaceOM_N2 format 2
+        fom_n_p1() as FOM_N1 format 2
+        fom_n_p2() as FOM_N2 format 2
+        biom_n_p1() as Biom_N1 format 2
+        biom_n_p2() as Biom_N2 format 2
+        hum_n_p1() as Hum_N1 format 1
+        hum_n_p2() as Hum_N2 format 1
+        totaln as PlantN format 3
+        TotalPlantN as PastureN format 3
+        oc_p1() as OCTotal1 format 2
+        oc_p2() as OCTotal2 format 2
+        fertiliser as FertiliserN format 1
+        dlt_urea_hydrol_p1() as HydrolisedN1 format 3
+        dlt_urea_hydrol_p2() as HydrolisedN2 format 3
+        nitrification_p1() as NitrifiedN1 format 3
+        nitrification_p2() as NitrifiedN2 format 3
+        dnit_p1() as DenitrifiedN1 format 3
+        dnit_p2() as DenitrifiedN2 format 3
+        leach_no3_p1 as LeachedNO31 format 3
+        leach_no3_p2 as LeachedNO32 format 3
+        dlt_n_min_res_p1() as NetMineralisedResidue1 format 3
+        dlt_n_min_res_p2() as NetMineralisedResidue2 format 3
+        dlt_n_min_tot_p1() as NetMineralisedHumus1 format 3
+        dlt_n_min_tot_p2() as NetMineralisedHumus2 format 3
+        n2o_atm_p1() as N2Oemissions1 format 3
+        n2o_atm_p2() as N2Oemissions2 format 3
+        es_p1 as Evaporation1 format 2
+        es_p2 as Evaporation2 format 2
+        sw_uptake_p1() as Transpiration1 format 2
+        sw_uptake_p2() as Transpiration2 format 2
+        drain_p1 as Drain1 format 2
+        drain_p2 as Drain2 format 2
+        dlayer_ps format 1
+        no3_p1 format 2
+        no3_p2 format 2
+        nh4_p1 format 2
+        nh4_p2 format 2
+        fom_n_p1 format 3
+        fom_n_p2 format 3
+        biom_n_p1 format 3
+        biom_n_p2 format 3
+        hum_n_p1 format 2
+        hum_n_p2 format 2
+        fom_c_p1 format 3
+        fom_c_p2 format 3
+        biom_c_p1 format 3
+        biom_c_p2 format 3
+        hum_c_p1 format 2
+        hum_c_p2 format 2
+
+     Output file = Sim18-SoilCNPatchTest_Pasture+Hum+FOM+SurfOM+N+Urea Report.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- SumPaddocks Initialisation --------------------------------------------
+   Initialised
+
+------- Report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 3
+        nh4() as NH4Total format 3
+        no3() as NO3Total format 3
+        surfaceom_n as SurfaceOM_N format 2
+        fom_n() as FOM_N format 2
+        biom_n() as Biom_N format 2
+        hum_n() as Hum_N format 1
+        totaln as PlantN format 3
+        TotalPlantN as PastureN format 3
+        fertiliser as FertiliserN format 1
+        dlt_urea_hydrol() as HydrolisedN format 3
+        nitrification() as NitrifiedN format 3
+        dnit() as DenitrifiedN format 3
+        leach_no3 as LeachedNO3 format 3
+        dlt_n_min_res() as NetMineralisedResidue format 3
+        dlt_n_min_tot() as NetMineralisedHumus format 3
+        n2o_atm() as N2Oemissions format 3
+        biomass as PlantBiomass format 3
+        oc() as OCTotal format 2
+        es as Evaporation format 2
+        sw_uptake() as Transpiration format 2
+        drain as Drain format 2
+        dlayer format 1
+        no3 format 2
+        nh4 format 2
+        fom_n format 3
+        biom_n format 3
+        hum_n format 2
+        fom_c format 3
+        biom_c format 3
+        hum_c format 2
+        NumPatches
+
+     Output file = Sim18-SoilCNPatchTest_Pasture+Hum+FOM+SurfOM+N+Urea Paddock1-wPatch Report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Schedule Initialisation ------------------------------------
+     Operations Schedule
+     ===================
+          01-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          20-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=200 (mm), type=urea_n
+
+------- CutGraze_AgPasture Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     days_after_cut = 15 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     harvested_dm =0
+     harvested_n = 0
+     removed_dm = 0.0
+     removed_n = 0.0
+     return_dm = 0.0
+     return_n = 0.0
+     growthratecalc = 0
+     n_conc_total = 0
+     
+     SECTION:- start_of_day
+     if today >= date('01/01/1900') and today <= date('31/12/2100') then
+        preharvest_dm = agpasture.stemwt + agpasture.leafwt
+        preharvest_n = agpasture.stemn + agpasture.leafn
+        harvested_dm = 0.0
+        harvested_n = 0.0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0.0
+        n_conc_removed = 0.0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 15 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2000 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1500 then
+           agpasture graze type = 'residue', amount = 1500
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           days_after_cut = 0
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0.0
+              n_on_urine = return_n - n_on_dung
+              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : days_after_cut = 14.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- MediumSedimentarySoil Water Initialisation ----------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.200  0.220  0.400  0.500  0.360  1.200  0.762  0.400 25.000
+          150.-  300.  0.200  0.210  0.390  0.490  0.370  1.200  0.190  0.300 20.000
+          300.-  600.  0.200  0.200  0.380  0.480  0.380  1.250  0.048  0.250 20.000
+          600.-  900.  0.190  0.190  0.370  0.470  0.370  1.300  0.000  0.250 20.000
+          900.- 1200.  0.180  0.180  0.360  0.460  0.360  1.350  0.000  0.300 20.000
+         1200.- 1500.  0.170  0.170  0.350  0.450  0.350  1.400  0.000  0.300 20.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.00      21.00      27.00      15.00
+          150.-  300.      31.50      24.00      27.00      15.00
+          300.-  600.      60.00      54.00      54.00      30.00
+          600.-  900.      57.00      54.00      54.00      30.00
+          900.- 1200.      54.00      54.00      54.00      30.00
+         1200.- 1500.      51.00      54.00      54.00      30.00
+          ---------------------------------------------------------
+               Totals     286.50     261.00     270.00     150.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        4.00 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- MediumSedimentarySoil Nitrogen Initialisation -------------------------
+
+        - Reading/checking parameters
+           - Using Generic medium sedimentary soil soil mineralisation specification
+           - Soil temperature calculated internally
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.00    5.00    9.00    0.00
+             2     6.50  1.50    5.00    9.00    0.00
+             3     6.50  0.50    5.00   18.75    0.00
+             4     6.50  0.25    5.00   19.50    0.00
+             5     6.50  0.10    5.00   20.25    0.00
+             6     6.50  0.10    5.00   21.00    0.00
+          ------------------------------------------------
+           Totals               30.00   97.50    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      52995.7  4239.7  1004.3   125.5   156.2     5.2
+             2      26748.5  2139.9   251.5    31.4   115.7     3.9
+             3      18659.9  1492.8    90.1    11.3    63.5     2.1
+             4       9735.5   778.8    14.5     1.8    34.9     1.2
+             5       4048.0   323.8     2.0     0.3    19.1     0.6
+             6       4199.9   336.0     0.1     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  116387.6  9311.0  1362.4   170.3   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+
+------- AddPatch Initialisation -----------------------------------------------
+   Initialised
+
+------- Report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 3
+        nh4() as NH4Total format 3
+        no3() as NO3Total format 3
+        surfaceom_n as SurfaceOM_N format 2
+        fom_n() as FOM_N format 2
+        biom_n() as Biom_N format 2
+        hum_n() as Hum_N format 1
+        totaln as PlantN format 3
+        TotalPlantN as PastureN format 3
+        fertiliser as FertiliserN format 1
+        dlt_urea_hydrol() as HydrolisedN format 3
+        nitrification() as NitrifiedN format 3
+        dnit() as DenitrifiedN format 3
+        leach_no3 as LeachedNO3 format 3
+        dlt_n_min_res() as NetMineralisedResidue format 3
+        dlt_n_min_tot() as NetMineralisedHumus format 3
+        n2o_atm() as N2Oemissions format 3
+        biomass as PlantBiomass format 3
+        oc() as OCTotal format 2
+        es as Evaporation format 2
+        sw_uptake() as Transpiration format 2
+        drain as Drain format 2
+        dlayer format 1
+        no3 format 2
+        nh4 format 2
+        fom_n format 3
+        biom_n format 3
+        hum_n format 2
+        fom_c format 3
+        biom_c format 3
+        hum_c format 2
+        NumPatches
+
+     Output file = Sim18-SoilCNPatchTest_Pasture+Hum+FOM+SurfOM+N+Urea Paddock1-nPatch-base Report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Schedule Initialisation ------------------------------------
+     Operations Schedule
+     ===================
+          01-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          20-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=200 (mm), type=urea_n
+
+------- CutGraze_AgPasture Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     days_after_cut = 15 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     harvested_dm =0
+     harvested_n = 0
+     removed_dm = 0.0
+     removed_n = 0.0
+     return_dm = 0.0
+     return_n = 0.0
+     growthratecalc = 0
+     n_conc_total = 0
+     
+     SECTION:- start_of_day
+     if today >= date('01/01/1900') and today <= date('31/12/2100') then
+        preharvest_dm = agpasture.stemwt + agpasture.leafwt
+        preharvest_n = agpasture.stemn + agpasture.leafn
+        harvested_dm = 0.0
+        harvested_n = 0.0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0.0
+        n_conc_removed = 0.0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 15 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2000 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1500 then
+           agpasture graze type = 'residue', amount = 1500
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           days_after_cut = 0
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0.0
+              n_on_urine = return_n - n_on_dung
+              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : days_after_cut = 14.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- MediumSedimentarySoil Water Initialisation ----------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.200  0.220  0.400  0.500  0.360  1.200  0.762  0.400 25.000
+          150.-  300.  0.200  0.210  0.390  0.490  0.370  1.200  0.190  0.300 20.000
+          300.-  600.  0.200  0.200  0.380  0.480  0.380  1.250  0.048  0.250 20.000
+          600.-  900.  0.190  0.190  0.370  0.470  0.370  1.300  0.000  0.250 20.000
+          900.- 1200.  0.180  0.180  0.360  0.460  0.360  1.350  0.000  0.300 20.000
+         1200.- 1500.  0.170  0.170  0.350  0.450  0.350  1.400  0.000  0.300 20.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.00      21.00      27.00      15.00
+          150.-  300.      31.50      24.00      27.00      15.00
+          300.-  600.      60.00      54.00      54.00      30.00
+          600.-  900.      57.00      54.00      54.00      30.00
+          900.- 1200.      54.00      54.00      54.00      30.00
+         1200.- 1500.      51.00      54.00      54.00      30.00
+          ---------------------------------------------------------
+               Totals     286.50     261.00     270.00     150.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        4.00 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- MediumSedimentarySoil Nitrogen Initialisation -------------------------
+
+        - Reading/checking parameters
+           - Using Generic medium sedimentary soil soil mineralisation specification
+           - Soil temperature calculated internally
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.00    5.00    9.00    0.00
+             2     6.50  1.50    5.00    9.00    0.00
+             3     6.50  0.50    5.00   18.75    0.00
+             4     6.50  0.25    5.00   19.50    0.00
+             5     6.50  0.10    5.00   20.25    0.00
+             6     6.50  0.10    5.00   21.00    0.00
+          ------------------------------------------------
+           Totals               30.00   97.50    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      52995.7  4239.7  1004.3   125.5   156.2     5.2
+             2      26748.5  2139.9   251.5    31.4   115.7     3.9
+             3      18659.9  1492.8    90.1    11.3    63.5     2.1
+             4       9735.5   778.8    14.5     1.8    34.9     1.2
+             5       4048.0   323.8     2.0     0.3    19.1     0.6
+             6       4199.9   336.0     0.1     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  116387.6  9311.0  1362.4   170.3   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+
+------- Report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 3
+        nh4() as NH4Total format 3
+        no3() as NO3Total format 3
+        surfaceom_n as SurfaceOM_N format 2
+        fom_n() as FOM_N format 2
+        biom_n() as Biom_N format 2
+        hum_n() as Hum_N format 1
+        totaln as PlantN format 3
+        TotalPlantN as PastureN format 3
+        fertiliser as FertiliserN format 1
+        dlt_urea_hydrol() as HydrolisedN format 3
+        nitrification() as NitrifiedN format 3
+        dnit() as DenitrifiedN format 3
+        leach_no3 as LeachedNO3 format 3
+        dlt_n_min_res() as NetMineralisedResidue format 3
+        dlt_n_min_tot() as NetMineralisedHumus format 3
+        n2o_atm() as N2Oemissions format 3
+        biomass as PlantBiomass format 3
+        oc() as OCTotal format 2
+        es as Evaporation format 2
+        sw_uptake() as Transpiration format 2
+        drain as Drain format 2
+        dlayer format 1
+        no3 format 2
+        nh4 format 2
+        fom_n format 3
+        biom_n format 3
+        hum_n format 2
+        fom_c format 3
+        biom_c format 3
+        hum_c format 2
+        NumPatches
+
+     Output file = Sim18-SoilCNPatchTest_Pasture+Hum+FOM+SurfOM+N+Urea Paddock1-nPatch-urine Report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- AddUrine Initialisation -----------------------------------------------
+     Operations Schedule
+     ===================
+          05-Jan  Prepare      Fertiliser apply amount=100 (kg/ha), depth=1 (mm), type=urea_n
+
+------- Operations Schedule Initialisation ------------------------------------
+     Operations Schedule
+     ===================
+          01-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          20-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=200 (mm), type=urea_n
+
+------- CutGraze_AgPasture Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     days_after_cut = 15 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     harvested_dm =0
+     harvested_n = 0
+     removed_dm = 0.0
+     removed_n = 0.0
+     return_dm = 0.0
+     return_n = 0.0
+     growthratecalc = 0
+     n_conc_total = 0
+     
+     SECTION:- start_of_day
+     if today >= date('01/01/1900') and today <= date('31/12/2100') then
+        preharvest_dm = agpasture.stemwt + agpasture.leafwt
+        preharvest_n = agpasture.stemn + agpasture.leafn
+        harvested_dm = 0.0
+        harvested_n = 0.0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0.0
+        n_conc_removed = 0.0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 15 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2000 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1500 then
+           agpasture graze type = 'residue', amount = 1500
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           days_after_cut = 0
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0.0
+              n_on_urine = return_n - n_on_dung
+              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : days_after_cut = 14.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- MediumSedimentarySoil Water Initialisation ----------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.200  0.220  0.400  0.500  0.360  1.200  0.762  0.400 25.000
+          150.-  300.  0.200  0.210  0.390  0.490  0.370  1.200  0.190  0.300 20.000
+          300.-  600.  0.200  0.200  0.380  0.480  0.380  1.250  0.048  0.250 20.000
+          600.-  900.  0.190  0.190  0.370  0.470  0.370  1.300  0.000  0.250 20.000
+          900.- 1200.  0.180  0.180  0.360  0.460  0.360  1.350  0.000  0.300 20.000
+         1200.- 1500.  0.170  0.170  0.350  0.450  0.350  1.400  0.000  0.300 20.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.00      21.00      27.00      15.00
+          150.-  300.      31.50      24.00      27.00      15.00
+          300.-  600.      60.00      54.00      54.00      30.00
+          600.-  900.      57.00      54.00      54.00      30.00
+          900.- 1200.      54.00      54.00      54.00      30.00
+         1200.- 1500.      51.00      54.00      54.00      30.00
+          ---------------------------------------------------------
+               Totals     286.50     261.00     270.00     150.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        4.00 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- MediumSedimentarySoil Nitrogen Initialisation -------------------------
+
+        - Reading/checking parameters
+           - Using Generic medium sedimentary soil soil mineralisation specification
+           - Soil temperature calculated internally
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.00    5.00    9.00    0.00
+             2     6.50  1.50    5.00    9.00    0.00
+             3     6.50  0.50    5.00   18.75    0.00
+             4     6.50  0.25    5.00   19.50    0.00
+             5     6.50  0.10    5.00   20.25    0.00
+             6     6.50  0.10    5.00   21.00    0.00
+          ------------------------------------------------
+           Totals               30.00   97.50    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      52995.7  4239.7  1004.3   125.5   156.2     5.2
+             2      26748.5  2139.9   251.5    31.4   115.7     3.9
+             3      18659.9  1492.8    90.1    11.3    63.5     2.1
+             4       9735.5   778.8    14.5     1.8    34.9     1.2
+             5       4048.0   323.8     2.0     0.3    19.1     0.6
+             6       4199.9   336.0     0.1     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  116387.6  9311.0  1362.4   170.3   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+------- Start of simulation  --------------------------------------------------
+      Sending apply message to fertiliser
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 64.72500
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
+      Sending apply message to fertiliser
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 64.72500
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
+      Sending apply message to fertiliser
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 64.72500
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
+05 January 2000(Day of year=5), SoilNitrogen.AddPatch:
+ create new patch, with area = 0.50, based on existing patch(0) - Old area = 1.00, new area = 0.50
+5 January 2000(Day of year=5), AddUrine: 
+      Sending apply message to fertiliser
+5 January 2000(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+16 January 2000(Day of year=16), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 31.69739 (kg/ha), n = 1.19266 (kg/ha), cpr = 0
+16 January 2000(Day of year=16), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 31.69739 (kg/ha), n = 1.19266 (kg/ha), cpr = 0
+16 January 2000(Day of year=16), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 31.69739 (kg/ha), n = 1.19266 (kg/ha), cpr = 0
+20 January 2000(Day of year=20), Operations Schedule: 
+      Sending apply message to fertiliser
+20 January 2000(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  200.00 (layer   2)
+20 January 2000(Day of year=20), Operations Schedule: 
+      Sending apply message to fertiliser
+20 January 2000(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  200.00 (layer   2)
+20 January 2000(Day of year=20), Operations Schedule: 
+      Sending apply message to fertiliser
+20 January 2000(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  200.00 (layer   2)
+31 January 2000(Day of year=31), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 30.93738 (kg/ha), n = 1.22728 (kg/ha), cpr = 0
+31 January 2000(Day of year=31), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 30.93738 (kg/ha), n = 1.22728 (kg/ha), cpr = 0
+31 January 2000(Day of year=31), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 30.93738 (kg/ha), n = 1.22728 (kg/ha), cpr = 0
+10/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -4.97870256133126E-09 will be reset to minimum value
+10/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -3.48025064322854E-09 will be reset to minimum value
+10/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.49707796159859E-08 will be reset to minimum value
+10/02/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -3.4374398216741E-08 will be reset to minimum value
+12/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.62863786346001E-09 will be reset to minimum value
+13/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.16739239108821E-09 will be reset to minimum value
+15 February 2000(Day of year=46), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 28.74084 (kg/ha), n = 1.15597 (kg/ha), cpr = 0
+15 February 2000(Day of year=46), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 25.42163 (kg/ha), n = 0.98785 (kg/ha), cpr = 0
+15 February 2000(Day of year=46), CutGraze_AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 28.74084 (kg/ha), n = 1.15597 (kg/ha), cpr = 0
+16/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -2.07139536079204E-09 will be reset to minimum value
+17/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.86076355018772E-09 will be reset to minimum value
+17/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -1.90144258671587E-09 will be reset to minimum value
+18/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.21508963791106E-09 will be reset to minimum value
+18/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.08666688147796E-09 will be reset to minimum value
+19/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.86167670116022E-09 will be reset to minimum value
+19/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.13842516663576E-09 will be reset to minimum value
+19/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.18258267067795E-09 will be reset to minimum value
+20/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -2.77158195005622E-09 will be reset to minimum value
+22/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -3.48197351507373E-09 will be reset to minimum value
+23/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.0852818339896E-09 will be reset to minimum value
+23/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -2.76635539475656E-09 will be reset to minimum value
+24/02/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -9.99152405256609E-09 will be reset to minimum value
+24/02/2000 - Attempt to change no3[2] in Patch[Patch1] to a value below the lower limit
+  The value -9.99152405256609E-09 will be reset to minimum value
+25/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.29481905489726E-09 will be reset to minimum value
+26/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.05419609153223E-09 will be reset to minimum value
+26/02/2000 - Attempt to change no3[1] in Patch[Patch1] to a value below the lower limit
+  The value -1.05419608459334E-09 will be reset to minimum value
+26/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.20954893323422E-08 will be reset to minimum value
+27/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.52599904240658E-09 will be reset to minimum value
+27/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -3.12676867730843E-09 will be reset to minimum value
+27/02/2000 - Attempt to change no3[1] in Patch[Patch1] to a value below the lower limit
+  The value -1.52599904240658E-09 will be reset to minimum value
+27/02/2000 - Attempt to change no3[4] in Patch[Patch1] to a value below the lower limit
+  The value -3.12676867730843E-09 will be reset to minimum value
+28/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.79535583622048E-09 will be reset to minimum value
+28/02/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -3.56823628977487E-09 will be reset to minimum value
+28/02/2000 - Attempt to change no3[1] in Patch[Patch1] to a value below the lower limit
+  The value -1.79535584315937E-09 will be reset to minimum value
+28/02/2000 - Attempt to change no3[4] in Patch[Patch1] to a value below the lower limit
+  The value -3.56823628977487E-09 will be reset to minimum value
+28/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.11762879506649E-08 will be reset to minimum value
+28/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -1.85433865484974E-09 will be reset to minimum value
+28 February 2000(Day of year=59), clock: 
+     Simulation is terminating due to end criteria being met.
+
