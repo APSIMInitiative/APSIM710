@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3153" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3182" name="simulations">
   <folder name="Expt324">
     <simulation name="Expt324N0">
       <metfile name="met">
@@ -322,18 +322,18 @@ endif
                 <double>0.3</double>
               </LL>
               <KL>
-                <double>0.1</double>
                 <double>0.06</double>
-                <double>0.05</double>
                 <double>0.04</double>
                 <double>0.03</double>
-                <double>0.03</double>
+                <double>0.02</double>
+                <double>0.02</double>
+                <double>0.02</double>
                 <double>0.01</double>
                 <double>0.01</double>
                 <double>0.01</double>
-                <double>0.01</double>
-                <double>0.01</double>
-                <double>0.01</double>
+                <double>0</double>
+                <double>0</double>
+                <double>0</double>
               </KL>
               <XF>
                 <double>1</double>
@@ -345,9 +345,9 @@ endif
                 <double>1</double>
                 <double>1</double>
                 <double>1</double>
-                <double>1</double>
-                <double>1</double>
-                <double>1</double>
+                <double>0</double>
+                <double>0</double>
+                <double>0</double>
               </XF>
             </SoilCrop>
           </Water>
@@ -400,7 +400,7 @@ endif
               <double>4100</double>
             </Thickness>
             <OC>
-              <double>2.3</double>
+              <double>2.1</double>
               <double>1.06</double>
               <double>0.65</double>
               <double>0.5</double>
@@ -416,7 +416,7 @@ endif
               <double>0.01</double>
             </FBiom>
             <FInert>
-              <double>0.22</double>
+              <double>0.24</double>
               <double>0.47</double>
               <double>0.77</double>
               <double>0.95</double>
@@ -511,6 +511,8 @@ endif
             <variable>AnnualRain</variable>
             <variable>AnnualEo</variable>
             <variable>AnnualNPP</variable>
+            <variable>AnnualDnit</variable>
+            <variable>AnnualFertiliser</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>end_year</event>
@@ -544,6 +546,8 @@ endif
           <variable>sum of Rain on post from AnnualOutput.reported to now as AnnualRain</variable>
           <variable>sum of eo on post from AnnualOutput.reported to now as AnnualEo</variable>
           <variable>sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP</variable>
+          <variable>sum of dnit() on post from AnnualOutput.reported to now as AnnualDnit</variable>
+          <variable>sum of fertiliser on post from AnnualOutput.reported to now as AnnualFertiliser</variable>
         </tracker>
       </area>
     </simulation>
@@ -2281,6 +2285,8 @@ endif</text>
             <variable>Annualrain</variable>
             <variable>AnnualEo</variable>
             <variable>AnnualNPP</variable>
+            <variable>AnnualDnit</variable>
+            <variable>AnnualFertiliser</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>end_year</event>
@@ -2313,6 +2319,8 @@ endif</text>
           <variable>sum of rain on post from AnnualOutput.reported to now as AnnualRain</variable>
           <variable>sum of eo on post from AnnualOutput.reported to now as AnnualEo</variable>
           <variable>sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP</variable>
+          <variable>sum of dnit() on post from AnnualOutput.reported to now as AnnualDnit</variable>
+          <variable>sum of fertiliser on post from AnnualOutput.reported to now as AnnualFertiliser</variable>
         </tracker>
       </area>
     </simulation>
@@ -3652,6 +3660,8 @@ endif</text>
             <variable>AnnualRain</variable>
             <variable>AnnualEo</variable>
             <variable>AnnualNPP</variable>
+            <variable>AnnualDnit</variable>
+            <variable>AnnualFertiliser</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>end_year</event>
@@ -3684,6 +3694,8 @@ endif</text>
           <variable>sum of rain on post from AnnualOutput.reported to now as AnnualRain</variable>
           <variable>sum of eo on post from AnnualOutput.reported to now as AnnualEo</variable>
           <variable>sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP</variable>
+          <variable>sum of dnit() on post from AnnualOutput.reported to now as AnnualDnit</variable>
+          <variable>sum of fertiliser on post from AnnualOutput.reported to now as AnnualFertiliser</variable>
         </tracker>
       </area>
     </simulation>
@@ -6378,12 +6390,8 @@ endif
   </folder>
   <Graph name="OC">
     <Legend>
-      <CheckedTitles> Expt212N0 MonthlyOutput</CheckedTitles>
-      <CheckedTitles> Expt212N2 MonthlyOutput</CheckedTitles>
       <CheckedTitles> Expt324N0 MonthlyOutput</CheckedTitles>
       <CheckedTitles> Expt324N3 MonthlyOutput</CheckedTitles>
-      <CheckedTitles> Expt504N0 MonthlyOutput</CheckedTitles>
-      <CheckedTitles> Expt504N3 MonthlyOutput</CheckedTitles>
     </Legend>
     <Plot name="Predicted">
       <SeriesType>Solid line</SeriesType>
@@ -6418,6 +6426,31 @@ endif
       </colour>
       <X>Age</X>
       <Y>AnnualNPP</Y>
+      <GDApsimFileReader name="ApsimFileReader">
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N0 AnnualOutput.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N2 AnnualOutput.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N0 AnnualOutput.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3 AnnualOutput.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt504N0 AnnualOutput.out</FileName>
+        <FileName>%apsim%\Tests\Validation\OilPalm\Expt504N3 AnnualOutput.out</FileName>
+      </GDApsimFileReader>
+    </Plot>
+  </Graph>
+  <Graph name="N Losses">
+    <Legend>
+      <CheckedTitles> AnnualDnit, Expt324N0 AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualDnit, Expt324N3 AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualFertiliser, Expt324N0 AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualFertiliser, Expt324N3 AnnualOutput</CheckedTitles>
+    </Legend>
+    <Plot name="Predicted">
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Age</X>
+      <Y>AnnualDnit</Y>
+      <Y>AnnualFertiliser</Y>
       <GDApsimFileReader name="ApsimFileReader">
         <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N0 AnnualOutput.out</FileName>
         <FileName>%apsim%\Tests\Validation\OilPalm\Expt212N2 AnnualOutput.out</FileName>

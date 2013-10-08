@@ -531,7 +531,7 @@ public class OilPalm
             
         }
 
-        StemGrowth =StemDMD*Fr+Excess; 
+        StemGrowth = StemDMD * Fr;// +Excess; 
         StemMass += StemGrowth;
 
         CarbonStress = Fr;
