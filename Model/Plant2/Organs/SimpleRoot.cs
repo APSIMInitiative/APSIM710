@@ -20,7 +20,19 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     private string OurName;
     private bool TalkDirectlyToRoot;
 
-    public override double DMDemand 
+    public override DMDemandType DMDemand
+    {
+        get
+        {
+            double Demand = 0;
+            if (DMDemandFunction != null)
+                Demand = DMDemandFunction.Value;
+            else Demand = 0;
+            return new DMDemandType { Structural = Demand };
+        }
+    }
+
+ /*   public override double DMDemand 
     { 
        get 
         {
@@ -28,7 +40,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
                   return DMDemandFunction.Value;
             else  return 0;
         } 
-    }
+    }*/
     public override DMSupplyType DMSupply { get { return new DMSupplyType { Photosynthesis = 0, Retranslocation = 0 }; } }
     public override DMAllocationType DMAllocation
     {
@@ -38,8 +50,8 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
         }
     }
 
-    public override double NDemand { get { return 0; } }
-    public override NSupplyType NSupply { get { return new NSupplyType(); } }
+    //public override double NDemand { get { return 0; } }
+    public override NDemandType NDemand2 { get { return new NDemandType(); } }    public override NSupplyType NSupply { get { return new NSupplyType(); } }
     public override double WaterDemand { get { return 0; } }
 
     [Output]

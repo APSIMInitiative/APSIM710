@@ -53,6 +53,7 @@ public class GenericOrgan : BaseOrgan
     private double StartNReallocationSupply = 0;
     protected double PotentialDMAllocation = 0;
     protected double StructuralDMDemand = 0;
+    protected double NonStructuralDMDemand = 0;
     protected double InitialWt = 0;
     private double InitStutFraction = 1;
     #endregion
@@ -107,17 +108,30 @@ public class GenericOrgan : BaseOrgan
     #endregion
 
     #region Arbitrator methods
-    [Output]
-    [Units("g/m^2")]
-    public override double DMDemand
+ 
+  /*  public override double DMDemand
     {
         get
         {
             StructuralDMDemand = DMDemandFunction.Value * _StructuralFraction;
             return StructuralDMDemand;
         }
+    }*/
+    [Output]
+    [Units("g/m^2")]
+    public override DMDemandType DMDemand
+    {
+        get
+        {
+             StructuralDMDemand = DMDemandFunction.Value * _StructuralFraction;
+             double MaximumDM = (StartLive.StructuralWt + StructuralDMDemand) * 1 / _StructuralFraction;
+             MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
+             NonStructuralDMDemand = Math.Max(0.0, MaximumDM - StructuralDMDemand - StartLive.StructuralWt - StartLive.NonStructuralWt); 
+             return new DMDemandType { Structural = StructuralDMDemand, NonStructural = NonStructuralDMDemand };
+        }
+
     }
-    public override double DMSinkCapacity
+  /*  public override double DMSinkCapacity
     {
         get
         {
@@ -125,12 +139,12 @@ public class GenericOrgan : BaseOrgan
             MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
             return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartLive.StructuralWt - StartLive.NonStructuralWt);
         }
-    }
+    }*/
     public override double DMPotentialAllocation
     {
         set
         {
-            if (DMDemand == 0)
+            if (DMDemand.Structural == 0)
                 if (value < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in " + Name);
@@ -149,7 +163,7 @@ public class GenericOrgan : BaseOrgan
             Reallocation = 0};
         }
     }
-    public override double NDemand
+    /*public override double NDemand
     {
         get
         {
@@ -158,6 +172,19 @@ public class GenericOrgan : BaseOrgan
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             return NDeficit * _NitrogenDemandSwitch;
+        }
+    }*/
+
+    public override NDemandType NDemand2
+    {
+        get
+        {
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
+            double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
+            NDeficit *= _NitrogenDemandSwitch;
+            return new NDemandType { Structural = NDeficit };
         }
     }
     public override NSupplyType NSupply
@@ -192,9 +219,9 @@ public class GenericOrgan : BaseOrgan
             // Excess allocation
             if (value.ExcessAllocation < -0.0000000001)
                 throw new Exception("-ve ExcessDM Allocation to " + Name);
-            if ((value.ExcessAllocation - DMSinkCapacity) > 0.0000000001)
+            if ((value.ExcessAllocation - DMDemand.NonStructural) > 0.0000000001)
                 throw new Exception("ExcessDM Allocation to " + Name + " is in excess of its Capacity");
-            if (DMSinkCapacity > 0)
+            if (DMDemand.NonStructural > 0)
                 Live.NonStructuralWt += value.ExcessAllocation;
      
             // Retranslocation

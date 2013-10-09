@@ -150,7 +150,32 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         if (Phenology.OnDayOf(RipeStage))
             _ReadyForHarvest = true;
     }
-    public override double DMDemand
+    public override DMDemandType DMDemand
+    {
+        get
+        {
+
+            double Demand = 0;
+            if (DMDemandFunction != null)
+            {
+                Demand = DMDemandFunction.Value;
+            }
+            else
+            {
+                Number = NumberFunction.Value;
+                if (Number > 0)
+                {
+                    double demand = Number * FillingRate.Value;
+                    // Ensure filling does not exceed a maximum size
+                    Demand = Math.Min(demand, (MaximumSize - Live.Wt / Number) * Number);
+                }
+                else
+                    Demand = 0;
+            }
+            return new DMDemandType { Structural = Demand };
+        }
+    }
+    /*public override double DMDemand
     {
         get
         {
@@ -171,12 +196,12 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
             }
        }
-    }
+    }*/
     public override double DMPotentialAllocation
     {
         set
         {
-            if (DMDemand == 0)
+            if (DMDemand.Structural == 0)
                 if (value < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
@@ -185,7 +210,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     }
     public override DMAllocationType DMAllocation
     { set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; } }
-    public override double NDemand
+    /*public override double NDemand
     {
         get
         {
@@ -194,6 +219,19 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             double demand = Number * NFillingRate.Value;
             return Math.Min(demand, MaximumNConc.Value * DailyGrowth) * _NitrogenDemandSwitch;
+        }
+
+    }*/
+    public override NDemandType NDemand2
+    {
+        get
+        {
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
+            double demand = Number * NFillingRate.Value;
+            demand = Math.Min(demand, MaximumNConc.Value * DailyGrowth) * _NitrogenDemandSwitch;
+            return new NDemandType { Structural = demand };
         }
 
     }

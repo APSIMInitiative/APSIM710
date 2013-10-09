@@ -206,8 +206,11 @@ public class Arbitrator
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMDemand[i] = Organs[i].DMDemand;
-            DMSinkCapacity[i] = Organs[i].DMSinkCapacity;
+            DMDemandType Demand = Organs[i].DMDemand;
+            //DMDemand[i] = Organs[i].DMDemand;
+            DMDemand[i] = Demand.Structural;
+            //DMSinkCapacity[i] = Organs[i].DMSinkCapacity;
+            DMSinkCapacity[i] = Demand.NonStructural;
             DMAllocation[i] = 0;
             DMReallocation[i] = 0;
             DMRetranslocation[i] = 0;
@@ -215,10 +218,15 @@ public class Arbitrator
         TotalPriorityDMDemand = 0;
         TotalNonPriorityDMDemand = 0;
         for (int i = 0; i < Organs.Count; i++)
+        {
+            DMDemandType Demand = Organs[i].DMDemand;
             if (IsPriority[i] == true)
-                TotalPriorityDMDemand += Organs[i].DMDemand;
+                //TotalPriorityDMDemand += Organs[i].DMDemand;
+                TotalPriorityDMDemand += Demand.Structural;
             else
-                TotalNonPriorityDMDemand += Organs[i].DMDemand;
+                //TotalNonPriorityDMDemand += Organs[i].DMDemand;
+                TotalNonPriorityDMDemand += Demand.Structural;
+        }
 
         TotalDMDemand = MathUtility.Sum(DMDemand);
         TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
@@ -364,7 +372,9 @@ public class Arbitrator
         // GET ALL SUPPLIES AND DEMANDS AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
-            NDemandOrgan[i] = Organs[i].NDemand;
+            NDemandType NDemand = Organs[i].NDemand2;
+            NDemandOrgan[i] = Organs[i].NDemand2.Structural;  //Fixme currently all N demand is passed as structural
+            //NDemandOrgan[i] = Organs[i].NDemand;
             NSupplyType NSupply = Organs[i].NSupply;
             NReallocationSupply[i] = NSupply.Reallocation;
              NUptakeSupply[i] = NSupply.Uptake;

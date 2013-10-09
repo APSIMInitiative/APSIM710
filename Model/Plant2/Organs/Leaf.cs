@@ -473,7 +473,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("g/m^2")]
-    public double PotentialGrowth { get { return DMDemand; } }
+    public double PotentialGrowth { get { return DMDemand.Structural; } }
     [Output]
     [Units("mm")]
     public double Transpiration { get { return EP; } }
@@ -650,9 +650,8 @@ public class Leaf : BaseOrgan, AboveGround
  #endregion
 
  #region Arbitrator methods
-    [Output]
-    [Units("g/m^2")]
-    public override double DMDemand
+
+    /*public override double DMDemand
     {
         get
         {
@@ -667,6 +666,27 @@ public class Leaf : BaseOrgan, AboveGround
 
             return Demand;
         }
+    }*/
+    [Output]
+    [Units("g/m^2")]
+    public override DMDemandType DMDemand
+    {
+        get
+        {
+            double Demand = 0.0;
+            foreach (LeafCohort L in Leaves)
+                Demand += L.DMDemand;
+
+            if (DMDemandFunction != null)
+                Demand = Math.Min(DMDemandFunction.Value, Demand);
+
+            double Capacity = 0.0;
+            foreach (LeafCohort L in Leaves)
+                Capacity += L.DMSinkCapacity;
+            
+            return new DMDemandType { Structural = Demand, NonStructural = Capacity };
+        }
+
     }
     /// <summary>
     /// Daily photosynthetic "net" supply of dry matter for the whole plant (g DM/m2/day)
@@ -688,7 +708,7 @@ public class Leaf : BaseOrgan, AboveGround
             return new DMSupplyType { Photosynthesis = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation , Reallocation = Reallocation};
         }
     }
-    public override double DMSinkCapacity
+    /*public override double DMSinkCapacity
     {
         get
         {
@@ -697,12 +717,12 @@ public class Leaf : BaseOrgan, AboveGround
                 Capacity += L.DMSinkCapacity;
             return Capacity;
         } 
-    }
+    }*/
     public override double DMPotentialAllocation
     {
         set
         {
-            if (DMDemand == 0)
+            if (DMDemand.Structural == 0)
                 if (value < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
@@ -739,7 +759,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         set
         {
-            if (DMDemand == 0)
+            if (DMDemand.Structural == 0)
                 if (value.Allocation < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of DM in Leaf");
@@ -831,7 +851,17 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("g/m^2")]
-    public override double NDemand
+    public override NDemandType NDemand2
+    {
+        get
+        {
+            double Demand = 0.0;
+            foreach (LeafCohort L in Leaves)
+                Demand += L.NDemand;
+            return new NDemandType { Structural = Demand };
+        }
+    }
+    /*public override double NDemand
     {
         get
         {
@@ -840,12 +870,12 @@ public class Leaf : BaseOrgan, AboveGround
                 Demand += L.NDemand;
             return Demand;
         }
-    }
+    }*/
     public override NAllocationType NAllocation
     {
         set
         {
-            if (NDemand == 0)
+            if (NDemand2.Structural == 0)
                 if (value.Allocation == 0) { }//All OK
                 else
                     throw new Exception("Invalid allocation of N");

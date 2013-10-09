@@ -61,7 +61,19 @@ class SimpleLeaf : BaseOrgan, AboveGround
     private double KDead = 0;                  // Extinction Coefficient (Dead)
     public double DeltaBiomass = 1;
     public double BiomassYesterday = 0;
-    public override double DMDemand
+    public override DMDemandType DMDemand
+    {
+        get
+        {
+            double Demand = 0;
+            if (DMDemandFunction != null)
+                Demand = DMDemandFunction.Value;
+            else
+                Demand = 1;
+            return new DMDemandType { Structural = Demand };
+        }
+    }
+    /*public override double DMDemand
     {
         get {
             if (DMDemandFunction != null)
@@ -69,7 +81,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
             else
                 return 1; 
              }
-    }
+    }*/
     public override DMSupplyType DMSupply
     {        
         get {
@@ -306,7 +318,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     }
 
 
-    public override double NDemand
+    /*public override double NDemand
     {
         get
         {
@@ -319,6 +331,25 @@ class SimpleLeaf : BaseOrgan, AboveGround
 
           double NDeficit = Math.Max(0.0, NConc.Value * (Live.Wt + DeltaBiomass) - Live.N);
             return NDeficit;
+        }
+    }*/
+    public override NDemandType NDemand2
+    {
+        get
+        {
+            double NDeficit = 0;
+            if (NitrogenDemandSwitch == null) 
+                NDeficit = 0;
+            if (NitrogenDemandSwitch != null)
+            {
+                if (NitrogenDemandSwitch.Value == 0)
+                    NDeficit = 0;
+            }
+            if (NConc == null)
+                NDeficit = 0;
+            else
+            NDeficit = Math.Max(0.0, NConc.Value * (Live.Wt + DeltaBiomass) - Live.N); 
+            return new NDemandType { Structural = NDeficit };
         }
     }
 
@@ -335,7 +366,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     {
         set
         {
-            if (NDemand == 0)
+            if (NDemand2.Structural == 0)
                 if (value.Allocation == 0) { }//All OK
                 else
                     throw new Exception("Invalid allocation of N");
@@ -349,7 +380,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
                 if ((NSupplyValue > 0))
                 {
                     //What do we need to meat demand;
-                    double ReqN = NDemand;
+                    double ReqN = NDemand2.Structural;
 
                     if (ReqN == NSupplyValue)
                     {

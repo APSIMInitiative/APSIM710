@@ -318,7 +318,17 @@ public class Root : BaseOrgan, BelowGround
  #endregion
  
  #region Arbitrator method calls
-    public override double DMDemand
+    public override DMDemandType DMDemand
+    {
+        get
+        {
+            double Demand = 0;
+            if (isGrowing)
+                Demand = Arbitrator.DMSupply * PartitionFraction.Value;
+            return new DMDemandType { Structural = Demand };
+        }
+    }
+  /*  public override double DMDemand
     {
         get
         {
@@ -326,7 +336,7 @@ public class Root : BaseOrgan, BelowGround
                 return Arbitrator.DMSupply * PartitionFraction.Value;
             return 0;
         }
-    }
+    }*/
     public override double DMPotentialAllocation
     {
         set
@@ -334,7 +344,7 @@ public class Root : BaseOrgan, BelowGround
             if (Depth <= 0)
                 return; //cannot allocate growth where no length
 
-            if (DMDemand == 0)
+            if (DMDemand.Structural == 0)
                 if (value < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
@@ -440,7 +450,25 @@ public class Root : BaseOrgan, BelowGround
     }
     [Output]
     [Units("g/m2")]
-    public override double NDemand
+    public override NDemandType NDemand2
+    {
+        get
+        {
+            //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
+            double TotalDeficit = 0.0;
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
+            foreach (Biomass Layer in LayerLive)
+            {
+                double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
+                TotalDeficit += NDeficit;
+            }
+            TotalDeficit *= _NitrogenDemandSwitch;
+            return new NDemandType { Structural = TotalDeficit };
+        }
+    }
+    /*public override double NDemand
     {
         get
         {
@@ -456,7 +484,7 @@ public class Root : BaseOrgan, BelowGround
             }
             return TotalDeficit * _NitrogenDemandSwitch;
         }
-    }
+    }*/
     public override NSupplyType NSupply
     {
         get
