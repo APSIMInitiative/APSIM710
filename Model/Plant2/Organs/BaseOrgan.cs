@@ -17,11 +17,13 @@ public class BaseOrgan : Organ
     public override double DMSinkCapacity { get { return 0; } set { } }
     public override double DMPotentialAllocation { set { } }
     public override DMAllocationType DMAllocation { set { } }
+    public override DMDemandType DMDemand2 { get { return new DMDemandType(); } set { } }
 
     public override double NDemand { get { return 0; } set { } }
     public override NSupplyType NSupply { get { return new NSupplyType(); } set { } }
     public override NAllocationType NAllocation { set {  } }
     public override double NFixationCost { get { return 0; } set { } }
+    public override NDemandType NDemand2 { get { return new NDemandType(); } set { } }
 
     public override double WaterDemand { get { return 0; } set { } }
     public override double WaterSupply { get { return 0; } set { } }
