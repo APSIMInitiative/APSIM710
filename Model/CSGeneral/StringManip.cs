@@ -350,7 +350,7 @@ namespace CSGeneral
                 ColumnType = Type.GetType("System.String");
 
             else if (MathUtility.IsNumericalenUS(Value))
-                ColumnType = Type.GetType("System.Single");
+                ColumnType = Type.GetType("System.Double");
 
             else if (Units == "" && StringManip.IsDateTime(Value))
                 ColumnType = Type.GetType("System.DateTime");

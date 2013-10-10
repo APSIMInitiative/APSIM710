@@ -21,9 +21,9 @@ namespace outputComp
         /// 
         /// </summary>
         //============================================================================
-        public override void beginWriting()
+        public override void BeginWriting()
         {
-            base.beginWriting();
+            base.BeginWriting();
         }
 
 
@@ -34,9 +34,9 @@ namespace outputComp
         /// 
         /// </summary>
         //============================================================================
-        public override void endWriting()
+        public override void EndWriting()
         {
-            base.endWriting();
+            base.EndWriting();
 
             
         }

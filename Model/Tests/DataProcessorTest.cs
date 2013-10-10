@@ -116,7 +116,7 @@ namespace APSIM.Tests
             Assert.AreEqual(Convert.ToDouble(Data.Rows[5][5]), 420);           // col 4
 
             // Make sure second row is of type single.
-            Assert.AreEqual(Data.Columns[1].DataType.ToString(), "System.Single");
+            Assert.AreEqual(Data.Columns[1].DataType.ToString(), "System.Double");
         }
         [Test]
         public void TestProbability()

@@ -1,51 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using CMPServices;
 
 namespace outputComp
 {
-    //============================================================================
+    
+    // ============================================================================
     /// <summary>
-    /// 
+    /// Text reporter
     /// </summary>
-    //============================================================================
+    // ============================================================================
     public class TTextReporter : TGenericReporter
     {
-        static String MISSINGTEXT = "#n/a";
+        protected static String MISSINGTEXT = "#n/a";
 
         private StreamWriter FOutFile;  //Results file 
         private int FInitColumns;       //Initial number of output columns      
         private List<int> FWidths;      //width of each column for apsim format
         private StringBuilder FHeaderfmt; //format string for apsim format
 
-
+        /// <summary>
+        /// Create the text reporter
+        /// </summary>
         public TTextReporter()
         {
-            FWidths = new List<int>();
-            FHeaderfmt = new StringBuilder();
+            this.FWidths = new List<int>();
+            this.FHeaderfmt = new StringBuilder();
         }
-        //============================================================================
+        
+        // ============================================================================
         /// <summary>
         /// Write an 'empty' line to any existing file.
         /// </summary>
         public void ClearOutFile()
         {
-            if ((FileName.Length > 0) && File.Exists(FileName))
+            if ((this.FileName.Length > 0) && File.Exists(this.FileName))
             {
-                FOutFile = new StreamWriter(FileName, false);
-                FOutFile.WriteLine("- no data -");
-                FOutFile.Close();
+                this.FOutFile = new StreamWriter(this.FileName, false);
+                this.FOutFile.WriteLine("- no data -");
+                this.FOutFile.Close();
             }
         }
-        //============================================================================
+
+        // ============================================================================
         /// <summary>
         /// Writes the header rows to the output file. Must be done after the            
         /// FColumns structure is populated, which can only happen once variable values  
         /// are returned.
         /// </summary>
-        //============================================================================
+        // ============================================================================
         private void WriteHeaders()
         {
             int Idx;
@@ -60,9 +66,13 @@ namespace outputComp
                 FHeaderfmt.Append("{0,15}");
                 colArray[0] = "Date";
                 if (DateFMT.Length > 0)
+                {
                     unitsArray[0] = "(" + DateFMT + ")";
+                }
                 else
+                {
                     unitsArray[0] = "(dd/mm/yyyy)";
+                }
                 for (Idx = 0; Idx <= FColumns.Count - 1; Idx++)
                 {
                     maxwidth = Math.Max(FColumns[Idx].Name.Length + 1, FColumns[Idx].Units.Length + 1);
@@ -91,12 +101,12 @@ namespace outputComp
             }
             FOutFile.WriteLine();
         }
-        //============================================================================
+        ////============================================================================
         /// <summary>
-        /// 
+        /// Open the output file
         /// </summary>
-        //============================================================================
-        public override void beginWriting()
+        ////============================================================================
+        public override void BeginWriting()
         {
             if (!FWriting)
             {
@@ -108,24 +118,24 @@ namespace outputComp
                     {
                         FOutFile.WriteLine(Title);
                     }
-                    base.beginWriting();
+                    base.BeginWriting();
                 }
                 catch (Exception excep)
                 {
-                    throw (new ApplicationException("Cannot open output file. " + excep.Message));
+                    throw new ApplicationException("Cannot open output file. " + excep.Message);
                 }
             }
         }
         //============================================================================
         /// <summary>
-        /// 
+        /// Close the output file
         /// </summary>
         //============================================================================
-        public override void endWriting()
+        public override void EndWriting()
         {
             if (FWriting)
             {
-                base.endWriting();
+                base.EndWriting();
                 FOutFile.Close();
                 if (FColumns.Count != FInitColumns)
                 {
@@ -134,11 +144,11 @@ namespace outputComp
                 }
             }
         }
-        //============================================================================
+        ////============================================================================
         /// <summary>
         /// Output one line of the results file 
         /// </summary>
-        //============================================================================
+        ////============================================================================
         public override void writeValues()
         {
             String sDateStr = "";
@@ -154,7 +164,7 @@ namespace outputComp
                 FFirstTime = false;
             }
             //Write the line of output values       
-            if (IntervalUnit <= TTimeValue.SEC) //Dates formatted according to ISO 8601 
+            if (IntervalUnit <= TTimeValue.SEC) // Dates formatted according to ISO 8601 
             {
                 sDateStr = FCurrOutputTime.asISODateTimeStr();
             }
@@ -169,16 +179,24 @@ namespace outputComp
                     if (ApsimFMT)
                     {
                         if (DateFMT.Length > 0)
+                        {
                             sDateStr = FCurrOutputTime.asDateStrFMT(DateFMT);
+                        }
                         else
+                        {
                             sDateStr = FCurrOutputTime.asDateStr();
+                        }
                     }
                     else
                     {
                         if (DateFMT.Length > 0)
+                        {
                             sDateStr = FCurrOutputTime.asDateStrFMT(DateFMT);
+                        }
                         else
+                        {
                             sDateStr = FCurrOutputTime.asISODateStr();
+                        }
                     }
                 }
             }
@@ -192,8 +210,8 @@ namespace outputComp
             for (Idx = 0; Idx <= FColumns.Count - 1; Idx++)
             {
                 scalarItem = FColumns[Idx];
-                if (scalarItem.AggregCount == 0)        //It is possible that no value has been 
-                {                                       //recorded for this column (an array may have shrunk)
+                if (scalarItem.AggregCount == 0)        // It is possible that no value has been 
+                {                                       // recorded for this column (an array may have shrunk)
                     if (ApsimFMT)
                         colArray[Idx + 1] = MISSINGTEXT;
                     else
@@ -202,7 +220,7 @@ namespace outputComp
                 else
                 {
                     strVal = "";
-                    //format the output value
+                    // format the output value
                     switch (scalarItem.baseType)
                     {
                         case TTypedValue.TBaseType.ITYPE_INT1:
@@ -211,7 +229,17 @@ namespace outputComp
                         case TTypedValue.TBaseType.ITYPE_INT8: strVal = Convert.ToInt32(scalarItem.dVal).ToString();
                             break;
                         case TTypedValue.TBaseType.ITYPE_SINGLE:
-                        case TTypedValue.TBaseType.ITYPE_DOUBLE: strVal = String.Format("{0:f" + scalarItem.decPl + "}", scalarItem.dVal);
+                        case TTypedValue.TBaseType.ITYPE_DOUBLE:
+                            {
+                                if (Math.Log10(Math.Abs(scalarItem.dVal)) > 10)
+                                {
+                                    strVal = String.Format(CultureInfo.InvariantCulture, "{0:e" + scalarItem.decPl + "}", scalarItem.dVal);
+                                }
+                                else
+                                {
+                                    strVal = String.Format(CultureInfo.InvariantCulture, "{0:f" + scalarItem.decPl + "}", scalarItem.dVal);
+                                }
+                            }
                             break;
                         case TTypedValue.TBaseType.ITYPE_CHAR: strVal = scalarItem.sVal;
                             break;
@@ -221,24 +249,28 @@ namespace outputComp
                             break;
                     }
                     if (ApsimFMT)
+                    {
                         colArray[Idx + 1] = strVal;
+                    }
                     else
-                        FOutFile.Write("\t" + strVal);  //Write the current value of the column }
+                    {
+                        FOutFile.Write("\t" + strVal);  // Write the current value of the column }
+                    }
                 }
 
-                FColumns[Idx].Clear();      //Clear the current column values       
+                FColumns[Idx].Clear();      // Clear the current column values       
             }
             if (ApsimFMT)
                 FOutFile.Write(FHeaderfmt.ToString(), colArray);
             FOutFile.WriteLine();
         }
-        //============================================================================
+        ////============================================================================
         /// <summary>
-        /// 
+        /// Get the column
         /// </summary>
         /// <param name="sLine"></param>
         /// <returns></returns>
-        //============================================================================
+        ////============================================================================
         private String GetColumn(ref String sLine)
         {
             string result = "";
@@ -257,13 +289,13 @@ namespace outputComp
             }
             return result;
         }
-        //============================================================================
+        ////============================================================================
         /// <summary>
         /// Rewrite the results file, ordering the columns in the expected manner. This  
         /// has to be done when the length of array variables increases during the       
         /// course of storing values.  
         /// </summary>
-        //============================================================================
+        ////============================================================================
         private void SortColumns()
         {
             List<int> iSortOrder = new List<int>();
@@ -280,7 +312,7 @@ namespace outputComp
 
             if (FWriting)
             {
-                throw (new ApplicationException("TTextReporter: Cannot sort columns while results file is open"));
+                throw new ApplicationException("TTextReporter: Cannot sort columns while results file is open");
             }
             else
             {
@@ -311,27 +343,29 @@ namespace outputComp
                 {
                     FinalFile.Write("\t" + FColumns[iSortOrder[i]].Name);
                 }
+
                 FinalFile.WriteLine();
 
-                for (i = 0; i <= FColumns.Count-1; i++) {                       //Column units                          
+                for (i = 0; i <= FColumns.Count-1; i++) {                       // Column units                          
                   FinalFile.Write("\t" + FColumns[ iSortOrder[i] ].Units);
                 }
+
                 FinalFile.WriteLine();
 
-                ColTexts = new List<String>();                                  //Set up a list with the correct number 
-                for (i = 0; i <= FColumns.Count - 1; i++)                       //of strings                           
+                ColTexts = new List<String>();                                  // Set up a list with the correct number 
+                for (i = 0; i <= FColumns.Count - 1; i++)                       // of strings                           
                 {                                     
                     ColTexts.Add(MISSINGTEXT);
                 }
 
                 while (!OrigFile.EndOfStream)
-                {                                                               //Work through the results file...      
+                {                                                               // Work through the results file...      
                     for (i = 0; i <= FColumns.Count - 1; i++)
                     {
                         ColTexts[i] = MISSINGTEXT;
                     }
 
-                    sLine = OrigFile.ReadLine();                                //... read in each line of results...   
+                    sLine = OrigFile.ReadLine();                                // ... read in each line of results...   
                     sDateStr = GetColumn(ref sLine);
                     for (i = 0; i <= FColumns.Count - 1; i++)
                     {
@@ -346,6 +380,7 @@ namespace outputComp
                     {
                         FinalFile.Write("\t" + ColTexts[iSortOrder[i]]);
                     }
+
                     FinalFile.WriteLine();
                 }
 
@@ -355,26 +390,25 @@ namespace outputComp
                 File.Move(sTempName, FileName);                                 //sorted one                          }
             }
         }
-        //============================================================================
+        ////============================================================================
         /// <summary>
         /// 
         /// </summary>
         /// <param name="valTree"></param>
-        /// <param name="iSortOrder"></param>
-        /// <param name="iColI"></param>
-        //============================================================================
-        private void AddSortedIndexes(TValTree valTree, ref List<int> iSortOrder, ref int iColI)
+        /// <param name="sortOrder"></param>
+        /// <param name="colI"></param>
+        ////============================================================================
+        private void AddSortedIndexes(TValTree valTree, ref List<int> sortOrder, ref int colI)
         {
             if (valTree.colNumber >= 0)
             {
-                iSortOrder[iColI] = valTree.colNumber;
-                iColI++;
+                sortOrder[colI] = valTree.colNumber;
+                colI++;
             }
             for (int i = 0; i <= valTree.subTrees.Count - 1; i++)
             {
-                AddSortedIndexes(valTree.subTrees[i], ref iSortOrder, ref iColI);
+                AddSortedIndexes(valTree.subTrees[i], ref sortOrder, ref colI);
             }
-
         }
     }
 }

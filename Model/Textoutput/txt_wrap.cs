@@ -167,7 +167,7 @@ namespace outputComp
         //==========================================================================
         public override void terminate()
         {
-            FReporter.endWriting();
+            FReporter.EndWriting();
             base.terminate();
         }
         //==========================================================================
@@ -448,7 +448,7 @@ namespace outputComp
                         }
                         if (!bError)
                         {
-                            FReporter.beginWriting();                           // Open the output file                  
+                            FReporter.BeginWriting();                           // Open the output file                  
                         }
                         FFirstTime = false;
                     }

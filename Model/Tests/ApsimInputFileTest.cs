@@ -64,11 +64,11 @@ namespace APSIM.Tests
 
             int FirstRow = 0;
             Assert.AreEqual(MetData.Rows[FirstRow]["Site"], "DALB");
-            Assert.AreEqual(MetData.Rows[FirstRow]["radn"], (float)20.74);
-            Assert.AreEqual(MetData.Rows[FirstRow]["maxt"], (float)33.0);
-            Assert.AreEqual(MetData.Rows[FirstRow]["mint"], (float)17.4);
-            Assert.AreEqual(MetData.Rows[FirstRow]["rain"], (float)0.2);
-            Assert.AreEqual(MetData.Rows[FirstRow]["evap"], (float)7.41);
+            Assert.AreEqual(MetData.Rows[FirstRow]["radn"], (double)20.74);
+            Assert.AreEqual(MetData.Rows[FirstRow]["maxt"], (double)33.0);
+            Assert.AreEqual(MetData.Rows[FirstRow]["mint"], (double)17.4);
+            Assert.AreEqual(MetData.Rows[FirstRow]["rain"], (double)0.2);
+            Assert.AreEqual(MetData.Rows[FirstRow]["evap"], (double)7.41);
 
             int LastRow = MetData.Rows.Count - 1;
             Assert.AreEqual(LastRow, 3);
@@ -128,11 +128,11 @@ namespace APSIM.Tests
             InputFile.Close();
 
             Assert.AreEqual(MetData.Rows[0]["Site"], "DALB");
-            Assert.AreEqual(MetData.Rows[0]["radn"], (float)20.74);
-            Assert.AreEqual(MetData.Rows[0]["maxt"], (float)33.0);
-            Assert.AreEqual(MetData.Rows[0]["mint"], (float)17.4);
-            Assert.AreEqual(MetData.Rows[0]["rain"], (float)0.2);
-            Assert.AreEqual(MetData.Rows[0]["evap"], (float)7.41);
+            Assert.AreEqual(MetData.Rows[0]["radn"], (double)20.74);
+            Assert.AreEqual(MetData.Rows[0]["maxt"], (double)33.0);
+            Assert.AreEqual(MetData.Rows[0]["mint"], (double)17.4);
+            Assert.AreEqual(MetData.Rows[0]["rain"], (double)0.2);
+            Assert.AreEqual(MetData.Rows[0]["evap"], (double)7.41);
 
             File.Delete("text.csv");
         }
