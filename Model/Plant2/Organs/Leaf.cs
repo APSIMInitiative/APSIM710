@@ -656,18 +656,25 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            double Demand = 0.0;
-            foreach (LeafCohort L in Leaves)
-                Demand += L.DMDemand;
+            double StructuralDemand = 0.0;
+            double NonStructuralDemand = 0.0;
+            double MetabolicDemand = 0.0;
 
             if (DMDemandFunction != null)
-                Demand = Math.Min(DMDemandFunction.Value, Demand);
-
-            double Capacity = 0.0;
-            foreach (LeafCohort L in Leaves)
-                Capacity += L.DMSinkCapacity;
-            
-            return new DMDemandType { Structural = Demand, NonStructural = Capacity };
+            {
+                StructuralDemand = DMDemandFunction.Value * StructuralFraction.Value;
+                NonStructuralDemand = DMDemandFunction.Value * (1 - StructuralFraction.Value);
+            }
+            else
+            {
+                foreach (LeafCohort L in Leaves)
+                {
+                    StructuralDemand += L.StructuralDMDemand;
+                    MetabolicDemand += L.MetabolicDMDemand;
+                    NonStructuralDemand += L.NonStructuralDMDemand;
+                }
+            }
+            return new DMDemandType { Structural = StructuralDemand + MetabolicDemand, NonStructural = NonStructuralDemand };
         }
 
     }
@@ -708,14 +715,14 @@ public class Leaf : BaseOrgan, AboveGround
                 double TotalPotentialDemand = 0;
 
                 foreach (LeafCohort L in Leaves)
-                    TotalPotentialDemand += L.DMDemand;
+                    TotalPotentialDemand += L.StructuralDMDemand + L.MetabolicDMDemand;
 
                 // first make sure each cohort gets the DM required for Maximum SLA
                 double fraction = (value) / TotalPotentialDemand;//
                 foreach (LeafCohort L in Leaves)
                 {
                     double CohortPotentialDemand = 0;
-                    CohortPotentialDemand = L.DMDemand;
+                    CohortPotentialDemand = L.StructuralDMDemand + L.MetabolicDMDemand;
                     double PotentialAllocation = Math.Min(CohortPotentialDemand * fraction, DMPotentialsupply);
                     L.DMPotentialAllocation = PotentialAllocation;
                     DMPotentialallocated += PotentialAllocation;
@@ -744,11 +751,11 @@ public class Leaf : BaseOrgan, AboveGround
                 double DMallocated = 0;
                 double TotalDemand = 0;
                 foreach (LeafCohort L in Leaves)
-                    TotalDemand += L.DMDemand;
+                    TotalDemand += L.StructuralDMDemand + L.MetabolicDMDemand;
                 double DemandFraction = (value.Allocation) / TotalDemand;//
                 foreach (LeafCohort L in Leaves)
                 {
-                    double Allocation = Math.Min(L.DMDemand * DemandFraction, DMsupply);
+                    double Allocation = Math.Min((L.StructuralDMDemand + L.MetabolicDMDemand) * DemandFraction, DMsupply);
                     L.DMAllocation = Allocation;
                     DMallocated += Allocation;
                     DMsupply -= Allocation;
@@ -762,7 +769,7 @@ public class Leaf : BaseOrgan, AboveGround
             // excess allocation
             double TotalSinkCapacity = 0;
             foreach (LeafCohort L in Leaves)
-                TotalSinkCapacity += L.DMSinkCapacity;
+                TotalSinkCapacity += L.NonStructuralDMDemand;
             if (value.ExcessAllocation > TotalSinkCapacity)
                 throw new Exception("Allocating more excess DM to Leaves then they are capable of storing");
             if (TotalSinkCapacity > 0.0)
@@ -770,7 +777,7 @@ public class Leaf : BaseOrgan, AboveGround
                 double SinkFraction = value.ExcessAllocation / TotalSinkCapacity;
                 foreach (LeafCohort L in Leaves)
                 {
-                    double Allocation = Math.Min(L.DMSinkCapacity * SinkFraction, value.ExcessAllocation);
+                    double Allocation = Math.Min(L.NonStructuralDMDemand * SinkFraction, value.ExcessAllocation);
                     L.DMExcessAllocation = Allocation;
                 }
             }
@@ -828,10 +835,16 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            double Demand = 0.0;
+            double StructuralDemand = 0.0;
+            double MetabolicDemand = 0.0;
+            double NonStructuralDemand = 0.0;
             foreach (LeafCohort L in Leaves)
-                Demand += L.NDemand;
-            return new NDemandType { Structural = Demand };
+            {
+                StructuralDemand += L.StructuralNDemand;
+                MetabolicDemand += L.MetabolicNDemand;
+                NonStructuralDemand += L.NonStructuralNDemand;
+            }
+            return new NDemandType { Structural = StructuralDemand+MetabolicDemand+NonStructuralDemand };
         }
     }
     public override NAllocationType NAllocation

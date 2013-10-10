@@ -119,14 +119,14 @@ public class LeafCohort
     public double LeafStartNonStructuralDMRetranslocationSupply = 0;
     //variables used in calculating daily supplies and deltas
     public double DeltaWt = 0;
-    public double StructuralNDemand = 0;
-    public double MetabolicNDemand = 0;
-    public double NonStructuralNDemand = 0;
+    //public double StructuralNDemand = 0;
+    //public double MetabolicNDemand = 0;
+    //public double NonStructuralNDemand = 0;
     public double PotentialAreaGrowth = 0;
     private double DeltaPotentialArea = 0;
     private double DeltaWaterConstrainedArea = 0;
-    private double StructuralDMDemand = 0;
-    private double MetabolicDMDemand = 0;
+    //private double StructuralDMDemand = 0;
+    //private double MetabolicDMDemand = 0;
     private double PotentialStructuralDMAllocation = 0;
     private double PotentialMetabolicDMAllocation = 0;
     private double MetabolicNReallocated = 0;
@@ -266,22 +266,32 @@ public class LeafCohort
  #endregion
 
  #region Arbitration methods
-    virtual public double DMDemand
+    virtual public double StructuralDMDemand
     {
         get
         {
             if (IsGrowing)
             {
-                double TotalDMDemand = Math.Min(DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2),DeltaWaterConstrainedArea / SpecificLeafAreaMin); 
-                StructuralDMDemand = TotalDMDemand * StructuralFraction; 
-                MetabolicDMDemand = TotalDMDemand * (1 - StructuralFraction);
-                return StructuralDMDemand + MetabolicDMDemand;
+                double TotalDMDemand = Math.Min(DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2), DeltaWaterConstrainedArea / SpecificLeafAreaMin);
+                return TotalDMDemand * StructuralFraction;
             }
-            else
-                return 0.0;
+            else return 0;
         }
     }
-    virtual public double DMSinkCapacity
+    virtual public double MetabolicDMDemand
+    {
+        get
+        {
+            if (IsGrowing)
+            {
+                double TotalDMDemand = Math.Min(DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2), DeltaWaterConstrainedArea / SpecificLeafAreaMin);
+                return TotalDMDemand * (1 - StructuralFraction);
+            }
+            else return 0;
+        }
+    }
+
+    virtual public double NonStructuralDMDemand
     {
         get
         {
@@ -294,31 +304,61 @@ public class LeafCohort
                 return 0.0;
         }
     }
+    virtual public double TotalDMDemand
+    {
+        get
+        {
+            return StructuralDMDemand + MetabolicDMDemand;
+        }
+    }
+
     virtual public double DMExcessAllocation
     {
         set
         {
             if (value < -0.0000000001)
                 throw new Exception("-ve ExcessDM Allocation to Leaf Cohort");
-            if ((value - DMSinkCapacity) > 0.0000000001)
+            if ((value - NonStructuralDMDemand) > 0.0000000001)
                 throw new Exception("-ExcessDM Allocation to leaf Cohort is in excess of its Capacity");
-            if (DMSinkCapacity > 0)
+            if (NonStructuralDMDemand > 0)
                 Live.NonStructuralWt += value;
         }
     }
-    virtual public double NDemand
+    virtual public double StructuralNDemand
     {
         get
         {
             if ((IsNotSenescing) && (ShadeInducedSenRate == 0.0)) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
-            {
-                StructuralNDemand = MinimumNConc * PotentialStructuralDMAllocation;
-                MetabolicNDemand = FunctionalNConc * PotentialMetabolicDMAllocation;
-                NonStructuralNDemand = Math.Max(0.0, LuxaryNConc * (LiveStart.StructuralWt + LiveStart.MetabolicWt + PotentialStructuralDMAllocation + PotentialMetabolicDMAllocation) - Live.NonStructuralN);//Math.Max(0.0, MaxN - CritN - LeafStartNonStructuralN); //takes the difference between the two above as the maximum nonstructural N conc and subtracts the current nonstructural N conc to give a value
-                return StructuralNDemand + MetabolicNDemand + NonStructuralNDemand;
-            }
+                return MinimumNConc * PotentialStructuralDMAllocation;
             else
                 return 0.0;
+        }
+    }
+    virtual public double NonStructuralNDemand
+    {
+        get
+        {
+            if ((IsNotSenescing) && (ShadeInducedSenRate == 0.0)) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
+                return Math.Max(0.0, LuxaryNConc * (LiveStart.StructuralWt + LiveStart.MetabolicWt + PotentialStructuralDMAllocation + PotentialMetabolicDMAllocation) - Live.NonStructuralN);//Math.Max(0.0, MaxN - CritN - LeafStartNonStructuralN); //takes the difference between the two above as the maximum nonstructural N conc and subtracts the current nonstructural N conc to give a value
+            else
+                return 0.0;
+        }
+    }
+    virtual public double MetabolicNDemand
+    {
+        get
+        {
+            if ((IsNotSenescing) && (ShadeInducedSenRate == 0.0)) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
+                return FunctionalNConc * PotentialMetabolicDMAllocation;
+            else
+                return 0.0;
+        }
+    }
+    virtual public double TotalNDemand
+    {
+        get
+        {
+            return StructuralNDemand + NonStructuralNDemand + MetabolicNDemand;
         }
     }
     virtual public double DMAllocation
@@ -327,9 +367,9 @@ public class LeafCohort
         {
             if (value < -0.0000000001)
                 throw new Exception("-ve DM Allocation to Leaf Cohort");
-            if ((value - DMDemand) > 0.0000000001)
+            if ((value - TotalDMDemand) > 0.0000000001)
                 throw new Exception("DM Allocated to Leaf Cohort is in excess of its Demand");
-            if (DMDemand > 0)
+            if (TotalDMDemand > 0)
             {
                 double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
                 StructuralDMAllocation = value * StructuralDMDemandFrac;
@@ -345,9 +385,9 @@ public class LeafCohort
         {
             if (value < -0.000000001)
                 throw new Exception("-ve N allocation to Leaf cohort");
-            if ((value - NDemand) > 0.0000000001)
+            if ((value - TotalNDemand) > 0.0000000001)
                 throw new Exception("N Allocation to leaf cohort in excess of its Demand");
-            if (NDemand > 0.0)
+            if (TotalNDemand > 0.0)
             {
                 double StructDemFrac = 0;
                 if (StructuralNDemand > 0)
@@ -411,9 +451,9 @@ public class LeafCohort
         {
             if (value < -0.0000000001)
                 throw new Exception("-ve Potential DM Allocation to Leaf Cohort");
-            if ((value - DMDemand) > 0.0000000001)
+            if ((value - TotalDMDemand) > 0.0000000001)
                 throw new Exception("Potential DM Allocation to Leaf Cohortis in excess of its Demand");
-            if (DMDemand > 0)
+            if (TotalDMDemand > 0)
             {
                 double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
                 PotentialStructuralDMAllocation = value * StructuralDMDemandFrac;
@@ -616,11 +656,11 @@ public class LeafCohort
             LeafStartNRetranslocationSupply = NRetranslocationSupply;
 
             //zero locals variables
-            StructuralDMDemand = 0;
-            MetabolicDMDemand = 0;
-            StructuralNDemand = 0;
-            MetabolicNDemand = 0;
-            NonStructuralNDemand = 0;
+            //StructuralDMDemand = 0;
+            //MetabolicDMDemand = 0;
+            //StructuralNDemand = 0;
+            //MetabolicNDemand = 0;
+            //NonStructuralNDemand = 0;
             PotentialStructuralDMAllocation = 0;
             PotentialMetabolicDMAllocation = 0;
             DMRetranslocated = 0;
