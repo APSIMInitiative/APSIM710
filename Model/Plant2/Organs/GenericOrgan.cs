@@ -108,15 +108,6 @@ public class GenericOrgan : BaseOrgan
     #endregion
 
     #region Arbitrator methods
- 
-  /*  public override double DMDemand
-    {
-        get
-        {
-            StructuralDMDemand = DMDemandFunction.Value * _StructuralFraction;
-            return StructuralDMDemand;
-        }
-    }*/
     [Output]
     [Units("g/m^2")]
     public override DMDemandType DMDemand
@@ -131,15 +122,6 @@ public class GenericOrgan : BaseOrgan
         }
 
     }
-  /*  public override double DMSinkCapacity
-    {
-        get
-        {
-            double MaximumDM = (StartLive.StructuralWt + StructuralDMDemand) * 1 / _StructuralFraction;
-            MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
-            return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartLive.StructuralWt - StartLive.NonStructuralWt);
-        }
-    }*/
     public override double DMPotentialAllocation
     {
         set
@@ -163,19 +145,7 @@ public class GenericOrgan : BaseOrgan
             Reallocation = 0};
         }
     }
-    /*public override double NDemand
-    {
-        get
-        {
-            double _NitrogenDemandSwitch = 1;
-            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
-            double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
-            return NDeficit * _NitrogenDemandSwitch;
-        }
-    }*/
-
-    public override NDemandType NDemand2
+    public override NDemandType NDemand
     {
         get
         {

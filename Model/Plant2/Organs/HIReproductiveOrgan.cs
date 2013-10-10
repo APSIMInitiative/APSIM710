@@ -69,19 +69,6 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0.0;
         }
     }
-   /* public override double DMDemand
-    {
-        get
-        {
-            double CurrentWt = (Live.Wt + Dead.Wt);
-            double NewHI = HI + HIIncrement.Value;
-            double NewWt = NewHI * AboveGround.Wt;
-            double Demand = Math.Max(0.0, NewWt - CurrentWt);
-
-            return Demand;
-        }
-
-    }*/
     public override DMDemandType DMDemand
     {
         get
@@ -98,16 +85,7 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; }
     }
-    /*public override double NDemand
-    {
-        get
-        {
-            double demand = Math.Max(0.0, (NConc.Value * Live.Wt) - Live.N);
-            return demand;
-        }
-
-    }*/
-    public override NDemandType NDemand2
+    public override NDemandType NDemand
     {
         get
         {

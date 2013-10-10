@@ -175,28 +175,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             return new DMDemandType { Structural = Demand };
         }
     }
-    /*public override double DMDemand
-    {
-        get
-        {
-            if (DMDemandFunction != null)
-            {
-                return DMDemandFunction.Value;
-            }
-            else
-            {
-              Number = NumberFunction.Value;
-              if (Number > 0)
-              {
-                double demand = Number * FillingRate.Value;
-                // Ensure filling does not exceed a maximum size
-                return Math.Min(demand, (MaximumSize - Live.Wt / Number) * Number);
-              }
-              else
-                return 0;
-            }
-       }
-    }*/
     public override double DMPotentialAllocation
     {
         set
@@ -210,19 +188,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     }
     public override DMAllocationType DMAllocation
     { set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; } }
-    /*public override double NDemand
-    {
-        get
-        {
-            double _NitrogenDemandSwitch = 1;
-            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
-            double demand = Number * NFillingRate.Value;
-            return Math.Min(demand, MaximumNConc.Value * DailyGrowth) * _NitrogenDemandSwitch;
-        }
-
-    }*/
-    public override NDemandType NDemand2
+    public override NDemandType NDemand
     {
         get
         {

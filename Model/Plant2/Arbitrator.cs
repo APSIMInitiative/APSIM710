@@ -372,8 +372,8 @@ public class Arbitrator
         // GET ALL SUPPLIES AND DEMANDS AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
-            NDemandType NDemand = Organs[i].NDemand2;
-            NDemandOrgan[i] = Organs[i].NDemand2.Structural;  //Fixme currently all N demand is passed as structural
+            NDemandType NDemand = Organs[i].NDemand;
+            NDemandOrgan[i] = Organs[i].NDemand.Structural;  //Fixme currently all N demand is passed as structural
             //NDemandOrgan[i] = Organs[i].NDemand;
             NSupplyType NSupply = Organs[i].NSupply;
             NReallocationSupply[i] = NSupply.Reallocation;

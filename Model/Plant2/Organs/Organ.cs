@@ -76,17 +76,12 @@ abstract public class Organ
 
     #region Organ - Arbitrator interface methods
     //DryMatter methods
-    //abstract public double DMDemand { get; set; }
-    //abstract public double DMSinkCapacity { get; set; }
     abstract public double DMPotentialAllocation { set; }
     abstract public DMDemandType DMDemand { get; set; }
-    //abstract public double DMPotentialAllocation { set; }
-    //abstract public DMDemandType DMDemand2 { get; set; }
     abstract public DMSupplyType DMSupply { get; set; }
     abstract public DMAllocationType DMAllocation { set; }
     //Nitrogen methods
-    //abstract public double NDemand { get; set; }
-    abstract public NDemandType NDemand2 { get; set; }
+    abstract public NDemandType NDemand { get; set; }
     abstract public NSupplyType NSupply { get; set; }
     abstract public NAllocationType NAllocation { set; }
     //Water methods

@@ -73,15 +73,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
             return new DMDemandType { Structural = Demand };
         }
     }
-    /*public override double DMDemand
-    {
-        get {
-            if (DMDemandFunction != null)
-                return DMDemandFunction.Value;
-            else
-                return 1; 
-             }
-    }*/
+
     public override DMSupplyType DMSupply
     {        
         get {
@@ -318,22 +310,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     }
 
 
-    /*public override double NDemand
-    {
-        get
-        {
-         if (NitrogenDemandSwitch == null) //Default of 1 means demand is always truned on!!!!
-             return 0;
-         if (NitrogenDemandSwitch.Value == 0)
-             return 0;
-         if (NConc == null)
-             throw new Exception("Lacking N conc");
-
-          double NDeficit = Math.Max(0.0, NConc.Value * (Live.Wt + DeltaBiomass) - Live.N);
-            return NDeficit;
-        }
-    }*/
-    public override NDemandType NDemand2
+    public override NDemandType NDemand
     {
         get
         {
@@ -366,7 +343,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     {
         set
         {
-            if (NDemand2.Structural == 0)
+            if (NDemand.Structural == 0)
                 if (value.Allocation == 0) { }//All OK
                 else
                     throw new Exception("Invalid allocation of N");
@@ -380,7 +357,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
                 if ((NSupplyValue > 0))
                 {
                     //What do we need to meat demand;
-                    double ReqN = NDemand2.Structural;
+                    double ReqN = NDemand.Structural;
 
                     if (ReqN == NSupplyValue)
                     {

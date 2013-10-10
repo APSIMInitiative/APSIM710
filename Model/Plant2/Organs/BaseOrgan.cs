@@ -12,18 +12,15 @@ public class BaseOrgan : Organ
     [Link]
     public MetFile MetData = null;
 
-    //public override double DMDemand { get { return 0; } set{} }
     public override DMSupplyType DMSupply { get { return new DMSupplyType(); } set { } }
-    //public override double DMSinkCapacity { get { return 0; } set { } }
     public override double DMPotentialAllocation { set { } }
     public override DMAllocationType DMAllocation { set { } }
     public override DMDemandType DMDemand { get { return new DMDemandType(); } set { } }
 
-    //public override double NDemand { get { return 0; } set { } }
     public override NSupplyType NSupply { get { return new NSupplyType(); } set { } }
     public override NAllocationType NAllocation { set {  } }
     public override double NFixationCost { get { return 0; } set { } }
-    public override NDemandType NDemand2 { get { return new NDemandType(); } set { } }
+    public override NDemandType NDemand { get { return new NDemandType(); } set { } }
 
     public override double WaterDemand { get { return 0; } set { } }
     public override double WaterSupply { get { return 0; } set { } }

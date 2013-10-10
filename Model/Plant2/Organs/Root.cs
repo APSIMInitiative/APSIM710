@@ -328,15 +328,7 @@ public class Root : BaseOrgan, BelowGround
             return new DMDemandType { Structural = Demand };
         }
     }
-  /*  public override double DMDemand
-    {
-        get
-        {
-            if (isGrowing)
-                return Arbitrator.DMSupply * PartitionFraction.Value;
-            return 0;
-        }
-    }*/
+
     public override double DMPotentialAllocation
     {
         set
@@ -450,7 +442,7 @@ public class Root : BaseOrgan, BelowGround
     }
     [Output]
     [Units("g/m2")]
-    public override NDemandType NDemand2
+    public override NDemandType NDemand
     {
         get
         {
@@ -468,23 +460,7 @@ public class Root : BaseOrgan, BelowGround
             return new NDemandType { Structural = TotalDeficit };
         }
     }
-    /*public override double NDemand
-    {
-        get
-        {
-            //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
-            double TotalDeficit = 0.0;
-            double _NitrogenDemandSwitch = 1;
-            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
-            foreach (Biomass Layer in LayerLive)
-            {
-                double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
-                TotalDeficit += NDeficit;
-            }
-            return TotalDeficit * _NitrogenDemandSwitch;
-        }
-    }*/
+
     public override NSupplyType NSupply
     {
         get

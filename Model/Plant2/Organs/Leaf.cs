@@ -650,23 +650,6 @@ public class Leaf : BaseOrgan, AboveGround
  #endregion
 
  #region Arbitrator methods
-
-    /*public override double DMDemand
-    {
-        get
-        {
-            double Demand = 0.0;
-            foreach (LeafCohort L in Leaves)
-                Demand += L.DMDemand;
-
-            // Need a better way to do this - perhaps via refactoring leaf cohorts.  Need to
-            // allow a DM demand that comes from allometry or some method other than leaf sizes.
-            if (DMDemandFunction != null)
-                Demand = Math.Min(DMDemandFunction.Value,Demand);
-
-            return Demand;
-        }
-    }*/
     [Output]
     [Units("g/m^2")]
     public override DMDemandType DMDemand
@@ -708,16 +691,6 @@ public class Leaf : BaseOrgan, AboveGround
             return new DMSupplyType { Photosynthesis = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation , Reallocation = Reallocation};
         }
     }
-    /*public override double DMSinkCapacity
-    {
-        get
-        {
-            double Capacity = 0.0;
-            foreach (LeafCohort L in Leaves)
-                Capacity += L.DMSinkCapacity;
-            return Capacity;
-        } 
-    }*/
     public override double DMPotentialAllocation
     {
         set
@@ -851,7 +824,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("g/m^2")]
-    public override NDemandType NDemand2
+    public override NDemandType NDemand
     {
         get
         {
@@ -861,21 +834,11 @@ public class Leaf : BaseOrgan, AboveGround
             return new NDemandType { Structural = Demand };
         }
     }
-    /*public override double NDemand
-    {
-        get
-        {
-            double Demand = 0.0;
-            foreach (LeafCohort L in Leaves)
-                Demand += L.NDemand;
-            return Demand;
-        }
-    }*/
     public override NAllocationType NAllocation
     {
         set
         {
-            if (NDemand2.Structural == 0)
+            if (NDemand.Structural == 0)
                 if (value.Allocation == 0) { }//All OK
                 else
                     throw new Exception("Invalid allocation of N");
