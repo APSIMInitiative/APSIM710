@@ -94,7 +94,6 @@ class fruitPodPart : public SimplePart {
       Co2Modifier *co2Modifier;
       lookupFunction TECoeff;
       PlantPartArea pod;
-      float radiationInterceptedGreen;
 };
 
 #endif /* PodPartH */

@@ -78,7 +78,7 @@ void CMPComponentInterface::messageToLogic(const Message& message)
    bool ack = message.toAcknowledge == 1;
    //unsigned fromID = message.from;
    unsigned msgID = message.messageID;
-   unsigned sender = message.from;
+   unsigned senderID = message.from;
 
 	try
 		{
@@ -100,8 +100,7 @@ void CMPComponentInterface::messageToLogic(const Message& message)
          {
          CompleteType complete;
          complete.ackID = msgID;
-         //sendMessage(newMessage(Message::Complete, componentID, parentID, false, complete));
-         sendMessage(newMessage(Message::Complete, componentID, sender, false, complete));
+         sendMessage(newMessage(Message::Complete, componentID, senderID, false, complete));
          }
 
 		}
