@@ -34,13 +34,22 @@ public class DMSupplyType
     public double Retranslocation;
     public double Reallocation;
 }
+public class DMPotentialAllocationType
+{
+    public double Structural;
+    public double Metabolic;
+    public double NonStructural;
+}
 public class DMAllocationType
 {
     public double Allocation;
     public double ExcessAllocation;
     public double Retranslocation;
     public double Reallocation;
-    public double Respired; 
+    public double Respired;
+    public double StructuralAllocation;
+    public double NonStructuralAllocation;
+    public double MetabolicAllocation;
 }
 public class NAllocationType
 {
@@ -56,6 +65,9 @@ public class NSupplyType
     public double Uptake;
     public double Fixation;
     public double Retranslocation;
+    public double StructuralAllocation;
+    public double NonStructuralAllocation;
+    public double MetabolicAllocation;
 }
 #endregion
 
@@ -77,6 +89,7 @@ abstract public class Organ
     #region Organ - Arbitrator interface methods
     //DryMatter methods
     abstract public double DMPotentialAllocation { set; }
+    abstract public DMPotentialAllocationType DMPotentialAllocation2 { set; }
     abstract public DMDemandType DMDemand { get; set; }
     abstract public DMSupplyType DMSupply { get; set; }
     abstract public DMAllocationType DMAllocation { set; }

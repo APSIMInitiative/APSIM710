@@ -503,7 +503,7 @@ public class LeafCohort
             if (value > 0.0)
             {
                 NonStructuralWtReallocated = Math.Min(LeafStartNonStructuralDMReallocationSupply, value); //Reallocate nonstructural first
-                MetabolicWtReallocated = Math.Max(0.0, value - LeafStartMetabolicDMReallocationSupply); //Then reallocate metabolic DM
+                MetabolicWtReallocated = Math.Max(0.0, value - NonStructuralWtReallocated); //Then reallocate metabolic DM
                 Live.NonStructuralWt -= NonStructuralWtReallocated;
                 Live.MetabolicWt -= MetabolicWtReallocated;
             }
@@ -729,18 +729,6 @@ public class LeafCohort
             Live.StructuralN -= StructuralNSenescing;
             Dead.StructuralN += StructuralNSenescing;
 
-
-            /*
-             * If the leaf decreased during the day then it is possible for the senesing material to be larger than the leaf
-             * RFZ
-             */ 
-
-
-
-            //Live.MetabolicWt -= (MetabolicWtSenescing);
-            //Live.MetabolicWt = Math.Max(0.0, Live.MetabolicWt);
-            //Dead.MetabolicWt += (MetabolicWtSenescing);
-            //RFZ
             Live.MetabolicWt -= Math.Max(0.0,MetabolicWtSenescing - MetabolicWtReallocated);
             Dead.MetabolicWt += Math.Max(0.0, MetabolicWtSenescing - MetabolicWtReallocated);
 
@@ -752,7 +740,6 @@ public class LeafCohort
             Dead.NonStructuralN += Math.Max(0.0, NonStructuralNSenescing - NonStructuralNReallocated - NonStructuralNRetrasnlocated);
 
             Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
-            //Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
             Live.NonStructuralWt = Math.Max(0.0, Live.NonStructuralWt);
   
             //RFZ

@@ -186,6 +186,17 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             PotentialDMAllocation = value;
         }
     }
+    public override DMPotentialAllocationType DMPotentialAllocation2
+    {
+        set
+        {
+            if (DMDemand.Structural == 0)
+                if (value.Structural < 0.000000000001) { }//All OK
+                else
+                    throw new Exception("Invalid allocation of potential DM in" + Name);
+            PotentialDMAllocation = value.Structural;
+        }
+    }
     public override DMAllocationType DMAllocation
     { set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; } }
     public override NDemandType NDemand

@@ -35,14 +35,16 @@ public class Arbitrator
 
     //  Class arrays
     bool[] IsPriority = null;
-    double[] DMFreshSupplyOrgan = null;
-    double[] DMStoreSupplyOrgan = null;
-    double[] DMDemand = null;
-    double[] DMSinkCapacity = null;
-    double[] DMAllocation = null;
-    double[] DMReallocationSupply = null;
+    double[] DMSupplyPhotosynthesis = null;
+    double[] DMSupplyRetranslocation = null;
+    double[] DMSupplyReallocation = null;
+    double[] DMDemandStructural = null;
+    double[] DMDemandMetabolic = null;
+    double[] DMDemandNonStructural = null;
+    double[] DMAllocationStructural = null;
+    double[] DMAllocationMetabolic = null;
+    double[] DMAllocationNonStructural = null;
     double[] DMReallocation = null; 
-    double[] DMExcessAllocation = null;
     double[] DMRetranslocation = null;
     
     double[] NDemandOrgan = null;
@@ -65,7 +67,7 @@ public class Arbitrator
     {
         get
         {
-            return TotalFreshDMSupply;
+            return TotalDMSupplyPhotosynthesis;
         }
     }
     [Output]
@@ -89,23 +91,25 @@ public class Arbitrator
     public bool KAware = false;
 
     //Local variables
-    private double TotalFreshDMSupply = 0;
-    private double TotalStoreDMSupply = 0;
+    private double TotalDMSupplyPhotosynthesis = 0;
+    private double TotalDMSupplyRetranslocation = 0;
+    private double TotalDMSupplyReallocation = 0;
     private double TotalPriorityDMDemand = 0;
     private double TotalNonPriorityDMDemand = 0;
     private double StartWt = 0;
     private double TotalNDemand = 0;
     private double EndWt = 0;
-    private double TotalDMDemand = 0;
-    private double TotalDMSinkCapacity = 0;
-    private double TotalWtAllocated = 0;
-    private double TotalWtNotAllocatedSinkLimitation = 0;
+    private double TotalDMDemandStructural = 0;
+    private double TotalDMDemandMetabolic = 0;
+    private double TotalDMDemandNonStructural = 0;
+    private double TotalDMSupplyAllocated = 0;
+    private double TotalDMSupplyNotAllocatedSinkLimitation = 0;
     private double DMNotAllocated = 0;
     private double DMBalanceError = 0;
-    private double TotalStoreDMRetranslocated = 0;
+    private double TotalNonStructuralDMRetranslocated = 0;
     private double StartingN = 0;
     private double TotalNReallocationSupply = 0;
-    private double TotalDMReallocationSupply = 0;
+    //private double TotalDMReallocationSupply = 0;
     private double TotalNUptakeSupply = 0;
     private double TotalNFixationSupply = 0;
     private double TotalNRetranslocationSupply = 0;
@@ -163,17 +167,18 @@ public class Arbitrator
     { 
         //create organ specific variables
         IsPriority = new bool[Organs.Count];
-        DMFreshSupplyOrgan = new double[Organs.Count];
-        DMStoreSupplyOrgan = new double[Organs.Count];
-        DMDemand = new double[Organs.Count];
-        DMSinkCapacity = new double[Organs.Count];
-        DMAllocation = new double[Organs.Count];
-        DMExcessAllocation = new double[Organs.Count];
+        DMSupplyPhotosynthesis = new double[Organs.Count];
+        DMSupplyRetranslocation = new double[Organs.Count];
+        DMSupplyReallocation = new double[Organs.Count];
+        DMDemandStructural = new double[Organs.Count];
+        DMDemandMetabolic = new double[Organs.Count];
+        DMDemandNonStructural = new double[Organs.Count];
+        DMAllocationStructural = new double[Organs.Count];
+        DMAllocationMetabolic = new double[Organs.Count];
+        DMAllocationNonStructural = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
         DMReallocation = new double[Organs.Count];
-        DMReallocationSupply = new double[Organs.Count];
-
- 
+         
         //Tag priority organs
         if (PriorityOrgan != null)
         {
@@ -190,28 +195,24 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             DMSupplyType DM = Organs[i].DMSupply;
-            DMFreshSupplyOrgan[i] = DM.Photosynthesis;
-            DMStoreSupplyOrgan[i] = DM.Retranslocation;
-
-            //RFZ
-            DMFreshSupplyOrgan[i] += DM.Reallocation;
-
-            //Also store in Reallocation supply so we can remove from dead.
-            DMReallocationSupply[i] += DM.Reallocation;
+            DMSupplyPhotosynthesis[i] = DM.Photosynthesis;
+            DMSupplyRetranslocation[i] = DM.Retranslocation;
+            DMSupplyReallocation[i] += DM.Reallocation;
         }
-        TotalFreshDMSupply = MathUtility.Sum(DMFreshSupplyOrgan);
-        TotalStoreDMSupply = MathUtility.Sum(DMStoreSupplyOrgan);
-        TotalDMReallocationSupply = MathUtility.Sum(DMReallocationSupply);
+        TotalDMSupplyPhotosynthesis = MathUtility.Sum(DMSupplyPhotosynthesis);
+        TotalDMSupplyRetranslocation = MathUtility.Sum(DMSupplyRetranslocation);
+        TotalDMSupplyReallocation = MathUtility.Sum(DMSupplyReallocation);
 
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
             DMDemandType Demand = Organs[i].DMDemand;
-            //DMDemand[i] = Organs[i].DMDemand;
-            DMDemand[i] = Demand.Structural;
-            //DMSinkCapacity[i] = Organs[i].DMSinkCapacity;
-            DMSinkCapacity[i] = Demand.NonStructural;
-            DMAllocation[i] = 0;
+            DMDemandStructural[i] = Demand.Structural;
+            DMDemandMetabolic[i] = Demand.Metabolic;
+            DMDemandNonStructural[i] = Demand.NonStructural;
+            DMAllocationStructural[i] = 0;
+            DMAllocationMetabolic[i] = 0;
+            DMAllocationNonStructural[i] = 0;
             DMReallocation[i] = 0;
             DMRetranslocation[i] = 0;
         }
@@ -221,84 +222,86 @@ public class Arbitrator
         {
             DMDemandType Demand = Organs[i].DMDemand;
             if (IsPriority[i] == true)
-                //TotalPriorityDMDemand += Organs[i].DMDemand;
-                TotalPriorityDMDemand += Demand.Structural;
+                TotalPriorityDMDemand += (Demand.Structural + Demand.Metabolic);
             else
-                //TotalNonPriorityDMDemand += Organs[i].DMDemand;
-                TotalNonPriorityDMDemand += Demand.Structural;
+                TotalNonPriorityDMDemand += (Demand.Structural + Demand.Metabolic);
         }
 
-        TotalDMDemand = MathUtility.Sum(DMDemand);
-        TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
+        TotalDMDemandStructural = MathUtility.Sum(DMDemandStructural);
+        TotalDMDemandMetabolic = MathUtility.Sum(DMDemandMetabolic);
+        TotalDMDemandNonStructural = MathUtility.Sum(DMDemandNonStructural);
     }
     virtual public void DoPotentialDMAllocation(List<Organ> Organs)
     {
         //  Allocate to meet Organs demands
-        TotalWtAllocated = 0;
-        TotalWtNotAllocatedSinkLimitation = 0;
-        DMNotAllocated = TotalFreshDMSupply;
+        TotalDMSupplyAllocated = 0;
+        TotalDMSupplyNotAllocatedSinkLimitation = 0;
+        DMNotAllocated = TotalDMSupplyPhotosynthesis + TotalDMSupplyReallocation - TotalDMSupplyAllocated;
         //Gives to each organ: the minimum between what the organ demands (if supply is plenty) or it's share of total demand (if supply is not enough) CHCK-EIT
 
         //First give biomass to priority organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            if ((IsPriority[i] == true) && (DMDemand[i] > 0.0))
+            if ((IsPriority[i] == true) && (DMDemandStructural[i] + DMDemandMetabolic[i] > 0.0))
             {
-                double proportion = DMDemand[i] / TotalPriorityDMDemand;
-                double DMAllocated = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
-                DMAllocation[i] = DMAllocated;
-                DMReallocation[i] = 0;
-                TotalWtAllocated += DMAllocated;
+                double proportion = (DMDemandStructural[i] + DMDemandMetabolic[i])/ TotalPriorityDMDemand;
+                double DMAllocated = Math.Min(DMNotAllocated * proportion, (DMDemandStructural[i] + DMDemandMetabolic[i]) - (DMAllocationStructural[i] + DMAllocationMetabolic[i]));
+                DMAllocationStructural[i] += DMAllocated * DMDemandStructural[i] / (DMDemandStructural[i] + DMDemandMetabolic[i]);
+                DMAllocationMetabolic[i] += DMAllocated * DMDemandMetabolic[i] / (DMDemandStructural[i] + DMDemandMetabolic[i]);
+                TotalDMSupplyAllocated += DMAllocated;
             }
         }
-        DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
+        DMNotAllocated = TotalDMSupplyPhotosynthesis + TotalDMSupplyReallocation - TotalDMSupplyAllocated;
         //Then give the left overs to the non-priority organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            if ((IsPriority[i] == false) && (DMDemand[i] > 0.0))
+            if ((IsPriority[i] == false) && (DMDemandStructural[i] + DMDemandMetabolic[i] > 0.0))
             {
-                double proportion = DMDemand[i] / TotalNonPriorityDMDemand;
-                DMAllocation[i] = Math.Min(DMNotAllocated * proportion, DMDemand[i] - DMAllocation[i]);
-                TotalWtAllocated += DMAllocation[i];
+                double proportion = (DMDemandStructural[i] + DMDemandMetabolic[i]) / TotalNonPriorityDMDemand;
+                double DMAllocated = Math.Min(DMNotAllocated * proportion, (DMDemandStructural[i] + DMDemandMetabolic[i]) - (DMAllocationStructural[i] + DMAllocationMetabolic[i]));
+                DMAllocationStructural[i] += DMAllocated * DMDemandStructural[i] / (DMDemandStructural[i] + DMDemandMetabolic[i]);
+                DMAllocationMetabolic[i] += DMAllocated * DMDemandMetabolic[i] / (DMDemandStructural[i] + DMDemandMetabolic[i]);
+                TotalDMSupplyAllocated += DMAllocated;
             }
         }
 
         //Anything left over after that goes to the sink organs
-        DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
+        DMNotAllocated = TotalDMSupplyPhotosynthesis + TotalDMSupplyReallocation - TotalDMSupplyAllocated;
         if (DMNotAllocated > 0)
         {
             for (int i = 0; i < Organs.Count; i++)
             {
-                if (DMSinkCapacity[i] > 0.0)
+                if (DMDemandNonStructural[i] > 0.0)
                 {
-                    double proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
-                    double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
-                    DMExcessAllocation[i] += DMExcess;
-                    TotalWtAllocated += DMExcess;
+                    double proportion = DMDemandNonStructural[i] / TotalDMDemandNonStructural;
+                    double DMAllocated = Math.Min(DMNotAllocated * proportion, DMDemandNonStructural[i]);
+                    DMAllocationNonStructural[i] += DMAllocated;
+                    TotalDMSupplyAllocated += DMAllocated;
                 }
             }
         }
-        TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalFreshDMSupply - TotalWtAllocated);
+        TotalDMSupplyNotAllocatedSinkLimitation = Math.Max(0.0, TotalDMSupplyPhotosynthesis + TotalDMSupplyReallocation - TotalDMSupplyAllocated);
 
         // Then check it all adds up
-        DMBalanceError = Math.Abs((TotalWtAllocated + TotalWtNotAllocatedSinkLimitation) - TotalFreshDMSupply);
-        if (DMBalanceError > 0.00001 & TotalDMDemand > 0)
+        DMBalanceError = Math.Abs((TotalDMSupplyAllocated + TotalDMSupplyNotAllocatedSinkLimitation) - (TotalDMSupplyPhotosynthesis + TotalDMSupplyReallocation));
+        if (DMBalanceError > 0.00001 & TotalDMDemandStructural > 0)
             throw new Exception("Mass Balance Error in Photosynthesis DM Allocation");
 
         //Then if demand is not met by fresh DM supply retranslocate non-structural DM to meet demands
-        TotalStoreDMRetranslocated = 0;
-        if ((TotalDMDemand - TotalWtAllocated) > 0)
+        TotalNonStructuralDMRetranslocated = 0;
+        if ((TotalDMDemandStructural + TotalDMDemandMetabolic - TotalDMSupplyAllocated) > 0)
         {
             for (int i = 0; i < Organs.Count; i++)
             {
-                double proportion = 0.0;
-                double Retrans = 0.0;
-                if ((DMDemand[i] - DMAllocation[i]) > 0.0)
+                //double proportion = 0.0;
+                //double DMAllocation = 0.0;
+                if ((DMDemandStructural[i] + DMDemandMetabolic[i] - DMAllocationStructural[i] - DMAllocationMetabolic[i]) > 0.0)
                 {
-                    proportion = DMDemand[i] / TotalDMDemand;
-                    Retrans = Math.Min(TotalStoreDMSupply * proportion, Math.Max(0.0, DMDemand[i] - DMAllocation[i]));
-                    DMAllocation[i] += Retrans;
-                    TotalStoreDMRetranslocated += Retrans;
+                    double proportion = (DMDemandStructural[i] + DMDemandMetabolic[i]) / (TotalDMDemandStructural+TotalDMDemandMetabolic);
+                    double DMAllocated = Math.Min(TotalDMSupplyRetranslocation * proportion, Math.Max(0.0, (DMDemandStructural[i] + DMDemandMetabolic[i]) - (DMAllocationStructural[i] + DMAllocationMetabolic[i])));
+                    DMAllocationStructural[i] += DMAllocated * DMDemandStructural[i] / (DMDemandStructural[i] + DMDemandMetabolic[i]);
+                    DMAllocationMetabolic[i] += DMAllocated * DMDemandMetabolic[i] / (DMDemandStructural[i] + DMDemandMetabolic[i]);
+                    TotalNonStructuralDMRetranslocated += DMAllocated;
                 }
             }
         }
@@ -306,17 +309,23 @@ public class Arbitrator
         //Partition retranslocation of DM between supplying organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            if (DMStoreSupplyOrgan[i] > 0)
+            if (DMSupplyRetranslocation[i] > 0)
             {
-                double RelativeSupply = DMStoreSupplyOrgan[i] / TotalStoreDMSupply;
-                DMRetranslocation[i] += TotalStoreDMRetranslocated * RelativeSupply;
+                double RelativeSupply = DMSupplyRetranslocation[i] / TotalDMSupplyRetranslocation;
+                DMRetranslocation[i] += TotalNonStructuralDMRetranslocated * RelativeSupply;
             }
         }
 
         // Send potential DM allocation to organs to set this variable for calculating N demand
         for (int i = 0; i < Organs.Count; i++)
         {
-            Organs[i].DMPotentialAllocation = DMAllocation[i];
+            //Organs[i].DMPotentialAllocation2 = DMAllocationStructural[i];
+            Organs[i].DMPotentialAllocation2 = new DMPotentialAllocationType
+            {
+                Structural = DMAllocationStructural[i] + DMAllocationMetabolic[i],  //Need to seperate metabolic and structural allocations
+                Metabolic = DMAllocationMetabolic[i],  //This wont do anything currently
+                NonStructural = DMAllocationNonStructural[i], //Nor will this do anything
+            };
         }
     }
 
@@ -330,13 +339,13 @@ public class Arbitrator
          * More complicated (steps) than needed for current usage
          */
 
-        if (TotalDMReallocationSupply > 0.00000000001)
+        if (TotalDMSupplyReallocation > 0.00000000001)
         {
             for (int i = 0; i < Organs.Count; i++)
             {
-                if (DMReallocationSupply[i] > 0)
+                if (DMSupplyReallocation[i] > 0)
                 {
-                    DMReallocation[i] = DMReallocationSupply[i];
+                    DMReallocation[i] = DMSupplyReallocation[i];
                 }
                 else
                     DMReallocation[i] = 0;
@@ -397,8 +406,6 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
             RelativeNDemand[i] = NDemandOrgan[i] / TotalNDemand; 
     }
-   
-    
     virtual public void DoNutrientReAllocation(List<Organ> Organs) 
     {
         NReallocationAllocated = 0;
@@ -481,7 +488,7 @@ public class Arbitrator
     {
         NFixationAllocated = 0;
         TotalFixationWtloss = 0;
-        if (TotalNFixationSupply > 0.00000000001 && TotalFreshDMSupply > 0.00000000001)
+        if (TotalNFixationSupply > 0.00000000001 && TotalDMSupplyPhotosynthesis > 0.00000000001)
         {
             // Calculate how much fixation N each demanding organ is allocated based on relative demands
             double NDemandFactor = 0.6;
@@ -514,24 +521,24 @@ public class Arbitrator
         if (NFixationAllocated > 0.00000000001)
         {
             //First determine it the cost of N fixation can be met by potential biomass production that was surpless to growing organ demands
-            NetWtLossFixation = Math.Max(0.0, TotalFixationWtloss - TotalWtNotAllocatedSinkLimitation);
+            NetWtLossFixation = Math.Max(0.0, TotalFixationWtloss - TotalDMSupplyNotAllocatedSinkLimitation);
             if (NetWtLossFixation > 0.00000000001)
             {
-                TotalWtAllocated -= NetWtLossFixation; //If not reduce biomass allocations to account for the cost of fixation
+                TotalDMSupplyAllocated -= NetWtLossFixation; //If not reduce biomass allocations to account for the cost of fixation
                 double WtLossNotAttributed = NetWtLossFixation;
                 for (int i = 0; i < Organs.Count; i++) //The reduce allocation to individual organs and don't constrain an organ if that will cause its N conc to exceed maximum (i.e constrain the growth of the organs in larger defict so they move closer to maxNconc)
                 {
                     double MinposbileDM = (Organs[i].Live.N + NAllocated[i]) / Organs[i].MaxNconc;
-                    double CurrentDM = Organs[i].Live.Wt + DMAllocation[i];
+                    double CurrentDM = Organs[i].Live.Wt + DMAllocationStructural[i];
                     double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
-                    DMAllocation[i] -= Math.Min(DMAllocation[i], Math.Min(Possibleloss, WtLossNotAttributed));
+                    DMAllocationStructural[i] -= Math.Min(DMAllocationStructural[i], Math.Min(Possibleloss, WtLossNotAttributed));
                     WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed);
                 }
                 if (WtLossNotAttributed > 0.00000000001)
                     throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
             }
         }
-        //To introduce functionality for other nutrients we need to repeath this for loop for each new nutrient type
+        //To introduce functionality for other nutrients we need to repeat this for loop for each new nutrient type
         // Calculate posible growth based on Minimum N requirement of organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -548,21 +555,24 @@ public class Arbitrator
         NutrientLimitatedWtAllocation = 0;
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMAllocation[i] = Math.Min(DMAllocation[i], NLimitedGrowth[i]);  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
-            NutrientLimitatedWtAllocation += (DMAllocation[i] + DMExcessAllocation[i]); 
+            DMAllocationStructural[i] = Math.Min(DMAllocationStructural[i], NLimitedGrowth[i]);  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
+            NutrientLimitatedWtAllocation += (DMAllocationStructural[i] + DMAllocationNonStructural[i]); 
         }
-        TotalWtLossNutrientShortage = TotalWtAllocated - NutrientLimitatedWtAllocation + TotalStoreDMRetranslocated;
+        TotalWtLossNutrientShortage = TotalDMSupplyAllocated - NutrientLimitatedWtAllocation + TotalNonStructuralDMRetranslocated;
 
         // Send DM allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
             Organs[i].DMAllocation = new DMAllocationType
             {
-                Allocation = DMAllocation[i],
-                ExcessAllocation = DMExcessAllocation[i],
-                Respired = FixationWtLoss[i],
+                Allocation = DMAllocationStructural[i] + DMAllocationMetabolic[i], //To be replaced 
+                ExcessAllocation = DMAllocationNonStructural[i],  //To be replaced 
+                Respired = FixationWtLoss[i], 
                 Reallocation = DMReallocation[i],
-                Retranslocation = DMRetranslocation[i]
+                Retranslocation = DMRetranslocation[i],
+                StructuralAllocation = DMAllocationStructural[i],
+                NonStructuralAllocation = DMAllocationNonStructural[i],
+                MetabolicAllocation = DMAllocationMetabolic[i],
             };
         }
     }
@@ -598,10 +608,10 @@ public class Arbitrator
         EndWt = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndWt += Organs[i].Live.Wt + Organs[i].Dead.Wt;
-        DMBalanceError = (EndWt - (StartWt + TotalFreshDMSupply));
+        DMBalanceError = (EndWt - (StartWt + TotalDMSupplyPhotosynthesis));
         if (DMBalanceError > 0.0001)
-            throw new Exception("DM Mass Balance violated!!!!  Daily Plant N increment is greater than Photosynthetic DM supply");
-        DMBalanceError = (EndWt - (StartWt + TotalDMDemand + TotalDMSinkCapacity));
+            throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than Photosynthetic DM supply");
+        DMBalanceError = (EndWt - (StartWt + TotalDMDemandStructural + TotalDMDemandNonStructural));
         if (DMBalanceError > 0.0001)
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than the sum of structural DM demand, metabolic DM demand and NonStructural DM capacity");
     }
@@ -613,11 +623,11 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             double proportion = 0.0;
-            if (DMDemand[i] > 0.0)
+            if (DMDemandStructural[i] > 0.0)
             {
-                proportion = DMDemand[i] / TotalDMDemand;
-                DMAllocation[i] = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
-                TotalWtAllocated += DMAllocation[i];
+                proportion = DMDemandStructural[i] / TotalDMDemand;
+                DMAllocationStructural[i] = Math.Min(TotalDMSupplyPhotosynthesis * proportion, DMDemandStructural[i]);
+                TotalWtAllocated += DMAllocationStructural[i];
             }
         }
     }
@@ -641,7 +651,7 @@ public class Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Min(Math.Max(0.0, DMAllocation[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
+            double Requirement = Math.Min(Math.Max(0.0, DMAllocationStructural[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
@@ -671,7 +681,7 @@ public class Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Min(Math.Max(0.0, DMAllocation[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), (NDemandOrgan[i]-NAllocated[i])); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
+            double Requirement = Math.Min(Math.Max(0.0, DMAllocationStructural[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), (NDemandOrgan[i]-NAllocated[i])); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {

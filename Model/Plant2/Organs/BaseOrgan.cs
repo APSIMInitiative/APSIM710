@@ -14,6 +14,7 @@ public class BaseOrgan : Organ
 
     public override DMSupplyType DMSupply { get { return new DMSupplyType(); } set { } }
     public override double DMPotentialAllocation { set { } }
+    public override DMPotentialAllocationType DMPotentialAllocation2 { set{} }
     public override DMAllocationType DMAllocation { set { } }
     public override DMDemandType DMDemand { get { return new DMDemandType(); } set { } }
 
