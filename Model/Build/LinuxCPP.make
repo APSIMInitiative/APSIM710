@@ -25,7 +25,7 @@ CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLU
 #-----------------------------------------------------------------------
 # Required libraries
 LIBS:= -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) \
-        $(EXTRALIBS)  -lboost_filesystem-mt -lboost_regex-mt -lboost_date_time-mt -lboost_thread-mt \
+        $(EXTRALIBS)  -lboost_filesystem -lboost_regex -lboost_date_time -lboost_thread \
         $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
 
 ifeq ($(PROJECTTYPE),dll)
