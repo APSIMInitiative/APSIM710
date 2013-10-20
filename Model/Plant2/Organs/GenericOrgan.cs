@@ -194,16 +194,16 @@ public class GenericOrgan : BaseOrgan
     {
         set
         {
-            Live.StructuralWt += Math.Min(value.Allocation, StructuralDMDemand);
-            Live.NonStructuralWt += Math.Max(0, value.Allocation - StructuralDMDemand);
+            Live.StructuralWt += Math.Min(value.StructuralAllocation, StructuralDMDemand);
+            //Live.NonStructuralWt += Math.Max(value.NonStructuralAllocation, NonStructuralDMDemand);
      
             // Excess allocation
-            if (value.ExcessAllocation < -0.0000000001)
-                throw new Exception("-ve ExcessDM Allocation to " + Name);
-            if ((value.ExcessAllocation - DMDemand.NonStructural) > 0.0000000001)
-                throw new Exception("ExcessDM Allocation to " + Name + " is in excess of its Capacity");
+            if (value.NonStructuralAllocation < -0.0000000001)
+                throw new Exception("-ve NonStructuralDM Allocation to " + Name);
+            if ((value.NonStructuralAllocation - DMDemand.NonStructural) > 0.0000000001)
+                throw new Exception("StructuralDM Allocation to " + Name + " is in excess of its Capacity");
             if (DMDemand.NonStructural > 0)
-                Live.NonStructuralWt += value.ExcessAllocation;
+                Live.NonStructuralWt += value.NonStructuralAllocation;
      
             // Retranslocation
             if (value.Retranslocation - StartLive.NonStructuralWt > 0.0000000001)

@@ -83,7 +83,7 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     }
     public override DMAllocationType DMAllocation
     {
-        set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; }
+        set { Live.StructuralWt += value.StructuralAllocation; DailyGrowth = value.StructuralAllocation; }
     }
     public override NDemandType NDemand
     {

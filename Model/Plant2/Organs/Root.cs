@@ -491,10 +491,10 @@ public class Root : BaseOrgan, BelowGround
             {
                 if (TotalRAw > 0)
 
-                    LayerLive[layer].StructuralWt += value.Allocation * RAw[layer] / TotalRAw;
-                else if (value.Allocation > 0)
+                    LayerLive[layer].StructuralWt += value.StructuralAllocation * RAw[layer] / TotalRAw;
+                else if (value.StructuralAllocation > 0)
                     throw new Exception("Error trying to partition root biomass");
-                allocated += (TotalRAw > 0) ? value.Allocation * RAw[layer] / TotalRAw : 0;
+                allocated += (TotalRAw > 0) ? value.StructuralAllocation * RAw[layer] / TotalRAw : 0;
             }
         }
     }

@@ -86,7 +86,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     {
         set
         {
-            Live.StructuralWt += value.Allocation;
+            Live.StructuralWt += value.StructuralAllocation;
         }
     }
     [Output]

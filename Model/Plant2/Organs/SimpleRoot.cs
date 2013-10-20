@@ -37,11 +37,12 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         set
         {
-            Live.StructuralWt += value.Allocation;
+            Live.StructuralWt += value.StructuralAllocation;
         }
     }
 
-    public override NDemandType NDemand { get { return new NDemandType(); } }    public override NSupplyType NSupply { get { return new NSupplyType(); } }
+    public override NDemandType NDemand { get { return new NDemandType(); } }
+    public override NSupplyType NSupply { get { return new NSupplyType(); } }
     public override double WaterDemand { get { return 0; } }
 
     [Output]

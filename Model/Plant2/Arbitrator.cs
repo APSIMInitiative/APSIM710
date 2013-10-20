@@ -328,9 +328,6 @@ public class Arbitrator
             };
         }
     }
-
-
-
     virtual public void DoDMReallocation(List<Organ> Organs)
     {
         /*
@@ -353,7 +350,6 @@ public class Arbitrator
         }
 
     }
-
     //To introduce Arbitration for other nutrients we need to add additional members to biomass object for each new type and then repeat eaco of the 4 allocation functions below for each nutrient type
     virtual public void DoNutrientSetup(List<Organ> Organs)
     {
@@ -528,11 +524,24 @@ public class Arbitrator
                 double WtLossNotAttributed = NetWtLossFixation;
                 for (int i = 0; i < Organs.Count; i++) //The reduce allocation to individual organs and don't constrain an organ if that will cause its N conc to exceed maximum (i.e constrain the growth of the organs in larger defict so they move closer to maxNconc)
                 {
-                    double MinposbileDM = (Organs[i].Live.N + NAllocated[i]) / Organs[i].MaxNconc;
-                    double CurrentDM = Organs[i].Live.Wt + DMAllocationStructural[i];
-                    double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
-                    DMAllocationStructural[i] -= Math.Min(DMAllocationStructural[i], Math.Min(Possibleloss, WtLossNotAttributed));
-                    WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed);
+                    if ((DMAllocationMetabolic[i] > 0) || (DMAllocationStructural[i] > 0))
+                    {
+                        double MinposbileDM = (Organs[i].Live.N + NAllocated[i]) / Organs[i].MaxNconc;
+                        double StructuralProportion = DMAllocationStructural[i] / (DMAllocationStructural[i] + DMAllocationMetabolic[i]);
+                        double MinposbileStructuralDM = MinposbileDM * StructuralProportion;
+                        double MinposbileMetabolicDM = MinposbileDM * (1 - StructuralProportion);
+                        //double CurrentDM = Organs[i].Live.Wt + DMAllocationStructural[i];
+                        double CurrentStructuralDM = Organs[i].Live.StructuralWt + DMAllocationStructural[i];
+                        double CurrentMetabolicDM = Organs[i].Live.MetabolicWt + DMAllocationMetabolic[i];
+                        //double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
+                        double PossibleStructuralloss = Math.Max(0.0, CurrentStructuralDM - MinposbileStructuralDM);
+                        double PossibleMetabolicloss = Math.Max(0.0, CurrentMetabolicDM - MinposbileMetabolicDM);
+                        //DMAllocationStructural[i] -= Math.Min(DMAllocationStructural[i], Math.Min(Possibleloss, WtLossNotAttributed));
+                        DMAllocationStructural[i] -= Math.Min(DMAllocationStructural[i], Math.Min(PossibleStructuralloss, WtLossNotAttributed * StructuralProportion));
+                        DMAllocationMetabolic[i] -= Math.Min(DMAllocationMetabolic[i], Math.Min(PossibleMetabolicloss, WtLossNotAttributed * (1 - StructuralProportion)));
+                        //WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed);
+                        WtLossNotAttributed -= Math.Min(PossibleStructuralloss + PossibleMetabolicloss, WtLossNotAttributed);
+                    }
                 }
                 if (WtLossNotAttributed > 0.00000000001)
                     throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
@@ -555,8 +564,14 @@ public class Arbitrator
         NutrientLimitatedWtAllocation = 0;
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMAllocationStructural[i] = Math.Min(DMAllocationStructural[i], NLimitedGrowth[i]);  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
-            NutrientLimitatedWtAllocation += (DMAllocationStructural[i] + DMAllocationNonStructural[i]); 
+            if ((DMAllocationMetabolic[i] + DMAllocationStructural[i]) != 0)
+            {
+                double proportion = DMAllocationMetabolic[i] / (DMAllocationMetabolic[i] + DMAllocationStructural[i]);
+                DMAllocationStructural[i] = Math.Min(DMAllocationStructural[i], NLimitedGrowth[i] * (1 - proportion));  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
+                DMAllocationMetabolic[i] = Math.Min(DMAllocationMetabolic[i], NLimitedGrowth[i] * proportion);
+            }
+            ////Urgent fix !!!!!!1 Need to add something here to reduce Metabolic wt also
+            NutrientLimitatedWtAllocation += (DMAllocationStructural[i] + DMAllocationNonStructural[i]);  ///Urgent fix !!!!!!1 MEtabolic N should be in this sum
         }
         TotalWtLossNutrientShortage = TotalDMSupplyAllocated - NutrientLimitatedWtAllocation + TotalNonStructuralDMRetranslocated;
 
@@ -565,8 +580,8 @@ public class Arbitrator
         {
             Organs[i].DMAllocation = new DMAllocationType
             {
-                Allocation = DMAllocationStructural[i] + DMAllocationMetabolic[i], //To be replaced 
-                ExcessAllocation = DMAllocationNonStructural[i],  //To be replaced 
+                //Allocation = DMAllocationStructural[i] + DMAllocationMetabolic[i], //To be replaced 
+                //ExcessAllocation = DMAllocationNonStructural[i],  //To be replaced 
                 Respired = FixationWtLoss[i], 
                 Reallocation = DMReallocation[i],
                 Retranslocation = DMRetranslocation[i],
@@ -611,7 +626,7 @@ public class Arbitrator
         DMBalanceError = (EndWt - (StartWt + TotalDMSupplyPhotosynthesis));
         if (DMBalanceError > 0.0001)
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than Photosynthetic DM supply");
-        DMBalanceError = (EndWt - (StartWt + TotalDMDemandStructural + TotalDMDemandNonStructural));
+        DMBalanceError = (EndWt - (StartWt + TotalDMDemandStructural + TotalDMDemandMetabolic + TotalDMDemandNonStructural));
         if (DMBalanceError > 0.0001)
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than the sum of structural DM demand, metabolic DM demand and NonStructural DM capacity");
     }
@@ -651,7 +666,7 @@ public class Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Min(Math.Max(0.0, DMAllocationStructural[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
+            double Requirement = Math.Min(Math.Max(0.0, (DMAllocationStructural[i] + DMAllocationMetabolic[i]) * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
@@ -681,7 +696,7 @@ public class Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Min(Math.Max(0.0, DMAllocationStructural[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), (NDemandOrgan[i]-NAllocated[i])); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
+            double Requirement = Math.Min(Math.Max(0.0, (DMAllocationStructural[i] + DMAllocationMetabolic[i]) * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), (NDemandOrgan[i]-NAllocated[i])); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
@@ -696,7 +711,7 @@ public class Arbitrator
         {
             double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
             double Allocation = 0.0;
-            double RemainingSupply = TotalSupply - TotalAllocated;
+            double RemainingSupply = Math.Max(TotalSupply - TotalAllocated,0);
             if (Requirement > 0.0)
             {
                 Allocation = Math.Min(RemainingSupply * RelativeNDemand[i], Requirement);

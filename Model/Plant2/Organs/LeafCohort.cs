@@ -290,7 +290,6 @@ public class LeafCohort
             else return 0;
         }
     }
-
     virtual public double NonStructuralDMDemand
     {
         get
@@ -308,11 +307,10 @@ public class LeafCohort
     {
         get
         {
-            return StructuralDMDemand + MetabolicDMDemand;
+            return StructuralDMDemand + MetabolicDMDemand + NonStructuralDMDemand;
         }
     }
-
-    virtual public double DMExcessAllocation
+  /*  virtual public double DMExcessAllocation
     {
         set
         {
@@ -321,9 +319,9 @@ public class LeafCohort
             if ((value - NonStructuralDMDemand) > 0.0000000001)
                 throw new Exception("-ExcessDM Allocation to leaf Cohort is in excess of its Capacity");
             if (NonStructuralDMDemand > 0)
-                Live.NonStructuralWt += value;
+                //Live.NonStructuralWt += value;
         }
-    }
+    }*/
     virtual public double StructuralNDemand
     {
         get
@@ -361,22 +359,45 @@ public class LeafCohort
             return StructuralNDemand + NonStructuralNDemand + MetabolicNDemand;
         }
     }
-    virtual public double DMAllocation
+    virtual public DMAllocationType DMAllocation
     {
         set
         {
-            if (value < -0.0000000001)
+            //Firstly allocate DM
+            if (value.StructuralAllocation + value.NonStructuralAllocation + value.MetabolicAllocation  < -0.0000000001)
                 throw new Exception("-ve DM Allocation to Leaf Cohort");
-            if ((value - TotalDMDemand) > 0.0000000001)
+            if ((value.StructuralAllocation + value.NonStructuralAllocation + value.MetabolicAllocation - TotalDMDemand) > 0.0000000001)
                 throw new Exception("DM Allocated to Leaf Cohort is in excess of its Demand");
             if (TotalDMDemand > 0)
             {
-                double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
-                StructuralDMAllocation = value * StructuralDMDemandFrac;
-                MetabolicDMAllocation = value * (1 - StructuralDMDemandFrac);
-                Live.StructuralWt += StructuralDMAllocation;
-                Live.MetabolicWt += MetabolicDMAllocation;
+                //double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
+                StructuralDMAllocation = value.StructuralAllocation;
+                MetabolicDMAllocation = value.MetabolicAllocation;
+                Live.StructuralWt += value.StructuralAllocation;
+                Live.MetabolicWt += value.MetabolicAllocation;
+                Live.NonStructuralWt += value.NonStructuralAllocation;
             }
+            
+            //Then remove reallocated DM
+            if (value.Reallocation - (LeafStartMetabolicDMReallocationSupply + LeafStartNonStructuralDMReallocationSupply) > 0.00000000001)
+                throw new Exception("A leaf cohort cannot supply that amount for DM Reallocation");
+            if (value.Reallocation < -0.0000000001)
+                throw new Exception("Leaf cohort given negative DM Reallocation");
+            if (value.Reallocation > 0.0)
+            {
+                NonStructuralWtReallocated = Math.Min(LeafStartNonStructuralDMReallocationSupply, value.Reallocation); //Reallocate nonstructural first
+                MetabolicWtReallocated = Math.Max(0.0, Math.Min(value.Reallocation - NonStructuralWtReallocated,LeafStartMetabolicDMReallocationSupply)); //Then reallocate metabolic DM
+                Live.NonStructuralWt -= NonStructuralWtReallocated;
+                Live.MetabolicWt -= MetabolicWtReallocated;
+            }
+
+            //Then remove retranslocated DM
+            if (value.Retranslocation < -0.0000000001)
+                throw new Exception("Negative DM retranslocation from a Leaf Cohort");
+            if (value.Retranslocation > LeafStartDMRetranslocationSupply)
+                throw new Exception("A leaf cohort cannot supply that amount for DM retranslocation");
+            if ((value.Retranslocation > 0) && (LeafStartDMRetranslocationSupply > 0))
+                Live.NonStructuralWt -= value.Retranslocation;
         }
     }
     virtual public double NAllocation
@@ -453,17 +474,20 @@ public class LeafCohort
                 throw new Exception("-ve Potential DM Allocation to Leaf Cohort");
             if ((value - TotalDMDemand) > 0.0000000001)
                 throw new Exception("Potential DM Allocation to Leaf Cohortis in excess of its Demand");
-            if (TotalDMDemand > 0)
+            if ((StructuralDMDemand + MetabolicDMDemand) > 0)
             {
+                //double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand + NonStructuralDMDemand);
+                //double MetabolicDMDemandFrac = MetabolicDMDemand / (StructuralDMDemand + MetabolicDMDemand + NonStructuralDMDemand);
                 double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
                 PotentialStructuralDMAllocation = value * StructuralDMDemandFrac;
+                //PotentialMetabolicDMAllocation = value * MetabolicDMDemandFrac;
                 PotentialMetabolicDMAllocation = value * (1 - StructuralDMDemandFrac);
             }
         }
 
   
     }
-    public double DMRetranslocation
+  /*  public double DMRetranslocation
     {
         set
         {
@@ -474,7 +498,7 @@ public class LeafCohort
             if ((value > 0) && (LeafStartDMRetranslocationSupply > 0))
                 Live.NonStructuralWt -= value;
         }
-    }
+    }*/
     public double NReallocation
     {
         set
@@ -492,7 +516,7 @@ public class LeafCohort
             }
         }
     }
-    public double DMReallocation
+ /*   public double DMReallocation
     {
         set
         {
@@ -508,7 +532,7 @@ public class LeafCohort
                 Live.MetabolicWt -= MetabolicWtReallocated;
             }
         }
-    }
+    }*/
  #endregion
 
  #region Functions
@@ -875,6 +899,7 @@ public class LeafCohort
             {
                 FracSenShade = Math.Min(MaxLiveArea * ShadeInducedSenRate, LiveArea) / LiveArea;
                 FracSenShade += StemMortality;
+                FracSenShade = Math.Min(FracSenShade, 1.0);
             }
             
             return Math.Max(FracSenAge, FracSenShade);
