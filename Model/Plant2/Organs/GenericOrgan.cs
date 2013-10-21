@@ -122,18 +122,7 @@ public class GenericOrgan : BaseOrgan
         }
 
     }
-    public override double DMPotentialAllocation
-    {
-        set
-        {
-            if (DMDemand.Structural == 0)
-                if (value < 0.000000000001) { }//All OK
-                else
-                    throw new Exception("Invalid allocation of potential DM in " + Name);
-            PotentialDMAllocation = value;
-        }
-    }
-    public override DMPotentialAllocationType DMPotentialAllocation2
+    public override DMPotentialAllocationType DMPotentialAllocation
     {
         set
         {
@@ -195,8 +184,7 @@ public class GenericOrgan : BaseOrgan
         set
         {
             Live.StructuralWt += Math.Min(value.StructuralAllocation, StructuralDMDemand);
-            //Live.NonStructuralWt += Math.Max(value.NonStructuralAllocation, NonStructuralDMDemand);
-     
+        
             // Excess allocation
             if (value.NonStructuralAllocation < -0.0000000001)
                 throw new Exception("-ve NonStructuralDM Allocation to " + Name);

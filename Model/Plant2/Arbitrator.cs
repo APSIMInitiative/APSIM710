@@ -293,8 +293,6 @@ public class Arbitrator
         {
             for (int i = 0; i < Organs.Count; i++)
             {
-                //double proportion = 0.0;
-                //double DMAllocation = 0.0;
                 if ((DMDemandStructural[i] + DMDemandMetabolic[i] - DMAllocationStructural[i] - DMAllocationMetabolic[i]) > 0.0)
                 {
                     double proportion = (DMDemandStructural[i] + DMDemandMetabolic[i]) / (TotalDMDemandStructural+TotalDMDemandMetabolic);
@@ -319,8 +317,7 @@ public class Arbitrator
         // Send potential DM allocation to organs to set this variable for calculating N demand
         for (int i = 0; i < Organs.Count; i++)
         {
-            //Organs[i].DMPotentialAllocation2 = DMAllocationStructural[i];
-            Organs[i].DMPotentialAllocation2 = new DMPotentialAllocationType
+           Organs[i].DMPotentialAllocation = new DMPotentialAllocationType
             {
                 Structural = DMAllocationStructural[i] + DMAllocationMetabolic[i],  //Need to seperate metabolic and structural allocations
                 Metabolic = DMAllocationMetabolic[i],  //This wont do anything currently
@@ -379,10 +376,9 @@ public class Arbitrator
         {
             NDemandType NDemand = Organs[i].NDemand;
             NDemandOrgan[i] = Organs[i].NDemand.Structural;  //Fixme currently all N demand is passed as structural
-            //NDemandOrgan[i] = Organs[i].NDemand;
             NSupplyType NSupply = Organs[i].NSupply;
             NReallocationSupply[i] = NSupply.Reallocation;
-             NUptakeSupply[i] = NSupply.Uptake;
+            NUptakeSupply[i] = NSupply.Uptake;
             NFixationSupply[i] = NSupply.Fixation;
             NRetranslocationSupply[i] = NSupply.Retranslocation;
             NReallocation[i] = 0;
@@ -530,16 +526,12 @@ public class Arbitrator
                         double StructuralProportion = DMAllocationStructural[i] / (DMAllocationStructural[i] + DMAllocationMetabolic[i]);
                         double MinposbileStructuralDM = MinposbileDM * StructuralProportion;
                         double MinposbileMetabolicDM = MinposbileDM * (1 - StructuralProportion);
-                        //double CurrentDM = Organs[i].Live.Wt + DMAllocationStructural[i];
                         double CurrentStructuralDM = Organs[i].Live.StructuralWt + DMAllocationStructural[i];
                         double CurrentMetabolicDM = Organs[i].Live.MetabolicWt + DMAllocationMetabolic[i];
-                        //double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
                         double PossibleStructuralloss = Math.Max(0.0, CurrentStructuralDM - MinposbileStructuralDM);
                         double PossibleMetabolicloss = Math.Max(0.0, CurrentMetabolicDM - MinposbileMetabolicDM);
-                        //DMAllocationStructural[i] -= Math.Min(DMAllocationStructural[i], Math.Min(Possibleloss, WtLossNotAttributed));
                         DMAllocationStructural[i] -= Math.Min(DMAllocationStructural[i], Math.Min(PossibleStructuralloss, WtLossNotAttributed * StructuralProportion));
                         DMAllocationMetabolic[i] -= Math.Min(DMAllocationMetabolic[i], Math.Min(PossibleMetabolicloss, WtLossNotAttributed * (1 - StructuralProportion)));
-                        //WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed);
                         WtLossNotAttributed -= Math.Min(PossibleStructuralloss + PossibleMetabolicloss, WtLossNotAttributed);
                     }
                 }
@@ -570,8 +562,7 @@ public class Arbitrator
                 DMAllocationStructural[i] = Math.Min(DMAllocationStructural[i], NLimitedGrowth[i] * (1 - proportion));  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
                 DMAllocationMetabolic[i] = Math.Min(DMAllocationMetabolic[i], NLimitedGrowth[i] * proportion);
             }
-            ////Urgent fix !!!!!!1 Need to add something here to reduce Metabolic wt also
-            NutrientLimitatedWtAllocation += (DMAllocationStructural[i] + DMAllocationNonStructural[i]);  ///Urgent fix !!!!!!1 MEtabolic N should be in this sum
+            NutrientLimitatedWtAllocation += (DMAllocationStructural[i] + DMAllocationNonStructural[i]); 
         }
         TotalWtLossNutrientShortage = TotalDMSupplyAllocated - NutrientLimitatedWtAllocation + TotalNonStructuralDMRetranslocated;
 
@@ -580,8 +571,6 @@ public class Arbitrator
         {
             Organs[i].DMAllocation = new DMAllocationType
             {
-                //Allocation = DMAllocationStructural[i] + DMAllocationMetabolic[i], //To be replaced 
-                //ExcessAllocation = DMAllocationNonStructural[i],  //To be replaced 
                 Respired = FixationWtLoss[i], 
                 Reallocation = DMReallocation[i],
                 Retranslocation = DMRetranslocation[i],

@@ -329,65 +329,7 @@ public class Root : BaseOrgan, BelowGround
         }
     }
 
-    public override double DMPotentialAllocation
-    {
-        set
-        {
-            if (Depth <= 0)
-                return; //cannot allocate growth where no length
-
-            if (DMDemand.Structural == 0)
-                if (value < 0.000000000001) { }//All OK
-                else
-                    throw new Exception("Invalid allocation of potential DM in" + Name);
-
-            // Calculate Root Activity Values for water and nitrogen
-            double[] RAw = new double[dlayer.Length];
-            double[] RAn = new double[dlayer.Length];
-            double TotalRAw = 0;
-            double TotalRAn = 0; ;
-
-            for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-                if (layer <= LayerIndex(Depth))
-                    if (LayerLive[layer].Wt > 0)
-                    {
-                        RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
-                                   * dlayer[layer]
-                                   * RootProportion(layer, Depth);
-                        RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
-
-                        RAn[layer] = (DeltaNO3[layer] + DeltaNH4[layer]) / LayerLive[layer].Wt
-                                       * dlayer[layer]
-                                       * RootProportion(layer, Depth);
-                        RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
-                    }
-                    else if (layer > 0)
-                    {
-                        RAw[layer] = RAw[layer - 1];
-                        RAn[layer] = RAn[layer - 1];
-                    }
-                    else
-                    {
-                        RAw[layer] = 0;
-                        RAn[layer] = 0;
-                    }
-                TotalRAw += RAw[layer];
-                TotalRAn += RAn[layer];
-            }
-            double allocated = 0;
-            for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-                if (TotalRAw > 0)
-
-                    LayerLive[layer].PotentialDMAllocation = value * RAw[layer] / TotalRAw;
-                else if (value > 0)
-                    throw new Exception("Error trying to partition potential root biomass");
-                allocated += (TotalRAw > 0) ? value * RAw[layer] / TotalRAw : 0;
-            }
-        }
-    }
-    public override DMPotentialAllocationType DMPotentialAllocation2
+    public override DMPotentialAllocationType DMPotentialAllocation
     {
         set
         {

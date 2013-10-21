@@ -175,18 +175,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             return new DMDemandType { Structural = Demand };
         }
     }
-    public override double DMPotentialAllocation
-    {
-        set
-        {
-            if (DMDemand.Structural == 0)
-                if (value < 0.000000000001) { }//All OK
-                else
-                    throw new Exception("Invalid allocation of potential DM in" + Name);
-            PotentialDMAllocation = value;
-        }
-    }
-    public override DMPotentialAllocationType DMPotentialAllocation2
+    public override DMPotentialAllocationType DMPotentialAllocation
     {
         set
         {

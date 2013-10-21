@@ -16,13 +16,13 @@ public interface Reproductive
 #endregion
 
 #region Arbitrator method types
-public class DMDemandType
+public class DMPotentialAllocationType
 {
     public double Structural;
-    public double NonStructural;
     public double Metabolic;
+    public double NonStructural;
 }
-public class NDemandType
+public class DMDemandType
 {
     public double Structural;
     public double NonStructural;
@@ -33,12 +33,6 @@ public class DMSupplyType
     public double Photosynthesis;
     public double Retranslocation;
     public double Reallocation;
-}
-public class DMPotentialAllocationType
-{
-    public double Structural;
-    public double Metabolic;
-    public double NonStructural;
 }
 public class DMAllocationType
 {
@@ -52,14 +46,11 @@ public class DMAllocationType
     public double Respired;
 
 }
-public class NAllocationType
+public class NDemandType
 {
-    public double Allocation;
-    public double Reallocation;
-    public double Uptake_gsm; // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2.  This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
-    public double Fixation;
-    public double Retranslocation;
-
+    public double Structural;
+    public double NonStructural;
+    public double Metabolic;
 }
 public class NSupplyType
 {
@@ -70,6 +61,15 @@ public class NSupplyType
     public double StructuralAllocation;
     public double NonStructuralAllocation;
     public double MetabolicAllocation;
+}
+public class NAllocationType
+{
+    public double Allocation;
+    public double Reallocation;
+    public double Uptake_gsm; // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2.  This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
+    public double Fixation;
+    public double Retranslocation;
+
 }
 #endregion
 
@@ -90,8 +90,7 @@ abstract public class Organ
 
     #region Organ - Arbitrator interface methods
     //DryMatter methods
-    abstract public double DMPotentialAllocation { set; }
-    abstract public DMPotentialAllocationType DMPotentialAllocation2 { set; }
+    abstract public DMPotentialAllocationType DMPotentialAllocation { set; }
     abstract public DMDemandType DMDemand { get; set; }
     abstract public DMSupplyType DMSupply { get; set; }
     abstract public DMAllocationType DMAllocation { set; }

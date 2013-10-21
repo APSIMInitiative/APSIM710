@@ -310,18 +310,6 @@ public class LeafCohort
             return StructuralDMDemand + MetabolicDMDemand + NonStructuralDMDemand;
         }
     }
-  /*  virtual public double DMExcessAllocation
-    {
-        set
-        {
-            if (value < -0.0000000001)
-                throw new Exception("-ve ExcessDM Allocation to Leaf Cohort");
-            if ((value - NonStructuralDMDemand) > 0.0000000001)
-                throw new Exception("-ExcessDM Allocation to leaf Cohort is in excess of its Capacity");
-            if (NonStructuralDMDemand > 0)
-                //Live.NonStructuralWt += value;
-        }
-    }*/
     virtual public double StructuralNDemand
     {
         get
@@ -370,7 +358,6 @@ public class LeafCohort
                 throw new Exception("DM Allocated to Leaf Cohort is in excess of its Demand");
             if (TotalDMDemand > 0)
             {
-                //double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
                 StructuralDMAllocation = value.StructuralAllocation;
                 MetabolicDMAllocation = value.MetabolicAllocation;
                 Live.StructuralWt += value.StructuralAllocation;
@@ -487,18 +474,6 @@ public class LeafCohort
 
   
     }
-  /*  public double DMRetranslocation
-    {
-        set
-        {
-            if (value < -0.0000000001)
-                throw new Exception("Negative DM retranslocation from a Leaf Cohort");
-            if (value > LeafStartDMRetranslocationSupply)
-                throw new Exception("A leaf cohort cannot supply that amount for DM retranslocation");
-            if ((value > 0) && (LeafStartDMRetranslocationSupply > 0))
-                Live.NonStructuralWt -= value;
-        }
-    }*/
     public double NReallocation
     {
         set
@@ -516,23 +491,6 @@ public class LeafCohort
             }
         }
     }
- /*   public double DMReallocation
-    {
-        set
-        {
-            if (value - (LeafStartMetabolicDMReallocationSupply + LeafStartNonStructuralDMReallocationSupply) > 0.00000000001)
-                throw new Exception("A leaf cohort cannot supply that amount for DM Reallocation");
-            if (value < -0.0000000001)
-                throw new Exception("Leaf cohort given negative DM Reallocation");
-            if (value > 0.0)
-            {
-                NonStructuralWtReallocated = Math.Min(LeafStartNonStructuralDMReallocationSupply, value); //Reallocate nonstructural first
-                MetabolicWtReallocated = Math.Max(0.0, value - NonStructuralWtReallocated); //Then reallocate metabolic DM
-                Live.NonStructuralWt -= NonStructuralWtReallocated;
-                Live.MetabolicWt -= MetabolicWtReallocated;
-            }
-        }
-    }*/
  #endregion
 
  #region Functions

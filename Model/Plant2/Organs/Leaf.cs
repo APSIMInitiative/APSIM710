@@ -698,44 +698,7 @@ public class Leaf : BaseOrgan, AboveGround
             return new DMSupplyType { Photosynthesis = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation , Reallocation = Reallocation};
         }
     }
-    public override double DMPotentialAllocation
-    {
-        set
-        {
-            if (DMDemand.Structural == 0)
-                if (value < 0.000000000001) { }//All OK
-                else
-                    throw new Exception("Invalid allocation of potential DM in" + Name);
-            if (value == 0.0)
-            { }// do nothing
-            else
-            {
-                double DMPotentialsupply = value;
-                double DMPotentialallocated = 0;
-                double TotalPotentialDemand = 0;
-
-                foreach (LeafCohort L in Leaves)
-                    TotalPotentialDemand += L.StructuralDMDemand + L.MetabolicDMDemand;
-
-                // first make sure each cohort gets the DM required for Maximum SLA
-                double fraction = (value) / TotalPotentialDemand;//
-                foreach (LeafCohort L in Leaves)
-                {
-                    double CohortPotentialDemand = 0;
-                    CohortPotentialDemand = L.StructuralDMDemand + L.MetabolicDMDemand;
-                    double PotentialAllocation = Math.Min(CohortPotentialDemand * fraction, DMPotentialsupply);
-                    L.DMPotentialAllocation = PotentialAllocation;
-                    DMPotentialallocated += PotentialAllocation;
-                    DMPotentialsupply -= PotentialAllocation;
-                }
-                if (DMPotentialsupply > 0.0000000001)
-                    throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
-                if ((DMPotentialallocated - value) > 0.000000001)
-                    throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
-            }
-        }
-    }
-    public override DMPotentialAllocationType DMPotentialAllocation2
+    public override DMPotentialAllocationType DMPotentialAllocation
     {
         set
         {
@@ -799,7 +762,6 @@ public class Leaf : BaseOrgan, AboveGround
                 {
                     i++;
                     double Allocation = Math.Min(L.StructuralDMDemand * DemandFraction, DMsupply);
-                    //L.DMAllocation = new DMAllocationType { StructuralAllocation = Allocation };
                     StructuralDMAllocationCohort[i] = Allocation;
                     DMallocated += Allocation;
                     DMsupply -= Allocation;
@@ -832,7 +794,6 @@ public class Leaf : BaseOrgan, AboveGround
                 {
                     i++;
                     double Allocation = Math.Min(L.MetabolicDMDemand * DemandFraction, DMsupply);
-                    //L.DMAllocation = new DMAllocationType { MetabolicAllocation = Allocation };
                     MetabolicDMAllocationCohort[i] = Allocation;
                     DMallocated += Allocation;
                     DMsupply -= Allocation;
@@ -858,7 +819,6 @@ public class Leaf : BaseOrgan, AboveGround
                 {
                     i++;
                     double Allocation = Math.Min(L.NonStructuralDMDemand * SinkFraction, value.NonStructuralAllocation);
-                    //L.DMAllocation = new DMAllocationType { NonStructuralAllocation = Allocation };
                     NonStructuralDMAllocationCohort[i] = Allocation;
                 }
             }
@@ -876,7 +836,6 @@ public class Leaf : BaseOrgan, AboveGround
                 {
                     i++;
                     double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
-                    //L.DMAllocation = new DMAllocationType { Retranslocation = Supply };
                     DMRetranslocationCohort[i] = Supply;
                     remainder -= Supply;
                 }
@@ -898,7 +857,6 @@ public class Leaf : BaseOrgan, AboveGround
                 {
                     i++;
                     double ReAlloc = Math.Min(remainder, L.LeafStartDMReallocationSupply);
-                    //L.DMAllocation = new DMAllocationType { Reallocation = ReAlloc };
                     remainder = Math.Max(0.0, remainder - ReAlloc);
                     DMReAllocationCohort[i] = ReAlloc;
                 }
