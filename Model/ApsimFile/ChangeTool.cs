@@ -2377,85 +2377,40 @@ namespace ApsimFile
                 else
                     TemperatureNode = Node.ParentNode.AppendChild(Node.OwnerDocument.CreateElement("SoilTemperature2"));
 
-                XmlHelper.SetValue(TemperatureNode, "MaxTTimeDefault", XmlHelper.Value(Node, "maxt_time_default"));
-                XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductanceSource", XmlHelper.Value(Node, "bound_layer_cond_source"));
-                XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductance", XmlHelper.Value(Node, "bound_layer_cond"));
-                XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductanceIterations", XmlHelper.Value(Node, "boundary_layer_conductance_iterations"));
-                XmlHelper.SetValue(TemperatureNode, "NetRadiationSource", XmlHelper.Value(Node, "net_radn_source"));
-                XmlHelper.SetValue(TemperatureNode, "DefaultWindSpeed", XmlHelper.Value(Node, "default_wind_speed"));
-                XmlHelper.SetValue(TemperatureNode, "DefaultAltitude", XmlHelper.Value(Node, "default_altitude"));
-                XmlHelper.SetValue(TemperatureNode, "DefaultInstrumentHeight", XmlHelper.Value(Node, "default_instrum_height"));
-                XmlHelper.SetValue(TemperatureNode, "BareSoilHeight", XmlHelper.Value(Node, "bare_soil_height"));
+                string nodeName = XmlHelper.Attribute(Node, "name");
+                if (nodeName != "")
+                XmlHelper.SetAttribute(TemperatureNode, "name", nodeName);
 
-                string ClayString = XmlHelper.Value(Node, "clay");
-                if (ClayString != "")
+                string Shortcut = XmlHelper.Attribute(Node, "shortcut");
+                if (Shortcut != "")
                 {
-                    string[] Clay = ClayString.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    XmlNode AnalysisNode = XmlHelper.FindByType(SoilNode, "Analysis");
-                    if (AnalysisNode != null)
-                    {
-                        string[] AnalysisThickness = XmlHelper.Values(AnalysisNode, "Thickness/double").ToArray();
-                        if (Clay.Length > AnalysisThickness.Length)
-                            Array.Resize(ref Clay, AnalysisThickness.Length);
-                        else if (Clay.Length < AnalysisThickness.Length)
-                        {
-                            int StartIndex = Clay.Length;
-                            Array.Resize(ref Clay, AnalysisThickness.Length);
-                            for (int i = StartIndex; i < Clay.Length; i++)
-                                Clay[i] = Clay[StartIndex - 1];
-                        }
-                        XmlHelper.SetValues(AnalysisNode, "ParticleSizeClay/double", Clay);
-                    }
-                    else
-                        XmlHelper.SetValue(TemperatureNode, "Clay", ClayString);
-
+                    string childName = XmlHelper.ChildName(Shortcut);
+                    string parentName = XmlHelper.ParentPath(Shortcut);
+                    XmlNode referNode = XmlHelper.Find(Node.OwnerDocument.DocumentElement, parentName);
+                    XmlNode refSoilNode = XmlHelper.FindByType(referNode, "Soil");
+                    Shortcut = XmlHelper.FullPath(refSoilNode) + XmlHelper.Delimiter + childName;
+                    XmlHelper.SetAttribute(TemperatureNode, "shortcut", Shortcut);
                 }
-                Node.ParentNode.RemoveChild(Node);
-            }
-            else if (Node.Name.ToLower() == "soiltemp")
-            {
-                // Go find a soil node.
-                XmlNode SoilNode = XmlHelper.FindByType(Node.ParentNode, "Soil");
-                if (SoilNode != null)
+
+                else
                 {
-                    XmlNode ThicknessNode = XmlHelper.FindByType(SoilNode, "Water/Thickness");
-                    XmlNode LayerStructureNode = XmlHelper.FindByType(SoilNode, "LayerStructure/Thickness");
-                    XmlNode AnalysisNode = XmlHelper.FindByType(SoilNode, "Analysis");
-                    if (ThicknessNode != null && AnalysisNode != null)
+
+                    XmlHelper.SetValue(TemperatureNode, "MaxTTimeDefault", XmlHelper.Value(Node, "maxt_time_default"));
+                    XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductanceSource", XmlHelper.Value(Node, "bound_layer_cond_source"));
+                    XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductance", XmlHelper.Value(Node, "bound_layer_cond"));
+                    XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductanceIterations", XmlHelper.Value(Node, "boundary_layer_conductance_iterations"));
+                    XmlHelper.SetValue(TemperatureNode, "NetRadiationSource", XmlHelper.Value(Node, "net_radn_source"));
+                    XmlHelper.SetValue(TemperatureNode, "DefaultWindSpeed", XmlHelper.Value(Node, "default_wind_speed"));
+                    XmlHelper.SetValue(TemperatureNode, "DefaultAltitude", XmlHelper.Value(Node, "default_altitude"));
+                    XmlHelper.SetValue(TemperatureNode, "DefaultInstrumentHeight", XmlHelper.Value(Node, "default_instrum_height"));
+                    XmlHelper.SetValue(TemperatureNode, "BareSoilHeight", XmlHelper.Value(Node, "bare_soil_height"));
+
+                    string ClayString = XmlHelper.Value(Node, "clay");
+                    if (ClayString != "")
                     {
-                        List<string> Thickness;
-                        
-                        if (LayerStructureNode == null)
-                            Thickness = XmlHelper.Values(ThicknessNode, "double");
-                        else
-                            Thickness = XmlHelper.Values(LayerStructureNode, "double");
-
-                        string BoundaryLayer = XmlHelper.Value(Node, "bound_layer_cond");
-                        string[] Clay = XmlHelper.Value(Node, "clay").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-                        // get initial temps and remove bottom temp. Old SoilTemp used to work on nodes (numlayers+1)
-                        // rather than layers.
-                        string[] InitialTemperature = XmlHelper.Value(Node, "soil_temp").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                        Array.Resize(ref InitialTemperature, InitialTemperature.Length - 1);
-
-                        double[] ClayPercent = MathUtility.StringsToDoubles(Clay);
-                        ClayPercent = MathUtility.Multiply_Value(ClayPercent, 100);
-                        Clay = MathUtility.DoublesToStrings(ClayPercent);
-
-                        XmlNode TemperatureNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("SoilTemperature"));
-                        XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductance", BoundaryLayer);
-
-                        // Write a thickness node.
-                        XmlNode NewThicknessNode = TemperatureNode.AppendChild(TemperatureNode.OwnerDocument.CreateElement("Thickness"));
-                        XmlHelper.SetValues(NewThicknessNode, "double", Thickness);
-
-                        // Write initial temps.
-                        TemperatureNode.AppendChild(TemperatureNode.OwnerDocument.CreateElement("InitialSoilTemperature"));
-                        XmlHelper.SetValues(TemperatureNode, "InitialSoilTemperature/double", InitialTemperature);
-
-                        // Write particle size clay to analysis node.
-                        // Make sure clay has the right number of layers for Analysis.
-                        if (Clay != null)
+                        string[] Clay = ClayString.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        XmlNode AnalysisNode = XmlHelper.FindByType(SoilNode, "Analysis");
+                        if (AnalysisNode != null)
                         {
                             string[] AnalysisThickness = XmlHelper.Values(AnalysisNode, "Thickness/double").ToArray();
                             if (Clay.Length > AnalysisThickness.Length)
@@ -2469,8 +2424,90 @@ namespace ApsimFile
                             }
                             XmlHelper.SetValues(AnalysisNode, "ParticleSizeClay/double", Clay);
                         }
-                        Node.ParentNode.RemoveChild(Node);
+                        else
+                            XmlHelper.SetValue(TemperatureNode, "Clay", ClayString);
+
                     }
+                }
+                Node.ParentNode.RemoveChild(Node);
+            }
+            else if (Node.Name.ToLower() == "soiltemp")
+            {
+                // Go find a soil node.
+                XmlNode SoilNode = XmlHelper.FindByType(Node.ParentNode, "Soil");
+                if (SoilNode != null)
+                {
+                    XmlNode TemperatureNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("SoilTemperature"));
+                    string nodeName = XmlHelper.Attribute(Node, "name");
+                    if (nodeName != "")
+                        XmlHelper.SetAttribute(TemperatureNode, "name", nodeName);
+
+                    string Shortcut = XmlHelper.Attribute(Node, "shortcut");
+                    if (Shortcut != "")
+                    {
+                        string childName = XmlHelper.ChildName(Shortcut);
+                        string parentName = XmlHelper.ParentPath(Shortcut);
+                        XmlNode referNode = XmlHelper.Find(Node.OwnerDocument.DocumentElement, parentName);
+                        XmlNode refSoilNode = XmlHelper.FindByType(referNode, "Soil");
+                        Shortcut = XmlHelper.FullPath(refSoilNode) + XmlHelper.Delimiter + childName;
+                        XmlHelper.SetAttribute(TemperatureNode, "shortcut", Shortcut);
+                    }
+
+                    else
+                    {
+                        XmlNode ThicknessNode = XmlHelper.FindByType(SoilNode, "Water/Thickness");
+                        XmlNode LayerStructureNode = XmlHelper.FindByType(SoilNode, "LayerStructure/Thickness");
+                        XmlNode AnalysisNode = XmlHelper.FindByType(SoilNode, "Analysis");
+                        if (ThicknessNode != null && AnalysisNode != null)
+                        {
+                            List<string> Thickness;
+
+                            if (LayerStructureNode == null)
+                                Thickness = XmlHelper.Values(ThicknessNode, "double");
+                            else
+                                Thickness = XmlHelper.Values(LayerStructureNode, "double");
+
+                            string BoundaryLayer = XmlHelper.Value(Node, "bound_layer_cond");
+                            string[] Clay = XmlHelper.Value(Node, "clay").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                            // get initial temps and remove bottom temp. Old SoilTemp used to work on nodes (numlayers+1)
+                            // rather than layers.
+                            string[] InitialTemperature = XmlHelper.Value(Node, "soil_temp").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            Array.Resize(ref InitialTemperature, InitialTemperature.Length - 1);
+
+                            double[] ClayPercent = MathUtility.StringsToDoubles(Clay);
+                            ClayPercent = MathUtility.Multiply_Value(ClayPercent, 100);
+                            Clay = MathUtility.DoublesToStrings(ClayPercent);
+
+                            XmlHelper.SetValue(TemperatureNode, "BoundaryLayerConductance", BoundaryLayer);
+
+                            // Write a thickness node.
+                            XmlNode NewThicknessNode = TemperatureNode.AppendChild(TemperatureNode.OwnerDocument.CreateElement("Thickness"));
+                            XmlHelper.SetValues(NewThicknessNode, "double", Thickness);
+
+                            // Write initial temps.
+                            TemperatureNode.AppendChild(TemperatureNode.OwnerDocument.CreateElement("InitialSoilTemperature"));
+                            XmlHelper.SetValues(TemperatureNode, "InitialSoilTemperature/double", InitialTemperature);
+
+                            // Write particle size clay to analysis node.
+                            // Make sure clay has the right number of layers for Analysis.
+                            if (Clay != null)
+                            {
+                                string[] AnalysisThickness = XmlHelper.Values(AnalysisNode, "Thickness/double").ToArray();
+                                if (Clay.Length > AnalysisThickness.Length)
+                                    Array.Resize(ref Clay, AnalysisThickness.Length);
+                                else if (Clay.Length < AnalysisThickness.Length)
+                                {
+                                    int StartIndex = Clay.Length;
+                                    Array.Resize(ref Clay, AnalysisThickness.Length);
+                                    for (int i = StartIndex; i < Clay.Length; i++)
+                                        Clay[i] = Clay[StartIndex - 1];
+                                }
+                                XmlHelper.SetValues(AnalysisNode, "ParticleSizeClay/double", Clay);
+                            }
+                        }
+                    }
+                    Node.ParentNode.RemoveChild(Node);
                 }
             }
 

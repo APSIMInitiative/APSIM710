@@ -87,8 +87,8 @@ namespace CSGeneral
             StringBuilder FullPath = new StringBuilder();
             do
             {
-                FullPath.Insert(0, Delimiter);
                 FullPath.Insert(0, Name(LocalData));
+                FullPath.Insert(0, Delimiter);
             } while ((LocalData = Parent(LocalData)) != null);
             return FullPath.ToString();
         }
@@ -101,6 +101,11 @@ namespace CSGeneral
             if (ParentName == "")
                 throw new Exception("Cannot get the parent of the root node");
             return ParentName;
+        }
+        public static string ChildName(string NodePath)
+        {
+            int PosDelimiter = NodePath.LastIndexOf(Delimiter);
+            return NodePath.Substring(PosDelimiter + 1);
         }
         public static XmlNode Find(XmlNode Node, string NamePath)
         {
