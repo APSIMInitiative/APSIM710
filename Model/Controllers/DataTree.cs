@@ -187,73 +187,77 @@ namespace Controllers
 
 		#region "Refresh methods"
 
-		private void OnRefresh(ApsimFile.Component Comp)
-		{
-			// ----------------------------------------------
-			// Do a refresh from the specified Comp down
-			// ----------------------------------------------
-			System.Windows.Forms.Cursor.Current = Cursors.WaitCursor;
-			//set the cursor object (usually an arrow) to the wait cursor (usually an hourglass)
-			BeginUpdate();
-			//inbuilt tree function, it disables redrawing of the tree
+        private void OnRefresh(ApsimFile.Component Comp)
+        {
+            // ----------------------------------------------
+            // Do a refresh from the specified Comp down
+            // ----------------------------------------------
+            System.Windows.Forms.Cursor.Current = Cursors.WaitCursor;
+            //set the cursor object (usually an arrow) to the wait cursor (usually an hourglass)
 
+            //BeginUpdate();
+            //inbuilt tree function, it disables redrawing of the tree
+            // In theory, this should be more efficient, but in practice can lead to "Out of memory" errors when
+            // loading very large trees
 
-			try {
-				//If (the tree has no nodes) OR (Comp [the component parameter this sub was passed] is Null)
-				if ((Nodes.Count == 0) || (Comp == null)) {
-					Nodes.Clear();
-					//get rid of all the nodes in the tree 
-					TreeNode RootNode = Nodes.Add(Controller.ApsimData.RootComponent.Name);
-					//create the root node from the root component and add it to the tree.
-					RefreshNodeAndChildren(RootNode, Controller.ApsimData.RootComponent);
-					//refresh the tree from the root node down.
+            try
+            {
+                //If (the tree has no nodes) OR (Comp [the component parameter this sub was passed] is Null)
+                if ((Nodes.Count == 0) || (Comp == null))
+                {
+                    Nodes.Clear();
+                    //get rid of all the nodes in the tree 
+                    TreeNode RootNode = Nodes.Add(Controller.ApsimData.RootComponent.Name);
+                    //create the root node from the root component and add it to the tree.
+                    RefreshNodeAndChildren(RootNode, Controller.ApsimData.RootComponent);
+                    //refresh the tree from the root node down.
 
-				//Get the node you want to refresh 
+                    //Get the node you want to refresh 
 
-				} else {
-					TreeNode NodeToRefresh = GetNodeFromPath(Comp.FullPath);
-					//get the corresponding node for the component this sub was passed
-					//if you have switched from one toolbox to another toolbox, then even though the components exist to do the refresh, the corresponding nodes do not yet exist because this OnRefresh is supposed to provide them. So GetNodeFromPath will return Nothing.
-					if ((NodeToRefresh == null)) {
-						RefreshNodeAndChildren(Nodes[0], Controller.ApsimData.RootComponent);
-						//refresh the tree from this node down.
-					} else {
-						RefreshNodeAndChildren(NodeToRefresh, Comp);
-						//refresh the tree from this node down.
-					}
+                }
+                else
+                {
+                    TreeNode NodeToRefresh = GetNodeFromPath(Comp.FullPath);
+                    //get the corresponding node for the component this sub was passed
+                    //if you have switched from one toolbox to another toolbox, then even though the components exist to do the refresh, the corresponding nodes do not yet exist because this OnRefresh is supposed to provide them. So GetNodeFromPath will return Nothing.
+                    if ((NodeToRefresh == null))
+                    {
+                        RefreshNodeAndChildren(Nodes[0], Controller.ApsimData.RootComponent);
+                        //refresh the tree from this node down.
+                    }
+                    else
+                    {
+                        RefreshNodeAndChildren(NodeToRefresh, Comp);
+                        //refresh the tree from this node down.
+                    }
+                }
+                //If multiple nodes are selected set the tree's selected node to the first one.
 
-				}
-			} catch (Exception) {
-				EndUpdate();
-				//inbuilt tree function, reinables redrawing of the tree
-				System.Windows.Forms.Cursor.Current = Cursors.Default;
-				//set the cursor object back to the default windows cursor (usually an arrow)
-				throw;
-			}
+                //NB. Windows inbuilt Tree control does not allow you to select more then one node.
+                //   So we had to create our own code to manually highlight the nodes that are selected. (manually changed the background/foreground properties of each node in the tree) (see ColourNode sub in the 'Selection methods' Region) 
+                //   This is also why we needed to create the SelectedPaths property in the Base Control, instead of just using the tree controls inbuilt SelectedNode property.
 
+                if ((Controller.SelectedPaths.Count > 0))
+                {
+                    EnableNodeSelection = false;
+                    //don't let the user click any other nodes while this code executes
+                    SelectedNode = GetNodeFromPath(Controller.SelectedPaths[0]);
+                    //set tree's selected node property to the first item in the SelectedPaths. The tree control complains if you don't have something set as the SelectedNode, but we don't use it.
+                    EnableNodeSelection = true;
+                    //let the user click on other nodes again
 
-			//If multiple nodes are selected set the tree's selected node to the first one.
+                }
 
-			//NB. Windows inbuilt Tree control does not allow you to select more then one node.
-			//   So we had to create our own code to manually highlight the nodes that are selected. (manually changed the background/foreground properties of each node in the tree) (see ColourNode sub in the 'Selection methods' Region) 
-			//   This is also why we needed to create the SelectedPaths property in the Base Control, instead of just using the tree controls inbuilt SelectedNode property.
+            }
+            finally
+            {
+                //EndUpdate();
+                //inbuilt tree function, reinables redrawing of the tree
+                System.Windows.Forms.Cursor.Current = Cursors.Default;
+                //set the cursor object back to the default windows cursor (usually an arrow)
+            }
+        }
 
-			if ((Controller.SelectedPaths.Count > 0)) {
-				EnableNodeSelection = false;
-				//don't let the user click any other nodes while this code executes
-				SelectedNode = GetNodeFromPath(Controller.SelectedPaths[0]);
-				//set tree's selected node property to the first item in the SelectedPaths. The tree control complains if you don't have something set as the SelectedNode, but we don't use it.
-				EnableNodeSelection = true;
-				//let the user click on other nodes again
-
-			}
-
-
-			EndUpdate();
-			//inbuilt tree function, reinables redrawing of the tree
-			System.Windows.Forms.Cursor.Current = Cursors.Default;
-			//set the cursor object back to the default windows cursor (usually an arrow)
-		}
 		private void RefreshNodeAndChildren(TreeNode Node, ApsimFile.Component Comp)
 		{
 			// --------------------------------------------------
@@ -262,8 +266,9 @@ namespace Controllers
 			// --------------------------------------------------
 
 			// Refresh the specified node first.
-			Node.Text = Comp.Name;
-			Node.ImageIndex = Controller.ImageIndex(Comp.Type, "SmallIcon");
+            if (Node.Text != Comp.Name)
+              Node.Text = Comp.Name;
+            Node.ImageIndex = Controller.ImageIndex(Comp.Type, "SmallIcon");
 			Node.SelectedImageIndex = Node.ImageIndex;
 			Node.Tag = Comp.Type;
 			if (DisplayNodeTypeInTree) {
@@ -282,21 +287,12 @@ namespace Controllers
 			}
 			ColourNode(Node);
 			// Go refresh all children.
-			int ChildIndex = 0;
+            Node.Nodes.Clear();
 			foreach (ApsimFile.Component Child in Comp.ChildNodes) {
 				if (Child.Type != "factorial") {
-					TreeNode ChildTreeNode = null;
-					if (ChildIndex < Node.Nodes.Count) {
-						ChildTreeNode = Node.Nodes[ChildIndex];
-					} else {
-						ChildTreeNode = Node.Nodes.Add(Child.Name);
-					}
+					TreeNode ChildTreeNode = Node.Nodes.Add(Child.Name);
 					RefreshNodeAndChildren(ChildTreeNode, Child);
-					ChildIndex = ChildIndex + 1;
 				}
-			}
-			while (Node.Nodes.Count > ChildIndex) {
-				Node.Nodes.Remove(Node.Nodes[Node.Nodes.Count - 1]);
 			}
 		}
 		#endregion
