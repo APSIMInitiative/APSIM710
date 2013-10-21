@@ -52,6 +52,9 @@ public class GenericOrgan : BaseOrgan
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
     protected double PotentialDMAllocation = 0;
+    protected double PotentialStructuralDMAllocation = 0;
+    protected double PotentialMetabolicDMAllocation = 0;
+    //protected double PotentialNonStructuralDMAllocation = 0;
     protected double StructuralDMDemand = 0;
     protected double NonStructuralDMDemand = 0;
     protected double InitialWt = 0;
@@ -130,7 +133,9 @@ public class GenericOrgan : BaseOrgan
                 if (value.Structural < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in " + Name);
-            PotentialDMAllocation = value.Structural;
+            PotentialMetabolicDMAllocation = value.Metabolic;
+            PotentialStructuralDMAllocation = value.Structural;
+            PotentialDMAllocation = value.Structural + value.Metabolic;
         }
     }
     public override DMSupplyType DMSupply
@@ -183,15 +188,15 @@ public class GenericOrgan : BaseOrgan
     {
         set
         {
-            Live.StructuralWt += Math.Min(value.StructuralAllocation, StructuralDMDemand);
+            Live.StructuralWt += Math.Min(value.Structural, StructuralDMDemand);
         
             // Excess allocation
-            if (value.NonStructuralAllocation < -0.0000000001)
+            if (value.NonStructural < -0.0000000001)
                 throw new Exception("-ve NonStructuralDM Allocation to " + Name);
-            if ((value.NonStructuralAllocation - DMDemand.NonStructural) > 0.0000000001)
+            if ((value.NonStructural - DMDemand.NonStructural) > 0.0000000001)
                 throw new Exception("StructuralDM Allocation to " + Name + " is in excess of its Capacity");
             if (DMDemand.NonStructural > 0)
-                Live.NonStructuralWt += value.NonStructuralAllocation;
+                Live.NonStructuralWt += value.NonStructural;
      
             // Retranslocation
             if (value.Retranslocation - StartLive.NonStructuralWt > 0.0000000001)

@@ -36,15 +36,12 @@ public class DMSupplyType
 }
 public class DMAllocationType
 {
-    //public double Allocation;
-    //public double ExcessAllocation;
-    public double StructuralAllocation;
-    public double NonStructuralAllocation;
-    public double MetabolicAllocation;
+    public double Structural;
+    public double NonStructural;
+    public double Metabolic;
     public double Retranslocation;
     public double Reallocation;
     public double Respired;
-
 }
 public class NDemandType
 {
@@ -58,18 +55,17 @@ public class NSupplyType
     public double Uptake;
     public double Fixation;
     public double Retranslocation;
-    public double StructuralAllocation;
-    public double NonStructuralAllocation;
-    public double MetabolicAllocation;
 }
 public class NAllocationType
 {
-    public double Allocation;
+    public double Structural;
+    public double NonStructural;
+    public double Metabolic;
+    public double Allocation;  //FIXME.  this is to become redundant when other allocation types are wired up.
     public double Reallocation;
     public double Uptake_gsm; // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2.  This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
     public double Fixation;
     public double Retranslocation;
-
 }
 #endregion
 

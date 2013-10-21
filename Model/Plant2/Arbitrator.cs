@@ -319,7 +319,7 @@ public class Arbitrator
         {
            Organs[i].DMPotentialAllocation = new DMPotentialAllocationType
             {
-                Structural = DMAllocationStructural[i] + DMAllocationMetabolic[i],  //Need to seperate metabolic and structural allocations
+                Structural = DMAllocationStructural[i],  //Need to seperate metabolic and structural allocations
                 Metabolic = DMAllocationMetabolic[i],  //This wont do anything currently
                 NonStructural = DMAllocationNonStructural[i], //Nor will this do anything
             };
@@ -574,9 +574,9 @@ public class Arbitrator
                 Respired = FixationWtLoss[i], 
                 Reallocation = DMReallocation[i],
                 Retranslocation = DMRetranslocation[i],
-                StructuralAllocation = DMAllocationStructural[i],
-                NonStructuralAllocation = DMAllocationNonStructural[i],
-                MetabolicAllocation = DMAllocationMetabolic[i],
+                Structural = DMAllocationStructural[i],
+                NonStructural = DMAllocationNonStructural[i],
+                Metabolic = DMAllocationMetabolic[i],
             };
         }
     }

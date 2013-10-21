@@ -37,7 +37,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         set
         {
-            Live.StructuralWt += value.StructuralAllocation;
+            Live.StructuralWt += value.Structural;
         }
     }
 

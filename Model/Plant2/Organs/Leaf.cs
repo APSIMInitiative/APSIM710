@@ -701,13 +701,87 @@ public class Leaf : BaseOrgan, AboveGround
     public override DMPotentialAllocationType DMPotentialAllocation
     {
         set
-        {
+        {  
+            //Allocate Potential Structural DM
             if (DMDemand.Structural == 0)
                 if (value.Structural < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
+            
+            double[] CohortPotentialStructualDMAllocation = new double[Leaves.Count + 2];
+                
             if (value.Structural == 0.0)
             { }// do nothing
+            else
+            {
+                double DMPotentialsupply = value.Structural;
+                double DMPotentialallocated = 0;
+                double TotalPotentialDemand = 0;
+                foreach (LeafCohort L in Leaves)
+                    TotalPotentialDemand += L.StructuralDMDemand;
+                int i = 0;
+                foreach (LeafCohort L in Leaves)
+                {
+                    i++;
+                    double fraction = L.StructuralDMDemand / TotalPotentialDemand;
+                    double PotentialAllocation = Math.Min(L.StructuralDMDemand, DMPotentialsupply * fraction);
+                    CohortPotentialStructualDMAllocation[i] = PotentialAllocation;
+                    DMPotentialallocated += PotentialAllocation;
+                    //DMPotentialsupply -= PotentialAllocation;
+                }
+                //if (DMPotentialsupply > 0.0000000001)
+                //    throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
+                if ((DMPotentialallocated - value.Structural) > 0.000000001)
+                    throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
+            }
+        
+            //Allocate Metabolic DM
+            if (DMDemand.Metabolic == 0)
+                if (value.Metabolic < 0.000000000001) { }//All OK
+                else
+                    throw new Exception("Invalid allocation of potential DM in" + Name);
+            
+            double[] CohortPotentialMetabolicDMAllocation = new double[Leaves.Count + 2];
+                
+            if (value.Metabolic == 0.0)
+            { }// do nothing
+            else
+            {
+                double DMPotentialsupply = value.Metabolic;
+                double DMPotentialallocated = 0;
+                double TotalPotentialDemand = 0;
+                foreach (LeafCohort L in Leaves)
+                    TotalPotentialDemand += L.MetabolicDMDemand;
+                int i = 0;
+                foreach (LeafCohort L in Leaves)
+                {
+                    i++;
+                    double fraction = L.MetabolicDMDemand / TotalPotentialDemand;
+                    double PotentialAllocation = Math.Min(L.MetabolicDMDemand, DMPotentialsupply * fraction);
+                    CohortPotentialMetabolicDMAllocation[i] = PotentialAllocation;
+                    DMPotentialallocated += PotentialAllocation;
+                    //DMPotentialsupply -= PotentialAllocation;
+                }
+               // if (DMPotentialsupply > 0.0000000001)
+               //     throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
+                if ((DMPotentialallocated - value.Metabolic) > 0.000000001)
+                    throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
+            }
+
+            //Send allocations to cohorts
+            int a = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                a++;
+                L.DMPotentialAllocation = new DMPotentialAllocationType
+                {
+                    Structural = CohortPotentialStructualDMAllocation[a],
+                    Metabolic = CohortPotentialMetabolicDMAllocation[a],
+                };
+            }
+            //Send allocations to cohorts
+
+            /*/Need to seperate out structural and metabolic potentials
             else
             {
                 double DMPotentialsupply = value.Structural;
@@ -732,7 +806,7 @@ public class Leaf : BaseOrgan, AboveGround
                     throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
                 if ((DMPotentialallocated - value.Structural) > 0.000000001)
                     throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
-            }
+            }*/
         }
     }
     public override DMAllocationType DMAllocation
@@ -744,19 +818,19 @@ public class Leaf : BaseOrgan, AboveGround
             double check = Live.StructuralWt;
             //Structural DM allocation
             if (DMDemand.Structural == 0)
-                if (value.StructuralAllocation < 0.000000000001) { }//All OK
+                if (value.Structural < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of DM in Leaf");
-            if (value.StructuralAllocation == 0.0)
+            if (value.Structural == 0.0)
             { }// do nothing
             else
             {
-                double DMsupply = value.StructuralAllocation;
+                double DMsupply = value.Structural;
                 double DMallocated = 0;
                 double TotalDemand = 0;
                 foreach (LeafCohort L in Leaves)
                     TotalDemand += L.StructuralDMDemand;
-                double DemandFraction = (value.StructuralAllocation) / TotalDemand;//
+                double DemandFraction = (value.Structural) / TotalDemand;//
                 int i = 0;
                 foreach (LeafCohort L in Leaves)
                 {
@@ -768,7 +842,7 @@ public class Leaf : BaseOrgan, AboveGround
                 }
                 if (DMsupply > 0.0000000001)
                     throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
-                if ((DMallocated - value.StructuralAllocation) > 0.000000001)
+                if ((DMallocated - value.Structural) > 0.000000001)
                     throw new Exception("the sum of DM allocation to leaf cohorts is more that that allocated to leaf organ");
             }
 
@@ -776,19 +850,19 @@ public class Leaf : BaseOrgan, AboveGround
             double[] MetabolicDMAllocationCohort = new double[Leaves.Count + 2];
             
             if (DMDemand.Metabolic == 0)
-                if (value.MetabolicAllocation < 0.000000000001) { }//All OK
+                if (value.Metabolic < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of DM in Leaf");
-            if (value.MetabolicAllocation == 0.0)
+            if (value.Metabolic == 0.0)
             { }// do nothing
             else
             {
-                double DMsupply = value.MetabolicAllocation;
+                double DMsupply = value.Metabolic;
                 double DMallocated = 0;
                 double TotalDemand = 0;
                 foreach (LeafCohort L in Leaves)
                     TotalDemand += L.MetabolicDMDemand;
-                double DemandFraction = (value.MetabolicAllocation) / TotalDemand;//
+                double DemandFraction = (value.Metabolic) / TotalDemand;//
                 int i = 0;
                 foreach (LeafCohort L in Leaves)
                 {
@@ -800,7 +874,7 @@ public class Leaf : BaseOrgan, AboveGround
                 }
                 if (DMsupply > 0.0000000001)
                     throw new Exception("Metabolic DM allocated to Leaf left over after allocation to leaf cohorts");
-                if ((DMallocated - value.MetabolicAllocation) > 0.000000001)
+                if ((DMallocated - value.Metabolic) > 0.000000001)
                     throw new Exception("the sum of Metabolic DM allocation to leaf cohorts is more that that allocated to leaf organ");
             }
 
@@ -809,16 +883,16 @@ public class Leaf : BaseOrgan, AboveGround
             double TotalSinkCapacity = 0;
             foreach (LeafCohort L in Leaves)
                 TotalSinkCapacity += L.NonStructuralDMDemand;
-            if (value.NonStructuralAllocation > TotalSinkCapacity)
+            if (value.NonStructural > TotalSinkCapacity)
                 throw new Exception("Allocating more excess DM to Leaves then they are capable of storing");
             if (TotalSinkCapacity > 0.0)
             {
-                double SinkFraction = value.NonStructuralAllocation / TotalSinkCapacity;
+                double SinkFraction = value.NonStructural / TotalSinkCapacity;
                 int i = 0;
                 foreach (LeafCohort L in Leaves)
                 {
                     i++;
-                    double Allocation = Math.Min(L.NonStructuralDMDemand * SinkFraction, value.NonStructuralAllocation);
+                    double Allocation = Math.Min(L.NonStructuralDMDemand * SinkFraction, value.NonStructural);
                     NonStructuralDMAllocationCohort[i] = Allocation;
                 }
             }
@@ -871,9 +945,9 @@ public class Leaf : BaseOrgan, AboveGround
                 a++;
                 L.DMAllocation = new DMAllocationType
                 {
-                    StructuralAllocation = StructuralDMAllocationCohort[a],
-                    MetabolicAllocation = MetabolicDMAllocationCohort[a],
-                    NonStructuralAllocation = NonStructuralDMAllocationCohort[a],
+                    Structural = StructuralDMAllocationCohort[a],
+                    Metabolic = MetabolicDMAllocationCohort[a],
+                    NonStructural = NonStructuralDMAllocationCohort[a],
                     Retranslocation = DMRetranslocationCohort[a],
                     Reallocation = DMReAllocationCohort[a],
                 };

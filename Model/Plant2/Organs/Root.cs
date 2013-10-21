@@ -340,7 +340,6 @@ public class Root : BaseOrgan, BelowGround
                 if (value.Structural < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
-
             // Calculate Root Activity Values for water and nitrogen
             double[] RAw = new double[dlayer.Length];
             double[] RAn = new double[dlayer.Length];
@@ -433,10 +432,10 @@ public class Root : BaseOrgan, BelowGround
             {
                 if (TotalRAw > 0)
 
-                    LayerLive[layer].StructuralWt += value.StructuralAllocation * RAw[layer] / TotalRAw;
-                else if (value.StructuralAllocation > 0)
+                    LayerLive[layer].StructuralWt += value.Structural * RAw[layer] / TotalRAw;
+                else if (value.Structural > 0)
                     throw new Exception("Error trying to partition root biomass");
-                allocated += (TotalRAw > 0) ? value.StructuralAllocation * RAw[layer] / TotalRAw : 0;
+                allocated += (TotalRAw > 0) ? value.Structural * RAw[layer] / TotalRAw : 0;
             }
         }
     }

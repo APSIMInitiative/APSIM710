@@ -352,17 +352,17 @@ public class LeafCohort
         set
         {
             //Firstly allocate DM
-            if (value.StructuralAllocation + value.NonStructuralAllocation + value.MetabolicAllocation  < -0.0000000001)
+            if (value.Structural + value.NonStructural + value.Metabolic  < -0.0000000001)
                 throw new Exception("-ve DM Allocation to Leaf Cohort");
-            if ((value.StructuralAllocation + value.NonStructuralAllocation + value.MetabolicAllocation - TotalDMDemand) > 0.0000000001)
+            if ((value.Structural + value.NonStructural + value.Metabolic - TotalDMDemand) > 0.0000000001)
                 throw new Exception("DM Allocated to Leaf Cohort is in excess of its Demand");
             if (TotalDMDemand > 0)
             {
-                StructuralDMAllocation = value.StructuralAllocation;
-                MetabolicDMAllocation = value.MetabolicAllocation;
-                Live.StructuralWt += value.StructuralAllocation;
-                Live.MetabolicWt += value.MetabolicAllocation;
-                Live.NonStructuralWt += value.NonStructuralAllocation;
+                StructuralDMAllocation = value.Structural;
+                MetabolicDMAllocation = value.Metabolic;
+                Live.StructuralWt += value.Structural;
+                Live.MetabolicWt += value.Metabolic;
+                Live.NonStructuralWt += value.NonStructural;
             }
             
             //Then remove reallocated DM
@@ -453,22 +453,32 @@ public class LeafCohort
             return LeafStartNonStructuralDMReallocationSupply + LeafStartMetabolicDMReallocationSupply;
         }
     }
-    public double DMPotentialAllocation
+    virtual public DMPotentialAllocationType DMPotentialAllocation
     {
         set
         {
-            if (value < -0.0000000001)
+            if (value.Structural < -0.0000000001)
                 throw new Exception("-ve Potential DM Allocation to Leaf Cohort");
-            if ((value - TotalDMDemand) > 0.0000000001)
+            if ((value.Structural - StructuralDMDemand) > 0.0000000001)
                 throw new Exception("Potential DM Allocation to Leaf Cohortis in excess of its Demand");
-            if ((StructuralDMDemand + MetabolicDMDemand) > 0)
+            if (StructuralDMDemand > 0)
             {
-                //double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand + NonStructuralDMDemand);
-                //double MetabolicDMDemandFrac = MetabolicDMDemand / (StructuralDMDemand + MetabolicDMDemand + NonStructuralDMDemand);
-                double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
-                PotentialStructuralDMAllocation = value * StructuralDMDemandFrac;
-                //PotentialMetabolicDMAllocation = value * MetabolicDMDemandFrac;
-                PotentialMetabolicDMAllocation = value * (1 - StructuralDMDemandFrac);
+                PotentialStructuralDMAllocation = value.Structural;
+                //double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
+                //PotentialStructuralDMAllocation = value * StructuralDMDemandFrac;
+                //PotentialMetabolicDMAllocation = value * (1 - StructuralDMDemandFrac);
+            }
+            
+            if (value.Metabolic < -0.0000000001)
+                throw new Exception("-ve Potential DM Allocation to Leaf Cohort");
+            if ((value.Metabolic - MetabolicDMDemand) > 0.0000000001)
+                throw new Exception("Potential DM Allocation to Leaf Cohortis in excess of its Demand");
+            if (MetabolicDMDemand > 0)
+            {
+                PotentialMetabolicDMAllocation = value.Metabolic;
+                //double StructuralDMDemandFrac = StructuralDMDemand / (StructuralDMDemand + MetabolicDMDemand);
+                //PotentialStructuralDMAllocation = value * StructuralDMDemandFrac;
+                //PotentialMetabolicDMAllocation = value * (1 - StructuralDMDemandFrac);
             }
         }
 
