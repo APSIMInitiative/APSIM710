@@ -12,15 +12,15 @@ public class BaseOrgan : Organ
     [Link]
     public MetFile MetData = null;
 
-    public override DMSupplyType DMSupply { get { return new DMSupplyType(); } set { } }
-    public override DMPotentialAllocationType DMPotentialAllocation { set{} }
-    public override DMAllocationType DMAllocation { set { } }
-    public override DMDemandType DMDemand { get { return new DMDemandType(); } set { } }
+    public override BiomassSupplyType DMSupply { get { return new BiomassSupplyType(); } set { } }
+    public override BiomassPoolType DMPotentialAllocation { set{} }
+    public override BiomassAllocationType DMAllocation { set { } }
+    public override BiomassPoolType DMDemand { get { return new BiomassPoolType(); } set { } }
 
-    public override NSupplyType NSupply { get { return new NSupplyType(); } set { } }
-    public override NAllocationType NAllocation { set {  } }
+    public override BiomassSupplyType NSupply { get { return new BiomassSupplyType(); } set { } }
+    public override BiomassAllocationType NAllocation { set {  } }
     public override double NFixationCost { get { return 0; } set { } }
-    public override NDemandType NDemand { get { return new NDemandType(); } set { } }
+    public override BiomassPoolType NDemand { get { return new BiomassPoolType(); } set { } }
 
     public override double WaterDemand { get { return 0; } set { } }
     public override double WaterSupply { get { return 0; } set { } }
@@ -48,7 +48,7 @@ public class BaseOrgan : Organ
     
     [Output]
     [Units("g/m^2")]
-    public double DMSupplyPhotosynthesis { get { return DMSupply.Photosynthesis; } }
+    public double DMSupplyPhotosynthesis { get { return DMSupply.Fixation; } }
 
     [Output]
     [Units("g/m^2")]

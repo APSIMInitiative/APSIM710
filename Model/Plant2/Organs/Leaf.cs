@@ -652,7 +652,7 @@ public class Leaf : BaseOrgan, AboveGround
  #region Arbitrator methods
     [Output]
     [Units("g/m^2")]
-    public override DMDemandType DMDemand
+    public override BiomassPoolType DMDemand
     {
         get
         {
@@ -674,14 +674,14 @@ public class Leaf : BaseOrgan, AboveGround
                     NonStructuralDemand += L.NonStructuralDMDemand;
                 }
             }
-            return new DMDemandType { Structural = StructuralDemand, Metabolic = MetabolicDemand, NonStructural = NonStructuralDemand };
+            return new BiomassPoolType { Structural = StructuralDemand, Metabolic = MetabolicDemand, NonStructural = NonStructuralDemand };
         }
 
     }
     /// <summary>
     /// Daily photosynthetic "net" supply of dry matter for the whole plant (g DM/m2/day)
     /// </summary>
-    public override DMSupplyType DMSupply
+    public override BiomassSupplyType DMSupply
     {
         get
         {
@@ -695,10 +695,10 @@ public class Leaf : BaseOrgan, AboveGround
             }
 
 
-            return new DMSupplyType { Photosynthesis = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation , Reallocation = Reallocation};
+            return new BiomassSupplyType { Fixation = Photosynthesis.Growth(RadIntTot), Retranslocation = Retranslocation , Reallocation = Reallocation};
         }
     }
-    public override DMPotentialAllocationType DMPotentialAllocation
+    public override BiomassPoolType DMPotentialAllocation
     {
         set
         {  
@@ -727,10 +727,7 @@ public class Leaf : BaseOrgan, AboveGround
                     double PotentialAllocation = Math.Min(L.StructuralDMDemand, DMPotentialsupply * fraction);
                     CohortPotentialStructualDMAllocation[i] = PotentialAllocation;
                     DMPotentialallocated += PotentialAllocation;
-                    //DMPotentialsupply -= PotentialAllocation;
                 }
-                //if (DMPotentialsupply > 0.0000000001)
-                //    throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
                 if ((DMPotentialallocated - value.Structural) > 0.000000001)
                     throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
             }
@@ -760,10 +757,7 @@ public class Leaf : BaseOrgan, AboveGround
                     double PotentialAllocation = Math.Min(L.MetabolicDMDemand, DMPotentialsupply * fraction);
                     CohortPotentialMetabolicDMAllocation[i] = PotentialAllocation;
                     DMPotentialallocated += PotentialAllocation;
-                    //DMPotentialsupply -= PotentialAllocation;
                 }
-               // if (DMPotentialsupply > 0.0000000001)
-               //     throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
                 if ((DMPotentialallocated - value.Metabolic) > 0.000000001)
                     throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
             }
@@ -773,43 +767,15 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
             {
                 a++;
-                L.DMPotentialAllocation = new DMPotentialAllocationType
+                L.DMPotentialAllocation = new BiomassPoolType
                 {
                     Structural = CohortPotentialStructualDMAllocation[a],
                     Metabolic = CohortPotentialMetabolicDMAllocation[a],
                 };
             }
-            //Send allocations to cohorts
-
-            /*/Need to seperate out structural and metabolic potentials
-            else
-            {
-                double DMPotentialsupply = value.Structural;
-                double DMPotentialallocated = 0;
-                double TotalPotentialDemand = 0;
-
-                foreach (LeafCohort L in Leaves)
-                    TotalPotentialDemand += L.StructuralDMDemand + L.MetabolicDMDemand;
-
-                // first make sure each cohort gets the DM required for Maximum SLA
-                double fraction = (value.Structural) / TotalPotentialDemand;//
-                foreach (LeafCohort L in Leaves)
-                {
-                    double CohortPotentialDemand = 0;
-                    CohortPotentialDemand = L.StructuralDMDemand + L.MetabolicDMDemand;
-                    double PotentialAllocation = Math.Min(CohortPotentialDemand * fraction, DMPotentialsupply);
-                    L.DMPotentialAllocation = PotentialAllocation;
-                    DMPotentialallocated += PotentialAllocation;
-                    DMPotentialsupply -= PotentialAllocation;
-                }
-                if (DMPotentialsupply > 0.0000000001)
-                    throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
-                if ((DMPotentialallocated - value.Structural) > 0.000000001)
-                    throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
-            }*/
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     {
         set
         {
@@ -943,7 +909,7 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
             {
                 a++;
-                L.DMAllocation = new DMAllocationType
+                L.DMAllocation = new BiomassAllocationType
                 {
                     Structural = StructuralDMAllocationCohort[a],
                     Metabolic = MetabolicDMAllocationCohort[a],
@@ -968,7 +934,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("g/m^2")]
-    public override NDemandType NDemand
+    public override BiomassPoolType NDemand
     {
         get
         {
@@ -981,19 +947,19 @@ public class Leaf : BaseOrgan, AboveGround
                 MetabolicDemand += L.MetabolicNDemand;
                 NonStructuralDemand += L.NonStructuralNDemand;
             }
-            return new NDemandType { Structural = StructuralDemand+MetabolicDemand+NonStructuralDemand };
+            return new BiomassPoolType { Structural = StructuralDemand+MetabolicDemand+NonStructuralDemand };
         }
     }
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
             if (NDemand.Structural == 0)
-                if (value.Allocation == 0) { }//All OK
+                if (value.Structural == 0) { }//All OK  FIXME this needs to be seperated into compoents
                 else
                     throw new Exception("Invalid allocation of N");
 
-            if (value.Allocation == 0.0)
+            if (value.Structural == 0.0)
             { }// do nothing
             else
             {
@@ -1020,7 +986,7 @@ public class Leaf : BaseOrgan, AboveGround
                         TotalNonStructuralNDemand += L.NonStructuralNDemand;
                     }
                 }
-                double NSupplyValue = value.Allocation;
+                double NSupplyValue = value.Structural;
                 double LeafNAllocated = 0;
 
                 // first make sure each cohort gets the structural N requirement for growth (includes MinNconc for structural growth and MinNconc for nonstructural growth)
@@ -1035,7 +1001,7 @@ public class Leaf : BaseOrgan, AboveGround
                         CohortNAllocation[i] += allocation;
                         LeafNAllocated += allocation;
                     }
-                    NSupplyValue = value.Allocation - LeafNAllocated;
+                    NSupplyValue = value.Structural - LeafNAllocated;
                 }
 
                 // then allocate additional N relative to leaves metabolic demands
@@ -1050,7 +1016,7 @@ public class Leaf : BaseOrgan, AboveGround
                         CohortNAllocation[i] += allocation;
                         LeafNAllocated += allocation;
                     }
-                    NSupplyValue = value.Allocation - LeafNAllocated;
+                    NSupplyValue = value.Structural - LeafNAllocated;
                 }
 
                 // then allocate excess N relative to leaves N sink capacity
@@ -1065,12 +1031,12 @@ public class Leaf : BaseOrgan, AboveGround
                         CohortNAllocation[i] += allocation;
                         LeafNAllocated += allocation;
                     }
-                    NSupplyValue = value.Allocation - LeafNAllocated;
+                    NSupplyValue = value.Structural - LeafNAllocated;
                 }
 
                 if (NSupplyValue > 0.0000000001)
                     throw new Exception("N allocated to Leaf left over after allocation to leaf cohorts");
-                if ((LeafNAllocated - value.Allocation) > 0.000000001)
+                if ((LeafNAllocated - value.Structural) > 0.000000001)
                     throw new Exception("the sum of N allocation to leaf cohorts is more that that allocated to leaf organ");
 
                 //send N allocations to each cohort
@@ -1120,7 +1086,7 @@ public class Leaf : BaseOrgan, AboveGround
 
         }
     }
-    public override NSupplyType NSupply
+    public override BiomassSupplyType NSupply
     {
         get
         {
@@ -1132,7 +1098,7 @@ public class Leaf : BaseOrgan, AboveGround
                 ReallocationSupply += L.LeafStartNReallocationSupply;
             }
 
-            return new NSupplyType { Retranslocation = RetransSupply, Reallocation = ReallocationSupply };
+            return new BiomassSupplyType { Retranslocation = RetransSupply, Reallocation = ReallocationSupply };
         }
     }
 

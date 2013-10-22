@@ -318,18 +318,18 @@ public class Root : BaseOrgan, BelowGround
  #endregion
  
  #region Arbitrator method calls
-    public override DMDemandType DMDemand
+    public override BiomassPoolType DMDemand
     {
         get
         {
             double Demand = 0;
             if (isGrowing)
                 Demand = Arbitrator.DMSupply * PartitionFraction.Value;
-            return new DMDemandType { Structural = Demand };
+            return new BiomassPoolType { Structural = Demand };
         }
     }
 
-    public override DMPotentialAllocationType DMPotentialAllocation
+    public override BiomassPoolType DMPotentialAllocation
     {
         set
         {
@@ -386,7 +386,7 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     {
         set
         {
@@ -441,7 +441,7 @@ public class Root : BaseOrgan, BelowGround
     }
     [Output]
     [Units("g/m2")]
-    public override NDemandType NDemand
+    public override BiomassPoolType NDemand
     {
         get
         {
@@ -456,11 +456,11 @@ public class Root : BaseOrgan, BelowGround
                 TotalDeficit += NDeficit;
             }
             TotalDeficit *= _NitrogenDemandSwitch;
-            return new NDemandType { Structural = TotalDeficit };
+            return new BiomassPoolType { Structural = TotalDeficit };
         }
     }
 
-    public override NSupplyType NSupply
+    public override BiomassSupplyType NSupply
     {
         get
         {
@@ -470,13 +470,13 @@ public class Root : BaseOrgan, BelowGround
                 double[] nh4supply = new double[dlayer.Length];
                 SoilNSupply(no3supply, nh4supply);
                 double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
-                return new NSupplyType { Uptake = NSupply };
+                return new BiomassSupplyType { Uptake = NSupply };
             }
             else
-                return new NSupplyType();
+                return new BiomassSupplyType();
         }
     }
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
@@ -487,7 +487,7 @@ public class Root : BaseOrgan, BelowGround
                 double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
                 Demand += NDeficit;
             }
-            double Supply = value.Allocation;
+            double Supply = value.Structural;
             double NAllocated = 0;
             if ((Demand == 0) && (Supply > 0.0000000001))
             { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
@@ -510,8 +510,8 @@ public class Root : BaseOrgan, BelowGround
             }
 
             // uptake_gsm
-            _Nuptake = value.Uptake_gsm;
-            double Uptake = value.Uptake_gsm / kgha2gsm;
+            _Nuptake = value.Uptake;
+            double Uptake = value.Uptake / kgha2gsm;
             NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
             NitrogenUptake.Sender = "Plant2";
             NitrogenUptake.SenderType = "Plant";

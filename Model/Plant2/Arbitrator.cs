@@ -194,8 +194,8 @@ public class Arbitrator
         // GET SUPPLIES AND CALCULATE TOTAL
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMSupplyType DM = Organs[i].DMSupply;
-            DMSupplyPhotosynthesis[i] = DM.Photosynthesis;
+            BiomassSupplyType DM = Organs[i].DMSupply;
+            DMSupplyPhotosynthesis[i] = DM.Fixation;
             DMSupplyRetranslocation[i] = DM.Retranslocation;
             DMSupplyReallocation[i] += DM.Reallocation;
         }
@@ -206,7 +206,7 @@ public class Arbitrator
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMDemandType Demand = Organs[i].DMDemand;
+            BiomassPoolType Demand = Organs[i].DMDemand;
             DMDemandStructural[i] = Demand.Structural;
             DMDemandMetabolic[i] = Demand.Metabolic;
             DMDemandNonStructural[i] = Demand.NonStructural;
@@ -220,7 +220,7 @@ public class Arbitrator
         TotalNonPriorityDMDemand = 0;
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMDemandType Demand = Organs[i].DMDemand;
+            BiomassPoolType Demand = Organs[i].DMDemand;
             if (IsPriority[i] == true)
                 TotalPriorityDMDemand += (Demand.Structural + Demand.Metabolic);
             else
@@ -317,7 +317,7 @@ public class Arbitrator
         // Send potential DM allocation to organs to set this variable for calculating N demand
         for (int i = 0; i < Organs.Count; i++)
         {
-           Organs[i].DMPotentialAllocation = new DMPotentialAllocationType
+           Organs[i].DMPotentialAllocation = new BiomassPoolType
             {
                 Structural = DMAllocationStructural[i],  //Need to seperate metabolic and structural allocations
                 Metabolic = DMAllocationMetabolic[i],  //This wont do anything currently
@@ -374,9 +374,9 @@ public class Arbitrator
         // GET ALL SUPPLIES AND DEMANDS AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
-            NDemandType NDemand = Organs[i].NDemand;
+            BiomassPoolType NDemand = Organs[i].NDemand;
             NDemandOrgan[i] = Organs[i].NDemand.Structural;  //Fixme currently all N demand is passed as structural
-            NSupplyType NSupply = Organs[i].NSupply;
+            BiomassSupplyType NSupply = Organs[i].NSupply;
             NReallocationSupply[i] = NSupply.Reallocation;
             NUptakeSupply[i] = NSupply.Uptake;
             NFixationSupply[i] = NSupply.Fixation;
@@ -569,7 +569,7 @@ public class Arbitrator
         // Send DM allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            Organs[i].DMAllocation = new DMAllocationType
+            Organs[i].DMAllocation = new BiomassAllocationType
             {
                 Respired = FixationWtLoss[i], 
                 Reallocation = DMReallocation[i],
@@ -589,13 +589,13 @@ public class Arbitrator
                 throw new Exception("-ve N Allocation");
             else if (NAllocated[i] < 0.0)
                 NAllocated[i] = 0.0;
-            Organs[i].NAllocation = new NAllocationType
+            Organs[i].NAllocation = new BiomassAllocationType
             {
-                Allocation = NAllocated[i],
+                Structural = NAllocated[i], //This needs to be seperated into components
                 Fixation = NFixation[i],
                 Reallocation = NReallocation[i],
                 Retranslocation = NRetranslocation[i],
-                Uptake_gsm = NUptake[i]
+                Uptake = NUptake[i]
             };
         }
 

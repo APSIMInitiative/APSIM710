@@ -347,7 +347,7 @@ public class LeafCohort
             return StructuralNDemand + NonStructuralNDemand + MetabolicNDemand;
         }
     }
-    virtual public DMAllocationType DMAllocation
+    virtual public BiomassAllocationType DMAllocation
     {
         set
         {
@@ -453,7 +453,7 @@ public class LeafCohort
             return LeafStartNonStructuralDMReallocationSupply + LeafStartMetabolicDMReallocationSupply;
         }
     }
-    virtual public DMPotentialAllocationType DMPotentialAllocation
+    virtual public BiomassPoolType DMPotentialAllocation
     {
         set
         {

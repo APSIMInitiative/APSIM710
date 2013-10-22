@@ -69,7 +69,7 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0.0;
         }
     }
-    public override DMDemandType DMDemand
+    public override BiomassPoolType DMDemand
     {
         get
         {
@@ -78,27 +78,27 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             double NewWt = NewHI * AboveGround.Wt;
             double Demand = Math.Max(0.0, NewWt - CurrentWt);
 
-            return new DMDemandType { Structural = Demand };
+            return new BiomassPoolType { Structural = Demand };
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     {
         set { Live.StructuralWt += value.Structural; DailyGrowth = value.Structural; }
     }
-    public override NDemandType NDemand
+    public override BiomassPoolType NDemand
     {
         get
         {
             double demand = Math.Max(0.0, (NConc.Value * Live.Wt) - Live.N);
-            return new NDemandType { Structural = demand };
+            return new BiomassPoolType { Structural = demand };
         }
 
     }
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
-            Live.StructuralN += value.Allocation;
+            Live.StructuralN += value.Structural;
         }
     }
 }

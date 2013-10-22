@@ -16,25 +16,20 @@ public interface Reproductive
 #endregion
 
 #region Arbitrator method types
-public class DMPotentialAllocationType
-{
-    public double Structural;
-    public double Metabolic;
-    public double NonStructural;
-}
-public class DMDemandType
+public class BiomassPoolType
 {
     public double Structural;
     public double NonStructural;
     public double Metabolic;
 }
-public class DMSupplyType
+public class BiomassSupplyType
 {
-    public double Photosynthesis;
-    public double Retranslocation;
+    public double Fixation;
     public double Reallocation;
-}
-public class DMAllocationType
+    public double Uptake;
+    public double Retranslocation;
+}    
+public class BiomassAllocationType
 {
     public double Structural;
     public double NonStructural;
@@ -42,30 +37,8 @@ public class DMAllocationType
     public double Retranslocation;
     public double Reallocation;
     public double Respired;
-}
-public class NDemandType
-{
-    public double Structural;
-    public double NonStructural;
-    public double Metabolic;
-}
-public class NSupplyType
-{
-    public double Reallocation;
     public double Uptake;
     public double Fixation;
-    public double Retranslocation;
-}
-public class NAllocationType
-{
-    public double Structural;
-    public double NonStructural;
-    public double Metabolic;
-    public double Allocation;  //FIXME.  this is to become redundant when other allocation types are wired up.
-    public double Reallocation;
-    public double Uptake_gsm; // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2.  This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
-    public double Fixation;
-    public double Retranslocation;
 }
 #endregion
 
@@ -86,14 +59,14 @@ abstract public class Organ
 
     #region Organ - Arbitrator interface methods
     //DryMatter methods
-    abstract public DMPotentialAllocationType DMPotentialAllocation { set; }
-    abstract public DMDemandType DMDemand { get; set; }
-    abstract public DMSupplyType DMSupply { get; set; }
-    abstract public DMAllocationType DMAllocation { set; }
+    abstract public BiomassPoolType DMPotentialAllocation { set; }
+    abstract public BiomassPoolType DMDemand { get; set; }
+    abstract public BiomassSupplyType DMSupply { get; set; }
+    abstract public BiomassAllocationType DMAllocation { set; }
     //Nitrogen methods
-    abstract public NDemandType NDemand { get; set; }
-    abstract public NSupplyType NSupply { get; set; }
-    abstract public NAllocationType NAllocation { set; }
+    abstract public BiomassPoolType NDemand { get; set; }
+    abstract public BiomassSupplyType NSupply { get; set; }
+    abstract public BiomassAllocationType NAllocation { set; }
     //Water methods
     abstract public double WaterDemand { get; set; }
     abstract public double WaterSupply { get; set; }

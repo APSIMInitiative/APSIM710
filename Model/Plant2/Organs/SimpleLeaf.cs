@@ -61,7 +61,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     private double KDead = 0;                  // Extinction Coefficient (Dead)
     public double DeltaBiomass = 1;
     public double BiomassYesterday = 0;
-    public override DMDemandType DMDemand
+    public override BiomassPoolType DMDemand
     {
         get
         {
@@ -70,19 +70,19 @@ class SimpleLeaf : BaseOrgan, AboveGround
                 Demand = DMDemandFunction.Value;
             else
                 Demand = 1;
-            return new DMDemandType { Structural = Demand };
+            return new BiomassPoolType { Structural = Demand };
         }
     }
 
-    public override DMSupplyType DMSupply
+    public override BiomassSupplyType DMSupply
     {        
         get {
             if (Photosynthesis != null)
             DeltaBiomass = Photosynthesis.Growth(RadIntTot);
-            return new DMSupplyType { Photosynthesis = DeltaBiomass, Retranslocation = 0,Reallocation = 0 } ; 
+            return new BiomassSupplyType { Fixation = DeltaBiomass, Retranslocation = 0,Reallocation = 0 } ; 
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     {
         set
         {
@@ -310,7 +310,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     }
 
 
-    public override NDemandType NDemand
+    public override BiomassPoolType NDemand
     {
         get
         {
@@ -326,7 +326,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
                 NDeficit = 0;
             else
             NDeficit = Math.Max(0.0, NConc.Value * (Live.Wt + DeltaBiomass) - Live.N); 
-            return new NDemandType { Structural = NDeficit };
+            return new BiomassPoolType { Structural = NDeficit };
         }
     }
 
@@ -339,20 +339,20 @@ class SimpleLeaf : BaseOrgan, AboveGround
     */
   
     
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
             if (NDemand.Structural == 0)
-                if (value.Allocation == 0) { }//All OK
+                if (value.Structural == 0) { }//All OK
                 else
                     throw new Exception("Invalid allocation of N");
 
-            if (value.Allocation == 0.0)
+            if (value.Structural == 0.0)
             { }// do nothing
             else
             {
-                double NSupplyValue = value.Allocation;
+                double NSupplyValue = value.Structural;
                
                 if ((NSupplyValue > 0))
                 {

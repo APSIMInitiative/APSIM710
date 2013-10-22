@@ -113,7 +113,7 @@ public class GenericOrgan : BaseOrgan
     #region Arbitrator methods
     [Output]
     [Units("g/m^2")]
-    public override DMDemandType DMDemand
+    public override BiomassPoolType DMDemand
     {
         get
         {
@@ -121,11 +121,11 @@ public class GenericOrgan : BaseOrgan
              double MaximumDM = (StartLive.StructuralWt + StructuralDMDemand) * 1 / _StructuralFraction;
              MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
              NonStructuralDMDemand = Math.Max(0.0, MaximumDM - StructuralDMDemand - StartLive.StructuralWt - StartLive.NonStructuralWt); 
-             return new DMDemandType { Structural = StructuralDMDemand, NonStructural = NonStructuralDMDemand };
+             return new BiomassPoolType { Structural = StructuralDMDemand, NonStructural = NonStructuralDMDemand };
         }
 
     }
-    public override DMPotentialAllocationType DMPotentialAllocation
+    public override BiomassPoolType DMPotentialAllocation
     {
         set
         {
@@ -138,19 +138,19 @@ public class GenericOrgan : BaseOrgan
             PotentialDMAllocation = value.Structural + value.Metabolic;
         }
     }
-    public override DMSupplyType DMSupply
+    public override BiomassSupplyType DMSupply
     {
         get
         {
             double _DMRetranslocationFactor = 0;
             if (DMRetranslocationFactor != null) //Default of 0 means retranslocation is always truned off!!!!
                 _DMRetranslocationFactor = DMRetranslocationFactor.Value;
-            return new DMSupplyType { Photosynthesis = 0, 
+            return new BiomassSupplyType { Fixation = 0, 
                                       Retranslocation = StartLive.NonStructuralWt * _DMRetranslocationFactor,
             Reallocation = 0};
         }
     }
-    public override NDemandType NDemand
+    public override BiomassPoolType NDemand
     {
         get
         {
@@ -159,14 +159,14 @@ public class GenericOrgan : BaseOrgan
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             NDeficit *= _NitrogenDemandSwitch;
-            return new NDemandType { Structural = NDeficit };
+            return new BiomassPoolType { Structural = NDeficit };
         }
     }
-    public override NSupplyType NSupply
+    public override BiomassSupplyType NSupply
     {
         get
         {
-            NSupplyType Supply = new NSupplyType();
+            BiomassSupplyType Supply = new BiomassSupplyType();
 
             // Calculate Reallocation Supply.
             double _NReallocationFactor = 0;
@@ -184,7 +184,7 @@ public class GenericOrgan : BaseOrgan
             return Supply;
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     {
         set
         {
@@ -204,17 +204,17 @@ public class GenericOrgan : BaseOrgan
             Live.NonStructuralWt -= value.Retranslocation;
         }
     }
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
             // Allocation
-            if (value.Allocation > 0)
+            if (value.Structural > 0)
             {
                 double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * MinimumNConc.Value - Live.StructuralN);
-                double StructuralAllocation = Math.Min(StructuralNRequirement, value.Allocation);
+                double StructuralAllocation = Math.Min(StructuralNRequirement, value.Structural);
                 Live.StructuralN += StructuralAllocation;
-                Live.NonStructuralN += Math.Max(0.0, value.Allocation - StructuralAllocation);
+                Live.NonStructuralN += Math.Max(0.0, value.Structural - StructuralAllocation);
             }
 
             // Retranslocation

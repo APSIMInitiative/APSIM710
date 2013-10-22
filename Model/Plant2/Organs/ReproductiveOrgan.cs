@@ -150,7 +150,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         if (Phenology.OnDayOf(RipeStage))
             _ReadyForHarvest = true;
     }
-    public override DMDemandType DMDemand
+    public override BiomassPoolType DMDemand
     {
         get
         {
@@ -172,10 +172,10 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 else
                     Demand = 0;
             }
-            return new DMDemandType { Structural = Demand };
+            return new BiomassPoolType { Structural = Demand };
         }
     }
-    public override DMPotentialAllocationType DMPotentialAllocation
+    public override BiomassPoolType DMPotentialAllocation
     {
         set
         {
@@ -186,9 +186,9 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             PotentialDMAllocation = value.Structural;
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     { set { Live.StructuralWt += value.Structural; DailyGrowth = value.Structural; } }
-    public override NDemandType NDemand
+    public override BiomassPoolType NDemand
     {
         get
         {
@@ -197,15 +197,15 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             double demand = Number * NFillingRate.Value;
             demand = Math.Min(demand, MaximumNConc.Value * DailyGrowth) * _NitrogenDemandSwitch;
-            return new NDemandType { Structural = demand };
+            return new BiomassPoolType { Structural = demand };
         }
 
     }
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
-            Live.StructuralN += value.Allocation;
+            Live.StructuralN += value.Structural;
         }
     }
     public override double MaxNconc

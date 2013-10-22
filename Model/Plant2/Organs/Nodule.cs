@@ -32,7 +32,7 @@ public class Nodule : GenericOrgan, BelowGround
             return FixationMetabolicCost.Value;
         }
     }
-    public override NAllocationType NAllocation
+    public override BiomassAllocationType NAllocation
     {
         set
         {
@@ -48,11 +48,11 @@ public class Nodule : GenericOrgan, BelowGround
             return RespiredWt;
         }
     }
-    public override NSupplyType NSupply
+    public override BiomassSupplyType NSupply
     {
         get
         {
-            NSupplyType Supply = base.NSupply;   // get our base GenericOrgan to fill a supply structure first.
+            BiomassSupplyType Supply = base.NSupply;   // get our base GenericOrgan to fill a supply structure first.
             if (Live != null)
             {
                 // Now add in our fixation
@@ -61,7 +61,7 @@ public class Nodule : GenericOrgan, BelowGround
             return Supply;
         }
     }
-    public override DMAllocationType DMAllocation
+    public override BiomassAllocationType DMAllocation
     {
         set
         //This is the DM that is consumed to fix N.  this is calculated by the arbitrator and passed to the nodule to report
