@@ -1145,13 +1145,20 @@ subroutine surfom_Leach (leach_rain)
 		 ! Changes added by RCichota, use NitrogenChanged to modify N amounts
 		 ! 1- Fill the array data
 		 NchgData%num_DeltaNH4 = deepest_layer
-       NchgData%DeltaNH4 = nh4_incorp
-       NchgData%num_DeltaNO3 = deepest_layer
-       NchgData%DeltaNO3 = no3_incorp
+     NchgData%DeltaNH4(:) = 0
+     NchgData%DeltaNH4(1:deepest_layer) = nh4_incorp
+
+     NchgData%num_DeltaNO3 = deepest_layer
+     NchgData%DeltaNO3(:) = 0
+     NchgData%DeltaNO3(1:deepest_layer) = no3_incorp
+
+     NchgData%num_DeltaUrea = 0
+     NchgData%DeltaUrea(:) = 0
+
 		 ! 2- Send a NitrogenChanged event to the system
-       NchgData%Sender = 'SurfaceOM'
-       NchgData%SenderType = 'SurfaceOrganicMatter'
-       call publish_NitrogenChanged(id%NitrogenChanged, NchgData)
+     NchgData%Sender = 'SurfaceOM'
+     NchgData%SenderType = 'SurfaceOrganicMatter'
+     call publish_NitrogenChanged(id%NitrogenChanged, NchgData)
 
 		 ! old code:
        !call set_real_array (unknown_module, 'dlt_no3','(kg/ha)', no3_incorp,deepest_layer)
