@@ -1,0 +1,2768 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = LivsimSample
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                 "LivsimOutput" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                         "Area" = %apsim%\Model\Manager2.dll
+   Component                    "Economics" = %apsim%\Model\Manager2.dll
+   Component          "Cow Herd Management" = %apsim%\Model\Manager2.dll
+   Component        "Shoat Herd Management" = %apsim%\Model\Manager2.dll
+   Component               "bransupplement" = %apsim%\Model\Manager2.dll
+   Component          "Maize_residue_store" = %apsim%\Model\Manager2.dll
+   Component        "Sorghum_residue_store" = %apsim%\Model\Manager2.dll
+   Component      "Groundnut_residue_store" = %apsim%\Model\Manager2.dll
+   Component         "Mucuna_residue_store" = %apsim%\Model\Manager2.dll
+   Component                        "magic" = %apsim%\Model\Manager2.dll
+   Component              "Crop Management" = %apsim%\Model\TclLink.dll
+   Component                 "Feed Quality" = %apsim%\Model\RLink.dll
+   Component                       "shoats" = %apsim%\Model\RLink.dll
+   Component                         "cows" = %apsim%\Model\RLink.dll
+   Component                  "Ind Tracker" = %apsim%\Model\RLink.dll
+   Component                  "Run Summary" = %apsim%\Model\RLink.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                       "canopy" = %apsim%\Model\Canopy.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                      "Erosion" = %apsim%\Model\Erosion.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "peanut" = %apsim%\Model\Plant.dll
+   Component                       "mucuna" = %apsim%\Model\Plant.dll
+   Component                         "weed" = %apsim%\Model\Plant.dll
+   Component                        "maize" = %apsim%\Model\Maize.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                       "canopy" = %apsim%\Model\Canopy.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                      "Erosion" = %apsim%\Model\Erosion.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "peanut" = %apsim%\Model\Plant.dll
+   Component                       "mucuna" = %apsim%\Model\Plant.dll
+   Component                         "weed" = %apsim%\Model\Plant.dll
+   Component                        "maize" = %apsim%\Model\Maize.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                       "canopy" = %apsim%\Model\Canopy.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                      "Erosion" = %apsim%\Model\Erosion.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "peanut" = %apsim%\Model\Plant.dll
+   Component                       "mucuna" = %apsim%\Model\Plant.dll
+   Component                         "weed" = %apsim%\Model\Plant.dll
+   Component                        "maize" = %apsim%\Model\Maize.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component            "Establish pasture" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                      "Erosion" = %apsim%\Model\Erosion.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "grasp" = %apsim%\Model\Grasp.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Using start date from the met file.
+     Using end date from the met file.
+     Simulation start date =  1/01/1988
+     Simulation end date   = 30/04/1990
+     Time step =           = 1440 (mins)
+
+------- LivsimOutput Initialisation -------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        herdsize_shoats
+        herdsize_cows
+        inputdmOfShoats
+        faecdmOfShoats
+        milkOfShoats
+        inputdmOfCows
+        faecdmOfCows
+        milkOfCows
+        grass_eaten
+        maize_eaten
+        bran_eaten
+        sorghum_eaten
+        mucuna_eaten
+        resd_eaten
+        store
+
+     Output file = LivsimSample LivsimOutput.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Dalby.met
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Area Initialisation ---------------------------------------------------
+
+------- Economics Initialisation ----------------------------------------------
+
+------- Cow Herd Management Initialisation ------------------------------------
+
+------- Shoat Herd Management Initialisation ----------------------------------
+
+------- bransupplement Initialisation -----------------------------------------
+
+------- Maize_residue_store Initialisation ------------------------------------
+
+------- Sorghum_residue_store Initialisation ----------------------------------
+
+------- Groundnut_residue_store Initialisation --------------------------------
+
+------- Mucuna_residue_store Initialisation -----------------------------------
+
+------- magic Initialisation --------------------------------------------------
+Crop Management: 
+     Copyright (C) 1991-1994 The Regents of the University of California.
+     Copyright (C) 1996-1997 Sun Microsystems, Inc.
+     Copyright (C) 2001      ActiveState.
+     --->Section: end_month
+
+set cow [apsimGetOptional inputdmOfCows]; if {$cow == ""} {set cow 0}
+set shoat [apsimGetOptional inputdmOfShoats]; if {$shoat == ""} {set shoat 0}
+
+set year [apsimGet year]
+lappend annual($year,dm_eaten) [expr $cow + $shoat]
+
+     --->Section: end_simulation
+
+          
+close_annual_stuff
+close_harvest_stuff
+
+
+close_iat_stuff
+
+
+     --->Section: end_year
+
+foreach paddock $config(paddocks) {
+   set weeds($paddock,Events)  0
+}
+do_end_year
+     --->Section: init
+
+set config(paddocks) [list plot1 plot2 plot3]
+set config(pasturePaddocks) [list verges]
+
+for {set i 0} {$i < [llength $config(paddocks)]} {incr i} {
+  set config([lindex $config(paddocks) $i],area) [apsimGet [lindex $config(paddocks) $i]_area]
+}
+
+for {set i 0} {$i < [llength $config(pasturePaddocks)]} {incr i} {
+  set config([lindex $config(pasturePaddocks) $i],area) [apsimGet [lindex $config(pasturePaddocks) $i]_area]
+}
+
+# A list of crops in each paddock
+set config(crops) [list maize peanut mucuna sorghum]
+
+apsimRegisterGetSet config(paddocks)
+foreach paddock $config(paddocks) {
+  set config($paddock,initialState) F0
+  set config($paddock,history) {}
+  set config($paddock,graphNames) ${paddock}graph
+  set state($paddock) {}
+}
+
+set simName [apsimGet title]
+# Sow this crop
+proc sow_Maize_crop {paddock} {
+  apsimSendMessage $paddock.maize sow {plants 4.4} {sowing_depth 30} {cultivar  sc501} {row_spacing 750} {crop_class  plant}
+}
+
+proc sow_Maize {paddock} {
+  global config
+
+  if {"yes" == "yes"} {
+     doTillageNow $paddock doPresowTillage
+  }
+
+  sow_Maize_crop $paddock
+
+  if {0 > 0} {
+     apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  no3_n" \
+               "rate 0" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type no3_n" \
+               "fertiliser_rate 0" {incrop_cost {}} "crop maize" \
+               "comment Fertiliser"
+  }
+  doManure Maize $paddock
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doSowingTillage
+  }
+
+  apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"}
+
+  operateLabour "operator male" "activity sowing"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+  set config(season) "LR"
+}
+
+# Can we sow a crop?
+proc canSow_Maize {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin 15-jan 15-feb] } {
+      if {( [apsimGet rain\[3\]] >= 20 ) ||
+          ( "yes" == "yes" && [dateIs 15-feb] ) } {
+          return 1
+      }
+    }
+  }
+  return 0
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {paddock} {
+   global config
+   foreach crop $config(crops) {
+      set status [apsimGetOptional $paddock.$crop.plant_status]
+      if {$status != "" && $status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 > $t1} {
+      return [expr $t >= $t0 || $t <= $t1]
+   } else {
+      return [expr $t >= $t0 && $t <= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) && ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }
+   return [expr $mday + $daysin($month)]
+}
+
+# Sow this crop
+proc sow_Groundnut_crop {paddock} {
+  apsimSendMessage $paddock.peanut sow {plants 2.8} {sowing_depth 30} {cultivar  early_bunch} {row_spacing 750} {crop_class  plant}
+}
+proc sow_Groundnut {paddock} {
+  global config
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doPresowTillage
+  }
+
+  sow_Groundnut_crop $paddock
+
+  if {0 > 0} {
+     apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  no3_n" \
+               "rate 0" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type no3_n" \
+               "fertiliser_rate 0" {incrop_cost {}} "crop peanut" \
+               "comment Fertiliser"
+  }
+
+  apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"}
+
+  doManure Groundnuts $paddock
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doSowingTillage
+  }
+  operateLabour "operator male" "activity sowing"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+  set config(season) "LR"
+}
+
+# Can we sow a crop?
+proc canSow_Groundnut {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin 15-jan 15-feb] } {
+      if {( [apsimGet rain\[4\]] >= 25 ) ||
+          ( "yes" == "yes" && [dateIs 15-feb] ) } {
+          return 1
+      }
+    }
+  }
+  return 0
+}
+
+
+# Sow this crop
+proc sow_Sorghum_crop {paddock} {
+  apsimSendMessage $paddock.sorghum sow {plants 8} {sowing_depth 30} {cultivar  Buster} {row_spacing 750} {crop_class  [class]}
+}
+proc sow_Sorghum {paddock} {
+  global config
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doPresowTillage
+  }
+
+  sow_Sorghum_crop $paddock
+
+  if {0 > 0} {
+     apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  no3_n" \
+               "rate 0" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type no3_n" \
+               "fertiliser_rate 0" {incrop_cost {}} "crop sorghum" \
+               "comment Fertiliser"
+  }
+
+  apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"}
+
+  doManure Sorghum $paddock
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doSowingTillage
+  }
+  operateLabour "operator male" "activity sowing"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+  set config(season) "LR"
+}
+
+# Can we sow a crop?
+proc canSow_Sorghum {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin 10-feb 10-feb] } {
+      if {( [apsimGet rain\[3\]] >= 25 ) ||
+          ( "yes" == "yes" && [dateIs 10-feb] ) } {
+          return 1
+      }
+    }
+  }
+  return 0
+}
+
+
+# Sow this crop
+proc sow_Mucuna_crop {paddock} {
+  apsimSendMessage $paddock.mucuna sow {plants 2.8} {sowing_depth 30} {cultivar  mucuna_gen} {row_spacing 750} {crop_class  plant}
+}
+proc sow_Mucuna {paddock} {
+  global config
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doPresowTillage
+  }
+
+  sow_Mucuna_crop $paddock
+
+  if {0 > 0} {
+     apsimSendMessage $paddock.fertiliser apply {type no3_n} {amount 0}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  no3_n" \
+               "rate 0" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type no3_n" \
+               "fertiliser_rate 0" {incrop_cost {}} "crop mucuna" \
+               "comment Fertiliser"
+  }
+
+  apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"}
+
+  doManure Groundnuts $paddock
+
+  if {"no" == "yes"} {
+     doTillageNow $paddock doSowingTillage
+  }
+  operateLabour "operator male" "activity sowing"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+  set config(season) "LR"
+}
+
+# Can we sow a crop?
+proc canSow_Mucuna {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin 10-feb 10-feb] } {
+      if {( [apsimGet rain\[4\]] >= 25 ) ||
+          ( "yes" == "yes" && [dateIs 10-feb] ) } {
+          return 1
+      }
+    }
+  }
+  return 0
+}
+
+
+set config(manurecrops) [list Maize]
+
+proc doManure {crop paddock} {
+   global config
+   if {[lsearch $config(manurecrops) $crop] >= 0} {
+     apsimSet cows.manurepaddock  $paddock
+     apsimSendMessage "cows" ApplyStoredManure
+   }
+}
+
+if {[expr 0+0+100+0] != 100} {error "maize harvest residue fractions dont add to 100%"}
+
+proc harvest_Maize {paddock} {
+   global config daysSinceLastHarvest
+   set somWtOld [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+
+   operateLabour "operator male" "activity harvesting"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+
+   set yield [expr [apsimGet $paddock.maize.yield]/1000.0]
+   set biomass [apsimGet $paddock.maize.biomass]
+   if {"maize" == "sorghum" } {
+     set grainWt [apsimGet $paddock.maize.graingreenWt]
+     if {$grainWt > 0} {
+       set grainN [apsimGet $paddock.maize.graingreenN]
+       set grainProtein [expr $grainN / $grainWt * 100.0 * 5.71] ;# (%)
+     } else {
+       set grainProtein 0.0
+     }
+     set stover [expr ([apsimGet $paddock.maize.LeafGreenWt] + \
+                       [apsimGet $paddock.maize.LeafSenescedWt] + \
+                       [apsimGet $paddock.maize.StemGreenWt] ) ]
+     if {$stover > 0.0} {
+       set stoverProtein [expr ([apsimGet $paddock.maize.LeafGreenN] + \
+                                [apsimGet $paddock.maize.LeafSenescedN] + \
+                                [apsimGet $paddock.maize.StemGreenN]) / \
+                               $stover * 100.0 * 5.71]
+     } else {
+       set stoverProtein 0.0
+     }
+     set stover [expr 10 * $stover]
+   } elseif {"maize" == "maize"} {
+     set grainProtein [apsimGet $paddock.maize.grain_protein] ;# (%)
+     set stover [expr [apsimGet $paddock.maize.stover_wt] * 10.0 ]
+     if {$stover > 0} {
+        set stoverProtein [expr ([apsimGet $paddock.maize.stover_n] * 10.0) / $stover * 100.0 * 5.71]
+     } else {
+        set stoverProtein 0.0
+     }
+   } else {
+     set grainProtein [expr [apsimGet $paddock.maize.grainN] / \
+                            [apsimGet $paddock.maize.grainWt] * 100.0 * 5.71] ;# (%)
+     set stover [expr ($biomass - $yield) ]
+     set stoverProtein [expr [apsimGet $paddock.maize.vegetativeN] / \
+                             [apsimGet $paddock.maize.vegetativeWt]* 100.0 * 5.71]
+   }
+
+   apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "harvesting costs"}
+
+   apsimSendMessage economics income {category cropprice} "name maize"  \
+                          "yield $yield" \
+                          "area $config($paddock,area)" "paddock $paddock" "crop maize" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"
+
+   apsimSendMessage $paddock.maize  harvest  "remove 0.0"
+   apsimSendMessage $paddock.maize  end_crop
+
+   set somWtNew [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+   set somAdded [expr $somWtNew - $somWtOld]
+
+   set daysSinceLastHarvest($paddock) 0
+
+   set grazedFrac 0.0
+   if {0 > 0} {
+      set grazedFrac [expr 0 / 100.0]
+   }
+   set storedFrac 0.0
+   if {100 > 0} {
+      set storedFrac [expr 100 / 100.0]
+      apsimSet Maize_residue_store.store [expr [apsimGet Maize_residue_store.store] + $storedFrac * $stover * $config($paddock,area)]
+   }
+   set removedFrac [expr ($storedFrac + 0) / 100.0]
+   if {$removedFrac > 0} {
+      apsimWriteToSummaryFile "Residues: removing [expr $removedFrac] of surface residues in paddock $paddock"
+      apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} "f_incorp $removedFrac" {tillage_depth 0.0}
+   }
+
+   global annual
+   set year [apsimGet year]
+   set wetYield [expr ($yield * 100.0) / (100.0 - 12.0)] ;# 12% grain moisture
+   if {[info exists annual($year,maize,harvest)]} {
+     set annual($year,maize,harvest) [expr $annual($year,maize,harvest) + $wetYield * $config($paddock,area)]
+   } else {
+     set annual($year,maize,harvest)  [expr $wetYield * $config($paddock,area)]
+   }
+   global harvest iat
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock maize \
+      [format %.0f $biomass] [format %.0f [expr 1000.0 * $yield]] [format %.1f $grainProtein]]
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock maize_residue \
+      [format %.0f $biomass] [format %.0f $stover] [format %.1f $stoverProtein]]
+   lappend iat [list [apsimGet dd/mm/yyyy],maize,\
+[format %.0f $biomass],[format %.0f [expr 1000.0 * $yield]],[format %.1f $grainProtein],\
+[format %.0f $stover],[format %.1f $stoverProtein]]
+}
+
+proc canHarvest_Maize {paddock} {
+  return [expr [string equal [apsimGet $paddock.maize.StageName] "harvest_ripe"] || \
+               [string equal [apsimGet $paddock.maize.plant_status] "dead"]]
+}
+
+
+
+if {[expr 0+0+100+0] != 100} {error "peanut harvest residue fractions dont add to 100%"}
+
+proc harvest_Groundnut {paddock} {
+   global config daysSinceLastHarvest
+   set somWtOld [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+
+   operateLabour "operator male" "activity harvesting"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+
+   set yield [expr [apsimGet $paddock.peanut.yield]/1000.0]  ;# tonnes/ha
+   set biomass [apsimGet $paddock.peanut.biomass]
+   if {"peanut" == "sorghum" } {
+     set grainWt [apsimGet $paddock.peanut.graingreenWt]
+     if {$grainWt > 0} {
+       set grainN [apsimGet $paddock.peanut.graingreenN]
+       set grainProtein [expr $grainN / $grainWt * 100.0 * 5.71] ;# (%)
+     } else {
+       set grainProtein 0.0
+     }
+     set stover [expr ([apsimGet $paddock.peanut.LeafGreenWt] + \
+                       [apsimGet $paddock.peanut.LeafSenescedWt] + \
+                       [apsimGet $paddock.peanut.StemGreenWt] ) ]
+     if {$stover > 0.0} {
+       set stoverProtein [expr ([apsimGet $paddock.peanut.LeafGreenN] + \
+                                [apsimGet $paddock.peanut.LeafSenescedN] + \
+                                [apsimGet $paddock.peanut.StemGreenN]) / \
+                               $stover * 100.0 * 5.71]
+     } else {
+       set stoverProtein 0.0
+     }
+     set stover [expr 10 * $stover]
+   } else {
+     set grainWt [apsimGet $paddock.peanut.grainWt]
+     if {$grainWt > 0} {
+       set grainProtein [expr [apsimGet $paddock.peanut.grainN] / \
+                            $grainWt * 100.0 * 5.71] ;# (%)
+       set stover [expr ($biomass - 1000* $yield) ]
+       set stoverProtein [expr [apsimGet $paddock.peanut.vegetativeN] / \
+                             [apsimGet $paddock.peanut.vegetativeWt]* 100.0 * 5.71]
+     } else {
+       set stover 0.0
+       set stoverProtein 0.0
+       set grainProtein 0.0
+     }
+   }
+
+   apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "harvesting costs"}
+
+   apsimSendMessage economics income {category cropprice} "name peanut"  \
+                          "yield $yield" \
+                          "area $config($paddock,area)" "paddock $paddock" "crop peanut" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"
+
+   apsimSendMessage $paddock.peanut  harvest  "remove 0.0"
+   apsimSendMessage $paddock.peanut  end_crop
+
+   set somWtNew [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+   set somAdded [expr $somWtNew - $somWtOld]
+
+   set daysSinceLastHarvest($paddock) 0
+
+   set grazedFrac 0.0
+   if {0 > 0} {
+      set grazedFrac [expr 0 / 100.0]
+   }
+   set storedFrac 0.0
+   if {100 > 0} {
+      set storedFrac [expr 100 / 100.0]
+      apsimSet Groundnut_residue_store.store [expr [apsimGet Groundnut_residue_store.store] + $storedFrac * $stover * $config($paddock,area)]
+   }
+   set removedFrac [expr ($storedFrac + 0) / 100.0]
+   if {$removedFrac > 0} {
+      apsimWriteToSummaryFile "Residues: removing [expr $removedFrac] of surface residues in paddock $paddock"
+      apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} "f_incorp $removedFrac" {tillage_depth 0.0}
+   }
+
+   global annual
+   set year [apsimGet year]
+   set wetYield [expr ($yield * 100.0) / (100.0 - 12.0)] ;# 12% grain moisture
+   if {[info exists annual($year,peanut,harvest)]} {
+     set annual($year,peanut,harvest) [expr $annual($year,peanut,harvest) + $wetYield * $config($paddock,area)]
+   } else {
+     set annual($year,peanut,harvest)  [expr $wetYield * $config($paddock,area)]
+   }
+   global harvest iat
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock peanut \
+      [format %.0f $biomass] [format %.0f [expr 1000.0 * $yield]] [format %.1f $grainProtein]]
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock peanut_residue \
+      [format %.0f $biomass] [format %.0f $stover] [format %.1f $stoverProtein]]
+   lappend iat [list [apsimGet dd/mm/yyyy],peanut,\
+[format %.0f $biomass],[format %.0f [expr 1000.0 * $yield]],[format %.1f $grainProtein],\
+[format %.0f $stover],[format %.1f $stoverProtein]]
+}
+
+proc canHarvest_Groundnut {paddock} {
+  return [expr [string equal [apsimGet $paddock.peanut.StageName] "harvest_ripe"] || \
+               [string equal [apsimGet $paddock.peanut.plant_status] "dead"]]
+}
+
+
+
+if {[expr 0+0+0+100] != 100} {error "sorghum harvest residue fractions dont add to 100%"}
+
+proc harvest_Sorghum {paddock} {
+   global config daysSinceLastHarvest
+   set somWtOld [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+
+   operateLabour "operator male" "activity harvesting"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+
+   set yield [expr [apsimGet $paddock.sorghum.yield]/1000.0]
+   set biomass [apsimGet $paddock.sorghum.biomass]
+   if {"sorghum" == "sorghum"} {
+     set grainWt [apsimGet $paddock.sorghum.graingreenWt]
+     if {$grainWt > 0} {
+       set grainN [apsimGet $paddock.sorghum.graingreenN]
+       set grainProtein [expr $grainN / $grainWt * 100.0 * 5.71] ;# (%)
+     } else {
+       set grainProtein 0.0
+     }
+     set stover [expr ([apsimGet $paddock.sorghum.LeafGreenWt] + \
+                       [apsimGet $paddock.sorghum.LeafSenescedWt] + \
+                       [apsimGet $paddock.sorghum.StemGreenWt] ) ]
+     if {$stover > 0.0} {
+       set stoverProtein [expr ([apsimGet $paddock.sorghum.LeafGreenN] + \
+                                [apsimGet $paddock.sorghum.LeafSenescedN] + \
+                                [apsimGet $paddock.sorghum.StemGreenN]) / \
+                               $stover * 100.0 * 5.71]
+     } else {
+       set stoverProtein 0.0
+     }
+     set stover [expr 10 * $stover]
+   } elseif {"sorghum" == "maize"} {
+     set grainProtein [apsimGet $paddock.sorghum.grain_protein]        ;# (%)
+     set stover [apsimGet $paddock.sorghum.stover]
+     set stoverProtein [expr [apsimGet $paddock.sorghum.stover_n] / \
+                             [apsimGet $paddock.sorghum.stover_wt] * 100.0 * 5.71] ;# (%)
+   } else {
+     set grainWt [apsimGet $paddock.sorghum.grainWt]
+     if {$grainWt > 0} {
+       set grainProtein [expr [apsimGet $paddock.sorghum.grainN] / \
+                            $grainWt * 100.0 * 5.71] ;# (%)
+     } else {
+       set grainProtein 0.0
+     }
+     set stover [expr ($biomass - $yield) ]
+     set stoverProtein [expr [apsimGet $paddock.sorghum.vegetativeN] / \
+                             [apsimGet $paddock.sorghum.vegetativeWt]* 100.0 * 5.71]
+   }
+
+   apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "harvesting costs"}
+
+   apsimSendMessage economics income {category cropprice} "name sorghum"  \
+                          "yield $yield" \
+                          "area $config($paddock,area)" "paddock $paddock" "crop sorghum" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"
+
+   apsimSendMessage $paddock.sorghum  harvest  "remove 0.0"
+   apsimSendMessage $paddock.sorghum  end_crop
+
+   set somWtNew [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+   set somAdded [expr $somWtNew - $somWtOld]
+
+   set daysSinceLastHarvest($paddock) 0
+
+   set grazedFrac 0.0
+   if {0 > 0} {
+      set grazedFrac [expr 0 / 100.0]
+   }
+   set storedFrac 0.0
+   if {0 > 0} {
+      set storedFrac [expr 0 / 100.0]
+      apsimSet Sorghum_residue_store.store [expr [apsimGet Sorghum_residue_store.store] + $storedFrac * $stover * $config($paddock,area)]
+   }
+   set removedFrac [expr ($storedFrac + 0) / 100.0]
+   if {$removedFrac > 0} {
+      apsimWriteToSummaryFile "Residues: removing [expr $removedFrac] of surface residues in paddock $paddock"
+      apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} "f_incorp $removedFrac" {tillage_depth 0.0}
+   }
+
+   global annual
+   set year [apsimGet year]
+   set wetYield [expr ($yield * 100.0) / (100.0 - 12.0)] ;# 12% grain moisture
+   if {[info exists annual($year,sorghum,harvest)]} {
+     set annual($year,sorghum,harvest) [expr $annual($year,sorghum,harvest) + $wetYield * $config($paddock,area)]
+   } else {
+     set annual($year,sorghum,harvest)  [expr $wetYield * $config($paddock,area)]
+   }
+   global harvest iat
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock sorghum \
+      [format %.0f $biomass] [format %.0f [expr 1000.0 * $yield]] [format %.1f $grainProtein]]
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock sorghum_residue \
+      [format %.0f $biomass] [format %.0f $stover] [format %.1f $stoverProtein]]
+   lappend iat [list [apsimGet dd/mm/yyyy],sorghum,\
+[format %.0f $biomass],[format %.0f [expr 1000.0 * $yield]],[format %.1f $grainProtein],\
+[format %.0f $stover],[format %.1f $stoverProtein]]
+}
+
+proc canHarvest_Sorghum {paddock} {
+  return [expr [string equal [apsimGet $paddock.sorghum.StageName] "harvest_ripe"] || \
+               [string equal [apsimGet $paddock.sorghum.plant_status] "dead"]]
+}
+
+
+
+if {[expr 0+0+100+0] != 100} {error "mucuna harvest residue fractions dont add to 100%"}
+
+proc harvest_Mucuna {paddock} {
+   global config daysSinceLastHarvest
+   set somWtOld [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+
+   operateLabour "operator male" "activity harvesting"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"
+
+   set yield [expr [apsimGet $paddock.mucuna.yield]/1000.0]  ;# tonnes/ha
+   set biomass [apsimGet $paddock.mucuna.biomass]
+   if {"mucuna" == "sorghum"} {
+     set grainWt [apsimGet $paddock.mucuna.graingreenWt]
+     if {$grainWt > 0} {
+       set grainN [apsimGet $paddock.mucuna.graingreenN]
+       set grainProtein [expr $grainN / $grainWt * 100.0 * 5.71] ;# (%)
+     } else {
+       set grainProtein 0.0
+     }
+     set stover [expr ([apsimGet $paddock.mucuna.LeafGreenWt] + \
+                       [apsimGet $paddock.mucuna.LeafSenescedWt] + \
+                       [apsimGet $paddock.mucuna.StemGreenWt] ) ]
+     if {$stover > 0.0} {
+       set stoverProtein [expr ([apsimGet $paddock.mucuna.LeafGreenN] + \
+                                [apsimGet $paddock.mucuna.LeafSenescedN] + \
+                                [apsimGet $paddock.mucuna.StemGreenN]) / \
+                               $stover * 100.0 * 5.71]
+     } else {
+       set stoverProtein 0.0
+     }
+     set stover [expr 10 * $stover]
+   } elseif {"mucuna" == "maize"} {
+     set grainProtein [apsimGet $paddock.mucuna.grain_protein]        ;# (%)
+     set stover [apsimGet $paddock.mucuna.stover]
+     set stoverProtein [expr [apsimGet $paddock.mucuna.stover_n] / \
+                             [apsimGet $paddock.mucuna.stover_wt] * 100.0 * 5.71] ;# (%)
+   } else {
+     set grainWt [apsimGet $paddock.mucuna.grainWt]
+     if {$grainWt > 0} {
+       set grainProtein [expr [apsimGet $paddock.mucuna.grainN] / \
+                            $grainWt * 100.0 * 5.71] ;# (%)
+     } else {
+       set grainProtein 0.0
+     }
+     set stover [expr ($biomass - 1000 * $yield) ]
+     if {[apsimGet $paddock.mucuna.vegetativeWt] > 0 } {
+       set stoverProtein [expr [apsimGet $paddock.mucuna.vegetativeN] / \
+                               [apsimGet $paddock.mucuna.vegetativeWt]* 100.0 * 5.71]
+     } else {
+       set stoverProtein 0.0
+     }
+   }
+
+   apsimSendMessage economics expenditure \
+                   "cost [expr 0 * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "harvesting costs"}
+
+   apsimSendMessage economics income {category cropprice} "name mucuna"  \
+                          "yield $yield" \
+                          "area $config($paddock,area)" "paddock $paddock" "crop mucuna" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"
+
+   apsimSendMessage $paddock.mucuna  harvest  "remove 0.0"
+   apsimSendMessage $paddock.mucuna  end_crop
+
+   set somWtNew [apsimGet "$paddock.SurfaceOrganicMatter.surfaceom_wt"]
+   set somAdded [expr $somWtNew - $somWtOld]
+
+   set daysSinceLastHarvest($paddock) 0
+
+   set grazedFrac 0.0
+   if {0 > 0} {
+      set grazedFrac [expr 0 / 100.0]
+   }
+   set storedFrac 0.0
+   if {100 > 0} {
+      set storedFrac [expr 100 / 100.0]
+      apsimSet Mucuna_residue_store.store [expr [apsimGet Mucuna_residue_store.store] + $storedFrac * $stover * $config($paddock,area)]
+   }
+   set removedFrac [expr ($storedFrac + 0) / 100.0]
+   if {$removedFrac > 0} {
+      apsimWriteToSummaryFile "Residues: removing [expr $removedFrac] of surface residues in paddock $paddock"
+      apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} "f_incorp $removedFrac" {tillage_depth 0.0}
+   }
+
+   global annual
+   set year [apsimGet year]
+   set wetYield [expr ($yield * 100.0) / (100.0 - 12.0)] ;# 12% grain moisture
+   if {[info exists annual($year,mucuna,harvest)]} {
+     set annual($year,mucuna,harvest) [expr $annual($year,mucuna,harvest) + $wetYield * $config($paddock,area)]
+   } else {
+     set annual($year,mucuna,harvest)  [expr $wetYield * $config($paddock,area)]
+   }
+   global harvest iat
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock mucuna \
+      [format %.0f $biomass] [format %.0f [expr 1000.0 * $yield]] [format %.1f $grainProtein]]
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock mucuna_residue \
+      [format %.0f $biomass] [format %.0f $stover] [format %.1f $stoverProtein]]
+   lappend iat [list [apsimGet dd/mm/yyyy],mucuna,\
+[format %.0f $biomass],[format %.0f [expr 1000.0 * $yield]],[format %.1f $grainProtein],\
+[format %.0f $stover],[format %.1f $stoverProtein]]
+}
+
+proc canHarvest_Mucuna {paddock} {
+  return [expr [string equal [apsimGet $paddock.mucuna.StageName] "harvest_ripe"] || \
+               [string equal [apsimGet $paddock.mucuna.plant_status] "dead"]]
+}
+
+
+proc checkWeeds {} {
+   global daysSinceLastTillage weeds config
+   set rainCrit [apsimGet rain\[4\]]
+
+   foreach paddock $config(paddocks) {
+      incr daysSinceLastTillage($paddock)
+      set weeds($paddock,status) [apsimGet $paddock.weed.plant_status]
+      if {$daysSinceLastTillage($paddock) > 20 &&
+          $weeds($paddock,status) == "out" &&
+          $rainCrit >= 25 &&
+          $weeds($paddock,Events) < 0} {
+           apsimWriteToSummaryFile "Weeds germinating in $paddock"
+           apsimSendMessage $paddock.weed sow {crop_class summer_grass} {plants 20} {sowing_depth 75} {cultivar early} {row_spacing 750}
+           incr weeds($paddock,Events)
+      } elseif {$weeds($paddock,status) == "dead" || [apsimGet $paddock.weed.StageName] == "harvest_ripe"} {
+           killWeeds $paddock
+      }
+   }
+}
+
+proc killWeeds {paddock} {
+   global weeds daysSinceLastTillage annual
+   apsimWriteToSummaryFile "Killing weeds in $paddock"
+   if {$weeds($paddock,status) != "out"} {
+     apsimSendMessage $paddock.weed end_crop
+   }
+   set weeds($paddock,status) "out"
+   set annual($paddock,weedings) [expr $annual($paddock,weedings) + 1.0]
+   set daysSinceLastTillage($paddock) 0
+}
+
+proc doFallowTillage40 {paddock} {
+   global config daysSinceLastTillage
+
+   killWeeds $paddock
+   if {[string equal "user_defined" "user_defined"]} {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} {f_incorp 0.9} {tillage_depth 100}
+   } else {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined}
+   }
+   set daysSinceLastTillage($paddock) 0
+}
+
+proc doTillageSometime {paddock operator activity routine} {
+   global config
+   operateLabour "operator $operator" "activity $activity" \
+                 "area $config($paddock,area)" "callback [list $routine $paddock]" \
+                 "paddock $paddock" "costtype incrop_cost" {comment "Fallow tillage"}
+
+}
+
+proc doTillageNow {paddock routine} {
+   $routine $paddock
+}
+
+
+proc doIncropTillage21 {paddock} {
+   global config daysSinceLastTillage
+
+   killWeeds $paddock
+   if {[string equal "user_defined" "user_defined"]} {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} {f_incorp 0.9} {tillage_depth 100}
+   } else {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined}
+   }
+   set daysSinceLastTillage($paddock) 0
+}
+
+proc doIncropTillage45 {paddock} {
+   global config daysSinceLastTillage
+
+   killWeeds $paddock
+   if {[string equal "user_defined" "user_defined"]} {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} {f_incorp 0.9} {tillage_depth 100}
+   } else {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined}
+   }
+
+   set daysSinceLastTillage($paddock) 0
+}
+
+proc doPresowTillage {paddock} {
+   global config daysSinceLastTillage
+
+   killWeeds $paddock
+   if {[string equal "user_defined" "user_defined"]} {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} {f_incorp 0.9} {tillage_depth 100}
+   } else {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined}
+   }
+
+   operateLabour "operator male" "activity presow_till"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Pre sowing tillage"}
+   set daysSinceLastTillage($paddock) 0
+}
+
+
+
+proc doSowingTillage {paddock} {
+   global config daysSinceLastTillage
+
+   killWeeds $paddock
+   if {[string equal "user_defined" "user_defined"]} {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined} {f_incorp 0.1} {tillage_depth 100}
+   } else {
+       apsimSendMessage "$paddock.SurfaceOrganicMatter" tillage {type user_defined}
+   }
+
+   operateLabour "operator male" "activity sowing"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Sowing tillage"}
+   set daysSinceLastTillage($paddock) 0
+}
+
+
+# Return area (ha) planted to a crop
+proc areaOf {crop} {
+   global config
+   if {[info exists config($crop,alias)]} {set crop $config($crop,alias)}
+   set sum 0.0
+   foreach paddock $config(cropPaddocks) {
+      set state [currentState $paddock]
+      if {[info exists config($state,alias)]} {set state $config($state,alias)}
+      if {"$state" == "$crop"} {
+        set sum [expr $sum + $config($paddock,area)]
+      }
+   }
+   return $sum
+}
+
+proc areaPlantedOk {crop} {
+   global config
+   if {[info exists config($crop,alias)]} {set crop $config($crop,alias)}
+   set f [expr [areaOf $crop] / $config(allCropArea)]
+
+   return [expr $f < $config(maxFract,$crop)]
+}
+
+proc historyOk {paddock crop} {
+   global config
+   if {[info exists config($crop,alias)]} {set crop $config($crop,alias)}
+   set max $config(maxContinuous,$crop)
+   set n [llength $config($paddock,history)]
+   for {set i $n} {$i >= $n - $max} {decr i} {
+      if {[lindex $config($paddock,history)] != $crop} {return 1}
+   }
+   return 0
+}
+
+
+
+########### Support procedures
+
+proc max {a b} { return [expr {($a > $b) ? $a : $b}] }
+proc min {a b} { return [expr {($a > $b) ? $b : $a}] }
+
+# Return the current state of the system
+proc currentState {paddock} {
+   global state
+   return $state($paddock)
+}
+
+# Gather arguments (eg sowing depth, fert rate etc} from defaults array
+# $action: the operation (sow, fert ...
+# $what: the module (wheat, sorghum ...
+proc gatherArgs {action what} {
+   global defaults config
+
+   # 1. "sow,..."
+   foreach {index value} [array get defaults $action,*] {
+      set args([lindex [split $index ","] end]) $value
+   }
+   # 2. override above with any "wheat,sow,..."
+   foreach {index value} [array get defaults $what,$action,*] {
+      set args([lindex [split $index ","] end]) $value
+   }
+   # 3. override above with any "SpringWheat,sow,..."
+   if {[info exists config($what,alias)]} {
+      foreach {index value} [array get defaults $config($what,alias),$action,*] {
+         set args([lindex [split $index ","] end]) $value
+      }
+   }
+   return [array get args]
+}
+
+# Mash a list into name/value pairs to pass via the apsim message system
+proc mash {list} {
+   set result {}
+   foreach {name value} $list {lappend result [list $name $value]}
+   return $result
+}
+
+# Sum a list
+proc lsum {list} {
+   set result 0.0
+   foreach value $list {set result [expr $result + $value]}
+   return $result
+}
+
+# Linear interpolation
+proc linint {x_coords y_coords value} {
+   set y  0.0
+
+   if {[llength $x_coords] <= 0 || [llength $y_coords] <= 0 || [llength $x_coords] != [llength $y_coords]} {
+      error "bad coordinates in linear_interp_real"
+   }
+
+   for {set indx 0} {$indx < [llength $x_coords]} {incr indx} {
+      if {$value <= [lindex $x_coords $indx]} {
+         if {$indx == 0} {
+            set y [lindex $y_coords $indx]
+         } else {
+            if {abs($value - [lindex $x_coords $indx]) < 1.0E-4} {
+               set y [lindex $y_coords $indx]
+            } else  {
+               set y_part [expr [lindex $y_coords $indx] - [lindex $y_coords [expr $indx-1]] ]
+               set x_part [expr [lindex $x_coords $indx] - [lindex $x_coords [expr $indx-1]] ]
+               set y [expr ($y_part/$x_part) * ($value - [lindex $x_coords [expr $indx - 1]]) + [lindex $y_coords [expr $indx- 1]] ]
+            }
+         break;
+         }
+      } elseif {$indx == [lindex $x_coords $indx]-1} {
+         set y  [lindex $y_coords $indx]
+      } else {
+         set y  0.0
+      }
+   }
+   return $y
+}
+
+#############################
+############### The decision routine(s).
+#############################
+# Return the score for planting "what"
+proc checkRules {thisPaddock} {
+  global config
+
+  uplevel #0 set paddock \"$thisPaddock\"
+  set bestScore -1.0; set bestTarget {}; set bestArc {}; set bestGraph {}
+  foreach graph $config($thisPaddock,graphNames) {
+     foreach arc [$graph arcs -out [currentState $thisPaddock]] {
+        set expr {}
+        set target [$graph arc target $arc]
+        foreach rule [$graph arc get $arc rules] {
+           set value [uplevel #0 expr $rule]
+           lappend expr $value
+           if {$value == 0} {break} ;# no need to continue evaluating subsequent rules
+        }
+        if {[llength $expr] > 0} {
+           set score [expr [join $expr "*"]]
+           if {$score > $bestScore} {
+              set bestScore  $score
+              set bestTarget $target
+              set bestArc    $arc
+              set bestGraph  $graph
+           }
+        }
+     }
+  }
+  return [list  $bestScore $bestGraph $bestTarget $bestArc]
+}
+
+# A place holder function to monitor state transitions
+proc logState {graph paddock state} {
+  ###puts "$graph $paddock $state"
+}
+
+# Change state to another
+proc changeState {paddock graph arc} {
+   global state
+   uplevel #0 set paddock \"$paddock\"
+   puts "$graph - Changing state in paddock $paddock from $state($paddock) to [$graph arc target $arc]"
+   if {[$graph arc keyexists $arc actions]} {
+      foreach action [$graph arc get $arc actions] {
+         puts "      - undertaking action $action"
+         uplevel #0 $action
+      }
+   }
+   set state($paddock) [$graph arc target $arc]
+   logState $graph $paddock $state($paddock)
+}
+
+# Do daily process at top level
+proc doProcess {} {
+   global date config daysSinceLastHarvest
+
+   set date "[apsimGet day],[apsimGet year]"
+
+   set more 1
+   while {$more} {
+      set more 0
+      # 1. Find out what's possible
+      set bestPaddock {}; set bestScore -1.0
+      foreach paddock $config(paddocks) {
+         foreach {score graph target arc} [checkRules $paddock] {break}
+         if {$score > $bestScore} {
+            set bestPaddock $paddock; set bestScore $score; set bestGraph $graph; set bestTarget $target; set bestArc $arc
+         }
+      }
+      if {$bestScore > 0.0} {
+         changeState $bestPaddock $bestGraph $bestArc
+         set more 1
+      }
+   }
+
+   foreach paddock $config(paddocks) {
+      incr daysSinceLastHarvest($paddock)
+   }
+}
+
+# pass events to various output files
+proc reportEvent {from what} {
+   foreach {event args} [split $what "-"] {break}
+}
+
+puts "Done farm"
+
+package require struct
+foreach {paddock sequence} {plot1 Maize plot2 Groundnut plot3 Mucuna} {
+   ::struct::graph ${paddock}graph
+   set states [split $sequence "."]
+   for {set istate 0} {$istate < [llength $states]} {incr istate} { ${paddock}graph node insert "F$istate" }
+   for {set istate 0} {$istate < [llength $states]} {incr istate} {
+     set myState [lindex $states $istate].$istate
+     ${paddock}graph node insert $myState
+     ${paddock}graph arc insert F$istate $myState "arc$istate"
+     if {[lindex $states $istate] == "SR_X" } {
+       ${paddock}graph arc lappend "arc$istate" rules "\[dateIs 14-mar\]"
+     } elseif {[lindex $states $istate] == "LR_X"} {
+       ${paddock}graph arc lappend "arc$istate" rules "\[dateIs 14-sep\]"
+     } else {
+       ${paddock}graph arc lappend "arc$istate" actions "sow_[lindex $states $istate] $paddock"
+       ${paddock}graph arc lappend "arc$istate" rules "\[canSow_[lindex $states $istate] $paddock \]"
+       ${paddock}graph arc lappend "arc$istate" rules "\$daysAfterHarvest(\$paddock) > 1"
+     }
+     if {$istate == [llength $states] - 1} {
+        ${paddock}graph arc insert $myState F0 "arc${istate}Out"
+     } else {
+        ${paddock}graph arc insert $myState F[expr $istate+1] "arc${istate}Out"
+     }
+     if {[lindex $states $istate] == "LR_X" || [lindex $states $istate] == "SR_X"} {
+       ${paddock}graph arc lappend "arc${istate}Out" rules "1"
+     } else {
+       ${paddock}graph arc lappend "arc${istate}Out" actions "harvest_[lindex $states $istate] $paddock"
+       ${paddock}graph arc lappend "arc${istate}Out" actions "set daysAfterHarvest(\$paddock) 0"
+       ${paddock}graph arc lappend "arc${istate}Out" rules "\[canHarvest_[lindex $states $istate] $paddock \]"
+     }
+   }
+   puts "Paddock $paddock cropping sequence:"
+   foreach node [${paddock}graph nodes] {
+     puts " Node $node"
+     foreach key [${paddock}graph node keys $node *] {
+       puts " $key: [${paddock}graph node get $node $key]"
+     }
+     foreach arc [${paddock}graph arcs -out $node] {
+       foreach key [${paddock}graph arc keys $arc *] {
+          puts " $arc:$key [${paddock}graph arc get $arc $key]"
+       }
+     }
+   }
+}
+
+foreach paddock $config(paddocks) {set daysAfterHarvest($paddock) 30}
+
+
+# Utilities
+proc lsum {list} {return [expr  [join $list "+"]]}
+proc lavg {list} {
+  if {[llength $list] > 0} {
+    return [expr [lsum $list] / [llength $list]]
+  }
+  return 0.0
+}
+
+# Annual summary of whole farm averages
+
+proc open_annual_stuff {} {
+   global annual annualcrop config
+   set year [expr [apsimGet year] - 1 ]
+   set annual(years) $year
+   set annual(accRain) 0.0
+   set annual($year,balance) [apsimGetOptional balance]
+   set annual($year,income) [apsimGetOptional income]
+   set annual($year,expenditure) [apsimGetOptional expenditure]
+   foreach {accumulator} { dm_eaten} {
+     set annual($year,$accumulator) 0
+   }
+   foreach {accumulator} {runoff drain soil_loss es weedings} {
+     foreach paddock $config(paddocks) {
+        set annual($paddock,$accumulator) 0.0
+     }
+   }
+}
+
+proc do_end_year {} {
+   global config annual annualcrop
+
+   set year [apsimGet year]
+
+   foreach {accumulator} {runoff drain soil_loss es weedings} {
+     foreach paddock $config(paddocks) {
+        set annual($year,$paddock,$accumulator) $annual($paddock,$accumulator)
+        set annual($paddock,$accumulator) 0.0
+     }
+   }
+   foreach paddock $config(paddocks) {
+     set annual($year,$paddock,avg_cover) [apsimGetOptional "$paddock.tracker.avg_cover"]
+     if {$annual($year,$paddock,avg_cover) == ""} {set annual($year,$paddock,avg_cover) "*"}
+
+     set annual($year,$paddock,avg_carbon) [apsimGetOptional "$paddock.tracker.avg_carbon"]
+     if {$annual($year,$paddock,avg_carbon) == ""} {set annual($year,$paddock,avg_carbon) "*"}
+   }
+   set annual($year,accRain) $annual(accRain)
+   set annual(accRain) 0.0
+   set annual($year,balance) [apsimGetOptional balance]
+   set annual($year,income) [apsimGetOptional income]
+   set annual($year,expenditure) [apsimGetOptional expenditure]
+   lappend annual(years) $year
+}
+
+proc close_annual_stuff {} {
+   global simName config annual annualcrop
+   puts "close_annual_stuff called"
+   parray annual
+
+   # Heading
+   set fp [open $simName.annual.out w]
+   puts $fp "Title = $simName"
+   puts $fp ""
+   puts -nonewline $fp "year "
+   foreach {accumulator} {runoff drain soil_loss es avg_cover avg_carbon rain weedings dm_eaten} {
+      puts -nonewline $fp " $accumulator"
+   }
+   foreach id [getLabourers] {
+      puts -nonewline $fp " ${id}_labour"
+   }
+   foreach crop $config(crops) {
+      puts -nonewline $fp " ${crop}_harvest"
+   }
+   puts $fp " income expenditure profit"
+
+   puts -nonewline $fp "() "
+   foreach {accumulator} {runoff drain soil_loss es rain } {
+      puts -nonewline $fp " (mm)"
+   }
+   puts -nonewline $fp " ()  ()  () (kg)"
+   foreach id [getLabourers] {
+      puts -nonewline $fp " (hours)"
+   }
+   foreach crop $config(crops) {
+      puts -nonewline $fp " (tonnes-wet)"
+   }
+   puts $fp " ($) ($) ($)"
+
+   # Area weighted averages of environmental stuff
+   set tfa 0.0
+   foreach paddock $config(paddocks) {set tfa [expr $tfa + $config($paddock,area)]}
+   if {$tfa <= 0.0} {close $fp; return}
+
+   foreach year [lrange $annual(years) 1 end] {
+      puts -nonewline $fp "$year "
+      foreach {accumulator} {runoff drain soil_loss es} {
+         set s 0.0
+         foreach paddock $config(paddocks) {
+            set s [expr $s + $annual($year,$paddock,$accumulator) * $config($paddock,area) / $tfa]
+         }
+         puts -nonewline $fp " [format %.2f $s]"
+      }
+      foreach {accumulator} {avg_cover avg_carbon} {
+         set s 0.0
+         foreach paddock $config(paddocks) {
+            if {![string is double -strict $annual($year,$paddock,$accumulator)]} {
+               set s " *"
+               break
+            } else {
+               set s [expr $s + $annual($year,$paddock,$accumulator) * $config($paddock,area) / $tfa]
+            }
+         }
+         if {[string is double -strict $s]} {
+            puts -nonewline $fp " [format %.2f $s]"
+         } else {
+            puts -nonewline $fp " *"
+         }
+      }
+      puts -nonewline $fp " [format %.2f $annual($year,accRain)]"
+      set s 0.0
+      foreach paddock $config(paddocks) {set s [expr $s + $annual($year,$paddock,weedings)] }
+      puts -nonewline $fp " [format %.0f $s]"
+      if {[info exists annual($year,dm_eaten)]} {
+         puts -nonewline $fp " [lsum $annual($year,dm_eaten)]"
+      } else {
+         puts -nonewline $fp " 0"
+      }
+      foreach id [getLabourers] {
+        if {[info exists annual($year,labourhours)]} {
+          puts -nonewline $fp " $annual($year,$id,labourhours)"
+        } else {
+          puts -nonewline $fp " 0"
+        }
+      }
+      foreach crop $config(crops) {
+         if {[info exists annual($year,$crop,harvest)]} {
+           puts -nonewline $fp " [format %.3f $annual($year,$crop,harvest)]"
+         } else {
+           puts -nonewline $fp " *"
+         }
+      }
+
+      if {[info exists annual($year,income)] && [string is double -strict $annual($year,income)] } {
+         puts -nonewline $fp " [format %.2f $annual($year,income)]"
+      } else {
+         puts -nonewline $fp " *"
+      }
+      if {[info exists annual($year,expenditure)] && [string is double -strict $annual($year,expenditure)]} {
+         puts -nonewline $fp " [format %.2f $annual($year,expenditure)]"
+      } else {
+         puts -nonewline $fp " *"
+      }
+      # profit = change in bank balance each year
+      catch {
+         puts -nonewline $fp " [format %.2f [expr $annual($year,balance) - $annual([expr $year-1],balance)]]"
+      }
+      puts $fp ""
+   }
+   close $fp
+}
+# Annual summary of whole farm averages
+
+proc open_harvest_stuff {} {
+   global harvest config
+   set harvest {}
+}
+
+
+proc close_harvest_stuff {} {
+   global simName config harvest
+   puts "close_harvest_stuff called"
+
+   # Heading
+   set fp [open $simName.harvest.out w]
+   puts $fp "Title = $simName"
+   puts $fp ""
+   puts $fp "Date         season paddock crop biomass  yield   protein"
+   puts $fp "(dd/mm/yyyy)     ()      ()   () (kg/ha) (kg/ha)  (%)"
+
+   foreach line $harvest {
+      puts $fp $line
+   }
+   close $fp
+}
+
+
+# Annual summary of whole farm averages
+
+proc open_iat_stuff {} {
+   global iat config
+   set iat {}
+}
+
+
+proc close_iat_stuff {} {
+   global simName config iat
+   puts "close_iat_stuff called"
+
+   # Heading
+   set fp [open $simName.iat.csv w]
+   puts $fp "Date,crop,biomass,grain.yield,grain.protein,residue.yield,residue.protein"
+   puts $fp "(dd/mm/yyyy),(),(kg/ha),(kg/ha),(%),(kg/ha),(%)"
+
+   foreach line $iat {
+      puts $fp $line
+   }
+   close $fp
+}
+
+
+# Apsim Machinery (sub)Module
+# Contains Tractors, Implements & Labour.
+
+# Operations:
+# bool available(<config>)    ; See if a configuration can be used today (read)
+# operate <config> <area>     ; Operate a configuration over an area until finished (event)
+
+########################## Apsim interface code here
+source $apsuite/Model/TclLink/CIDataTypes.tcl
+
+# A trace handler for status. This handler is called whenever another module
+# asks us whether machinery is available.
+#    NB. Careful! Errors in trace routines are not caught!!!
+proc machinery:maProc {name1 name2 op} {
+   if {$op == "read" } {
+      global config $name1
+      foreach {junk operator implement} [split $name1 "_"] { break }
+
+      # Check they are known to us
+      if {[lsearch $config(operators) $operator] < 0} {
+         set msg "operator \"$operator\" is unknown - I only know about $config(operators)"
+         error $msg
+      }
+      if {[lsearch $config(implements) $implement] < 0} {
+         set msg "implement \"$implement\" is unknown - I only know about $config(implements)"
+         error $msg
+      }
+
+      # Now see if they are busy
+      set avail 1
+      catch {
+         global machinery:jobs
+         foreach job ${machinery:jobs} {
+            foreach {tid iid area paddock costtype} [split $job ","] {break}
+            if {"$operator" == "$tid" || "$implement" == "$iid"} {set avail 0}
+         }
+      } msg
+      if {$msg != ""} {apsimWriteToSummaryFile $msg; error $msg}
+
+      # Set the variable - this is what is returned to apsim.
+      set $name1 $avail
+   }
+}
+
+# An event handler.
+proc operateLabour {args} {
+  foreach arg $args {
+     regsub -all "'" [lindex $arg 0] {} _name
+     regsub -all "'" [lrange $arg 1 end] {} _value
+     if {"$_name" != "callback"} {
+        set [string tolower $_name] [string tolower $_value]
+     } else {
+        set $_name $_value
+     }
+  }
+  if {![info exists operator] || ![info exists activity] || ![info exists area]} {
+     error "Must specify a operator, activity, and area to operate over."
+  }
+  if { ![info exists paddock] } {set paddock {}}
+  if { ![info exists costtype] } {set costtype unknown}
+  if { ![info exists callback]}  {
+    machinery:operate $operator $activity $area $paddock $costtype
+  } else {
+    machinery:operateLater $operator $activity $area $paddock $costtype $callback
+  }
+}
+
+# Now register the event handlers.
+#apsimSubscribeVariant operate            "machinery:operateHandler"
+#apsimSubscribeVariant operate_later      "machinery:operateLaterHandler"
+apsimSubscribeNull process            "machinery:process"
+apsimSubscribeNull end_financial_year "machinery:end_year"
+########################## End apsim interface code
+
+########################## Machinery configuration code
+# Read in our configuration
+proc machinery:initialise {} {
+   global config
+   if {![info exists config(operators)]} {set config(operators) {}}
+   if {![info exists config(implements)]} {set config(implements) {}}
+}
+
+# return the work rate for this combo can cover per hour
+proc getCombo {operator implement thing} {
+   global config
+   if {![info exists config(machinery,$operator,$implement,$thing)]} {
+      error "No $thing specified for $operator and $implement"
+   }
+   return $config(machinery,$operator,$implement,$thing)
+}
+
+proc getRate {tid iid} {
+   return [getCombo $tid $iid workrate]
+}
+
+proc getValue {id thing} {
+   global config
+   if {![info exists config(machinery,$id,$thing)]} {
+      error "No $thing for $id specified (get)"
+   }
+   return $config(machinery,$id,$thing)
+}
+
+# Return the cost of labour per hour
+proc labourCost {} {
+   global config
+   if {![info exists config(economics,labourCost)]} {
+      error "No labourCost specified"
+   }
+   return $config(economics,labourCost)
+}
+
+# return the labour cost this combo uses per hour
+proc getLabourCost {tid iid} {
+   return [expr [getCombo $tid $iid workrate] * [ labourCost ]]
+}
+
+proc getLabourers {} {
+   global config
+   return $config(operators)
+}
+
+
+# Return the number of hours worked per day
+proc getHoursPerDay {tid iid} {
+   return [getCombo $tid $iid hoursperday]
+}
+
+proc setValue {id thing value} {
+   global config
+   if {![info exists config(machinery,$id,$thing)]} {
+      error "No $thing for $id specified (set)"
+   }
+   set config(machinery,$id,$thing) $value
+}
+
+##############
+# Operate a configuration over an area. Just add it to the job queue
+# and let process look after it.
+proc machinery:operate {operator implement area paddock costtype} {
+   if {![string is double -strict $area]} {
+      error "Area should be a number (not $area)"
+   }
+   global machinery:jobs
+   lappend machinery:jobs $operator,$implement,$area,$paddock,$costtype,
+   apsimWriteToSummaryFile "Machinery job \"$operator + $implement\" is queued"
+}
+
+proc machinery:operateLater {operator implement area paddock costtype command} {
+   if {![string is double -strict $area]} {
+      error "Area should be a number (not $area)"
+   }
+   global machinery:jobs
+   lappend machinery:jobs $operator,$implement,$area,$paddock,$costtype,$command
+   apsimWriteToSummaryFile "Machinery job \"$operator + $implement\" is queued"
+}
+
+# The daily process routine. Manages the job queue
+proc machinery:process {} {
+   global machinery:jobs annual
+   set tomorrowsJobs {}
+   # Go through each job. If an item is in use in any prior job, we can't do it today.
+   for {set ijob 0} {$ijob < [llength ${machinery:jobs}]} {incr ijob} {
+      set job [lindex ${machinery:jobs} $ijob]
+      foreach {tid iid area paddock costtype command} [split $job ","] {break}
+      set inuse 0
+      for {set j 0} {$j < $ijob} {incr j} {
+         foreach {Ttid Tiid Tarea Tpaddock Tcosttype Tcommand} [split [lindex ${machinery:jobs} $j] ","] {break}
+         if {$tid == $Ttid || $iid == $Tiid} {set inuse 1}
+      }
+      if {!$inuse} {
+        # The job is running today. Work out how many hours, and then the costs
+        set maxHours [getHoursPerDay $tid $iid]
+        set rate [getRate $tid $iid]
+
+        if {$maxHours * $rate <= $area} {
+           set hours $maxHours
+           set areaToday [expr $maxHours * $rate]
+        } else {
+           set hours [expr $area / $rate]
+           set areaToday [expr $hours * $rate]
+        }
+        set cost [expr $hours * [getLabourCost $tid $iid]]
+        apsimSendMessage "" expenditure [list hours $hours] [list cost $cost] [list comment "operating costs of $tid + $iid"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
+        set year [apsimGet year]
+        if {![info exists annual($year,labourhours)]} {
+           set annual($year,$tid,labourhours) $hours
+        } else {
+           set annual($year,$tid,labourhours) [expr $annual($year,labourhours) + $hours]
+        }
+
+        set rate [expr $hours * [getRate $tid $iid]]
+        set area [expr $area - $rate]
+
+        if {$area > 0} {
+           lappend tomorrowsJobs $tid,$iid,$area,$paddock,$costtype,$command
+        } else {
+           apsimWriteToSummaryFile "Labour job '$tid + $iid' in $paddock has finished"
+           if {$command != ""} { apsimWriteToSummaryFile "doing $command"; eval $command }
+        }
+      } else {
+        lappend tomorrowsJobs $job
+      }
+   }
+   set machinery:jobs $tomorrowsJobs
+}
+
+# The "end_year" routine. Do loan payments and replacement
+proc machinery:end_year {} {
+   global annual
+   global machinery:jobs
+
+}
+
+lappend config(operators) "male"
+set config(machinery,male,age) "0"
+
+set config(machinery,male,sowing,workrate) "0.5"
+set config(machinery,male,sowing,hoursperday) "12"
+
+set config(machinery,male,weeding,workrate) "0.8"
+set config(machinery,male,weeding,hoursperday) "12"
+
+set config(machinery,male,harvesting,workrate) "0.2"
+set config(machinery,male,harvesting,hoursperday) "8"
+
+set config(machinery,male,presow_till,workrate) "0.1"
+set config(machinery,male,presow_till,hoursperday) "8"
+
+set config(machinery,male,spraying,workrate) "0.1"
+set config(machinery,male,spraying,hoursperday) "8"
+
+set config(economics,labourCost) "0.0"
+          
+     --->Section: post
+
+foreach paddock $config(paddocks) {
+   if {[apsimGetOptional $paddock.maize.DaysAfterSowing] == 21} {
+      doTillageSometime $paddock male weeding doIncropTillage21
+   }
+}
+
+foreach paddock $config(paddocks) {
+   if {[apsimGetOptional $paddock.maize.DaysAfterSowing] == 45} {
+      doTillageSometime $paddock male weeding doIncropTillage45
+   }
+}
+foreach paddock $config(paddocks) {incr daysAfterHarvest($paddock)}
+          
+   set annual(accRain) [expr $annual(accRain) + [apsimGet rain]]
+   foreach {accumulator} {runoff drain es } {
+      foreach paddock $config(paddocks) {
+         if {$paddock != "toplevel"} {
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $config($paddock,watBal).$accumulator]]
+         }
+      }
+   }
+   foreach {accumulator} {soil_loss} {
+      foreach paddock $config(paddocks) {
+         if {$paddock != "toplevel"} {
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $paddock.erosion.$accumulator]]
+         }
+      }
+   }
+   
+     --->Section: prepare
+
+checkWeeds
+
+foreach paddock $config(paddocks) {
+   if {$daysSinceLastHarvest($paddock) == 40} {
+      doTillageSometime $paddock male weeding doFallowTillage40
+   }
+}
+
+if {[dateIs 15-mar]} {
+   if {"no" == "yes"} {
+      foreach paddock $config(paddocks) {
+         apsimSendMessage $config($paddock,watBal) reset
+         apsimSendMessage $config($paddock,nModule) reset
+      }
+   }
+   apsimSendMessage "" lr_start
+}
+if {[dateIs 14-sep]} {
+  apsimSendMessage "" lr_end
+}
+
+     --->Section: process
+
+# Housekeeping
+if {[catch {doProcess } msg]} {
+   puts "$errorInfo"
+   error "$msg\n$errorInfo"
+}
+
+
+     --->Section: start_simulation
+
+foreach paddock $config(paddocks) {
+   set weeds($paddock,GermDay) {}
+   set weeds($paddock,Events)  0
+   set daysSinceLastTillage($paddock)    0
+}
+foreach paddock $config(paddocks) {
+  set state($paddock)         $config($paddock,initialState) ;# Should get this from xml
+  set history($paddock)       $config($paddock,history)
+  set daysSinceLastHarvest($paddock) 60
+}
+
+# All our soils are called "Soil.."
+foreach paddock $config(paddocks) {
+   set config($paddock,watBal)   "$paddock.Soil Water"
+   set config($paddock,nModule)  "$paddock.Soil Nitrogen"
+}
+
+set config(states) {}
+
+
+catch "file delete $simName.annual.out"
+
+open_annual_stuff
+catch "file delete $simName.harvest.out"
+
+open_harvest_stuff
+
+
+catch "file delete $simName.iat.csv"
+
+open_iat_stuff
+
+
+
+# Finally, load our configuration database and initialise states
+machinery:initialise
+set machinery:jobs {}
+
+# Now tell apsim we own it, set up the trace variable we use to trigger when the variable is read
+foreach tid $config(operators) {
+  foreach iid $config(implements) {
+     set v available_${tid}_${iid}
+     set $v 0
+     apsimRegisterGetSet $v
+     trace add variable $v read "machinery:maProc"
+  }
+}
+
+apsimWriteToSummaryFile "Labour:\nOperators=$config(operators)\nImplements=$config(implements)"
+
+
+     --->End
+Done farm
+Paddock plot1 cropping sequence:
+ Node Maize.0
+ arc0Out:actions {harvest_Maize plot1} {set daysAfterHarvest($paddock) 0}
+ arc0Out:rules {[canHarvest_Maize plot1 ]}
+ Node F0
+ arc0:actions {sow_Maize plot1}
+ arc0:rules {[canSow_Maize plot1 ]} {$daysAfterHarvest($paddock) > 1}
+Paddock plot2 cropping sequence:
+ Node Groundnut.0
+ arc0Out:actions {harvest_Groundnut plot2} {set daysAfterHarvest($paddock) 0}
+ arc0Out:rules {[canHarvest_Groundnut plot2 ]}
+ Node F0
+ arc0:actions {sow_Groundnut plot2}
+ arc0:rules {[canSow_Groundnut plot2 ]} {$daysAfterHarvest($paddock) > 1}
+Paddock plot3 cropping sequence:
+ Node F0
+ arc0:actions {sow_Mucuna plot3}
+ arc0:rules {[canSow_Mucuna plot3 ]} {$daysAfterHarvest($paddock) > 1}
+ Node Mucuna.0
+ arc0Out:actions {harvest_Mucuna plot3} {set daysAfterHarvest($paddock) 0}
+ arc0Out:rules {[canHarvest_Mucuna plot3 ]}
+Feed Quality: 
+     RLink Initialisation
+     Loading R from C:/Program Files/R/R-3.0.1
+     R version 3.0.1 (2013-05-16)
+     Copyright (C) 2011 The R Foundation for Statistical Computing
+     --->Section: init
+
+# Feed source ranking - highest ranks are eaten first, lowest last.
+FeedRank <-list()
+
+# Feed (ID 4 in mark's spreadsheet)
+Qlty<-list()
+Qlty[["maize.dm"]] <- 1000.0  ;#(DM content g/kg)
+Qlty[["maize.me"]] <-   12.2  ;#(Metab. Energy MJ/kg)
+Qlty[["maize.ge"]] <-   19    ;#
+Qlty[["maize.fme"]] <-  8.8   ;#(Ferment. Energy MJ/kg)
+Qlty[["maize.cp"]] <-   180   ;#(Crude prot. g/kg)
+Qlty[["maize.adin"]] <- 0.5   ;#(Acid Digest insol. N g/kg)
+Qlty[["maize.dmd"]] <-  0.8   ;#(Dry matter Digest g/kg)
+Qlty[["maize.a"]] <-    0.7   ;#(fr)
+Qlty[["maize.b"]] <-    0.2   ;#(fr)
+Qlty[["maize.c"]] <-    0.1   ;#(fr)
+Qlty[["maize.ndf"]] <-  137   ;#()
+Qlty[["maize.p"]] <-    0.001 ;#()
+Qlty[["maize.k"]] <-    0.009 ;#()
+Qlty[["maize.type"]] <- 3     ;# forage legume
+FeedRank[["maize"]] <-4
+
+Qlty[["sorghum.dm"]] <- 1000.0  ;#(DM content g/kg)
+Qlty[["sorghum.me"]] <-   12.2  ;#(Metab. Energy MJ/kg)
+Qlty[["sorghum.ge"]] <-   19    ;#
+Qlty[["sorghum.fme"]] <-  8.8   ;#(Ferment. Energy MJ/kg)
+Qlty[["sorghum.cp"]] <-   180   ;#(Crude prot. g/kg)
+Qlty[["sorghum.adin"]] <- 0.5   ;#(Acid Digest insol. N g/kg)
+Qlty[["sorghum.dmd"]] <-  0.8   ;#(Dry matter Digest g/kg)
+Qlty[["sorghum.a"]] <-    0.7   ;#(fr)
+Qlty[["sorghum.b"]] <-    0.2   ;#(fr)
+Qlty[["sorghum.c"]] <-    0.1   ;#(fr)
+Qlty[["sorghum.ndf"]] <-  137   ;#()
+Qlty[["sorghum.p"]] <-    0.001 ;#()
+Qlty[["sorghum.k"]] <-    0.009 ;#()
+Qlty[["sorghum.type"]] <- 3     ;# forage legume
+FeedRank[["sorghum"]] <-4
+
+# Feed (ID 6 in mark's spreadsheet)
+Qlty[["resd.dm"]] <- 1000.0  ;#(DM content g/kg)
+Qlty[["resd.me"]] <-   12.3 ;#(Metab. Energy MJ/kg)
+Qlty[["resd.ge"]] <-   19    ;#
+Qlty[["resd.fme"]] <-  11.4   ;#(Ferment. Energy MJ/kg)
+Qlty[["resd.cp"]] <-   190   ;#(Crude prot. g/kg)
+Qlty[["resd.adin"]] <- 1.3   ;#(Acid Digest insol. N g/kg)
+Qlty[["resd.dmd"]] <-  0.75   ;#(Dry matter Digest g/kg)
+Qlty[["resd.a"]] <-    0.23   ;#(fr)
+Qlty[["resd.b"]] <-    0.71   ;#(fr)
+Qlty[["resd.c"]] <-    0.18   ;#(fr)
+Qlty[["resd.ndf"]] <-  137   ;#()
+Qlty[["resd.p"]] <-    0.001 ;#()
+Qlty[["resd.k"]] <-    0.009 ;#()
+Qlty[["resd.type"]] <- 3     ;# 
+FeedRank[["resd"]] <-6
+
+# Feed (ID 6 in mark's spreadsheet)
+Qlty[["mucuna.dm"]] <- 1000.0  ;#(DM content g/kg)
+Qlty[["mucuna.me"]] <-   12.3 ;#(Metab. Energy MJ/kg)
+Qlty[["mucuna.ge"]] <-   19    ;#
+Qlty[["mucuna.fme"]] <-  11.4   ;#(Ferment. Energy MJ/kg)
+Qlty[["mucuna.cp"]] <-   190   ;#(Crude prot. g/kg)
+Qlty[["mucuna.adin"]] <- 1.3   ;#(Acid Digest insol. N g/kg)
+Qlty[["mucuna.dmd"]] <-  0.75   ;#(Dry matter Digest g/kg)
+Qlty[["mucuna.a"]] <-    0.23   ;#(fr)
+Qlty[["mucuna.b"]] <-    0.71   ;#(fr)
+Qlty[["mucuna.c"]] <-    0.18   ;#(fr)
+Qlty[["mucuna.ndf"]] <-  137   ;#()
+Qlty[["mucuna.p"]] <-    0.001 ;#()
+Qlty[["mucuna.k"]] <-    0.009 ;#()
+Qlty[["mucuna.type"]] <- 3     ;# 
+FeedRank[["mucuna"]] <- 5
+
+# Feed (ID 5 in mark's spreadsheet)- worst quality
+Qlty[["grass.dm"]] <-  1000.0 ;#(DM content g/kg)
+Qlty[["grass.me"]] <-  11.4 ;#(Metab. Energy MJ/kg)
+Qlty[["grass.ge"]] <-   19    ;#
+Qlty[["grass.fme"]] <-  10.6  ;#(Ferment. Energy MJ/kg)
+Qlty[["grass.cp"]] <-   180   ;#(Crude prot. g/kg)
+Qlty[["grass.adin"]] <- 1.2   ;#(Acid Digest insol. N g/kg)
+Qlty[["grass.dmd"]] <-  0.7   ;#(Dry matter Digest g/kg)
+Qlty[["grass.a"]] <-    0.4   ;#(fr)
+Qlty[["grass.b"]] <-    0.6   ;#(fr)
+Qlty[["grass.c"]] <-    0.2   ;#(fr)
+Qlty[["grass.ndf"]] <-  137   ;#()
+Qlty[["grass.p"]] <-    0.001 ;#()
+Qlty[["grass.k"]] <-    0.009 ;#()
+Qlty[["grass.type"]] <- 1     ;# 
+FeedRank[["grass"]] <-2
+
+# Concentrate (ID 1 in spreadsheet)
+Qlty[["bran.dm"]] <- 1000.0   ;#(DM content g/kg)
+Qlty[["bran.me"]] <-   12.7  ;#(Metab. Energy MJ/kg)
+Qlty[["bran.ge"]] <-   18.8  ;#
+Qlty[["bran.fme"]] <-  9.9   ;#(Ferment. Energy MJ/kg)
+Qlty[["bran.cp"]] <-   300   ;#(Crude prot. g/kg)
+Qlty[["bran.adin"]] <- 1.3   ;#(Acid Digest insol. N g/kg)
+Qlty[["bran.dmd"]] <-  0.81  ;#(Dry matter Digest g/kg)
+Qlty[["bran.a"]] <-    0.25  ;#(fr)
+Qlty[["bran.b"]] <-    0.64  ;#(fr)
+Qlty[["bran.c"]] <-    0.12  ;#(fr)
+Qlty[["bran.ndf"]] <-  180   ;#()
+Qlty[["bran.p"]] <-    0.005 ;#()
+Qlty[["bran.k"]] <-    0.008 ;#()
+Qlty[["bran.type"]] <- 2     ;# concentrate
+FeedRank[["bran"]] <-10
+
+# Helper function to add all the Y parts of structure X
+AASum<-function (x, y) {
+   s<- 0
+   for (e in 1:x$numelement) {
+      s <-  s + x[[paste("element.",e,sep="")]][[y]]
+   }
+   return(s)
+}
+
+# Return a list of feeds in a structure
+feedNames <- function(x) {
+   r <- NULL
+   for (e in 1:x$numelement) {
+      n<-x[[paste("element.",e,sep="")]][["CohortID"]]
+      if (sum(r == n) == 0) {
+         r <- c(r, n)
+      } 
+   }
+   return(r)   
+}
+
+# return a feed's attribute from the Qlty data
+feedAttr  <- function(x, y) {
+   q <- Qlty[[paste(x,y,sep=".")]]
+   if (length(q) == 12) {
+      q <- q[apsim$get("month")]
+   } else if (length(q) != 1) {
+      stop(paste("Length of",x,y,"should be 1 or 12, is", length(q)))
+   }
+   return(q)
+}
+
+
+# If it's a rationed feed source, eat that amount (kg/ha). Otherwise, 
+# do the leaf/stem selection.
+doDietSelection <- function (DMEaten, available) {
+   if ("ration" %in% names(available)) {
+      return(eatAmount(min(DMEaten, available[["ration"]]), available)) 
+   }
+   return(doLeafStemSelection(DMEaten, available)) 
+}
+
+# Eat an amount (up to DMEaten kg/ha) from a feed source
+eatAmount <- function (DMEaten, available) {
+   eaten <- 0; i <- 1 
+   for(i in 1:available$numelement) {
+      if (eaten < DMEaten) {
+        amount <- max(0, min(available[[paste("element.",i,sep="")]][["Weight"]], DMEaten))
+      } else {
+        amount <- 0
+      }
+      available[[paste("element.",i,sep="")]][["WeightRemoved"]] <- amount 
+      eaten <- eaten + amount
+   } 
+   return(available)
+}
+
+## Green&dead x leaf&stem diet selection (from grasp - pasture).
+graz_comp_curve <- function(ndx, a) { return ((a * ndx) / (ndx * (a - 1) + 1)) }
+doLeafStemSelection <- function (DMEaten, available) {
+   n <- 0; green_leaf <- green_stem <- dead_leaf<- dead_stem <- green_pool <- dead_pool <- 0
+   for (i in 1:available$numelement) {
+      e <- available[[paste("element.",i,sep="")]]
+      if (e$Organ == "leaf" && e$AgeID == "live") {
+         green_leaf <- green_leaf + e$Weight
+         green_pool <- green_pool + e$Weight
+         n <- n + 1 ; igl<- i
+      } else if (e$Organ == "leaf" && e$AgeID == "dead") {
+         dead_leaf <- dead_leaf + e$Weight
+         dead_pool <- dead_pool + e$Weight
+         n <- n + 1; idl <- i
+      } else if (e$Organ == "stem" && e$AgeID == "live") {
+         green_stem <- green_stem + e$Weight
+         green_pool <- green_pool + e$Weight
+         n <- n + 1; igs <- i
+      } else if (e$Organ == "stem" && e$AgeID == "dead") {
+         dead_stem <- dead_stem + e$Weight
+         dead_pool <- dead_pool + e$Weight
+         n <- n + 1; ids <- i
+      }
+   }
+   if (n < 4) {
+     stop("Oops! not enough green/dead/leaf/stem pools")
+   }
+   
+   if (green_pool > 0) { green_prop_leaf <- green_leaf / green_pool } else {green_prop_leaf <- 0.0}
+   if (dead_pool > 0) { dead_prop_leaf<- dead_leaf / dead_pool } else {dead_prop_leaf <- 0.0}
+
+   green_prop <- green_pool / (green_pool + dead_pool)
+   if (is.nan(green_prop)) {green_prop <- 0.0}
+
+   mod_green_prop <-  min(1.0, max( (green_prop - 0.10) / 0.90, 0.0))
+   # If green is less than 10%, no active selection for green by stock
+   if (mod_green_prop > 0.0) {
+      green_diet <- graz_comp_curve(mod_green_prop, 19.0)
+   } else {
+      green_diet <- green_prop
+   }
+
+   leaf_diet <- 0.85
+   curve_factor <- (0.5 * leaf_diet - leaf_diet) / (0.5 * leaf_diet - 0.5) 
+
+   total_eaten <- min(DMEaten, green_pool + dead_pool)
+   green_eaten <- green_diet * DMEaten
+   green_eaten <- min(green_pool, green_eaten)
+   dead_eaten <- (1.0 - green_diet) * DMEaten
+   dead_eaten <- min(dead_pool, dead_eaten)
+
+   green_leaf_eaten <- green_eaten * graz_comp_curve(green_prop_leaf, curve_factor)
+   green_leaf_eaten <- max(min(green_leaf, green_leaf_eaten), 0.0)
+
+   dead_leaf_eaten <- dead_eaten * graz_comp_curve(dead_prop_leaf, curve_factor)
+   dead_leaf_eaten <- max(min(dead_leaf, dead_leaf_eaten), 0.0)
+
+   green_stem_eaten <- green_eaten - green_leaf_eaten
+   green_stem_eaten <- max(min(green_stem, green_stem_eaten), 0.0)
+
+   dead_stem_eaten <- dead_eaten - dead_leaf_eaten
+   dead_stem_eaten <- max(min(dead_stem, dead_stem_eaten), 0.0)
+
+   # Trampling????
+   #prop_can_eat <- 1.0
+   #trampled <- DMEaten * (( 1.0 / prop_can_eat) - 1.0)
+
+   eaten <- available
+   stopifnot (green_leaf_eaten <= eaten[[paste("element.",igl,sep="")]][["Weight"]]) 
+   eaten[[paste("element.",igl,sep="")]][["WeightRemoved"]] <-green_leaf_eaten
+   stopifnot (dead_leaf_eaten <= eaten[[paste("element.",idl,sep="")]][["Weight"]]) 
+   eaten[[paste("element.",idl,sep="")]][["WeightRemoved"]] <-dead_leaf_eaten
+   stopifnot (green_stem_eaten <= eaten[[paste("element.",igs,sep="")]][["Weight"]]) 
+   eaten[[paste("element.",igs,sep="")]][["WeightRemoved"]] <-green_stem_eaten
+   stopifnot (dead_stem_eaten <= eaten[[paste("element.",ids,sep="")]][["Weight"]]) 
+   eaten[[paste("element.",ids,sep="")]][["WeightRemoved"]] <-dead_stem_eaten
+   return(eaten)
+}
+ 
+# Animal classes (column 1)
+#Weaners (3-12 months) 1
+#Juveniles (1-3 yrs)   2
+#Dry (M+F)             3
+#Lactating             6
+#Kids (0-3 months)     7
+
+# Feed type      (column 2)
+# Concentrate          2
+# Forage legumes       1
+# Pasture              3
+                       
+# Gather the structures that hold available feed from apsim.
+# These same structures are returned with eaten amounts later.
+getFeedFromAPSIM <- function (sources) {
+   AvailableToAnimal <- list()
+   for (source in sources) {
+      available <-apsim$get(paste(source, "AvailableToAnimal", sep="."))
+      slist<-unlist(strsplit(source,".", fixed=T))
+      paddock<-slist[1]
+      if (length(slist) <= 1) {
+        available$area <- 1.0
+      } else {
+        available$area <- apsim$get(paste(paddock,"_area",sep=""))
+      } 
+      AvailableToAnimal[[source]] <- available
+   }
+   return(AvailableToAnimal)
+}
+
+# Define the diet (kg/hd/month) for one beast.
+# Forages are equally presented, 
+define_dietOLD <- function(AvailableToAnimal, ConcentrateAmount, herdsize, numSupplemented) {
+   #Amount of concentrates according to age class and milk production
+   numForage<-numConc <-0
+   for (source in names(AvailableToAnimal)) {
+      if (feedAttr(feedNames(AvailableToAnimal[[source]] )[1],"type") == 2) {
+         numConc <- numConc + 1
+      } else {
+         numForage<- numForage + 1
+      }   
+   }
+   Forage_Quant <-matrix(nrow=numForage, ncol=2)
+   Conc_Quant <-matrix(nrow=numConc, ncol=2)
+   isource<-iconc  <- iforage <- 1
+   for (source in names(AvailableToAnimal)) {
+      available <- AvailableToAnimal[[source]] 
+      kg <- AASum(available, "Weight") * available$area ;# kg/ha -> kg
+      if ("ration" %in% names(available)) {kg <- min(kg, available[["ration"]]) } 
+      feedName <- feedNames(available)[1]
+      feedType <- feedAttr(feedNames(available)[1],"type")
+
+      if (feedType != 2) {
+          kg.hd <- kg / herdsize
+          Forage_Quant[iforage,1] <- isource
+          Forage_Quant[iforage,2] <-  kg.hd
+          iforage <- iforage + 1
+      } else {
+          kg.hd <- kg / numSupplemented
+          Conc_Quant[iconc,1] <- isource
+          if (ConcentrateAmount > 0) {
+            Conc_Quant[iconc,2] <-  max(0, min(kg.hd, ConcentrateAmount))
+          } else {
+            Conc_Quant[iconc,2] <-  0.0
+          }  
+          iconc <- iconc + 1
+      }
+      isource <- isource + 1
+   }
+
+   # Determine quality
+   ForageQuality <- matrix(ncol=14,nrow=numForage)
+   ConcentrateQuality <- matrix(ncol=14,nrow=numConc)
+   isource<- iconc <- iforage <- 1
+   for (source in names(AvailableToAnimal)) {
+      available <- AvailableToAnimal[[source]]
+      name <- feedNames(available)[1]
+      feedAttr <- feedAttr(name,"type")
+      qualities <- c("dm","me","ge","fme","cp","adin","dmd","a","b","c","ndf","p","k")
+      for (iq in 1:length(qualities)) {
+         if (feedAttr == 1 || feedAttr == 3) {
+            ForageQuality[iforage,iq+1] <- feedAttr(name,qualities[iq])
+         } else if (feedAttr == 2) {
+            ConcentrateQuality[iconc,iq+1] <- feedAttr(name,qualities[iq])
+         }
+      }
+      if (feedAttr == 1 || feedAttr == 3) {
+         ForageQuality[iforage,1] <- isource
+         iforage <- iforage + 1
+      } else if (feedAttr == 2) {
+         ConcentrateQuality[iconc,1] <- isource
+         iconc <- iconc + 1
+      }
+      isource <- isource + 1
+   }
+
+   Diet <-list(concentratequantity=Conc_Quant,
+               concentratequality=ConcentrateQuality,
+               foragequantity=Forage_Quant,
+               foragequality=ForageQuality)
+   return(Diet)
+}
+
+# Define the diet (kg/hd/month) for one beast.
+# Forages are equally presented, offers 
+define_diet <- function(AvailableToAnimal, ConcentrateAmount, pot_intake, herdsize, numSupplemented) {
+   #Amount of concentrates according to age class and milk production
+   numForage<-numConc <-0
+   for (source in names(AvailableToAnimal)) {
+      if (feedAttr(feedNames(AvailableToAnimal[[source]] )[1],"type") == 2) {
+         numConc <- numConc + 1
+      } else {
+         numForage<- numForage + 1
+      }   
+   }
+   Forage_Quant <-matrix(nrow=numForage, ncol=2)
+   Conc_Quant <-matrix(nrow=numConc, ncol=2)
+   isource <- iconc <- iforage <- 1
+
+   done <- vector()
+   # Take the highest ranking feeds first
+   allocated <- 0
+   while (length(done) < length(names(AvailableToAnimal))) {
+      best <- 0; bestclass <- bestsource <- ""
+      for (source in names(AvailableToAnimal)) { 
+         class <-AvailableToAnimal[[source]]$element.1$CohortID
+         if (!source %in% done && FeedRank[[class]] > best) {
+            best <- FeedRank[[class]]
+            bestclass<-class
+            bestsource<-source
+         }
+      }
+      if (bestsource != "") {
+
+        available <- AvailableToAnimal[[bestsource]] 
+        kg <- max(0.0, AASum(available, "Weight") * available$area) ;# kg/ha -> kg
+        if ("ration" %in% names(available)) {
+           kg <- min(kg, available[["ration"]]) 
+        } 
+        feedType <- feedAttr(feedNames(available)[1],"type")
+
+        if (feedType != 2) {
+           kg.hd <- kg / herdsize
+           kg.hd <- min(pot_intake, kg.hd)
+           Forage_Quant[iforage,1] <- isource
+           Forage_Quant[iforage,2] <-  kg.hd
+           iforage <- iforage + 1
+        } else {
+           kg <- min(kg, ConcentrateAmount)
+           kg.hd <- ifelse(numSupplemented > 0, kg / numSupplemented, 0)
+           Conc_Quant[iconc,1] <- isource
+           if (ConcentrateAmount > 0) {
+             Conc_Quant[iconc,2] <-  max(0, min(kg.hd, ConcentrateAmount))
+           } else {
+             Conc_Quant[iconc,2] <-  0.0
+           }  
+           iconc <- iconc + 1
+        }
+        pot_intake <- max(pot_intake - kg.hd, 0.0)
+        cat (" offering", round(kg.hd,1), "kg from", AASum(available,"Weight") * available$area,"kg of", bestsource, "\n")
+        done<-c(done,bestsource)  
+        isource <- isource + 1
+      } 
+   } # while ...
+
+   # Determine quality
+   ForageQuality <- matrix(ncol=14,nrow=numForage)
+   ConcentrateQuality <- matrix(ncol=14,nrow=numConc)
+   isource<- iconc <- iforage <- 1
+   for (source in names(AvailableToAnimal)) {
+      available <- AvailableToAnimal[[source]]
+      name <- feedNames(available)[1]
+      feedAttr <- feedAttr(name,"type")
+      qualities <- c("dm","me","ge","fme","cp","adin","dmd","a","b","c","ndf","p","k")
+      for (iq in 1:length(qualities)) {
+         if (feedAttr == 1 || feedAttr == 3) {
+            ForageQuality[iforage,iq+1] <- feedAttr(name,qualities[iq])
+         } else if (feedAttr == 2) {
+            ConcentrateQuality[iconc,iq+1] <- feedAttr(name,qualities[iq])
+         }
+      }
+      if (feedAttr == 1 || feedAttr == 3) {
+         ForageQuality[iforage,1] <- isource
+         iforage <- iforage + 1
+      } else if (feedAttr == 2) {
+         ConcentrateQuality[iconc,1] <- isource
+         iconc <- iconc + 1
+      }
+      isource <- isource + 1
+   }
+
+   Diet <-list(concentratequantity=Conc_Quant,
+               concentratequality=ConcentrateQuality,
+               foragequantity=Forage_Quant,
+               foragequality=ForageQuality)
+   return(Diet)
+}
+
+
+     --->Section: prepare
+    for (source in names(FeedRank)) {
+       name <- paste(source, "_eaten", sep="")
+       assign(name, 0.0)
+    }
+
+     --->Section: start_simulation
+    # register accumulators in the system for reporting
+    for (source in names(FeedRank)) {
+       name <- paste(source, "_eaten", sep="")
+       assign(name, 0.0)
+       apsim$expose(name, "", get(name))
+    }
+
+     --->End
+shoats: 
+     --->Section: do_stock
+
+ConcentrateQuality <-ForageQuality <- FeedInput <- AvailableToAnimal <- list()
+
+if (apsim$get("end_month")) {
+   cat("shoats: ", ncol(Goats), " in herd\n")
+  
+   if (length(Goats) > 0) {
+    AvailableToAnimal <- getFeedFromAPSIM(FeedSourcesshoats)
+    if (30 > 0 && "maize_residue_store" %in% FeedSourcesshoats) {
+      AvailableToAnimal[["maize_residue_store"]]$ration <- 30 * herdsize_shoats
+    } else {
+      AvailableToAnimal[["maize_residue_store"]]$ration <- 0
+    }
+    if (30 > 0 && "Sorghum_residue_store" %in% FeedSourcesshoats) {
+      AvailableToAnimal[["Sorghum_residue_store"]]$ration <- 30 * herdsize_shoats
+    } else {
+      AvailableToAnimal[["Sorghum_residue_store"]]$ration <- 0
+    }
+    if (15 > 0 && "Groundnut_residue_store" %in% FeedSourcesshoats) {
+      AvailableToAnimal[["Groundnut_residue_store"]]$ration <- 15 * herdsize_shoats
+    } else {
+      AvailableToAnimal[["Groundnut_residue_store"]]$ration <- 0
+    }
+    if (30 > 0 && "Mucuna_residue_store" %in% FeedSourcesshoats) {
+      AvailableToAnimal[["Mucuna_residue_store"]]$ration <- 30 * herdsize_shoats
+    } else {
+      AvailableToAnimal[["Mucuna_residue_store"]]$ration <- 0
+    }
+    AvailableToAnimal[["magic"]]$ration <- 100000
+    numSupplemented <- 0
+    for(cownr in 1:ncol(Goats)) {
+       if (isSupplementedshoats(Goats[,cownr])) {numSupplemented <- numSupplemented + 1}
+    }
+    nbeforeKids<-ncol(Goats)
+    for(cownr in 1:nbeforeKids) {
+      New_goat<-matrix()
+      Goat<-Goats[,cownr]
+      cat("Goat ", cownr, "sex=", ifelse(Goat$char$sex < 0.5, "M", "F"), "age=", round(Goat$char$age,1), "bw=", Goat$char$bw, "\n")
+      if(Goat$char$death==0 && Goat$char$replaced==0) {
+         ConcentrateAmount <- ifelse(isSupplementedshoats(Goat), ConcentrateAmountFemaleshoats, ConcentrateAmountAllElseshoats)
+         #for (conc in FeedConcentrates) { AvailableToAnimal[[conc]]$ration <- ConcentrateAmount }
+         Diet <- define_diet(AvailableToAnimal, ConcentrateAmount, estimate_pot_intake_shoats(Goat), nbeforeKids, numSupplemented)
+         source("LIVSIM_shoat/livsim_shoat.r")
+         tmp 	<-livsim_shoat(Goat,Goats,ShoatParam,ShoatMgmt,ShoatBreed,Diet,nbshoats)
+         Goat_new   <-tmp[[1]]
+         New_goat   <-tmp[[2]]
+         nbshoats   <-tmp[[3]]
+         Feed       <-tmp[[4]]
+         ShoatParam <-tmp[[5]]
+         Kids       <-tmp[[6]]
+         rm(tmp)
+      } else if(Goat$char$death==1) {
+         cat("Shoat has died ", cownr, "bw=", Goat$char$bw, "\n")
+         source("LIVSIM_shoat/define_new_shoat.r")
+         Goat_new <-define_new_shoat()
+         source("LIVSIM_shoat/shoat_dead.r")
+         Goat_new	 <- shoat_dead(Goat,Goat_new)
+         count_dead <- count_dead+1
+      } else if(Goat$char$replaced==1) {
+         source("LIVSIM_shoat/define_new_shoat.r")
+         Goat_new <-define_new_shoat()
+         source("LIVSIM_shoat/shoat_replaced.r")
+         Goat_new		   <- shoat_replaced(Goat,Goat_new)
+         count_replaced <- count_replaced+1
+      } else {
+         Goat_new <- Goat
+      }
+      Goats[,cownr] <- Goat_new
+      if(!is.na(New_goat[[1]][2])) {
+         Goats<-cbind(Goats,New_goat,deparse.level=0)
+      }
+    }
+
+    # prune off any fully dead animals 
+    deadInHerd <- TRUE
+    while (deadInHerd && length(Goats) > 0) {
+      deadInHerd <- FALSE
+      for(cownr in 1:ncol(Goats)) {
+        if(Goats[,cownr]$char$death==2) {
+          cat ("Removing dead shoat\n")
+          Goats<- as.matrix(Goats[,-cownr])
+          deadInHerd <- TRUE
+          break
+        }
+      }
+    }
+   }
+
+   updateShoatVars()
+ 
+   if (inputdmOfshoats > 0) {
+     remaining <- inputdmOfshoats
+     done <- vector()
+     # Take the highest ranking feeds first
+     cat ("shoats eating", round(inputdmOfshoats,1), "kg\n")
+     while (length(done) < length(names(AvailableToAnimal))) {
+        best <- 0; bestclass <- bestsource <- ""
+        for (source in names(AvailableToAnimal)) { 
+           class <-AvailableToAnimal[[source]]$element.1$CohortID
+           if (!source %in% done && FeedRank[[class]] > best) {
+              best <- FeedRank[[class]]
+              bestclass<-class
+              bestsource<-source
+           }
+        }
+        if (bestsource != "") {
+          if (feedAttr(bestclass, "type") == 2) {
+            # work out the ration fed to entire herd
+            amount_kg <-ConcentrateAmountFemaleshoats * numSupplemented + ConcentrateAmountAllElseshoats * (herdsize_shoats - numSupplemented)
+            amount_kg <- min(remaining, amount_kg)
+            AvailableToAnimal[[bestsource]]$ration <- amount_kg 
+            eaten <- doDietSelection(amount_kg / AvailableToAnimal[[bestsource]]$area, 
+                                  AvailableToAnimal[[bestsource]])
+          } else {
+            eaten <- doDietSelection(remaining / AvailableToAnimal[[bestsource]]$area, 
+                                        AvailableToAnimal[[bestsource]])
+          }                            
+          removed_kg <- AASum(eaten,"WeightRemoved") * eaten$area
+          remaining <- remaining - removed_kg
+          cat ("shoats eating", round(removed_kg,1), "kg from", AASum(eaten,"Weight") * eaten$area,"kg of", bestsource, "\n")
+          apsim$set(paste(bestsource,"RemovedByAnimal",sep="."), list("RemovedByAnimal", eaten))
+
+          accumName <- paste(bestclass, "_eaten", sep="")
+          assign(accumName, removed_kg + get(accumName), envir = .GlobalEnv)
+        }
+        done<-c(done,bestsource)  
+     }
+     if (remaining > 0) {
+        cat("WARNING - shoats eating more feed (", remaining, " kg) than available!!\n")
+     }
+   }
+   manureCollectedshoats <- 0.0
+   if (faecdmOfshoats > 0) {
+     cat ("Total manure production = " , round(faecdmOfshoats,1) , " kg\n");
+     doManureshoats(0.0, "verges")
+   }
+   if (F) {
+     apsim$publish("livsimoutput.do_output", "Null", list())
+   }
+}
+     --->Section: init
+
+# Initialisation 
+require( Rcpp )
+library(abind)
+
+# see if we've got the livsim code
+if (!file.exists("LIVSIM_shoat/livsim_shoat.r")) {
+  msg<-"You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl\n"
+  for (i in 1:10) {cat(msg)} ; flush(stdout());
+  apsimFatal(msg)
+}
+
+# Manure handling
+manurepaddock <- "plot1"
+apsim$expose("manurepaddock", "", manurepaddock )
+manurestore <- 0.0
+manureNstore <- manurestore * 0.1
+
+# Feed sources & quality
+FeedSourcesshoats <- unlist(strsplit("bransupplement Groundnut_residue_store Sorghum_residue_store Mucuna_residue_store maize_residue_store verges.grasp magic", " "))
+FeedConcentrates <-unlist(strsplit("bran", " "))
+ConcentrateAmountFemaleshoats <- 15
+ConcentrateAmountAllElseshoats <- 0
+
+# Buy & sell routines. Called by something else in apsim
+onBuyShoat <- function (args) {
+  cat("Buying ",args[["number"]], "x", args[["weight"]], "kg ",args$genotype, "shoat(s)\n"); flush.console()
+
+  for (i in 1:args[["number"]]) {
+     # Add a shoat to the herd.
+     if (length(Goats) > 0) {
+       Goats <<- cbind(Goats, Initial_Goats[,1])
+     } else {
+       Goats <<- as.matrix(Initial_Goats[,1])
+     }
+     Goats[,ncol(Goats)]$sys$id <<- nbshoats
+     Goats[,ncol(Goats)]$sys$damid <<- -1000 - Goats[,ncol(Goats)]$sys$id
+     Goats[,ncol(Goats)]$char$age <<- args[["age"]]
+     Goats[,ncol(Goats)]$char$lactind <<- 0
+     Goats[,ncol(Goats)]$char$pregind <<- 0
+     if (args[["sex"]] == "m" || args[["sex"]] == "M") {
+       Goats[,ncol(Goats)]$char$sex <<- 0
+     } else if (args[["sex"]] == "f" || args[["sex"]] == "F") {
+       Goats[,ncol(Goats)]$char$sex <<- 1
+     } else {
+       error(paste("cant determine sex of ", args[["sex"]]))
+     }
+     Goats[,ncol(Goats)]$char$bw <<- args[["weight"]]
+     #breed <- ShoatBreed[[ args$genotype ]]
+     #for (pname in names(breed)) {
+     #   ShoatParam[[ pname ]] <<- breed[[ pname ]]
+     #}
+     ShoatParam$sys$nbgoats <<- ShoatParam$sys$nbgoats +1
+     nbshoats <<- nbshoats+1
+     numShoatsBrought <<- numShoatsBrought + 1
+  }
+  updateShoatVars()
+}
+apsim$subscribe("buyshoats", "Buy", "onBuyShoat")
+
+onSellShoat <- function (args) {
+  Goat<-Goats[,args$group]
+  cat("Selling goat ", args$group, "sex=", ifelse(Goat$char$sex < 0.5, "M", "F"), "age=", round(Goat$char$age,1), "bw=", Goat$char$bw, "\n")
+
+  numShoatsSold <<- numShoatsSold + 1
+  weightShoatsSold <<- weightShoatsSold + Goats[,args$group]$char$bw
+
+  Goats <<- as.matrix(Goats[,-args$group])
+  ShoatParam$sys$nbgoats <<- ShoatParam$sys$nbgoats - 1
+  updateShoatVars()
+}
+apsim$subscribe("sellshoats", "Sell", "onSellShoat")
+
+# Update the variables that are exposed to apsim
+updateShoatVars <- function () {
+  inputdmOfshoats <<- 0; faecdmOfshoats<<- 0; faecnOfshoats<<- 0
+  bwshoats<<-rep(0, ncol(Goats))
+  ageshoats<<-rep(0, ncol(Goats))
+  sexshoats<<-rep("", ncol(Goats))
+  inputdmshoats <<- rep(0, ncol(Goats))
+  faecdmshoats <<- rep(0, ncol(Goats))
+  faecnshoats <<- rep(0, ncol(Goats))
+  herdsize_shoats <<- 0
+  if (length(Goats) > 0 ) {
+    goat <- 1
+    for(goatnr in 1:ncol(Goats)) {
+      if (Goats[,goatnr]$char$death == 0) {
+        bwshoats[goat] <<- Goats[,goatnr]$char$bw
+        ageshoats[goat] <<- Goats[,goatnr]$char$age
+        if (Goats[,goatnr]$char$sex < 0.5) {
+           sexshoats[goat] <<- "M"
+        } else {
+           if (Goats[,goatnr]$char$calvind > 0 && Goats[,goatnr]$char$calvind<=ShoatParam$lact$laclen && 
+              Goats[,goatnr]$char$feeddeficit==0 && Goats[,goatnr]$char$lactind>=0.01) {              
+             sexshoats[goat] <<- "FL"
+           } else {
+             sexshoats[goat] <<- "F"
+           }
+        }
+        inputdmshoats[goat] <<- Goats[,goatnr]$input$dm
+        faecdmshoats[goat] <<- Goats[,goatnr]$out$faecdm
+        faecnshoats[goat] <- Goats[,goatnr]$out$faecn
+        milkshoats[goat] <- Goats[,goatnr]$out$milk
+        goat<-goat+1
+      }
+    }
+    inputdmOfshoats <<- sum(inputdmshoats)
+    faecdmOfshoats <<- sum(faecdmshoats)
+    faecnOfshoats <<- sum(faecnshoats)
+    milkOfshoats <<- sum(milkshoats)
+    herdsize_shoats <<- ncol(Goats)
+  }
+}
+
+bwshoats <- vector()
+ageshoats <- vector()
+sexshoats <- vector()
+inputdmshoats <- vector()
+faecdmshoats <- vector()
+faecnshoats <- vector()
+milkshoats <- vector()
+inputdmOfshoats <- 0
+faecdmOfshoats <- 0
+faecnOfshoats <- 0
+milkOfshoats <- 0
+
+
+## APSIM specific routines                 
+dumpit <- function(list) {  if (class(list) == "list") {dumpit2("", list)} else {
+ if (length(dim(list) > 1)) {
+   for (i in 1:nrow(list)) {cat (list[i,],"\n")}
+ }else{  
+  cat(list,"\n")
+ } 
+}}
+
+dumpit2 <- function(prefix, list) {
+  for (x in names(list)) {
+    if (class(list[[x]]) == "list") {
+      dumpit2(paste(prefix,"$",x), list[[x]])
+    } else if (length(dim(list[[x]]) > 1)) {
+      cat(prefix, "$", x, "=", nrow(list[[x]]),"x",ncol(list[[x]]), ":\n")
+       for (i in 1:nrow(list[[x]])) {cat ( list[[x]][i,],"\n")}
+    } else {
+      cat(prefix, "$", x, "=", list[[x]], "\n")
+    }
+  }
+}
+
+
+isSupplementedshoats <- function (Goat) {
+  return ((Goat$char$age>=0 && Goat$char$age<=0.25) ||
+           (Goat$char$age>3 && Goat$out$milk>0.001))
+}
+
+# Deal with manure production. Some may be stored for later application to a cropping paddock
+manureCollectedshoats <- 0.0
+doManureshoats <- function (recoveryFract, uncollectedDest) { 
+   manureCollectedshoats <<- faecdmOfshoats * recoveryFract
+   manureNCollected <- faecnOfshoats * recoveryFract
+
+   cat ("Collected manure (stored) = " , round(manureCollectedshoats,0) , " kg,", round(manureNCollected,1), "kg N \n");
+   manurestore <<- manurestore + manureCollectedshoats
+   manureNstore <<- manureNstore + manureNCollected
+
+   area<-as.numeric(apsim$get(paste(uncollectedDest, "_area",sep="")))
+   manureUnCollectedKgHa <- faecdmOfshoats *
+           (1.0 - recoveryFract) / area
+
+   manureNUnCollectedKgHa <- faecnOfshoats *
+           (1.0 - recoveryFract) / area
+
+   cat ("UnCollected manure (added to", uncollectedDest, "SOM pool) = " , 
+          round(manureUnCollectedKgHa,0) , " kg/ha,", round(manureNUnCollectedKgHa,1), "kg/ha N \n")
+
+   apsim$publish(paste(uncollectedDest,".SurfaceOrganicMatter.AddFaeces",sep=""),
+                 "AddFaeces", list(OMWeight=manureUnCollectedKgHa, OMN=manureNUnCollectedKgHa, OMP=0))
+}
+
+# Apply any stored manure to nominated paddock when asked to
+onApplyStoredManureXX <- function (args) {
+  manurearea <- as.numeric(apsim$get(paste(manurepaddock,"_area",sep="")))
+
+  cat ("Applying", manurestore, "kg manure to", manurepaddock, "SOM pool over", manurearea, "ha\n")
+
+  manureAppliedKgHa <- manurestore / manurearea
+  manureNAppliedKgHa <- manureNstore / manurearea
+
+  if (manureAppliedKgHa  > 0) {
+    cat ("manure = " , manureAppliedKgHa , " kg/ha, ", manureNAppliedKgHa, "kg/ha N\n")
+    apsim$publish(paste (manurepaddock,".SurfaceOrganicMatter.AddFaeces", sep=""),
+                "AddFaeces", list(OMWeight=manureAppliedKgHa , OMN=manureNAppliedKgHa , OMP=0))
+  }
+  manurestore <<- 0.0
+  manureNstore<<- 0.0
+}
+
+estimate_pot_intake_shoats<-function(Goat)
+  {
+  min_dmd<-0.7
+  if (Goat$char$sex > 0.5) {
+     coefIntake<- 1 ; #??approx(CowParam$lact$milkfatlp,CowParam$bw$intlact,Cow$char$lactind)
+  } else {
+     coefIntake<-1
+  }
+  ## FIXME should be: Intake_forages = (130.9*(Feed$me_av/Feed$ge_av)+0.384*Goat$char$bw-18.75)*Goat$char$bw^0.75/1000*Param$sys$tfactor
+  Intake_forages<-(0.0107 * Goat$char$bw / (1 - min_dmd)) * 30.4 * coefIntake
+  Intake_forages<-max(Intake_forages, 1.5 * Goat$char$bw)
+
+  return(Intake_forages)
+}
+
+apsim$subscribe("ApplyStoredManure", "NULL", "onApplyStoredManure")
+
+title <- apsim$get("title")
+
+#-------------------LivSim-------------------
+# Step 1: Initialise
+#-------------------Reading input for LivSim-------------------
+source("LIVSIM_shoat/input/input_livsim_shoat.r")
+tmp <-input_livsim_shoat()
+Initial_Goats <-tmp[[1]]
+ShoatBreed  <-tmp[[2]]
+ShoatParam	<-tmp[[3]]
+ShoatMgmt	   <-tmp[[4]]
+#ForageQuality	<-tmp[[5]]
+#ConcentrateQuality <-tmp[[6]]
+rm(tmp)
+
+#--------------------------------Setting auxiliary variables-------------------------
+ShoatParam$sys$ylen 		 	   <- 365
+ShoatParam$sys$timestep 	 	 <- ShoatParam$sys$tfactor / ShoatParam$sys$ylen
+ShoatParam$sys$simulationstep <- 12
+ShoatParam$sys$monthstep      <- ShoatParam$sys$ylen / 12 / ShoatParam$sys$ylen
+ShoatParam$sys$simulationtime <- 24
+ShoatParam$sys$nbgoats 		   <- 0
+ShoatParam$milk_allowance 	 <- 0.60   # Fraction of the produced milk that is given to the calf.
+ShoatParam$max_conc        	 <- 0.40   # Maximum contribution of concentrate to diet of cows as a fraction of the roughage dry matter intake
+ShoatParam$calving_rate   	 <- 0.95   # Calving rate (per year)
+counter              	 <- 1      # Internal variable
+
+source("LIVSIM_shoat/check_shoat.r")
+
+# Initial conditions - an empty herd.
+nbshoats    <-ShoatParam$sys$nbgoats
+count_dead <-0
+Goats <- define_shoat(0)
+
+# Some modules are fussy over data type (eg string vs int) - register them here after declaration
+herdsize_shoats <- 0.0
+apsim$expose("herdsize_shoats", "", herdsize_shoats)
+
+source("LIVSIM_shoat/livsim_shoat.r")
+source("LIVSIM_shoat/potential_intake_shoat.r")
+source("LIVSIM_shoat/mortality_shoat.r")
+source("LIVSIM_shoat/updategoat_shoat.r")
+source("LIVSIM_shoat/potential_growth_shoat.r")
+source("LIVSIM_shoat/conception_shoat.r")
+source("LIVSIM_shoat/walking_shoat.r")
+source("LIVSIM_shoat/nutritive_requirements_shoat.r")
+source("LIVSIM_shoat/gestation_shoat.r")
+source("LIVSIM_shoat/lactation_shoat.r")
+source("LIVSIM_shoat/actual_intake_shoat.r")
+source("LIVSIM_shoat/manure_shoat.r")
+source("LIVSIM_shoat/balance_check_shoat.r")
+source("LIVSIM_shoat/urine_shoat.r")
+source("LIVSIM_shoat/define_new_shoat.r")
+source("LIVSIM_shoat/shoat_dead.r")
+source("LIVSIM_shoat/shoat_replaced.r")
+
+source("LIVSIM_shoat/feed_translation_shoat.r")
+
+     --->End
+     --->Exported R Variables:
+     ageshoats     
+     bwshoats     
+     sexshoats     
+     milkshoats     
+     inputdmOfshoats     
+     faecdmOfshoats     
+     faecnOfshoats     
+     milkOfshoats     
+     manurestore     
+     FeedSourcesshoats     
+     ConcentrateAmountFemaleshoats     
+     manureCollectedshoats     
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     You need to obtain the LIVSIM source code from Mark.vanWijk@wur.nl
+     
+     Component name: ..shoats
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
