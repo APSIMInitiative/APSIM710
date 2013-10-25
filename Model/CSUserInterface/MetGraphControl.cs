@@ -119,15 +119,15 @@ namespace CSUserInterface
                 YearlyData = DataTableUtility.FilterTableForYear(MetData, (int)YearStartBox.Value, (int)YearStartBox.Value + (int)NumYearsBox.Value - 1);
 
                 //JF 061211 - Fix bug in max radiation for years that don't begin at day 1 by sending the starting day to QMax
-                float firstDay = 0;
+                int firstDay = 0;
                 if ((YearlyData.Count > 0))
                 {
                     if (YearlyData.Table.Columns.Contains("day"))
-                        firstDay = (float)YearlyData[0]["day"];
+                        firstDay = Convert.ToInt32(YearlyData[0]["day"]);
                     else if (YearlyData.Table.Columns.Contains("date"))
                     {
-                        DateTime D = (DateTime)YearlyData[0]["date"];
-                        firstDay = D.DayOfYear;
+                            DateTime D = (DateTime)YearlyData[0]["date"];
+                            firstDay = D.DayOfYear;
                     }
                 }
 
@@ -225,11 +225,13 @@ namespace CSUserInterface
                     doy = doy + 1;
                     if (HaveVPColumn && !Convert.IsDBNull(YearlyData[Row]["vp"]))
                     {
-                        YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, (float)YearlyData[Row]["vp"]);
+                        YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, 
+                                                                  Convert.ToSingle(YearlyData[Row]["vp"]));
                     }
                     else
                     {
-                        YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, MetUtility.svp((float)YearlyData[Row]["mint"]));
+                        YearlyData[Row]["Qmax"] = MetUtility.QMax(doy + 1, Latitude, MetUtility.Taz, MetUtility.Alpha, 
+                                                             MetUtility.svp(Convert.ToSingle(YearlyData[Row]["mint"])));
                     }
                 }
             }

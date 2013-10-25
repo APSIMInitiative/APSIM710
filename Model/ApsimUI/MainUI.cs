@@ -140,18 +140,23 @@ namespace APSIMUI
                         int _Height = 0;
                         int _Width = 0;
                         WindowState = (FormWindowState)Convert.ToInt32(Configuration.Instance.Setting("windowstate"));
-                        Top = Convert.ToInt32(Configuration.Instance.Setting("top"));
-                        Left = Convert.ToInt32(Configuration.Instance.Setting("left"));
-                        if ((Left < 0 | Left > this.Width))
-                        {
-                            Left = 1;
-                        }
+                        string s = Configuration.Instance.Setting("top");
+                        if (s != "") Top = Convert.ToInt32(s); else Top = 1;
                         if ((Top < 0 | Top > this.Height))
                         {
                             Top = 1;
                         }
-                        _Height = Convert.ToInt32(Configuration.Instance.Setting("height"));
-                        _Width = Convert.ToInt32(Configuration.Instance.Setting("width"));
+                        s = Configuration.Instance.Setting("left");
+                        if (s != "") Left = Convert.ToInt32(s); else Left = 1;
+                        if ((Left < 0 | Left > this.Width))
+                        {
+                            Left = 1;
+                        }
+                        s = Configuration.Instance.Setting("height");
+                        if (s != "") _Height = Convert.ToInt32(s); else _Height = 400;
+
+                        s = Configuration.Instance.Setting("width");
+                        if (s != "") _Width = Convert.ToInt32(s); else _Height = 600;
 
                         if ((_Height == 0 | _Width == 0))
                         {
