@@ -58,19 +58,16 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblStatus = new System.Windows.Forms.Label();
             this.dlgColour = new System.Windows.Forms.ColorDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.panel5.SuspendLayout();
             this.pnlHints.SuspendLayout();
             this.pnlNodeProperties.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlArcProperties)).BeginInit();
             this.pnlArcProperties.Panel1.SuspendLayout();
             this.pnlArcProperties.Panel2.SuspendLayout();
             this.pnlArcProperties.SuspendLayout();
@@ -383,7 +380,7 @@
             this.lstHints.FormattingEnabled = true;
             this.lstHints.Items.AddRange(new object[] {
             "<left-click>: select a node or arc.",
-            "<right-click>:  shows a context-sensitive  menu.",
+            "<right-click>: shows a context-sensitive menu.",
             "",
             "Once a node/arc is selected, it can be dragged to a new position.",
             "",
@@ -430,12 +427,10 @@
             this.Controls.SetChildIndex(this.splitContainer1, 0);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
@@ -446,7 +441,6 @@
             this.pnlArcProperties.Panel1.PerformLayout();
             this.pnlArcProperties.Panel2.ResumeLayout(false);
             this.pnlArcProperties.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pnlArcProperties)).EndInit();
             this.pnlArcProperties.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();

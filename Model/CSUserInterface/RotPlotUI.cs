@@ -180,11 +180,21 @@ namespace CSUserInterface
                         sRule += "\"" + action + "\"";
                     sRule += ";\n";
                 }
-                sRule += "   g.AddDirectedEdge(\"" + arc.SourceNode.Name + "\",\"" + arc.TargetNode.Name + "\"," + rName + ");\n";
-
+                sRule += "g.AddDirectedEdge(\"" + arc.SourceNode.Name + "\",\"" + arc.TargetNode.Name + "\"," + rName + ");\n";
             }
-            sRule += "   currentState = \"Fallow\";\n"; // FIXME
-            sRule += "   }\n";
+			foreach (var c in pnlFlowLayout.Controls) {
+				if (c is PaddockState) {
+				   PaddockState p = (PaddockState) c;
+				   if (p.chkPaddock.Text == "<self>") {
+                      sRule += "currentState = \"" + p.cboState.Text + "\";\n"; 
+				   } else {
+                    /*sRule += "set config(" + paddock.Name + ",initialState) \"" + p.cboState.Text + "\"\n"*/; //FIXME				}
+				   }
+				}
+			}
+
+
+            sRule += "}\n";
             sRule += "[EventHandler] public void OnProcess()\n";
             sRule += "{\n";
             sRule += "   bool more = true;\n";
@@ -366,16 +376,24 @@ namespace CSUserInterface
         }
         private void WritePaddocks()
         {
-            foreach (GDPaddock paddock in ManagedPaddocks)
-            {
-                XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("paddock"));
-                XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
-                childNode.InnerText = paddock.Name;
-                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("isManaged"));
-                childNode.InnerText = paddock.Managed ? "1" : "0";
-                childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("initialState"));
-                childNode.InnerText = paddock.InitialState;
-            }
+			foreach (var c in pnlFlowLayout.Controls) {
+				if (c is PaddockState) {
+				   PaddockState p = (PaddockState) c;
+				   if (p.chkPaddock.Text == "<self>") {
+                       XmlNode initStateNode = Data.AppendChild(Data.OwnerDocument.CreateElement("InitialState"));
+				       initStateNode.InnerText = p.cboState.Text;
+				   } else {
+//                   XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("paddock"));
+//                   XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
+//                   childNode.InnerText = paddock.Name;
+//                   childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("isManaged"));
+//                   childNode.InnerText = paddock.Managed ? "1" : "0";
+//                   childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("initialState"));
+//                   childNode.InnerText = paddock.InitialState;
+//                    /*sRule += "set config(" + paddock.Name + ",initialState) \"" + p.cboState.Text + "\"\n"*/; //FIXME				}
+				   }
+				}
+			}
         }
 
         private void UpdateAvailablePaddocks()
@@ -415,6 +433,16 @@ namespace CSUserInterface
                 {
                     GraphName = nodes[0].InnerText;
                 }
+				// Fudge a paddock if needed (ie reading an old style .apsim file)
+				if (ManagedPaddocks.Count == 0) 
+				{
+					GDPaddock t = new GDPaddock();
+					t.Name = "<self>";
+					t.Managed = true;
+					t.InitialState = ReadChildNodeText(Data, "InitialState");
+					if (t.InitialState == null) t.InitialState = "Fallow";
+					ManagedPaddocks.Add(t); 
+				}
             }
         }
         public GDNode ReadGDNode(XmlNode tmpNode)
@@ -702,10 +730,10 @@ namespace CSUserInterface
     }
     public class GDPaddock
     {
+		public GDPaddock() {Name = ""; InitialState = ""; Managed = true;}
         public string Name { get; set; }
         public string InitialState { get; set; } //Set to a GDNode Name
         public bool Managed { get; set; }
-
     }
 
     public class GDObject
@@ -861,7 +889,9 @@ namespace CSUserInterface
         }
         private void CalcBezPoints()
         {
-            int iStart = Math.Min(SourceNode.Mid.X, TargetNode.Mid.X);
+			if (SourceNode == null || TargetNode == null) return;
+
+			int iStart = Math.Min(SourceNode.Mid.X, TargetNode.Mid.X);
             int iEnd = Math.Max(SourceNode.Mid.X, TargetNode.Mid.X);
             int xPoints = iEnd - iStart;
             iStart = Math.Min(SourceNode.Mid.Y, TargetNode.Mid.Y);
