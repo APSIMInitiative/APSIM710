@@ -336,11 +336,10 @@ namespace ApsimFile
             // create job and return it.
             Job J = new Job();
             if (Configuration.getArchitecture() == Configuration.architecture.win32) 
-               J.CommandLine = "cmd.exe /c del ";
+               J.CommandLine = "cmd.exe /c del " + StringManip.DQuote(FileName);
             else
-               J.CommandLine = "/bin/sh rm -f ";
+               J.CommandLine = "/bin/rm -f " + StringManip.DQuote(FileName);
 
-            J.CommandLine += StringManip.DQuote(FileName);
             J.WorkingDirectory = Path.GetDirectoryName(FileName);
             J.Name = "Delete " + FileName;
             J.DependsOn = new List<DependsOn>();

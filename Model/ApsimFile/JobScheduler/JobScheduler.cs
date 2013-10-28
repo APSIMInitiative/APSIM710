@@ -433,17 +433,18 @@ public class JobScheduler
                         Response = "NULL";
                         CancelWorkerThread = true;
                     }
-
                     // Shutdown and end connection
                     client.Client.Send(Encoding.UTF8.GetBytes(Response));
+					client.GetStream().Close();
                     client.Close();
+					client = null; GC.Collect(); // mono workaround for "Too many open files".
                 }
                 Thread.Sleep(100);
             }
         }
         catch (SocketException e)
         {
-            Console.WriteLine("SocketException: {0}", e);
+            Console.WriteLine("JobScheduler socket exception: {0}", e);
         }
         finally
         {
@@ -468,7 +469,6 @@ public class JobScheduler
             return "ERROR";
 
         string[] CommandBits = Data.Split("~".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
         if (CommandBits == null)
             throw new Exception("Invalid data string from socket: " + Data);
 
