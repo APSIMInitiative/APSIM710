@@ -1602,6 +1602,8 @@ c      end if
      :                               , num_layers)
 
       elseif (variable_name .eq. 'll_dep')  then
+	  
+         num_layers = count_of_real_vals (g%dlayer, max_layer)	  
 
          call respond2get_real_array (variable_name
      :                               , '(mm)'
@@ -1609,6 +1611,8 @@ c      end if
      :                               , num_layers)
 
       elseif (variable_name .eq. 'kl')  then
+	  
+	     num_layers = count_of_real_vals (g%dlayer, max_layer)
 
          call respond2get_real_array (variable_name
      :                               , '()'
@@ -1616,6 +1620,8 @@ c      end if
      :                               , num_layers)
 
       elseif (variable_name .eq. 'xf')  then
+	  
+         num_layers = count_of_real_vals (g%dlayer, max_layer)	  
 
          call respond2get_real_array (variable_name
      :                               , '()'
