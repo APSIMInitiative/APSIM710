@@ -387,7 +387,7 @@ public class LeafCohort
                 Live.NonStructuralWt -= value.Retranslocation;
         }
     }
-    virtual public double NAllocation
+    /*virtual public double NAllocation
     {
         set
         {
@@ -407,6 +407,40 @@ public class LeafCohort
                 Live.NonStructuralN += Math.Max(0.0, value - StructuralNAllocation - MetabolicNAllocation); //Then partition N to NonStructural
             }
         }
+    }*/
+    virtual public BiomassAllocationType NAllocation
+    {
+        set
+        {
+            //Fresh allocations
+            Live.StructuralN += value.Structural;
+            Live.MetabolicN += value.Metabolic;
+            Live.NonStructuralN += value.NonStructural;
+            //Reallocation
+            if (value.Reallocation - (LeafStartMetabolicNReallocationSupply + LeafStartNonStructuralNReallocationSupply) > 0.00000000001)
+                throw new Exception("A leaf cohort cannot supply that amount for N Reallocation");
+            if (value.Reallocation < -0.0000000001)
+                throw new Exception("Leaf cohort given negative N Reallocation");
+            if (value.Reallocation > 0.0)
+            {
+                NonStructuralNReallocated = Math.Min(LeafStartNonStructuralNReallocationSupply, value.Reallocation); //Reallocate nonstructural first
+                MetabolicNReallocated = Math.Max(0.0, value.Reallocation - LeafStartNonStructuralNReallocationSupply); //Then reallocate metabolic N
+                Live.NonStructuralN -= NonStructuralNReallocated;
+                Live.MetabolicN -= MetabolicNReallocated;
+            }
+            //Retranslocation
+            if (value.Retranslocation - (LeafStartMetabolicNRetranslocationSupply + LeafStartNonStructuralNRetranslocationSupply) > 0.00000000001)
+                throw new Exception("A leaf cohort cannot supply that amount for N Retranslocation");
+            if (value.Retranslocation < -0.0000000001)
+                throw new Exception("Leaf cohort given negative N Retranslocation");
+            if (value.Retranslocation > 0.0)
+            {
+                NonStructuralNRetrasnlocated = Math.Min(LeafStartNonStructuralNRetranslocationSupply, value.Retranslocation); //Reallocate nonstructural first
+                MetabolicNRetranslocated = Math.Max(0.0, value.Retranslocation - LeafStartNonStructuralNRetranslocationSupply); //Then reallocate metabolic N
+                Live.NonStructuralN -= NonStructuralNRetrasnlocated;
+                Live.MetabolicN -= MetabolicNRetranslocated;
+            }
+        }
     }
     virtual public double NRetranslocationSupply
     {
@@ -415,7 +449,7 @@ public class LeafCohort
             return LeafStartNonStructuralNRetranslocationSupply + LeafStartMetabolicNRetranslocationSupply;
         }
     }
-    virtual public double NRetranslocation
+    /*virtual public double NRetranslocation
     {
         set
         {
@@ -431,7 +465,7 @@ public class LeafCohort
                 Live.MetabolicN -= MetabolicNRetranslocated;
             }
         }
-    }
+    }*/
     public double DMRetranslocationSupply
     {
         get
@@ -484,7 +518,7 @@ public class LeafCohort
 
   
     }
-    public double NReallocation
+    /*public double NReallocation
     {
         set
         {
@@ -500,7 +534,7 @@ public class LeafCohort
                 Live.MetabolicN -= MetabolicNReallocated;
             }
         }
-    }
+    }*/
  #endregion
 
  #region Functions

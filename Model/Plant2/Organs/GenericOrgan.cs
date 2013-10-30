@@ -159,7 +159,10 @@ public class GenericOrgan : BaseOrgan
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             NDeficit *= _NitrogenDemandSwitch;
-            return new BiomassPoolType { Structural = NDeficit };
+            double StructuralNDemand = Math.Min(NDeficit,PotentialStructuralDMAllocation * MinimumNConc.Value);
+            double NonStructuralNDemand = Math.Max(0,NDeficit - StructuralNDemand); 
+            //Nothing in generic organ to deal with metabolic N as yet.
+            return new BiomassPoolType { Structural = StructuralNDemand, NonStructural = NonStructuralNDemand };
         }
     }
     public override BiomassSupplyType NSupply
@@ -211,11 +214,13 @@ public class GenericOrgan : BaseOrgan
             // Allocation
             if (value.Structural > 0)
             {
-                double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * MinimumNConc.Value - Live.StructuralN);
-                double StructuralAllocation = Math.Min(StructuralNRequirement, value.Structural);
-                Live.StructuralN += StructuralAllocation;
-                Live.NonStructuralN += Math.Max(0.0, value.Structural - StructuralAllocation);
+                //double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * MinimumNConc.Value - Live.StructuralN);
+                //double StructuralAllocation = Math.Min(StructuralNRequirement, value.Structural);
+                Live.StructuralN += value.Structural;
+                //Live.NonStructuralN += Math.Max(0.0, value.Structural - StructuralAllocation);
             }
+            if (value.NonStructural > 0)
+                Live.NonStructuralN += value.NonStructural;
 
             // Retranslocation
             if (MathUtility.IsGreaterThan(value.Retranslocation, StartLive.NonStructuralN - StartNRetranslocationSupply))
