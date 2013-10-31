@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -514,13 +515,13 @@ void RComponent::respondToSetDoubleArray(const std::string &variableName, std::v
       for (std::vector<double>::iterator p = value.begin(); p != value.end(); p++)
 	      {
 	      if (p != value.begin()) cmd += ",";
-        cmd += *p;
+        cmd += boost::lexical_cast<string>(*p);
 	      }
       cmd += ")";
       }
    else
       {
-	    cmd += value[0];
+	    cmd += boost::lexical_cast<string>(value[0]);
       }
    REvalQ(cmd.c_str());
    currentRComponent = old;
@@ -544,7 +545,7 @@ void RComponent::respondToSetDouble(const std::string &variableName, double &val
    RComponent *old = currentRComponent; currentRComponent = this;
    string cmd = variableName;
    cmd += "<-";
-   cmd += value;
+   cmd += boost::lexical_cast<string>(value);
    REvalQ(cmd.c_str());
    currentRComponent = old;
    }
