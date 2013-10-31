@@ -47,7 +47,6 @@ public class Arbitrator
         public double[] RelativeStructuralDemand {get;set;}
         public double[] RelativeMetabolicDemand {get;set;}
         public double[] RelativeNonStructuralDemand {get;set;}
-        public double[] RelativeDemand {get;set;}
         public double TotalPlantDemand {get;set;}
         public double TotalPriorityDemand {get;set;}
         public double TotalNonPriorityDemand {get;set;}
@@ -62,6 +61,7 @@ public class Arbitrator
         public double TotalRetranslocationSupply {get;set;}
         //Biomass Allocation Variables
         public double[] Reallocation {get;set;}
+        public double TotalReallocation { get; set; }
         public double[] Uptake {get;set;}
         public double[] Fixation {get;set;}
         public double[] Retranslocation {get;set;}
@@ -79,8 +79,7 @@ public class Arbitrator
         public double TotalAllocated {get;set;}
         public double NotAllocated {get;set;}
         public double SinkLimitation {get;set;}
-        //public double TotalNonStructuralRetranslocated {get;set;}
-        //Error checking variables
+         //Error checking variables
         public double Start { get; set; }
         public double End { get; set; }
         public double BalanceError { get; set; }
@@ -94,7 +93,6 @@ public class Arbitrator
             RelativeStructuralDemand = new double[Size];
             RelativeMetabolicDemand = new double[Size];
             RelativeNonStructuralDemand = new double[Size];
-            RelativeDemand = new double[Size];
             TotalDemand = new double[Size];
             ReallocationSupply = new double[Size];
             UptakeSupply = new double[Size];
@@ -150,10 +148,11 @@ public class Arbitrator
         //Work out how much each organ will grow in the absence of nutrient stress, and how much DM they can supply.
         DoDMSetup(Organs);
         //Reallocate DM from senescing organs to growing organs
-        DoDMReallocation(Organs);
+        //DoDMReallocation(Organs);
         //Set potential growth of each organ, assuming adequate nutrient supply.
         DoPotentialDMAllocation(Organs);
         //Work out how much nutrient each organ needs and how much the supplying organs can provide
+        //DoNutrientSetup(Organs, N);
         DoNutrientSetup(Organs);
         //ReAllocate nutrient from senescing organs to growing organs
         DoNutrientReAllocation(Organs);
@@ -212,6 +211,8 @@ public class Arbitrator
         DM.TotalReallocationSupply = MathUtility.Sum(DM.ReallocationSupply);
 
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
+        DM.TotalPriorityDemand = 0;
+        DM.TotalNonPriorityDemand = 0;
         for (int i = 0; i < Organs.Count; i++)
         {
             BiomassPoolType Demand = Organs[i].DMDemand;
@@ -223,62 +224,63 @@ public class Arbitrator
             DM.NonStructuralAllocation[i] = 0;
             DM.Reallocation[i] = 0;
             DM.Retranslocation[i] = 0;
-        }
-        DM.TotalPriorityDemand = 0;
-        DM.TotalNonPriorityDemand = 0;
-        for (int i = 0; i < Organs.Count; i++)
-        {
-            BiomassPoolType Demand = Organs[i].DMDemand;
+        
             if (DM.IsPriority[i] == true)
                 DM.TotalPriorityDemand += (Demand.Structural + Demand.Metabolic);
             else
                 DM.TotalNonPriorityDemand += (Demand.Structural + Demand.Metabolic);
         }
-
+        
         DM.TotalStructuralDemand = MathUtility.Sum(DM.StructuralDemand);
         DM.TotalMetabolicDemand = MathUtility.Sum(DM.MetabolicDemand);
         DM.TotalNonStructuralDemand = MathUtility.Sum(DM.NonStructuralDemand);
         DM.TotalStructuralAllocation = 0;
         DM.TotalMetabolicAllocation = 0;
         DM.TotalNonStructuralAllocation = 0;
-        }
+    }
     virtual public void DoPotentialDMAllocation(List<Organ> Organs)
     {
         //  Allocate to meet Organs demands
         DM.TotalAllocated = 0;
         DM.SinkLimitation = 0;
         DM.NotAllocated = DM.TotalFixationSupply + DM.TotalReallocationSupply - DM.TotalAllocated;
-        //Gives to each organ: the minimum between what the organ demands (if supply is plenty) or it's share of total demand (if supply is not enough) CHCK-EIT
-
+        
         //First give biomass to priority organs
-        for (int i = 0; i < Organs.Count; i++)
+        if (DM.NotAllocated > 0)
         {
-            if ((DM.IsPriority[i] == true) && (DM.StructuralDemand[i] + DM.MetabolicDemand[i] > 0.0))
+            for (int i = 0; i < Organs.Count; i++)
             {
-                double proportion = (DM.StructuralDemand[i] + DM.MetabolicDemand[i])/ DM.TotalPriorityDemand;
-                double DMAllocated = Math.Min(DM.NotAllocated * proportion, (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) - (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]));
-                DM.StructuralAllocation[i] += DMAllocated * DM.StructuralDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
-                DM.MetabolicAllocation[i] += DMAllocated * DM.MetabolicDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
-                DM.TotalAllocated += DMAllocated;
+                if ((DM.IsPriority[i] == true) && (DM.StructuralDemand[i] + DM.MetabolicDemand[i] > 0.0))
+                {
+                    double proportion = (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) / DM.TotalPriorityDemand;
+                    double DMAllocated = Math.Min(DM.NotAllocated * proportion, (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) - (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]));
+                    DM.StructuralAllocation[i] += DMAllocated * DM.StructuralDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
+                    DM.MetabolicAllocation[i] += DMAllocated * DM.MetabolicDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
+                    DM.TotalAllocated += DMAllocated;
+                }
             }
         }
         DM.NotAllocated = DM.TotalFixationSupply + DM.TotalReallocationSupply - DM.TotalAllocated;
+        
         //Then give the left overs to the non-priority organs
-        for (int i = 0; i < Organs.Count; i++)
+        if (DM.NotAllocated > 0)
         {
-            if ((DM.IsPriority[i] == false) && (DM.StructuralDemand[i] + DM.MetabolicDemand[i] > 0.0))
+            for (int i = 0; i < Organs.Count; i++)
             {
-                double proportion = (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) / DM.TotalNonPriorityDemand;
-                double DMAllocated = Math.Min(DM.NotAllocated * proportion, (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) - (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]));
-                DM.StructuralAllocation[i] += DMAllocated * DM.StructuralDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
-                DM.MetabolicAllocation[i] += DMAllocated * DM.MetabolicDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
-                DM.TotalAllocated += DMAllocated;
+                if ((DM.IsPriority[i] == false) && (DM.StructuralDemand[i] + DM.MetabolicDemand[i] > 0.0))
+                {
+                    double proportion = (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) / DM.TotalNonPriorityDemand;
+                    double DMAllocated = Math.Min(DM.NotAllocated * proportion, (DM.StructuralDemand[i] + DM.MetabolicDemand[i]) - (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]));
+                    DM.StructuralAllocation[i] += DMAllocated * DM.StructuralDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
+                    DM.MetabolicAllocation[i] += DMAllocated * DM.MetabolicDemand[i] / (DM.StructuralDemand[i] + DM.MetabolicDemand[i]);
+                    DM.TotalAllocated += DMAllocated;
+                }
             }
         }
-
+        
         //Anything left over after that goes to the sink organs
         DM.NotAllocated = DM.TotalFixationSupply + DM.TotalReallocationSupply - DM.TotalAllocated;
-        if (DM.NotAllocated > 0)
+        if ((DM.NotAllocated > 0) && (DM.TotalNonStructuralDemand > 0))
         {
             for (int i = 0; i < Organs.Count; i++)
             {
@@ -291,8 +293,8 @@ public class Arbitrator
                 }
             }
         }
+        
         DM.SinkLimitation = Math.Max(0.0, DM.TotalFixationSupply + DM.TotalReallocationSupply - DM.TotalAllocated);
-
         DM.TotalStructuralAllocation = MathUtility.Sum(DM.StructuralAllocation);
         DM.TotalMetabolicAllocation = MathUtility.Sum(DM.MetabolicAllocation);
         DM.TotalNonStructuralAllocation = MathUtility.Sum(DM.NonStructuralAllocation);
@@ -301,6 +303,17 @@ public class Arbitrator
         DM.BalanceError = Math.Abs((DM.TotalAllocated + DM.SinkLimitation) - (DM.TotalFixationSupply + DM.TotalReallocationSupply));
         if (DM.BalanceError > 0.00001 & DM.TotalStructuralDemand > 0)
             throw new Exception("Mass Balance Error in Photosynthesis DM Allocation");
+
+        //Partition reallocation of DM between supplying organs
+        DM.TotalReallocation = Math.Min(DM.TotalReallocationSupply, DM.TotalAllocated);
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            if (DM.ReallocationSupply[i] > 0)
+            {
+                double RelativeSupply = DM.ReallocationSupply[i] / DM.TotalReallocationSupply;
+                DM.Reallocation[i] += DM.TotalReallocation * RelativeSupply;
+            }
+        }
 
         //Then if demand is not met by fresh DM supply retranslocate non-structural DM to meet demands
         DM.TotalRetranslocation = 0;
@@ -340,38 +353,19 @@ public class Arbitrator
             };
         }
     }
-    virtual public void DoDMReallocation(List<Organ> Organs)
-    {
-        /*
-         * All reallocation is handle in supply pool
-         * However need to know how much each organ suplied for so not added to dead pool.
-         * More complicated (steps) than needed for current usage
-         */
 
-        if (DM.TotalReallocationSupply > 0.00000000001)
-        {
-            for (int i = 0; i < Organs.Count; i++)
-            {
-                if (DM.ReallocationSupply[i] > 0)
-                {
-                    DM.Reallocation[i] = DM.ReallocationSupply[i];
-                }
-                else
-                    DM.Reallocation[i] = 0;
-            }
-        }
-
-    }
     //To introduce Arbitration for other nutrients we need to add additional members to biomass object for each new type and then repeat eaco of the 4 allocation functions below for each nutrient type
+//        virtual public void DoNutrientSetup(List<Organ> Organs, BiomassArbitrationType BAT)
+//    {
+//        BAT = new BiomassArbitrationType(Organs.Count);
+    
     virtual public void DoNutrientSetup(List<Organ> Organs)
     {
         N = new BiomassArbitrationType(Organs.Count);
 
         // GET ALL INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
         N.Start = 0;
-        for (int i = 0; i < Organs.Count; i++)
-            N.Start += Organs[i].Live.N + Organs[i].Dead.N;
-
+        
         // GET ALL SUPPLIES AND DEMANDS AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -380,11 +374,13 @@ public class Arbitrator
             N.MetabolicDemand[i] = Organs[i].NDemand.Metabolic;
             N.NonStructuralDemand[i] = Organs[i].NDemand.NonStructural;
             N.TotalDemand[i] = N.StructuralDemand[i] + N.MetabolicDemand[i] + N.NonStructuralDemand[i];
+            
             BiomassSupplyType Supply = Organs[i].NSupply;
             N.ReallocationSupply[i] = Supply.Reallocation;
             N.UptakeSupply[i] = Supply.Uptake;
             N.FixationSupply[i] = Supply.Fixation;
             N.RetranslocationSupply[i] = Supply.Retranslocation;
+            
             N.Reallocation[i] = 0;
             N.Uptake[i] = 0;
             N.Fixation[i] = 0;
@@ -392,7 +388,8 @@ public class Arbitrator
             N.StructuralAllocation[i] = 0;
             N.MetabolicAllocation[i] = 0;
             N.NonStructuralAllocation[i] = 0;
-            N.Respiration[i] = 0;
+            
+            N.Start += Organs[i].Live.N + Organs[i].Dead.N;
         }
         N.TotalStructuralDemand = MathUtility.Sum(N.StructuralDemand);
         N.TotalMetabolicDemand = MathUtility.Sum(N.MetabolicDemand);
@@ -412,8 +409,6 @@ public class Arbitrator
             N.RelativeMetabolicDemand[i] = N.MetabolicDemand[i] / N.TotalMetabolicDemand;
             if (N.TotalNonStructuralDemand > 0)
             N.RelativeNonStructuralDemand[i] = N.NonStructuralDemand[i] / N.TotalNonStructuralDemand;
-            if (N.TotalPlantDemand > 0)
-            N.RelativeDemand[i] = (N.StructuralDemand[i] + N.MetabolicDemand[i] + N.NonStructuralDemand[i]) / N.TotalPlantDemand; //Fixme, this is to be removed when bug fixed
         }
     }
     virtual public void DoNutrientReAllocation(List<Organ> Organs) 
@@ -483,7 +478,7 @@ public class Arbitrator
                 if (N.RetranslocationSupply[i] > 0.00000000001)
                 {
                     double RelativeSupply = N.RetranslocationSupply[i] / N.TotalRetranslocationSupply;
-                    N.Retranslocation[i] += NRetranslocationAllocated * RelativeSupply; //FIXME-EIT 
+                    N.Retranslocation[i] += NRetranslocationAllocated * RelativeSupply; 
                 }
             }
         }
@@ -491,7 +486,7 @@ public class Arbitrator
     virtual public void DoNutrientFixation(List<Organ> Organs)
     {
         double NFixationAllocated = 0;
-        if (N.TotalFixationSupply > 0.00000000001 && DM.TotalFixationSupply > 0.00000000001)
+        if (N.TotalFixationSupply > 0.00000000001)
         {
             // Calculate how much fixation N each demanding organ is allocated based on relative demands
             if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
@@ -516,6 +511,64 @@ public class Arbitrator
                     DM.TotalRespiration = MathUtility.Sum(DM.Respiration);
                 }
             }
+            
+            // Work out the amount of biomass (if any) lost due to the cost of N fixation
+            if (DM.TotalRespiration <= DM.SinkLimitation)
+            { } //Cost of N fixation can be met by DM supply that was not allocated
+            else
+            {//claw back todays NonStructuralDM allocation to cover the cost
+                double UnallocatedRespirationCost = DM.TotalRespiration - DM.SinkLimitation;
+                if (DM.TotalNonStructuralAllocation > 0)
+                {
+                    for (int i = 0; i < Organs.Count; i++)
+                    {
+                        double proportion = DM.NonStructuralAllocation[i] / DM.TotalNonStructuralAllocation;
+                        double Clawback = Math.Min(UnallocatedRespirationCost * proportion, DM.NonStructuralAllocation[i]);
+                        DM.NonStructuralAllocation[i] -= Clawback;
+                        UnallocatedRespirationCost -= Clawback;
+                    }
+                }
+                if (UnallocatedRespirationCost == 0)
+                { }//All cost accounted for
+                else
+                {//Remobilise more Non-structural DM to cover the cost
+                    if (DM.TotalRetranslocationSupply > 0)
+                    {
+                        for (int i = 0; i < Organs.Count; i++)
+                        {
+                            double proportion = DM.RetranslocationSupply[i] / DM.TotalRetranslocationSupply;
+                            double DMRetranslocated = Math.Min(UnallocatedRespirationCost * proportion, DM.RetranslocationSupply[i]);
+                            DM.Retranslocation[i] += DMRetranslocated;
+                            UnallocatedRespirationCost -= DMRetranslocated;
+                        }
+                    }
+                    if (UnallocatedRespirationCost == 0)
+                    { }//All cost accounted for
+                    else
+                    {//Start cutting into Structural and Metabolic Allocations
+                        if ((DM.TotalStructuralAllocation + DM.TotalMetabolicAllocation) > 0)
+                        {
+                            double Costmet = 0;
+                            for (int i = 0; i < Organs.Count; i++)
+                            {
+                                if ((DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]) > 0)
+                                {
+                                    double proportion = (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]) / (DM.TotalStructuralAllocation + DM.TotalMetabolicAllocation);
+                                    double StructualFraction = DM.StructuralAllocation[i] / (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]);
+                                    double StructuralClawback = Math.Min(UnallocatedRespirationCost * proportion * StructualFraction, DM.StructuralAllocation[i]);
+                                    double MetabolicClawback = Math.Min(UnallocatedRespirationCost * proportion * (1 - StructualFraction), DM.MetabolicAllocation[i]);
+                                    DM.StructuralAllocation[i] -= StructuralClawback;
+                                    DM.MetabolicAllocation[i] -= MetabolicClawback;
+                                    Costmet += (StructuralClawback + MetabolicClawback);
+                                }
+                            }
+                            UnallocatedRespirationCost -= Costmet;
+                        }
+                    }
+                    if (UnallocatedRespirationCost > 0.0000000001)
+                        throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
+                }
+            }
         }
     }
     virtual public void DoActualDMAllocation(List<Organ> Organs)
@@ -523,65 +576,6 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
             N.TotalAllocation[i] = N.StructuralAllocation[i] + N.MetabolicAllocation[i] + N.NonStructuralAllocation[i];
 
-        // Work out the amount of biomass (if any) lost due to the cost of N fixation
-        if (DM.TotalRespiration <= DM.SinkLimitation)
-        { } //Cost of N fixation can be met by DM supply that was not allocated
-        else
-        {//claw back todays NonStructuralDM allocation to cover the cost
-            double UnallocatedRespirationCost = DM.TotalRespiration - DM.SinkLimitation;
-            if (DM.TotalNonStructuralAllocation > 0)
-            {
-                for (int i = 0; i < Organs.Count; i++)
-                {
-                    double proportion = DM.NonStructuralAllocation[i] / DM.TotalNonStructuralAllocation;
-                    double Clawback = Math.Min(UnallocatedRespirationCost * proportion, DM.NonStructuralAllocation[i]);
-                    DM.NonStructuralAllocation[i] -= Clawback;
-                    UnallocatedRespirationCost -= Clawback;
-                }
-            }
-            if(UnallocatedRespirationCost == 0)
-            {}//All cost accounted for
-            else
-            {//Remobilise more Non-structural DM to cover the cost
-                if (DM.TotalRetranslocationSupply > 0)
-                {
-                    for (int i = 0; i < Organs.Count; i++)
-                    {
-                        double proportion = DM.RetranslocationSupply[i] / DM.TotalRetranslocationSupply;
-                        double DMRetranslocated = Math.Min(UnallocatedRespirationCost * proportion, DM.RetranslocationSupply[i]);
-                        DM.Retranslocation[i] += DMRetranslocated;
-                        UnallocatedRespirationCost -= DMRetranslocated;
-                    }
-                }
-                if (UnallocatedRespirationCost == 0)
-                { }//All cost accounted for
-                else
-                {//Start cutting into Structural and Metabolic Allocations
-                    if ((DM.TotalStructuralAllocation + DM.TotalMetabolicAllocation) > 0)
-                    {
-                        double Costmet = 0;
-                        for (int i = 0; i < Organs.Count; i++)
-                        {
-                            if ((DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]) > 0)
-                            {
-                                double proportion = (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]) / (DM.TotalStructuralAllocation + DM.TotalMetabolicAllocation);
-                                double StructualFraction = DM.StructuralAllocation[i] / (DM.StructuralAllocation[i] + DM.MetabolicAllocation[i]);
-                                double StructuralClawback = Math.Min(UnallocatedRespirationCost * proportion * StructualFraction, DM.StructuralAllocation[i]);
-                                double MetabolicClawback = Math.Min(UnallocatedRespirationCost * proportion * (1 - StructualFraction), DM.MetabolicAllocation[i]);
-                                DM.StructuralAllocation[i] -= StructuralClawback;
-                                DM.MetabolicAllocation[i] -= MetabolicClawback;
-                                Costmet += (StructuralClawback + MetabolicClawback);
-                            }
-                        }
-                        UnallocatedRespirationCost -= Costmet;
-                    }
-                }
-                if (UnallocatedRespirationCost > 0.0000000001)
-                    throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
-
-            }
-          }
-        
         //To introduce functionality for other nutrients we need to repeat this for loop for each new nutrient type
         // Calculate posible growth based on Minimum N requirement of organs
         for (int i = 0; i < Organs.Count; i++)
@@ -605,10 +599,8 @@ public class Arbitrator
                 DM.StructuralAllocation[i] = Math.Min(DM.StructuralAllocation[i], N.ConstrainedGrowth[i] * (1 - proportion));  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
                 DM.MetabolicAllocation[i] = Math.Min(DM.MetabolicAllocation[i], N.ConstrainedGrowth[i] * proportion);
             }
-            //NutrientLimitatedWtAllocation += (DM.StructuralAllocation[i] + DM.NonStructuralAllocation[i]); 
         }
-        //TotalWtLossNutrientShortage = DM.TotalAllocated - NutrientLimitatedWtAllocation + DM.TotalNonStructuralRetranslocated;
-
+        
         // Send DM allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -628,8 +620,7 @@ public class Arbitrator
         // Send N allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            //Fixme, this error trap should really use zero non - 0.0001
-            if ((N.StructuralAllocation[i] < -0.00001) || (N.MetabolicAllocation[i] < -0.00001) || (N.NonStructuralAllocation[i] < -0.00001))
+             if ((N.StructuralAllocation[i] < -0.00000001) || (N.MetabolicAllocation[i] < -0.00000001) || (N.NonStructuralAllocation[i] < -0.00000001))
                 throw new Exception("-ve N Allocation");
             if (N.StructuralAllocation[i] < 0.0)
                 N.StructuralAllocation[i] = 0.0;
@@ -693,16 +684,11 @@ public class Arbitrator
         {
             double StructuralRequirement = Math.Max(0, N.StructuralDemand[i] - N.StructuralAllocation[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double MetabolicRequirement = Math.Max(0, N.MetabolicDemand[i] - N.MetabolicAllocation[i]);
-            double StructuralFraction = N.StructuralDemand[i] / (N.StructuralDemand[i] + N.MetabolicDemand[i]);
-            double StructuralAllocation = 0.0;
-            double MetabolicAllocation = 0.0;
             if ((StructuralRequirement + MetabolicRequirement) > 0.0)
             {
-                //Fixme, the commented out line is correct bu the one below is used to replicate bug found during refactoring
-                //StructuralAllocation = Math.Min(StructuralRequirement, TotalSupply * StructuralFraction * RelativeN.DemandStructural[i]);
-                //MetabolicAllocation = Math.Min(MetabolicRequirement, TotalSupply * (1-StructuralFraction) * RelativeN.DemandMetabolic[i]);
-                StructuralAllocation = Math.Min(StructuralRequirement, TotalSupply * StructuralFraction * N.RelativeDemand[i]);
-                MetabolicAllocation = Math.Min(MetabolicRequirement, TotalSupply * (1 - StructuralFraction) * N.RelativeDemand[i]);
+                double StructuralFraction = N.StructuralDemand[i] / (N.StructuralDemand[i] + N.MetabolicDemand[i]);
+                double StructuralAllocation = Math.Min(StructuralRequirement, TotalSupply * StructuralFraction * N.RelativeStructuralDemand[i]);
+                double MetabolicAllocation = Math.Min(MetabolicRequirement, TotalSupply * (1 - StructuralFraction) * N.RelativeMetabolicDemand[i]);
                 N.StructuralAllocation[i] += StructuralAllocation;
                 N.MetabolicAllocation[i] += MetabolicAllocation;
                 NotAllocated -= (StructuralAllocation + MetabolicAllocation);
@@ -712,17 +698,13 @@ public class Arbitrator
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, N.NonStructuralDemand[i] - N.NonStructuralAllocation[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
-            double Allocation = 0.0;
-            //double RemainingSupply = Math.Max(TotalSupply - TotalAllocated, 0);
-            if (N.NonStructuralDemand[i] > 0.0)
+            double NonStructuralRequirement = Math.Max(0.0, N.NonStructuralDemand[i] - N.NonStructuralAllocation[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
+            if (NonStructuralRequirement > 0.0)
             {
-                //Fixme, the commented out line is correct bu the one below is used to replicate bug found during refactoring
-                //Allocation = Math.Min(NotAllocated * RelativeN.DemandNonStructural[i], Requirement);
-                Allocation = Math.Min(NotAllocated * N.RelativeDemand[i], Requirement);
-                N.NonStructuralAllocation[i] += Allocation;
-                NotAllocated -= Allocation;
-                TotalAllocated += Allocation;
+                double NonStructuralAllocation = Math.Min(NotAllocated * N.RelativeNonStructuralDemand[i], NonStructuralRequirement);
+                N.NonStructuralAllocation[i] += NonStructuralAllocation;
+                NotAllocated -= NonStructuralAllocation;
+                TotalAllocated += NonStructuralAllocation;
             }
         }
     }
@@ -734,13 +716,11 @@ public class Arbitrator
         {
             double StructuralRequirement = Math.Max(0, N.StructuralDemand[i] - N.StructuralAllocation[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double MetabolicRequirement = Math.Max(0, N.MetabolicDemand[i] - N.MetabolicAllocation[i]); 
-            double StructuralFraction = N.StructuralDemand[i] / (N.StructuralDemand[i] + N.MetabolicDemand[i]);
-            double StructuralAllocation = 0.0;
-            double MetabolicAllocation = 0.0;
             if ((StructuralRequirement + MetabolicRequirement) > 0.0)
             {
-                StructuralAllocation = Math.Min(StructuralRequirement, NotAllocated * StructuralFraction);
-                MetabolicAllocation = Math.Min(MetabolicRequirement, NotAllocated * (1 - StructuralFraction));
+                double StructuralFraction = N.StructuralDemand[i] / (N.StructuralDemand[i] + N.MetabolicDemand[i]);
+                double StructuralAllocation = Math.Min(StructuralRequirement, NotAllocated * StructuralFraction);
+                double MetabolicAllocation = Math.Min(MetabolicRequirement, NotAllocated * (1 - StructuralFraction));
                 N.StructuralAllocation[i] += StructuralAllocation;
                 N.MetabolicAllocation[i] += MetabolicAllocation;
                 NotAllocated -= (StructuralAllocation + MetabolicAllocation);
@@ -750,14 +730,13 @@ public class Arbitrator
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0, N.NonStructuralDemand[i] - N.NonStructuralAllocation[i]);
-            double Allocation = 0.0;
-            if (Requirement > 0.0)
+            double NonStructuralRequirement = Math.Max(0, N.NonStructuralDemand[i] - N.NonStructuralAllocation[i]);
+            if (NonStructuralRequirement > 0.0)
             {
-                Allocation = Math.Min(Requirement, NotAllocated);
-                N.NonStructuralAllocation[i] += Allocation;
-                NotAllocated -= Allocation;
-                TotalAllocated += Allocation;
+                double NonStructuralAllocation = Math.Min(NonStructuralRequirement, NotAllocated);
+                N.NonStructuralAllocation[i] += NonStructuralAllocation;
+                NotAllocated -= NonStructuralAllocation;
+                TotalAllocated += NonStructuralAllocation;
             }
         }
     }
@@ -769,13 +748,11 @@ public class Arbitrator
         {
             double StructuralRequirement = Math.Max(0.0, N.StructuralDemand[i] - N.StructuralAllocation[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double MetabolicRequirement = Math.Max(0.0, N.MetabolicDemand[i] - N.MetabolicAllocation[i]);
-            double StructuralFraction = N.StructuralDemand[i] / (N.StructuralDemand[i] + N.MetabolicDemand[i]);
-            double StructuralAllocation = 0.0;
-            double MetabolicAllocation = 0.0;
             if ((StructuralRequirement + MetabolicRequirement) > 0.0)
             {
-                StructuralAllocation = Math.Min(StructuralRequirement, NotAllocated * StructuralFraction);
-                MetabolicAllocation = Math.Min(MetabolicRequirement, NotAllocated * (1 - StructuralFraction));
+                double StructuralFraction = N.StructuralDemand[i] / (N.StructuralDemand[i] + N.MetabolicDemand[i]);
+                double StructuralAllocation = Math.Min(StructuralRequirement, NotAllocated * StructuralFraction);
+                double MetabolicAllocation = Math.Min(MetabolicRequirement, NotAllocated * (1 - StructuralFraction));
                 N.StructuralAllocation[i] += StructuralAllocation;
                 N.MetabolicAllocation[i] += MetabolicAllocation;
                 NotAllocated -= (StructuralAllocation + MetabolicAllocation);
@@ -785,17 +762,13 @@ public class Arbitrator
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, N.NonStructuralDemand[i] - N.NonStructuralAllocation[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
-            double Allocation = 0.0;
-            //double RemainingSupply = Math.Max(TotalSupply - TotalAllocated, 0);
-            if (N.NonStructuralDemand[i] > 0.0)//Fixme.  This should use requirement, not Demand
+            double NonStructuralRequirement = Math.Max(0.0, N.NonStructuralDemand[i] - N.NonStructuralAllocation[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
+            if (NonStructuralRequirement > 0.0)
             {
-                //Fixme, the commented out line is correct bu the one below is used to replicate bug found during refactoring
-                //Allocation = Math.Min(NotAllocated * RelativeN.DemandNonStructural[i], Requirement);
-                Allocation = Math.Min(NotAllocated * N.RelativeDemand[i], Requirement);
-                N.NonStructuralAllocation[i] += Allocation;
-                NotAllocated -= Allocation;
-                TotalAllocated += Allocation;
+                double NonStructuralAllocation = Math.Min(NotAllocated * N.RelativeNonStructuralDemand[i], NonStructuralRequirement);
+                N.NonStructuralAllocation[i] += NonStructuralAllocation;
+                NotAllocated -= NonStructuralAllocation;
+                TotalAllocated += NonStructuralAllocation;
             }
         }
     }
