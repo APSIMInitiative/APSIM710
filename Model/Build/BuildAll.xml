@@ -805,16 +805,10 @@
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create SFX Binaries">
-         <DependsOn>Create MSI Binaries</DependsOn>
-    		<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+       <DependsOn>Create MSI Binaries</DependsOn>
+       <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
 		   <CommandLine>%APSIM%/Release/Release.bat %PatchFileName%</CommandLine>
 		   <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileName%</CommandLineUnix>
-      </Job>
-      <Job name="Upload SFX Binaries">
-         <DependsOn>Create SFX Binaries</DependsOn>
-   		<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.Win32.exe C:\inetpub\wwwroot\Files</CommandLine>
-		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
       </Job>
    </Target>
 
@@ -829,39 +823,59 @@
    <Target name="Bob">
       <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
+      <Job name="Upload SFX Binaries">
+   	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+		   <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.Win32.exe C:\inetpub\wwwroot\Files</CommandLine>
+      </Job>
       <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
         <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
       </Job>
-      <Job name="Upload Diff Zip">
-      <!-- The windows build will copy it to the local filesystem. -->
-          <DependsOn>Create Diff Zip</DependsOn>
-	  <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-	  <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
-      </Job>
 		<Job name="Create Build Tree Zip">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %APSIM%</CommandLine>
-			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
 		<Job name="Update DB Build tree">
          <DependsOn>Create Build Tree Zip</DependsOn>
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe BuildTreeFileName http://bob.apsim.info/files/%PatchFileNameShort%.buildtree.zip</CommandLine>
-			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
 		<Job name="CreateBinariesZip">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
-			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
 		<Job name="Update DB Binaries">
          <DependsOn>CreateBinariesZip</DependsOn>
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.binaries.zip</CommandLine>
-			<CommandLineUnix>/bin/true</CommandLineUnix>
 		</Job>
       <Job name="Update DB Details">
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
+		</Job>
+   </Target>
+
+   <Target name="LinuxX64">
+    <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
+    <DependsOn IgnoreErrors="true">Release</DependsOn>
+    <Job name="Upload X64 SFX Binaries">
+   	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
+    </Job>
+    <Job name="Upload X64 SFX Binaries 2">
+   	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
+    </Job>
+    <Job name="Create X64 Diff Zip">
+        <WorkingDirectory>%APSIM%</WorkingDirectory>
+        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
+    </Job>
+    <Job name="Upload X64 Diff Zip">
+      <DependsOn>Create Diff Zip</DependsOn>
+       <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+	     <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
+    </Job>
+    <Job name="Update X64 DB Details">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
 		</Job>
@@ -906,12 +920,13 @@
       <Job name="Unit tests">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="ApsimUI tests">
          <WorkingDirectory>%APSIM%/Model/Tests/bin/release</WorkingDirectory>
          <CommandLine>"C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" APSIM.Tests.dll</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>   
-
    </Target>
 
   <!-- ############### All test simulations will go here ############### -->

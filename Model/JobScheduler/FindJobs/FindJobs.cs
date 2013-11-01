@@ -121,7 +121,7 @@ class Program
         Target.Jobs.Clear();
         Target.Jobs.AddRange(convertJobs);
 
-        StreamReader dataFile = new StreamReader(@"Build\report.txt");
+        StreamReader dataFile = new StreamReader(@"Build/report.txt");
         string line;
         Dictionary<string, int> times = new Dictionary<string, int>();
         while ((line = dataFile.ReadLine()) != null)
@@ -166,13 +166,15 @@ class Program
         XmlSerializer x = new XmlSerializer(typeof(Target));
         StringWriter s = new StringWriter();
         x.Serialize(s, Target);
-        
+
+#if false        
         //debug code
         string st = s.ToString();
         using (TextWriter writer = File.CreateText(@"c:\temp\list.txt"))
         {
             writer.Write(st);
         }
+#endif
         
         Utility.SocketSend(Macros["Server"], Convert.ToInt32(Macros["Port"]),
                            "AddTarget~" + s.ToString());
