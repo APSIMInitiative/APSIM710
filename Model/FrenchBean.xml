@@ -33,7 +33,8 @@
     <Plant>
       <CropType type="text" description="CropType">FrenchBean</CropType>
       <Arbitrator>
-        <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+        <NArbitrationOption type="text" description="NArbitrationOption">PriorityAllocation</NArbitrationOption>
+        <DMArbitrationOption type="text" description="DMArbitrationOption">RelativeAllocation</DMArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
 	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
@@ -60,9 +61,6 @@
 	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
 		   
         </Memo>
-        <Constant name="RetransWtNRatio">
-          <Value type="text" description="Value">0</Value>
-        </Constant>
       </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">

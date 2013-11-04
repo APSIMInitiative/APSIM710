@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.5-r3113" name="Kale2">
+<Type version="36" creator="Apsim 7.5-r3212" name="Kale2">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -33,8 +33,8 @@
         <Values type="text" description="Values">1           2      3         4          5     6   </Values>
       </StageBasedInterpolation>
       <Arbitrator>
-        <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
-        <PriorityOrgan type="text" description="Organs that recieve priority for biomass partitioning">Leaf</PriorityOrgan>
+        <NArbitrationOption type="text" description="NArbitrationOption">PriorityAllocation</NArbitrationOption>
+        <DMArbitrationOption type="text" description="DMArbitrationOption">PriorityAllocation</DMArbitrationOption>
         <Memo>
           There are a number of passes involved in the allocation of Weight (Wt).
           Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -62,9 +62,6 @@
           Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
 
         </Memo>
-        <Constant name="RetransWtNRatio">
-          <Value type="text" description="Value">0</Value>
-        </Constant>
       </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
@@ -217,101 +214,6 @@ For Potato the potential branching rate is the branching pattern that would be o
           <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
         </LinearInterpolationFunction>
       </Structure>
-      <Root>
-        <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
-        <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
-        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialDM type="text" description="InitialDM">5</InitialDM>
-        <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
-        <KNO3 type="text" description="KNO3">0.02</KNO3>
-        <KNH4 type="text" description="KNH4">0.0</KNH4>
-        <LinearInterpolationFunction name="KLModifier">
-          <XProperty>Leaf.LAI</XProperty>
-          <XYPairs>
-            <XY>0 1</XY>
-            <XY>3 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <Constant name="SoilWaterEffect">
-          <Value>1.0</Value>
-        </Constant>
-        <AirTemperatureFunction name="TemperatureEffect">
-          <XYPairs>
-            <XY>0 1</XY>
-            <XY>26 1</XY>
-            <XY>35 1</XY>
-          </XYPairs>
-        </AirTemperatureFunction>
-        <PhaseLookup name="RootFrontVelocity">
-          <PhaseLookupValue>
-            <Start type="text" description="Start">Germination</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant>
-              <Value type="text" description="Value">10</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Emergence">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">Vegetative</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.3</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Vegetative">
-            <Start type="text" description="Start">Vegetative</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">.3</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <Constant name="MaximumNConc">
-          <Value>0.01</Value>
-          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
-        </Constant>
-        <Constant name="MinimumNConc">
-          <Value type="text" description="Value">0.005</Value>
-          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
-        </Constant>
-        <PhaseBasedSwitch name="NitrogenDemandSwitch">
-          <Start type="text" description="Start">Emergence</Start>
-          <End type="text" description="End">Maturity</End>
-          <Memo>Stops the roots from demanding Nitrogen after final leaf stage
-        </Memo>
-        </PhaseBasedSwitch>
-        <LinearInterpolationFunction name="SenescenceRate">
-          <XProperty type="text" description="XProperty">Leaf.FractionDied</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>1 0.001</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <CompositeBiomass name="Live">
-          <Property>Root.LayerLive[]</Property>
-        </CompositeBiomass>
-        <CompositeBiomass name="Dead">
-          <Property>Root.LayerDead[]</Property>
-        </CompositeBiomass>
-        <Memo>Optional paramaters
-
-1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
-2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
-</Memo>
-        <Constant name="MaxDailyNUptake">
-          <Value type="text" description="Value">7.5</Value>
-          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
-        </Constant>
-        <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.5</Value>
-          <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
-          <Constant name="StructuralFraction">
-            <Value type="text" description="Value">1</Value>
-            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
-          </Constant>
-        </Constant>
-      </Root>
       <Leaf>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
@@ -617,6 +519,101 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           </PhaseLookup>
         </PartitionFractionDemandFunction>
       </GenericAboveGroundOrgan>
+      <Root>
+        <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM type="text" description="InitialDM">5</InitialDM>
+        <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
+        <KNO3 type="text" description="KNO3">0.02</KNO3>
+        <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <LinearInterpolationFunction name="KLModifier">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>3 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <Constant name="SoilWaterEffect">
+          <Value>1.0</Value>
+        </Constant>
+        <AirTemperatureFunction name="TemperatureEffect">
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>26 1</XY>
+            <XY>35 1</XY>
+          </XYPairs>
+        </AirTemperatureFunction>
+        <PhaseLookup name="RootFrontVelocity">
+          <PhaseLookupValue>
+            <Start type="text" description="Start">Germination</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant>
+              <Value type="text" description="Value">10</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Emergence">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Vegetative</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.3</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Vegetative</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">.3</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0.005</Value>
+          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+        </Constant>
+        <PhaseBasedSwitch name="NitrogenDemandSwitch">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Stops the roots from demanding Nitrogen after final leaf stage
+        </Memo>
+        </PhaseBasedSwitch>
+        <LinearInterpolationFunction name="SenescenceRate">
+          <XProperty type="text" description="XProperty">Leaf.FractionDied</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>1 0.001</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <CompositeBiomass name="Live">
+          <Property>Root.LayerLive[]</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Root.LayerDead[]</Property>
+        </CompositeBiomass>
+        <Memo>Optional paramaters
+
+1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+</Memo>
+        <Constant name="MaxDailyNUptake">
+          <Value type="text" description="Value">7.5</Value>
+          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
+        </Constant>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.5</Value>
+          <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">1</Value>
+            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          </Constant>
+        </Constant>
+      </Root>
       <Summary />
       <CompositeBiomass name="AboveGround">
         <Property>Leaf.Live</Property>
