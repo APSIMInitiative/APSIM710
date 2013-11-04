@@ -94,6 +94,7 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
 //---------------------------------------------------------------------------
 extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
 {
+   int retcode = 0;
    try
       {
       const char* Banner  = "     ###     ######     #####   #   #     #   \n"
@@ -120,7 +121,7 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
          cout << error.what() << endl;
          cout.flush();
          }  
-      return(1);
+      retcode = 1;
       }
    catch (...)
       {
@@ -128,9 +129,12 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
       cout << "-----------------" << endl;
       cout << "An unknown exception has occurred in APSIM" << endl;
       cout.flush();
-      return(1);
+      retcode = 1;
       }
-   return(0);
+#ifndef __WIN32__
+   _exit(retcode); // mono vm will (sometimes) deadlock when calling global destructors
+#endif
+   return(retcode);
 }
 
 
