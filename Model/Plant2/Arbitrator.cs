@@ -23,7 +23,8 @@ public class Arbitrator
 
     [EventHandler]
     public void OnInit()
-    { 
+    {
+        //NAware Array.Exists(NutrientDrivers, element => element == "Nitrogen");  Fixme  Need to put this into .xml and write code to handle N unaware crops
         PAware = Array.Exists(NutrientDrivers, element => element == "Phosphorus");
         KAware = Array.Exists(NutrientDrivers, element => element == "Potasium"); 
     }
@@ -113,7 +114,9 @@ public class Arbitrator
     
     public BiomassArbitrationType DM = null;
     public BiomassArbitrationType N = null;
-    
+    public BiomassArbitrationType P = null;
+    public BiomassArbitrationType K = null;
+
     [Output]
     public double DMSupply
     {
@@ -138,43 +141,47 @@ public class Arbitrator
             return DM.End - DM.Start;
         }
     }
-    
+
+    //FixME Currently all models are N aware but none are P or K aware.  More programming is needed to make this work! 
+    public bool NAware = true;
     public bool PAware = false;
     public bool KAware = false;
+
  #endregion
 
     public void DoArbitrator(List<Organ> Organs)
     {
         //Work out how much each organ will grow in the absence of nutrient stress, and how much DM they can supply.
         DoDMSetup(Organs);
-        //Reallocate DM from senescing organs to growing organs
-        //DoDMReallocation(Organs);
         //Set potential growth of each organ, assuming adequate nutrient supply.
         DoPotentialDMAllocation(Organs);
-        //Work out how much nutrient each organ needs and how much the supplying organs can provide
-        //DoNutrientSetup(Organs, N);
-        DoNutrientSetup(Organs);
-        //ReAllocate nutrient from senescing organs to growing organs
-        DoNutrientReAllocation(Organs);
-        //If nutruent demands of growing organs not met then take up nutrient from the soil
-        DoNutrientUptake(Organs);
-        //If nutrient demands of growing organs still not met then retranslocate non-structural N from live organs
-        DoNutrientRetranslocation(Organs);
-        //For the nodule organ (legume crops) if N demand is still not met then fix N to meet organ N demands
-        DoNutrientFixation(Organs);
-        //Where modules are made N or K aware repeat nutrient allocation steps for these also.  Note, no code is written to Set supplies or demands for P or k in other organs yet
+
+        if (NAware) //Note, currently all models on N Aware
+        {
+            DoNutrientSetup(Organs, ref N);
+            DoNutrientReAllocation(Organs, N);
+            DoNutrientUptake(Organs, N);
+            DoNutrientRetranslocation(Organs, N);
+            DoNutrientFixation(Organs, N);
+        }
+        if (PAware) //Note, currently all models on NOT P Aware
+        {
+            DoNutrientSetup(Organs, ref P);
+            DoNutrientReAllocation(Organs, P);
+            DoNutrientUptake(Organs, P);
+            DoNutrientRetranslocation(Organs, P);
+            DoNutrientFixation(Organs, P);
+        }
+        if (KAware) //Note, currently all models on NOT K Aware
+        {
+            DoNutrientSetup(Organs, ref K);
+            DoNutrientReAllocation(Organs, K);
+            DoNutrientUptake(Organs, K);
+            DoNutrientRetranslocation(Organs, K);
+            DoNutrientFixation(Organs, K);
+        }
         //Work out how much DM can be assimilated by each organ based on the most limiting nutrient
         DoActualDMAllocation(Organs);       
-        if (PAware || KAware) //Fixme.  This K and P response needs considerably more work before it does anything useful
-        {   //Repeat nutrient allocation routines using actual DM allocation 
-            DoNutrientSetup(Organs);
-            DoNutrientReAllocation(Organs);
-            DoNutrientUptake(Organs);
-            DoNutrientRetranslocation(Organs);
-            DoNutrientFixation(Organs);  //Note for legumes the cost of N fixiation will be over predicted if growth is limited by another nutrient.  Need to check this cost is not being counted twice and over estimating the effect of nutrient shortage on DM pdn
-
-        }
-
         //Tell each organ how much nutrient they are getting following allocaition
         DoNutrientAllocation(Organs);
     }
@@ -354,164 +361,164 @@ public class Arbitrator
         }
     }
 
-    //To introduce Arbitration for other nutrients we need to add additional members to biomass object for each new type and then repeat eaco of the 4 allocation functions below for each nutrient type
-//        virtual public void DoNutrientSetup(List<Organ> Organs, BiomassArbitrationType BAT)
-//    {
-//        BAT = new BiomassArbitrationType(Organs.Count);
-    
-    virtual public void DoNutrientSetup(List<Organ> Organs)
+    //Work out how much nutrient each organ needs and how much the supplying organs can provide
+    virtual public void DoNutrientSetup(List<Organ> Organs, ref BiomassArbitrationType BAT)
     {
-        N = new BiomassArbitrationType(Organs.Count);
+        BAT = new BiomassArbitrationType(Organs.Count);
 
         // GET ALL INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
-        N.Start = 0;
-        
+        BAT.Start = 0;
+
         // GET ALL SUPPLIES AND DEMANDS AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
             BiomassPoolType Demand = Organs[i].NDemand;
-            N.StructuralDemand[i] = Organs[i].NDemand.Structural;
-            N.MetabolicDemand[i] = Organs[i].NDemand.Metabolic;
-            N.NonStructuralDemand[i] = Organs[i].NDemand.NonStructural;
-            N.TotalDemand[i] = N.StructuralDemand[i] + N.MetabolicDemand[i] + N.NonStructuralDemand[i];
-            
+            BAT.StructuralDemand[i] = Organs[i].NDemand.Structural;
+            BAT.MetabolicDemand[i] = Organs[i].NDemand.Metabolic;
+            BAT.NonStructuralDemand[i] = Organs[i].NDemand.NonStructural;
+            BAT.TotalDemand[i] = BAT.StructuralDemand[i] + BAT.MetabolicDemand[i] + BAT.NonStructuralDemand[i];
+
             BiomassSupplyType Supply = Organs[i].NSupply;
-            N.ReallocationSupply[i] = Supply.Reallocation;
-            N.UptakeSupply[i] = Supply.Uptake;
-            N.FixationSupply[i] = Supply.Fixation;
-            N.RetranslocationSupply[i] = Supply.Retranslocation;
-            
-            N.Reallocation[i] = 0;
-            N.Uptake[i] = 0;
-            N.Fixation[i] = 0;
-            N.Retranslocation[i] = 0;
-            N.StructuralAllocation[i] = 0;
-            N.MetabolicAllocation[i] = 0;
-            N.NonStructuralAllocation[i] = 0;
-            
-            N.Start += Organs[i].Live.N + Organs[i].Dead.N;
+            BAT.ReallocationSupply[i] = Supply.Reallocation;
+            BAT.UptakeSupply[i] = Supply.Uptake;
+            BAT.FixationSupply[i] = Supply.Fixation;
+            BAT.RetranslocationSupply[i] = Supply.Retranslocation;
+
+            BAT.Reallocation[i] = 0;
+            BAT.Uptake[i] = 0;
+            BAT.Fixation[i] = 0;
+            BAT.Retranslocation[i] = 0;
+            BAT.StructuralAllocation[i] = 0;
+            BAT.MetabolicAllocation[i] = 0;
+            BAT.NonStructuralAllocation[i] = 0;
+
+            BAT.Start += Organs[i].Live.N + Organs[i].Dead.N;
         }
-        N.TotalStructuralDemand = MathUtility.Sum(N.StructuralDemand);
-        N.TotalMetabolicDemand = MathUtility.Sum(N.MetabolicDemand);
-        N.TotalNonStructuralDemand = MathUtility.Sum(N.NonStructuralDemand);
-        N.TotalPlantDemand = N.TotalStructuralDemand + N.TotalMetabolicDemand + N.TotalNonStructuralDemand;
-        N.TotalReallocationSupply = MathUtility.Sum(N.ReallocationSupply);
-        N.TotalUptakeSupply = MathUtility.Sum(N.UptakeSupply);
-        N.TotalFixationSupply = MathUtility.Sum(N.FixationSupply);
-        N.TotalRetranslocationSupply = MathUtility.Sum(N.RetranslocationSupply);
+        BAT.TotalStructuralDemand = MathUtility.Sum(BAT.StructuralDemand);
+        BAT.TotalMetabolicDemand = MathUtility.Sum(BAT.MetabolicDemand);
+        BAT.TotalNonStructuralDemand = MathUtility.Sum(BAT.NonStructuralDemand);
+        BAT.TotalPlantDemand = BAT.TotalStructuralDemand + BAT.TotalMetabolicDemand + BAT.TotalNonStructuralDemand;
+        BAT.TotalReallocationSupply = MathUtility.Sum(BAT.ReallocationSupply);
+        BAT.TotalUptakeSupply = MathUtility.Sum(BAT.UptakeSupply);
+        BAT.TotalFixationSupply = MathUtility.Sum(BAT.FixationSupply);
+        BAT.TotalRetranslocationSupply = MathUtility.Sum(BAT.RetranslocationSupply);
 
         //Set relative N demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            if (N.TotalStructuralDemand > 0)
-            N.RelativeStructuralDemand[i] = N.StructuralDemand[i] / N.TotalStructuralDemand;
-            if (N.TotalMetabolicDemand > 0)
-            N.RelativeMetabolicDemand[i] = N.MetabolicDemand[i] / N.TotalMetabolicDemand;
-            if (N.TotalNonStructuralDemand > 0)
-            N.RelativeNonStructuralDemand[i] = N.NonStructuralDemand[i] / N.TotalNonStructuralDemand;
+            if (BAT.TotalStructuralDemand > 0)
+                BAT.RelativeStructuralDemand[i] = BAT.StructuralDemand[i] / BAT.TotalStructuralDemand;
+            if (BAT.TotalMetabolicDemand > 0)
+                BAT.RelativeMetabolicDemand[i] = BAT.MetabolicDemand[i] / BAT.TotalMetabolicDemand;
+            if (BAT.TotalNonStructuralDemand > 0)
+                BAT.RelativeNonStructuralDemand[i] = BAT.NonStructuralDemand[i] / BAT.TotalNonStructuralDemand;
         }
     }
-    virtual public void DoNutrientReAllocation(List<Organ> Organs) 
+    //ReAllocate nutrient from senescing organs to growing organs
+    virtual public void DoNutrientReAllocation(List<Organ> Organs, BiomassArbitrationType BAT)
     {
         double NReallocationAllocated = 0;
-        if (N.TotalReallocationSupply > 0.00000000001)
+        if (BAT.TotalReallocationSupply > 0.00000000001)
         {
             //Calculate how much reallocated N (and associated biomass) each demanding organ is allocated based on relative demands
             if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
-                RelativeAllocation(Organs, N.TotalReallocationSupply, ref NReallocationAllocated);
+                RelativeAllocation(Organs, BAT.TotalReallocationSupply, ref NReallocationAllocated);
             if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
-                PriorityAllocation(Organs, N.TotalReallocationSupply, ref NReallocationAllocated);
+                PriorityAllocation(Organs, BAT.TotalReallocationSupply, ref NReallocationAllocated);
             if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
-                PrioritythenRelativeAllocation(Organs, N.TotalReallocationSupply, ref NReallocationAllocated);
+                PrioritythenRelativeAllocation(Organs, BAT.TotalReallocationSupply, ref NReallocationAllocated);
 
             //Then calculate how much N (and associated biomass) is realloced from each supplying organ based on relative reallocation supply
             for (int i = 0; i < Organs.Count; i++)
             {
-                if (N.ReallocationSupply[i] > 0)
+                if (BAT.ReallocationSupply[i] > 0)
                 {
-                    double RelativeSupply = N.ReallocationSupply[i] / N.TotalReallocationSupply;
-                    N.Reallocation[i] += NReallocationAllocated * RelativeSupply;
+                    double RelativeSupply = BAT.ReallocationSupply[i] / BAT.TotalReallocationSupply;
+                    BAT.Reallocation[i] += NReallocationAllocated * RelativeSupply;
                 }
             }
         }
     }
-    virtual public void DoNutrientUptake(List<Organ> Organs)
+    //If nutruent demands of growing organs not met then take up nutrient from the soil
+    virtual public void DoNutrientUptake(List<Organ> Organs, BiomassArbitrationType BAT)
     {
         double NUptakeAllocated = 0;
-        if (N.TotalUptakeSupply > 0.00000000001)
+        if (BAT.TotalUptakeSupply > 0.00000000001)
         {
             // Calculate how much uptake N each demanding organ is allocated based on relative demands
             if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
-                RelativeAllocation(Organs, N.TotalUptakeSupply, ref NUptakeAllocated);
+                RelativeAllocation(Organs, BAT.TotalUptakeSupply, ref NUptakeAllocated);
             if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
-                PriorityAllocation(Organs, N.TotalUptakeSupply, ref NUptakeAllocated);
+                PriorityAllocation(Organs, BAT.TotalUptakeSupply, ref NUptakeAllocated);
             if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
-                PrioritythenRelativeAllocation(Organs, N.TotalUptakeSupply, ref NUptakeAllocated);
+                PrioritythenRelativeAllocation(Organs, BAT.TotalUptakeSupply, ref NUptakeAllocated);
 
             // Then calculate how much N is taken up by each supplying organ based on relative uptake supply
             for (int i = 0; i < Organs.Count; i++)
             {
-                if (N.UptakeSupply[i] > 0.00000000001)
+                if (BAT.UptakeSupply[i] > 0.00000000001)
                 {
-                    double RelativeSupply = N.UptakeSupply[i] / N.TotalUptakeSupply;
-                    N.Uptake[i] += NUptakeAllocated * RelativeSupply;
+                    double RelativeSupply = BAT.UptakeSupply[i] / BAT.TotalUptakeSupply;
+                    BAT.Uptake[i] += NUptakeAllocated * RelativeSupply;
                 }
             }
         }
     }
-    virtual public void DoNutrientRetranslocation(List<Organ> Organs)
+    //If nutrient demands of growing organs still not met then retranslocate non-structural N from live organs
+    virtual public void DoNutrientRetranslocation(List<Organ> Organs, BiomassArbitrationType BAT)
     {
         double NRetranslocationAllocated = 0;
-        if (N.TotalRetranslocationSupply > 0.00000000001)
+        if (BAT.TotalRetranslocationSupply > 0.00000000001)
         {
             // Calculate how much retranslocation N (and associated biomass) each demanding organ is allocated based on relative demands
             if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
-                RelativeAllocation(Organs, N.TotalRetranslocationSupply, ref NRetranslocationAllocated);
+                RelativeAllocation(Organs, BAT.TotalRetranslocationSupply, ref NRetranslocationAllocated);
             if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
-                PriorityAllocation(Organs, N.TotalRetranslocationSupply, ref NRetranslocationAllocated);
+                PriorityAllocation(Organs, BAT.TotalRetranslocationSupply, ref NRetranslocationAllocated);
             if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
-                PrioritythenRelativeAllocation(Organs, N.TotalRetranslocationSupply, ref NRetranslocationAllocated);
+                PrioritythenRelativeAllocation(Organs, BAT.TotalRetranslocationSupply, ref NRetranslocationAllocated);
 
             /// Then calculate how much N (and associated biomass) is retranslocated from each supplying organ based on relative retranslocation supply
             for (int i = 0; i < Organs.Count; i++)
             {
-                if (N.RetranslocationSupply[i] > 0.00000000001)
+                if (BAT.RetranslocationSupply[i] > 0.00000000001)
                 {
-                    double RelativeSupply = N.RetranslocationSupply[i] / N.TotalRetranslocationSupply;
-                    N.Retranslocation[i] += NRetranslocationAllocated * RelativeSupply; 
+                    double RelativeSupply = BAT.RetranslocationSupply[i] / BAT.TotalRetranslocationSupply;
+                    BAT.Retranslocation[i] += NRetranslocationAllocated * RelativeSupply;
                 }
             }
         }
     }
-    virtual public void DoNutrientFixation(List<Organ> Organs)
+    //For the nodule organ (legume crops) if N demand is still not met then fix N to meet organ N demands
+    virtual public void DoNutrientFixation(List<Organ> Organs, BiomassArbitrationType BAT)
     {
         double NFixationAllocated = 0;
-        if (N.TotalFixationSupply > 0.00000000001)
+        if (BAT.TotalFixationSupply > 0.00000000001)
         {
             // Calculate how much fixation N each demanding organ is allocated based on relative demands
             if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
-                RelativeAllocation(Organs, N.TotalFixationSupply, ref NFixationAllocated);
+                RelativeAllocation(Organs, BAT.TotalFixationSupply, ref NFixationAllocated);
             if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
-                PriorityAllocation(Organs, N.TotalFixationSupply, ref NFixationAllocated);
+                PriorityAllocation(Organs, BAT.TotalFixationSupply, ref NFixationAllocated);
             if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
-                PrioritythenRelativeAllocation(Organs, N.TotalFixationSupply, ref NFixationAllocated);
+                PrioritythenRelativeAllocation(Organs, BAT.TotalFixationSupply, ref NFixationAllocated);
 
             // Then calculate how much N is fixed from each supplying organ based on relative fixation supply
             if (NFixationAllocated > 0)
             {
                 for (int i = 0; i < Organs.Count; i++)
                 {
-                    if (N.FixationSupply[i] > 0.00000000001)
+                    if (BAT.FixationSupply[i] > 0.00000000001)
                     {
-                        double RelativeSupply = N.FixationSupply[i] / N.TotalFixationSupply;
-                        N.Fixation[i] = NFixationAllocated * RelativeSupply;
+                        double RelativeSupply = BAT.FixationSupply[i] / BAT.TotalFixationSupply;
+                        BAT.Fixation[i] = NFixationAllocated * RelativeSupply;
                         double Respiration = NFixationAllocated * RelativeSupply * Organs[i].NFixationCost;  //Calculalte how much respirtion is associated with fixation
                         DM.Respiration[i] = Respiration; // allocate it to the organ
                     }
                     DM.TotalRespiration = MathUtility.Sum(DM.Respiration);
                 }
             }
-            
+
             // Work out the amount of biomass (if any) lost due to the cost of N fixation
             if (DM.TotalRespiration <= DM.SinkLimitation)
             { } //Cost of N fixation can be met by DM supply that was not allocated
@@ -566,7 +573,7 @@ public class Arbitrator
                         }
                     }
                     if (UnallocatedRespirationCost > 0.0000000001)
-                        throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
+                        throw new Exception("Crop is trying to Fix excessive amounts of BAT.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
                 }
             }
         }
