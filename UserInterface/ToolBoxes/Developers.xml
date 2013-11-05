@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3148" name="Developers">
+<folder version="36" creator="Apsim 7.5-r3215" name="Developers">
   <Plant2>
     <ini />
   </Plant2>
@@ -1494,5 +1494,50 @@ endif
     <raphanus_raphanistrum />
     <Triticale />
     <wheat2 />
+    <LocalClimate />
+    <manager2 name="MetProxy">
+      <ui />
+      <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   [Output] float mint   {get; set;}
+   [Output] float maxt   {get; set;}
+   [Output] float radn   {get; set;}
+   [Output] float rain   {get; set;}
+     
+   [EventHandler] public void OnInitialised()
+   {
+   }
+      
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+
+      NewMetType metData = new NewMetType();
+      metData.mint = mint;
+      metData.maxt = maxt;
+      metData.radn = radn;
+      metData.rain = rain;
+      newMet.Invoke(metData);
+   } 
+   
+   [Event]
+   public event NewMetDelegate newMet;
+}
+       </text>
+    </manager2>
+  </folder>
+  <SoilArbitrator />
+  <folder name="Agroforestry">
+    <LocalClimate />
+    <TreeMicroClimate>
+      <inputFilename type="text" description="inputFilename" />
+    </TreeMicroClimate>
+    <SimpleTree />
   </folder>
 </folder>

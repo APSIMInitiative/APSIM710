@@ -2500,6 +2500,11 @@ c         g%co2level = c%co2level
          call collect_real_var (variable_name, '()'
      :                             ,c%leaf_init_rate, numvals
      :                             , 0.0, 2000.0)
+	 
+	  else if (variable_name .eq. 'my_dlt') then
+         call collect_real_array (variable_name, 10, '(mm)'
+     :                             ,g%dlt_sw_dep, numvals
+     :                             , 0.0, 2000.0)
 
       else
          ! don't know this variable name
@@ -2595,9 +2600,9 @@ c         g%co2level = c%co2level
       call get_integer_var (unknown_module, 'year', '()'
      :                                    , g%year, numvals
      :                                    , min_year, max_year)
+	 
 
-
-      !-------------------------------------------------------------------
+	 !-------------------------------------------------------------------
       ! climate
       call get_real_var (unknown_module, 'latitude', '(oL)'
      :                                  , g%latitude, numvals
@@ -5419,7 +5424,6 @@ c      g%day_of_year         = 0
       g%nfact_pheno         = 0.0
       g%temp_stress_photo   = 0.0
       g%swdef_fixation      = 0.0
-
 
       !climate
 c      g%fr_intc_radn        = 0.0

@@ -498,7 +498,7 @@
 !plant water relations
 !-----------------------------------------------------------
 
-        integer   num_layers              ! number of layers in profile ()
+        integer   num_layers              ! number of layers in profile ()	
         real      dlayer  (max_layer)     ! thickness of soil layer I (mm)
         real      sat_dep (max_layer)     ! saturated soil water
         real      dul_dep (max_layer)     ! drained upper limit soil water

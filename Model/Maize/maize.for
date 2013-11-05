@@ -5685,11 +5685,18 @@ cpsc need to develop leaf senescence functions for crop
       integer    deepest_layer
       integer    layer                 ! layer number of profile ()
       real       ext_sw_supply(max_layer)
+	  real       no_water                ! don't do water balance at all, it will be injected from another model/script
+	  integer    numvals
 
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
-
-         if ((p%uptake_source .eq. 'apsim').or.
+	  
+	  call get_real_var_optional (unknown_module, 'no_water', '()',
+     :                      no_water, numvals, 0.0, 1.0)
+	  
+         if (numvals.gt.0) then
+		      PRINT *, 'Maize not performing water balance.'
+         elseif ((p%uptake_source .eq. 'apsim').or.
      :       (p%uptake_source .eq. 'swim3')) then
          call crop_get_ext_uptakes (
      :                  'apsim'   ! uptake flag
