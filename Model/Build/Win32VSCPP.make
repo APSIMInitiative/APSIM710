@@ -13,7 +13,7 @@ LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 MT="$(WindowsSdkDir)\bin\mt.exe"
 RC=rc
 
-BOOST = $(APSIM)\..\BuildLibraries\boost_1_44
+BOOST = $(APSIM)\..\BuildLibraries\boost_1_54_0
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
 ICONV = $(APSIM)\..\BuildLibraries\libiconv-1.11.1.win32
 
