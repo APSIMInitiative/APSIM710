@@ -300,7 +300,7 @@ public class ApsimToSim
 
     private static string ReplaceSoilMacros(XmlNode SoilNode, string ApsimToSimContents)
     {
-        Soil Soil = Soil.Create(SoilNode.OuterXml);
+        Soil mySoil = Soil.Create(SoilNode.OuterXml);
 
         // Loop through all soil macros.
         int PosMacro = 0;
@@ -326,14 +326,14 @@ public class ApsimToSim
                     string CropName = MacroName.Substring(0, MacroName.IndexOf(' '));
                     string VariableName = MacroName.Substring(MacroName.IndexOf(' ') + 1);
                     if (VariableName.Equals("ll", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = Soil.LL(CropName);
+                        Obj = mySoil.LL(CropName);
                     else if (VariableName.Equals("kl", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = Soil.KL(CropName);
+                        Obj = mySoil.KL(CropName);
                     else if (VariableName.Equals("xf", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = Soil.XF(CropName);
+                        Obj = mySoil.XF(CropName);
                 }
                 else
-                    Obj = Utility.GetValueOfFieldOrProperty(MacroName, Soil);
+                    Obj = Utility.GetValueOfFieldOrProperty(MacroName, mySoil);
 
                 if (Obj != null)
                 {

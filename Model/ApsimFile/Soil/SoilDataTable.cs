@@ -243,8 +243,8 @@ namespace ApsimFile
 
             foreach (XmlNode SoilNode in SoilNodes)
             {
-                Soil Soil = Soil.Create(SoilNode.OuterXml);
-                SoilToTable(Soil, Table);
+                Soil mySoil = Soil.Create(SoilNode.OuterXml);
+                SoilToTable(mySoil, Table);
             }
 
             return Table;

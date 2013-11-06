@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,7 +10,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ApsimUI</RootNamespace>
     <AssemblyName>ApsimUI</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -27,17 +26,16 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -64,12 +62,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ApsimFile">
       <HintPath>..\ApsimFile.dll</HintPath>
     </Reference>
-    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CSGeneral">
       <HintPath>..\CSGeneral.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -96,7 +92,6 @@
       <DependentUpon>MainUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="ApsimUISplash.resx">
       <DependentUpon>ApsimUISplash.cs</DependentUpon>
     </EmbeddedResource>
@@ -204,10 +199,6 @@
     <ProjectReference Include="..\CPIUserInterface\CPIUserInterface.csproj">
       <Project>{15A749C8-7D50-4290-A601-E00B3609EB1F}</Project>
       <Name>CPIUserInterface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
-      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
-      <Name>CSGeneral</Name>
     </ProjectReference>
     <ProjectReference Include="..\CSUserInterface\CSUserInterface.csproj">
       <Project>{25C8E90E-D464-4F49-B29E-2811F1B266DE}</Project>

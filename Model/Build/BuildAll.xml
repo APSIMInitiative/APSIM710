@@ -679,7 +679,7 @@
          <WorkingDirectory>%APSIM%/Model/StandardProducts</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-<Job name="Compile PH">
+      <Job name="Compile PH">
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
@@ -687,7 +687,6 @@
          <WorkingDirectory>%APSIM%/Model/PH</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-
       <Job name="Compile pigs">
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
@@ -724,7 +723,15 @@
       <Job name="Compile ApsimUI">
          <DependsOn>Compile CMPServices</DependsOn>
          <DependsOn>Compile ConToApsim</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ApsimUI</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Apsim.exe">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Apsim</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile ShellExtensions">
@@ -805,7 +812,6 @@
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create SFX Binaries">
-       <DependsOn>Create MSI Binaries</DependsOn>
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
 		   <CommandLine>%APSIM%/Release/Release.bat %PatchFileName%</CommandLine>
 		   <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileName%</CommandLineUnix>
@@ -864,7 +870,7 @@
     </Job>
     <Job name="Upload X64 SFX Binaries 2">
    	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
+		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://apsrunet.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
     </Job>
     <Job name="Create X64 Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,14 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoilNitrogen</RootNamespace>
     <AssemblyName>SoilNitrogen</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>http://localhost/SoilNitrogen/</PublishUrl>
     <Install>true</Install>
@@ -35,10 +33,9 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -49,7 +46,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,25 +54,21 @@
     <DocumentationFile>SoilNitrogen.Doco.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CMPServices, Version=1.0.4290.21531, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CMPServices.dll</HintPath>
-    </Reference>
-    <Reference Include="CSDotNetComponentInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CSDotNetComponentInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CSGeneral.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetProxies, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DotNetProxies.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="CMPServices">
+      <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
+    <Reference Include="CSDotNetComponentInterface">
+      <HintPath>..\CSDotNetComponentInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="CSGeneral">
+      <HintPath>..\CSGeneral.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetProxies">
+      <HintPath>..\DotNetProxies.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Variables.cs" />
@@ -117,12 +110,8 @@
       <Link>SoilNitrogen.xml</Link>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="SoilNitrogen.Doco.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>del "$(TargetDir)SoilNitrogen.Doco.xml"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
