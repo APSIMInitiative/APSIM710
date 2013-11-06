@@ -326,8 +326,8 @@ extern "C" void DLLEXPORT STDCALL apsimSetNumeric(const char *e, int numSet, dou
    if (numSet == 1) {
       currentRComponent->apsimAPI.set(std::string(e), "", *data);
    } else if (numSet > 1) {
-      std::vector<double> setArray;
-      for (unsigned int i = 0; i <  setArray.size(); i++) {setArray.push_back(data[i]);}
+      std::vector<double> setArray(numSet);
+      for (unsigned int i = 0; i <  numSet; i++) {setArray[i] = data[i];}
       currentRComponent->apsimAPI.set(std::string(e), "", setArray);
    }
 }
@@ -338,9 +338,9 @@ extern "C" void DLLEXPORT STDCALL apsimSetCharacter(const char *e, int numSet, c
       std::string s(data);
       currentRComponent->apsimAPI.set(std::string(e), "", s);
    } else if (numSet > 1) {
-      std::vector<std::string> setArray;
+      std::vector<std::string> setArray(numSet);
       char *p = data;
-      for (unsigned int i = 0; i <  setArray.size(); i++) {setArray.push_back(p); p += strlen(p) + 1;}
+      for (unsigned int i = 0; i <  numSet; i++) {setArray[i] = p; p += strlen(p) + 1;}
       currentRComponent->apsimAPI.set(std::string(e), "", setArray);
    }
 }
@@ -666,19 +666,19 @@ SEXP apsimGet( std::string variableName )
          } else if (numGotten > 1 ) {
             bool allNumeric = true;
             char *p = dataReturned;
-            for (int i = 0; i < numGotten; i++) { if(!isNumeric(p)) {allNumeric = false;} ; p += strlen(p); }
+            for (int i = 0; i < numGotten; i++) { if(!isNumeric(p)) {allNumeric = false;} ; p += strlen(p) + 1; }
             if (allNumeric) 
             {
                std::vector<double> v(numGotten);
                p = dataReturned;
-               for (int i = 0; i < numGotten; i++) { v[i] = asNumeric(p); p += strlen(p); }
+               for (int i = 0; i < numGotten; i++) {v[i] = asNumeric(p); p += strlen(p) + 1; }
                result = Rcpp::wrap(v);
             }
             else
             {
                std::vector<std::string> v(numGotten);
                p = dataReturned;
-               for (int i = 0; i < numGotten; i++) { v[i] = p; p += strlen(p); }
+               for (int i = 0; i < numGotten; i++) { v[i] = p; p += strlen(p) + 1; }
                result = Rcpp::wrap(v);
             }
          }
@@ -689,8 +689,8 @@ SEXP apsimGet( std::string variableName )
          if ( numGotten == 1) {
             result = Rcpp::wrap(* dataReturned);
          } else if ( numGotten > 1 ) {
-            std::vector<double> v;
-            for (int i = 0; i < numGotten; i++) { v.push_back(dataReturned[i]); }
+            std::vector<double> v(numGotten);
+            for (int i = 0; i < numGotten; i++) {v[i] = dataReturned[i]; }
             result = Rcpp::wrap(v);
          }
          if (dataReturned) {apsimFree(dataReturned);}
