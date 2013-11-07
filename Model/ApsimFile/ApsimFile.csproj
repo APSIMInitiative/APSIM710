@@ -55,6 +55,7 @@
     <WarningLevel>4</WarningLevel>
     <ErrorReport>prompt</ErrorReport>
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\</OutputPath>
@@ -72,21 +73,6 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <Choose>
-    <When Condition="'$(OS)' != 'Windows_NT'">
-      <ItemGroup>
-        <Reference Include="Mono.Data.Sqlite" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="System.Data.SQLite, Version=1.0.73.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\System.Data.SQLite.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
@@ -108,6 +94,11 @@
     <Reference Include="System.Configuration" />
     <Reference Include="CMPServices">
       <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Data.Sqlite" Condition="'$(OS)' != 'Windows_NT'"/>
+    <Reference Include="System.Data.SQLite, Version=1.0.73.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL" Condition="'$(OS)' == 'Windows_NT'">
+        <SpecificVersion>False</SpecificVersion>
+        <HintPath>..\System.Data.SQLite.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
