@@ -127,7 +127,7 @@ public class Root : BaseOrgan, BelowGround
  #endregion
 
  #region Functions
-    public override void DoPotentialGrowth()
+    public override void DoPotentialDM()
     {
         _SenescenceRate = 0;
         if (SenescenceRate != null) //Default of zero means no senescence

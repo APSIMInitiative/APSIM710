@@ -77,12 +77,17 @@ public class Plant
         if (Phenology != null)
             Phenology.DoTimeStep();
     }
-    public void DoPotentialGrowth()
+    public void DoDMSetUp()
     {
         if (Structure != null)
-            Structure.DoPotentialGrowth();
+            Structure.DoPotentialDM();
         foreach (Organ o in Organs)
-            o.DoPotentialGrowth();
+            o.DoPotentialDM();
+    }
+    public void DoNutrientSetUp()
+    {
+        foreach (Organ o in Organs)
+            o.DoPotentialNutrient();
     }
     private void DoWater()
     {
@@ -202,10 +207,13 @@ public class Plant
     public void OnProcess()
     {
         DoPhenology();
-        DoPotentialGrowth();
-        DoWater();
+        DoDMSetUp();
+        DoWater();  //Fixme Do water should go before do DMsetup
         if (Arbitrator != null)
-            Arbitrator.DoArbitrator(Organs);
+            Arbitrator.DoDMArbitration(Organs);
+        DoNutrientSetUp();
+        if (Arbitrator != null)
+            Arbitrator.DoNutrientArbitration(Organs);
         DoActualGrowth();
     }
     [EventHandler]

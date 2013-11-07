@@ -142,7 +142,7 @@ public class Arbitrator
 
  #endregion
 
-    public void DoArbitrator(List<Organ> Organs)
+    public void DoDMArbitration(List<Organ> Organs)
     {
         //Work out how much each organ will grow in the absence of nutrient stress, and how much DM they can supply.
         DoDMSetup(Organs);
@@ -151,7 +151,9 @@ public class Arbitrator
         DoFixation(Organs, DM, DMArbitrationOption);
         DoRetranslocation(Organs, DM, DMArbitrationOption);
         DoPotentialDMAllocation(Organs);
-        if (NAware) //Note, currently all models N Aware, I have to write some code to take this out
+    }
+    public void DoNutrientArbitration(List<Organ> Organs)
+        {if (NAware) //Note, currently all models N Aware, I have to write some code to take this out
         {
             DoSetup(Organs, ref N);
             DoReAllocation(Organs, N, NArbitrationOption);
@@ -194,10 +196,14 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             BiomassSupplyType Supply = Organs[i].DMSupply;
+            //BiomassSupplyType Supply = null;
+            //Activator.CreateInstance(BiomassSupplyType, ("Organs[i].DMSupply", ,);
             DM.ReallocationSupply[i] = Supply.Reallocation;
             DM.UptakeSupply[i] = Supply.Uptake;
             DM.FixationSupply[i] = Supply.Fixation;
             DM.RetranslocationSupply[i] = Supply.Retranslocation;
+            //double _dead;
+            //Organs[i].My.Get("Dead.Wt", out _dead);
             DM.Start += Organs[i].Live.Wt + Organs[i].Dead.Wt;
         }
 

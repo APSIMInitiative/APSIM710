@@ -81,7 +81,8 @@ abstract public class Organ
     #region Top Level Time-step  and event Functions
     //Plant actions
     virtual public void DoWaterUptake(double Demand) { }
-    virtual public void DoPotentialGrowth() { }
+    virtual public void DoPotentialDM() { }
+    virtual public void DoPotentialNutrient() { }
     virtual public void DoActualGrowth() { }
     // Methods that can be called .e.g from manager
     abstract public void OnSow(SowPlant2Type Sow);

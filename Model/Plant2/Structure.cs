@@ -108,7 +108,7 @@ public class Structure
     #endregion
 
     #region Top level timestep Functions
-    public void DoPotentialGrowth()
+    public void DoPotentialDM()
     {
         if (Phenology.OnDayOf(InitialiseStage) == false) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
            if (MainStemPrimordiaInitiationRate.Value > 0.0)

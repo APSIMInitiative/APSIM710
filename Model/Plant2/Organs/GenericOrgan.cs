@@ -68,7 +68,7 @@ public class GenericOrgan : BaseOrgan
     #endregion
 
     #region Organ functions
-    public override void DoPotentialGrowth()
+    public override void DoPotentialDM()
     {
         SenescenceRate = 0;
         if (SenescenceRateFunction != null) //Default of zero means no senescence

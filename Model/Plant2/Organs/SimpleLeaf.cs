@@ -288,7 +288,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
         }
     }
 
-    public override void DoPotentialGrowth()
+    public override void DoPotentialDM()
     {
         if (CoverFunction != null)
              // return _LAI;

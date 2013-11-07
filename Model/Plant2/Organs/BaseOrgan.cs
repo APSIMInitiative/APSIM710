@@ -35,7 +35,8 @@ public class BaseOrgan : Organ
         set { throw new Exception("Cannot set water allocation for " + Name); }
     }
     public override void DoWaterUptake(double Demand) { }
-    public override void DoPotentialGrowth() { }
+    public override void DoPotentialDM() { }
+    public override void DoPotentialNutrient() { }
     public override void DoActualGrowth() { }
 
     public override double MaxNconc { get { return 0; } set { } }

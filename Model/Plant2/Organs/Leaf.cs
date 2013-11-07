@@ -517,7 +517,7 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort Leaf in From)
             To.Add(Leaf.Clone());
     }
-    public override void DoPotentialGrowth()
+    public override void DoPotentialDM()
     {
 
           EP = 0;
