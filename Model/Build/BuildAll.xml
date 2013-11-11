@@ -793,12 +793,6 @@
          <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
-      <Job name="Create MSI Binaries">
-         <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
-         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateMSIBinaries.bat %PatchFileNameShort%.binaries.Win32</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
       <Job name="Update DB Setup Bootleg">
          <DependsOn>Create Bootleg MSI</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
@@ -831,7 +825,7 @@
       <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Upload SFX Binaries">
    	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.Win32.exe C:\inetpub\wwwroot\Files</CommandLine>
+		   <CommandLine>cmd.exe /c copy %PatchFileName%.binaries.WINDOWS.exe C:\inetpub\wwwroot\Files</CommandLine>
       </Job>
       <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
