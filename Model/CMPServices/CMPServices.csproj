@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -22,6 +22,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -69,6 +72,7 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -112,6 +116,8 @@
     <Compile Include="evmngr.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="extmath.cs" />
+    <Compile Include="graztype.cs" />
     <Compile Include="initpsr.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -166,6 +172,7 @@
     <Compile Include="typedval.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="waterprm.cs" />
     <Compile Include="wineventlog.cs" />
     <Compile Include="wrapper.cs">
       <SubType>Code</SubType>
@@ -194,6 +201,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
