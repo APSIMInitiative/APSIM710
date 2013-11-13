@@ -70,6 +70,7 @@ namespace CSUserInterface
             }
             YearPanel.Visible = (TabControl.SelectedIndex != 0);
             YearPanel.Parent = this;
+            YearPanel.Top = TabControl.SelectedTab.Top + 2;
             YearPanel.BringToFront();
         }
 
@@ -142,7 +143,7 @@ namespace CSUserInterface
                     {
                         RainfallLabel.Text = MathUtility.Sum(Rainfall).ToString("f1") + " mm for the years " + YearStartBox.Value.ToString() + " to " + (YearStartBox.Value + NumYearsBox.Value - 1).ToString();
                     }
-
+                    RainfallLabel.Left = Label1.Left + Label1.Width;
                 }   
                 else
                 {
@@ -236,6 +237,16 @@ namespace CSUserInterface
                 }
             }
 
+        }
+
+        /// <summary>
+        /// When the tab is changed, hide or show the year panel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            YearPanel.Visible = (TabControl.SelectedIndex != 0);
         }
 
     }
