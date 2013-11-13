@@ -18,27 +18,27 @@ public interface Reproductive
 #region Arbitrator method types
 public class BiomassPoolType
 {
-    public double Structural;
-    public double NonStructural;
-    public double Metabolic;
+    public double Structural { get; set; }
+    public double NonStructural { get; set; }
+    public double Metabolic { get; set; }
 }
 public class BiomassSupplyType
 {
-    public double Fixation;
-    public double Reallocation;
-    public double Uptake;
-    public double Retranslocation;
+    public double Fixation {get; set;}
+    public double Reallocation {get; set;}
+    public double Uptake {get; set;}
+    public double Retranslocation {get; set;}
 }    
 public class BiomassAllocationType
 {
-    public double Structural;
-    public double NonStructural;
-    public double Metabolic;
-    public double Retranslocation;
-    public double Reallocation;
-    public double Respired;
-    public double Uptake;
-    public double Fixation;
+    public double Structural { get; set; }
+    public double NonStructural { get; set; }
+    public double Metabolic { get; set; }
+    public double Retranslocation { get; set; }
+    public double Reallocation { get; set; }
+    public double Respired { get; set; }
+    public double Uptake { get; set; }
+    public double Fixation { get; set; }
 }
 #endregion
 
