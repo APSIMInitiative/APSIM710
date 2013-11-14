@@ -812,8 +812,8 @@
       </Job>
       <Job name="Create SFX Binaries">
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLine>%APSIM%/Release/Release.bat %PatchFileName%</CommandLine>
-		   <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileName%</CommandLineUnix>
+		   <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
+		   <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
       </Job>
    </Target>
 
@@ -830,7 +830,7 @@
       <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Upload SFX Binaries">
    	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLine>cmd.exe /c copy %PatchFileName%.binaries.WINDOWS.exe C:\inetpub\wwwroot\Files</CommandLine>
+		   <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.WINDOWS.exe C:\inetpub\wwwroot\Files</CommandLine>
       </Job>
       <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
@@ -865,18 +865,14 @@
     <DependsOn IgnoreErrors="true">Release</DependsOn>
     <Job name="Upload X64 SFX Binaries">
    	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
-    </Job>
-    <Job name="Upload X64 SFX Binaries 2">
-   	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://apsrunet.apsim.info/Files/%PatchFileNameShort%.binaries.Linux.exe</CommandLineUnix>
+		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.LINUX.X86_64.exe</CommandLineUnix>
     </Job>
     <Job name="Create X64 Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
         <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
     </Job>
     <Job name="Upload X64 Diff Zip">
-      <DependsOn>Create Diff Zip</DependsOn>
+       <DependsOn>Create X64 Diff Zip</DependsOn>
        <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 	     <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
     </Job>

@@ -191,7 +191,7 @@ class Bob
       {
          string prefix = "";
          if (System.Environment.MachineName.ToUpper() != "BOB")
-            prefix = System.Environment.MachineName;
+            prefix = "linux";
          string SQL = "SELECT ID FROM BuildJobs WHERE " + prefix + "Status = 'Queued' ORDER BY ID";
 
          SqlDataReader Reader = null;
@@ -239,7 +239,7 @@ class Bob
       static void DBUpdate(string FieldName, object Value, SqlConnection Connection, int JobID)
       {
          if (FieldName == "Status" && Environment.MachineName.ToUpper() != "BOB")
-            FieldName = Environment.MachineName + "Status";
+            FieldName = "linuxStatus";
 
          string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + Value.ToString() + "' WHERE ID = " + JobID.ToString();
 

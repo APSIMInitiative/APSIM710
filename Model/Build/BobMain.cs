@@ -94,7 +94,7 @@ class BobMain
          if (System.Environment.MachineName.ToUpper() == "BOB")
             Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "Status Fail", "%APSIM%/Model");
          else
-            Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", System.Environment.MachineName + "Status Fail", "%APSIM%/Model");
+            Run("Set status of job", "%APSIM%/Model/UpdateFieldInDB.exe", "linuxStatus Fail", "%APSIM%/Model");
 
          ErrorCode = 1;
       }
@@ -115,7 +115,7 @@ class BobMain
          DB.UpdateEndDateToNow(JobID);
       } else {
          string commandArgs = "-T " + SourceBuildAllOutputFileName +
-            " -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%." + System.Environment.MachineName + ".xml";
+            " -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.linux.xml";
          Run("Upload BuildAllOutput", "curl", commandArgs, "%APSIM%/Model/Build");
       }
 

@@ -21,7 +21,7 @@ if [ "$1" = "" ] ; then
   . $APSIM/Model/Build/VersionInfo.sh
   7zr a -sfx Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.Linux.exe $dest
 else  
-  7zr a -sfx `basename $1 .zip`.binaries.Linux.exe Temp
+  7zr a -sfx $1.binaries.Linux.exe Temp
 fi
 
 rm -rf Temp
