@@ -326,7 +326,7 @@ class Program
                 Console.WriteLine(FileName);
 
             string prefix = "";
-            if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+            if (Environment.MachineName.ToUpper() != "BOB") prefix = "linux";
 
             string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + 
                 (prefix != "" ? "." + prefix : "") + ".diffs.zip";

@@ -108,7 +108,7 @@ class Bob
                if (System.Environment.MachineName.ToUpper() == "BOB")
                  System.Environment.SetEnvironmentVariable("HostSuffix", "");
                else
-                 System.Environment.SetEnvironmentVariable("HostSuffix", "-" + System.Environment.MachineName);
+                 System.Environment.SetEnvironmentVariable("HostSuffix", "-linux" /* + System.Environment.MachineName*/);
 
                // Run the patch.
                Run("Running patch...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.Combine(APSIMDir,"Model/Build/BobMain.cs") , Log);
