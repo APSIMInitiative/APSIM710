@@ -34,10 +34,10 @@ namespace Uptake
         // Plant information -------------------------------------------------------
         protected int FNoPlantParams;
         protected int FNoPlants;
-        protected PlantUptake[] FPlantInfo;
+        protected PlantUptake[] FPlantInfo = new PlantUptake[GrazType.MaxPlantSpp];
         // Space for results -------------------------------------------------------
-        protected double[,] FWaterUptake; // = new double[GrazType.MaxPlantSpp, GrazType.MaxSoilLayers];
-        protected double[,] FSoilFract; // = new double[GrazType.MaxPlantSpp, GrazType.MaxSoilLayers];
+        protected double[,] FWaterUptake = new double[GrazType.MaxPlantSpp, GrazType.MaxSoilLayers];
+        protected double[,] FSoilFract = new double[GrazType.MaxPlantSpp, GrazType.MaxSoilLayers];
 
         public WaterAllocator()
         {
@@ -116,6 +116,8 @@ namespace Uptake
         public virtual void setPlantDemand(int Idx, double WaterDemand)
         {
             checkPlantIndex(Idx);
+            if (FPlantInfo[Idx] == null)
+                FPlantInfo[Idx] = new PlantUptake();
             FPlantInfo[Idx].Demand = WaterDemand;       //WaterDemand is already in kg/m^2/d 
         }
 
@@ -259,7 +261,7 @@ namespace Uptake
         // Space for computations --------------------------------------------------
         private TWaterParam[] FParams;
         // Space for computations --------------------------------------------------
-        protected double[,] FWaterSupply;
+        protected double[,] FWaterSupply = new double[GrazType.MaxPlantSpp, GrazType.MaxSoilLayers];
         // Soil information --------------------------------------------------------
         /// <summary>
         /// Exponent in psi-K function            
@@ -666,18 +668,31 @@ namespace Uptake
 
     public class TRoot
     {
-        public double[] fLL = new double[GrazType.MaxSoilLayers];            // LayerArray
-        public double[] fKL = new double[GrazType.MaxSoilLayers];            // LayerArray
-        public double[] fPsi_min = new double[GrazType.MaxSoilLayers];       // LayerArray
-        public double[] fPsi_max = new double[GrazType.MaxSoilLayers];       // LayerArray
-        public double[] fGamma = new double[GrazType.MaxSoilLayers];         // LayerArray
-        public double[] fLambda = new double[GrazType.MaxSoilLayers];        // LayerArray
+        public double[] fLL;            // LayerArray
+        public double[] fKL;            // LayerArray
+        public double[] fPsi_min;       // LayerArray
+        public double[] fPsi_max;       // LayerArray
+        public double[] fGamma;         // LayerArray
+        public double[] fLambda;        // LayerArray
 
         public double fRel_Psi;
-        public double[] fMonoSupply = new double[GrazType.MaxSoilLayers];    // LayerArray
-        public double[] fQ = new double[GrazType.MaxSoilLayers];             // LayerArray
+        public double[] fMonoSupply;    // LayerArray
+        public double[] fQ;             // LayerArray
         public double fPrev_Rel_Psi;
-        public double[] fPrev_Fract = new double[GrazType.MaxSoilLayers];    // LayerArray    
+        public double[] fPrev_Fract;    // LayerArray    
+
+        public TRoot()
+        {
+            fLL = new double[GrazType.MaxSoilLayers];            // LayerArray
+            fKL = new double[GrazType.MaxSoilLayers];            // LayerArray
+            fPsi_min = new double[GrazType.MaxSoilLayers];       // LayerArray
+            fPsi_max = new double[GrazType.MaxSoilLayers];       // LayerArray
+            fGamma = new double[GrazType.MaxSoilLayers];         // LayerArray
+            fLambda = new double[GrazType.MaxSoilLayers];        // LayerArray
+            fMonoSupply = new double[GrazType.MaxSoilLayers];    // LayerArray
+            fQ = new double[GrazType.MaxSoilLayers];             // LayerArray
+            fPrev_Fract = new double[GrazType.MaxSoilLayers];    // LayerArray    
+        }
     }
 
     /// <summary>
@@ -685,7 +700,7 @@ namespace Uptake
     /// </summary>
     public class WaterAllocator3 : WaterAllocator2
     {
-        private TRoot[] FRootData;
+        private TRoot[] FRootData = new TRoot[GrazType.MaxPlantSpp];
 
         public WaterAllocator3(SoilWaterParams SoilParams)
             : base(SoilParams)
@@ -1025,8 +1040,10 @@ namespace Uptake
         /// <param name="fLL"></param>
         public void setRootParams(int Idx, double[] fKL, double[] fLL)
         {
-            for (int i = 0; i < fKL.Length - 1; i++)    //for each layer
+            for (int i = 0; i <= fKL.Length - 1; i++)    //for each layer
             {
+                if (FRootData[Idx] == null)
+                    FRootData[Idx] = new TRoot();
                 FRootData[Idx].fKL[i] = fKL[i];
                 FRootData[Idx].fLL[i] = fLL[i];
             }

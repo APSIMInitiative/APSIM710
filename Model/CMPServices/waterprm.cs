@@ -58,7 +58,7 @@
         public double SnowMeltBase;
 
         ///<summary>Conversion factor between kg/ha and ppm</summary>
-        public double[] ConcFactor;
+        public double[] ConcFactor = new double[GrazType.MaxSoilLayers + 1];    // [0] = surface
 
         ///<summary>Soil moisture at saturation (mm)</summary>
         public double[] SoilM_SAT = new double[GrazType.MaxSoilLayers + 1];     // [0] = surface
