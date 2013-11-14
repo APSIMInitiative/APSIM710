@@ -209,7 +209,7 @@ namespace CSGeneral
         public void UpdateStatus(int JobID, string NewStatus)
         {
             string prefix = "";
-            if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+            if (Environment.MachineName.ToUpper() != "BOB") prefix = "linux" /*Environment.MachineName*/;
 
             string SQL = "UPDATE BuildJobs SET " + prefix + "Status = '" + NewStatus + "' WHERE ID = " + JobID.ToString();
 
@@ -258,7 +258,7 @@ namespace CSGeneral
         public void UpdateDiffFileName(int JobID, string DiffsFileName)
         {
             string prefix = "";
-            if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+            if (Environment.MachineName.ToUpper() != "BOB") prefix = "linux" /*Environment.MachineName*/;
 
             string SQL = "UPDATE BuildJobs SET " + prefix + "DiffsFileName = '" + DiffsFileName + "'" +
                                                 " WHERE ID = " + JobID.ToString();
@@ -273,7 +273,7 @@ namespace CSGeneral
         public void SetNumDiffs(int JobID, int NumDiffs)
         {
             string prefix = "";
-            if (Environment.MachineName.ToUpper() != "BOB") prefix = Environment.MachineName;
+            if (Environment.MachineName.ToUpper() != "BOB") prefix = "linux"/*Environment.MachineName*/;
             string SQL = "UPDATE BuildJobs SET " + prefix + "NumDiffs = " + NumDiffs.ToString() + " WHERE ID = " + JobID.ToString();
 
             SqlCommand Command = new SqlCommand(SQL, Connection);
