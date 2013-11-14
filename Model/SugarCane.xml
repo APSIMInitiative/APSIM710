@@ -20,7 +20,7 @@
         <initdata>
                [Model]
                <uptake_source>calc</uptake_source>
-               <rlv>0.04  0.02  0.01  .005  0.00  0.00 0.00</rlv>
+               <rlv_init>0.04  0.02  0.01  .005  0.00  0.00 0.00</rlv_init>
                <ll>[soil.[InstanceName] ll]</ll>
                <kl>[soil.[InstanceName] kl]</kl>
                <xf>[soil.[InstanceName] xf]</xf>
@@ -33,7 +33,7 @@
        <!--**************************************
        Upper and Lower Bound Constants (for Sugar, Soil and Met variables)
        ******************************************-->
-        <crop_type>SugarCane</crop_type>     <!-- used by Micromet module-->
+        <crop_type>SugarCane</crop_type> <!-- crop_type is used by Micromet module-->
         <tt_emerg_to_begcane_ub description="upper limit">2000.0</tt_emerg_to_begcane_ub>
         <tt_begcane_to_flowering_ub description="upper limit">10000.0</tt_begcane_to_flowering_ub>
         <tt_flowering_to_crop_end_ub description="upper limit">5000.0</tt_flowering_to_crop_end_ub>
@@ -79,7 +79,7 @@
         
         
        <!--**************************************
-       Section for Plant versus Ratoon Contstants 
+       Section for Plant/Ratoon Crop Contstants 
        ******************************************-->
         <CropConstants Name="plant">
           <stage_names>sowing sprouting emergence begin_cane flowering end_crop</stage_names>
@@ -89,7 +89,7 @@
           <!-- ratio_root_shoot =   0        0        0.30       0.20       0.20     0.0
              -->
           <ratio_root_shoot>0        0        0.20       0.15       0.10     0.0</ratio_root_shoot>
-          <transp_eff_cf units="kpa">0.008  0.008       0.008      0.008      0.008    0.008</transp_eff_cf>
+          <transp_eff_cf units="kg kPa/kg">0.008  0.008       0.008      0.008      0.008    0.008</transp_eff_cf>
           <n_fix_rate>0        0         0          0           0       0</n_fix_rate>
           <extinction_coef>0.38</extinction_coef>
           <extinction_coef_dead>0.01</extinction_coef_dead>
@@ -313,7 +313,7 @@
           <!-- ratio_root_shoot =   0        0        0.30       0.20      0.20     0.0
              -->
           <ratio_root_shoot>0        0        0.20       0.15       0.10     0.0</ratio_root_shoot>
-          <transp_eff_cf units="kpa">0.008  0.008       0.008      0.008      0.008    0.008</transp_eff_cf>
+          <transp_eff_cf units="kg kPa/kg">0.008  0.008       0.008      0.008      0.008    0.008</transp_eff_cf>
           <n_fix_rate>0        0         0          0           0       0</n_fix_rate>
           <extinction_coef>0.38</extinction_coef>
           <extinction_coef_dead>0.01</extinction_coef_dead>
@@ -533,16 +533,663 @@
            cultivars currently in 16-6-96:
            Q117, Q96, Q138, Q141, H73, TS65-28, NCo376, N12, N14, CP51, R570, M1356, M55560, Q124
           -->
-     
+ 
+        <CultivarConstants Name="cultivars[1]">
+          <cultivar_name>q117</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1   1.5  1.5 1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   6    10  12  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[2]">
+          <cultivar_name>q117_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  12  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[3]">
+          <cultivar_name>q117_fum</cultivar_name>             
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5 3.0  2.5 1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   4    10  12  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[4]">
+          <cultivar_name>q117_fum_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>2.0  3.0  2.0 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  12  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[5]">
+          <cultivar_name>q96</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>900.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5  1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[6]">
+          <cultivar_name>q96_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>900.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5 1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[7]">
+        <cultivar_name>q96_fum</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>900.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5  1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[8]">
+          <cultivar_name>q96_fum_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>900.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[9]">
+          <cultivar_name>q138</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>600.</sucrose_delay>
+          <min_sstem_sucrose>1500.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[10]">
+          <cultivar_name>q138_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>1500.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[11]">
+          <cultivar_name>q138_fum</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>600.</sucrose_delay>
+          <min_sstem_sucrose>1500.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5  1 1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[12]">
+          <cultivar_name>q138_fum_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>1500.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5  1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10   16 26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[13]">
+          <cultivar_name>ts65-28</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5  1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[14]">
+          <cultivar_name>ts65-28_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[15]">
+          <cultivar_name>ts65-28_fum</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[16]">
+          <cultivar_name>ts65-28_fum_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[17]">
+           <cultivar_name>h73</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <!-- sucrose_fraction_stalk = 1.0 0.50
+             -->
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <!-- min_sstem_sucrose = 100
+             -->
+          <min_sstem_sucrose>800</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[18]">
+          <cultivar_name>h73_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.50</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>800</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5  1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10   16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[19]">
+          <cultivar_name>q141</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.64</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <!-- needs checking
+             -->
+          <min_sstem_sucrose>1200.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[20]">
+          <cultivar_name>q141_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.64</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <!-- needs checking
+             -->
+          <min_sstem_sucrose>1200.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[21]">
+          <cultivar_name>nco376</cultivar_name>
+          <!-- ________________________-
+             from Inman-Bamber 1991 SAJPAS
+             -->
+          <leaf_size>3000 7000  12000  28000  28000</leaf_size>
+          <leaf_size_no>1    4     6       14      20</leaf_size_no>
+          <cane_fraction>0.65</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1800</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>10.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[22]">
+          <cultivar_name>nco376_ratoon</cultivar_name>
+          <!-- ________________________________
+             from Inman-Bamber 1991 SAJPAS
+             -->
+          <leaf_size>3000 7000  12000 28000  28000</leaf_size>
+          <leaf_size_no>1    4     6      14      20</leaf_size_no>
+          <cane_fraction>0.65</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1800</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>10.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[23]">
+          <cultivar_name>n12</cultivar_name>
+          <leaf_size>3000 7000  12000  30000  30000</leaf_size>
+          <leaf_size_no>1    4     6       14      20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[24]">
+          <cultivar_name>n12_ratoon</cultivar_name>
+          <leaf_size>3000  7000 12000  30000  30000</leaf_size>
+          <leaf_size_no>1    4     6       14      20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[25]">
+          <cultivar_name>n14</cultivar_name>
+          <!-- ______________________
+             from Inman_Bamber 1989 SASTA
+             -->
+          <leaf_size>3000 8000 13000  45000 45000</leaf_size>
+          <leaf_size_no>1    4     6      14    20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1.5 1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[26]">
+          <cultivar_name>n14_ratoon</cultivar_name>
+          <!-- ____________________________-
+             from Inman_Bamber 1989 SASTA
+             -->
+          <leaf_size>3000 8000  13000   45000 45000</leaf_size>
+          <leaf_size_no>1    4      6       14    20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[27]">
+          <cultivar_name>CP51</cultivar_name>
+          <leaf_size>3000 7000  15000  35000  35000</leaf_size>
+          <leaf_size_no>1    4     7       15      20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1350</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1  1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10 16   26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[28]">
+          <cultivar_name>CP51_ratoon</cultivar_name>
+          <leaf_size>3000 7000  15000  35000  35000</leaf_size>
+          <leaf_size_no>1    4     7       15      20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0</sucrose_delay>
+          <min_sstem_sucrose>450.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1350</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1  1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10 16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[29]">
+          <cultivar_name>R570</cultivar_name>
+          <leaf_size>3000 7000 10000  45000  60000   60000</leaf_size>
+          <leaf_size_no>1    4     6      10    14       20</leaf_size_no>
+          <!-- cane_fraction = 0.75 ()
+             -->
+          <cane_fraction>0.68</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.58</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>693.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1500</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>6   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[30]">
+          <cultivar_name>R570_ratoon</cultivar_name>
+          <leaf_size>3000 7000 10000  45000  60000    60000</leaf_size>
+          <leaf_size_no>1    4     6      10    14       20</leaf_size_no>
+          <!-- cane_fraction = 0.75 ()
+             -->
+          <cane_fraction>0.68</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.58</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>693.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1500</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>10   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[31]">
+          <cultivar_name>M1356</cultivar_name>
+          <leaf_size>3000 7000 10000  25000  40000  40000</leaf_size>
+          <leaf_size_no>1    4     6      10    14       20</leaf_size_no>
+          <!-- cane_fraction = 0.86 ()
+             -->
+          <cane_fraction>0.78</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.57</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>521.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1200</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>6   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[32]">
+          <cultivar_name>M1356_ratoon</cultivar_name>
+          <leaf_size>3000 7000 10000  25000   40000  40000</leaf_size>
+          <leaf_size_no>1    4     6      10     14       20</leaf_size_no>
+          <!-- cane_fraction = 0.86 ()
+             -->
+          <cane_fraction>0.78</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.57</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>521.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1200</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>10   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[33]">
+          <cultivar_name>M55560</cultivar_name>
+          <leaf_size>3000 7000 10000  35000   50000  50000</leaf_size>
+          <leaf_size_no>1    4     6      10     14       20</leaf_size_no>
+          <!-- cane_fraction = 0.78 ()
+             -->
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.62</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>775</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1300</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>6   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[34]">
+          <cultivar_name>M55560_ratoon</cultivar_name>
+          <leaf_size>3000 7000 10000  35000  50000  50000</leaf_size>
+          <leaf_size_no>1    4     6      10     14      20</leaf_size_no>
+          <!-- cane_fraction = 0.78 ()
+             -->
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.62</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>775</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1300</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>10   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[35]">
+          <cultivar_name>q124</cultivar_name>
+          <!-- ______________________-
+             based on q117 pending field data
+             -->
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+        </CultivarConstants>
+        <CultivarConstants Name="cultivars[36]">
+          <cultivar_name>q124_ratoon</cultivar_name>
+          <leaf_size>1500 55000  55000</leaf_size>
+          <leaf_size_no>1    14       20</leaf_size_no>
+          <cane_fraction>0.70</cane_fraction>
+          <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+          <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+          <sucrose_delay>0.</sucrose_delay>
+          <min_sstem_sucrose>800.</min_sstem_sucrose>
+          <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+          <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+          <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+          <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+          <green_leaf_no>13.0</green_leaf_no>
+          <tillerf_leaf_size>1.5  1.5  1.5  1   1</tillerf_leaf_size>
+          <tillerf_leaf_size_no>1    4    10   16  26</tillerf_leaf_size_no>
+        </CultivarConstants>     
      
      
         <!--**********************
         Section for Root Constants  (different depending on if using (SoilWat or SWIM) or Eo modules in the simulation)
         **************************
-           need to put in dummy values for (xf, kl, rlv) to get the module to initialise the values.
+           need to put in dummy values for (xf, kl, rlv_init) to get the module to initialise the values.
            these values get overwritten by the actual values from the ApsimToSim section. -->
         <uptake_source>calc</uptake_source>
-        <rlv>0.0 0.0 0.0</rlv> 
+        <rlv_init>0.0 0.0 0.0</rlv_init> 
         <ll>0.0 0.0 0.0</ll>     
         <kl>0.0 0.0 0.0</kl>
         <xf>0.0 0.0 0.0</xf>
