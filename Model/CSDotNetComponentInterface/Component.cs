@@ -393,12 +393,36 @@ namespace ModelFramework
                 Data = (Data as Instance).Model;
             if (Data == null)
             {
-                 WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();
-                 if (GetInternal<double>(NamePath, Value))
+                WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();
+                if (GetInternal<double>(NamePath, Value))
                      Data = Value.Value;
             }
             return Data != null;
         }
+
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool GetObject<T>(string NamePath, ref T Data) where T : TypeInterpreter
+        {
+            String GetterName = NamePath;
+            // external variable
+            if (NamePath[0] == '.')             //this is a FQN
+            {
+                GetterName = NamePath.Remove(0, 1);
+            }
+            else
+            {
+                if (!NamePath.Contains("."))    //if it is qualified then it is relative to this component
+                {
+                    GetterName = NamePrefix + NamePath;
+                }
+            }
+            return HostComponent.Get(GetterName, Data, true);
+        }
+
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
         /// The method will return true if found or false otherwise. The value of the variable will be 
