@@ -38,7 +38,9 @@ class Bob
        	 svnExe = "svn"; sevenZipExe = "unzip";
          }
 
-      string ConnectionString = File.ReadAllText(@"C:\dbConnect.txt");
+      string  pwfile = "C:\\dbConnect.txt";
+      if (!File.Exists(pwfile)) {pwfile = "/etc/dbConnect.txt";}
+      string ConnectionString = File.ReadAllText(pwfile);
       SqlConnection Connection = new SqlConnection(ConnectionString);
 
       try
