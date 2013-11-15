@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CMPServices, Version=1.0.5065.23245, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
     <Reference Include="CSGeneral">
       <HintPath>..\CSGeneral.dll</HintPath>
     </Reference>
@@ -41,6 +45,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WaterAllocator">
+      <HintPath>..\WaterAllocator.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(OS)' != 'Windows_NT'">
@@ -74,6 +81,7 @@
     <Compile Include="ChangeToolTest.cs" />
     <Compile Include="ApsimInputFileTest.cs" />
     <Compile Include="MacroTest.cs" />
+    <Compile Include="WaterAllocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApsimFile\ApsimFile.csproj">
