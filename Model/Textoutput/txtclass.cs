@@ -15,8 +15,6 @@ namespace outputComp
     // ============================================================================
     public class TTextReporter : TGenericReporter
     {
-        protected static String MISSINGTEXT = "#n/a";
-
         private StreamWriter FOutFile;  //Results file 
         private int FInitColumns;       //Initial number of output columns      
         private List<int> FWidths;      //width of each column for apsim format
@@ -30,7 +28,20 @@ namespace outputComp
             this.FWidths = new List<int>();
             this.FHeaderfmt = new StringBuilder();
         }
-        
+        protected String MissingText 
+        {
+            get
+            {
+                if (ApsimFMT)
+                {
+                    return "?";
+                }
+                else
+                {
+                    return "#n/a";
+                }
+            }
+        }
         // ============================================================================
         /// <summary>
         /// Write an 'empty' line to any existing file.
@@ -213,9 +224,9 @@ namespace outputComp
                 if (scalarItem.AggregCount == 0)        // It is possible that no value has been 
                 {                                       // recorded for this column (an array may have shrunk)
                     if (ApsimFMT)
-                        colArray[Idx + 1] = MISSINGTEXT;
+                        colArray[Idx + 1] = MissingText;
                     else
-                        FOutFile.Write("\t", MISSINGTEXT);
+                        FOutFile.Write("\t", MissingText);
                 }
                 else
                 {
@@ -354,15 +365,15 @@ namespace outputComp
 
                 ColTexts = new List<String>();                                  // Set up a list with the correct number 
                 for (i = 0; i <= FColumns.Count - 1; i++)                       // of strings                           
-                {                                     
-                    ColTexts.Add(MISSINGTEXT);
+                {
+                    ColTexts.Add(MissingText);
                 }
 
                 while (!OrigFile.EndOfStream)
                 {                                                               // Work through the results file...      
                     for (i = 0; i <= FColumns.Count - 1; i++)
                     {
-                        ColTexts[i] = MISSINGTEXT;
+                        ColTexts[i] = MissingText;
                     }
 
                     sLine = OrigFile.ReadLine();                                // ... read in each line of results...   
