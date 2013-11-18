@@ -1,6 +1,6 @@
 include $(APSIM)/Model/Build/Platform.make
 
-PROJECT = AgroForestry
+PROJECT = Agroforestry
 
 PROJECTTYPE = dll
 
