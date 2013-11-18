@@ -874,7 +874,7 @@
 		</Job>
       <Job name="Update DB Details">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
+			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.txt</CommandLine>
 		</Job>
    </Target>
 
@@ -885,6 +885,10 @@
    	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
 		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.LINUX.X86_64.exe</CommandLineUnix>
     </Job>
+    <Job name="Update X64 DB SFX Binaries">
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe linuxBinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.binaries.LINUX.X86_64.exe</CommandLine>
+		</Job>
     <Job name="Create X64 Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
         <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
@@ -894,9 +898,17 @@
        <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 	     <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
     </Job>
+    <Job name="Update X64 DB Diff">
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLine>UpdateFieldInDB.exe linuxDiffsFileName http://bob.apsim.info/files/%PatchFileNameShort%.Linux.diffs.zip</CommandLine>
+		</Job>
+    <Job name="Upload X64 Details">
+       <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+	     <CommandLineUnix>curl -T /tmp/%PatchFileNameShort%.txt -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.linux.txt</CommandLineUnix>
+    </Job>
     <Job name="Update X64 DB Details">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
+			<CommandLine>UpdateFieldInDB.exe linuxDetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.linux.txt</CommandLine>
 		</Job>
    </Target>
 

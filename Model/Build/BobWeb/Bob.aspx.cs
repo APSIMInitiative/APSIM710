@@ -45,10 +45,12 @@ namespace BobWeb
 
                 if (!Convert.IsDBNull(Row["LinuxStatus"]))
                 {
-                    Status += "<p><a href=\"" + Row["LinuxDetailsFileName"] + "\"> x32:" + Row["LinuxStatus"].ToString();
+                    Status += "<p><a href=\"" + Row["LinuxDetailsFileName"] + "\">lnx64:" + Row["LinuxStatus"].ToString();
                     if (!Convert.IsDBNull(Row["LinuxNumDiffs"]) && Convert.ToInt32(Row["LinuxNumDiffs"]) > 0)
                         Status += " (" + Row["LinuxNumDiffs"].ToString() + ")";
-                    Status += "</a></p>";
+                    Status += "</a>";
+                    Status += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".linux.xml\">(xml)</a><p>";
+                    
                 }
                 Row["Status"] = Status;
 
@@ -57,7 +59,7 @@ namespace BobWeb
                     Links += " <a href=\"" + Row["DiffsFileName"] + "\">W32&nbsp;Diffs</a>";
 
                 if (!Convert.IsDBNull(Row["LINUXDiffsFileName"]))
-                    Links += " <a href=\"" + Row["LinuxDiffsFileName"] + "\">X32&nbsp;Diffs</a>";
+                    Links += " <a href=\"" + Row["LinuxDiffsFileName"] + "\">lnx64&nbsp;Diffs</a>";
 
                 if (!Convert.IsDBNull(Row["BinariesFileName"]))
                     Links += " <a href=\"" + Row["BinariesFileName"] + "\">Binaries</a>";
@@ -71,8 +73,8 @@ namespace BobWeb
                 if (!Convert.IsDBNull(Row["SetupFileName"]))
                 {
                     Links += " <a href=\"" + Row["SetupFileName"] + "\">WindowsInstallerFull</a>";
-                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.Win32.exe\">Win32SelfExtractingBinaries</a>";
-                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.Linux.x\">LinuxSelfExtractingBinaries</a>";
+                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.WINDOWS.exe\">Win32SelfExtractingBinaries</a>";
+                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.LINUX.X86_64.exe\">LinuxX64SelfExtractingBinaries</a>";
                 }
                 Data.Columns["DetailsFileName"].MaxLength = 2000;
                 Row["DetailsFileName"] = Links;
