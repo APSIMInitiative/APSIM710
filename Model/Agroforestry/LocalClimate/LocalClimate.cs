@@ -33,7 +33,7 @@ public class LocalClimate
         metData.mint = mint;
         metData.maxt = maxt;
         metData.radn = radn;
-        metData.rain = 0;//rain;
+        metData.rain = rain;
         metData.vp = vp;
         metData.today = Today.Date.ToOADate(); //Not sure if this is what the NewMetType uses, but it's the only one that returns a double.
         newMet.Invoke(metData);

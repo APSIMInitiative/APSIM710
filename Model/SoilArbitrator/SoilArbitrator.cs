@@ -51,8 +51,8 @@ public class SoilArbitrator
             foreach (Component c in p.Crops)
             {
                 string PlantStatus;
-                if(!c.Get("plant_status", out PlantStatus))
-                    throw new Exception ("Could not find plant_status for crop :" + c.Name);
+                if (!c.Get("plant_status", out PlantStatus))
+                    throw new Exception("Could not find plant_status for crop :" + c.Name);
 
                 if (PlantStatus != "out") //if crop is not in ground, we don't care about it
                 {
@@ -102,58 +102,60 @@ public class SoilArbitrator
             double[] dlayer;
             Soil.Get("dlayer", out dlayer);
             Soil.Get("sw_dep", out SWDep);
-            double[,] RelKLStrength = CalcRelKLStrength(RootZones);
-            double[,] RelSWLayerStrength = CalcRelSWLayerStrength(RootZones, SWDep, NumLayers);
-            double[,] SWSupply = CalcSWSupply(RootZones, SWDep, NumLayers);
-
             double[] CropSWDemand = new double[RootZones.Count()];
             for (int i = 0; i < RootZones.Count(); i++) //get demand for all crops in paddock using relative SW strength
             {
                 Dictionary<string, double> PaddockSWDemands = (Dictionary<string, double>)RootZones.ToArray()[i].ItemArray[3];
                 CropSWDemand[i] = PaddockSWDemands[p.Name] * (double)RootZones.ToArray()[i].ItemArray[2];
             }
+            double[,] RelKLStrength = CalcRelKLStrength(RootZones, CropSWDemand);
+            double[,] RelSWLayerStrength = CalcRelSWLayerStrength(RootZones, SWDep, NumLayers);
+            double[,] SWSupply = CalcSWSupply(RootZones, SWDep, NumLayers);
 
-                double[,] LayerUptake = new double[RootZones.Count(), NumLayers];
-                double[,] OldLayerUptake = new double[RootZones.Count(), NumLayers]; //used to determine equilibrium
+            double[,] LayerUptake = new double[RootZones.Count(), NumLayers];
+            double[] LastCropSWDemand;
+            double[,] LastSWSupply;
 
-          //      do
-          //      {
-                    OldLayerUptake = LayerUptake;
-                    Console.WriteLine("loop");
-                    for (int i = 0; i < RootZones.Count(); i++) //get as much water as possible for the layer using relative kl strengths
+            do
+            {
+                LastCropSWDemand = CropSWDemand;
+                LastSWSupply = SWSupply;
+
+                for (int i = 0; i < RootZones.Count(); i++) //get as much water as possible for the layer using relative kl strengths
+                {
+                    RootSystemZoneType Zone = (RootSystemZoneType)RootZones.ToArray()[i].ItemArray[4];
+                    for (int j = 0; j < NumLayers; j++)
                     {
-                        RootSystemZoneType Zone = (RootSystemZoneType)RootZones.ToArray()[i].ItemArray[4];
-                        for (int j = 0; j < NumLayers; j++)
+                        if (MathUtility.Sum(CropSWDemand) < MathUtility.Sum(SWSupply))
                         {
-                            LayerUptake[i, j] = Math.Min(CropSWDemand[i] * RelSWLayerStrength[i, j], SWSupply[i, j] * RelKLStrength[j, i] * RootProportion(j, Zone.RootDepth, dlayer));
-                            if (LayerUptake[i, j] < 0)
-                                LayerUptake[i, j] = 0;
-                            Console.Write(LayerUptake[i, j].ToString("#.##", formatProvider) + " ");
+                            LayerUptake[i, j] = CropSWDemand[i] * RelSWLayerStrength[i, j];
                         }
-                        Console.WriteLine();
+                        else
+                            LayerUptake[i, j] = SWSupply[i, j] * RelKLStrength[j, i] * RootProportion(j, Zone.RootDepth, dlayer);
+                        if (LayerUptake[i, j] < 0)
+                            throw new Exception("Layer uptake should not be negative"); 
                     }
+                }
 
-                    DenseMatrix Uptake = DenseMatrix.OfArray(LayerUptake);
-                    Console.WriteLine(Uptake.ToString("#.##", formatProvider));
-                    for (int i = 0; i < RootZones.Count(); i++) //subtract taken water from the supply and demand
+                DenseMatrix Uptake = DenseMatrix.OfArray(LayerUptake);
+                for (int i = 0; i < RootZones.Count(); i++) //subtract taken water from the supply and demand
+                {
+
+                    CropSWDemand[i] -= Uptake.Row(i).Sum();
+                    for (int j = 0; j < NumLayers; j++)
                     {
-
-                        CropSWDemand[i] -= Uptake.Row(i).Sum();
-                        for (int j = 0; j < NumLayers; j++)
-                        {
-                            SWSupply[i, j] -= LayerUptake[i, j];
-                        }
+                        SWSupply[i, j] -= LayerUptake[i, j];
                     }
+                }
 
-                    //subtract from soil water
-                    double[] SetSW = new double[NumLayers];
-                    for (int j = 0; j < Uptake.ColumnCount; j++)
-                    {
-                        SetSW[j] = SWDep[j] - Uptake.Column(j).Sum();
-                    }
+                //subtract from soil water
+                for (int j = 0; j < Uptake.ColumnCount; j++)
+                {
+                    SWDep[j] -= Uptake.Column(j).Sum();
+                }
 
-                    Soil.Set("sw_dep", SetSW);
-                //} while ((double)MathUtility.Sum(SWSupply) > 0 && (double)MathUtility.Sum(OldLayerUptake) != (double)MathUtility.Sum(LayerUptake));        
+                Soil.Set("sw_dep", SWDep);
+            } while (MathUtility.Sum(LastCropSWDemand) != MathUtility.Sum(CropSWDemand) && MathUtility.Sum(LastSWSupply) != MathUtility.Sum(SWSupply));
         }
     }
 
@@ -214,14 +216,19 @@ public class SoilArbitrator
     {
         RootSystemZoneType zone = new RootSystemZoneType();
         double[,] RelSWLayerStrength = new double[RootZones.Count(), NumLayers];
-        for (int i=0;i< RootZones.Count();i++) //crops
+        for (int i = 0; i < RootZones.Count(); i++) //crops
         {
             double TotalSource = 0;
             zone = (RootSystemZoneType)RootZones.ToArray()[i].ItemArray[4];
+            int DeepestRoot = CalcMaxRootLayer(zone.RootDepth, zone.dlayer);
             for (int j = 0; j < NumLayers; j++)
-                TotalSource += zone.kl[j] * SWDep[j];
+                if (j <= DeepestRoot)
+                    TotalSource += zone.kl[j] * SWDep[j];
             for (int j = 0; j < NumLayers; j++)
-                RelSWLayerStrength[i,j] = zone.kl[j] * SWDep[j] / TotalSource;
+                if (j <= DeepestRoot && zone.kl[j] > 0)
+                    RelSWLayerStrength[i, j] = zone.kl[j] * SWDep[j] / TotalSource;
+                else
+                    RelSWLayerStrength[i, j] = 0;
         }
         return RelSWLayerStrength;
     }
@@ -232,13 +239,18 @@ public class SoilArbitrator
     /// </summary>
     /// <param name="RootZones">The rootzones to process in current paddock</param>
     /// <returns>A 2D array containing the relative kl strength of each crop and layer.</returns>
-    private double[,] CalcRelKLStrength(IEnumerable<DataRow> RootZones)
+    private double[,] CalcRelKLStrength(IEnumerable<DataRow> RootZones, double[] CropSWDemand)
     {
         double[][] KLArray = new double[RootZones.Count()][];
-        for (int i = 0; i < RootZones.Count(); i++) //extract the kl array from each zone
+        int[] LowestRootLayer = new int[RootZones.Count()];
+        for (int i = 0; i < KLArray.GetLength(0); i++) //extract the kl array from each zone
         {
             RootSystemZoneType zone = (RootSystemZoneType)RootZones.ToArray()[i].ItemArray[4];
             KLArray[i] = zone.kl;
+            for (int j = 0; j < KLArray[i].Length; j++)
+                if (CropSWDemand[i] == 0)
+                    KLArray[i][j] = 0;
+            LowestRootLayer[i] = CalcMaxRootLayer(zone.RootDepth, zone.dlayer);
         }
 
         //calculate relative demand strength for each layer
@@ -248,11 +260,15 @@ public class SoilArbitrator
             double KLSum = 0;
             for (int j = 0; j < KLArray.Length; j++) //for the current layer, sum the kl's of each crop in the layer
             {
-                KLSum += KLArray[j][i];
+                if(i <= LowestRootLayer[j])
+                    KLSum += KLArray[j][i];
             }
             for (int j = 0; j < KLArray.Length; j++) //use those summed kl's to calculate the relative kl strength for each crop in the layer
             {
-                RelKLStrength[i, j] = KLArray[j][i] / KLSum;
+                if (i <= LowestRootLayer[j] && KLArray[j][i] > 0)
+                    RelKLStrength[i, j] = KLArray[j][i] / KLSum;
+                else
+                    RelKLStrength[i, j] = 0;
             }
         }
         return RelKLStrength;
@@ -311,5 +327,25 @@ public class SoilArbitrator
         depth_of_root_in_layer = (double)Math.Max(0.0, depth_to_root - depth_to_layer_top);
 
         return depth_of_root_in_layer / dlayer[layer];
+    }
+
+    /// <summary>
+    /// Calculate the deepest layer containing roots.
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <param name="root_depth"></param>
+    /// <param name="dlayer"></param>
+    /// <returns>The index of the deepest layer containing roots</returns>
+    private int CalcMaxRootLayer(double root_depth, double[] dlayer)
+    {
+        double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
+        for (int i = 0; i < dlayer.Length; i++)
+        {
+            depth_to_layer_bottom += dlayer[i];
+            if (root_depth < depth_to_layer_bottom)
+                return i;
+        }
+
+        return dlayer.Length; //bottom layer
     }
 }

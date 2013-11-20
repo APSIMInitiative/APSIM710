@@ -4534,15 +4534,15 @@
             END IF
 !
 !!-----------The following only in main field
-            IF (g%CROPSTA .GE. 4) THEN
+!!            IF (g%CROPSTA .GE. 4) THEN
 !!           Check if lower limit dead leaves is reached
-               IF (g%LDSTRS.LE.0.) THEN
-               call fatal_error(err_user,
-     :           'Soil dryer than lower limit when dead' //
-     :           'LDSTRS <= 0')
-               END IF
+ !!              IF (g%LDSTRS.LE.0.) THEN
+ !!              call fatal_error(err_user,
+ !!    :           'Soil dryer than lower limit when dead' //
+ !!    :           'LDSTRS <= 0')
+ !!              END IF
 !!-----------End if only in main field
-            END IF
+ !!           END IF
 !          !
 !!========END OF SKIP WHOLE RATE CALCULATIONS BEFORE EMERGENCE
          END IF

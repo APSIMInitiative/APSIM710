@@ -17,6 +17,8 @@ public class SimpleTree
     double CoverLive = 0.5;
     [Output]
     string plant_status = "alive";
+    [Output]
+    double sw_demand = 0;
 
     private int NumPlots;
     private double[] dlayer;
@@ -28,7 +30,6 @@ public class SimpleTree
     {
         NumPlots = MyPaddock.Parent.ChildPaddocks.Count; 
         RootSystem = new RootSystemType();
-
     }
 
     [EventHandler]
@@ -48,7 +49,7 @@ public class SimpleTree
 
             for (int j = 0; j < RootSystem.Zone[i].dlayer.Length; j++)
             {
-                RootSystem.Zone[i].kl[j] = 0.01;
+                RootSystem.Zone[i].kl[j] = 0.02;
                 RootSystem.Zone[i].ll[j] = 0.15;
             }
         }
@@ -77,6 +78,7 @@ public class SimpleTree
             foreach (double d in i)
                 TotPotSWUptake += d;
         RootSystem.SWDemand = TotPotSWUptake;
+        sw_demand = TotPotSWUptake;
     }
 
     private double RootProportion(int layer, double root_depth, double[] dlayer)
