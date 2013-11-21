@@ -28,6 +28,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% %2.vdproj %3 ..\..\Documentation                           %%Apsim%%\Documentation
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.lnk                             %%Apsim%%\Model
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.xml                             %%Apsim%%\Model
+del ..\..\Model\APSIM.Tests.dll
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.exe                             %%Apsim%%\Model
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.dll                             %%Apsim%%\Model
 %InsertFiles% %2.vdproj %3 ..\..\Model\RunTime\*.dll                     %%Apsim%%\Model

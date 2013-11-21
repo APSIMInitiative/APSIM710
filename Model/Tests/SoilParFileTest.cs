@@ -121,7 +121,7 @@ namespace APSIM.Tests
         [SetUp]
         public void Init()
         {
-            StreamWriter Temp = new StreamWriter("Temp.par");
+            StreamWriter Temp = new StreamWriter("./Temp.par");
             Temp.Write(ParContents);
             Temp.Close();
         }
@@ -129,13 +129,16 @@ namespace APSIM.Tests
         [TearDown]
         public void TearDown()
         {
-            File.Delete("Temp.par");
+            File.Delete("./Temp.par");
         }
+#if __MonoCS__
 
+#else
+// Uses kernel32.dll
         [Test]
         public void TestImportFromPar()
         {
-            Soil S = Soil.Create(SoilParFile.Import(".\\Temp.par"));
+            Soil S = Soil.Create(SoilParFile.Import("./Temp.par"));
 
             Assert.AreEqual(S.Name, "BlackVertosol");
             Assert.IsTrue(MathUtility.AreEqual(S.Water.BD,
@@ -146,5 +149,6 @@ namespace APSIM.Tests
                                                new double[] { 0.290, 0.290, 0.320, 0.320, 0.350, 0.380, 0.410, 0.480, 0.470, 0.460, 0.440 }));
 
         }
+#endif
     }
 }

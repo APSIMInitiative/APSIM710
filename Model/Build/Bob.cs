@@ -115,7 +115,10 @@ class Bob
 
                // Close log file.
                Log.Close();
-
+               if (System.Environment.MachineName.ToUpper() != "BOB")
+                  Run("Uploading details...", Path.Combine(APSIMDir, "/usr/bin/curl"), " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%-linux.txt");
+				  
+				   
                Console.WriteLine("Waiting for a patch...");
             }
             else
@@ -191,10 +194,11 @@ class Bob
       /// </summary>
       static int FindNextJob(SqlConnection Connection)
       {
-         string prefix = "";
-         if (System.Environment.MachineName.ToUpper() != "BOB")
-            prefix = "linux";
-         string SQL = "SELECT ID FROM BuildJobs WHERE " + prefix + "Status = 'Queued' ORDER BY ID";
+      	 string SQL;
+         if (System.Environment.MachineName.ToUpper() == "BOB")
+            SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Queued' ORDER BY ID";
+         else 
+            SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Pass' AND linuxStatus = 'Queued' ORDER BY ID";
 
          SqlDataReader Reader = null;
          try
@@ -202,7 +206,7 @@ class Bob
             SqlCommand Command = new SqlCommand(SQL, Connection);
             Reader = ExecuteReader(Command);
             if (Reader.Read())
-                return Convert.ToInt32(Reader[0]);
+               return Convert.ToInt32(Reader[0]);
          }
          finally
          {

@@ -79,7 +79,7 @@ namespace APSIM.Tests
         [Test]
         public void SerialiseSoil()
         {
-            StreamWriter Out = new StreamWriter("..\\..\\TestOut.xml");
+            StreamWriter Out = new StreamWriter("./Tests/TestOut.xml");
             Out.Write(Soil.ToXml());
             Out.Close();
         }
@@ -87,7 +87,7 @@ namespace APSIM.Tests
         [Test]
         public void DeserialiseSoil()
         {
-            StreamReader F = new StreamReader("..\\..\\Test.xml");
+            StreamReader F = new StreamReader("./Tests/Test.xml");
             string Xml = F.ReadToEnd();
             F.Close();
             Soil.Create(Xml);

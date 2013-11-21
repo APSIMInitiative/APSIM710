@@ -548,13 +548,21 @@
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
          <DependsOn>Compile DotNetProxies</DependsOn>
-         <DependsOn>Compile DotNetProxies</DependsOn>
          <WorkingDirectory>%APSIM%/Model/SysBal2</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile TclLink">
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/TclLink</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile Tests">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Textoutput">
@@ -874,7 +882,7 @@
 		</Job>
       <Job name="Update DB Details">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
+			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.txt</CommandLine>
 		</Job>
    </Target>
 
@@ -883,7 +891,7 @@
     <DependsOn IgnoreErrors="true">Release</DependsOn>
     <Job name="Upload X64 SFX Binaries">
    	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.LINUX.X86_64.exe</CommandLineUnix>
+	   <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.LINUX.X86_64.exe</CommandLineUnix>
     </Job>
     <Job name="Create X64 Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
@@ -892,11 +900,11 @@
     <Job name="Upload X64 Diff Zip">
        <DependsOn>Create X64 Diff Zip</DependsOn>
        <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-	     <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
+       <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
     </Job>
     <Job name="Update X64 DB Details">
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%%HostSuffix%.txt</CommandLine>
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>UpdateFieldInDB.exe linuxDetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%-linux.txt</CommandLine>
 		</Job>
    </Target>
 
@@ -941,10 +949,10 @@
          <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
-      <Job name="ApsimUI tests">
-         <WorkingDirectory>%APSIM%/Model/Tests/bin/release</WorkingDirectory>
+      <Job name="Apsim NUNIT tests">
+         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>"C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" APSIM.Tests.dll</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
+         <CommandLineUnix>nunit-console APSIM.Tests.dll</CommandLineUnix>
       </Job>   
    </Target>
 

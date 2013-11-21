@@ -8,6 +8,7 @@ cp    $APSIM/Model/ApsimRun.sh $dest/Model
 cp    $APSIM/Model/*.xml $dest/Model
 cp    $APSIM/Model/*.so  $dest/Model
 cp    $APSIM/Model/*.dll $dest/Model
+if [ -f $dest/Model/APSIM.Tests.dll ]; then rm -f $dest/Model/APSIM.Tests.dll; fi
 cp    $APSIM/Model/*.exe $dest/Model
 cp    $APSIM/Model/*.x   $dest/Model
 mkdir $dest/Model/TclLink

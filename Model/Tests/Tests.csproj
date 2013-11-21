@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,18 +25,20 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CMPServices, Version=1.0.5065.23245, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CMPServices">
       <HintPath>..\CMPServices.dll</HintPath>
     </Reference>
     <Reference Include="CSGeneral">
       <HintPath>..\CSGeneral.dll</HintPath>
+    </Reference>
+    <Reference Include="ApsimFile">
+      <HintPath>..\ApsimFile.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,12 +84,6 @@
     <Compile Include="ApsimInputFileTest.cs" />
     <Compile Include="MacroTest.cs" />
     <Compile Include="WaterAllocator.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ApsimFile\ApsimFile.csproj">
-      <Project>{416A3885-FD38-46D0-BE42-54AA33D146B7}</Project>
-      <Name>ApsimFile</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Test.xml" />
