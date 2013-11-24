@@ -42,8 +42,9 @@ class Program
         if (!Directory.Exists(DirectoryName)) { throw new Exception("Directory " + DirectoryName + " does not exist"); }
 
         string PatchFileName = Macros["PatchFileName"];
-        
-        if (!File.Exists(PatchFileName)) { throw new Exception("PatchFileName " + PatchFileName + " does not exist"); }
+
+// if the file doesnt exist, then we are testing against a "passed" revision (ie linux)
+//      if (!File.Exists(PatchFileName)) { throw new Exception("PatchFileName " + PatchFileName + " does not exist"); }
 
         // Find SVN.exe on the path.
         string SVNFileName;
@@ -57,7 +58,13 @@ class Program
         string StdOut = Utility.CheckProcessExitedProperly(P);
         string[] Lines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-        string TempDirectory = (Path.GetTempPath() + Path.GetFileNameWithoutExtension(PatchFileName)).Replace('\\','/');
+        string TempDirectory = Path.GetTempPath();
+        if (File.Exists(PatchFileName)) 
+           TempDirectory += Path.GetFileNameWithoutExtension(PatchFileName);
+        else             
+           TempDirectory += PatchFileName;
+
+        TempDirectory = TempDirectory.Replace('\\','/');
         if (Directory.Exists(TempDirectory))
             Directory.Delete(TempDirectory, true);
         Directory.CreateDirectory(TempDirectory);
@@ -98,6 +105,7 @@ class Program
 
         // Now loop through all entries files in our temporary directory and remove entries
         // that don't apply.
+        string outZip = "";
         if (Lines.Length > 0)
         {
             List<string> Entries = new List<string>();
@@ -105,9 +113,15 @@ class Program
             foreach (string FileName in Entries)
                 ModifyEntriesFile(FileName);
 
+
             // Now zip up the whole temporary directory.
-            string outZip = Path.Combine(Directory.GetCurrentDirectory(), 
-                                         Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip");
+            outZip = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
+            if (File.Exists(PatchFileName)) 
+               outZip += Path.GetFileNameWithoutExtension(PatchFileName);
+            else             
+               outZip += PatchFileName;
+            outZip += ".diffs.zip";
+
             string zipExe;
 
             if (Path.DirectorySeparatorChar == '/')
@@ -127,7 +141,7 @@ class Program
         }
 
         // Now report the number of diffs to the Builds Database.
-        ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName);
+        ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName, outZip);
     }
 
 
@@ -278,13 +292,14 @@ class Program
     /// <summary>
     /// Report the number of diffs to the database.
     /// </summary>
-    private static void ReportNumDiffs(string ApsimDirectoryName, List<string> ModifiedFiles, string PatchFileName)
+    private static void ReportNumDiffs(string ApsimDirectoryName, List<string> ModifiedFiles, string PatchFileName, string outZip)
     {
         // Some of the diffs in ModifiedFiles will be from the patch, so to get a count of
         // the number of files that were changed by APSIM running we need to remove those
         // files from the list that were sent in the patch.
-        string[] PatchFileNames;
-        PatchFileNames = Zip.FileNamesInZip(PatchFileName, "");
+        string[] PatchFileNames = new string [0];
+        if (File.Exists(PatchFileName)) 
+          PatchFileNames = Zip.FileNamesInZip(PatchFileName, "");
 
         foreach (string FileNameInPatch in PatchFileNames)
         {
@@ -325,12 +340,11 @@ class Program
             foreach (string FileName in ModifiedFiles)
                 Console.WriteLine(FileName);
 
-            string prefix = "";
-            if (Environment.MachineName.ToUpper() != "BOB") prefix = "linux";
-
-            string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + 
-                (prefix != "" ? "." + prefix : "") + ".diffs.zip";
-            Db.UpdateDiffFileName(JobID, DiffsFileName);
+            if (Environment.MachineName.ToUpper() == "BOB") 
+                {
+                string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip";
+                Db.UpdateDiffFileName(JobID, DiffsFileName);
+                }                
             Db.Close();
             throw new Exception("Build is not clean");
         }

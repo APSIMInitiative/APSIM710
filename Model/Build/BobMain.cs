@@ -36,31 +36,41 @@ class BobMain
       {
          // Setup the DB fields for current job.
          if (System.Environment.MachineName.ToUpper() == "BOB")
+            {
             DB.UpdateStartDateToNow(JobID);
 
-         // Check the previous job to see if it has stalled. If so then set its
-         // status accordingly. Otherwise we get multiple "Running" status'.
-         if (JobID > 0)
-         {
-            string PreviousStatus = DB.Get("Status", JobID-1).ToString();
-            if (PreviousStatus == "Running")
-              DB.UpdateStatus(JobID-1, "Aborted");
-         }
+            // Check the previous job to see if it has stalled. If so then set its
+            // status accordingly. Otherwise we get multiple "Running" status'.
+            if (JobID > 0)
+            {
+               string PreviousStatus = DB.Get("Status", JobID-1).ToString();
+               if (PreviousStatus == "Running")
+                 DB.UpdateStatus(JobID-1, "Aborted");
+            }
 
-         // Apply this patch to svn.
-         Run("Apply patch", "%APSIM%/Model/cscs.exe",
-             "%APSIM%/Model/Build/ApplyPatch.cs %APSIM%",
-             "%APSIM%/Model");
-
-         // Run the version stamper.
-         Run("Run version stamper", "%APSIM%/Model/cscs.exe",
-             "%APSIM%/Model/Build/VersionStamper.cs Directory=%APSIM% Increment=Yes",
-             "%APSIM%/Model/Build");
-             
-         // Set the VersionStamper increment environment variable to indicate that the 
-         // VersionStamper should increment the revision number. This is necessary to
-         // keep the revision number reported by APSIM inline with SVN.
-         System.Environment.SetEnvironmentVariable("Increment", "Yes");
+            // Apply this patch to svn.
+            Run("Apply patch", "%APSIM%/Model/cscs.exe",
+                "%APSIM%/Model/Build/ApplyPatch.cs %APSIM%",
+                "%APSIM%/Model");
+            
+            // Run the version stamper.
+            Run("Run version stamper", "%APSIM%/Model/cscs.exe",
+                "%APSIM%/Model/Build/VersionStamper.cs Directory=%APSIM% Increment=Yes",
+                "%APSIM%/Model/Build");
+                
+            // Set the VersionStamper increment environment variable to indicate that the 
+            // VersionStamper should increment the revision number. This is necessary to
+            // keep the revision number reported by APSIM inline with SVN.
+            System.Environment.SetEnvironmentVariable("Increment", "Yes");
+            }
+         else 
+            {
+            // Run the version stamper.
+            Run("Run version stamper", "%APSIM%/Model/cscs.exe",
+                "%APSIM%/Model/Build/VersionStamper.cs Directory=%APSIM% Increment=No",
+                "%APSIM%/Model/Build");
+            System.Environment.SetEnvironmentVariable("Increment", "No");
+            }
 
          // Compile the JobScheduler.
          Run("Compile job scheduler",
