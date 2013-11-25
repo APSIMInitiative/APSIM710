@@ -108,7 +108,7 @@ class Bob
                   // Clean the tree.
                   RemoveUnwantedFiles(Directory.GetCurrentDirectory());
                   Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
-                  Run("SVN update", svnExe, "update -r" + revision + " %APSIM%", Log);
+                  Run("SVN update", svnExe, "update -r " + revision + " %APSIM%", Log);
                   Log.Flush();
 
                   // Set some environment variables.

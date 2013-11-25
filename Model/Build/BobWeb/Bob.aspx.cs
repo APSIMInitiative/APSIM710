@@ -49,8 +49,12 @@ namespace BobWeb
                     if (!Convert.IsDBNull(Row["LinuxNumDiffs"]) && Convert.ToInt32(Row["LinuxNumDiffs"]) > 0)
                         Status += " (" + Row["LinuxNumDiffs"].ToString() + ")";
                     Status += "</a>";
-                    Status += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".linux.xml\">(xml)</a><p>";
-                    
+                    if (!Convert.IsDBNull(Row["LinuxDetailsFileName"]) 
+                    {
+                       string xmlFileName = Path.GetFileNameWithoutExtension(Row["LinuxDetailsFileName"].ToString()) + ".xml";
+                       if (File.Exists("c:/inetpub/wwwroot/files/" + xmlFileName))
+                          Status += " <a href=\"" + xmlFileName + "\">(xml)</a><p>";
+                    }                 
                 }
                 Row["Status"] = Status;
 
