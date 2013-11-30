@@ -1070,6 +1070,12 @@ c     :              1d0)
      :            '(g/cm^3)',
      :            p%rhob(0),
      :            p%n+1)
+      else if (Variable_name .eq. 'ks') then
+         call respond2Get_double_array (
+     :            Variable_name,
+     :            '(mm/d)',
+     :            p%Ks(0),
+     :            p%n+1)
       else if (Variable_name .eq. 'sw') then
          call respond2Get_double_array (
      :            Variable_name,
@@ -1517,6 +1523,19 @@ cnh added as per request by Dr Val Snow
 
          call apswim_reset_water_balance (2,suction)
 
+      else if (Variable_name .eq. 'ks') then
+
+         call collect_double_array (
+     :              'ks',
+     :              p%n+1,
+     :              '(mm/d)',
+     :              p%Ks(0),
+     :              numvals,
+     :              0.d0,
+     :              1.d4)      
+         
+         call SetupKCurve()
+         
 cnh added as per request by Dr Val Snow
 
       else if (index(Variable_name,'exco_').eq.1) then
@@ -2101,19 +2120,11 @@ c      p%dx(p%n) = 0.5*(p%x(p%n)-p%x(p%n-1))
          g%M1(layer,5) = 0
          g%Y0(layer,5) = 0
          g%Y1(layer,5) = 0
-
-         b = -log(p%Psidul/psi_ll15)/log(p%dul(layer)/p%ll15(layer))
-         g%MicroP(layer) = b*2d0+3d0
-         g%Kdula(layer) = min(0.99*p%Kdul,p%Ks(layer))
-         g%MicroKs(layer) = g%Kdula(layer)/(p%dul(layer)/p%sat(layer))
-     :                                         **g%MicroP(layer)
-
-         Sdul = p%dul(layer)/p%sat(layer)
-         g%MacroP(layer)=Log10(g%Kdula(layer)/99d0
-     :                   /(p%Ks(layer)-g%MicroKs(layer)))/Log10(Sdul)
-                  
+   
    26    continue
-
+      
+      call SetupKCurve ()                
+         
 * ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
     
       if (g%th(1).ne.0) then
@@ -2151,6 +2162,31 @@ c   50    continue
       return
       end subroutine
 
+* ====================================================================
+      subroutine SetupKCurve()
+* ====================================================================
+
+      integer layer
+      double precision b
+      double precision Sdul
+
+*- Implementation Section ----------------------------------
+
+      do 100 layer=0,p%n
+         b = -log(p%Psidul/psi_ll15)/log(p%dul(layer)/p%ll15(layer))
+         g%MicroP(layer) = b*2d0+3d0
+         g%Kdula(layer) = min(0.99*p%Kdul,p%Ks(layer))
+         g%MicroKs(layer) = g%Kdula(layer)/(p%dul(layer)/p%sat(layer))
+     :                                         **g%MicroP(layer)
+
+         Sdul = p%dul(layer)/p%sat(layer)
+         g%MacroP(layer)=Log10(g%Kdula(layer)/99d0
+     :                   /(p%Ks(layer)-g%MicroKs(layer)))/Log10(Sdul)
+ 100  continue
+      
+      return
+      end subroutine
+      
 * ====================================================================
        subroutine apswim_interp (node,tpsi,tth,thd,hklg,hklgd)
 * ====================================================================
