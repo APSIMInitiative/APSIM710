@@ -821,7 +821,8 @@ cjh      dlt_stage = l_bound(new_stage - g%current_stage,0.0)
 
       else
 cjh         phase_devel = 0.0
-         phase_devel = mod(g%current_stage, 1.0)
+cnh         phase_devel = mod(g%current_stage, 1.0)
+         phase_devel = 0.0
 
       endif
 
@@ -980,7 +981,8 @@ cpsc           need to develop leaf senescence functions for crop
 
 cejvo         made it absolute leafnumber and added second slope
 
-      if ((stage_is_between (emerg, harvest_ripe, g%current_stage))
+      if ((stage_is_between (emerg, harvest_ripe, g%current_stage)
+     :     .or.int(g%current_stage).eq.harvest_ripe)
      : .and. (g%leaf_no_final .ne. 0.0)) then
 
          ttsum= sum_between (emerg, now, g%tt_tot)
@@ -1020,9 +1022,9 @@ cgd
      :                                  , leaf_no_dead_yesterday)
 
          endif
-      elseif (on_day_of (harvest_ripe
-     :                 , g%current_stage, g%days_tot)) then
-         leaf_no_dead_today = g%leaf_no_final
+cnh      elseif (on_day_of (harvest_ripe
+cnh     :                 , g%current_stage, g%days_tot)) then
+cnh         leaf_no_dead_today = g%leaf_no_final
 
       else
          leaf_no_dead_today = 0.0
@@ -3922,7 +3924,8 @@ csc  true....
       call fill_real_array (N_conc_crit, 0.0, max_part)
       call fill_real_array (N_conc_min, 0.0, max_part)
 
-      if (stage_is_between (emerg, maturity, g_current_stage)) then
+cnh      if (stage_is_between (emerg, maturity, g_current_stage)) then
+      if (g_current_stage.ge.emerg) then
          N_conc_crit(grain) = c_N_conc_crit_grain
          N_conc_max(grain) = c_N_conc_max_grain
          N_conc_min(grain) = c_N_conc_min_grain
@@ -4103,7 +4106,8 @@ csc  true....
 
       call push_routine (my_name)
 
-      if (stage_is_between (emerg, maturity, g_current_stage)) then
+cnh      if (stage_is_between (emerg, maturity, g_current_stage)) then
+       if (g_current_stage.ge.emerg) then
 
          numvals = count_of_real_vals (c_P_stage_code, max_stage)
 
@@ -4640,6 +4644,77 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
       return
       end subroutine
 
+*     ===========================================================
+      Recursive
+     :subroutine millet_death_nutrition (
+     :              g_cnd_photo
+     :            , g_leaf_no
+     :            , c_leaf_no_crit
+     :            , c_nfact_photo_limit
+     :            , g_nfact_photo
+     :            , c_nfact_photo_rate
+     :            , g_plants
+     :            , dlt_plants)
+*     ===========================================================
+      implicit none
+
+*+  Sub-Program Arguments
+      real       g_cnd_photo(*)
+      real       g_leaf_no(*)
+      real       c_leaf_no_crit
+      real       c_nfact_photo_limit
+      real       g_nfact_photo
+      real       c_nfact_photo_rate
+      real       g_plants
+      real       dlt_plants
+
+*+  Purpose
+*      Determine percentage plant failure due to nutrition stress
+
+*+  Mission statement
+*       Determine plant death from nutrition
+
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'millet_death_nutrition')
+
+*+  Local Variables
+      real       cnd_photo            ! cumulative water stress for photoperiod
+      real       leaf_no               ! number of leaves
+      real       killfr                ! fraction of crop population to kill
+      character  string*200            ! output string
+
+*- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+      cnd_photo = sum_between (emerg, flag_leaf, g_cnd_photo)
+      leaf_no = sum_between (emerg, now, g_leaf_no)
+
+      if (leaf_no.lt.c_leaf_no_crit
+     :       .and. cnd_photo.gt.c_nfact_photo_limit
+     :       .and. g_nfact_photo .lt.1.0) then
+
+         killfr = c_nfact_photo_rate* (cnd_photo - c_nfact_photo_limit)
+         killfr = bound (killfr, 0.0, 1.0)
+         dlt_plants = - g_plants*killfr
+
+         write (string, '(a, i4, a)')
+     :          'plant_kill.'
+     :         , nint (killfr*100.0)
+     :         , '% failure because of nutrient stress.'
+
+         call Write_string (string)
+
+      else
+         dlt_plants = 0.0
+
+      endif
+
+      call pop_routine (my_name)
+      return
+      end subroutine
 
 *     ===========================================================
       Recursive
@@ -4728,6 +4803,7 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :                    , g_dlt_plants_failure_phen_delay
      :                    , g_dlt_plants_death_seedling
      :                    , g_dlt_plants_death_drought
+     :                    , g_dlt_plants_death_nutrition
      :                    , g_dlt_plants_death_barrenness
      :                    , dlt_plants
      :                       )
@@ -4741,6 +4817,7 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
       real       g_dlt_plants_failure_phen_delay
       real       g_dlt_plants_death_seedling
       real       g_dlt_plants_death_drought
+      real       g_dlt_plants_death_nutrition
       real       g_dlt_plants_death_barrenness
       real       dlt_plants
 
@@ -4767,7 +4844,8 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :                , g_dlt_plants_failure_phen_delay
      :                , g_dlt_plants_death_seedling
      :                , g_dlt_plants_death_drought
-     :                , g_dlt_plants_death_barrenness)
+     :                , g_dlt_plants_death_nutrition)
+cnh     :                , g_dlt_plants_death_barrenness)
 
       call pop_routine (my_name)
       return

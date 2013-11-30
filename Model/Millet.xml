@@ -72,7 +72,7 @@
       <!--                  sow ger eme  juv   fi   flag   fl   st_gf end_gf mat  hv_rpe
       -->
       <stage_code description="numeric code for phenological stages">1   2   3    4    5     6     7      8     9    10    11    12</stage_code>
-      <rue units="g/MJ" description="PKC95 (preflow. part)">0   0  1.86 1.86 1.86  1.86  1.86    1.4   1.4   1.4   0     0</rue>
+      <rue units="g/MJ" description="PKC95 (preflow. part)">0   0  1.86 1.86 1.86  1.86  1.86    1.4   1.4   1.4   1.4     1.4</rue>
       <!-- rue =              0   0  1.90 1.90 1.90  1.90  1.90    1.4   1.4   1.4   0     0  (g/MJ)   ! PKC95 (preflow. part) O&M 85 - radiation use efficiency
       rue for solrad, using k-values based on solrad from the equation k=-0.2061*row spacing + 0.6016
       rue data from paper 3 millet series
@@ -143,7 +143,11 @@
       <!--   photosynthesis water stress
       millet_root_depth
       -->
-      <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
+     <nfact_photo_limit description="">20.1</nfact_photo_limit>
+     <nfact_photo_rate description="">0.0</nfact_photo_rate>
+  
+
+ <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
       <!--  millet_leaf_area_init
       -->
       <initial_tpla units="mm^2/plant" description="EJvO half 1st leaf - initial total plant leaf area">200.0</initial_tpla>
@@ -174,7 +178,7 @@
       -->
       <head_grain_no_max_ub units="/head" description="upper limit">10000.0</head_grain_no_max_ub>
       <grain_gth_rate_ub units="mg/d" description="upper limit">5.0</grain_gth_rate_ub>
-      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">1000.0</tt_emerg_to_endjuv_ub>
       <pp_endjuv_to_init_ub units="oCd/h" description="upper limit">500.0</pp_endjuv_to_init_ub>
       <tt_flower_to_maturity_ub units="oCd" description="upper limit">1000.0</tt_flower_to_maturity_ub>
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
@@ -307,7 +311,7 @@
       <leaf_no_dead_const description="EJVO data;dead leaf no intercept">-3.7575</leaf_no_dead_const>
       <leaf_no_dead_slope description="dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope>
       <leaf_no_dead_slope1 description="EJVO data;dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope1>
-      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
+
       <!--  millet_get_other_variables
       limits set to check inputs
       -->
@@ -401,6 +405,7 @@
       <b_slope2 description="leaf area skewness slope2">-0.1100</b_slope2>
       <!--     millet_tiller
       -->
+      <!-- Changed by HLH Oct 2012 original <tiller_no_pot description="potential no. of tillers per plant">5</tiller_no_pot> -->
       <tiller_no_pot description="potential no. of tillers per plant">5</tiller_no_pot>
       <!--   (=no. of APSIM tiller modules
       included in control file)
@@ -457,16 +462,16 @@
       millet_N_conc_limits
       emerg   endjuv fi    flag   start gf maturity
       -->
-      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_flower>
-      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016</y_n_conc_crit_flower>
-      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025</y_n_conc_max_flower>
+      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10 12</x_stage_code>
+      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016 0.016</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025 0.025</y_n_conc_max_leaf>
+      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002 0.002</y_n_conc_min_stem>
+      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003 0.003</y_n_conc_crit_stem>
+      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015 0.015</y_n_conc_max_stem>
+      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_flower>
+      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016 0.016</y_n_conc_crit_flower>
+      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025 0.025</y_n_conc_max_flower>
       <!--                         ! emerg   juv     fi      flower  maturity
       x_stage_code =            3       4       5       7      10      ()   ! stage code used in table
       y_n_conc_crit_leaf =      0.021   0.021   0.0210  0.018   0.0080 ()   ! PDC 85 - leaf critical N conc.
@@ -508,9 +513,9 @@
       p_conc_max    = 0.0050  0.0040  0.0030  0.002  0.002 ()
       p_conc_min    = 0.0025  0.0020  0.0015  0.0010  0.0010 ()
       -->
-      <p_stage_code>3       4      5      7      8      10</p_stage_code>
-      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020</p_conc_max>
-      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007</p_conc_min>
+      <p_stage_code>3       4      5      7      8      10     12 </p_stage_code>
+      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020 0.0020</p_conc_max>
+      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007  0.0007</p_conc_min>
       <k_pfact_photo>2.0</k_pfact_photo>
       <k_pfact_pheno description="20">10   </k_pfact_pheno>
       <k_pfact_expansion>20</k_pfact_expansion>
@@ -591,6 +596,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </bj104>
       <rcbic911 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -611,6 +617,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </rcbic911>
       <wrajpop cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -631,6 +638,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </wrajpop>
       <hhb67 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -651,6 +659,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>         
       </hhb67>
       <mh179 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -669,7 +678,31 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </mh179>
+      <!-- Next 3 cultivars added by HLH Oct 2012. Based on BJ104 with emerg to flowering from Akponikpe 2008. Local variety = Hainikirey -->
+      <ZATIB cultivar="yes">
+         <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
+         <hi_max_pot description="maximum harvest index potential">0.55</hi_max_pot>
+         <head_grain_no_max units="grains/head" description="EJvO data tagging exp - potential grains per head [Jones and Carberry, 1994]">2600.0</head_grain_no_max>
+         <grain_gth_rate units="mg/grain/d" description="PKC95; potential grain growth rate [Jones and Carberry, 1994]">0.46</grain_gth_rate>
+         <tt_emerg_to_endjuv units="oCd" description="EJvO data - TT from emergence to end of juvenile phase">360</tt_emerg_to_endjuv>
+         <est_days_emerg_to_init units="d" description="PSC data - estimated days from emergence to floral init.">17</est_days_emerg_to_init>
+         <pp_endjuv_to_init units="oCd/h" description="EJvO data - photoperiod sensitivity">112.4</pp_endjuv_to_init>
+         <tt_flower_to_maturity units="oCd" description="EJvO PKC96 - TT from flowering to maturity">600.0</tt_flower_to_maturity>
+         <tt_flag_to_flower units="oCd" description="EJvO data - TT from flag leaf to flowering">100.0</tt_flag_to_flower>
+         <tt_flower_to_start_grain units="oCd" description="Bieler data - TT from flowering to start grain fill">80.0</tt_flower_to_start_grain>
+         <tt_maturity_to_ripe units="oCd" description="TT from maturity to harvest ripe">1</tt_maturity_to_ripe>
+         <y0_const description="EJVO 4 plants/m2 n=27, adj r2=0.47 largest leaf area intercept">-8350.0</y0_const>
+         <y0_slope description="EJVO 4 plants/m2 n=27, adj r2=0.47 largest leaf area slope">1430.0</y0_slope>
+         <!-- y0_const =                   -4800.0      ()   ! High density
+         y0_slope =                    1090.0      ()   ! High density
+         -->
+         <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  3000</y_height>
+      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.008</leaf_no_dead_slope2>      
+      </ZATIB> 
+
    </Model>
    <Model name="Millet1">
 
@@ -686,7 +719,7 @@
       rue data from paper 3 millet series
       rue after anthesis changed from old value above proporationally as rue before anthesis.
       -->
-      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   0     0</rue>
+      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   1.6     1.6</rue>
       <root_depth_rate units="mm/d" description="MVSK 94 - extraction front velocity">0   0  20.0 20.0 20.0  20.0  20.0    0.0   0.0   0.0   0     0</root_depth_rate>
       <ratio_root_shoot units="0-1" description="root:shoot ratio for daily assimilate partitioning">0  0   1    1    0.33  0.33  0.087  0     0     0     0     0</ratio_root_shoot>
       <frac_dm_to_leaf units="0-1" description="fraction of dm allocated to leaves">0   0  0.67 0.67 0.67  0     0       0     0     0     0     0</frac_dm_to_leaf>
@@ -749,6 +782,9 @@
       <!--   photosynthesis water stress
       millet1_root_depth
       -->
+     <nfact_photo_limit description="">20.1</nfact_photo_limit>
+     <nfact_photo_rate description="">0.0</nfact_photo_rate>
+
       <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
       <!--  millet1_leaf_area_init
       -->
@@ -780,7 +816,7 @@
       -->
       <head_grain_no_max_ub units="/head" description="upper limit">10000.0</head_grain_no_max_ub>
       <grain_gth_rate_ub units="mg/d" description="upper limit">5.0</grain_gth_rate_ub>
-      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">1000.0</tt_emerg_to_endjuv_ub>
       <pp_endjuv_to_init_ub units="oCd/h" description="upper limit">500.0</pp_endjuv_to_init_ub>
       <tt_flower_to_maturity_ub units="oCd" description="upper limit">1000.0</tt_flower_to_maturity_ub>
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
@@ -912,7 +948,7 @@
       <leaf_no_dead_const description="EJVO data;dead leaf no intercept">-5.01</leaf_no_dead_const>
       <leaf_no_dead_slope description="dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope>
       <leaf_no_dead_slope1 description="EJVO data; dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope1>
-      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
+
       <!--  millet1_get_other_variables
       limits set to check inputs
       -->
@@ -1059,16 +1095,16 @@
       millet1_N_conc_limits
       emerg   endjuv fi    flag   start gf maturity
       -->
-      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_flower>
-      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016</y_n_conc_crit_flower>
-      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025</y_n_conc_max_flower>
+      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10 12</x_stage_code>
+      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016 0.016</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025 0.025</y_n_conc_max_leaf>
+      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002 0.002</y_n_conc_min_stem>
+      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003 0.003</y_n_conc_crit_stem>
+      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015 0.015</y_n_conc_max_stem>
+      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_flower>
+      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016 0.016</y_n_conc_crit_flower>
+      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025 0.025</y_n_conc_max_flower>
       <!--                         ! emerg   juv     fi      flower  maturity
       x_stage_code =            3       4       5       7      10      ()   ! stage code used in table
       y_n_conc_crit_leaf =      0.021   0.021   0.0210  0.018   0.0080 ()   ! PDC 85 - leaf critical N conc.
@@ -1110,9 +1146,9 @@
       p_conc_max    = 0.0050  0.0040  0.0030  0.002  0.002 ()
       p_conc_min    = 0.0025  0.0020  0.0015  0.0010  0.0010 ()
       -->
-      <p_stage_code>3       4      5      7      8      10</p_stage_code>
-      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020</p_conc_max>
-      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007</p_conc_min>
+      <p_stage_code>3       4      5      7      8      10   12</p_stage_code>
+      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020 0.0020</p_conc_max>
+      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007 0.0007</p_conc_min>
       <k_pfact_photo>2.0</k_pfact_photo>
       <k_pfact_pheno description="20">10   </k_pfact_pheno>
       <k_pfact_expansion>20</k_pfact_expansion>
@@ -1191,6 +1227,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </bj104>
       <rcbic911 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1211,6 +1248,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </rcbic911>
       <wrajpop cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1231,6 +1269,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </wrajpop>
       <hhb67 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1251,6 +1290,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </hhb67>
       <mh179 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1269,7 +1309,32 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </mh179>
+      <!-- Next 3 cultivars added by HLH Oct 2012. Based on BJ104 with emerg to flowering from Akponikpe 2008. Local variety = Hainikirey -->
+  
+      <ZATIB cultivar="yes">
+         <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
+         <hi_max_pot description="maximum harvest index potential">0.55</hi_max_pot>
+         <head_grain_no_max units="grains/head" description="EJvO data tagging exp - potential grains per head [Jones and Carberry, 1994]">2200.0</head_grain_no_max>
+         <grain_gth_rate units="mg/grain/d" description="PKC95;potential grain growth rate [Jones and Carberry, 1994]">0.46</grain_gth_rate>
+         <tt_emerg_to_endjuv units="oCd" description="EJvO data - TT from emergence to end of juvenile phase">260</tt_emerg_to_endjuv>
+         <est_days_emerg_to_init units="d" description="PSC data - estimated days from emergence to floral init.">17</est_days_emerg_to_init>
+         <pp_endjuv_to_init units="oCd/h" description="EJvO data - photoperiod sensitivity">112.4</pp_endjuv_to_init>
+         <tt_flower_to_maturity units="oCd" description="EJvO PKC96 - TT from flowering to maturity">600.0</tt_flower_to_maturity>
+         <tt_flag_to_flower units="oCd" description="EJvO data - TT from flag leaf to flowering">100.0</tt_flag_to_flower>
+         <tt_flower_to_start_grain units="oCd" description="Bieler data - TT from flowering to start grain fill">80.0</tt_flower_to_start_grain>
+         <tt_maturity_to_ripe units="oCd" description="TT from maturity to harvest ripe">1</tt_maturity_to_ripe>
+         <y0_const description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept">2100.0</y0_const>
+         <y0_slope description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope">1150.0</y0_slope>
+         <!-- y0_const =                    2550.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept
+         y0_slope =                     820.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope
+         -->
+         <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.008</leaf_no_dead_slope2>      
+      </ZATIB> 
+     
    </Model>
    <Model name="Millet2">
       <!--   N fixation
@@ -1285,7 +1350,7 @@
       rue data from paper 3 millet series
       rue after anthesis changed from old value above proporationally as rue before anthesis.
       -->
-      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   0     0</rue>
+      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   1.6     1.6</rue>
       <root_depth_rate units="mm/d" description="MVSK 94 - extraction front velocity">0   0  20.0 20.0 20.0  20.0  20.0    0.0   0.0   0.0   0     0</root_depth_rate>
       <ratio_root_shoot units="0-1" description="root:shoot ratio for daily assimilate partitioning">0  0   1    1    0.33  0.33  0.087  0     0     0     0     0</ratio_root_shoot>
       <frac_dm_to_leaf units="0-1" description="fraction of dm allocated to leaves">0   0  0.67 0.67 0.67  0     0       0     0     0     0     0</frac_dm_to_leaf>
@@ -1348,6 +1413,9 @@
       <!--   photosynthesis water stress
       millet2_root_depth
       -->
+     <nfact_photo_limit description="">20.1</nfact_photo_limit>
+     <nfact_photo_rate description="">0.0</nfact_photo_rate>
+
       <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
       <!--  millet2_leaf_area_init
       -->
@@ -1380,7 +1448,7 @@
       -->
       <head_grain_no_max_ub units="/head" description="upper limit">10000.0</head_grain_no_max_ub>
       <grain_gth_rate_ub units="mg/d" description="upper limit">5.0</grain_gth_rate_ub>
-      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">1000.0</tt_emerg_to_endjuv_ub>
       <pp_endjuv_to_init_ub units="oCd/h" description="upper limit">500.0</pp_endjuv_to_init_ub>
       <tt_flower_to_maturity_ub units="oCd" description="upper limit">1000.0</tt_flower_to_maturity_ub>
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
@@ -1512,7 +1580,7 @@
       <leaf_no_dead_const description="EJVO data;dead leaf no intercept">-5.01</leaf_no_dead_const>
       <leaf_no_dead_slope description="dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope>
       <leaf_no_dead_slope1 description="EJVO data;dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope1>
-      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
+
       <!--  millet2_get_other_variables
       limits set to check inputs
       -->
@@ -1659,16 +1727,16 @@
       millet2_N_conc_limits
       emerg   endjuv fi    flag   start gf maturity
       -->
-      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_flower>
-      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016</y_n_conc_crit_flower>
-      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025</y_n_conc_max_flower>
+      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10 12</x_stage_code>
+      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016 0.016</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025 0.025</y_n_conc_max_leaf>
+      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002 0.002</y_n_conc_min_stem>
+      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003 0.003</y_n_conc_crit_stem>
+      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015 0.015</y_n_conc_max_stem>
+      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_flower>
+      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016 0.016</y_n_conc_crit_flower>
+      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025 0.025</y_n_conc_max_flower>
       <!--                         ! emerg   juv     fi      flower  maturity
       x_stage_code =            3       4       5       7      10      ()   ! stage code used in table
       y_n_conc_crit_leaf =      0.021   0.021   0.0210  0.018   0.0080 ()   ! PDC 85 - leaf critical N conc.
@@ -1710,9 +1778,9 @@
       p_conc_max    = 0.0050  0.0040  0.0030  0.002  0.002 ()
       p_conc_min    = 0.0025  0.0020  0.0015  0.0010  0.0010 ()
       -->
-      <p_stage_code>3       4      5      7      8      10</p_stage_code>
-      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020</p_conc_max>
-      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007</p_conc_min>
+      <p_stage_code>3       4      5      7      8      10   12</p_stage_code>
+      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020  0.0020</p_conc_max>
+      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007 0.0007</p_conc_min>
       <k_pfact_photo>2.0</k_pfact_photo>
       <k_pfact_pheno description="20">10   </k_pfact_pheno>
       <k_pfact_expansion>20</k_pfact_expansion>
@@ -1791,6 +1859,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </bj104>
       <rcbic911 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1811,6 +1880,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </rcbic911>
       <wrajpop cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1831,6 +1901,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </wrajpop>
       <hhb67 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1851,6 +1922,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </hhb67>
       <mh179 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -1869,7 +1941,31 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </mh179>
+      <!-- Next 3 cultivars added by HLH Oct 2012. Based on BJ104 with emerg to flowering from Akponikpe 2008. Local variety = Hainikirey --> 
+      <ZATIB cultivar="yes">
+         <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
+         <hi_max_pot description="maximum harvest index potential">0.55</hi_max_pot>
+         <head_grain_no_max units="grains/head" description="EJvO data tagging exp - potential grains per head [Jones and Carberry, 1994]">2200.0</head_grain_no_max>
+         <grain_gth_rate units="mg/grain/d" description="PKC95;potential grain growth rate [Jones and Carberry, 1994]">0.46</grain_gth_rate>
+         <tt_emerg_to_endjuv units="oCd" description="EJvO data - TT from emergence to end of juvenile phase">250</tt_emerg_to_endjuv>
+         <est_days_emerg_to_init units="d" description="PSC data - estimated days from emergence to floral init.">17</est_days_emerg_to_init>
+         <pp_endjuv_to_init units="oCd/h" description="EJvO data - photoperiod sensitivity">112.4</pp_endjuv_to_init>
+         <tt_flower_to_maturity units="oCd" description="EJvO PKC96 - TT from flowering to maturity">600.0</tt_flower_to_maturity>
+         <tt_flag_to_flower units="oCd" description="EJvO data - TT from flag leaf to flowering">100.0</tt_flag_to_flower>
+         <tt_flower_to_start_grain units="oCd" description="Bieler data - TT from flowering to start grain fill">80.0</tt_flower_to_start_grain>
+         <tt_maturity_to_ripe units="oCd" description="TT from maturity to harvest ripe">1</tt_maturity_to_ripe>
+         <y0_const description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept">2100.0</y0_const>
+         <y0_slope description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope">1150.0</y0_slope>
+         <!-- y0_const =                    2550.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept
+         y0_slope =                     820.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope
+         -->
+         <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.008</leaf_no_dead_slope2>      
+      </ZATIB> 
+    
    </Model>
    <Model name="Millet3">
       <!--   N fixation
@@ -1885,7 +1981,7 @@
       rue data from paper 3 millet series
       rue after anthesis changed from old value above proporationally as rue before anthesis.
       -->
-      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   0     0</rue>
+      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   1.6   1.6</rue>
       <root_depth_rate units="mm/d" description="MVSK 94 - extraction front velocity">0   0  20.0 20.0 20.0  20.0  20.0    0.0   0.0   0.0   0     0</root_depth_rate>
       <ratio_root_shoot units="0-1" description="root:shoot ratio for daily assimilate partitioning">0  0   1    1    0.33  0.33  0.087  0     0     0     0     0</ratio_root_shoot>
       <frac_dm_to_leaf units="0-1" description="fraction of dm allocated to leaves">0   0  0.67 0.67 0.67  0     0       0     0     0     0     0</frac_dm_to_leaf>
@@ -1948,6 +2044,9 @@
       <!--   photosynthesis water stress
       millet3_root_depth
       -->
+     <nfact_photo_limit description="">20.1</nfact_photo_limit>
+     <nfact_photo_rate description="">0.0</nfact_photo_rate>
+
       <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
       <!--  millet3_leaf_area_init
       -->
@@ -1980,7 +2079,7 @@
       -->
       <head_grain_no_max_ub units="/head" description="upper limit">10000.0</head_grain_no_max_ub>
       <grain_gth_rate_ub units="mg/d" description="upper limit">5.0</grain_gth_rate_ub>
-      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">1000.0</tt_emerg_to_endjuv_ub>
       <pp_endjuv_to_init_ub units="oCd/h" description="upper limit">500.0</pp_endjuv_to_init_ub>
       <tt_flower_to_maturity_ub units="oCd" description="upper limit">1000.0</tt_flower_to_maturity_ub>
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
@@ -2112,7 +2211,7 @@
       <leaf_no_dead_const description="EJVO data;dead leaf no intercept">-5.01</leaf_no_dead_const>
       <leaf_no_dead_slope description="dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope>
       <leaf_no_dead_slope1 description="EJVO data;dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope1>
-      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
+
       <!--  millet3_get_other_variables
       limits set to check inputs
       -->
@@ -2259,16 +2358,16 @@
       millet3_N_conc_limits
       emerg   endjuv fi    flag   start gf maturity
       -->
-      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_flower>
-      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016</y_n_conc_crit_flower>
-      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025</y_n_conc_max_flower>
+      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10 12</x_stage_code>
+      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016 0.016</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025 0.025</y_n_conc_max_leaf>
+      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002 0.002</y_n_conc_min_stem>
+      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003 0.003</y_n_conc_crit_stem>
+      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015 0.015</y_n_conc_max_stem>
+      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_flower>
+      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016 0.016</y_n_conc_crit_flower>
+      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025 0.025</y_n_conc_max_flower>
       <!--                         ! emerg   juv     fi      flower  maturity
       x_stage_code =            3       4       5       7      10      ()   ! stage code used in table
       y_n_conc_crit_leaf =      0.021   0.021   0.0210  0.018   0.0080 ()   ! PDC 85 - leaf critical N conc.
@@ -2310,9 +2409,9 @@
       p_conc_max    = 0.0050  0.0040  0.0030  0.002  0.002 ()
       p_conc_min    = 0.0025  0.0020  0.0015  0.0010  0.0010 ()
       -->
-      <p_stage_code>3       4      5      7      8      10</p_stage_code>
-      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020</p_conc_max>
-      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007</p_conc_min>
+      <p_stage_code>3       4      5      7      8      10  12 </p_stage_code>
+      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020 0.0020 </p_conc_max>
+      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007 0.0007</p_conc_min>
       <k_pfact_photo>2.0</k_pfact_photo>
       <k_pfact_pheno description="20">10   </k_pfact_pheno>
       <k_pfact_expansion>20</k_pfact_expansion>
@@ -2391,6 +2490,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </bj104>
       <rcbic911 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -2411,6 +2511,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </rcbic911>
       <wrajpop cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -2431,6 +2532,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </wrajpop>
       <hhb67 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -2451,6 +2553,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </hhb67>
       <mh179 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -2469,7 +2572,31 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </mh179>
+      <!-- Next 3 cultivars added by HLH Oct 2012. Based on BJ104 with emerg to flowering from Akponikpe 2008. Local variety = Hainikirey -->
+  
+      <ZATIB cultivar="yes">
+         <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
+         <hi_max_pot description="maximum harvest index potential">0.55</hi_max_pot>
+         <head_grain_no_max units="grains/head" description="EJvO data tagging exp - potential grains per head [Jones and Carberry, 1994]">2200.0</head_grain_no_max>
+         <grain_gth_rate units="mg/grain/d" description="PKC95;potential grain growth rate [Jones and Carberry, 1994]">0.46</grain_gth_rate>
+         <tt_emerg_to_endjuv units="oCd" description="EJvO data - TT from emergence to end of juvenile phase">240</tt_emerg_to_endjuv>
+         <est_days_emerg_to_init units="d" description="PSC data - estimated days from emergence to floral init.">17</est_days_emerg_to_init>
+         <pp_endjuv_to_init units="oCd/h" description="EJvO data - photoperiod sensitivity">112.4</pp_endjuv_to_init>
+         <tt_flower_to_maturity units="oCd" description="EJvO PKC96 - TT from flowering to maturity">600.0</tt_flower_to_maturity>
+         <tt_flag_to_flower units="oCd" description="EJvO data - TT from flag leaf to flowering">100.0</tt_flag_to_flower>
+         <tt_flower_to_start_grain units="oCd" description="Bieler data - TT from flowering to start grain fill">80.0</tt_flower_to_start_grain>
+         <tt_maturity_to_ripe units="oCd" description="TT from maturity to harvest ripe">1</tt_maturity_to_ripe>
+         <y0_const description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept">2100.0</y0_const>
+         <y0_slope description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope">1150.0</y0_slope>
+         <!-- y0_const =                    2550.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept
+         y0_slope =                     820.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope
+         -->
+         <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.008</leaf_no_dead_slope2>      
+      </ZATIB>      
    </Model>
    <Model name="Millet4">
       <!--   N fixation
@@ -2485,7 +2612,7 @@
       rue data from paper 3 millet series
       rue after anthesis changed from old value above proporationally as rue before anthesis.
       -->
-      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   0     0</rue>
+      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6  1.6  1.6</rue>
       <root_depth_rate units="mm/d" description="MVSK 94 - extraction front velocity">0   0  20.0 20.0 20.0  20.0  20.0    0.0   0.0   0.0   0     0</root_depth_rate>
       <ratio_root_shoot units="0-1" description="root:shoot ratio for daily assimilate partitioning">0  0   1    1    0.33  0.33  0.087  0     0     0     0     0</ratio_root_shoot>
       <frac_dm_to_leaf units="0-1" description="fraction of dm allocated to leaves">0   0  0.67 0.67 0.67  0     0       0     0     0     0     0</frac_dm_to_leaf>
@@ -2548,6 +2675,9 @@
       <!--   photosynthesis water stress
       millet4_root_depth
       -->
+     <nfact_photo_limit description="">20.1</nfact_photo_limit>
+     <nfact_photo_rate description="">0.0</nfact_photo_rate>
+
       <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
       <!--  millet4_leaf_area_init
       -->
@@ -2580,7 +2710,7 @@
       -->
       <head_grain_no_max_ub units="/head" description="upper limit">10000.0</head_grain_no_max_ub>
       <grain_gth_rate_ub units="mg/d" description="upper limit">5.0</grain_gth_rate_ub>
-      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">1000.0</tt_emerg_to_endjuv_ub>
       <pp_endjuv_to_init_ub units="oCd/h" description="upper limit">500.0</pp_endjuv_to_init_ub>
       <tt_flower_to_maturity_ub units="oCd" description="upper limit">1000.0</tt_flower_to_maturity_ub>
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
@@ -2712,7 +2842,7 @@
       <leaf_no_dead_const description="EJVO data;dead leaf no intercept">-5.01</leaf_no_dead_const>
       <leaf_no_dead_slope description="dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope>
       <leaf_no_dead_slope1 description="EJVO data;dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope1>
-      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
+
       <!--  millet4_get_other_variables
       limits set to check inputs
       -->
@@ -2859,16 +2989,16 @@
       millet4_N_conc_limits
       emerg   endjuv fi    flag   start gf maturity
       -->
-      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_flower>
-      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016</y_n_conc_crit_flower>
-      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025</y_n_conc_max_flower>
+      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10 12</x_stage_code>
+      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016 0.016</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025 0.025</y_n_conc_max_leaf>
+      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002 0.002</y_n_conc_min_stem>
+      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003 0.003</y_n_conc_crit_stem>
+      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015 0.015</y_n_conc_max_stem>
+      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_flower>
+      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016 0.016</y_n_conc_crit_flower>
+      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025 0.025</y_n_conc_max_flower>
       <!--                         ! emerg   juv     fi      flower  maturity
       x_stage_code =            3       4       5       7      10      ()   ! stage code used in table
       y_n_conc_crit_leaf =      0.021   0.021   0.0210  0.018   0.0080 ()   ! PDC 85 - leaf critical N conc.
@@ -2910,9 +3040,9 @@
       p_conc_max    = 0.0050  0.0040  0.0030  0.002  0.002 ()
       p_conc_min    = 0.0025  0.0020  0.0015  0.0010  0.0010 ()
       -->
-      <p_stage_code>3       4      5      7      8      10</p_stage_code>
-      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020</p_conc_max>
-      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007</p_conc_min>
+      <p_stage_code>3       4      5      7      8      10    12</p_stage_code>
+      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020 0.0020 </p_conc_max>
+      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007 0.0007</p_conc_min>
       <k_pfact_photo>2.0</k_pfact_photo>
       <k_pfact_pheno description="20">10   </k_pfact_pheno>
       <k_pfact_expansion>20</k_pfact_expansion>
@@ -2991,6 +3121,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </bj104>
       <rcbic911 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3011,6 +3142,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </rcbic911>
       <wrajpop cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3031,6 +3163,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </wrajpop>
       <hhb67 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3051,6 +3184,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </hhb67>
       <mh179 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3069,7 +3203,32 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </mh179>
+      <!-- Next 3 cultivars added by HLH Oct 2012. Based on BJ104 with emerg to flowering from Akponikpe 2008. Local variety = Hainikirey -->
+  
+      <ZATIB cultivar="yes">
+         <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
+         <hi_max_pot description="maximum harvest index potential">0.55</hi_max_pot>
+         <head_grain_no_max units="grains/head" description="EJvO data tagging exp - potential grains per head [Jones and Carberry, 1994]">2200.0</head_grain_no_max>
+         <grain_gth_rate units="mg/grain/d" description="PKC95;potential grain growth rate [Jones and Carberry, 1994]">0.46</grain_gth_rate>
+         <tt_emerg_to_endjuv units="oCd" description="EJvO data - TT from emergence to end of juvenile phase">230</tt_emerg_to_endjuv>
+         <est_days_emerg_to_init units="d" description="PSC data - estimated days from emergence to floral init.">17</est_days_emerg_to_init>
+         <pp_endjuv_to_init units="oCd/h" description="EJvO data - photoperiod sensitivity">112.4</pp_endjuv_to_init>
+         <tt_flower_to_maturity units="oCd" description="EJvO PKC96 - TT from flowering to maturity">600.0</tt_flower_to_maturity>
+         <tt_flag_to_flower units="oCd" description="EJvO data - TT from flag leaf to flowering">100.0</tt_flag_to_flower>
+         <tt_flower_to_start_grain units="oCd" description="Bieler data - TT from flowering to start grain fill">80.0</tt_flower_to_start_grain>
+         <tt_maturity_to_ripe units="oCd" description="TT from maturity to harvest ripe">1</tt_maturity_to_ripe>
+         <y0_const description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept">2100.0</y0_const>
+         <y0_slope description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope">1150.0</y0_slope>
+         <!-- y0_const =                    2550.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept
+         y0_slope =                     820.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope
+         -->
+         <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.008</leaf_no_dead_slope2>      
+      </ZATIB> 
+    
    </Model>
    <Model name="Millet5">
       <!--   N fixation
@@ -3085,7 +3244,7 @@
       rue data from paper 3 millet series
       rue after anthesis changed from old value above proporationally as rue before anthesis.
       -->
-      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   0     0</rue>
+      <rue units="g/MJ" description="PKC95 (preflow. part) O and M 85 - radiation use efficiency">0   0  2.17 2.17 2.17  2.17  2.17    1.6   1.6   1.6   1.6   1.6</rue>
       <root_depth_rate units="mm/d" description="MVSK 94 - extraction front velocity">0   0  20.0 20.0 20.0  20.0  20.0    0.0   0.0   0.0   0     0</root_depth_rate>
       <ratio_root_shoot units="0-1" description="root:shoot ratio for daily assimilate partitioning">0  0   1    1    0.33  0.33  0.087  0     0     0     0     0</ratio_root_shoot>
       <frac_dm_to_leaf units="0-1" description="fraction of dm allocated to leaves">0   0  0.67 0.67 0.67  0     0       0     0     0     0     0</frac_dm_to_leaf>
@@ -3148,6 +3307,9 @@
       <!--   photosynthesis water stress
       millet5_root_depth
       -->
+     <nfact_photo_limit description="">20.1</nfact_photo_limit>
+     <nfact_photo_rate description="">0.0</nfact_photo_rate>
+
       <initial_root_depth units="mm" description="initial depth of roots">110.0</initial_root_depth>
       <!--  millet5_leaf_area_init
       -->
@@ -3180,7 +3342,7 @@
       -->
       <head_grain_no_max_ub units="/head" description="upper limit">10000.0</head_grain_no_max_ub>
       <grain_gth_rate_ub units="mg/d" description="upper limit">5.0</grain_gth_rate_ub>
-      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">500.0</tt_emerg_to_endjuv_ub>
+      <tt_emerg_to_endjuv_ub units="oCd" description="upper limit">1000.0</tt_emerg_to_endjuv_ub>
       <pp_endjuv_to_init_ub units="oCd/h" description="upper limit">500.0</pp_endjuv_to_init_ub>
       <tt_flower_to_maturity_ub units="oCd" description="upper limit">1000.0</tt_flower_to_maturity_ub>
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
@@ -3312,7 +3474,7 @@
       <leaf_no_dead_const description="EJVO data;dead leaf no intercept">-5.01</leaf_no_dead_const>
       <leaf_no_dead_slope description="dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope>
       <leaf_no_dead_slope1 description="EJVO data;dead leaf no slope 1 (before flag leaf)">0.0167</leaf_no_dead_slope1>
-      <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
+
       <!--  millet5_get_other_variables
       limits set to check inputs
       -->
@@ -3459,16 +3621,16 @@
       millet5_N_conc_limits
       emerg   endjuv fi    flag   start gf maturity
       -->
-      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10</x_stage_code>
-      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_leaf>
-      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016</y_n_conc_crit_leaf>
-      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025</y_n_conc_max_leaf>
-      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002</y_n_conc_min_stem>
-      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003</y_n_conc_crit_stem>
-      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015</y_n_conc_max_stem>
-      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007</y_n_conc_min_flower>
-      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016</y_n_conc_crit_flower>
-      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025</y_n_conc_max_flower>
+      <x_stage_code description="- EVO ESTIMATED  from detailed sorghum data">3       4      5     6      8      10 12</x_stage_code>
+      <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_leaf>
+      <y_n_conc_crit_leaf>0.063   0.063  0.042 0.030  0.016  0.016 0.016</y_n_conc_crit_leaf>
+      <y_n_conc_max_leaf>0.070   0.070  0.050 0.035  0.028  0.025 0.025</y_n_conc_max_leaf>
+      <y_n_conc_min_stem>0.025   0.025  0.004 0.003  0.002  0.002 0.002</y_n_conc_min_stem>
+      <y_n_conc_crit_stem>0.060   0.060  0.025 0.010  0.006  0.003 0.003</y_n_conc_crit_stem>
+      <y_n_conc_max_stem>0.070   0.070  0.040 0.025  0.015  0.015 0.015</y_n_conc_max_stem>
+      <y_n_conc_min_flower description="made flower like leaf">0.025   0.025  0.021 0.010  0.008  0.007 0.007</y_n_conc_min_flower>
+      <y_n_conc_crit_flower>0.063   0.063  0.042 0.020  0.016  0.016 0.016</y_n_conc_crit_flower>
+      <y_n_conc_max_flower>0.070   0.070  0.050 0.040  0.028  0.025 0.025</y_n_conc_max_flower>
       <!--                         ! emerg   juv     fi      flower  maturity
       x_stage_code =            3       4       5       7      10      ()   ! stage code used in table
       y_n_conc_crit_leaf =      0.021   0.021   0.0210  0.018   0.0080 ()   ! PDC 85 - leaf critical N conc.
@@ -3510,9 +3672,9 @@
       p_conc_max    = 0.0050  0.0040  0.0030  0.002  0.002 ()
       p_conc_min    = 0.0025  0.0020  0.0015  0.0010  0.0010 ()
       -->
-      <p_stage_code>3       4      5      7      8      10</p_stage_code>
-      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020</p_conc_max>
-      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007</p_conc_min>
+      <p_stage_code>3       4      5      7      8      10  12 </p_stage_code>
+      <p_conc_max>0.005   0.004  0.003  0.0015  0.0015  0.0020 0.0020 </p_conc_max>
+      <p_conc_min>0.003   0.002  0.0015 0.0007 0.0007 0.0007 0.0007</p_conc_min>
       <k_pfact_photo>2.0</k_pfact_photo>
       <k_pfact_pheno description="20">10   </k_pfact_pheno>
       <k_pfact_expansion>20</k_pfact_expansion>
@@ -3591,6 +3753,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </bj104>
       <rcbic911 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3611,6 +3774,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </rcbic911>
       <wrajpop cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3631,6 +3795,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </wrajpop>
       <hhb67 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3651,6 +3816,7 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </hhb67>
       <mh179 cultivar="yes">
          <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
@@ -3669,7 +3835,32 @@
          -->
          <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
          <y_height units="mm" description="plant canopy height">0  3000</y_height>
+                        <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.0120</leaf_no_dead_slope2>
       </mh179>
+      <!-- Next 3 cultivars added by HLH Oct 2012. Based on BJ104 with emerg to flowering from Akponikpe 2008. Local variety = Hainikirey -->
+  
+      <ZATIB cultivar="yes">
+         <hi_incr units="1/days" description="rate of HI increase (optional)">0.0</hi_incr>
+         <hi_max_pot description="maximum harvest index potential">0.55</hi_max_pot>
+         <head_grain_no_max units="grains/head" description="EJvO data tagging exp - potential grains per head [Jones and Carberry, 1994]">2200.0</head_grain_no_max>
+         <grain_gth_rate units="mg/grain/d" description="PKC95;potential grain growth rate [Jones and Carberry, 1994]">0.46</grain_gth_rate>
+         <tt_emerg_to_endjuv units="oCd" description="EJvO data - TT from emergence to end of juvenile phase">220</tt_emerg_to_endjuv>
+         <est_days_emerg_to_init units="d" description="PSC data - estimated days from emergence to floral init.">17</est_days_emerg_to_init>
+         <pp_endjuv_to_init units="oCd/h" description="EJvO data - photoperiod sensitivity">112.4</pp_endjuv_to_init>
+         <tt_flower_to_maturity units="oCd" description="EJvO PKC96 - TT from flowering to maturity">600.0</tt_flower_to_maturity>
+         <tt_flag_to_flower units="oCd" description="EJvO data - TT from flag leaf to flowering">100.0</tt_flag_to_flower>
+         <tt_flower_to_start_grain units="oCd" description="Bieler data - TT from flowering to start grain fill">80.0</tt_flower_to_start_grain>
+         <tt_maturity_to_ripe units="oCd" description="TT from maturity to harvest ripe">1</tt_maturity_to_ripe>
+         <y0_const description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept">2100.0</y0_const>
+         <y0_slope description="EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope">1150.0</y0_slope>
+         <!-- y0_const =                    2550.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area intercept
+         y0_slope =                     820.0      ()   ! EJVO 4 plants/m2 n=123, adj r2=0.29 largest leaf area slope
+         -->
+         <x_stem_wt units="g/stem" description="look up table for canopy height">0  10</x_stem_wt>
+         <y_height units="mm" description="plant canopy height">0  3000</y_height>
+               <leaf_no_dead_slope2 description="EJVO data;dead leaf no slope 2 (after flag leaf)">0.008</leaf_no_dead_slope2>      
+      </ZATIB> 
+      
    </Model>
   
 </Type>

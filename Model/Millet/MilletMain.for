@@ -325,7 +325,9 @@
          real       swdf_grain_min      ! minimum of water stress factor
          real       swdf_pheno_limit    ! critical cumulative phenology water stress above which the crop fails (unitless)
          real       swdf_photo_limit    ! critical cumulative photosynthesis water stress above which the crop partly fails (unitless)
+         real       nfact_photo_limit   ! 
          real       swdf_photo_rate     ! rate of plant reduction with photosynthesis water stress
+         real       nfact_photo_rate    !
          real       temp_fac_min        ! temperature stress factor minimum optimum temp
          real       temp_grain_crit_stress    ! temperature above which heat stress occurs
          real       tfac_slope          ! temperature stress factor slope
@@ -458,6 +460,7 @@
          real       dlt_plants_failure_phen_delay
          real       dlt_plants_death_seedling
          real       dlt_plants_death_drought
+         real       dlt_plants_death_nutrition
          real       dlt_plants_death_barrenness
          real       dlt_root_depth      ! increase in root depth (mm)
          real       dlt_slai            ! area of leaf that senesces from plant
@@ -863,7 +866,7 @@ c+!!!!!!!!! check order dependency of deltas
 
          call Millet_plant_death(1) ! 1 = barreness using cubic (+bug)
                                    ! 2 = linear barreness effect
-
+          
       else
          ! crop is dead
       endif
@@ -1347,7 +1350,9 @@ cejvo      leaf_no = sum_between (germ, harvest_ripe, g%leaf_no)
          c%swdf_grain_min            = 0.0
          c%swdf_pheno_limit          = 0.0
          c%swdf_photo_limit          = 0.0
+         c%nfact_photo_limit         = 0.0
          c%swdf_photo_rate           = 0.0
+         c%nfact_photo_rate          = 0.0
          c%temp_fac_min              = 0.0
          c%temp_grain_crit_stress    = 0.0
          c%tfac_slope                = 0.0
@@ -1458,6 +1463,7 @@ cejvo      leaf_no = sum_between (germ, harvest_ripe, g%leaf_no)
          g%dlt_plants_failure_phen_delay  =0.0
          g%dlt_plants_death_seedling      =0.0
          g%dlt_plants_death_drought       =0.0
+         g%dlt_plants_death_nutrition     =0.0
          g%dlt_plants_death_barrenness    =0.0
          g%dlt_root_depth            = 0.0
          g%dlt_slai                  = 0.0
@@ -1671,6 +1677,7 @@ cjh special for erik - end
       g%dlt_plants_failure_phen_delay  =0.0
       g%dlt_plants_death_seedling      =0.0
       g%dlt_plants_death_drought       =0.0
+      g%dlt_plants_death_nutrition     =0.0
       g%dlt_plants_death_barrenness    =0.0
       g%grain_no = 0
       g%dlt_root_depth = 0
@@ -1839,6 +1846,7 @@ cjh special for erik - end
       g%dlt_plants_failure_phen_delay  =0.0
       g%dlt_plants_death_seedling      =0.0
       g%dlt_plants_death_drought       =0.0
+      g%dlt_plants_death_nutrition     =0.0
       g%dlt_plants_death_barrenness    =0.0
       g%dlt_root_depth = 0.0
       g%dlt_slai = 0.0
@@ -2244,6 +2252,11 @@ cgd   Eriks modifications for Leaf Area
      :                     , 'y_height', max_table, '()'
      :                     , p%y_height, p%num_stem_wt
      :                     , 0.0, 5000.0)
+     
+       call read_real_var (g%cultivar
+     :                    , 'leaf_no_dead_slope2', '()'
+     :                    , c%leaf_no_dead_slope2, numvals
+     :                    , 0.0, 100.0)
 
              ! report
 
@@ -4109,10 +4122,19 @@ cejvo
      :                    , 0.0, 100.0)
 
       call read_real_var (section_name
+     :                    , 'nfact_photo_limit', '()'
+     :                    , c%nfact_photo_limit, numvals
+     :                    , 0.0, 100.0)
+
+      call read_real_var (section_name
      :                    , 'swdf_photo_rate', '()'
      :                    , c%swdf_photo_rate, numvals
      :                    , 0.0, 1.0)
 
+      call read_real_var (section_name
+     :                    , 'nfact_photo_rate', '()'
+     :                    , c%nfact_photo_rate, numvals
+     :                    , 0.0, 1.0)
 
          !    millet_root_depth
 
@@ -4482,11 +4504,6 @@ cejvo
       call read_real_var (section_name
      :                    , 'leaf_no_dead_slope1', '()'
      :                    , c%leaf_no_dead_slope1, numvals
-     :                    , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                    , 'leaf_no_dead_slope2', '()'
-     :                    , c%leaf_no_dead_slope2, numvals
      :                    , 0.0, 100.0)
 
          !    millet_get_other_variables

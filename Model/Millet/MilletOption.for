@@ -2486,6 +2486,16 @@ cnh      real dlt_plants
      :        , g%plants
      :        , g%dlt_plants_death_drought)
 
+         call millet_death_nutrition (
+     :          g%cnd_photo
+     :        , g%leaf_no
+     :        , c%leaf_no_crit
+     :        , c%nfact_photo_limit
+     :        , g%nfact_photo
+     :        , c%nfact_photo_rate
+     :        , g%plants
+     :        , g%dlt_plants_death_nutrition)
+        
          call millet_death_actual (
      :          g%dlt_plants_failure_germ
      :        , g%dlt_plants_failure_emergence
@@ -2493,6 +2503,7 @@ cnh      real dlt_plants
      :        , g%dlt_plants_failure_phen_delay
      :        , g%dlt_plants_death_seedling
      :        , g%dlt_plants_death_drought
+     :        , g%dlt_plants_death_nutrition
      :        , g%dlt_plants_death_barrenness
      :        , g%dlt_plants
      :            )
@@ -2566,6 +2577,16 @@ cnh      real dlt_plants
      :        , g%plants
      :        , g%dlt_plants_death_drought)
 
+         call millet_death_nutrition (
+     :          g%cnd_photo
+     :        , g%leaf_no
+     :        , c%leaf_no_crit
+     :        , c%nfact_photo_limit
+     :        , g%nfact_photo
+     :        , c%nfact_photo_rate
+     :        , g%plants
+     :        , g%dlt_plants_death_nutrition)
+
          call millet_death_actual (
      :          g%dlt_plants_failure_germ
      :        , g%dlt_plants_failure_emergence
@@ -2573,6 +2594,7 @@ cnh      real dlt_plants
      :        , g%dlt_plants_failure_phen_delay
      :        , g%dlt_plants_death_seedling
      :        , g%dlt_plants_death_drought
+     :        , g%dlt_plants_death_nutrition
      :        , g%dlt_plants_death_barrenness
      :        , g%dlt_plants
      :            )
