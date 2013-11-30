@@ -1535,6 +1535,48 @@ cnh added as per request by Dr Val Snow
      :              1.d4)      
          
          call SetupKCurve()
+
+      else if (Variable_name .eq. 'sat') then
+
+         call collect_double_array (
+     :              'sat',
+     :              p%n+1,
+     :              '(mm/mm)',
+     :              p%Sat(0),
+     :              numvals,
+     :              0.d0,
+     :              1.d0)      
+         call SetupThetaCurve()
+         call SetupKCurve()
+         call apswim_reset_water_balance (1,g%th)
+
+      else if (Variable_name .eq. 'dul') then
+
+         call collect_double_array (
+     :              'dul',
+     :              p%n+1,
+     :              '(mm/mm)',
+     :              p%DUL(0),
+     :              numvals,
+     :              0.d0,
+     :              1.d0)      
+         call SetupThetaCurve()
+         call SetupKCurve()
+         call apswim_reset_water_balance (1,g%th)
+
+      else if (Variable_name .eq. 'll15') then
+
+         call collect_double_array (
+     :              'll15',
+     :              p%n+1,
+     :              '(mm/mm)',
+     :              p%LL15(0),
+     :              numvals,
+     :              0.d0,
+     :              1.d0)      
+         call SetupThetaCurve()
+         call SetupKCurve()
+         call apswim_reset_water_balance (1,g%th)         
          
 cnh added as per request by Dr Val Snow
 
