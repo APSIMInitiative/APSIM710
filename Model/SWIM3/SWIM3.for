@@ -2024,7 +2024,6 @@ c      eqr0 = 0d0
 c      double precision tth
       double precision thetaj, thetak, dthetaj, dthetak
       double precision hklgj, hklgk, dhklgj, dhklgk
-      double precision alpha,beta,phi,tau
        integer          time_mins
       double precision b
       double precision Sdul
@@ -2064,6 +2063,56 @@ c      p%dx(p%n) = 0.5*(p%x(p%n)-p%x(p%n-1))
 
           
 * ------- IF USING SIMPLE SOIL SPECIFICATION CALCULATE PROPERTIES -----
+
+
+
+      call SetupThetaCurve()   
+      call SetupKCurve ()                
+         
+* ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
+    
+      if (g%th(1).ne.0) then
+         ! water content was supplied in input file
+         ! so calculate matric potential
+         call apswim_reset_water_balance (1,g%th)
+
+      else
+         ! matric potential was supplied in input file
+         ! so calculate water content
+         call apswim_reset_water_balance (2,g%psi)
+      endif
+
+
+      ! Calculate Water Table If Required
+      if (p%ibbc.eq.1) then
+         p%bbc_value = p%x(p%n) - p%bbc_value/10d0
+      else if (p%ibbc.eq.4) then
+         !p%bbc_value = p%x(p%n) - p%bbc_value/10d0
+         ! Now reset theta to saturated below the water table
+c         do 50 node = 0,p%n
+c            if (p%x(node).gt.(p%bbc_value/10d0 - 100d0))then
+c               g%psi(node) = p%x(node)-p%bbc_value/10d0
+c               g%th(node) = apswim_Simpletheta(node,g%psi(node))
+c               g%p(node)=apswim_pf(g%psi(node))
+c            endif
+c   50    continue
+   
+         g%psi(p%n) = p%x(p%n)-p%bbc_value/10d0
+         g%th(p%n) = apswim_Simpletheta(p%n,g%psi(p%n))
+         g%p(p%n)=apswim_pf(g%psi(p%n))
+            
+      endif
+
+      return
+      end subroutine
+
+* ====================================================================
+      subroutine SetupThetaCurve()
+* ====================================================================
+      integer layer
+      double precision alpha,beta,phi,tau
+
+*- Implementation Section ----------------------------------
 
          do 26 layer =0,p%n
             p%psid(layer) = p%Psidul !- (p%x(p%n) - p%x(layer))
@@ -2121,47 +2170,10 @@ c      p%dx(p%n) = 0.5*(p%x(p%n)-p%x(p%n-1))
          g%Y0(layer,5) = 0
          g%Y1(layer,5) = 0
    
-   26    continue
-      
-      call SetupKCurve ()                
-         
-* ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
-    
-      if (g%th(1).ne.0) then
-         ! water content was supplied in input file
-         ! so calculate matric potential
-         call apswim_reset_water_balance (1,g%th)
-
-      else
-         ! matric potential was supplied in input file
-         ! so calculate water content
-         call apswim_reset_water_balance (2,g%psi)
-      endif
-
-
-      ! Calculate Water Table If Required
-      if (p%ibbc.eq.1) then
-         p%bbc_value = p%x(p%n) - p%bbc_value/10d0
-      else if (p%ibbc.eq.4) then
-         !p%bbc_value = p%x(p%n) - p%bbc_value/10d0
-         ! Now reset theta to saturated below the water table
-c         do 50 node = 0,p%n
-c            if (p%x(node).gt.(p%bbc_value/10d0 - 100d0))then
-c               g%psi(node) = p%x(node)-p%bbc_value/10d0
-c               g%th(node) = apswim_Simpletheta(node,g%psi(node))
-c               g%p(node)=apswim_pf(g%psi(node))
-c            endif
-c   50    continue
-   
-         g%psi(p%n) = p%x(p%n)-p%bbc_value/10d0
-         g%th(p%n) = apswim_Simpletheta(p%n,g%psi(p%n))
-         g%p(p%n)=apswim_pf(g%psi(p%n))
-            
-      endif
-
+   26    continue      
       return
       end subroutine
-
+      
 * ====================================================================
       subroutine SetupKCurve()
 * ====================================================================
