@@ -100,6 +100,7 @@ class Bob
 				          }
 				       else 
 				          {
+                  DBUpdate("linuxStatus", "Running", Connection, JobID);
 				          // Linux builds only check "passed" patches - ie revisions
                   string revision = DBGet("RevisionNumber", Connection, JobID).ToString();
                   string LogFileName = "/tmp/Apsim7.5-r" + revision + ".txt";
@@ -209,19 +210,12 @@ class Bob
          else 
             SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Pass' AND linuxStatus = 'Queued' ORDER BY ID";
 
-         SqlDataReader Reader = null;
-         try
-         {
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            Reader = ExecuteReader(Command);
+         using (SqlCommand Command = new SqlCommand(SQL, Connection))
+           using (SqlDataReader Reader = ExecuteReader(Command))
+            {
             if (Reader.Read())
                return Convert.ToInt32(Reader[0]);
-         }
-         finally
-         {
-            if (Reader != null)
-               Reader.Close();
-         }
+            }
          return -1;
       }
 
@@ -232,20 +226,13 @@ class Bob
       {
          string SQL = "SELECT " + FieldName + " FROM BuildJobs WHERE ID = " + JobID.ToString();
 
-         SqlDataReader Reader = null;
-         try
-         {
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            Reader = ExecuteReader(Command);
+         using (SqlCommand Command = new SqlCommand(SQL, Connection))
+           using (SqlDataReader Reader = ExecuteReader(Command))
+            {
             if (Reader.Read())
                 return Reader[0];
-         }
-         finally
-         {
-            if (Reader != null)
-               Reader.Close();
-         }
-         return "";
+            }
+         return(null);
       }
 
       /// <summary>
@@ -253,13 +240,10 @@ class Bob
       /// </summary>
       static void DBUpdate(string FieldName, object Value, SqlConnection Connection, int JobID)
       {
-         if (FieldName == "Status" && Environment.MachineName.ToUpper() != "BOB")
-            FieldName = "linuxStatus";
-
          string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + Value.ToString() + "' WHERE ID = " + JobID.ToString();
 
-         SqlCommand Command = new SqlCommand(SQL, Connection);
-         Command.ExecuteNonQuery();
+         using (SqlCommand Command = new SqlCommand(SQL, Connection))
+            Command.ExecuteNonQuery();
       }
 
       /// <summary>
