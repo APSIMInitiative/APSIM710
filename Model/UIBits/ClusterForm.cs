@@ -22,36 +22,29 @@ namespace UIBits
 
         private void OnLoad(object sender, EventArgs e)
          {
-         VersionBox.Text = Configuration.Instance.Setting("dropboxApsimVersion");
-         if (VersionBox.Text =="")
-             VersionBox.Text = Path.GetFileName(Configuration.ApsimDirectory());
+             string FolderLocation = Configuration.Instance.Setting("ClusterLocalInputFolder");
+             if (FolderLocation != "")
+                 FolderTextBox.Text = FolderLocation;
+             
+            sfxBox.Text = Configuration.Instance.Setting("ClusterSimulationSFX");
+            if (sfxBox.Text == "")
+                sfxBox.Text = "http://apsrunet.apsim.info/apsim/Apsim" +
+                    Configuration.Instance.ExeVersion() + "-" +
+                    Configuration.Instance.ExeBuildNumber() + ".binaries.WINDOWS.exe";
 
-         string DropBoxLocation = Configuration.Instance.Setting("dropboxFolder");
+
+         string DropBoxLocation = Configuration.Instance.Setting("ClusterSimulationFolder");
          if (DropBoxLocation == "")
          {
              DropBoxLocation = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
                                   + "\\..\\Dropbox\\Apsim\\" + Environment.UserName;
              DropBoxLocation = Path.GetFullPath(DropBoxLocation);
          }
-         string FolderLocation = Configuration.Instance.Setting("ClusterSimulationFolder");
-         if (FolderLocation != "")
-             FolderTextBox.Text = FolderLocation;
 
-         DropBoxFolder.Text = DropBoxLocation;
+         ClusterSimulationFolder.Text = DropBoxLocation;
          FolderTextBox.Enabled = (FolderLocation != "");
          BrowseButton.Enabled = false;
-         if (File.Exists(VersionBox.Text))
-         {
-             BootlegSelector.Enabled = true;
-             release_select.Checked = false;
-             custom_select.Checked = true;
-         }
-         else
-         {
-             BootlegSelector.Enabled = false;
-             custom_select.Checked = false;
-             release_select.Checked = true;
-         }
+
          string sims = Configuration.Instance.Setting("dropboxSimsPerJob");
          if (sims != "") 
              simsPerJob.Value = Convert.ToDecimal(sims); 
@@ -73,8 +66,8 @@ namespace UIBits
 
          }
 
-        public string Version { get { return VersionBox.Text; } }
-        public string DropFolder { get { return DropBoxFolder.Text; } }
+        public string Version { get { return sfxBox.Text; } }
+        public string DropFolder { get { return ClusterSimulationFolder.Text; } }
         public string FolderOfFiles { get { return FolderTextBox.Text; } }
         public int simsPerJobNumber { get { return (int)simsPerJob.Value; } }
 
@@ -135,7 +128,7 @@ namespace UIBits
             FolderBrowserDialog f = new FolderBrowserDialog();
             if (f.ShowDialog() == DialogResult.OK)
             {
-                DropBoxFolder.Text = f.SelectedPath;
+                ClusterSimulationFolder.Text = f.SelectedPath;
             }
         }
 
@@ -145,25 +138,9 @@ namespace UIBits
             f.Multiselect = false;
             if (f.ShowDialog() == DialogResult.OK)
             {
-                VersionBox.Text = f.FileName;
+                sfxBox.Text = f.FileName;
             }
         }
-
-        private void release_select_Click(object sender, EventArgs e)
-        {
-            BootlegSelector.Enabled = false;
-            custom_select.Checked = false;
-            release_select.Checked = true;
-            VersionBox.Text = Path.GetFileName(Configuration.ApsimDirectory());
-        }
-
-        private void custom_select_Click(object sender, EventArgs e)
-        {
-            BootlegSelector.Enabled = true;
-            custom_select.Checked = true;
-            release_select.Checked = false;
-        }
-
 
         public void ClusterHelpDocumentation(object sender, EventArgs e)
         {
@@ -179,12 +156,24 @@ namespace UIBits
 
         private void ClusterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Configuration.Instance.SetSetting("ClusterSimulationFolder", FolderTextBox.Text);
+            Configuration.Instance.SetSetting("ClusterLocalInputFolder", FolderTextBox.Text);
+            Configuration.Instance.SetSetting("ClusterSimulationSFX", sfxBox.Text);
         }
 
-        private void release_select_CheckedChanged(object sender, EventArgs e)
-        {
 
+        private void writeToZipfile_Click(object sender, EventArgs e)
+        {
+                uploadSelected.Checked = false;
+                ClusterSimulationFolder.Enabled = true;
+                BrowseButton2.Enabled = true;
+                username.Enabled = false; password.Enabled = false;
+        }
+        private void uploadSelected_Click(object sender, EventArgs e)
+        {
+                ClusterSimulationFolder.Enabled = false;
+                BrowseButton2.Enabled = false;
+                writeToZipfile.Checked = false;
+                username.Enabled = true; password.Enabled = true;
         }
     }
 }
