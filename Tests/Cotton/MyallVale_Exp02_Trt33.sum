@@ -1,0 +1,392 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = MyallVale_Exp02_Trt33
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component               "report_harvest" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "Cotton2" = %apsim%\model\mvOZCOT.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/08/1975
+     Simulation end date   = 30/06/1976
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: .\myall_apsim.met
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        Expt_name
+        year
+        day
+        manager.yield_acre as yld/acre
+        Cotton2.das
+        Cotton2.sites
+        Cotton2.squarz
+        Cotton2.bollz
+        Cotton2.openz
+        Cotton2.lai
+        Cotton2.availn
+        manager.pesw_depth as soil_w
+        Cotton2.bload
+        Cotton2.frun
+        Cotton2.carcap_c
+        Cotton2.carcap_n
+        Cotton2.smi
+        Cotton2.vnstrs
+        Cotton2.fnstrs
+        Cotton2.uptakn
+        Cotton2.totnup
+        Cotton2.wli
+        no3()
+        nh4()
+        dnit()
+        biom_n()
+        biom_c()
+        biom_c(1)
+        eo
+        Cotton2.evap_pot
+        Cotton2.dm
+        Cotton2.dw_boll
+        Cotton2.frudw_tot
+        Cotton2.dw_stem
+        Cotton2.dw_leaf
+        Cotton2.dw_root
+        Cotton2.frudw_shed
+
+     Output file = MyallVale_Exp02_Trt33 report.out
+     Format = normal
+
+------- report_harvest Initialisation -----------------------------------------
+     Output variables:
+        Expt_name
+        year
+        day
+        manager.yield_acre as yld/acre
+        Cotton2.das
+        Cotton2.openz
+        Cotton2.lint
+        Cotton2.bolls_sc
+        Cotton2.lai_max
+        Cotton2.nuptake
+        Cotton2.squarz_max
+
+     Output file = MyallVale_Exp02_Trt33 report_harvest.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      06/10/1975  Prepare      fertiliser apply amount = 0. (kg/ha), type = nh4_n, depth = 10
+      05/10/1975  Prepare      'soil nitrogen' set no3 = 9.2 18.6 15.1 14.3 14.3 12.6 0.1
+      16/10/1975  Post         Cotton2 sow cultivar = dp16, sowing_depth = 50. (mm), row_spacing = 1000. (mm), plants_pm = 10. , skiprow = 0
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     expt_name = title
+     if day = 273                   then
+        deficit = sat_dep() - sw_dep()
+        irrigation.amount = deficit
+     endif
+     
+     SECTION:- end_of_day
+        yield_acre = yield/2.5
+        sw_depth = sw_dep()
+        ll15_depth = ll15_dep()
+        pesw_depth = sw_depth - ll15_depth
+        if (cotton2.crop_in <> 0) then
+           report do_output
+        endif
+        if (cotton2.ozcot_status > 0) then
+          report_harvest do_output
+          cotton2 harvest
+          cotton2 end_crop
+        endif
+     END of rules
+     
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.085  0.170  0.407  0.457  0.407  1.360  0.613  0.200
+          100.-  300.  0.169  0.188  0.402  0.452  0.402  1.370  0.340  0.200
+          300.-  500.  0.240  0.240  0.394  0.444  0.394  1.390  0.048  0.200
+          500.-  700.  0.270  0.270  0.410  0.460  0.410  1.350  0.000  0.200
+          700.-  900.  0.290  0.290  0.413  0.463  0.413  1.340  0.000  0.200
+          900.- 1100.  0.310  0.310  0.405  0.455  0.405  1.360  0.000  0.200
+         1100.- 1300.  0.250  0.250  0.408  0.458  0.408  1.360  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      17.00      23.70      23.70       5.00
+          100.-  300.      37.60      42.80      42.80      10.00
+          300.-  500.      48.00      30.80      30.80      10.00
+          500.-  700.      54.00      28.00      28.00      10.00
+          700.-  900.      58.00      24.60      24.60      10.00
+          900.- 1100.      62.00      19.00      19.00      10.00
+         1100.- 1300.      50.00      31.60      31.60      10.00
+          ---------------------------------------------------------
+               Totals     326.60     200.50     200.50      65.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.60  1.00   19.45    0.41    0.00
+             2     7.70  1.00   34.52    0.82    0.00
+             3     7.80  0.45   18.76    0.83    0.00
+             4     7.80  0.45   16.20    1.35    0.00
+             5     7.90  0.45   16.08    1.34    0.00
+             6     8.00  0.45   10.88    1.36    0.00
+             7     8.00  0.45    5.17    1.36    0.00
+          ------------------------------------------------
+           Totals              121.07    7.47    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      13276.7   915.6   323.3    40.4   154.0     1.9
+             2      27176.1  1874.2   223.9    28.0    97.0     1.2
+             3      12505.6   862.5     4.4     0.6    61.2     0.8
+             4      12148.8   837.8     1.2     0.2    38.6     0.5
+             5      12058.8   831.6     1.2     0.1    24.3     0.3
+             6      12238.8   844.1     1.2     0.2    15.3     0.2
+             7      12238.8   844.1     1.2     0.2     9.7     0.1
+          ---------------------------------------------------------
+           Totals  101643.5  7009.9   556.5    69.6   400.0     5.0
+          ---------------------------------------------------------
+
+
+------- OZCOT Initialisation ----------------------------------
+
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local string variable : expt_name = MyallVale_Exp02_Trt33
+     Manager creating a new local real variable : yield_acre = 0.00000
+     Manager creating a new local real variable : sw_depth = 523.98053
+     Manager creating a new local real variable : ll15_depth = 326.60001
+     Manager creating a new local real variable : pesw_depth = 197.38052
+30 September 1975(Day of year=273), manager: 
+     Manager creating a new local real variable : deficit = 89.42136
+5 October 1975(Day of year=278), Operations: 
+      Sending set message to soil nitrogen
+6 October 1975(Day of year=279), Operations: 
+      Sending apply message to fertiliser
+16 October 1975(Day of year=289), Operations: 
+      Sending sow message to cotton2
+
+16 October 1975 (Day of year=289), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  DP16
+         percent_L  =  39.00
+         scboll     =  5.0
+         respcon    =  0.025
+         sqcon      =  0.021
+         fcutout    =  0.4789
+         flai       =  0.9
+         ddisq      =  420.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  180  350  380  520  660  870  1100  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.80
+
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           289    50.0    10.0    1000.0      DP16      0
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             10.0          0.170 
+             20.0          0.188 
+             20.0          0.240 
+             20.0          0.270 
+             20.0          0.290 
+             20.0          0.310 
+             20.0          0.250 
+        -----------------------------
+
+
+26 October 1975 (Day of year=299), cotton:
+    *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
+
+16 April 1976 (Day of year=107), cotton: 
+         Defoliant spray   1
+26 April 1976 (Day of year=117), cotton: 
+         Crop to be picked and terminated.
+26 April 1976(Day of year=117), manager: 
+     Manager sending message :- cotton2 harvest
+
+      Harvest
+
+
+      Days after sowing      =   193
+      bolls/m2               =   81.6        Lint (kg/ha)            =   1021.5
+      N uptake (kg/ha)       =    73.2        bolls sc (g/boll)       =      3.2
+      max squares das (days) =   97          max lai das (days)      =    145
+      maximum squares/m2     =   129.6        maximum lai (m2/m2)     =      3.52
+      Total above ground biomass (kg/ha) =  9839.1
+
+
+     Manager sending message :- cotton2 end_crop
+30 June 1976(Day of year=182), clock: 
+     Simulation is terminating due to end criteria being met.
+

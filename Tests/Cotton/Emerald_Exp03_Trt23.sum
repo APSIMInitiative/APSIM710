@@ -1,0 +1,898 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = Emerald_Exp03_Trt23
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component               "report_harvest" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "Cotton2" = %apsim%\model\mvOZCOT.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/08/1984
+     Simulation end date   = 30/06/1985
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: .\emer_apsim.met
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        Expt_name
+        year
+        day
+        manager.yield_acre as yld/acre
+        Cotton2.das
+        Cotton2.sites
+        Cotton2.squarz
+        Cotton2.bollz
+        Cotton2.openz
+        Cotton2.lai
+        Cotton2.availn
+        manager.pesw_depth as soil_w
+        Cotton2.bload
+        Cotton2.frun
+        Cotton2.carcap_c
+        Cotton2.carcap_n
+        Cotton2.smi
+        Cotton2.vnstrs
+        Cotton2.fnstrs
+        Cotton2.uptakn
+        Cotton2.totnup
+        Cotton2.wli
+        no3()
+        nh4()
+        dnit()
+        dlt_n_min()
+        no3_leach(6)
+        fom_n()
+        hum_n()
+        biom_n()
+        dlt_rntrf()
+        dlt_n_min_tot()
+        dlt_fom_n_min()
+        dlt_res_nh4_min()
+        dlt_biom_n_min()
+        dlt_hum_n_min()
+        biom_n()
+        biom_c()
+        biom_c(1)
+        eo
+        Cotton2.evap_pot
+        Cotton2.dm
+        Cotton2.dw_boll
+        Cotton2.frudw_tot
+        Cotton2.dw_stem
+        Cotton2.dw_leaf
+        Cotton2.dw_root
+        Cotton2.frudw_shed
+
+     Output file = Emerald_Exp03_Trt23 report.out
+     Format = normal
+
+------- report_harvest Initialisation -----------------------------------------
+     Output variables:
+        Expt_name
+        year
+        day
+        manager.yield_acre as yld/acre
+        Cotton2.das
+        Cotton2.openz
+        Cotton2.lint
+        Cotton2.bolls_sc
+        Cotton2.lai_max
+        Cotton2.nuptake
+        Cotton2.squarz_max
+
+     Output file = Emerald_Exp03_Trt23 report_harvest.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      06/09/1984  Prepare      fertiliser apply amount = 240. (kg/ha), type = nh4_n, depth = 10
+      05/09/1984  Prepare      'soil nitrogen' set no3 = 13.2 26.5 21.6 20.4 20.4 18.0
+      18/10/1984  Post         Cotton2 sow cultivar = dp16, sowing_depth = 50. (mm), row_spacing = 1000. (mm), plants_pm = 10. , skiprow = 0
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     expt_name = title
+     if day = 272 or day = 13  or day = 25                  then
+        deficit = sat_dep() - sw_dep()
+        irrigation.amount = deficit
+     endif
+     
+     SECTION:- end_of_day
+        yield_acre = yield/2.5
+        sw_depth = sw_dep()
+        ll15_depth = ll15_dep()
+        pesw_depth = sw_depth - ll15_depth
+        if (cotton2.crop_in <> 0) then
+           report do_output
+        endif
+        if (cotton2.ozcot_status > 0) then
+          report_harvest do_output
+          cotton2 harvest
+          cotton2 end_crop
+        endif
+     END of rules
+     
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.120  0.250  0.500  0.550  0.345  1.040  0.613  0.200
+          100.-  300.  0.228  0.253  0.500  0.550  0.443  1.040  0.340  0.200
+          300.-  500.  0.280  0.280  0.490  0.540  0.450  1.060  0.048  0.200
+          500.-  700.  0.293  0.293  0.485  0.535  0.450  1.085  0.000  0.200
+          700.-  900.  0.305  0.305  0.480  0.530  0.450  1.110  0.000  0.200
+          900.- 1100.  0.310  0.310  0.465  0.510  0.463  1.150  0.000  0.200
+         1100.- 1300.  0.310  0.310  0.465  0.510  0.463  1.150  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      25.00       9.50      25.00       5.00
+          100.-  300.      50.60      38.00      49.40      10.00
+          300.-  500.      56.00      34.00      42.00      10.00
+          500.-  700.      58.60      31.40      38.40      10.00
+          700.-  900.      61.00      29.00      35.00      10.00
+          900.- 1100.      62.00      30.60      31.00       9.00
+         1100.- 1300.      62.00      30.60      31.00       9.00
+          ---------------------------------------------------------
+               Totals     375.20     203.10     251.80      63.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.50  0.76    4.16    0.10    0.00
+             2     8.50  0.63    8.42    0.21    0.00
+             3     8.20  0.59    6.15    0.21    0.00
+             4     8.20  0.58    4.45    0.22    0.00
+             5     8.20  0.57    2.66    0.22    0.00
+             6     8.20  0.52    1.15    0.23    0.00
+             7     8.20  0.52    1.15    0.23    0.00
+          ------------------------------------------------
+           Totals               28.14    1.42    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       7690.2   640.8   213.8    26.7   154.0     1.9
+             2      13114.6  1092.9    93.4    11.7    97.0     1.2
+             3      12483.2  1040.3    24.8     3.1    61.2     0.8
+             4      12570.4  1047.5    15.6     1.9    38.6     0.5
+             5      12647.7  1054.0     6.3     0.8    24.3     0.3
+             6      11958.8   996.6     1.2     0.1    15.3     0.2
+             7      11958.8   996.6     1.2     0.1     9.7     0.1
+          ---------------------------------------------------------
+           Totals   82423.8  6868.6   356.2    44.5   400.0     5.0
+          ---------------------------------------------------------
+
+
+------- OZCOT Initialisation ----------------------------------
+
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local string variable : expt_name = Emerald_Exp03_Trt23
+     Manager creating a new local real variable : yield_acre = 0.00000
+     Manager creating a new local real variable : sw_depth = 577.45905
+     Manager creating a new local real variable : ll15_depth = 375.20001
+     Manager creating a new local real variable : pesw_depth = 202.25903
+5 September 1984(Day of year=249), Operations: 
+      Sending set message to soil nitrogen
+6 September 1984(Day of year=250), Operations: 
+      Sending apply message to fertiliser
+6 September 1984(Day of year=250), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       240.00 of N as ammonium (nh4_n)
+                                         added at depth   10.00 (layer   1)
+28 September 1984(Day of year=272), manager: 
+     Manager creating a new local real variable : deficit = 98.95514
+18 October 1984(Day of year=292), Operations: 
+      Sending sow message to cotton2
+
+18 October 1984 (Day of year=292), cotton:  
+      Sowing
+
+
+        - Reading Cultivar Parameters
+         ---------------------------------------
+         Cultivar   =  DP16
+         percent_L  =  39.00
+         scboll     =  5.0
+         respcon    =  0.025
+         sqcon      =  0.021
+         fcutout    =  0.4789
+         flai       =  0.9
+         ddisq      =  420.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  180  350  380  520  660  870  1100  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.80
+
+
+
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           292    50.0    10.0    1000.0      DP16      0
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             10.0          0.250 
+             20.0          0.253 
+             20.0          0.280 
+             20.0          0.293 
+             20.0          0.305 
+             20.0          0.310 
+             20.0          0.310 
+        -----------------------------
+
+
+27 October 1984 (Day of year=301), cotton:
+    *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
+
+26 February 1985 (Day of year=57), cotton: 
+         Defoliant spray   1
+8 March 1985 (Day of year=67), cotton: 
+         Crop to be picked and terminated.
+8 March 1985(Day of year=67), manager: 
+     Manager sending message :- cotton2 harvest
+
+      Harvest
+
+
+      Days after sowing      =   141
+      bolls/m2               =   70.4        Lint (kg/ha)            =   1170.7
+      N uptake (kg/ha)       =    170.1        bolls sc (g/boll)       =      4.3
+      max squares das (days) =   83          max lai das (days)      =    120
+      maximum squares/m2     =   127.5        maximum lai (m2/m2)     =      1.64
+      Total above ground biomass (kg/ha) =  8766.0
+
+
+     Manager sending message :- cotton2 end_crop
+9 March 1985(Day of year=68): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -9.949986    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 March 1985(Day of year=69): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -8.294078    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 March 1985(Day of year=70): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -7.571636    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 March 1985(Day of year=71): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -6.327059    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 March 1985(Day of year=72): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -10.45983    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 March 1985(Day of year=73): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -9.659740    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 March 1985(Day of year=74): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -7.691964    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 March 1985(Day of year=75): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -5.565934    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 March 1985(Day of year=76): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -3.512302    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 March 1985(Day of year=77): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.429232    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 April 1985(Day of year=112): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -6.282436    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 April 1985(Day of year=113): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -8.331842    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 April 1985(Day of year=114): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -8.343095    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 April 1985(Day of year=115): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -7.208007    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 April 1985(Day of year=116): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -5.782776    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 April 1985(Day of year=117): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -4.040749    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 April 1985(Day of year=118): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -2.228118    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 April 1985(Day of year=119): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (  -0.4360760    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 May 1985(Day of year=127): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -10.45983    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 May 1985(Day of year=128): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -10.04411    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 May 1985(Day of year=129): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -8.503757    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 May 1985(Day of year=130): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -6.759916    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 May 1985(Day of year=131): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -4.200828    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 May 1985(Day of year=132): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -3.519866    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 May 1985(Day of year=133): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.996502    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 May 1985(Day of year=134): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.087769    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 May 1985(Day of year=137): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -10.45983    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 May 1985(Day of year=138): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -8.894883    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 May 1985(Day of year=139): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -7.305706    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 May 1985(Day of year=140): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -2.788280    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 May 1985(Day of year=141): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -2.412189    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 May 1985(Day of year=142): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -2.591846    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 May 1985(Day of year=143): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.855143    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 May 1985(Day of year=144): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (  -0.1510502    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 May 1985(Day of year=147): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -9.892451    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 May 1985(Day of year=148): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -6.875262    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 May 1985(Day of year=149): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -7.250977    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 May 1985(Day of year=150): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -6.676001    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 May 1985(Day of year=151): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -4.986489    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 June 1985(Day of year=152): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -3.774693    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 June 1985(Day of year=153): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -2.944565    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 June 1985(Day of year=154): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -7.105002    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 June 1985(Day of year=155): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -4.360115    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 June 1985(Day of year=156): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -2.922559    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 June 1985(Day of year=157): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.623412    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 June 1985(Day of year=158): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.623504    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 June 1985(Day of year=159): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.561707    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 June 1985(Day of year=160): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (   -1.151250    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 June 1985(Day of year=161): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (  -0.6970759    )
+             Variable is not checked
+     Component name: paddock.SurfaceOM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 June 1985(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.
+
