@@ -715,7 +715,7 @@ public class DataProcessor
                     {
                         NewRow[Col.ColumnName] = Row[Col];
                     }
-                    catch (Exception err)
+                    catch (Exception)
                     {
                         // Data type mistmatch
                     }

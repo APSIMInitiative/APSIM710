@@ -21,67 +21,76 @@ namespace UIBits
         }
 
         private void OnLoad(object sender, EventArgs e)
-         {
-             string FolderLocation = Configuration.Instance.Setting("ClusterLocalInputFolder");
-             if (FolderLocation != "")
-                 FolderTextBox.Text = FolderLocation;
-             
+        {
+            AllSimsCheckBox.Checked = true;
+
+            FolderTextBox.Text = Configuration.Instance.Setting("ClusterLocalInputFolder");
+            FolderTextBox.Enabled = false;
+            BrowseButton.Enabled = false;
+
             sfxBox.Text = Configuration.Instance.Setting("ClusterSimulationSFX");
             if (sfxBox.Text == "")
                 sfxBox.Text = "http://apsrunet.apsim.info/apsim/Apsim" +
                     Configuration.Instance.ExeVersion() + "-" +
                     Configuration.Instance.ExeBuildNumber() + ".binaries.WINDOWS.exe";
 
+            string s = Configuration.Instance.Setting("ClusterOutputFolder");
+            if (s == "")
+            {
+                s = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+                                     + "\\..\\Dropbox\\Apsim\\" + Environment.UserName;
+                s = Path.GetFullPath(s);
+            }
+            ClusterSimulationFolder.Text = s;
 
-         string DropBoxLocation = Configuration.Instance.Setting("ClusterSimulationFolder");
-         if (DropBoxLocation == "")
-         {
-             DropBoxLocation = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
-                                  + "\\..\\Dropbox\\Apsim\\" + Environment.UserName;
-             DropBoxLocation = Path.GetFullPath(DropBoxLocation);
-         }
 
-         ClusterSimulationFolder.Text = DropBoxLocation;
-         FolderTextBox.Enabled = (FolderLocation != "");
-         BrowseButton.Enabled = false;
+            s = Configuration.Instance.Setting("ClusterSimsPerJob");
+            if (s != "")
+                simsPerJob.Value = Convert.ToDecimal(s);
+            else
+                simsPerJob.Value = 10;
 
-         string sims = Configuration.Instance.Setting("dropboxSimsPerJob");
-         if (sims != "") 
-             simsPerJob.Value = Convert.ToDecimal(sims); 
-         else 
-             simsPerJob.Value = 10;
-         arch_unix.Enabled = true;
-         arch_win32.Enabled = true;
-         isUnix = Configuration.Instance.Setting("dropboxIsUnix") == "true";
-         if (isUnix)
-         {
-             arch_unix.Checked = true;
-             arch_win32.Checked = false;
-         }
-         else
-         {
-             arch_unix.Checked = false;
-             arch_win32.Checked = true;
-         }
+            s = Configuration.Instance.Setting("ClusterArchUnix");
+            if (s != "")
+               arch_unix.Checked = Convert.ToBoolean(s);
+            else
+                arch_unix.Checked = false;
 
-         }
+            s = Configuration.Instance.Setting("ClusterArchWindows");
+            if (s != "")
+                arch_win32.Checked = Convert.ToBoolean(s);
+            else
+                arch_win32.Checked = true;
 
-        public string Version { get { return sfxBox.Text; } }
-        public string DropFolder { get { return ClusterSimulationFolder.Text; } }
+            NiceUserCheckBox.Checked = true;
+
+        }
+
+        public string sfxLocation { get { return sfxBox.Text; } }
+        public string OutputFolder { get { return ClusterSimulationFolder.Text; } }
         public string FolderOfFiles { get { return FolderTextBox.Text; } }
         public int simsPerJobNumber { get { return (int)simsPerJob.Value; } }
 
-        private bool isUnix = false;
-        public bool archIsUnix { get { return isUnix; } }
-        public bool archIsWin32 { get { return (!isUnix); } }
+        public bool runThisSimulation { get { return AllSimsCheckBox.Checked; } }
+        public bool archIsUnix { get { return arch_unix.Checked; } }
+        public bool archIsWin32 { get { return arch_win32.Checked; } }
         public bool NiceUser { get { return NiceUserCheckBox.Checked; } }
 
-        private void AllSimsCheckBox_CheckedChanged(object sender, EventArgs e)
+        public string uploadUsername { get { return username.Text; } }
+        public string uploadPassword { get { return password.Text; } }
+
+        private void AllSimsCheckBox_Click(object sender, EventArgs e)
         {
+            AllFilesCheckBox.Checked = false;
+            FolderTextBox.Enabled = false;
+            BrowseButton.Enabled = false;
         }
 
-        private void AllFilesCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void AllFilesCheckBox_Click(object sender, EventArgs e)
         {
+            AllSimsCheckBox.Checked = false;
+            FolderTextBox.Enabled = true;
+            BrowseButton.Enabled = true;
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -92,36 +101,6 @@ namespace UIBits
                 FolderTextBox.Text = f.SelectedPath;
             }
         }
-
-        private void AllSimsCheckBox_Click(object sender, EventArgs e)
-        {
-            AllFilesCheckBox.Checked = false;
-            FolderTextBox.Enabled = false; FolderTextBox.Text = "";
-            BrowseButton.Enabled = false;
-
-        }
-
-        private void AllFilesCheckBox_Click(object sender, EventArgs e)
-        {
-            AllSimsCheckBox.Checked = false;
-            FolderTextBox.Enabled = true;
-            BrowseButton.Enabled = true;
-
-        }
-
-        private void arch_unix_Click(object sender, EventArgs e)
-        {
-            arch_win32.Checked = false;
-            arch_unix.Checked = true;
-            isUnix = true;
-        }
-        private void arch_win32_Click(object sender, EventArgs e)
-        {
-            arch_win32.Checked = true;
-            arch_unix.Checked = false;
-            isUnix = false;
-        }
-
 
         private void OnBrowseButton2Click(object sender, EventArgs e)
         {
@@ -154,26 +133,41 @@ namespace UIBits
             }
         }
 
-        private void ClusterForm_FormClosing(object sender, FormClosingEventArgs e)
+        public void SaveSettings() 
         {
-            Configuration.Instance.SetSetting("ClusterLocalInputFolder", FolderTextBox.Text);
-            Configuration.Instance.SetSetting("ClusterSimulationSFX", sfxBox.Text);
+           Configuration.Instance.SetSetting("ClusterLocalInputFolder", FolderTextBox.Text);
+           Configuration.Instance.SetSetting("ClusterSimulationSFX", sfxBox.Text);
+           Configuration.Instance.SetSetting("ClusterArchWindows", Convert.ToString(arch_win32.Checked));
+           Configuration.Instance.SetSetting("ClusterArchUnix", Convert.ToString(arch_unix.Checked));
+           Configuration.Instance.SetSetting("ClusterSimsPerJob", Convert.ToString(simsPerJob.Value));
+           Configuration.Instance.SetSetting("ClusterOutputFolder", ClusterSimulationFolder.Text);
         }
 
 
         private void writeToZipfile_Click(object sender, EventArgs e)
         {
-                uploadSelected.Checked = false;
-                ClusterSimulationFolder.Enabled = true;
-                BrowseButton2.Enabled = true;
-                username.Enabled = false; password.Enabled = false;
+            uploadSelected.Checked = false;
+            ClusterSimulationFolder.Enabled = true;
+            BrowseButton2.Enabled = true;
+            username.Enabled = false; password.Enabled = false;
         }
         private void uploadSelected_Click(object sender, EventArgs e)
         {
-                ClusterSimulationFolder.Enabled = false;
-                BrowseButton2.Enabled = false;
-                writeToZipfile.Checked = false;
-                username.Enabled = true; password.Enabled = true;
+            ClusterSimulationFolder.Enabled = false;
+            BrowseButton2.Enabled = false;
+            writeToZipfile.Checked = false;
+            username.Enabled = true; password.Enabled = true;
         }
+
+        private void AllSimsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ClusterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
     }
 }

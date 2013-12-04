@@ -322,7 +322,6 @@ namespace ApsimFile
         {
             //This test should only return true if "active" is present - running from the command line will run the entire set by default
             XmlNode varNode = AFile.FactorComponent.ContentsAsXML.SelectSingleNode("//active");
-            string s = "";
             if(varNode != null)
                 return XmlHelper.Value(AFile.FactorComponent.ContentsAsXML, "active") == "1";
             return true;

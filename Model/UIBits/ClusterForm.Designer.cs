@@ -178,7 +178,6 @@
              this.arch_win32.TabIndex = 26;
              this.arch_win32.Text = "Windows";
              this.arch_win32.UseVisualStyleBackColor = true;
-             this.arch_win32.Click += new System.EventHandler(this.arch_win32_Click);
              // 
              // arch_unix
              // 
@@ -189,7 +188,6 @@
              this.arch_unix.TabIndex = 25;
              this.arch_unix.Text = "Linux";
              this.arch_unix.UseVisualStyleBackColor = true;
-             this.arch_unix.Click += new System.EventHandler(this.arch_unix_Click);
              // 
              // AllSimsCheckBox
              // 
@@ -202,7 +200,6 @@
              this.AllSimsCheckBox.TabIndex = 16;
              this.AllSimsCheckBox.Text = "All simulations in current file";
              this.AllSimsCheckBox.UseVisualStyleBackColor = true;
-             this.AllSimsCheckBox.CheckedChanged += new System.EventHandler(this.AllSimsCheckBox_CheckedChanged);
              this.AllSimsCheckBox.Click += new System.EventHandler(this.AllSimsCheckBox_Click);
              // 
              // AllFilesCheckBox
@@ -214,14 +211,13 @@
              this.AllFilesCheckBox.TabIndex = 17;
              this.AllFilesCheckBox.Text = "All .apsim files found under folder:";
              this.AllFilesCheckBox.UseVisualStyleBackColor = true;
-             this.AllFilesCheckBox.CheckedChanged += new System.EventHandler(this.AllFilesCheckBox_CheckedChanged);
              this.AllFilesCheckBox.Click += new System.EventHandler(this.AllFilesCheckBox_Click);
              // 
              // FolderTextBox
              // 
-             this.FolderTextBox.Location = new System.Drawing.Point(191, 57);
+             this.FolderTextBox.Location = new System.Drawing.Point(209, 57);
              this.FolderTextBox.Name = "FolderTextBox";
-             this.FolderTextBox.Size = new System.Drawing.Size(348, 20);
+             this.FolderTextBox.Size = new System.Drawing.Size(330, 20);
              this.FolderTextBox.TabIndex = 18;
              // 
              // BrowseButton
@@ -239,9 +235,9 @@
              // 
              // sfxBox
              // 
-             this.sfxBox.Location = new System.Drawing.Point(191, 107);
+             this.sfxBox.Location = new System.Drawing.Point(209, 107);
              this.sfxBox.Name = "sfxBox";
-             this.sfxBox.Size = new System.Drawing.Size(348, 20);
+             this.sfxBox.Size = new System.Drawing.Size(330, 20);
              this.sfxBox.TabIndex = 21;
              // 
              // BrowseButton2
@@ -307,6 +303,7 @@
              this.password.Enabled = false;
              this.password.Location = new System.Drawing.Point(361, 370);
              this.password.Name = "password";
+             this.password.PasswordChar = '*';
              this.password.Size = new System.Drawing.Size(83, 20);
              this.password.TabIndex = 34;
              // 

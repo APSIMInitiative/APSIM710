@@ -163,7 +163,7 @@ namespace ApsimFile
                                 Path.Combine("Apsim", Instance.ApsimVersion()));
         }
 
-        public enum architecture { unix, win32 };
+        public enum architecture : int { unix = 1, win32 = 2};
 
         // from http://stackoverflow.com/questions/692410/hello-os-with-c-mono
         public static architecture getArchitecture()

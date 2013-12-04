@@ -255,25 +255,32 @@ namespace Actions
 				UIBits.ClusterForm F = new UIBits.ClusterForm();
 				if (F.ShowDialog() == DialogResult.OK) {
 					Cursor.Current = Cursors.WaitCursor;
-					Configuration.Instance.SetSetting("dropboxFolder", F.DropFolder);
-					Configuration.Instance.SetSetting("dropboxApsimVersion", F.Version);
-					if (F.archIsUnix) {
-						Configuration.Instance.SetSetting("dropboxIsUnix", "true");
-					} else {
-						Configuration.Instance.SetSetting("dropboxIsUnix", "false");
-					}
-					Configuration.Instance.SetSetting("dropboxSimsPerJob", F.simsPerJobNumber.ToString());
+                    F.SaveSettings();
 
 					List<string> FilesToRun = new List<string>();
-					if (string.IsNullOrEmpty(F.FolderOfFiles)) {
-						if ((!string.IsNullOrEmpty(Controller.ApsimData.FileName))) {
-							FilesToRun.Add(Controller.ApsimData.FileName);
-						}
-					} else {
+                    if (F.runThisSimulation && !string.IsNullOrEmpty(Controller.ApsimData.FileName)) 
+					    FilesToRun.Add(Controller.ApsimData.FileName);
+                    else if (!F.runThisSimulation && !string.IsNullOrEmpty(F.FolderOfFiles))
 						Utility.FindFiles(F.FolderOfFiles, "*.apsim", ref FilesToRun);
-					}
-					if ((FilesToRun.Count > 0)) {
-						ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.Version, F.archIsUnix, F.simsPerJobNumber, F.NiceUser, UpdateProgress);
+
+                    if ((FilesToRun.Count > 0)) {
+                        CondorJob c = new CondorJob();
+                        c.NiceUser = F.NiceUser;
+                        c.username = F.uploadUsername;
+                        c.password = F.uploadPassword;
+                        c.arch = 0;
+                        if (F.archIsUnix) c.arch |= Configuration.architecture.unix;
+                        if (F.archIsWin32) c.arch |= Configuration.architecture.win32;
+
+                        c.SelfExtractingExecutableLocation = F.sfxLocation;
+                        if (!Directory.Exists(F.OutputFolder))
+                            Directory.CreateDirectory(F.OutputFolder);
+                        c.DestinationFolder = F.OutputFolder;
+                        c.numberSimsPerJob = F.simsPerJobNumber;
+
+                        c.Go(FilesToRun, UpdateProgress);
+
+                        //ToowoombaCluster.RunOnCluster(FilesToRun, F.OutputFolder, F.uploadUsername, F.uploadPassword, F.sfxLocation, F.archIsUnix, F.archIsWin32, F.simsPerJobNumber, F.NiceUser, UpdateProgress);
 						MessageBox.Show("Your job has been placed in your dropbox folder. Your outputs will appear adjacent.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
 				}
