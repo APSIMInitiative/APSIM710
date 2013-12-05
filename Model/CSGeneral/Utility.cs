@@ -7,10 +7,11 @@ using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.Reflection;
 using System.Net.Sockets;
 using System.Threading;
-using System.Collections.Specialized;
 
 namespace CSGeneral
 {
@@ -422,9 +423,15 @@ namespace CSGeneral
             }
         }
 
-
+        public class UploadFile
+        {
+            public string RemoteName;
+            public string LocalName;
+            public string ContentType;
+        }
         /// <summary>
-        ///  Upload a file via ftp
+        ///  Upload a file 
+        ///    http://dev.bratched.com/en/uploading-multiple-files-with-c/
         /// </summary>
         /// <param name="localFileName">Name of the file to be uploaded</param>
         /// <param name="username">remote username</param>
@@ -432,28 +439,58 @@ namespace CSGeneral
         /// <param name="hostname">remote hostname</param>
         /// <param name="remoteFileName">Full path and name of where the file goes</param>
         /// <returns></returns>
-        public static bool UploadFtp(string localFileName, string username, string password, string hostname, string remoteFileName)
+        static public byte[] UploadFiles(string address, IEnumerable<UploadFile> files, NameValueCollection formValues, string username, string password)
         {
-            // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + hostname + remoteFileName);
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+            request.SendChunked = true;
 
-            // Copy the contents of the file to the request stream.
-            StreamReader sourceStream = new StreamReader(localFileName);
-            byte[] fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
-            sourceStream.Close();
-            request.ContentLength = fileContents.Length;
+            string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(username + ":" + password));
+            request.Headers.Add("Authorization", "Basic " + credentials);
 
-            Stream requestStream = request.GetRequestStream();
-            requestStream.Write(fileContents, 0, fileContents.Length);
-            requestStream.Close();
+            request.Method = "POST";
+            var boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x", NumberFormatInfo.InvariantInfo);
+            request.ContentType = "multipart/form-data; boundary=" + boundary;
+            boundary = "--" + boundary;
+            using (var requestStream = request.GetRequestStream())
+            {
+                // Write the values
+                foreach (string name in formValues.Keys)
+                {
+                    var buffer = Encoding.ASCII.GetBytes(boundary + Environment.NewLine);
+                    requestStream.Write(buffer, 0, buffer.Length);
+                    buffer = Encoding.ASCII.GetBytes(string.Format("Content-Disposition: form-data; name=\"{0}\"{1}{1}", name, Environment.NewLine));
+                    requestStream.Write(buffer, 0, buffer.Length);
+                    buffer = Encoding.UTF8.GetBytes(formValues[name] + Environment.NewLine);
+                    requestStream.Write(buffer, 0, buffer.Length);
+                }
 
-            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-            string retVal = response.StatusDescription;
-            response.Close();
+                // Write the files
+                foreach (var file in files)
+                {
+                    var buffer = Encoding.ASCII.GetBytes(boundary + Environment.NewLine);
+                    requestStream.Write(buffer, 0, buffer.Length);
+                    buffer = Encoding.UTF8.GetBytes(string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"{2}", file.RemoteName, file.LocalName, Environment.NewLine));
+                    requestStream.Write(buffer, 0, buffer.Length);
+                    buffer = Encoding.ASCII.GetBytes(string.Format("Content-Type: {0}{1}{1}", file.ContentType, Environment.NewLine));
+                    requestStream.Write(buffer, 0, buffer.Length);
+                    Stream fileStream = File.Open(file.LocalName, FileMode.Open);
+                    fileStream.CopyTo(requestStream);
+                    fileStream.Close();
+                    buffer = Encoding.ASCII.GetBytes(Environment.NewLine);
+                    requestStream.Write(buffer, 0, buffer.Length);
+                }
 
-            return retVal != "200";
+                var boundaryBuffer = Encoding.ASCII.GetBytes(boundary + "--");
+                requestStream.Write(boundaryBuffer, 0, boundaryBuffer.Length);
+            }
+
+            using (var response = request.GetResponse())
+            using (var responseStream = response.GetResponseStream())
+            using (var stream = new MemoryStream())
+            {
+                responseStream.CopyTo(stream);
+                return stream.ToArray();
+            }
         }
 
 

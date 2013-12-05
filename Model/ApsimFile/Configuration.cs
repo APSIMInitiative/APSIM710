@@ -278,6 +278,10 @@ namespace ApsimFile
         {
             return RemoveMacros(XmlHelper.Value(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName));
         }
+        public string RawSetting(string SettingName)
+        {
+            return XmlHelper.Value(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName);
+        }
         public string ClimateSetting(string SettingName)
         {
             return RemoveMacros(XmlHelper.Value(SettingsNode, "climate" + XmlHelper.Delimiter + SettingName));

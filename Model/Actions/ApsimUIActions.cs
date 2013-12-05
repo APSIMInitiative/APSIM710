@@ -268,6 +268,7 @@ namespace Actions
                         c.NiceUser = F.NiceUser;
                         c.username = F.uploadUsername;
                         c.password = F.uploadPassword;
+                        c.doUpload = F.doUpload;
                         c.arch = 0;
                         if (F.archIsUnix) c.arch |= Configuration.architecture.unix;
                         if (F.archIsWin32) c.arch |= Configuration.architecture.win32;
@@ -277,11 +278,10 @@ namespace Actions
                             Directory.CreateDirectory(F.OutputFolder);
                         c.DestinationFolder = F.OutputFolder;
                         c.numberSimsPerJob = F.simsPerJobNumber;
-
                         c.Go(FilesToRun, UpdateProgress);
 
-                        //ToowoombaCluster.RunOnCluster(FilesToRun, F.OutputFolder, F.uploadUsername, F.uploadPassword, F.sfxLocation, F.archIsUnix, F.archIsWin32, F.simsPerJobNumber, F.NiceUser, UpdateProgress);
-						MessageBox.Show("Your job has been placed in your dropbox folder. Your outputs will appear adjacent.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (!c.doUpload)
+						   MessageBox.Show("Your job has been placed in your dropbox folder. Your outputs will appear adjacent.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
 				}
 			} catch (Exception ex) {

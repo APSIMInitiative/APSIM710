@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
 using ApsimFile;
@@ -24,7 +25,7 @@ namespace ApsimFile
         // user pass to use if we are uploading 
         public string username = "";
         public string password = "";
-
+        public bool doUpload = false;
         // True if we want unix clients to run the scripts and sim files
         public Configuration.architecture arch = Configuration.getArchitecture();
 
@@ -43,7 +44,7 @@ namespace ApsimFile
         public string DestinationFolder = Directory.GetCurrentDirectory();
 
         public CondorJob() { }
-        public string Go(List<string> FilesToRun, ProgressNotifier Notifier)
+        public void Go(List<string> FilesToRun, ProgressNotifier Notifier)
         {
             Notifier(0, "Initialising");
             Directory.CreateDirectory(WorkingFolder);
@@ -63,8 +64,28 @@ namespace ApsimFile
             fp.Close();
 
             Notifier(100, "Zipping up");
+            string localzip = zipUp();
+            if (doUpload)
+            {
+                Notifier(0, "Uploading");
+                var values = new NameValueCollection
+        {
+            { "useAutoSubmit", "false" },
+            { "uploadDirectory", "/home/" + username }
+        };
+                var files = new[]
+        {
+            new Utility.UploadFile
+            {
+                RemoteName = Path.GetFileName(localzip),
+                LocalName = localzip,
+                ContentType = "application/x-zip",
+            }
+		};
+                byte[] result = Utility.UploadFiles("https://apsrunet.apsim.info/upload.php", files, values, username, password);
 
-            return (zipUp());
+            }
+            return;
         }
 
         // Add individual .apsim files to the job
@@ -227,8 +248,8 @@ namespace ApsimFile
 
             if (numSims > 0)
             {
-               SubWriter.WriteLine("transfer_input_files = " + string.Join(",", inputfiles));
-               SubWriter.WriteLine("queue");
+                SubWriter.WriteLine("transfer_input_files = " + string.Join(",", inputfiles));
+                SubWriter.WriteLine("queue");
             }
             WinExeWriter.Close(); LinuxExeWriter.Close();
             SubWriter.Close();
@@ -245,7 +266,7 @@ namespace ApsimFile
             FilesToZip.AddRange(Directory.GetFiles(WorkingFolder, "*.*"));
             string zipFile = CalcZipFileName();
 
-            Zip.ZipFiles(FilesToZip, zipFile, "");
+            Zip.ZipFiles(FilesToZip, zipFile, "", 9);
 
             // Remove all unwanted files
             foreach (string file in FilesToZip)

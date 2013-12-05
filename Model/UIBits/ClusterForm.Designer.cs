@@ -279,6 +279,7 @@
              this.uploadSelected.TabIndex = 24;
              this.uploadSelected.Text = "Upload to cluster";
              this.uploadSelected.UseVisualStyleBackColor = true;
+             this.uploadSelected.CheckedChanged += new System.EventHandler(this.uploadSelected_CheckedChanged);
              this.uploadSelected.Click += new System.EventHandler(this.uploadSelected_Click);
              // 
              // username

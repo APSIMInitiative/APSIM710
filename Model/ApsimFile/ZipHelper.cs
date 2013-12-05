@@ -8,7 +8,7 @@ public class Zip
         /// <summary>
         /// Zip all the specified files into the specified ZipFileName.
         /// </summary>
-        public static void ZipFiles(IEnumerable<string> FilesToZip, string filename, string Password)
+        public static void ZipFiles(IEnumerable<string> FilesToZip, string filename, string Password, int compressionLevel = 5)
             {
 		    if (!File.Exists(filename))
                 File.Delete(filename);
@@ -17,7 +17,7 @@ public class Zip
                 Zip.Password = Password;
             try
                 {
-                Zip.SetLevel(5); // 0 - store only to 9 - means best compression
+                    Zip.SetLevel(compressionLevel); // 0 - store only to 9 - means best compression
                 foreach (string FileName in FilesToZip)
                     {
                     FileStream fs = File.OpenRead(FileName);

@@ -28,7 +28,7 @@ namespace UIBits
             FolderTextBox.Enabled = false;
             BrowseButton.Enabled = false;
 
-            sfxBox.Text = Configuration.Instance.Setting("ClusterSimulationSFX");
+            sfxBox.Text = Configuration.Instance.RawSetting("ClusterSimulationSFX");
             if (sfxBox.Text == "")
                 sfxBox.Text = "http://apsrunet.apsim.info/apsim/Apsim" +
                     Configuration.Instance.ExeVersion() + "-" +
@@ -78,6 +78,7 @@ namespace UIBits
 
         public string uploadUsername { get { return username.Text; } }
         public string uploadPassword { get { return password.Text; } }
+        public bool doUpload { get { return uploadSelected.Checked; } }
 
         private void AllSimsCheckBox_Click(object sender, EventArgs e)
         {
@@ -165,6 +166,11 @@ namespace UIBits
         }
 
         private void ClusterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        private void uploadSelected_CheckedChanged(object sender, EventArgs e)
         {
 
         }
