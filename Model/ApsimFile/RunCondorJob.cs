@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
+using System.Text;
 using ApsimFile;
 using CSGeneral;
 
@@ -68,22 +69,20 @@ namespace ApsimFile
             if (doUpload)
             {
                 Notifier(0, "Uploading");
-                var values = new NameValueCollection
-        {
-            { "useAutoSubmit", "false" },
-            { "uploadDirectory", "/home/" + username }
-        };
-                var files = new[]
-        {
-            new Utility.UploadFile
-            {
-                RemoteName = Path.GetFileName(localzip),
-                LocalName = localzip,
-                ContentType = "application/x-zip",
-            }
-		};
-                byte[] result = Utility.UploadFiles("https://apsrunet.apsim.info/upload.php", files, values, username, password);
-
+                var values = new NameValueCollection  {
+                    { "useAutoSubmit", "false" },
+                    { "uploadDirectory", "/home/" + username }
+                };
+                var files = new[]  {
+                  new Utility.UploadFile  {
+                   RemoteName = Path.GetFileName(localzip),
+                   LocalName = localzip,
+                   ContentType = "application/x-zip",
+                }};
+                string result = Encoding.ASCII.GetString(Utility.UploadFiles("https://apsrunet.apsim.info/upload.php", files, values, username, password));
+                ApsimCondor a = new ApsimCondor();
+                a.Credentials = new System.Net.NetworkCredential(username, password);
+                string s = a.AddJob(new string [] {"/home/" + username + "/" + Path.GetFileName(localzip)});
             }
             return;
         }
@@ -280,7 +279,7 @@ namespace ApsimFile
 
         private string CalcZipFileName()
         {
-            string ZipFileName = DateTime.Now.ToShortDateString() + "(" + DateTime.Now.ToShortTimeString() + ").zip";
+            string ZipFileName = DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToShortTimeString() + ".zip";
             ZipFileName = ZipFileName.Replace(" ", ".");
             ZipFileName = ZipFileName.Replace("/", ".");
             ZipFileName = ZipFileName.Replace(":", ".");

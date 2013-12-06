@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -81,6 +81,7 @@
       <Name>System.Data</Name>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
@@ -95,14 +96,15 @@
     <Reference Include="CMPServices">
       <HintPath>..\CMPServices.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Data.Sqlite" Condition="'$(OS)' != 'Windows_NT'"/>
+    <Reference Include="Mono.Data.Sqlite" Condition="'$(OS)' != 'Windows_NT'" />
     <Reference Include="System.Data.SQLite, Version=1.0.73.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL" Condition="'$(OS)' == 'Windows_NT'">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\System.Data.SQLite.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\System.Data.SQLite.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApsimAttributes.cs" />
+    <Compile Include="ApsimCondor.cs" />
     <Compile Include="ApsimFile.cs" />
     <Compile Include="APSIMInputFile.cs" />
     <Compile Include="ApsimToSim.cs" />
