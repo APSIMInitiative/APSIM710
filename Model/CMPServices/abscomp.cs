@@ -69,7 +69,7 @@ namespace CMPServices
         {
             bool result = false;
 
-            if ((sourceCompID < sourceValues.Count) && (sourceValue(sourceCompID) != null)) //Already tested this ddlvalue
+            if (sourceValue(sourceCompID) != null) //Already tested this ddlvalue
             {
                 result = true;
             }
@@ -118,7 +118,7 @@ namespace CMPServices
         //============================================================================
         public TSourcedInfo sourceValue(uint sourceCompID)
         {
-            return sourceValues[(int)sourceCompID];
+            return sourceCompID < sourceValues.Count ? sourceValues[(int)sourceCompID] : null;
         }
 
         //============================================================================
@@ -1490,6 +1490,7 @@ namespace CMPServices
             prmSize = dest.sizeBytes();
             prmData = new byte[prmSize];
             dest.getData(ref prmData);                 //makes a copy into a block that has been allocated
+            dest.isVariant = true;
             dest.addSourceValue(publBy, dest);
             return true;
         }

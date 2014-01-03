@@ -1213,7 +1213,8 @@ namespace CMPServices
                             byte[] prmData, uint prmSize)
         {
             TEventInfo eventInfo;
-            TDDMLValue subsParams;
+            TEventInfo subsParams;
+            Boolean newVariant = false;
 
             try
             {
@@ -1222,21 +1223,30 @@ namespace CMPServices
                     eventInfo = (TEventInfo)eventList[eventID];
                     if (eventInfo != null)
                     {
-                        if (eventInfo.isVariant || !eventInfo.checkCompatibility(publBy, prmDDML))
+                        subsParams = eventInfo.sourceValue(publBy) as TEventInfo;
+                        if (subsParams == null)
                         {
-                            if (ConvertApsimVariant(eventInfo, publBy, prmDDML, ref prmData, ref prmSize))
+                            if (!eventInfo.checkCompatibility(publBy, prmDDML))
                             {
-                                eventInfo.isVariant = true;
+                                // It's not compatible, but maybe it's an old-style APSIM variant
+                                if (ConvertApsimVariant(eventInfo, publBy, prmDDML, ref prmData, ref prmSize))
+                                {
+                                    newVariant = true;
+                                }
+                                else
+                                {
+                                    string errorMsg = string.Format("{0}: Type of value passed for event {1} ({2}) parameter is incompatible.", FName, eventID, eventInfo.sDescr);
+                                    throw (new TypeMisMatchException(errorMsg));
+                                }
                             }
-                            else
-                            {
-                                string errorMsg = string.Format("{0}: Type of value passed for event {1} ({2}) parameter is incompatible.", FName, eventID, eventInfo.sDescr);
-                                throw (new TypeMisMatchException(errorMsg));
-                            }
+                            subsParams = eventInfo.sourceValue(publBy) as TEventInfo;
                         }
-                        subsParams = eventInfo.sourceValue(publBy);
                         if (subsParams != null)
+                        {
+                            if (subsParams.isVariant && !newVariant)
+                                ConvertApsimVariant(eventInfo, publBy, prmDDML, ref prmData, ref prmSize);
                             subsParams.setData(prmData, (int)prmSize, 0);
+                        }
                         eventsManager.beginEvent(eventID, msgFrom, publBy, msgID, subsParams, requiresAck);
                     }
                     else if (requiresAck)
