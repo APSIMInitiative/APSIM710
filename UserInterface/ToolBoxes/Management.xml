@@ -1501,14 +1501,7 @@ Public Class Script
 End Class
 </text>
     </manager2>
-    <manager2 name="Irrigate on sw deficit">
-      <ui>
-        <deficit type="text" description="Irrigate when soil water deficit reaches this amount (mm)">50</deficit>
-        <eff type="text" description="Irrigation efficiency (0-1)">1.0</eff>
-        <start type="text" description="The earliest date irrigation will be applied (dd-mmm)">1-jan</start>
-        <end type="text" description="The latest date irrigation will be applied (dd-mmm)">31-dec</end>
-      </ui>
-      <text>using System;
+<manager2 name="Irrigate on sw deficit"><ui><deficit type="text" description="Irrigate when soil water deficit reaches this amount (mm)">50</deficit><eff type="text" description="Irrigation efficiency (0-1)">1.0</eff><start type="text" description="The earliest date irrigation will be applied (dd-mmm)">1-jan</start><end type="text" description="The latest date irrigation will be applied (dd-mmm)">31-dec</end><maxlayer type="text" description="The deficit will be calculated to this soil layer (0 for full profile)">0</maxlayer></ui><text>using System;
 using ModelFramework;
 using CSGeneral;
 
@@ -1523,12 +1516,40 @@ public class Script
    [Param] double eff;           //irrigation efficiency
    [Param] string start;         //no irrigation will be applied before this date
    [Param] string end;           //no irrigation will be applied after this date
+   [Param] int maxlayer;         //calculate soil water deficit to this layer (inclusive)
+   [Output] double totalSWD;     //total soil water deficit for given layers
+   
+   private double[] DulDep;
+   private double[] SwDep;
+   private double[] LL15Dep;
+   private double[] SWD;
+   
+   [EventHandler] public void OnInitialised()
+   {
+      DulDep = new double[dul_dep.Length];
+      SwDep = new double[dul_dep.Length];
+      LL15Dep = new double[dul_dep.Length];
+      SWD = new double[dul_dep.Length];
+      
+      if (maxlayer &gt; dul_dep.Length)
+      {
+         Console.WriteLine("Warning: max layer is greater than number of layers.");
+         Console.WriteLine("Using full profile for soil water deficit calculations.");
+         maxlayer = 0;
+      }
+   }
      
    // The following event handler will be called each day at the end of the day
    [EventHandler] public void OnPost()
    {
+      for (int i = 0; i &lt; (maxlayer &gt; 0 ? maxlayer : dul_dep.Length); i++)
+      {
+         SWD[i] = dul_dep[i] - sw_dep[i];
+      }
+      totalSWD = MathUtility.Sum(SWD);
+      
       //if the soil water deficit is higer than the allowed deficit, and today is within the irrigation window
-      if (dul_dep[0] - (sw_dep[0] - ll15_dep[0]) &gt; deficit &amp;&amp; DateUtility.WithinDates(start, today, end))
+      if (totalSWD &gt; deficit &amp;&amp; DateUtility.WithinDates(start, today, end))
       {
          IrrigationApplicationType data = new IrrigationApplicationType(); //using a type means we can use defaults for values we don't change
          data.Amount = deficit;
@@ -1537,9 +1558,8 @@ public class Script
       }
    }  
 }
-       </text>
-    </manager2>
-    <manager2 name="Irrigate on event">
+       </text></manager2>
+	   <manager2 name="Irrigate on event">
       <ui>
         <amount type="text" description="Amount of irrigation to apply (mm)">50</amount>
         <eff type="text" description="Irrigation efficiency (0-1)">1.0</eff>
