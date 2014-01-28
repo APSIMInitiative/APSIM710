@@ -913,6 +913,7 @@ namespace CMPServices
                 {
                     if (bRegisterNow)
                         sendDeregistration(TypeSpec.KIND_REQUESTSET, iPropertyID);
+                    sendError("Setter property " + setPropertyList[iPropertyID].Name + " ID:" + iPropertyID.ToString() + " is being replaced by " + sName, true);
                     setPropertyList[iPropertyID] = null;
                 }
 
@@ -1119,6 +1120,7 @@ namespace CMPServices
                 {
                     if (bRegisterEventsNow)
                         sendDeregistration(((TEventInfo)eventList[eventID]).iKind, eventID);
+                    sendError("Event " + eventList[eventID].Name + " ID:" + eventID.ToString() + " is being replaced by " + sName, true);
                 }
                 eventList[eventID] = newEvent;
 

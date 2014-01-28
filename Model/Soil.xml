@@ -21,7 +21,7 @@
       <ApsimToSim>
       [foreach Soil.SoilWater]
          <component name="[soil.Name] Water" executable="%apsim%/Model/SoilWat.%dllext%" class="SoilWat">
-            <executable name="%apsim%/Model/SoilWat.%dllext%" version="1.0" class="SoilWat" />
+            <executable name="%apsim%/Model/SoilWat.%dllext%" version="1.0" />
             <initdata>
                [Model SoilWater]
                <diffus_const>[soil.SoilWater.DiffusConst]</diffus_const>
@@ -57,8 +57,8 @@
          </component>
       [endfor]
       [foreach Soil.Swim]
-         <component name="SWIM" executable="%apsim%/Model/SWIM3.%dllext%" class="Swim3">
-            <executable name="%apsim%/Model/SWIM3.%dllext%" version="1.0" class="Swim3" />
+         <component name="SWIM" executable="%apsim%/Model/SWIM3.%dllext%" class="Swim3.Swim">
+            <executable name="%apsim%/Model/SWIM3.%dllext%" version="1.0" />
             <initdata>
                [Model Swim3]
                <cn2_bare>[Swim.Cn2Bare]</cn2_bare>
@@ -132,7 +132,7 @@
          </component>
       [endfor]
          <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilN.%dllext%" class="SoilN">
-            <executable name="%apsim%/Model/SoilN.%dllext%" version="1.0" class="SoilN"/>
+            <executable name="%apsim%/Model/SoilN.%dllext%" version="1.0" />
             <initdata>
                [Model SoilNitrogen]
                [if "[soil.SoilType]"]<soiltype>[soil.SoilType]</soiltype>[endif]
@@ -153,7 +153,7 @@
          </component>
       [foreach Soil.Phosphorus]
          <component name="Phosphorus" executable="%apsim%/Model/SoilP.%dllext%" class="SoilP">
-            <executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" class="SoilP"/>
+            <executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" />
             <initdata>
                [Model SoilP]
                <root_cp>[soil.Phosphorus.RootCP]</root_cp>
@@ -169,7 +169,7 @@
       [endfor]
       [if [soil.Cl]]
          <component name="Cl" executable="%apsim%/Model/Solute.%dllext%" class="Solute.Cl">
-            <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" class="Solute" />
+            <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" />
             <initdata>
                <ub_solute>1000</ub_solute>
                <lb_solute>0</lb_solute>
