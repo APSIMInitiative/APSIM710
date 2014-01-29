@@ -1473,7 +1473,7 @@ Public Class SoilTemperature2
     ''' Assumptions
     '''       largest/smallest real number is 1.0e+/-30
     ''' </remarks>
-    Private Function divide(ByVal dividend As Object, ByVal divisor As Object, ByVal defaultValue As Object) As Object
+    Private Function divide(ByVal dividend As Double, ByVal divisor As Double, ByVal defaultValue As Double) As Double
 
         Const LARGEST As Double = 1.0E+30   ' largest acceptable no. for quotient
         Const NOUGHT As Double = 0.0      ' 0
@@ -1556,7 +1556,7 @@ Public Class SoilTemperature2
     ''' Notes
     '''     reports err if value GT upper or value LT lower or lower GT upper
     ''' </remarks>
-    Private Overloads Sub BoundCheck(ByVal VariableValue As Object, ByVal Lower As Object, ByVal Upper As Object, ByVal VariableName As String)
+    Private Overloads Sub BoundCheck(ByVal VariableValue As Double, ByVal Lower As Double, ByVal Upper As Double, ByVal VariableName As String)
 
         Const MARGIN As Double = 0.00001          ' margin for precision err of lower
         Dim LowerBound As Double = Lower - MARGIN       ' calculate a margin for precision err of lower.
