@@ -140,6 +140,17 @@ namespace ApsimFile
             return ReturnString;
         }
         private static string ApsimDir = "";
+
+        /// <summary>
+        /// Allow setting of this path by external users so that this
+        /// assembly can be used in a path other than the apsim directory.
+        /// </summary>
+        /// <param name="path">The new path</param>
+        public static void SetApsimDir(string path)
+        {
+            ApsimDir = path;
+        }
+
         public static string ApsimDirectory()
         {
             if (ApsimDir == "")
