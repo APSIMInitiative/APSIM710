@@ -102,6 +102,7 @@ Public Class SoilTemperature2
     Private gClay() As Double               ' Proportion of clay in each layer of profile (0-1)
 
 #End Region
+
 #Region "[Input]s From APSIM"
     <Input()> Private surfaceom_cover As Double = 0.0
     <Input()> Private timestep As Integer = 0     ' timestep in minutes
@@ -135,6 +136,7 @@ Public Class SoilTemperature2
     '<Input()> _
     Private Height As Double = 0.0    ' (mm) height of canopy above ground
 #End Region
+
 #Region "[Param]s From Files"
 
     <Param()> Private clay() As Double
@@ -435,7 +437,7 @@ Public Class SoilTemperature2
         gNumLayers = Soil.dlayer.Length
         gNz = gNumLayers + 1
 
-        ReDim Preserve gDLayer(gNumLayers + 1)     ' Dlayer dimensioned for layers 1 to gNumlayers + 1 extra for zone below bottom layer
+        ReDim gDLayer(gNumLayers + 1)     ' Dlayer dimensioned for layers 1 to gNumlayers + 1 extra for zone below bottom layer
         Soil.dlayer.CopyTo(gDLayer, 1)
         BoundCheckArray(gDLayer, 0.0, 1000.0, "dlayer")
 
@@ -1373,6 +1375,7 @@ Public Class SoilTemperature2
     End Function
 
 #End Region
+
 #Region "Test Net radiation alternative"
     ''' <summary>
     ''' Calculate initial variables for net radiation per timestep
