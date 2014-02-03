@@ -326,8 +326,6 @@ public class AgPasture
     private double p_rootMass;        //total root mass
     private double p_rootFrontier;    //depth of root frontier
 
-    private float p_Frgr;            //weighted mean of species Frgr
-
     //soil        
     private double p_bottomRootLayer;   //the soil layer just below root zone
     private double p_soilNdemand;       //plant N demand (shoot + root) for daily growth from soil (excludingfixation and remob)
@@ -997,7 +995,6 @@ public class AgPasture
     {
         NewPotentialGrowthType EventData = new NewPotentialGrowthType();
         EventData.sender = thisCropName;
-        p_Frgr = 0;
         p_gftemp = 0;     //weighted average   
 
 
@@ -1010,8 +1007,6 @@ public class AgPasture
                 prop = SP[s].dmgreen / AboveGroundLiveWt;   // dm_green;       
             }
             p_gftemp += SP[s].GFTemperature(Tday) * prop;
-            p_Frgr += SP[s].Frgr * (float)prop;
-
         }
 
         double gft = 1;
@@ -1026,7 +1021,8 @@ public class AgPasture
 
         //Also, have tested the consequences of passing p_Ncfactor in (different concept for gfwater), 
         //coulnd't see any differnece for results
-        EventData.frgr = Math.Min(Math.Min(p_Frgr, FVPD), (float)gft);
+        EventData.frgr = Math.Min(FVPD, (float)gft);
+        // RCichota, Jan/2014: removed AgPasture's Frgr from here, it is considered at the same level as nitrogen etc...
         NewPotentialGrowth.Invoke(EventData);
     }
 
@@ -2424,7 +2420,18 @@ public class AgPasture
     [Units("0-1")]
     public float GLFrgr                 //gf_rgr
     {
-        get { return p_Frgr; }
+        get {
+            double p_Frgr = 0; //weighted value
+            for (int s = 0; s < Nsp; s++)
+            {
+                double prop = 1.0 / Nsp;
+                if (p_greenDM != 0.0)
+                {
+                    prop = SP[s].dmgreen / AboveGroundLiveWt;
+                }
+                p_Frgr += SP[s].Frgr * prop;
+            }
+            return (float)p_Frgr;}
     }
 
     [Output]
@@ -4196,13 +4203,16 @@ public class Species
     //Species -------------------------------------------------------------
     public double DailyGrowthAct()
     {
-        if (!isLegume)
-            dGrowth = dGrowthW * Math.Pow(gfn, NdilutCoeff);    //Math.Sqrt(gfn);        // sqrt = more DM growth than N limitaed (dilution) 
+        double gfnit = 0.0;
+        if (isLegume)
+            gfnit = gfn;                           //legume no dilution, but reducing more DM (therefore LAI) 
         else
-            dGrowth = dGrowthW * gfn;                           //legume no dilution, but reducing more DM (therefore LAI) 
+            gfnit = Math.Pow(gfn, NdilutCoeff);    // more DM growth than N limited, due to dilution (typically NdilutCoeff = 0.5) 
 
+        dGrowth = dGrowthW * Math.Min(gfnit, Frgr);
         return dGrowth;
 
+        //RCichota, Jan/2014: updated the function, added account for Frgr
     }
 
     //Species -------------------------------------------------------------
