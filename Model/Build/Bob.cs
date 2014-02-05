@@ -1,7 +1,7 @@
 ﻿//css_ref System.Data.dll;
-//css_import ../CSGeneral/Utility.cs
-//css_import ../CSGeneral/StringManip.cs
-//css_import ../CSGeneral/MathUtility.cs
+//css_import ../CSGeneral/Utility.cs;
+//css_import ../CSGeneral/StringManip.cs;
+//css_import ../CSGeneral/MathUtility.cs;
 
 using System;
 using System.Text;
@@ -211,7 +211,7 @@ class Bob
             SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Pass' AND linuxStatus = 'Queued' ORDER BY ID";
 
          using (SqlCommand Command = new SqlCommand(SQL, Connection))
-           using (SqlDataReader Reader = ExecuteReader(Command))
+               (SqlDataReader Reader = ExecuteReader(Command))
             {
             if (Reader.Read())
                return Convert.ToInt32(Reader[0]);
@@ -227,7 +227,7 @@ class Bob
          string SQL = "SELECT " + FieldName + " FROM BuildJobs WHERE ID = " + JobID.ToString();
 
          using (SqlCommand Command = new SqlCommand(SQL, Connection))
-           using (SqlDataReader Reader = ExecuteReader(Command))
+               (SqlDataReader Reader = ExecuteReader(Command))
             {
             if (Reader.Read())
                 return Reader[0];
