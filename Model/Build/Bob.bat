@@ -1,4 +1,3 @@
-cd Z:\Apsim
 
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
