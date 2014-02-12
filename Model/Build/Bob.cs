@@ -100,9 +100,10 @@ class Bob
 				          }
 				       else 
 				          {
-                  DBUpdate("linuxStatus", "Running", Connection, JobID);
-				          // Linux builds only check "passed" patches - ie revisions
+                  // Linux builds only check "passed" patches - ie revisions
                   string revision = DBGet("RevisionNumber", Connection, JobID).ToString();
+                  if (revision == "") { Thread.Sleep(1 * 60 * 1000); break;}  // The job may have "passed" but not yet committed to svn
+                  DBUpdate("linuxStatus", "Running", Connection, JobID);
                   string LogFileName = "/tmp/Apsim7.5-r" + revision + ".txt";
                   StreamWriter Log = new StreamWriter(LogFileName);
 
