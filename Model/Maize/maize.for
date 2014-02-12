@@ -1527,13 +1527,14 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 
       if (Option .eq. 1) then
          if ((p%uptake_source .eq. 'apsim').or.
-     :       (p%uptake_source .eq. 'swim3')) then
+     :       (p%uptake_source .eq. 'swim3').or.
+     :       (p%uptake_source .eq. 'arbitrator')) then
             ! this would have been avoided if we have
             ! each stress factor in its own routine! - NIH
             ! photo requires (really) actually water uptake
             ! but expansion requires pot water uptake.
             ! we only have one supply variable.
-
+           if(p%uptake_source .ne. 'arbitrator') then
             call crop_get_ext_uptakes(
      :                  'apsim'   ! uptake flag
      :                , c%crop_type       ! crop type
@@ -1544,6 +1545,10 @@ C     Last change:  E    24 Aug 2001    4:50 pm
      :                , ext_sw_supply     ! uptake array
      :                , max_layer         ! array dim
      :                )
+           else
+              ext_sw_supply = g%arb_water_uptake
+           endif
+              
             call crop_swdef_photo(max_layer
      :                           , g%dlayer
      :                           , g%root_depth
@@ -1896,12 +1901,13 @@ C     Last change:  E    24 Aug 2001    4:50 pm
       character  my_name*(*)           ! name of procedure
       parameter (my_name = 'Maize_bio_TE')
 
+      real  sw_supply(max_layer)
+      integer layer
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
       if (Option .eq. 1) then
-
          call cproc_transp_eff_co2 (
      :              c%svp_fract
      :            , c%transp_eff_cf !*g%temp_stress_photo
@@ -1914,8 +1920,20 @@ C     Last change:  E    24 Aug 2001    4:50 pm
      :            , c%num_co2_level_te
      :            , g%transp_eff
      :             )
-
-         call cproc_bio_water1(
+          ! Need to use actual supply rather than potential in case SWIM is used because
+          ! actual can be much less than potential even when wet.  also, salt impacts can
+          ! reduce actual when potential is high because kl does not take Cl into account.
+          ! ALSO - needed to add a kludge below to allow for first day when RLV is zero (sigh!)
+          sw_supply(:) = 0
+          do layer = 1, g%num_layers
+            if (sum(g%root_length).gt.0) then
+               sw_supply(layer) = -g%dlt_sw_dep(layer)     
+            else
+               sw_supply(layer) = g%sw_supply(layer)
+            endif
+          enddo
+          if (p%uptake_source .eq. 'calc') then          
+             call cproc_bio_water1(
      :           max_layer
      :         , g%dlayer
      :         , g%root_depth
@@ -1923,7 +1941,16 @@ C     Last change:  E    24 Aug 2001    4:50 pm
      :         , g%transp_eff
      :         , g%dlt_dm_water
      :         )
-
+          else
+             call cproc_bio_water1(
+     :           max_layer
+     :         , g%dlayer
+     :         , g%root_depth
+     :         , sw_supply
+     :         , g%transp_eff
+     :         , g%dlt_dm_water
+     :         )
+          endif
       else
          call Fatal_error (ERR_internal, 'Invalid template option')
       endif
@@ -5685,20 +5712,22 @@ cpsc need to develop leaf senescence functions for crop
       integer    deepest_layer
       integer    layer                 ! layer number of profile ()
       real       ext_sw_supply(max_layer)
-	  real       no_water                ! don't do water balance at all, it will be injected from another model/script
-	  integer    numvals
+      real       no_water                ! don't do water balance at all, it will be injected from another model/script
+      integer    numvals
 
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
-	  
-	  call get_real_var_optional (unknown_module, 'no_water', '()',
+      
+      call get_real_var_optional (unknown_module, 'no_water', '()',
      :                      no_water, numvals, 0.0, 1.0)
-	  
+      
          if (numvals.gt.0) then
-		      PRINT *, 'Maize not performing water balance.'
+              PRINT *, 'Maize not performing water balance.'
          elseif ((p%uptake_source .eq. 'apsim').or.
-     :       (p%uptake_source .eq. 'swim3')) then
-         call crop_get_ext_uptakes (
+     :       (p%uptake_source .eq. 'swim3').or.
+     :       (p%uptake_source .eq. 'arbitrator')) then
+         if (p%uptake_source .ne. 'arbitrator') then
+            call crop_get_ext_uptakes (
      :                  'apsim'   ! uptake flag
      :                , c%crop_type       ! crop type
      :                , 'water'           ! uptake name
@@ -5708,7 +5737,12 @@ cpsc need to develop leaf senescence functions for crop
      :                , ext_sw_supply     ! uptake array
      :                , max_layer         ! array dim
      :                )
-
+         else
+             ext_sw_supply = g%arb_water_uptake
+         endif
+         g%sw_supply_sum = sum_real_array(ext_sw_supply, g%num_layers)
+         g%sw_supply_demand_ratio = divide(g%sw_supply_sum
+     :                                , g%sw_demand,0.0)
          do 100 layer = 1, g%num_layers
             g%dlt_sw_dep(layer) = -ext_sw_supply(layer)
   100    continue

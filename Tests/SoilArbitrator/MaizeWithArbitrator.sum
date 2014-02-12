@@ -21,11 +21,11 @@ Paddock:
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component "Remove all residues on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                        "maize" = %apsim%\Model\Maize.dll
-   Component                   "FieldProps" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -82,7 +82,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('10-jul') then
-       maize sow plants =3, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
+       maize sow plants =2, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -109,6 +109,14 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- Fertilise at sowing Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- maize.sowing
+             fertiliser apply amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
      END of rules
      
 
@@ -295,13 +303,18 @@ Paddock:
          - Reading constants
      
          - Reading constants
-
-------- FieldProps Initialisation ---------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 10 July 1985(Day of year=191), Sow on a fixed date: 
-     Manager sending message :- maize sow  plants = 3, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
+     Manager sending message :- maize sow  plants = 2, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
 10 July 1985(Day of year=191), maize: 
      Sowing initiate
+10 July 1985(Day of year=191), Fertilise at sowing: 
+     Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
+10 July 1985(Day of year=191), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       200.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
      
      
      
@@ -310,11 +323,11 @@ Paddock:
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no    mm      m^2    m      code     name       no
          -------------------------------------------------------
-            191   50.0    3.0    0.5    0.0   makueni       0.00
+            191   50.0    2.0    0.5    0.0   makueni       0.00
          -------------------------------------------------------
      
         - Reading root profile parameters
-     Uptake of NO3 and water calculated by maize
+     Module is using water uptake provided from SoilArbitrator
      
      
      
@@ -356,218 +369,84 @@ Paddock:
      
      
      
- Maize not performing water balance.
- Maize not performing water balance.
 11 July 1985(Day of year=192), maize: 
       stage    2.0 germination
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
 18 July 1985(Day of year=199), maize: 
       stage    3.0 emergence
-                          biomass =          0.6000000E-01   lai =    0.1140000E-02
+                          biomass =          0.4000000E-01   lai =    0.7600000E-03
                           stover N conc =    4.400000       extractable sw =    33.00000
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
 10 August 1985(Day of year=222), maize: 
       stage    4.0 end_of_juvenile
-                          biomass =          0.6876457       lai =    0.1490604E-01
-                          stover N conc =    3.933996       extractable sw =    112.4306
- Maize not performing water balance.
+                          biomass =          0.4615297       lai =    0.1001850E-01
+                          stover N conc =    3.991422       extractable sw =    112.4534
 11 August 1985(Day of year=223), maize: 
       stage    5.0 floral_initiation
-                          biomass =          0.7631191       lai =    0.1639265E-01
-                          stover N conc =    3.978535       extractable sw =    112.4215
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
+                          biomass =          0.5123181       lai =    0.1100957E-01
+                          stover N conc =    4.050403       extractable sw =    112.4473
 1 October 1985(Day of year=274), maize: 
       stage    6.0 flag_leaf
-                          biomass =           144.9081       lai =    0.8868373
-                          stover N conc =   0.9290079       extractable sw =    179.3437
- Maize not performing water balance.
+                          biomass =           220.3345       lai =    0.8276231
+                          stover N conc =    2.201556       extractable sw =    167.0554
 2 October 1985(Day of year=275), maize: 
       stage    7.0 flowering
-                          biomass =           149.6263       lai =    0.8855318
-                          stover N conc =   0.9132163       extractable sw =    178.4081
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
+                          biomass =           232.9677       lai =    0.8267264
+                          stover N conc =    2.179819       extractable sw =    164.5502
 11 October 1985(Day of year=284), maize: 
       stage    8.0 start_grain_fill
-                          biomass =           185.3145       lai =    0.8735184
-                          stover N conc =   0.8565719       extractable sw =    172.3018
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
- Maize not performing water balance.
+                          biomass =           331.4535       lai =    0.8184749
+                          stover N conc =    2.019869       extractable sw =    147.7086
 18 November 1985(Day of year=322), maize: 
       stage    9.0 end_grain_fill
-                          biomass =           323.6545       lai =    0.7301348
-                          stover N conc =   0.8149210       extractable sw =    147.2433
- Maize not performing water balance.
+                          biomass =           705.4571       lai =    0.7205451
+                          stover N conc =    1.300641       extractable sw =    81.09090
 19 November 1985(Day of year=323), maize: 
       stage   10.0 maturity
-                          biomass =           328.3195       lai =    0.7239550
-                          stover N conc =   0.8143485       extractable sw =    146.5799
- Maize not performing water balance.
+                          biomass =           714.9073       lai =    0.7162825
+                          stover N conc =    1.283559       extractable sw =    79.74689
 20 November 1985(Day of year=324), maize: 
       stage   11.0 harvest_ripe
-                          biomass =           328.3194       lai =    0.1596272E-02
-                          stover N conc =   0.8535215       extractable sw =    146.5799
+                          biomass =           714.9073       lai =    0.1424372E-02
+                          stover N conc =    1.335367       extractable sw =    79.74689
 20 November 1985(Day of year=324), Harvesting rule: 
      Manager sending message :- maize harvest
      
      
      
      flowering (DAS) =   85                                maturity (DAS)  =     133
-      flowering day  =  275                                 stover (kg/ha) =    2451.8
-      maturity day        =  323                            grain yield (kg/ha) =     831.4
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =     983.9
-      grain wt (g) =     0.320                              grains/m^2   =   259.435
-      grains/head =  86.5                                   maximum lai = 0.892
-      total above ground biomass (kg/ha) =    3283.2
-      live above ground biomass (kg/ha) =    3283.2
-      green above ground biomass (kg/ha) =    2839.3
-      senesced above ground biomass (kg/ha) =     443.9
+      flowering day  =  275                                 stover (kg/ha) =    4419.1
+      maturity day        =  323                            grain yield (kg/ha) =    2730.0
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    3230.8
+      grain wt (g) =     0.320                              grains/m^2   =   851.914
+      grains/head = 426.0                                   maximum lai = 0.831
+      total above ground biomass (kg/ha) =    7149.1
+      live above ground biomass (kg/ha) =    7149.1
+      green above ground biomass (kg/ha) =    6634.3
+      senesced above ground biomass (kg/ha) =     514.8
       dead above ground biomass (kg/ha) =       0.0
       number of leaves =  14.1
-      grain N percent =      1.40                           total N content (kg/ha) =     26.45
-      grain N uptake (kg/ha) =     11.63                    senesced N content (kg/ha) =      2.22
-      green N content (kg/ha) =     12.60                   dead N content (kg/ha) =      0.00
+      grain N percent =      1.82                           total N content (kg/ha) =     91.17
+      grain N uptake (kg/ha) =     49.72                    senesced N content (kg/ha) =      2.57
+      green N content (kg/ha) =     38.87                   dead N content (kg/ha) =      0.00
      
      
       Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.018
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.010
          end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation   to flag_leaf               0.000        0.000        0.232        0.325
-         flag_leaf           to flowering               0.000        0.000        0.646        0.717
-         flowering           to start_grain_fill        0.000        0.000        0.656        0.724
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.646        0.716
+         floral_initiation   to flag_leaf               0.000        0.000        0.000        0.056
+         flag_leaf           to flowering               0.000        0.000        0.000        0.000
+         flowering           to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.000        0.000
      
      Crop harvested.
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                831.38                    0.00
-                          N  (kg/ha) =                 11.63                    0.00
+                          DM (kg/ha) =               2730.02                    0.00
+                          N  (kg/ha) =                 49.72                    0.00
      
      Manager sending message :- maize end_crop
          Crop ended. Yield (dw) =     0.0
          Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               2451.82                  452.31
-                          N  (kg/ha) =                 14.82                    3.41
+                          DM (kg/ha) =               4419.05                  726.90
+                          N  (kg/ha) =                 41.45                    7.74
                           P  (kg/ha) =                  0.00                    0.00
      
 1 February 1986(Day of year=32), clock: 

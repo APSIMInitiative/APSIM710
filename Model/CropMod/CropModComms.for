@@ -258,6 +258,7 @@ cjh      endif
       integer    numvals
       character  string*200            ! output string
       real       swim3
+      real       arbitrator
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -289,6 +290,12 @@ cjh      endif
          p%uptake_source = 'swim3'
       endif
 
+      call get_real_var_optional (unknown_module, 'arbitrator', '()',
+     :                      arbitrator, numvals, 0.0, 1.0)
+      if(numvals.gt.0) then
+         p%uptake_source = 'arbitrator'
+      endif
+      
 
          !       cproc_sw_demand_bound
 
@@ -356,6 +363,10 @@ cjh      endif
          string = 'Module is using water uptake'//
      :       ' provided from Swim3'
 
+	  else if (p%uptake_source .eq. 'arbitrator') then
+
+         string = 'Module is using water uptake'//
+     :       ' provided from SoilArbitrator'
       else
          string = blank
 
@@ -2501,10 +2512,11 @@ c         g%co2level = c%co2level
      :                             ,c%leaf_init_rate, numvals
      :                             , 0.0, 2000.0)
 	 
-	  else if (variable_name .eq. 'my_dlt') then
-         call collect_real_array (variable_name, 10, '(mm)'
-     :                             ,g%dlt_sw_dep, numvals
-     :                             , 0.0, 2000.0)
+	  else if (variable_name .eq. 'arb_water_uptake') then
+      call collect_real_array (variable_name, max_layer
+     :                                    , '(mm)'
+     :                                    , g%arb_water_uptake, numvals
+     :                                    , 0.0, 10.0)
 
       else
          ! don't know this variable name
@@ -5603,6 +5615,8 @@ c      call fill_real_array(g%sw_dep,       0.0,max_layer)
       g%tiller_no_sq     =0.0
       g%dm_tiller_pot    =0.0
 
+	  !SoilArbitrator
+	  call fill_real_array(g%arb_water_uptake,0.0,max_layer)
 
 
 

@@ -15,7 +15,7 @@ public class SoilArbitrator
     [Input]
     DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
     [Output] // used to tell the maize model to not do the water balance
-    double no_water = 1.0f;
+    double arbitrator = 1.0f;
 
     Component SoilWat;
     RootSystemType RootData;
@@ -116,8 +116,10 @@ public class SoilArbitrator
             double[] LastCropSWDemand;
             double[,] LastSWSupply;
 
+            int count = 0;
             do
             {
+                count++;
                 LastCropSWDemand = CropSWDemand;
                 LastSWSupply = SWSupply;
 
@@ -132,16 +134,24 @@ public class SoilArbitrator
                         }
                         else
                             LayerUptake[i, j] = SWSupply[i, j] * RelKLStrength[j, i] * RootProportion(j, Zone.RootDepth, dlayer);
+
                         if (LayerUptake[i, j] < 0)
                             throw new Exception("Layer uptake should not be negative"); 
                     }
                 }
 
                 DenseMatrix Uptake = DenseMatrix.OfArray(LayerUptake);
+                Paddock CurrentPaddock;
+                Component CurrentCrop;
                 for (int i = 0; i < RootZones.Count(); i++) //subtract taken water from the supply and demand
                 {
-
+                    CurrentPaddock = (Paddock)p.LinkByName((string)RootZones.ToArray()[i].ItemArray[0]);
+                    CurrentCrop = (Component)CurrentPaddock.LinkByName((string)RootZones.ToArray()[i].ItemArray[1]);
                     CropSWDemand[i] -= Uptake.Row(i).Sum();
+                    if (CurrentCrop != null && CurrentCrop.Name.ToLower().Equals("maize"))
+                    {
+                        CurrentCrop.Set("arb_water_uptake", Uptake.Row(i).ToArray());
+                    }
                     for (int j = 0; j < NumLayers; j++)
                     {
                         SWSupply[i, j] -= LayerUptake[i, j];
@@ -184,7 +194,7 @@ public class SoilArbitrator
     }
 
     /// <summary>
-    /// Calculate the amount water available to each crop on a per layer basis.
+    /// Calculate the amount of water available to each crop on a per layer basis.
     /// As crops will have different lower limits, they can have a different supply.
     /// </summary>
     /// <param name="RootZones">The rootzones to process in current paddock</param>
@@ -199,7 +209,11 @@ public class SoilArbitrator
         {
             zone = (RootSystemZoneType)RootZones.ToArray()[i].ItemArray[4];
             for (int j = 0; j < NumLayers; j++)
+            {
                 SWSupply[i, j] = zone.kl[j] * (SWDep[j] - zone.ll[j] * zone.dlayer[j]);
+                if (SWSupply[i, j] < 0)
+                    SWSupply[i, j] = 0; //can be < 0 if another crop with a lower LL has extracted below what this one can.
+            }
         }
         return SWSupply;
     }

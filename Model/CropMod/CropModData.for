@@ -506,6 +506,7 @@
 
         real      sw_dep     (max_layer)  ! soil water content of layer L (mm)
         real      dlt_sw_dep (max_layer)  ! water uptake in each layer (mm water)
+        real      arb_water_uptake (max_layer)! water uptake provided by SoilArbitrator (JLF 20-01-14)
         real      kl         (max_layer)  ! root length density factor for water content for soil layer L (mm water)
 
         real      transp_eff              ! transpiration efficiency (g dm/m^2/mm water)
