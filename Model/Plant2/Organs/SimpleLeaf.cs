@@ -54,7 +54,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
     public RUEModel Photosynthesis = null;
 
 
-
+    public double Population = 0;
     [Param]
     private double K = 0.5;                      // Extinction Coefficient (Green)
     [Param]
@@ -67,7 +67,13 @@ class SimpleLeaf : BaseOrgan, AboveGround
         {
             double Demand = 0;
             if (DMDemandFunction != null)
+            {
                 Demand = DMDemandFunction.Value;
+                //Balance check cannot have a negative demand;
+                if (Demand < 0)
+                    throw new Exception("Simple leaf DM demand error : negative deamnd");
+            }
+
             else
                 Demand = 1;
             return new BiomassPoolType { Structural = Demand };
@@ -227,8 +233,10 @@ class SimpleLeaf : BaseOrgan, AboveGround
     }
     public override void OnSow(SowPlant2Type Data)
     {
-      if (structure != null) //could be optional ?
-        structure.Population = Data.Population;
+        if (structure != null) //could be optional ?
+            structure.Population = Data.Population;
+        else
+            Population = Data.Population;
         PublishNewPotentialGrowth();
         PublishNewCanopyEvent();
     }
@@ -293,7 +301,7 @@ class SimpleLeaf : BaseOrgan, AboveGround
         if (CoverFunction != null)
              // return _LAI;
             _LAI = (Math.Log(1 - CoverGreen) / -K);
-             if (LaiFunction != null)
+        if (LaiFunction != null)
              _LAI = LaiFunction.Value;
     }
     [EventHandler]

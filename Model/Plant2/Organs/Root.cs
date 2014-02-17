@@ -19,6 +19,8 @@ public class Root : BaseOrgan, BelowGround
     [Link(IsOptional=true)]
     protected Function SenescenceRate = null;
     [Link(IsOptional = true)]
+    protected Function MaximumRootDepth = null;
+    [Link(IsOptional = true)]
     Structure Structure = null;
     [Link(IsOptional = true)]
     Function TemperatureEffect = null;
@@ -163,6 +165,8 @@ public class Root : BaseOrgan, BelowGround
         int RootLayer = LayerIndex(Depth);
         double TEM = (TemperatureEffect == null)? 1: TemperatureEffect.Value;
         Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TEM;
+        if (MaximumRootDepth != null)
+          Math.Min(MaximumRootDepth.Value,Depth);
         double MaxDepth = 0;
         for (int i = 0; i < dlayer.Length; i++)
             if (xf[i] > 0)

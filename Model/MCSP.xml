@@ -20,8 +20,8 @@
       <component name="[InstanceName]" executable="[dll]" class="Plant2.GenericPlant">
         <executable name="[dll]" version="1.0" />
         <initdata>
-               [Model]
-               <ll>[soil.[InstanceName] ll]</ll><kl>[soil.[InstanceName] kl]</kl><xf>[soil.[InstanceName] xf]</xf></initdata>
+          [Model]
+          <ll>[soil.[InstanceName] ll]</ll><kl>[soil.[InstanceName] kl]</kl><xf>[soil.[InstanceName] xf]</xf></initdata>
       </component>
     </ApsimToSim>
   </MetaData>
@@ -32,17 +32,16 @@
         <Constant name="DensityFunction">
           <Value type="text" description="Value">600</Value>
         </Constant>
-        <Memo>Need a population for the root component
-</Memo>
+        <Memo>Need a population for the root component</Memo>
       </Population>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Sowing Germination Emergence StartReproductive EndReproductive Maturity PostMaturity</Stages>
         <Values type="text" description="Values">1           2      3         4          5     6   7</Values>
       </StageBasedInterpolation>
       <Root>
-        <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
-        <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
-        <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <ll>0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36</ll>
+        <kl>0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04</kl>
+        <xf>1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00</xf>
         <InitialDM>0.2</InitialDM>
         <SpecificRootLength>40000</SpecificRootLength>
         <KNO3>0.02</KNO3>
@@ -94,20 +93,21 @@
         <PhaseBasedSwitch name="NitrogenDemandSwitch">
           <Start type="text" description="Start">Germination</Start>
           <End type="text" description="End">Maturity</End>
-          <Memo>Stops the roots from demanding Nitrogen after final leaf stage
-        </Memo>
+          <Memo>Stops the roots from demanding Nitrogen after final leaf stage</Memo>
         </PhaseBasedSwitch>
         <Memo>Optional paramaters
 
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
-2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
-</Memo>
+2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.</Memo>
         <CompositeBiomass name="Live">
           <Property>Root.LayerLive[]</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
           <Property>Root.LayerDead[]</Property>
         </CompositeBiomass>
+        <Constant name="MaximumRootDepth">
+          <Value type="text" description="Value">1000</Value>
+        </Constant>
       </Root>
       <SimpleLeaf name="Leaf">
         <Frgr>1</Frgr>
@@ -130,9 +130,8 @@
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <PartitionFractionDemandFunction name="DMDemandFunction">
-          <Memo> Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
-		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply
-		</Memo>
+          <Memo>Note:  This must be renamed "DMDemandFunction" for the source code to recoginise it!!!!.  
+		This function returns the specified proportion of totol DM supply.  The organ may not get this proportion if the sum of demands from other organs exceeds DM supply</Memo>
           <Constant name="PartitionFraction">
             <Value type="text" description="Value">.9</Value>
           </Constant>
@@ -145,7 +144,7 @@
               <Value type="text" description="Value">0</Value>
             </Constant>
           </PhaseLookupValue>
-          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase</Memo>
           <PhaseLookupValue name="Expanding">
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">EndReproductive</End>
@@ -166,8 +165,7 @@
             <Start type="text" description="Start">EndReproductive</Start>
             <End type="text" description="End">Maturity</End>
             <MultiplyFunction name="TotalCoverLoss">
-              <Memo>Amount of sencesnce
-</Memo>
+              <Memo>Amount of sencesnce</Memo>
               <OnEventFunction name="MaxCoverFunction">
                 <SetEvent type="text" description="SetEvent">EndReproductive</SetEvent>
                 <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
@@ -222,7 +220,7 @@ Thus change the duration rate for the cultivar</Memo>
               <Value type="text" description="Value">0</Value>
             </Constant>
           </PhaseLookupValue>
-          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase</Memo>
           <PhaseLookupValue name="Expanding">
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">EndReproductive</End>
@@ -316,7 +314,7 @@ Thus change the duration rate for the cultivar</Memo>
               <Value type="text" description="Value">0</Value>
             </Constant>
           </PhaseLookupValue>
-          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase </Memo>
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase</Memo>
           <PhaseLookupValue name="Expanding">
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">EndReproductive</End>
@@ -354,7 +352,7 @@ Thus change the duration rate for the cultivar</Memo>
       <Arbitrator>
         <NArbitrationOption type="text" description="NArbitrationOption">PriorityAllocation</NArbitrationOption>
         <DMArbitrationOption type="text" description="DMArbitrationOption">RelativeAllocation</DMArbitrationOption>
-        <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
+        <Memo>There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
 	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
 	  Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
@@ -377,9 +375,7 @@ Thus change the duration rate for the cultivar</Memo>
 	  Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
 	  Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
       
-	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
-		   
-        </Memo>
+	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.</Memo>
       </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
@@ -491,7 +487,7 @@ Thus change the duration rate for the cultivar</Memo>
     <Cultivar name="GenericBarley">
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
-    <Cultivar name="GenericFieldPea">
+    <Cultivar name="GenericWheat">
       <Construct type="text" description="Construct">Plant</Construct>
       <Override name="Leaf.PotentialBiomass">
         <Xmax type="text" description="Xmax">17000</Xmax>
@@ -510,9 +506,69 @@ Thus change the duration rate for the cultivar</Memo>
     <Cultivar name="GenericPotato">
       <Construct type="text" description="Construct">Plant</Construct>
       <Override name="Leaf.PotentialBiomass">
-        <Xmax type="text" description="Xmax">17000</Xmax>
         <Xo type="text" description="Xo">1100</Xo>
         <b type="text" description="b">200</b>
+      </Override>
+      <Override name="ExpectedYield">
+        <Value type="text" description="Value">7100</Value>
+      </Override>
+      <Override name="RootProportion">
+        <Value type="text" description="Value">0.1</Value>
+      </Override>
+      <Override name="HarvestIndex">
+        <XYPairs>
+          <XY>0 0.14</XY>
+          <XY>696 0.46</XY>
+          <XY>1392 0.78</XY>
+        </XYPairs>
+      </Override>
+      <Override name="ProductDMProportion">
+        <Value type="text" description="Value">0.22</Value>
+      </Override>
+      <Override name="Leaf.DMDemandFunction.PartitionFraction">
+        <Value type="text" description="Value">0.2</Value>
+      </Override>
+      <Override name="Leaf.NConc">
+        <Value type="text" description="Value">0.01</Value>
+      </Override>
+      <Override name="Leaf.CoverFunction.Expanding.SigCoverFunction">
+        <Xmax type="text" description="Xmax">1</Xmax>
+        <Xo type="text" description="Xo">690</Xo>
+        <b type="text" description="b">120</b>
+      </Override>
+      <Override name="Leaf.CoverFunction.Senescence.TotalCoverLoss.LossOfCover.PCLoss.SenescenceRate.Duration">
+        <Value type="text" description="Value">600</Value>
+      </Override>
+      <Override name="Phenology.Emerging">
+        <ShootLag type="text" description="Time lag before linear coleoptile growth starts">2.0</ShootLag>
+        <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">1</ShootRate>
+      </Override>
+      <Override name="Phenology.CanopyExpanding.Target">
+        <Value type="text" description="Value">300</Value>
+      </Override>
+      <Override name="Phenology.YieldIncreasing.Target">
+        <Value type="text" description="Value">1000</Value>
+      </Override>
+      <Override name="Phenology.Maturing.Target">
+        <Value type="text" description="Value">700</Value>
+      </Override>
+      <Override name="Product.WaterContent">
+        <Value type="text" description="Value">0.22</Value>
+      </Override>
+      <Override name="Product.MaximumNConc">
+        <Value type="text" description="Value">0.02</Value>
+      </Override>
+      <Override name="Product.MinimumNConc">
+        <Value type="text" description="Value">0.018</Value>
+      </Override>
+      <Override name="Root">
+        <xf type="text" description="xf">1.00  1.00  1.00  1.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00</xf>
+      </Override>
+      <Override name="Root.MaxDailyNUptake">
+        <Value type="text" description="Value">20</Value>
+      </Override>
+      <Override name="Root.MaximumRootDepth">
+        <Value type="text" description="Value">500</Value>
       </Override>
     </Cultivar>
     <Cultivar name="LongPotato">

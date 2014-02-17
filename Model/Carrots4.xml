@@ -1,0 +1,991 @@
+<Type version="36" creator="Apsim 7.5-r3275" name="Carrots4">
+  <MetaData>
+    <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
+    <IsCrop type="text" description="IsCrop">Yes</IsCrop>
+    <ShowInMainTree type="text" description="ShowInMainTree">Yes</ShowInMainTree>
+    <Image type="text" description="Image">%apsim%\UserInterface\Images\kale.jpg</Image>
+    <Description type="text" description="Description">Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
+    <Documentation type="text" description="Documentation">%apsim%\Documentation\4 Module Reference\Kale.htm</Documentation>
+    <Documentation type="text" description="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <LargeIcon type="text" description="LargeIcon">%apsim%\UserInterface\Images\kale.bmp</LargeIcon>
+    <SmallIcon type="text" description="SmallIcon">%apsim%\UserInterface\Images\kale.bmp</SmallIcon>
+    <dll type="text" description="dll">%apsim%\Model\Plant2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[InstanceName]" executable="[dll]" class="Plant2.Carrots4">
+        <executable name="[dll]" version="1.0" />
+        <initdata>
+               [Model]
+               <ll>[soil.[InstanceName] ll]</ll><kl>[soil.[InstanceName] kl]</kl><xf>[soil.[InstanceName] xf]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <Plant>
+      <CropType type="text" description="CropType">Carrots4</CropType>
+      <StageBasedInterpolation name="StageCode">
+        <Stages type="text" description="Stages">Sowing Germination PreEmerge EstablishStart EstablishEnd Maturity </Stages>
+        <Values type="text" description="Values">1           2      3         4          5     6   </Values>
+      </StageBasedInterpolation>
+      <Arbitrator>
+        <NArbitrationOption type="text" description="NArbitrationOption">PriorityThenRelativeAllocation</NArbitrationOption>
+        <DMArbitrationOption type="text" description="DMArbitrationOption">RelativeAllocation</DMArbitrationOption>
+        <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
+	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
+	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
+	  Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
+	  Wt_Step 4. In this step, Non-structural DM is reallocated from Non-Structural pools if there was insufficient DM to meet the structural and metabolic DM demands of organs.
+	  The arbitrator then sends a potential DM allocation to each organ that they use to calculate their N demands and then steps through N partitioning routines.  The final pass in biomass partitioning comes after N partitioning
+	  
+	  N_Step 1. Set up N supplies and demands.  Each organ may (or may not) supply N in a number of ways.  Each organ has (potentially) a structural, metabolic and Non-structural N Demand.  The structural N demand is that required to grow immobile biomass components, Metabolic N is that required to produce working biomass such as the photosynthetic mechanism in the leaves.  The Non-structural N demand is considered to be the luxury uptake and storage of highly mobile N compounds such as nitrate.
+      Each of the following 4 steps have a number of processes in common; Firstly the arbitrator determines each organs current N demand (that outstanding after previous N partitioning steps), then it allocates N to each demanding organ (There are three ways that N can be allocated, see below), then it sets for each supplying organ the amount of N that was taken up.
+	  N_Step 2. NReallocation.  This is the supply of N within the plant by the reallocation of sensing and/or Non-structural N which is the lowest energy form of N available to the plant so is partitioned first.
+	  N_Step 3. NUptake.  This is the supply of mineral N from the environment (typically by roots from the soil). In this step the arbitrator partitions the potential N uptake supply to satisfy all organs N demands (Structural, Metabolic and Non-structural).  If supply is sufficient this will replenish all Non-structural N that was reallocated in the previous step.  If not the N conc of organs with a Non-structural N component will begin to fall.  If total N demand is less than the uptake supply the crop will leave the surplus mineral N in the soil.
+	  N_Step 4. NFixation.  This is the supply of symbiotically fixed N and is redundant for Non-fixers!  The arbitrator will asks all N fixing organs (typically nodules) for their potential N fixation supply and then partition this to meet the Structural and Metabolic N demands of organs.  The arbitrator will not fix N to meet Non-structural N demands to minimise the biomass cost of fixation which is metabolically expensive.  Fixation follows uptake to enable the arbitrator to capture the "Lazy" N fixing behaviour of some legumes.  Once fixation is calculated the arbitrator determines the DM cost of this fixation.
+	  N_Step 5. NRetranslocation.  This is only invoked under sever N shortage when NReallocation and Uptake (and fixation if appropriate) cannot meet structural and metabolic N demands.  It this step the arbitrator will remove Metabolic N from older leaf cohorts to meet the N demand of new leaves and reproductive organs.
+
+	
+      In all of these N partitioning steps there are three options the developer may chose for determining the allocation of N between demanding organs.
+	  1. RelativeAllocation.  If this option is used all N is partitioned to organs relative to their demand so that the organs with the larger N demand get a larger share of a limited N supply.
+	  2. PriorityAllocation.  If this option is used the arbitrator steps through all organs in order of priority (set by the order they appear in the IDE) allocating N to meet all of the first organs structural and metabolic N demands before partitioning any to the next organ in the hierarchy.  Once it has stepped through all organs and allocated their minimum (structural and metabolic) N demands it will then step through them again and allocate their luxury (Non-structural) N demands in the same way.
+	  3. PrioritythenRelativeAllocation.  If this option is used the arbitrator steps through all organs in order of priority allocating N to meet minimum N demands.  However on the second pass it allocated N relative to the organs outstanding demands such that the organ with the greatest luxury N demand will get the greatest share of the N allocation.
+	  
+	  Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
+	  Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
+      
+	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
+		   
+        </Memo>
+      </Arbitrator>
+      <Phenology>
+        <AirTemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>20 18</XY>
+            <XY>35 0</XY>
+          </XYPairs>
+        </AirTemperatureFunction>
+        <GerminatingPhase name="Planted">
+          <Start type="text" description="Start stage name">Sowing</Start>
+          <End type="text" description="End stage name">Germination</End>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+        </GerminatingPhase>
+        <EmergingPhase name="Germinating">
+          <Start type="text" description="Start stage name">Germination</Start>
+          <End type="text" description="End stage name">PreEmerge</End>
+          <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
+          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+        </EmergingPhase>
+        <GenericPhase name="Emerging">
+          <Start type="text" description="Start stage name">PreEmerge</Start>
+          <End type="text" description="End stage name">EstablishStart</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">400</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Carrots4/Model/Plant/Phenology/Planted/ThermalTime">
+            <XYPairs shortcut="/Carrots4/Model/Plant/Phenology/Planted/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+        </GenericPhase>
+        <GenericPhase name="Establishing">
+          <Start type="text" description="Start stage name">EstablishStart</Start>
+          <End type="text" description="End stage name">EstablishEnd</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">350</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Carrots4/Model/Plant/Phenology/Planted/ThermalTime">
+            <XYPairs shortcut="/Carrots4/Model/Plant/Phenology/Planted/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+        </GenericPhase>
+        <GenericPhase name="Growing">
+          <Start type="text" description="Start stage name">EstablishEnd</Start>
+          <End type="text" description="End stage name">Maturity</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">5000</Value>
+          </Constant>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+        </GenericPhase>
+        <EndPhase name="Maturity">
+          <Start type="text" description="Start stage name">Maturity</Start>
+          <End type="text" description="End stage name">Unused</End>
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/Carrots4/Model/Plant/Phenology/ThermalTime/XYPairs" />
+          </AirTemperatureFunction>
+          <Constant name="Target">
+            <Value type="text" description="Value">15000</Value>
+          </Constant>
+        </EndPhase>
+      </Phenology>
+      <Root>
+        <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM type="text" description="InitialDM">5</InitialDM>
+        <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
+        <KNO3 type="text" description="KNO3">0.02</KNO3>
+        <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <LinearInterpolationFunction name="KLModifier">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>3 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <Constant name="SoilWaterEffect">
+          <Value>1.0</Value>
+        </Constant>
+        <AirTemperatureFunction name="TemperatureEffect">
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>26 1</XY>
+            <XY>35 1</XY>
+          </XYPairs>
+        </AirTemperatureFunction>
+        <PhaseLookup name="RootFrontVelocity">
+          <PhaseLookupValue>
+            <Start type="text" description="Start">Germination</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant>
+              <Value type="text" description="Value">10</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Emergence">
+            <Start type="text" description="Start">PreEmerge</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.1</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0.005</Value>
+          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+        </Constant>
+        <PhaseBasedSwitch name="NitrogenDemandSwitch">
+          <Start type="text" description="Start">EstablishStart</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Stops the roots from demanding Nitrogen after final leaf stage
+        </Memo>
+        </PhaseBasedSwitch>
+        <CompositeBiomass name="Live">
+          <Property>Root.LayerLive[]</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Root.LayerDead[]</Property>
+        </CompositeBiomass>
+        <Memo>Optional paramaters
+
+1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+</Memo>
+        <Constant name="MaxDailyNUptake">
+          <Value type="text" description="Value">7.5</Value>
+          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
+        </Constant>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.5</Value>
+          <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">1</Value>
+            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          </Constant>
+        </Constant>
+        <Constant name="SenescentRate">
+          <Value type="text" description="Value">0.006</Value>
+          <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+        </Constant>
+      </Root>
+      <GenericAboveGroundOrgan name="Stem">
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.2</Value>
+          <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          <Constant name="StructuralFraction">
+            <Value type="text" description="Value">0.5</Value>
+            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
+          </Constant>
+        </Constant>
+        <LinearInterpolationFunction name="MaximumNConc">
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+          <XYPairs>
+            <XY>0 0.017</XY>
+            <XY>4 0.017</XY>
+            <XY>6 0.017</XY>
+          </XYPairs>
+          <Memo>Values estimated from Westerveld et al 2006, HortScience 41(5)</Memo>
+        </LinearInterpolationFunction>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0.014</Value>
+          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+          <Memo name="Memo1">Values estimated from Westerveld et al 2006, HortScience 41(5)</Memo>
+        </Constant>
+        <PhaseBasedSwitch name="NitrogenDemandSwitch">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>stops the stem from demanding N following final leaf stage
+        </Memo>
+        </PhaseBasedSwitch>
+        <Constant name="NRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>sets the proportion of Non-Structural N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
+        </Constant>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
+        </Constant>
+        <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
+1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
+3. NRetranslocationFactor.  Default value is 0 which means none of the nonstructuralN in this organ is available for retranslocation.  If retranslocation is required place a function on the organ named NRetranslocationFactor. It needs to be a number from 0 -1 that represents the proportion of non-structural N that can be removed from an organ on any day.
+4. NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+5. DMRetranslocationFactor.  Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.
+6. StructuralFraction.  Derault value is 1 which means all biomass partitioned to this organ is put into the structrual pool.  If you wish this organ to have NonStructural DM that can be retranslocated set this to a value lower than 1 (between 0 - 1). Also note that making structural fraction less then 1 may influence the biomass partitioning to this organ because biomass is only partitioned to NonStructural Pools after the DM demand from other pools has been met.
+</Memo>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="DMSinkCapacity">
+          <Value type="text" description="Value">1</Value>
+          <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
+        </Constant>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">EstablishStart</Start>
+              <End type="text" description="End">EstablishEnd</End>
+              <AddFunction name="StemPartition">
+                <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                <DivideFunction>
+                  <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                  <VariableReference name="PrevLAI">
+                    <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                    <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                  </VariableReference>
+                  <MultiplyFunction name="LMax">
+                    <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                    <VariableReference name="Population">
+                      <VariableName type="text" description="Variable Name">Leaf.Population</VariableName>
+                      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                    </VariableReference>
+                    <Constant>
+                      <Value type="text" description="Value">0.02357</Value>
+                    </Constant>
+                  </MultiplyFunction>
+                </DivideFunction>
+                <Constant name="h" shortcut="/Carrots4/Model/Plant/h" />
+              </AddFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Middle">
+              <Start type="text" description="Start">EstablishEnd</Start>
+              <End type="text" description="End">Maturity</End>
+              <AddFunction name="StemPartition">
+                <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                <DivideFunction>
+                  <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                  <VariableReference name="PrevLAI">
+                    <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                    <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                  </VariableReference>
+                  <MultiplyFunction name="LMax">
+                    <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                    <VariableReference name="Population">
+                      <VariableName type="text" description="Variable Name">Leaf.Population</VariableName>
+                      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                    </VariableReference>
+                    <Constant>
+                      <Value type="text" description="Value">0.02357</Value>
+                    </Constant>
+                  </MultiplyFunction>
+                </DivideFunction>
+                <Constant name="h" shortcut="/Carrots4/Model/Plant/h" />
+              </AddFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostMaturity">
+              <Start type="text" description="Start">Maturity</Start>
+              <End type="text" description="End">Unused</End>
+              <AddFunction name="StemPartition">
+                <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                <DivideFunction>
+                  <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                  <VariableReference name="PrevLAI">
+                    <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                    <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                  </VariableReference>
+                  <MultiplyFunction name="LMax">
+                    <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                    <VariableReference name="Population">
+                      <VariableName type="text" description="Variable Name">Leaf.Population</VariableName>
+                      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                    </VariableReference>
+                    <Constant>
+                      <Value type="text" description="Value">0.02357</Value>
+                    </Constant>
+                  </MultiplyFunction>
+                </DivideFunction>
+                <Constant name="h" shortcut="/Carrots4/Model/Plant/h" />
+              </AddFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </PartitionFractionDemandFunction>
+      </GenericAboveGroundOrgan>
+      <Summary />
+      <CompositeBiomass name="AboveGround">
+        <Property>Leaf.Live</Property>
+        <Property>Leaf.Dead</Property>
+        <Property>Stem.Live</Property>
+        <Property>Stem.Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="BelowGround">
+        <Property type="text" description="Property" />
+        <Property type="text" description="Property" />
+        <Property type="text" description="Property">Root.Live</Property>
+        <Property type="text" description="Property">Root.Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="Total">
+        <Property>Organs[].Live</Property>
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="TotalLive">
+        <Property>Organs[].Live</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="TotalDead">
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
+      <SimpleLeaf name="Leaf">
+        <Frgr>1</Frgr>
+        <Height>800</Height>
+        <LAI>6</LAI>
+        <LAIDead>0</LAIDead>
+        <K>0.5</K>
+        <KDead>0.5</KDead>
+        <XYPairs name="FT">
+          <XY>5 1</XY>
+          <XY>20 1</XY>
+          <XY>25 1</XY>
+          <XY>40 1</XY>
+        </XYPairs>
+        <XYPairs name="FVPD">
+          <XY>0 1</XY>
+          <XY>10 1</XY>
+          <XY>50 1</XY>
+        </XYPairs>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <PhaseLookup name="LaiFunction">
+          <PhaseLookupValue name="PreErmergence">
+            <Start type="text" description="Start">Sowing</Start>
+            <End type="text" description="End">EstablishStart</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase</Memo>
+          <PhaseLookupValue name="Emerging">
+            <Start type="text" description="Start">EstablishStart</Start>
+            <End type="text" description="End">EstablishEnd</End>
+            <AddFunction name="TotalLAI">
+              <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+              <AddFunction name="LeafGrowth">
+                <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                <MultiplyFunction name="AppearingGrowth">
+                  <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                  <MultiplyFunction name="NewPlantsToday">
+                    <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                    <DivideFunction name="RateofNewPlants">
+                      <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                      <VariableReference name="PotentialDensity">
+                        <VariableName type="text" description="Variable Name">Phenology.Establishing.Target.Value</VariableName>
+                        <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                      </VariableReference>
+                      <VariableReference name="EmergeDuration">
+                        <VariableName type="text" description="Variable Name">Phenology.Establishing.Target.Value</VariableName>
+                        <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                      </VariableReference>
+                    </DivideFunction>
+                    <VariableReference name="DailyTT">
+                      <VariableName type="text" description="Variable Name">Phenology.ThermalTime.Value</VariableName>
+                      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                    </VariableReference>
+                  </MultiplyFunction>
+                  <Constant name="InitialArea">
+                    <Value type="text" description="Value">0.000049</Value>
+                  </Constant>
+                </MultiplyFunction>
+                <MultiplyFunction name="DailyGrowth">
+                  <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                  <VariableReference name="L1">
+                    <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                    <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                  </VariableReference>
+                  <SubtractFunction name="LeafFraction">
+                    <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+                    <Constant>
+                      <Value type="text" description="Value">1</Value>
+                    </Constant>
+                    <MinimumFunction>
+                      <Memo>Returns the minimum value of all children functions.  Drop on nodes as appropriate</Memo>
+                      <Constant>
+                        <Value type="text" description="Value">1</Value>
+                      </Constant>
+                      <DivideFunction name="LeafRatio">
+                        <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                        <VariableReference name="L1">
+                          <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                          <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                        </VariableReference>
+                        <MultiplyFunction name="LMax">
+                          <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                          <MultiplyFunction name="TotalPlantsTillToday">
+                            <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                            <DivideFunction name="RateofNewPlants">
+                              <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                              <VariableReference name="PotentialDensity">
+                                <VariableName type="text" description="Variable Name">Phenology.Establishing.Target.Value</VariableName>
+                                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                              </VariableReference>
+                              <VariableReference name="EmergeDuration">
+                                <VariableName type="text" description="Variable Name">Phenology.Establishing.Target.Value</VariableName>
+                                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                              </VariableReference>
+                            </DivideFunction>
+                            <VariableReference name="TT">
+                              <VariableName type="text" description="Variable Name">Phenology.Establishing.TTinPhase</VariableName>
+                              <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                            </VariableReference>
+                          </MultiplyFunction>
+                          <Constant>
+                            <Value type="text" description="Value">0.0002347</Value>
+                          </Constant>
+                        </MultiplyFunction>
+                      </DivideFunction>
+                    </MinimumFunction>
+                  </SubtractFunction>
+                  <MaximumFunction name="TPrime">
+                    <Memo>Returns the maximum value of all children functions.  Drop on nodes as appropriate</Memo>
+                    <Constant>
+                      <Value type="text" description="Value">0</Value>
+                    </Constant>
+                    <SubtractFunction name="TPrime">
+                      <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+                      <MultiplyFunction name="T1">
+                        <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                        <Constant>
+                          <Value type="text" description="Value">1.5118</Value>
+                        </Constant>
+                        <PowerFunction>
+                          <Exponent type="text" description="Exponent">0.5118</Exponent>
+                          <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
+                          <DivideFunction name="Tx">
+                            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                            <DivideFunction>
+                              <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                              <AddFunction>
+                                <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                                <ExternalVariable name="MinT">
+                                  <VariableName type="text" description="Variable Name">Met.MinT</VariableName>
+                                  <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                                </ExternalVariable>
+                                <ExternalVariable name="MaxT">
+                                  <VariableName type="text" description="Variable Name">Met.MaxT</VariableName>
+                                  <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                                </ExternalVariable>
+                              </AddFunction>
+                              <Constant>
+                                <Value type="text" description="Value">2</Value>
+                              </Constant>
+                            </DivideFunction>
+                            <Constant>
+                              <Value type="text" description="Value">11.4</Value>
+                            </Constant>
+                          </DivideFunction>
+                        </PowerFunction>
+                      </MultiplyFunction>
+                      <MultiplyFunction name="T2">
+                        <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                        <Constant>
+                          <Value type="text" description="Value">0.5118</Value>
+                        </Constant>
+                        <PowerFunction>
+                          <Exponent type="text" description="Exponent">1.5118</Exponent>
+                          <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
+                          <DivideFunction name="Tx">
+                            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                            <DivideFunction>
+                              <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                              <AddFunction>
+                                <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                                <ExternalVariable name="MinT">
+                                  <VariableName type="text" description="Variable Name">Met.MinT</VariableName>
+                                  <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                                </ExternalVariable>
+                                <ExternalVariable name="MaxT">
+                                  <VariableName type="text" description="Variable Name">Met.MaxT</VariableName>
+                                  <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                                </ExternalVariable>
+                              </AddFunction>
+                              <Constant>
+                                <Value type="text" description="Value">2</Value>
+                              </Constant>
+                            </DivideFunction>
+                            <Constant>
+                              <Value type="text" description="Value">11.4</Value>
+                            </Constant>
+                          </DivideFunction>
+                        </PowerFunction>
+                      </MultiplyFunction>
+                    </SubtractFunction>
+                  </MaximumFunction>
+                  <Constant name="A1">
+                    <Value type="text" description="Value">0.2143</Value>
+                  </Constant>
+                </MultiplyFunction>
+              </AddFunction>
+              <VariableReference name="PrevLAI">
+                <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+              </VariableReference>
+            </AddFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="CanopyGrowth">
+            <Start type="text" description="Start">EstablishEnd</Start>
+            <End type="text" description="End">Maturity</End>
+            <AddFunction name="TotalLAI">
+              <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+              <VariableReference name="PrevLAI">
+                <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+              </VariableReference>
+              <MultiplyFunction name="DailyGrowth">
+                <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                <VariableReference name="L1">
+                  <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                  <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                </VariableReference>
+                <SubtractFunction name="LeafFraction">
+                  <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+                  <Constant>
+                    <Value type="text" description="Value">1</Value>
+                  </Constant>
+                  <DivideFunction name="LeafRatio">
+                    <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                    <VariableReference name="L1">
+                      <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                    </VariableReference>
+                    <MultiplyFunction name="LMax">
+                      <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                      <VariableReference name="Population">
+                        <VariableName type="text" description="Variable Name">Leaf.Population</VariableName>
+                        <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                      </VariableReference>
+                      <Constant>
+                        <Value type="text" description="Value">0.02357</Value>
+                      </Constant>
+                    </MultiplyFunction>
+                  </DivideFunction>
+                </SubtractFunction>
+                <MaximumFunction name="TPrime">
+                  <Memo>Returns the maximum value of all children functions.  Drop on nodes as appropriate</Memo>
+                  <Constant>
+                    <Value type="text" description="Value">0</Value>
+                  </Constant>
+                  <SubtractFunction name="TPrime">
+                    <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+                    <MultiplyFunction name="T1">
+                      <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                      <Constant>
+                        <Value type="text" description="Value">1.5118</Value>
+                      </Constant>
+                      <PowerFunction>
+                        <Exponent type="text" description="Exponent">0.5118</Exponent>
+                        <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
+                        <DivideFunction name="Tx">
+                          <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                          <DivideFunction>
+                            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                            <AddFunction>
+                              <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                              <ExternalVariable name="MinT">
+                                <VariableName type="text" description="Variable Name">Met.MinT</VariableName>
+                                <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                              </ExternalVariable>
+                              <ExternalVariable name="MaxT">
+                                <VariableName type="text" description="Variable Name">Met.MaxT</VariableName>
+                                <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                              </ExternalVariable>
+                            </AddFunction>
+                            <Constant>
+                              <Value type="text" description="Value">2</Value>
+                            </Constant>
+                          </DivideFunction>
+                          <Constant>
+                            <Value type="text" description="Value">11.4</Value>
+                          </Constant>
+                        </DivideFunction>
+                      </PowerFunction>
+                    </MultiplyFunction>
+                    <MultiplyFunction name="T2">
+                      <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                      <Constant>
+                        <Value type="text" description="Value">0.5118</Value>
+                      </Constant>
+                      <PowerFunction>
+                        <Exponent type="text" description="Exponent">1.5118</Exponent>
+                        <Memo>Raises the value of the child to the power of the especified exponent parameter</Memo>
+                        <DivideFunction name="Tx">
+                          <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                          <DivideFunction>
+                            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                            <AddFunction>
+                              <Memo>Sum the values of the children of this node.  Drop on childern nodes as appropriate</Memo>
+                              <ExternalVariable name="MinT">
+                                <VariableName type="text" description="Variable Name">Met.MinT</VariableName>
+                                <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                              </ExternalVariable>
+                              <ExternalVariable name="MaxT">
+                                <VariableName type="text" description="Variable Name">Met.MaxT</VariableName>
+                                <Memo>Returns the value of a nominated external APSIM numerical variable.
+
+The naming convention to refer to variables external to Plant2
+differs from the one used in other Plant2 functions.
+
+It is the same as the one used for outputfile variables and 
+APSIM manager module scripts.
+
+General Format:
+
+[component_name.]variable_name
+
+</Memo>
+                              </ExternalVariable>
+                            </AddFunction>
+                            <Constant>
+                              <Value type="text" description="Value">2</Value>
+                            </Constant>
+                          </DivideFunction>
+                          <Constant>
+                            <Value type="text" description="Value">11.4</Value>
+                          </Constant>
+                        </DivideFunction>
+                      </PowerFunction>
+                    </MultiplyFunction>
+                  </SubtractFunction>
+                </MaximumFunction>
+                <LessThanFunction name="A">
+                  <VariableReference>
+                    <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                  </VariableReference>
+                  <Constant name="Criteria">
+                    <Value type="text" description="Value">0.16</Value>
+                  </Constant>
+                  <Constant name="IfTrue">
+                    <Value type="text" description="Value">0.2143</Value>
+                  </Constant>
+                  <Constant name="IfFalse">
+                    <Value type="text" description="Value">0.0903</Value>
+                  </Constant>
+                </LessThanFunction>
+              </MultiplyFunction>
+            </AddFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Mature">
+            <Start type="text" description="Start">Maturity</Start>
+            <End type="text" description="End">Unused</End>
+            <Constant>
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="NConc">
+          <Value type="text" description="Value">0.02</Value>
+          <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
+        </Constant>
+        <PhaseLookup name="NitrogenDemandSwitch">
+          <PhaseLookupValue name="PreErmergence">
+            <Start type="text" description="Start">Sowing</Start>
+            <End type="text" description="End">EstablishStart</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <Memo>Returns the value of the "PhaseLookupValue" functions child if phenology is between the specified start and end value.  Multiple "PhaseLookupValue" functions can be added to this function returning different values durring different phases.  Function returns 0 if none of the "PhaseLookupValue" are in phase</Memo>
+          <PhaseLookupValue name="CanopyGrowth">
+            <Start type="text" description="Start">EstablishStart</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Mature">
+            <Start type="text" description="Start">Maturity</Start>
+            <End type="text" description="End">Unused</End>
+            <Constant>
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <RUEModel name="Photosynthesis">
+          <Constant name="RUE">
+            <Value type="text" description="Value">2.2</Value>
+          </Constant>
+          <WeightedTemperatureFunction name="FT">
+            <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
+            <XYPairs>
+              <XY>0 0.2</XY>
+              <XY>10 1</XY>
+              <XY>18 1</XY>
+              <XY>26 1</XY>
+              <XY>38 0</XY>
+            </XYPairs>
+          </WeightedTemperatureFunction>
+          <LinearInterpolationFunction name="FVPD">
+            <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+            <XYPairs>
+              <XY>0 1</XY>
+              <XY>10 1</XY>
+              <XY>50 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="FN">
+            <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+            <XYPairs>
+              <XY>0 1</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="FW">
+            <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>0.4 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Memo>Potential photosynthesis is set by the radiation use efficiency (RUE in gDM/MJ).  Stress and CO2 adjustments are applied as:
+Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
+          <RUECO2Function name="Fco2">
+            <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+          </RUECO2Function>
+        </RUEModel>
+        <Constant name="DMSinkCapacity">
+          <Value type="text" description="Value">0</Value>
+          <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
+        </Constant>
+        <MultiplyFunction name="ExtinctionCoeff">
+          <Memo>Quantifies the relationship between Leaf area index and radiation interception.  The PotentialExtinctionCoeff is the unstressed value and extinction coefficient declines in response to water stress as leaves wilt to reduce their radiation load</Memo>
+          <Constant name="PotentialExtinctionCoeff">
+            <Value type="text" description="Value">0.6</Value>
+          </Constant>
+          <LinearInterpolationFunction name="WaterStressReduction">
+            <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0 0.5</XY>
+              <XY>1 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </MultiplyFunction>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">EstablishStart</Start>
+              <End type="text" description="End">EstablishEnd</End>
+              <MaximumFunction name="DMDemandFunction">
+                <Memo>Cannot have a negative demand</Memo>
+                <Constant>
+                  <Value type="text" description="Value">0</Value>
+                </Constant>
+                <SubtractFunction name="LeafPartitionCalc">
+                  <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+                  <Constant name="Amount">
+                    <Value type="text" description="Value">1</Value>
+                    <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+                  </Constant>
+                  <DivideFunction>
+                    <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values.  Drop on node as appropriate </Memo>
+                    <VariableReference name="PrevLAI">
+                      <VariableName type="text" description="Variable Name">Leaf.LAI</VariableName>
+                      <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                    </VariableReference>
+                    <MultiplyFunction name="LMax">
+                      <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+                      <VariableReference name="Population">
+                        <VariableName type="text" description="Variable Name">Leaf.Population</VariableName>
+                        <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+                      </VariableReference>
+                      <Constant>
+                        <Value type="text" description="Value">0.02357</Value>
+                      </Constant>
+                    </MultiplyFunction>
+                  </DivideFunction>
+                  <Constant name="h" shortcut="/Carrots4/Model/Plant/h" />
+                </SubtractFunction>
+              </MaximumFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Middle">
+              <Start type="text" description="Start">EstablishEnd</Start>
+              <End type="text" description="End">Maturity</End>
+              <MaximumFunction name="DMDemandFunction" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction">
+                <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/Memo" />
+                <Constant shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/Constant" />
+                <SubtractFunction name="LeafPartitionCalc" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc">
+                  <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/Memo" />
+                  <Constant name="Amount" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/Amount">
+                    <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/Amount/Memo" />
+                  </Constant>
+                  <DivideFunction shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction">
+                    <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/Memo" />
+                    <VariableReference name="PrevLAI" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/PrevLAI">
+                      <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/PrevLAI/Memo" />
+                    </VariableReference>
+                    <MultiplyFunction name="LMax" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax">
+                      <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Memo" />
+                      <VariableReference name="Population" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Population">
+                        <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Population/Memo" />
+                      </VariableReference>
+                      <Constant shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Constant" />
+                    </MultiplyFunction>
+                  </DivideFunction>
+                  <Constant name="h" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/h" />
+                </SubtractFunction>
+              </MaximumFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostMaturity">
+              <Start type="text" description="Start">Maturity</Start>
+              <End type="text" description="End">Unused</End>
+              <MaximumFunction name="DMDemandFunction" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction">
+                <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/Memo" />
+                <Constant shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/Constant" />
+                <SubtractFunction name="LeafPartitionCalc" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc">
+                  <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/Memo" />
+                  <Constant name="Amount" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/Amount">
+                    <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/Amount/Memo" />
+                  </Constant>
+                  <DivideFunction shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction">
+                    <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/Memo" />
+                    <VariableReference name="PrevLAI" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/PrevLAI">
+                      <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/PrevLAI/Memo" />
+                    </VariableReference>
+                    <MultiplyFunction name="LMax" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax">
+                      <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Memo" />
+                      <VariableReference name="Population" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Population">
+                        <Memo shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Population/Memo" />
+                      </VariableReference>
+                      <Constant shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/DivideFunction/LMax/Constant" />
+                    </MultiplyFunction>
+                  </DivideFunction>
+                  <Constant name="h" shortcut="/Carrots4/Model/Plant/Leaf/DMDemandFunction/PartitionFraction/Early/DMDemandFunction/LeafPartitionCalc/h" />
+                </SubtractFunction>
+              </MaximumFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </PartitionFractionDemandFunction>
+      </SimpleLeaf>
+      <Constant name="h">
+        <Value type="text" description="Value">0.1753</Value>
+      </Constant>
+    </Plant>
+    <Cultivar name="CRC">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+  </Model>
+</Type>

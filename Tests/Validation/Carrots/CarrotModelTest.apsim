@@ -1,0 +1,805 @@
+<folder version="36" creator="Apsim 7.5-r3275" name="Simulations">
+  <simulation name="Carrot_11_11_97">
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Tests\Validation\Carrots\Observed\LawnRoad.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">10/11/1997</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">30/04/1998</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <Carrots4 />
+      <folder name="Manager folder">
+        <manager name="Sow on a fixed date">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">11-nov</date>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">Carrots4</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">70</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">CRC</cultivar>
+            <class type="classes" description="Enter crop growth class : " />
+            <row_spacing type="text" description="Enter row spacing (mm) : ">150</row_spacing>
+          </ui>
+          <script>
+            <text>
+        if (today = date('[date]') then
+              [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
+         endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <operations>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>13/11/1997</date>
+            <action>irrigation apply amount =25(mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>5/12/1997</date>
+            <action>irrigation apply amount =50(mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>3/01/1998</date>
+            <action>irrigation apply amount =50(mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>15/01/1998</date>
+            <action>irrigation apply amount =25(mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>20/03/1998</date>
+            <action>irrigation apply amount =25(mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>24/10/1997</date>
+            <action>fertiliser apply amount=100(kg/ha), type=urea_N (), depth=0 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>30/11/1997</date>
+            <action>fertiliser apply amount=200(kg/ha), type=urea_N (), depth=0 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>29/12/1997</date>
+            <action>fertiliser apply amount=200(kg/ha), type=urea_N (), depth=0 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>
+            </date>
+            <action>
+            </action>
+          </operation>
+        </operations>
+        <irrigation name="Irrigation">
+          <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+          <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+          <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+          <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+          <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+          <allocation type="text" description="Allocation in ML">0</allocation>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+          <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+          <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        </irrigation>
+        <manager name="Empty manager">
+          <script>
+            <text>
+            </text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>micromet lai_table
+!TotalTops = StemLivewt + LeafLivewt
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="End crop on a fixed date">
+          <ui>
+            <category type="category" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Carrots4</crop>
+            <date type="text" description="Enter ending date (dd-mmm) : ">15-Apr-1998</date>
+          </ui>
+          <script>
+            <text>
+
+        if (today = date('[date]') then
+              [crop]  end_crop
+        endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <outputfile>
+        <filename output="yes">Carrot_11_11_97.out</filename>
+        <title>Carrot_11_11_97</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy</variable>
+          <variable>AboveGroundLiveWt</variable>
+          <variable>LeafLAI</variable>
+          <variable>LeafNodeNo</variable>
+          <variable>PhenologyThermalTimeValue</variable>
+          <variable>PhenologyCurrentPhaseName</variable>
+          <variable>PhenologyCurrentStageName</variable>
+          <variable>LeafLiveWt</variable>
+          <variable>StemLiveWt</variable>
+          <variable>TotalTops</variable>
+          <variable>StemDeadWt</variable>
+          <variable>StemLiveN</variable>
+          <variable>StemDeadN</variable>
+          <variable>LeafDeadN</variable>
+          <variable>LeafLiveN</variable>
+          <variable>StemN</variable>
+          <variable>LeafN</variable>
+          <variable>TotalTopsN</variable>
+          <variable>RootLiveWt</variable>
+          <variable>AboveGroundDeadWt</variable>
+          <variable>LeafDeadWt</variable>
+          <variable>Biomass</variable>
+          <variable>LeafDMSupplyPhotosynthesis</variable>
+          <variable>TotalSupply</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>Daily</event>
+        </events>
+      </outputfile>
+      <Soil name="Templeton_ABlock">
+        <RecordNumber>0</RecordNumber>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <InitialWater name="Initial water">
+          <FractionFull>1</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>EvenlyDistributed</PercentMethod>
+        </InitialWater>
+        <Water>
+          <Thickness>
+            <double>100</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>50</double>
+          </Thickness>
+          <BD>
+            <double>1.3</double>
+            <double>1.3</double>
+            <double>1.3</double>
+            <double>1.3</double>
+            <double>1.3</double>
+            <double>1.3</double>
+            <double>1.3</double>
+          </BD>
+          <AirDry>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+          </AirDry>
+          <LL15>
+            <double>0.08</double>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.09</double>
+            <double>0.11</double>
+            <double>0.16</double>
+            <double>0.08</double>
+          </LL15>
+          <DUL>
+            <double>0.31</double>
+            <double>0.3</double>
+            <double>0.28</double>
+            <double>0.31</double>
+            <double>0.3</double>
+            <double>0.28</double>
+            <double>0.31</double>
+          </DUL>
+          <SAT>
+            <double>0.44</double>
+            <double>0.44</double>
+            <double>0.44</double>
+            <double>0.44</double>
+            <double>0.44</double>
+            <double>0.44</double>
+            <double>0.44</double>
+          </SAT>
+          <SoilCrop name="wheat">
+            <Thickness>
+              <double>100</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>50</double>
+            </Thickness>
+            <LL>
+              <double>0.08</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.09</double>
+              <double>0.11</double>
+              <double>0.16</double>
+              <double>0.08</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.08</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0.6</double>
+              <double>0.4</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="canola">
+            <Thickness>
+              <double>100</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>50</double>
+            </Thickness>
+            <LL>
+              <double>0.1</double>
+              <double>0.09</double>
+              <double>0.09</double>
+              <double>0.11</double>
+              <double>0.18</double>
+              <double>0.19</double>
+              <double>0.08</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="ForageBrassica">
+            <Thickness>
+              <double>100</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>50</double>
+            </Thickness>
+            <LL>
+              <double>0.08</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.09</double>
+              <double>0.11</double>
+              <double>0.16</double>
+              <double>0.08</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Kale">
+            <Thickness>
+              <double>100</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>50</double>
+            </Thickness>
+            <LL>
+              <double>0.08</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.09</double>
+              <double>0.11</double>
+              <double>0.16</double>
+              <double>0.08</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Kale2">
+            <Thickness>
+              <double>100</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>50</double>
+            </Thickness>
+            <LL>
+              <double>0.08</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.09</double>
+              <double>0.11</double>
+              <double>0.16</double>
+              <double>0.08</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Carrots4">
+            <Thickness>
+              <double>100</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>50</double>
+            </Thickness>
+            <LL>
+              <double>0.08</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.09</double>
+              <double>0.11</double>
+              <double>0.16</double>
+              <double>0.08</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+        </Water>
+        <SoilWater>
+          <SummerCona>4.4</SummerCona>
+          <SummerU>9</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>4.4</WinterCona>
+          <WinterU>9</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35.4</DiffusSlope>
+          <Salb>0.18</Salb>
+          <CN2Bare>68</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>NaN</Slope>
+          <DischargeWidth>NaN</DischargeWidth>
+          <CatchmentArea>NaN</CatchmentArea>
+          <MaxPond>NaN</MaxPond>
+          <Thickness>
+            <double>100</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>50</double>
+          </Thickness>
+          <SWCON>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.55</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>30</RootCN>
+          <RootWt>3000</RootWt>
+          <SoilCN>11.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>100</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>50</double>
+          </Thickness>
+          <OC>
+            <double>1.82</double>
+            <double>1.47</double>
+            <double>1.2</double>
+            <double>1.03</double>
+            <double>0.47</double>
+            <double>0.47</double>
+            <double>0.47</double>
+          </OC>
+          <FBiom>
+            <double>0.025</double>
+            <double>0.025</double>
+            <double>0.015</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.3</double>
+            <double>0.4</double>
+            <double>0.75</double>
+            <double>0.9</double>
+            <double>0.96</double>
+            <double>0.96</double>
+            <double>0.96</double>
+          </FInert>
+          <OCUnits>Total</OCUnits>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>100</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>50</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>6.6</double>
+            <double>6.2</double>
+            <double>5.7</double>
+            <double>5.5</double>
+            <double>5.5</double>
+            <double>5.5</double>
+            <double>5.5</double>
+          </PH>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <Sample name="Initial nitrogen">
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>34.871764410883</double>
+            <double>37.9487361004977</double>
+            <double>6.66667159677514</double>
+            <double>1.28205233949621</double>
+            <double>0.769231470282173</double>
+            <double>0.512819978781781</double>
+          </NO3>
+          <NH4>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </NH4>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
+        </Sample>
+      </Soil>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <manager name="ModValues">
+        <script>
+          <text>TotalTops = 0
+TotalTopsN = 0
+TotalSupply = 0</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+          </text>
+          <event>start_of_day</event>
+        </script>
+        <script>
+          <text>TotalSupply = TotalSupply + Carrots4.Leaf.DM.Supply.Photosynthesis</text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
+    </area>
+    <Graph name="LAI">
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0wAAAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchcuR3JhcGhpY3MzRC5CcnVzaC5Db2xvch8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IZLlNlcmllcy4xLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjEuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IZLlNlcmllcy4xLkxpbmVQZW4uVmlzaWJsZRcuU2VyaWVzLjEuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjEuVGl0bGUeLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjEuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4xLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUULldhbGxzLkxlZnQuQXV0b0hpZGUaLldhbGxzLkxlZnQuU2hhZG93LlZpc2libGUVLldhbGxzLlJpZ2h0LkF1dG9IaWRlGy5XYWxscy5SaWdodC5TaGFkb3cuVmlzaWJsZRQuV2FsbHMuQmFjay5BdXRvSGlkZRouV2FsbHMuQmFjay5TaGFkb3cuVmlzaWJsZRYuV2FsbHMuQm90dG9tLkF1dG9IaWRlHC5XYWxscy5Cb3R0b20uU2hhZG93LlZpc2libGUOLldhbGxzLlZpc2libGUcLkF4ZXMuTGVmdC5MYWJlbHMuU2VwYXJhdGlvbh0uQXhlcy5MZWZ0LkxhYmVscy5WYWx1ZUZvcm1hdBsuQXhlcy5MZWZ0LkxhYmVscy5Gb250Lk5hbWUbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplJS5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuTGVmdC5MYWJlbHMuU2hhZG93LlZpc2libGUULkF4ZXMuTGVmdC5BdXRvbWF0aWMYLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAVLkF4ZXMuTGVmdC5HcmlkLlN0eWxlGS5BeGVzLkxlZnQuR3JpZC5aUG9zaXRpb24XLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IWLkF4ZXMuTGVmdC5UaXRsZS5MaW5lcxouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZSguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yJC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IfLkF4ZXMuTGVmdC5UaXRsZS5TaGFkb3cuVmlzaWJsZRsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZSQuQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUfLkF4ZXMuVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRMuQXhlcy5Ub3AuQXV0b21hdGljFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBQuQXhlcy5Ub3AuR3JpZC5TdHlsZRguQXhlcy5Ub3AuR3JpZC5aUG9zaXRpb24WLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUjLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUmLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuUmlnaHQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFS5BeGVzLlJpZ2h0LkF1dG9tYXRpYxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwFi5BeGVzLlJpZ2h0LkdyaWQuU3R5bGUaLkF4ZXMuUmlnaHQuR3JpZC5aUG9zaXRpb24YLkF4ZXMuUmlnaHQuR3JpZC5WaXNpYmxlHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZRMuQXhlcy5SaWdodC5WaXNpYmxlHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUnLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIi5BeGVzLkJvdHRvbS5MYWJlbHMuU2hhZG93LlZpc2libGUdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwFy5BeGVzLkJvdHRvbS5HcmlkLlN0eWxlGy5BeGVzLkJvdHRvbS5HcmlkLlpQb3NpdGlvbhkuQXhlcy5Cb3R0b20uR3JpZC5WaXNpYmxlGi5BeGVzLkJvdHRvbS5NYXhpbXVtT2Zmc2V0FC5BeGVzLkJvdHRvbS5NYXhpbXVtFC5BeGVzLkJvdHRvbS5NaW5pbXVtGi5BeGVzLkJvdHRvbS5NaW5pbXVtT2Zmc2V0Hy5BeGVzLkJvdHRvbS5NaW5vclRpY2tzLlZpc2libGUYLkF4ZXMuQm90dG9tLlRpY2tzLkNvbG9yGC5BeGVzLkJvdHRvbS5UaXRsZS5MaW5lcxwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUmLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUjLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IhLkF4ZXMuQm90dG9tLlRpdGxlLlNoYWRvdy5WaXNpYmxlKS5BeGVzLkRlcHRoVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlJC5BeGVzLkRlcHRoVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRguQXhlcy5EZXB0aFRvcC5BdXRvbWF0aWMZLkF4ZXMuRGVwdGhUb3AuR3JpZC5TdHlsZR0uQXhlcy5EZXB0aFRvcC5HcmlkLlpQb3NpdGlvbiguQXhlcy5EZXB0aFRvcC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkRlcHRoVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlJi5BeGVzLkRlcHRoLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIS5BeGVzLkRlcHRoLkxhYmVscy5TaGFkb3cuVmlzaWJsZRUuQXhlcy5EZXB0aC5BdXRvbWF0aWMWLkF4ZXMuRGVwdGguR3JpZC5TdHlsZRouQXhlcy5EZXB0aC5HcmlkLlpQb3NpdGlvbiUuQXhlcy5EZXB0aC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkRlcHRoLlRpdGxlLlNoYWRvdy5WaXNpYmxlAAAAAAQABAAEAAQAAAAAAAAABgEAAAAAAAAAAAAAAAAABAQAAAAEBAAEAAAAAAEEBAQEAAEABAAAAAQEAAABBAAEBAQEAAABAAQAAAAEBAAAAAAAAAAAAAAAAAEBAAAAAAAEBAAAAAAEBgEABAAEAAABAQAAAAAABAQAAAAEAQAABAAAAAEBAAAAAAAEBAAAAAQBAAAEAAAAAQEBAAAAAAAABAQAAAAAAAAABAYBAAAEAAAAAAQAAAAAAAAEAAAACAgBCCFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMDAAAACCNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwIAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAAAQEBAQEBAQgBAQEBAQEBAQYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQQAAAAlU3lzdGVtLkRyYXdpbmcuVGV4dC5UZXh0UmVuZGVyaW5nSGludAQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQEBAQEBAQEBAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEICAEBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQIAAAB7BgAABwMAAAEEAAAABfv///8hU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAQAAAAd2YWx1ZV9fAAgDAAAAAABAAAEAAAAF+v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAABfn///8UU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcEAAAACsDAwP8AAAAAAAACAAEF+P///yBTdGVlbWEuVGVlQ2hhcnQuTGVnZW5kQWxpZ25tZW50cwEAAAAHdmFsdWVfXwAIAgAAAAMAAAABAAAAAAABCQkAAAAGCgAAAAZUYWhvbWEMAAAAAAAAAAAAAAAAAAAAAJB1QAAAAAAAkHVAAwAAAAAB9f////n///8KAAAAAAAAAACkAAEAAfT////5////CgAAAAAAAAAAJQABAABNAwAAbAEAAAXz////JlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5TbW9vdGhpbmdNb2RlAQAAAAd2YWx1ZV9fAAgEAAAAAQAAAAXy////JVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQBAAAAB3ZhbHVlX18ACAQAAAAAAAAAAAHx////+f///woAAAAAAAAAACUAAQABAAAAAAAAAAAAAAAABhAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAe/////5////CgAAAAAAAAAAJQABAAXu////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAAB7f////n///8KAAAAAAAAAAAlAAEAAez////5////CpkAAP8AAAAAAAACAAIAAAAGFQAAACNQcmVkaWN0ZWQsIExlYWZMQUksa2FsZTA2MDdfczFfTjUwMAoAAAAF6v///yZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAIAAAAAAAAAAAB6f///+7///8AAAAAAej////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB5v////n///8KAAAAAAAAAAAlAAEAAQHl////7v///wEAAAAB5P////n///8KAAAAAAAAAACkAAEAAeP////5////CgAAAAAAAAAAJQABAAHi////+f///wqZAAD/AAAAAAAAAgAAAgAAAAYfAAAAHU9ic2VydmVkLCBMQUksS2FsZV8xT2N0MDZfNTAwCgAAAAHg////6v///wAAAAAIAAAAAAAAAAAB3////+7///8AAAAAAd7////5////CgAAAAAAAAAAIwABAAAAAAAAAAAAAAAAAAAAUAAAAAYjAAAACCMjIzAuIyMjCQoAAAAJAAAAAAABAQAAAAXb////IFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAXa////IlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUBAAAAB3ZhbHVlX18ACAQAAAABAAAAAAAAAAAAAAAACgAAAAAB2f////n///8KAAAA/wAAAAAAAAIACSgAAAAJCgAAAAsAAAAB1v////n///8KwAAA/wAAAAAAAAIAAAHV////+f///wr/AAD/AAAAAAAAAgAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHS////2////wIAAAAB0f///9r///8BAAAAAAAAAAAAAAAAAAHQ////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAc/////5////Cv8AAP8AAAAAAAACAAAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHM////2////wIAAAABy////9r///8BAAAAAAAAAAAAAAAAAAHK////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAcn////5////Cv8AAP8AAAAAAAACAAAAUAAAAAY4AAAACWQvTU0veXl5eQkjAAAACQoAAAAJAAAAAAAAAAEAAAABxf///9v///8CAAAAAcT////a////AQAAAAAAAAAAAAAAAAoAAAAAAAAAACzjQAAAAADgCeNACgAAAAABw/////n///8KAAAA/wAAAAAAAAIACT4AAAAJCgAAAAsAAAAAAcD////5////Cv8AAP8AAAAAAAACAAAAAAEBv////9r///8BAAAAAAAAAAAAAAAAAAAAAQG+////2v///wEAAAAAAAAAAAAAAAAAEQkAAAABAAAABkMAAAAAESgAAAABAAAACUMAAAARPgAAAAEAAAAJQwAAAAs=</Format>
+      <Legend>
+        <CheckedTitles>Predicted, LeafLAI,Carrot_11_11_97</CheckedTitles>
+        <CheckedTitles>Observed, LAI,CRCmean</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <colour>
+        </colour>
+        <X>dd/mmm/yyyy</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>LeafLAI</Y>
+        <GDApsimFileReader name="Predicted">
+          <FileName>Carrot_11_11_97.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <PointType>Circle</PointType>
+        <X>dd/mm/yyyy</X>
+        <SeriesType>No line</SeriesType>
+        <Y>LAI</Y>
+        <GDFilter name="Observed">
+          <Filter>Plocal_init = 81.12 </Filter>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Carrots\Observed\CRCmean.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="RootStem">
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0wAAAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchcuR3JhcGhpY3MzRC5CcnVzaC5Db2xvch8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IZLlNlcmllcy4xLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjEuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IZLlNlcmllcy4xLkxpbmVQZW4uVmlzaWJsZRcuU2VyaWVzLjEuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjEuVGl0bGUeLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjEuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4xLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUULldhbGxzLkxlZnQuQXV0b0hpZGUaLldhbGxzLkxlZnQuU2hhZG93LlZpc2libGUVLldhbGxzLlJpZ2h0LkF1dG9IaWRlGy5XYWxscy5SaWdodC5TaGFkb3cuVmlzaWJsZRQuV2FsbHMuQmFjay5BdXRvSGlkZRouV2FsbHMuQmFjay5TaGFkb3cuVmlzaWJsZRYuV2FsbHMuQm90dG9tLkF1dG9IaWRlHC5XYWxscy5Cb3R0b20uU2hhZG93LlZpc2libGUOLldhbGxzLlZpc2libGUcLkF4ZXMuTGVmdC5MYWJlbHMuU2VwYXJhdGlvbh0uQXhlcy5MZWZ0LkxhYmVscy5WYWx1ZUZvcm1hdBsuQXhlcy5MZWZ0LkxhYmVscy5Gb250Lk5hbWUbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplJS5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuTGVmdC5MYWJlbHMuU2hhZG93LlZpc2libGUULkF4ZXMuTGVmdC5BdXRvbWF0aWMYLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAVLkF4ZXMuTGVmdC5HcmlkLlN0eWxlGS5BeGVzLkxlZnQuR3JpZC5aUG9zaXRpb24XLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IWLkF4ZXMuTGVmdC5UaXRsZS5MaW5lcxouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZSguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yJC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IfLkF4ZXMuTGVmdC5UaXRsZS5TaGFkb3cuVmlzaWJsZRsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZSQuQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUfLkF4ZXMuVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRMuQXhlcy5Ub3AuQXV0b21hdGljFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBQuQXhlcy5Ub3AuR3JpZC5TdHlsZRguQXhlcy5Ub3AuR3JpZC5aUG9zaXRpb24WLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUjLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUmLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuUmlnaHQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFS5BeGVzLlJpZ2h0LkF1dG9tYXRpYxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwFi5BeGVzLlJpZ2h0LkdyaWQuU3R5bGUaLkF4ZXMuUmlnaHQuR3JpZC5aUG9zaXRpb24YLkF4ZXMuUmlnaHQuR3JpZC5WaXNpYmxlHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZRMuQXhlcy5SaWdodC5WaXNpYmxlHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUnLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIi5BeGVzLkJvdHRvbS5MYWJlbHMuU2hhZG93LlZpc2libGUdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwFy5BeGVzLkJvdHRvbS5HcmlkLlN0eWxlGy5BeGVzLkJvdHRvbS5HcmlkLlpQb3NpdGlvbhkuQXhlcy5Cb3R0b20uR3JpZC5WaXNpYmxlGi5BeGVzLkJvdHRvbS5NYXhpbXVtT2Zmc2V0FC5BeGVzLkJvdHRvbS5NYXhpbXVtFC5BeGVzLkJvdHRvbS5NaW5pbXVtGi5BeGVzLkJvdHRvbS5NaW5pbXVtT2Zmc2V0Hy5BeGVzLkJvdHRvbS5NaW5vclRpY2tzLlZpc2libGUYLkF4ZXMuQm90dG9tLlRpY2tzLkNvbG9yGC5BeGVzLkJvdHRvbS5UaXRsZS5MaW5lcxwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUmLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUjLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IhLkF4ZXMuQm90dG9tLlRpdGxlLlNoYWRvdy5WaXNpYmxlKS5BeGVzLkRlcHRoVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlJC5BeGVzLkRlcHRoVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRguQXhlcy5EZXB0aFRvcC5BdXRvbWF0aWMZLkF4ZXMuRGVwdGhUb3AuR3JpZC5TdHlsZR0uQXhlcy5EZXB0aFRvcC5HcmlkLlpQb3NpdGlvbiguQXhlcy5EZXB0aFRvcC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkRlcHRoVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlJi5BeGVzLkRlcHRoLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIS5BeGVzLkRlcHRoLkxhYmVscy5TaGFkb3cuVmlzaWJsZRUuQXhlcy5EZXB0aC5BdXRvbWF0aWMWLkF4ZXMuRGVwdGguR3JpZC5TdHlsZRouQXhlcy5EZXB0aC5HcmlkLlpQb3NpdGlvbiUuQXhlcy5EZXB0aC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkRlcHRoLlRpdGxlLlNoYWRvdy5WaXNpYmxlAAAAAAQABAAEAAQAAAAAAAAABgEAAAAAAAAAAAAAAAAABAQAAAAEBAAEAAAAAAEEBAQEAAEABAAAAAQEAAABBAAEBAQEAAABAAQAAAAEBAAAAAAAAAAAAAAAAAEBAAAAAAAEBAAAAAAEBgEABAAEAAABAQAAAAAABAQAAAAEAQAABAAAAAEBAAAAAAAEBAAAAAQBAAAEAAAAAQEBAAAAAAAABAQAAAAAAAAABAYBAAAEAAAAAAQAAAAAAAAEAAAACAgBCCFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMDAAAACCNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwIAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAAAQEBAQEBAQgBAQEBAQEBAQYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQQAAAAlU3lzdGVtLkRyYXdpbmcuVGV4dC5UZXh0UmVuZGVyaW5nSGludAQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQEBAQEBAQEBAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEICAEBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQIAAAB7BgAABwMAAAEEAAAABfv///8hU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAQAAAAd2YWx1ZV9fAAgDAAAAAABAAAEAAAAF+v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAABfn///8UU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcEAAAACsDAwP8AAAAAAAACAAEF+P///yBTdGVlbWEuVGVlQ2hhcnQuTGVnZW5kQWxpZ25tZW50cwEAAAAHdmFsdWVfXwAIAgAAAAMAAAABAAAAAAABCQkAAAAGCgAAAAZUYWhvbWEMAAAAAAAAAAAAAAAAAAAAAJB1QAAAAAAAkHVAAwAAAAAB9f////n///8KAAAAAAAAAACkAAEAAfT////5////CgAAAAAAAAAAJQABAABNAwAAbAEAAAXz////JlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5TbW9vdGhpbmdNb2RlAQAAAAd2YWx1ZV9fAAgEAAAAAQAAAAXy////JVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQBAAAAB3ZhbHVlX18ACAQAAAAAAAAAAAHx////+f///woAAAAAAAAAACUAAQABAAAAAAAAAAAAAAAABhAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAe/////5////CgAAAAAAAAAAJQABAAXu////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAAB7f////n///8KAAAAAAAAAAAlAAEAAez////5////CpkAAP8AAAAAAAACAAIAAAAGFQAAACNQcmVkaWN0ZWQsIExlYWZMQUksa2FsZTA2MDdfczFfTjUwMAoAAAAF6v///yZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAIAAAAAAAAAAAB6f///+7///8AAAAAAej////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB5v////n///8KAAAAAAAAAAAlAAEAAQHl////7v///wEAAAAB5P////n///8KAAAAAAAAAACkAAEAAeP////5////CgAAAAAAAAAAJQABAAHi////+f///wqZAAD/AAAAAAAAAgAAAgAAAAYfAAAAHU9ic2VydmVkLCBMQUksS2FsZV8xT2N0MDZfNTAwCgAAAAHg////6v///wAAAAAIAAAAAAAAAAAB3////+7///8AAAAAAd7////5////CgAAAAAAAAAAIwABAAAAAAAAAAAAAAAAAAAAUAAAAAYjAAAACCMjIzAuIyMjCQoAAAAJAAAAAAABAQAAAAXb////IFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAXa////IlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUBAAAAB3ZhbHVlX18ACAQAAAABAAAAAAAAAAAAAAAACgAAAAAB2f////n///8KAAAA/wAAAAAAAAIACSgAAAAJCgAAAAsAAAAB1v////n///8KwAAA/wAAAAAAAAIAAAHV////+f///wr/AAD/AAAAAAAAAgAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHS////2////wIAAAAB0f///9r///8BAAAAAAAAAAAAAAAAAAHQ////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAc/////5////Cv8AAP8AAAAAAAACAAAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHM////2////wIAAAABy////9r///8BAAAAAAAAAAAAAAAAAAHK////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAcn////5////Cv8AAP8AAAAAAAACAAAAUAAAAAY4AAAACWQvTU0veXl5eQkjAAAACQoAAAAJAAAAAAAAAAEAAAABxf///9v///8CAAAAAcT////a////AQAAAAAAAAAAAAAAAAoAAAAAAAAAACzjQAAAAADgCeNACgAAAAABw/////n///8KAAAA/wAAAAAAAAIACT4AAAAJCgAAAAsAAAAAAcD////5////Cv8AAP8AAAAAAAACAAAAAAEBv////9r///8BAAAAAAAAAAAAAAAAAAAAAQG+////2v///wEAAAAAAAAAAAAAAAAAEQkAAAABAAAABkMAAAAAESgAAAABAAAACUMAAAARPgAAAAEAAAAJQwAAAAs=</Format>
+      <Legend>
+        <CheckedTitles>Predicted, StemLiveWt,Carrot_11_11_97</CheckedTitles>
+        <CheckedTitles>Observed, rootMass,CRCmean</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <colour>
+        </colour>
+        <X>dd/mmm/yyyy</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>StemLiveWt</Y>
+        <GDApsimFileReader name="Predicted">
+          <FileName>Carrot_11_11_97.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <PointType>Circle</PointType>
+        <X>dd/mm/yyyy</X>
+        <SeriesType>No line</SeriesType>
+        <Y>rootMass</Y>
+        <GDFilter name="Observed">
+          <Filter>Plocal_init = 81.12 </Filter>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Carrots\Observed\CRCmean.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="LeafWt">
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0wAAAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchcuR3JhcGhpY3MzRC5CcnVzaC5Db2xvch8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IZLlNlcmllcy4xLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjEuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IZLlNlcmllcy4xLkxpbmVQZW4uVmlzaWJsZRcuU2VyaWVzLjEuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjEuVGl0bGUeLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjEuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4xLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUULldhbGxzLkxlZnQuQXV0b0hpZGUaLldhbGxzLkxlZnQuU2hhZG93LlZpc2libGUVLldhbGxzLlJpZ2h0LkF1dG9IaWRlGy5XYWxscy5SaWdodC5TaGFkb3cuVmlzaWJsZRQuV2FsbHMuQmFjay5BdXRvSGlkZRouV2FsbHMuQmFjay5TaGFkb3cuVmlzaWJsZRYuV2FsbHMuQm90dG9tLkF1dG9IaWRlHC5XYWxscy5Cb3R0b20uU2hhZG93LlZpc2libGUOLldhbGxzLlZpc2libGUcLkF4ZXMuTGVmdC5MYWJlbHMuU2VwYXJhdGlvbh0uQXhlcy5MZWZ0LkxhYmVscy5WYWx1ZUZvcm1hdBsuQXhlcy5MZWZ0LkxhYmVscy5Gb250Lk5hbWUbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplJS5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuTGVmdC5MYWJlbHMuU2hhZG93LlZpc2libGUULkF4ZXMuTGVmdC5BdXRvbWF0aWMYLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAVLkF4ZXMuTGVmdC5HcmlkLlN0eWxlGS5BeGVzLkxlZnQuR3JpZC5aUG9zaXRpb24XLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IWLkF4ZXMuTGVmdC5UaXRsZS5MaW5lcxouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZSguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yJC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IfLkF4ZXMuTGVmdC5UaXRsZS5TaGFkb3cuVmlzaWJsZRsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZSQuQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUfLkF4ZXMuVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRMuQXhlcy5Ub3AuQXV0b21hdGljFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBQuQXhlcy5Ub3AuR3JpZC5TdHlsZRguQXhlcy5Ub3AuR3JpZC5aUG9zaXRpb24WLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUjLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUmLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuUmlnaHQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFS5BeGVzLlJpZ2h0LkF1dG9tYXRpYxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwFi5BeGVzLlJpZ2h0LkdyaWQuU3R5bGUaLkF4ZXMuUmlnaHQuR3JpZC5aUG9zaXRpb24YLkF4ZXMuUmlnaHQuR3JpZC5WaXNpYmxlHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZRMuQXhlcy5SaWdodC5WaXNpYmxlHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUnLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIi5BeGVzLkJvdHRvbS5MYWJlbHMuU2hhZG93LlZpc2libGUdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwFy5BeGVzLkJvdHRvbS5HcmlkLlN0eWxlGy5BeGVzLkJvdHRvbS5HcmlkLlpQb3NpdGlvbhkuQXhlcy5Cb3R0b20uR3JpZC5WaXNpYmxlGi5BeGVzLkJvdHRvbS5NYXhpbXVtT2Zmc2V0FC5BeGVzLkJvdHRvbS5NYXhpbXVtFC5BeGVzLkJvdHRvbS5NaW5pbXVtGi5BeGVzLkJvdHRvbS5NaW5pbXVtT2Zmc2V0Hy5BeGVzLkJvdHRvbS5NaW5vclRpY2tzLlZpc2libGUYLkF4ZXMuQm90dG9tLlRpY2tzLkNvbG9yGC5BeGVzLkJvdHRvbS5UaXRsZS5MaW5lcxwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUmLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUjLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IhLkF4ZXMuQm90dG9tLlRpdGxlLlNoYWRvdy5WaXNpYmxlKS5BeGVzLkRlcHRoVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlJC5BeGVzLkRlcHRoVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRguQXhlcy5EZXB0aFRvcC5BdXRvbWF0aWMZLkF4ZXMuRGVwdGhUb3AuR3JpZC5TdHlsZR0uQXhlcy5EZXB0aFRvcC5HcmlkLlpQb3NpdGlvbiguQXhlcy5EZXB0aFRvcC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkRlcHRoVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlJi5BeGVzLkRlcHRoLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIS5BeGVzLkRlcHRoLkxhYmVscy5TaGFkb3cuVmlzaWJsZRUuQXhlcy5EZXB0aC5BdXRvbWF0aWMWLkF4ZXMuRGVwdGguR3JpZC5TdHlsZRouQXhlcy5EZXB0aC5HcmlkLlpQb3NpdGlvbiUuQXhlcy5EZXB0aC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkRlcHRoLlRpdGxlLlNoYWRvdy5WaXNpYmxlAAAAAAQABAAEAAQAAAAAAAAABgEAAAAAAAAAAAAAAAAABAQAAAAEBAAEAAAAAAEEBAQEAAEABAAAAAQEAAABBAAEBAQEAAABAAQAAAAEBAAAAAAAAAAAAAAAAAEBAAAAAAAEBAAAAAAEBgEABAAEAAABAQAAAAAABAQAAAAEAQAABAAAAAEBAAAAAAAEBAAAAAQBAAAEAAAAAQEBAAAAAAAABAQAAAAAAAAABAYBAAAEAAAAAAQAAAAAAAAEAAAACAgBCCFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMDAAAACCNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwIAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAAAQEBAQEBAQgBAQEBAQEBAQYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQQAAAAlU3lzdGVtLkRyYXdpbmcuVGV4dC5UZXh0UmVuZGVyaW5nSGludAQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQEBAQEBAQEBAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEICAEBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQIAAAB7BgAABwMAAAEEAAAABfv///8hU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAQAAAAd2YWx1ZV9fAAgDAAAAAABAAAEAAAAF+v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAABfn///8UU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcEAAAACsDAwP8AAAAAAAACAAEF+P///yBTdGVlbWEuVGVlQ2hhcnQuTGVnZW5kQWxpZ25tZW50cwEAAAAHdmFsdWVfXwAIAgAAAAMAAAABAAAAAAABCQkAAAAGCgAAAAZUYWhvbWEMAAAAAAAAAAAAAAAAAAAAAJB1QAAAAAAAkHVAAwAAAAAB9f////n///8KAAAAAAAAAACkAAEAAfT////5////CgAAAAAAAAAAJQABAABNAwAAbAEAAAXz////JlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5TbW9vdGhpbmdNb2RlAQAAAAd2YWx1ZV9fAAgEAAAAAQAAAAXy////JVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQBAAAAB3ZhbHVlX18ACAQAAAAAAAAAAAHx////+f///woAAAAAAAAAACUAAQABAAAAAAAAAAAAAAAABhAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAe/////5////CgAAAAAAAAAAJQABAAXu////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAAB7f////n///8KAAAAAAAAAAAlAAEAAez////5////CpkAAP8AAAAAAAACAAIAAAAGFQAAACNQcmVkaWN0ZWQsIExlYWZMQUksa2FsZTA2MDdfczFfTjUwMAoAAAAF6v///yZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAIAAAAAAAAAAAB6f///+7///8AAAAAAej////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB5v////n///8KAAAAAAAAAAAlAAEAAQHl////7v///wEAAAAB5P////n///8KAAAAAAAAAACkAAEAAeP////5////CgAAAAAAAAAAJQABAAHi////+f///wqZAAD/AAAAAAAAAgAAAgAAAAYfAAAAHU9ic2VydmVkLCBMQUksS2FsZV8xT2N0MDZfNTAwCgAAAAHg////6v///wAAAAAIAAAAAAAAAAAB3////+7///8AAAAAAd7////5////CgAAAAAAAAAAIwABAAAAAAAAAAAAAAAAAAAAUAAAAAYjAAAACCMjIzAuIyMjCQoAAAAJAAAAAAABAQAAAAXb////IFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAXa////IlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUBAAAAB3ZhbHVlX18ACAQAAAABAAAAAAAAAAAAAAAACgAAAAAB2f////n///8KAAAA/wAAAAAAAAIACSgAAAAJCgAAAAsAAAAB1v////n///8KwAAA/wAAAAAAAAIAAAHV////+f///wr/AAD/AAAAAAAAAgAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHS////2////wIAAAAB0f///9r///8BAAAAAAAAAAAAAAAAAAHQ////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAc/////5////Cv8AAP8AAAAAAAACAAAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHM////2////wIAAAABy////9r///8BAAAAAAAAAAAAAAAAAAHK////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAcn////5////Cv8AAP8AAAAAAAACAAAAUAAAAAY4AAAACWQvTU0veXl5eQkjAAAACQoAAAAJAAAAAAAAAAEAAAABxf///9v///8CAAAAAcT////a////AQAAAAAAAAAAAAAAAAoAAAAAAAAAACzjQAAAAADgCeNACgAAAAABw/////n///8KAAAA/wAAAAAAAAIACT4AAAAJCgAAAAsAAAAAAcD////5////Cv8AAP8AAAAAAAACAAAAAAEBv////9r///8BAAAAAAAAAAAAAAAAAAAAAQG+////2v///wEAAAAAAAAAAAAAAAAAEQkAAAABAAAABkMAAAAAESgAAAABAAAACUMAAAARPgAAAAEAAAAJQwAAAAs=</Format>
+      <Legend>
+        <CheckedTitles>Predicted, LeafLiveWt,Carrot_11_11_97</CheckedTitles>
+        <CheckedTitles>Observed, ShootMass,CRCmean</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <colour>
+        </colour>
+        <X>dd/mmm/yyyy</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>LeafLiveWt</Y>
+        <GDApsimFileReader name="Predicted">
+          <FileName>Carrot_11_11_97.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <PointType>Circle</PointType>
+        <X>dd/mm/yyyy</X>
+        <SeriesType>No line</SeriesType>
+        <Y>ShootMass</Y>
+        <GDFilter name="Observed">
+          <Filter>Plocal_init = 81.12 </Filter>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Carrots\Observed\CRCmean.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="Supply">
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0wAAAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchcuR3JhcGhpY3MzRC5CcnVzaC5Db2xvch8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IZLlNlcmllcy4xLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjEuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IZLlNlcmllcy4xLkxpbmVQZW4uVmlzaWJsZRcuU2VyaWVzLjEuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjEuVGl0bGUeLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjEuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4xLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUULldhbGxzLkxlZnQuQXV0b0hpZGUaLldhbGxzLkxlZnQuU2hhZG93LlZpc2libGUVLldhbGxzLlJpZ2h0LkF1dG9IaWRlGy5XYWxscy5SaWdodC5TaGFkb3cuVmlzaWJsZRQuV2FsbHMuQmFjay5BdXRvSGlkZRouV2FsbHMuQmFjay5TaGFkb3cuVmlzaWJsZRYuV2FsbHMuQm90dG9tLkF1dG9IaWRlHC5XYWxscy5Cb3R0b20uU2hhZG93LlZpc2libGUOLldhbGxzLlZpc2libGUcLkF4ZXMuTGVmdC5MYWJlbHMuU2VwYXJhdGlvbh0uQXhlcy5MZWZ0LkxhYmVscy5WYWx1ZUZvcm1hdBsuQXhlcy5MZWZ0LkxhYmVscy5Gb250Lk5hbWUbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplJS5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuTGVmdC5MYWJlbHMuU2hhZG93LlZpc2libGUULkF4ZXMuTGVmdC5BdXRvbWF0aWMYLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAVLkF4ZXMuTGVmdC5HcmlkLlN0eWxlGS5BeGVzLkxlZnQuR3JpZC5aUG9zaXRpb24XLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IWLkF4ZXMuTGVmdC5UaXRsZS5MaW5lcxouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZSguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yJC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IfLkF4ZXMuTGVmdC5UaXRsZS5TaGFkb3cuVmlzaWJsZRsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZSQuQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUfLkF4ZXMuVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRMuQXhlcy5Ub3AuQXV0b21hdGljFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBQuQXhlcy5Ub3AuR3JpZC5TdHlsZRguQXhlcy5Ub3AuR3JpZC5aUG9zaXRpb24WLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUjLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUmLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuUmlnaHQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFS5BeGVzLlJpZ2h0LkF1dG9tYXRpYxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwFi5BeGVzLlJpZ2h0LkdyaWQuU3R5bGUaLkF4ZXMuUmlnaHQuR3JpZC5aUG9zaXRpb24YLkF4ZXMuUmlnaHQuR3JpZC5WaXNpYmxlHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZRMuQXhlcy5SaWdodC5WaXNpYmxlHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUnLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIi5BeGVzLkJvdHRvbS5MYWJlbHMuU2hhZG93LlZpc2libGUdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwFy5BeGVzLkJvdHRvbS5HcmlkLlN0eWxlGy5BeGVzLkJvdHRvbS5HcmlkLlpQb3NpdGlvbhkuQXhlcy5Cb3R0b20uR3JpZC5WaXNpYmxlGi5BeGVzLkJvdHRvbS5NYXhpbXVtT2Zmc2V0FC5BeGVzLkJvdHRvbS5NYXhpbXVtFC5BeGVzLkJvdHRvbS5NaW5pbXVtGi5BeGVzLkJvdHRvbS5NaW5pbXVtT2Zmc2V0Hy5BeGVzLkJvdHRvbS5NaW5vclRpY2tzLlZpc2libGUYLkF4ZXMuQm90dG9tLlRpY2tzLkNvbG9yGC5BeGVzLkJvdHRvbS5UaXRsZS5MaW5lcxwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUmLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUjLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IhLkF4ZXMuQm90dG9tLlRpdGxlLlNoYWRvdy5WaXNpYmxlKS5BeGVzLkRlcHRoVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlJC5BeGVzLkRlcHRoVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRguQXhlcy5EZXB0aFRvcC5BdXRvbWF0aWMZLkF4ZXMuRGVwdGhUb3AuR3JpZC5TdHlsZR0uQXhlcy5EZXB0aFRvcC5HcmlkLlpQb3NpdGlvbiguQXhlcy5EZXB0aFRvcC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkRlcHRoVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlJi5BeGVzLkRlcHRoLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIS5BeGVzLkRlcHRoLkxhYmVscy5TaGFkb3cuVmlzaWJsZRUuQXhlcy5EZXB0aC5BdXRvbWF0aWMWLkF4ZXMuRGVwdGguR3JpZC5TdHlsZRouQXhlcy5EZXB0aC5HcmlkLlpQb3NpdGlvbiUuQXhlcy5EZXB0aC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkRlcHRoLlRpdGxlLlNoYWRvdy5WaXNpYmxlAAAAAAQABAAEAAQAAAAAAAAABgEAAAAAAAAAAAAAAAAABAQAAAAEBAAEAAAAAAEEBAQEAAEABAAAAAQEAAABBAAEBAQEAAABAAQAAAAEBAAAAAAAAAAAAAAAAAEBAAAAAAAEBAAAAAAEBgEABAAEAAABAQAAAAAABAQAAAAEAQAABAAAAAEBAAAAAAAEBAAAAAQBAAAEAAAAAQEBAAAAAAAABAQAAAAAAAAABAYBAAAEAAAAAAQAAAAAAAAEAAAACAgBCCFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMDAAAACCNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwIAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAAAQEBAQEBAQgBAQEBAQEBAQYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQQAAAAlU3lzdGVtLkRyYXdpbmcuVGV4dC5UZXh0UmVuZGVyaW5nSGludAQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQEBAQEBAQEBAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEICAEBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAYGCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQEBASJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBAQIAAAB7BgAABwMAAAEEAAAABfv///8hU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAQAAAAd2YWx1ZV9fAAgDAAAAAABAAAEAAAAF+v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAABfn///8UU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcEAAAACsDAwP8AAAAAAAACAAEF+P///yBTdGVlbWEuVGVlQ2hhcnQuTGVnZW5kQWxpZ25tZW50cwEAAAAHdmFsdWVfXwAIAgAAAAMAAAABAAAAAAABCQkAAAAGCgAAAAZUYWhvbWEMAAAAAAAAAAAAAAAAAAAAAJB1QAAAAAAAkHVAAwAAAAAB9f////n///8KAAAAAAAAAACkAAEAAfT////5////CgAAAAAAAAAAJQABAABNAwAAbAEAAAXz////JlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5TbW9vdGhpbmdNb2RlAQAAAAd2YWx1ZV9fAAgEAAAAAQAAAAXy////JVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQBAAAAB3ZhbHVlX18ACAQAAAAAAAAAAAHx////+f///woAAAAAAAAAACUAAQABAAAAAAAAAAAAAAAABhAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAe/////5////CgAAAAAAAAAAJQABAAXu////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAAB7f////n///8KAAAAAAAAAAAlAAEAAez////5////CpkAAP8AAAAAAAACAAIAAAAGFQAAACNQcmVkaWN0ZWQsIExlYWZMQUksa2FsZTA2MDdfczFfTjUwMAoAAAAF6v///yZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAIAAAAAAAAAAAB6f///+7///8AAAAAAej////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB5v////n///8KAAAAAAAAAAAlAAEAAQHl////7v///wEAAAAB5P////n///8KAAAAAAAAAACkAAEAAeP////5////CgAAAAAAAAAAJQABAAHi////+f///wqZAAD/AAAAAAAAAgAAAgAAAAYfAAAAHU9ic2VydmVkLCBMQUksS2FsZV8xT2N0MDZfNTAwCgAAAAHg////6v///wAAAAAIAAAAAAAAAAAB3////+7///8AAAAAAd7////5////CgAAAAAAAAAAIwABAAAAAAAAAAAAAAAAAAAAUAAAAAYjAAAACCMjIzAuIyMjCQoAAAAJAAAAAAABAQAAAAXb////IFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAXa////IlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUBAAAAB3ZhbHVlX18ACAQAAAABAAAAAAAAAAAAAAAACgAAAAAB2f////n///8KAAAA/wAAAAAAAAIACSgAAAAJCgAAAAsAAAAB1v////n///8KwAAA/wAAAAAAAAIAAAHV////+f///wr/AAD/AAAAAAAAAgAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHS////2////wIAAAAB0f///9r///8BAAAAAAAAAAAAAAAAAAHQ////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAc/////5////Cv8AAP8AAAAAAAACAAAAUAAAAAkjAAAACQoAAAAJAAAAAAABAQAAAAHM////2////wIAAAABy////9r///8BAAAAAAAAAAAAAAAAAAHK////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAcn////5////Cv8AAP8AAAAAAAACAAAAUAAAAAY4AAAACWQvTU0veXl5eQkjAAAACQoAAAAJAAAAAAAAAAEAAAABxf///9v///8CAAAAAcT////a////AQAAAAAAAAAAAAAAAAoAAAAAAAAAACzjQAAAAADgCeNACgAAAAABw/////n///8KAAAA/wAAAAAAAAIACT4AAAAJCgAAAAsAAAAAAcD////5////Cv8AAP8AAAAAAAACAAAAAAEBv////9r///8BAAAAAAAAAAAAAAAAAAAAAQG+////2v///wEAAAAAAAAAAAAAAAAAEQkAAAABAAAABkMAAAAAESgAAAABAAAACUMAAAARPgAAAAEAAAAJQwAAAAs=</Format>
+      <Legend>
+        <CheckedTitles>Predicted, Cumulative LeafDMSupplyPhotosynthesis,Carrot_11_11_97</CheckedTitles>
+        <CheckedTitles>Observed, TotalMass,CRCmean</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <colour>
+        </colour>
+        <X>dd/mmm/yyyy</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Cumulative LeafDMSupplyPhotosynthesis</Y>
+        <GDApsimFileReader name="Predicted">
+          <FileName>Carrot_11_11_97.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <PointType>Circle</PointType>
+        <X>dd/mm/yyyy</X>
+        <SeriesType>No line</SeriesType>
+        <Y>TotalMass</Y>
+        <GDFilter name="Observed">
+          <Filter>Plocal_init = 81.12 </Filter>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Carrots\Observed\CRCmean.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="N Uptake">
+      <Legend>
+        <CheckedTitles> LeafLiveN</CheckedTitles>
+        <CheckedTitles> StemLiveN</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>dd/mmm/yyyy</X>
+        <Y>LeafLiveN</Y>
+        <Y>StemLiveN</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </simulation>
+</folder>

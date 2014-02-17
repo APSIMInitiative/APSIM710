@@ -662,6 +662,8 @@ public class Leaf : BaseOrgan, AboveGround
 
             if (DMDemandFunction != null)
             {
+                if (DMDemandFunction.Value < 0)
+                    throw new Exception("Leaf DM demand error : negative deamnd");
                 StructuralDemand = DMDemandFunction.Value * StructuralFraction.Value;
                 NonStructuralDemand = DMDemandFunction.Value * (1 - StructuralFraction.Value);
             }
