@@ -838,8 +838,8 @@
       </Job>
       <Job name="Create SFX Binaries">
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
-		   <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
+       <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
+       <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
       </Job>
    </Target>
 
@@ -854,9 +854,13 @@
    <Target name="Bob">
       <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
-      <Job name="Upload SFX Binaries">
-   	   <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-		   <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.WINDOWS.exe C:\inetpub\wwwroot\Files</CommandLine>
+      <Job name="Upload SFX Binaries 1">
+         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+         <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.WINDOWS.INTEL.exe C:\inetpub\wwwroot\Files</CommandLine>
+      </Job>
+      <Job name="Upload SFX Binaries 2">
+         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+         <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.WINDOWS.X86_64.exe C:\inetpub\wwwroot\Files</CommandLine>
       </Job>
       <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
@@ -890,7 +894,7 @@
     <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
     <DependsOn IgnoreErrors="true">Release</DependsOn>
     <Job name="Upload X64 SFX Binaries">
- 	    <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+      <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
       <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.Linux.exe -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.binaries.LINUX.X86_64.exe</CommandLineUnix>
     </Job>
     <Job name="Update X64 DB SFX Binaries">

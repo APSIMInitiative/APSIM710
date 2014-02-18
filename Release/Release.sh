@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 dest=Temp
 mkdir $dest
@@ -20,9 +20,17 @@ cp    $APSIM/UserInterface/ToolBoxes/*.xml $dest/UserInterface/ToolBoxes
 
 if [ "$1" = "" ] ; then
   . $APSIM/Model/Build/VersionInfo.sh
-  7zr a -sfx Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.Linux.exe $dest
+  if [ $(uname -m) == 'x86_64' ]; then
+     7zr a -sfx Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.LINUX.X86_64.exe $dest
+  else
+     7zr a -sfx Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.LINUX.INTEL.exe $dest
+  fi
 else  
-  7zr a -sfx $1.binaries.Linux.exe Temp
+  if [ $(uname -m) == 'x86_64' ]; then
+     7zr a -sfx $1.binaries.LINUX.X86_64.exe Temp
+  else
+     7zr a -sfx $1.binaries.LINUX.INTEL.exe Temp
+  fi
 fi
 
 rm -rf Temp
