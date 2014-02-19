@@ -235,7 +235,7 @@ class Bob
             using (SqlDataReader Reader = ExecuteReader(Command))
             {
                while (Reader.Read()) 
-                  DBUpdate("linuxStatus", "Ignored", Connection, Convert.ToInt32(Reader[0]);
+                  DBUpdate("linuxStatus", "Ignored", Connection, Convert.ToInt32(Reader[0]));
             }
          }
       }

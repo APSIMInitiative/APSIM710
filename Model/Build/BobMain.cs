@@ -104,12 +104,12 @@ class BobMain
             string sfxFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
             Path.ChangeExtension(sfxFileName, ".binaries.WINDOWS.INTEL.exe");
             string revFileName = "C:/inetpub/wwwroot/Files/Apsim75-r" + TipRevisionNumber.ToString() + ".binaries.WINDOWS.INTEL.exe";
-            Run("Make Symlink 1", "mklink.exe " + revFileName + " " + sfxFileName , "", "%APSIM%\\Model");
+            Run("Make Symlink 1", "cmd /c mklink " + revFileName + " " + sfxFileName , "", "%APSIM%\\Model");
 
             sfxFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
             Path.ChangeExtension(sfxFileName, ".binaries.WINDOWS.X86_64.exe");
             revFileName = "C:/inetpub/wwwroot/Files/Apsim75-r" + TipRevisionNumber.ToString() + ".binaries.WINDOWS.X86_64.exe";
-            Run("Make Symlink 2", "mklink.exe " + revFileName + " " + sfxFileName, "", "%APSIM%\\Model");
+            Run("Make Symlink 2", "cmd /c mklink " + revFileName + " " + sfxFileName, "", "%APSIM%\\Model");
 
          }
       }
