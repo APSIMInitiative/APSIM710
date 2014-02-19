@@ -102,7 +102,7 @@ class Bob
 				          {
                   // Linux builds only check "passed" patches - ie revisions
                   string revision = DBGet("RevisionNumber", Connection, JobID).ToString();
-                  if (revision == "") { Thread.Sleep(1 * 60 * 1000); break;}  // The job may have "passed" but not yet committed to svn
+                  if (revision == "") { Thread.Sleep(1 * 60 * 1000); continue;}  // The job may have "passed" but not yet committed to svn
                   DBUpdate("linuxStatus", "Running", Connection, JobID);
                   string LogFileName = "/tmp/Apsim7.5-r" + revision + ".txt";
                   StreamWriter Log = new StreamWriter(LogFileName);
@@ -209,8 +209,10 @@ class Bob
          if (System.Environment.MachineName.ToUpper() == "BOB")
             SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Queued' ORDER BY ID";
          else 
+            {
+            MarkFailedJobs(Connection);
             SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Pass' AND linuxStatus = 'Queued' ORDER BY ID";
-
+            }
          using (SqlCommand Command = new SqlCommand(SQL, Connection))
          using (SqlDataReader Reader = ExecuteReader(Command))
             {
@@ -218,6 +220,24 @@ class Bob
                return Convert.ToInt32(Reader[0]);
             }
          return -1;
+      }
+
+      /// <summary>
+      /// Mark "failed" jobs 
+      /// </summary>
+      static void MarkFailedJobs(SqlConnection Connection)
+      {
+         if (System.Environment.MachineName.ToUpper() != "BOB") 
+         {
+            string SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Fail' AND linuxStatus = 'Queued' ORDER BY ID";
+
+            using (SqlCommand Command = new SqlCommand(SQL, Connection))
+            using (SqlDataReader Reader = ExecuteReader(Command))
+            {
+               while (Reader.Read()) 
+                  DBUpdate("linuxStatus", "Ignored", Connection, Convert.ToInt32(Reader[0]);
+            }
+         }
       }
 
       /// <summary>

@@ -62,8 +62,8 @@ namespace BobWeb
                 if (!Convert.IsDBNull(Row["DiffsFileName"]))
                     Links += " <a href=\"" + Row["DiffsFileName"] + "\">W32&nbsp;Diffs</a>";
 
-                if (!Convert.IsDBNull(Row["LINUXDiffsFileName"]))
-                    Links += " <a href=\"" + Row["LinuxDiffsFileName"] + "\">lnx64&nbsp;Diffs</a>";
+                if (!Convert.IsDBNull(Row["linuxDiffsFileName"]))
+                    Links += " <a href=\"" + Row["linuxDiffsFileName"] + "\">lnx64&nbsp;Diffs</a>";
 
                 if (!Convert.IsDBNull(Row["BinariesFileName"]))
                     Links += " <a href=\"" + Row["BinariesFileName"] + "\">Binaries</a>";
@@ -72,13 +72,23 @@ namespace BobWeb
                     Links += " <a href=\"" + Row["BuildTreeFileName"] + "\">BuildTree</a>";
 
                 if (!Convert.IsDBNull(Row["SetupForReleaseFileName"]))
-                    Links += " <a href=\"" + Row["SetupForReleaseFileName"] + "\">WindowsInstaller</a>";
+                    Links += " <a href=\"" + Row["SetupForReleaseFileName"] + "\">WindowsInstaller</a><br>";
 
                 if (!Convert.IsDBNull(Row["SetupFileName"]))
                 {
-                    Links += " <a href=\"" + Row["SetupFileName"] + "\">WindowsInstallerFull</a>";
-                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.WINDOWS.exe\">Win32SelfExtractingBinaries</a>";
-                    Links += " <a href=\"http://bob.apsim.info/files/" + PatchFileName + ".binaries.LINUX.X86_64.exe\">LinuxX64SelfExtractingBinaries</a>";
+                    Links += " <a href=\"" + Row["SetupFileName"] + "\">WindowsInstallerFull</a><br>";
+                    if (!Convert.IsDBNull(Row["RevisionNumber"]))
+                    {
+                       string rev = Row["RevisionNumber"];
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim75-r" + rev + ".binaries.WINDOWS.INTEL.exe") 
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim75-r" + rev + ".binaries.WINDOWS.INTEL.exe\">Win32 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim75-r" + rev + ".binaries.WINDOWS.X86_64.exe") 
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim75-r" + rev + ".binaries.WINDOWS.X86_64.exe\">Win64 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim75-r" + rev + ".binaries.LINUX.INTEL.exe") 
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim75-r" + rev + ".binaries.LINUX.INTEL.exe\">Linux 32 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim75-r" + rev + ".binaries.LINUX.X86_64.exe") 
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim75-r" + rev + ".binaries.LINUX.X86_64.exe\">Linux 64 SFX</a><br>";
+                    }
                 }
                 Data.Columns["DetailsFileName"].MaxLength = 2000;
                 Row["DetailsFileName"] = Links;
