@@ -70,6 +70,7 @@ public class SoilArbitrator
                         RootData.Zone = new RootSystemZoneType[1];
                         RootData.Zone[0] = new RootSystemZoneType();
                         RootData.Zone[0].ZoneName = p.Name;
+                        RootData.Zone[0].ZoneArea = 1;
                         if (!c.Get("sw_demand", out RootData.SWDemand))
                             throw new Exception("Could not get sw_demand for crop " + c.Name);
                         if (!c.Get("root_depth", out RootData.Zone[0].RootDepth))
@@ -96,6 +97,10 @@ public class SoilArbitrator
         {
             IEnumerable<DataRow> RootZones = AllRootSystems.AsEnumerable().Where(row => row.ItemArray[0].Equals(PaddockName));
             Paddock p = (Paddock)paddock.LinkByName(PaddockName);
+            Component fieldProps = (Component)p.LinkByName("FieldProps");
+            double fieldArea;
+            if (fieldProps == null || !fieldProps.Get("fieldArea", out fieldArea))
+                throw new Exception("Could not find FieldProps component in field " + PaddockName);
 
             Component Soil = (Component)p.LinkByType("SoilWat");
             double[] SWDep;
@@ -154,14 +159,14 @@ public class SoilArbitrator
                     }
                     for (int j = 0; j < NumLayers; j++)
                     {
-                        SWSupply[i, j] -= LayerUptake[i, j];
+                        SWSupply[i, j] -= LayerUptake[i, j] ;
                     }
                 }
 
                 //subtract from soil water
                 for (int j = 0; j < Uptake.ColumnCount; j++)
                 {
-                    SWDep[j] -= Uptake.Column(j).Sum();
+                    SWDep[j] -= Uptake.Column(j).Sum() / fieldArea;
                 }
 
                 Soil.Set("sw_dep", SWDep);
@@ -210,7 +215,7 @@ public class SoilArbitrator
             zone = (RootSystemZoneType)RootZones.ToArray()[i].ItemArray[4];
             for (int j = 0; j < NumLayers; j++)
             {
-                SWSupply[i, j] = zone.kl[j] * (SWDep[j] - zone.ll[j] * zone.dlayer[j]);
+                SWSupply[i, j] = zone.kl[j] * (SWDep[j] - zone.ll[j] * zone.dlayer[j]) * zone.ZoneArea;
                 if (SWSupply[i, j] < 0)
                     SWSupply[i, j] = 0; //can be < 0 if another crop with a lower LL has extracted below what this one can.
             }
@@ -313,9 +318,9 @@ public class SoilArbitrator
             SWDeps[i] = (double)MathUtility.Sum(SWlayers);
         }
 
-        TotalSW = (double)MathUtility.Sum(SWDeps);
+        TotalSW = (double)MathUtility.Sum(SWDeps) ;
         for (int i = 0; i < ZoneNames.Length; i++)
-            SoilWaters.Add(ZoneNames[i], SWDeps[i] / TotalSW);
+            SoilWaters.Add(ZoneNames[i], SWDeps[i] / TotalSW * RootData.Zone[i].ZoneArea);
 
         return SoilWaters;
     }

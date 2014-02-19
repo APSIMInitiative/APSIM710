@@ -1,0 +1,252 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = T4
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component               "SoilArbitrator" = %apsim%\Model\SoilArbitrator.dll
+   Component             "TreeMicroClimate" = %apsim%\Model\TreeMicroClimate.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                   "FieldProps" = %apsim%\Model\Manager2.dll
+   Component                   "SimpleTree" = %apsim%\Model\SimpleTree.dll
+   Component                 "LocalClimate" = %apsim%\Model\LocalClimate.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/06/1985
+     Simulation end date   =  1/02/1986
+     Time step =           = 1440 (mins)
+
+------- SoilArbitrator Initialisation -----------------------------------------
+
+------- TreeMicroClimate Initialisation ---------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        sw_dep()
+        day
+        year
+        yield
+        biomass
+        plant_status
+        sw_demand
+
+     Output file = T4 TreeField.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     summeru =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     winteru =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     summercona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     wintercona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.080  0.160  0.320  0.400  0.320  1.400  0.762  0.300 50.000
+          150.-  300.  0.080  0.160  0.320  0.400  0.320  1.400  0.190  0.300 50.000
+          300.-  600.  0.080  0.160  0.320  0.400  0.320  1.300  0.048  0.300 50.000
+          600.- 1000.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1000.- 1300.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1300.- 1600.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1600.- 1900.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      24.00      24.00      24.00      12.00
+          150.-  300.      24.00      24.00      24.00      12.00
+          300.-  600.      48.00      48.00      48.00      24.00
+          600.- 1000.      64.00      64.00      64.00      32.00
+         1000.- 1300.      48.00      48.00      48.00      24.00
+         1300.- 1600.      48.00      48.00      48.00      24.00
+         1600.- 1900.      48.00      48.00      48.00      24.00
+          ---------------------------------------------------------
+               Totals     304.00     304.00     304.00     152.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+               1.00    0.00    0.00  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            0.00 (mm^0.5)
+            CONA:                     0.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Generic NZ heavy
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  4.50   20.00    4.20    0.00
+             2     7.00  3.00   10.00    2.10    0.00
+             3     7.00  1.50    5.00    2.34    0.00
+             4     7.00  0.60    2.33    0.52    0.00
+             5     7.00  0.23    1.00    0.39    0.00
+             6     7.00  0.10    1.00    0.39    0.00
+             7     7.00  0.10    1.97    0.52    0.00
+          ------------------------------------------------
+           Totals               41.30   10.46    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      92848.5  7427.9  1651.5   206.4    27.9     0.7
+             2      62505.9  5000.5   494.1    61.8    22.0     0.6
+             3      58384.2  4670.7   115.8    14.5    13.7     0.3
+             4      31173.1  2493.9    26.9     3.4     7.3     0.2
+             5       9082.5   726.6     4.5     0.6     4.5     0.1
+             6       3898.1   311.8     1.9     0.2     2.8     0.1
+             7       3898.1   311.8     1.9     0.2     1.8     0.0
+          ---------------------------------------------------------
+           Totals  261790.3 20943.2  2296.7   287.1    80.0     2.0
+          ---------------------------------------------------------
+
+------- FieldProps Initialisation ---------------------------------------------
+
+------- SimpleTree Initialisation ---------------------------------------------
+
+------- LocalClimate Initialisation -------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 February 1986(Day of year=32), clock: 
+     Simulation is terminating due to end criteria being met.
+

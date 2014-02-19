@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3232" name="simulations">
+<folder version="36" creator="Apsim 7.5-r3285" name="simulations">
   <folder name="Maize">
     <simulation name="MaizeWithArbitrator">
       <metfile name="met">
@@ -503,11 +503,51 @@
           </manager>
         </folder>
         <maize />
+        <manager2 name="FieldProps">
+          <ui>
+            <area type="text" description="Area of field (m^2)">1</area>
+            <dry type="yesno" description="dry">yes</dry>
+            <hot type="yesno" description="hot">yes</hot>
+            <shaded type="yesno" description="shaded">no</shaded>
+            <distToTree type="text" description="distance between tree and field (0 for tree in this field)">0</distToTree>
+          </ui>
+          <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
+   [Param] int area;
+   [Param] string dry;
+   [Param] string hot;
+   [Param] string shaded;
+   [Output] string isDry {get{return dry;}}
+   [Output] string isHot {get{return hot;}}
+   [Output] string isShaded {get{return shaded;}}
+   [Output] int fieldArea;
+
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+      fieldArea = area;
+   }
+      
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+   }
+   
+}
+       </text>
+        </manager2>
       </area>
       <Graph name="XY">
         <Legend>
-          <CheckedTitles> esw</CheckedTitles>
-          <CheckedTitles> biomass</CheckedTitles>
+          <CheckedTitles> esw, MaizeWithArbitrator MaizeField</CheckedTitles>
+          <CheckedTitles> esw, {Checkpoint} MaizeWithArbitrator MaizeField</CheckedTitles>
+          <CheckedTitles> biomass, MaizeWithArbitrator MaizeField</CheckedTitles>
+          <CheckedTitles> biomass, {Checkpoint} MaizeWithArbitrator MaizeField</CheckedTitles>
         </Legend>
         <Plot>
           <SeriesType>Solid line</SeriesType>
@@ -1048,9 +1088,7 @@
     <Graph name="XY">
       <Legend>
         <CheckedTitles> esw, MaizeWithArbitrator MaizeField</CheckedTitles>
-        <CheckedTitles> esw, MaizeNoArbitrator MaizeField</CheckedTitles>
-        <CheckedTitles> biomass, MaizeWithArbitrator MaizeField</CheckedTitles>
-        <CheckedTitles> biomass, MaizeNoArbitrator MaizeField</CheckedTitles>
+        <CheckedTitles> esw, {Checkpoint} MaizeWithArbitrator MaizeField</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1091,17 +1129,19 @@ using ModelFramework;
 public class Script 
 {      
    [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
-   [Param][Output] double area;
+   [Param] int area;
    [Param] string dry;
    [Param] string hot;
    [Param] string shaded;
    [Output] string isDry {get{return dry;}}
    [Output] string isHot {get{return hot;}}
    [Output] string isShaded {get{return shaded;}}
+   [Output] int fieldArea;
 
    // The following event handler will be called once at the beginning of the simulation
    [EventHandler] public void OnInitialised()
    {
+      fieldArea = area;
    }
       
    // The following event handler will be called each day at the beginning of the day
@@ -2100,8 +2140,6 @@ public class Script
     </simulation>
     <Graph name="XY">
       <Legend>
-        <CheckedTitles> esw, WheatWithArbitrator WheatField</CheckedTitles>
-        <CheckedTitles> esw, WheatNoArbitrator WheatField</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>

@@ -10,7 +10,7 @@
              Copyright(c) APSRU               
 
 Version                = 7.5
-Title                  = Agroforestry
+Title                  = T4M
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component               "SoilArbitrator" = %apsim%\Model\SoilArbitrator.dll
    Component             "TreeMicroClimate" = %apsim%\Model\TreeMicroClimate.dll
@@ -28,13 +28,27 @@ Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
-   Component "Remove all residues on a fixed date" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                        "maize" = %apsim%\Model\Maize.dll
+   Component                   "FieldProps" = %apsim%\Model\Manager2.dll
+   Component                 "LocalClimate" = %apsim%\Model\LocalClimate.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                   "FieldProps" = %apsim%\Model\Manager2.dll
+   Component                 "LocalClimate" = %apsim%\Model\LocalClimate.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                   "FieldProps" = %apsim%\Model\Manager2.dll
    Component                 "LocalClimate" = %apsim%\Model\LocalClimate.dll
 
@@ -71,7 +85,7 @@ Paddock:
         plant_status
         sw_demand
 
-     Output file = Agroforestry TreeField.out
+     Output file = T4M TreeField.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -273,46 +287,11 @@ Paddock:
         plant_status
         sw_demand
 
-     Output file = Agroforestry MaizeField.out
+     Output file = T4M TreeField1.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
-
-------- Sow on a fixed date Initialisation ------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-             if (today = date('1-jun') then
-       maize sow plants =3, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
-              endif
-     END of rules
-     
-
-------- Remove all residues on a fixed date Initialisation --------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-              if today = date('1-may') then
-     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
-              endif
-     END of rules
-     
-
-------- Harvesting rule Initialisation ----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-                if ('maize' = 'cotton') then
-       if (maize.ozcot_status > 0) then
-           maize harvest
-       endif
-                elseif (maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead') then
-       maize  harvest
-       maize  end_crop
-                endif
-     END of rules
-     
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -324,7 +303,7 @@ Paddock:
                       -------------------
      summeru =     0.000000
              less than lower limit of   0.1000000E-03
-     Component name: MaizeField.Soil Water
+     Component name: TreeField1.Soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -333,7 +312,7 @@ Paddock:
                       -------------------
      winteru =     0.000000
              less than lower limit of   0.1000000E-03
-     Component name: MaizeField.Soil Water
+     Component name: TreeField1.Soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -342,7 +321,7 @@ Paddock:
                       -------------------
      summercona =     0.000000
              less than lower limit of   0.1000000E-03
-     Component name: MaizeField.Soil Water
+     Component name: TreeField1.Soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -351,7 +330,7 @@ Paddock:
                       -------------------
      wintercona =     0.000000
              less than lower limit of   0.1000000E-03
-     Component name: MaizeField.Soil Water
+     Component name: TreeField1.Soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -491,164 +470,410 @@ Paddock:
            Totals  261790.3 20943.2  2296.7   287.1    80.0     2.0
           ---------------------------------------------------------
 
-------- maize Initialisation --------------------------------------------------
-      Initialising, V1.0 2000.01.21
+------- FieldProps Initialisation ---------------------------------------------
+
+------- LocalClimate Initialisation -------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        sw_dep()
+        day
+        year
+        yield
+        biomass
+        plant_status
+        sw_demand
+
+     Output file = T4M TreeField2.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
      
          - Reading constants
      
-         - Reading constants
+        - Reading Soil Property Parameters
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Value of variable is out of bounds.
-     Variable: radn
-     Value:        0.0000000
-     Bounds:        1.0000000 to       50.0000000
-     Component name: MaizeField.maize
+     summeru =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField2.Soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     winteru =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField2.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     summercona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField2.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     wintercona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField2.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.080  0.160  0.320  0.400  0.320  1.400  0.762  0.300 50.000
+          150.-  300.  0.080  0.160  0.320  0.400  0.320  1.400  0.190  0.300 50.000
+          300.-  600.  0.080  0.160  0.320  0.400  0.320  1.300  0.048  0.300 50.000
+          600.- 1000.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1000.- 1300.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1300.- 1600.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1600.- 1900.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      24.00      24.00      24.00      12.00
+          150.-  300.      24.00      24.00      24.00      12.00
+          300.-  600.      48.00      48.00      48.00      24.00
+          600.- 1000.      64.00      64.00      64.00      32.00
+         1000.- 1300.      48.00      48.00      48.00      24.00
+         1300.- 1600.      48.00      48.00      48.00      24.00
+         1600.- 1900.      48.00      48.00      48.00      24.00
+          ---------------------------------------------------------
+               Totals     304.00     304.00     304.00     152.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+               1.00    0.00    0.00  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            0.00 (mm^0.5)
+            CONA:                     0.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Generic NZ heavy
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  4.50   20.00    4.20    0.00
+             2     7.00  3.00   10.00    2.10    0.00
+             3     7.00  1.50    5.00    2.34    0.00
+             4     7.00  0.60    2.33    0.52    0.00
+             5     7.00  0.23    1.00    0.39    0.00
+             6     7.00  0.10    1.00    0.39    0.00
+             7     7.00  0.10    1.97    0.52    0.00
+          ------------------------------------------------
+           Totals               41.30   10.46    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      92848.5  7427.9  1651.5   206.4    27.9     0.7
+             2      62505.9  5000.5   494.1    61.8    22.0     0.6
+             3      58384.2  4670.7   115.8    14.5    13.7     0.3
+             4      31173.1  2493.9    26.9     3.4     7.3     0.2
+             5       9082.5   726.6     4.5     0.6     4.5     0.1
+             6       3898.1   311.8     1.9     0.2     2.8     0.1
+             7       3898.1   311.8     1.9     0.2     1.8     0.0
+          ---------------------------------------------------------
+           Totals  261790.3 20943.2  2296.7   287.1    80.0     2.0
+          ---------------------------------------------------------
+
+------- FieldProps Initialisation ---------------------------------------------
+
+------- LocalClimate Initialisation -------------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        sw_dep()
+        day
+        year
+        yield
+        biomass
+        plant_status
+        sw_demand
+
+     Output file = T4M TreeField3.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     summeru =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField3.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     winteru =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField3.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     summercona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField3.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     wintercona =     0.000000
+             less than lower limit of   0.1000000E-03
+     Component name: TreeField3.Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.080  0.160  0.320  0.400  0.320  1.400  0.762  0.300 50.000
+          150.-  300.  0.080  0.160  0.320  0.400  0.320  1.400  0.190  0.300 50.000
+          300.-  600.  0.080  0.160  0.320  0.400  0.320  1.300  0.048  0.300 50.000
+          600.- 1000.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1000.- 1300.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1300.- 1600.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+         1600.- 1900.  0.080  0.160  0.320  0.400  0.320  1.300  0.000  0.300 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      24.00      24.00      24.00      12.00
+          150.-  300.      24.00      24.00      24.00      12.00
+          300.-  600.      48.00      48.00      48.00      24.00
+          600.- 1000.      64.00      64.00      64.00      32.00
+         1000.- 1300.      48.00      48.00      48.00      24.00
+         1300.- 1600.      48.00      48.00      48.00      24.00
+         1600.- 1900.      48.00      48.00      48.00      24.00
+          ---------------------------------------------------------
+               Totals     304.00     304.00     304.00     152.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+               1.00    0.00    0.00  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            0.00 (mm^0.5)
+            CONA:                     0.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Generic NZ heavy
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  4.50   20.00    4.20    0.00
+             2     7.00  3.00   10.00    2.10    0.00
+             3     7.00  1.50    5.00    2.34    0.00
+             4     7.00  0.60    2.33    0.52    0.00
+             5     7.00  0.23    1.00    0.39    0.00
+             6     7.00  0.10    1.00    0.39    0.00
+             7     7.00  0.10    1.97    0.52    0.00
+          ------------------------------------------------
+           Totals               41.30   10.46    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      92848.5  7427.9  1651.5   206.4    27.9     0.7
+             2      62505.9  5000.5   494.1    61.8    22.0     0.6
+             3      58384.2  4670.7   115.8    14.5    13.7     0.3
+             4      31173.1  2493.9    26.9     3.4     7.3     0.2
+             5       9082.5   726.6     4.5     0.6     4.5     0.1
+             6       3898.1   311.8     1.9     0.2     2.8     0.1
+             7       3898.1   311.8     1.9     0.2     1.8     0.0
+          ---------------------------------------------------------
+           Totals  261790.3 20943.2  2296.7   287.1    80.0     2.0
+          ---------------------------------------------------------
 
 ------- FieldProps Initialisation ---------------------------------------------
 
 ------- LocalClimate Initialisation -------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- maize sow  plants = 3, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
-     Sowing initiate
-     
-     
-     
-                      Crop Sowing Data
-         -------------------------------------------------------
-         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
-         Day no    mm      m^2    m      code     name       no
-         -------------------------------------------------------
-            152   50.0    3.0    0.5    0.0   makueni       0.00
-         -------------------------------------------------------
-     
-        - Reading root profile parameters
-     Module is using water uptake provided from SoilArbitrator
-     
-     
-     
-     
-                         Root Profile
-         ------------------------------------------------
-           Layer      Kl      Lower Exploration
-           Depth              limit   Factor
-           (mm)       ()     (mm/mm)    ()
-         ------------------------------------------------
-          150.000    0.080    0.160    1.000
-          150.000    0.080    0.160    1.000
-          300.000    0.070    0.160    1.000
-          400.000    0.060    0.160    1.000
-          300.000    0.030    0.160    1.000
-          300.000    0.020    0.160    1.000
-          300.000    0.010    0.160    1.000
-          ------------------------------------------------
-     
-            Crop factor for bounding water use is set to  100.0  times eo.
-     
-     
-     
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar                 = makueni
-         est_days_endjuv_to_init  =      20
-         tt_emerg_to_endjuv       =  150.00
-         tt_flower_to_maturity    =  660.00
-         head_grain_no_max        =  480.00
-         grain_gth_rate           =    9.50
-         tt_flag_to_flower        =   10.00
-         tt_flower_to_start_grain =  120.00
-         tt_maturity_to_ripe      =    1.00
-         x_stem_wt      =     0.0   80.0
-         y_height      =     0.0 2000.0
-         ------------------------------------------------
-     
-     
-     
-2 June 1985(Day of year=153), maize: 
-      stage    2.0 germination
-8 June 1985(Day of year=159), maize: 
-      stage    3.0 emergence
-                          biomass =          0.6000000E-01   lai =    0.1140000E-02
-                          stover N conc =    4.400000       extractable sw =    22.22699
-2 July 1985(Day of year=183), maize: 
-      stage    4.0 end_of_juvenile
-                          biomass =          0.3660207       lai =    0.1031613E-02
-                          stover N conc =    19.84534       extractable sw =    71.95944
-3 July 1985(Day of year=184), maize: 
-      stage    5.0 floral_initiation
-                          biomass =          0.3767967       lai =    0.1495234E-02
-                          stover N conc =    17.09621       extractable sw =    71.33208
-6 September 1985(Day of year=249), maize: 
-      stage    6.0 flag_leaf
-                          biomass =           108.3503       lai =    0.6985952
-                          stover N conc =    2.210340       extractable sw =    233.6213
-7 September 1985(Day of year=250), maize: 
-      stage    7.0 flowering
-                          biomass =           115.8505       lai =    0.6985952
-                          stover N conc =    2.179529       extractable sw =    232.2754
-19 September 1985(Day of year=262), maize: 
-      stage    8.0 start_grain_fill
-                          biomass =           213.8816       lai =    0.6985952
-                          stover N conc =    1.975027       extractable sw =    213.2012
-3 November 1985(Day of year=307), maize: 
-      stage    9.0 end_grain_fill
-                          biomass =           593.4465       lai =    0.6985952
-                          stover N conc =    1.319833       extractable sw =    151.1124
-4 November 1985(Day of year=308), maize: 
-      stage   10.0 maturity
-                          biomass =           600.9009       lai =    0.6985952
-                          stover N conc =    1.303429       extractable sw =    150.5842
-5 November 1985(Day of year=309), maize: 
-      stage   11.0 harvest_ripe
-                          biomass =           600.9009       lai =    0.1139998E-02
-                          stover N conc =    1.331710       extractable sw =    150.5670
-5 November 1985(Day of year=309), Harvesting rule: 
-     Manager sending message :- maize harvest
-     
-     
-     
-     flowering (DAS) =   99                                maturity (DAS)  =     157
-      flowering day  =  250                                 stover (kg/ha) =    3553.9
-      maturity day        =  308                            grain yield (kg/ha) =    2455.2
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =    2905.5
-      grain wt (g) =     0.347                              grains/m^2   =   707.812
-      grains/head = 235.9                                   maximum lai = 0.699
-      total above ground biomass (kg/ha) =    6009.0
-      live above ground biomass (kg/ha) =    6009.0
-      green above ground biomass (kg/ha) =    5793.8
-      senesced above ground biomass (kg/ha) =     215.2
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  14.4
-      grain N percent =      1.86                           total N content (kg/ha) =     78.23
-      grain N uptake (kg/ha) =     45.70                    senesced N content (kg/ha) =      1.08
-      green N content (kg/ha) =     31.45                   dead N content (kg/ha) =      0.00
-     
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.024
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation   to flag_leaf               0.000        0.000        0.000        0.022
-         flag_leaf           to flowering               0.000        0.000        0.000        0.000
-         flowering           to start_grain_fill        0.000        0.000        0.000        0.006
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.000        0.000
-     
-     Crop harvested.
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               2455.15                    0.00
-                          N  (kg/ha) =                 45.70                    0.00
-     
-     Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =     0.0
-         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               3553.86                  389.50
-                          N  (kg/ha) =                 32.53                    4.15
-                          P  (kg/ha) =                  0.00                    0.00
-     
 1 February 1986(Day of year=32), clock: 
      Simulation is terminating due to end criteria being met.
 

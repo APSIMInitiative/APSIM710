@@ -39,7 +39,10 @@ public class SimpleTree
 
         for (int i = 0; i < NumPlots; i++)
         {
+            Component fieldProps = (Component)MyPaddock.Parent.ChildPaddocks[i].LinkByName("FieldProps");
             RootSystem.Zone[i] = new RootSystemZoneType();
+            if (!fieldProps.Get("fieldArea", out RootSystem.Zone[i].ZoneArea))
+                throw new Exception("Could not find FieldProps component in field " + MyPaddock.Parent.ChildPaddocks[i].Name);
             SoilWat = (Component)MyPaddock.LinkByType("SoilWat");
             SoilWat.Get("dlayer", out RootSystem.Zone[i].dlayer);
             RootSystem.Zone[i].ZoneName = MyPaddock.Parent.ChildPaddocks[i].Name;
@@ -70,7 +73,11 @@ public class SimpleTree
             SoilWat.Get("ll15_dep", out LL15Dep);
             for (int j = 0; j < SWDep.Length; j++)
             {
-                PotSWUptake[i][j] = Math.Max(0.0, RootProportion(j, RootSystem.Zone[i].RootDepth, RootSystem.Zone[i].dlayer) * RootSystem.Zone[i].kl[j] * (SWDep[j] - LL15Dep[j])) * 1; // 1 is the area of the zone - disabled for now
+                //only use 1 paddock to calculate sw_demand for testing
+                if (i == 0)
+                    PotSWUptake[i][j] = Math.Max(0.0, RootProportion(j, RootSystem.Zone[i].RootDepth, RootSystem.Zone[i].dlayer) * RootSystem.Zone[i].kl[j] * (SWDep[j] - LL15Dep[j])); //* RootSystem.Zone[i].ZoneArea;
+                else
+                    PotSWUptake[i][j] = 0;
             }
         }
 
