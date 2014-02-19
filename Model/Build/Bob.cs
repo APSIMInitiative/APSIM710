@@ -102,7 +102,7 @@ class Bob
 				          {
                   // Linux builds only check "passed" patches - ie revisions
                   string revision = DBGet("RevisionNumber", Connection, JobID).ToString();
-                  if (revision == "") { Thread.Sleep(1 * 60 * 1000); continue;}  // The job may have "passed" but not yet committed to svn
+                  if (revision == "") { Thrstring ead.Sleep(1 * 60 * 1000); continue;}  // The job may have "passed" but not yet committed to svn
                   DBUpdate("linuxStatus", "Running", Connection, JobID);
                   string LogFileName = "/tmp/Apsim7.5-r" + revision + ".txt";
                   StreamWriter Log = new StreamWriter(LogFileName);
