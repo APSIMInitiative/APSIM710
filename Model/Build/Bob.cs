@@ -229,7 +229,7 @@ class Bob
       {
          if (System.Environment.MachineName.ToUpper() != "BOB") 
          {
-            string SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Fail' AND linuxStatus = 'Queued' ORDER BY ID";
+            string SQL = "SELECT ID FROM BuildJobs WHERE (Status = 'Fail' OR Status = 'Aborted') AND linuxStatus = 'Queued' ORDER BY ID";
             List<int> ignoredJobs = new List<int>();
             using (SqlCommand Command = new SqlCommand(SQL, Connection))
             using (SqlDataReader Reader = ExecuteReader(Command))

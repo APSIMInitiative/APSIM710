@@ -101,14 +101,14 @@ class BobMain
             
             // Create symlinks for the webserver to serve up self extracting exes for each revision. This only happens 
             // for clean builds.
-            string sfxFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
+            string sfxFileName = Path.Combine("C:\\inetpub\\wwwroot\\Files", Path.GetFileName(PatchFileName));
             Path.ChangeExtension(sfxFileName, ".binaries.WINDOWS.INTEL.exe");
-            string revFileName = "C:/inetpub/wwwroot/Files/Apsim75-r" + TipRevisionNumber.ToString() + ".binaries.WINDOWS.INTEL.exe";
+            string revFileName = "C:\\inetpub\\wwwroot\\Files\\Apsim75-r" + TipRevisionNumber.ToString() + ".binaries.WINDOWS.INTEL.exe";
             Run("Make Symlink 1", "%ComSpec%", "/c mklink " + revFileName + " " + sfxFileName , "%APSIM%\\Model");
 
-            sfxFileName = Path.Combine("C:/inetpub/wwwroot/Files", Path.GetFileName(PatchFileName));
+            sfxFileName = Path.Combine("C:\\inetpub\\wwwroot\\Files", Path.GetFileName(PatchFileName));
             Path.ChangeExtension(sfxFileName, ".binaries.WINDOWS.X86_64.exe");
-            revFileName = "C:/inetpub/wwwroot/Files/Apsim75-r" + TipRevisionNumber.ToString() + ".binaries.WINDOWS.X86_64.exe";
+            revFileName = "C:\\inetpub\\wwwroot\\Files\\Apsim75-r" + TipRevisionNumber.ToString() + ".binaries.WINDOWS.X86_64.exe";
             Run("Make Symlink 2", "%ComSpec%", "/c mklink " + revFileName + " " + sfxFileName, "%APSIM%\\Model");
 
          }
