@@ -230,13 +230,16 @@ class Bob
          if (System.Environment.MachineName.ToUpper() != "BOB") 
          {
             string SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Fail' AND linuxStatus = 'Queued' ORDER BY ID";
-
+            List<int> ignoredJobs = new List<int>();
             using (SqlCommand Command = new SqlCommand(SQL, Connection))
             using (SqlDataReader Reader = ExecuteReader(Command))
             {
                while (Reader.Read()) 
-                  DBUpdate("linuxStatus", "Ignored", Connection, Convert.ToInt32(Reader[0]));
+                  ignoredJobs.Add(Convert.ToInt32(Reader[0]));
             }
+
+            foreach (int jobID in ignoredJobs) 
+                DBUpdate("linuxStatus", "Ignored", Connection, jobID);
          }
       }
 
