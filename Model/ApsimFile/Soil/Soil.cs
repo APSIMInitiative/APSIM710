@@ -210,6 +210,26 @@ namespace ApsimFile
         }
 
         /// <summary>
+        /// Calculate and return SW relative to the Water node thicknesses.
+        /// </summary>
+        public double[] SWAvailableToCropAtWaterThickness(string cropName)
+        {
+            if (InitialWater != null)
+                return InitialWater.SW(Water.Thickness, LLMapped(cropName, Water.Thickness), Water.DUL, XFMapped(cropName, Water.Thickness));
+            else
+            {
+                foreach (Sample Sample in Samples)
+                {
+                    if (MathUtility.ValuesInArray(Sample.SW))
+                    {
+                        return SWMapped(Sample.SWVolumetric(this), Sample.Thickness, Water.Thickness);
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Return AirDry at standard thickness. Units: mm/mm
         /// </summary>
         public double[] AirDry { get { return Map(Water.AirDry, Water.Thickness, Thickness, MapType.Concentration); } }
@@ -438,7 +458,7 @@ namespace ApsimFile
         {
             return CalcPAWC(Water.Thickness,
                             LLMapped(CropName, Water.Thickness),
-                            SWAtWaterThickness,
+                            SWAvailableToCropAtWaterThickness(CropName),
                             XFMapped(CropName, Water.Thickness));
         }
 

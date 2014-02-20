@@ -62,7 +62,8 @@ namespace ApsimFile
             if (Thickness.Length != LL.Length ||
                 Thickness.Length != DUL.Length)
                 return SW;
-            double[] PAWCmm = MathUtility.Multiply(MathUtility.Subtract(DUL, LL), Thickness);
+            double[] PAWCmm = MathUtility.Multiply(Soil.CalcPAWC(Thickness, LL, DUL, XF), Thickness);
+                //MathUtility.Multiply(MathUtility.Subtract(DUL, LL), Thickness);
 
             double AmountWater = MathUtility.Sum(PAWCmm) * FractionFull;
             for (int Layer = 0; Layer < LL.Length; Layer++)
