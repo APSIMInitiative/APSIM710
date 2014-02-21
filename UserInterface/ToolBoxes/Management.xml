@@ -686,13 +686,14 @@ endif
         <event>end_of_day</event>
       </script>
     </manager>
-    <manager name="Reset water, nitrogen and surfaceOM on fixed date">
+    <manager name="Reset water, nitrogen, surfaceOM and phosphorus on fixed date">
       <script>
         <text>
          if (today = date('[reset_date]')) then
             resetWater = '[resetWater]'
             resetNitrogen  = '[resetNitrogen]'
             resetSurfaceOM = '[resetSurfaceOM]'
+            resetP = '[resetP]'
             if (resetWater = 'yes') then
                 '[soilmodule] Water' reset
             endif
@@ -701,6 +702,9 @@ endif
             endif
             if (resetSurfaceOM = 'yes') then
                 '[surfaceommodule]' reset
+            endif
+            if (resetP = 'yes') then
+                '[pmodule]' reset
             endif
             act_mods reseting
          endif
@@ -713,17 +717,20 @@ endif
         <category type="category" description="Reset details" />
         <soilmodule type="modulename" description="Name of your soil module : " />
         <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
+        <pmodule type="modulename" description="Name of your phosphorus module : ">Phosphorus</pmodule>
         <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
         <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
         <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
+        <resetP type="yesno" description="Reset phosphorus?">no</resetP>
       </ui>
     </manager>
-    <manager name="Reset water, nitrogen and surfaceOM on sowing">
+    <manager name="Reset water, nitrogen, surfaceOM and phosphorus on sowing">
       <script>
         <text>
             resetWater = '[resetWater]'
             resetNitrogen  = '[resetNitrogen]'
             resetSurfaceOM = '[resetSurfaceOM]'
+            resetP = '[resetP]'
             if (resetWater = 'yes') then
                 '[soilmodule] Water' reset
             endif
@@ -733,7 +740,10 @@ endif
             if (resetSurfaceOM = 'yes') then
                 '[surfaceommodule]' reset
             endif
-            if (resetWater = 'yes' or resetNitrogen = 'yes' or resetSurfaceOM = 'yes') then
+            if (resetP = 'yes') then
+                '[pmodule]' reset
+            endif
+            if (resetWater = 'yes' or resetNitrogen = 'yes' or resetSurfaceOM = 'yes' or resetP = 'yes') then
                act_mods reseting
             endif
       </text>
@@ -746,9 +756,11 @@ endif
         <category type="category" description="Reset details" />
         <soilmodule type="modulename" description="Name of your soil module : " />
         <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
+        <pmodule type="modulename" description="Name of your phosphorus module : ">Phosphorus</pmodule>
         <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
         <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
         <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
+        <resetP type="yesno" description="Reset phosphorus?">no</resetP>
       </ui>
     </manager>
     <manager name="Rotations">
