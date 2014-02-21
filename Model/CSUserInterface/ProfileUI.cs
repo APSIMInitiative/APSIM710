@@ -10,6 +10,7 @@ using System.Drawing;
 using System;
 using Graph;
 using System.Reflection;
+using UIBits;
 
 namespace CSUserInterface
 {
@@ -134,7 +135,22 @@ namespace CSUserInterface
             if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
                 Graph.Populate(Soil, OurComponent.Type);
             else
-                Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
+            {
+                // get a table from the grid and remove totals from no3 and nh4 columns.
+                DataTable table = Grid.ToTable();
+                if (OurObject is Sample && table.Columns.Count > 2)
+                {
+                    string name = table.Columns[1].ColumnName;
+                    string units = StringManip.SplitOffBracketedValue(ref name, '(', ')');
+                    table.Columns[1].ColumnName = "NO3 (" + units + ")";
+
+                    name = table.Columns[2].ColumnName;
+                    units = StringManip.SplitOffBracketedValue(ref name, '(', ')');
+                    table.Columns[2].ColumnName = "NH4 (" + units + ")";
+
+                }
+                Graph.Populate(table, OurComponent.Type, Soil);
+            }
             Label.Visible = Label.Text != "";
         }
 
@@ -220,6 +236,12 @@ namespace CSUserInterface
                                     ToolStripItem Item = UnitsMenu.Items.Add((string)UnitsToStringInfo.Invoke(OurObject, new object[] { E }));
                                     Item.Tag = E;
                                 }
+
+                                if (Property.Name == "NO3" || Property.Name == "NH4")
+                                {
+                                    ToolStripItem Item = UnitsMenu.Items.Add("Set total");
+                                    Item.Tag = Property.Name + "(" + Units + ")";
+                                }
                             }
 
                             // Create a column.
@@ -233,6 +255,9 @@ namespace CSUserInterface
                             {
                                 Column.HeaderCell.ContextMenuStrip = UnitsMenu;
                             }
+
+                            if (Property.Name == "NO3" || Property.Name == "NH4")
+                                UpdateTotal(Column);
                         }
                     }
 
@@ -456,6 +481,10 @@ namespace CSUserInterface
                     Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                     UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
                 }
+                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("NO3") ||
+                         Grid.Columns[e.ColumnIndex].HeaderText.Contains("NH4"))
+                    UpdateTotal(Grid.Columns[e.ColumnIndex]);
+
                 if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
                     Graph.Populate(Soil, OurComponent.Type);
                 else
@@ -517,6 +546,14 @@ namespace CSUserInterface
             {
                 int Pos = Col.HeaderText.IndexOf("\n");
                 Col.HeaderText = Col.HeaderText.Substring(0, Pos + 1) + Total.ToString("f1");// +" mm";
+                Col.HeaderCell.Style.ForeColor = Color.Red;
+            }
+            else if (Col.HeaderText.Contains("NO3\r\n") || Col.HeaderText.Contains("NH4\r\n"))
+            {
+                string headerText = Col.HeaderText;
+                string units = "(" + StringManip.SplitOffBracketedValue(ref headerText, '(', ')') + ")";
+                int Pos = Col.HeaderText.IndexOf("\n");
+                Col.HeaderText = Col.HeaderText.Substring(0, Pos + 1) + Total.ToString("f1") + " " + units;
                 Col.HeaderCell.Style.ForeColor = Color.Red;
             }
         }
@@ -585,13 +622,42 @@ namespace CSUserInterface
         /// </summary>
         private void UnitsMenuItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            object Units = e.ClickedItem.Tag;
-            MethodInfo UnitChangeMethod = (sender as ContextMenuStrip).Tag as MethodInfo;
-            if (UnitChangeMethod.GetParameters().Length == 1)
-                UnitChangeMethod.Invoke(OurObject, new object[] {Units});
+            if (e.ClickedItem.Text == "Set total")
+            {
+                string name = e.ClickedItem.Tag as string;
+                string units = StringManip.SplitOffBracketedValue(ref name,'(', ')');
+                int colIndex;
+                if (name == "NO3")
+                    colIndex = 1;
+                else
+                    colIndex = 2;
+                double total = MathUtility.Sum(GridUtility.GetColumnAsDoubles(Grid, colIndex));
+                string newTotalString = InputDialog.InputBox("Enter total " + name + " (" + units + ")", name, total.ToString("f1"), false);
+                if (newTotalString != total.ToString("f1") && total != 0)
+                {
+                    double newTotal = Convert.ToDouble(newTotalString);
+                    double scale = newTotal / total; 
+                    // Need to scale the values.
+                    double[] values = GridUtility.GetColumnAsDoubles(Grid, colIndex);
+                    double[] newValues = MathUtility.Multiply_Value(values, scale);
+                    Sample sample = OurObject as Sample;
+                    if (name == "NO3")
+                        sample.NO3 = newValues;
+                    else
+                        sample.NH4 = newValues;
+                    OnRefresh();
+                }
+            }
             else
-                UnitChangeMethod.Invoke(OurObject, new object[] { Units, Soil });
-            OnRefresh();
+            {
+                object Units = e.ClickedItem.Tag;
+                MethodInfo UnitChangeMethod = (sender as ContextMenuStrip).Tag as MethodInfo;
+                if (UnitChangeMethod.GetParameters().Length == 1)
+                    UnitChangeMethod.Invoke(OurObject, new object[] { Units });
+                else
+                    UnitChangeMethod.Invoke(OurObject, new object[] { Units, Soil });
+                OnRefresh();
+            }
         }
 
         /// <summary>
@@ -606,6 +672,7 @@ namespace CSUserInterface
             else
                 MessageBox.Show(Msg, "Soil Errors", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
 
     }
 
