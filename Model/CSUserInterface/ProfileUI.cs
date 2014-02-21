@@ -354,7 +354,9 @@ namespace CSUserInterface
                                                       Soil.Water.Thickness);
 
                 DataGridViewColumn LL = GridUtility.AddColumn(Grid, CropName + " LL\r\n(mm/mm)", Crop.LL, "f3", CropColour, ForeColour, ToolTips: Crop.LLMetadata, ReadOnly: IsReadonly);
-                DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n", PAWCmm, "f1", CropColour, ForeColour);
+                DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n", PAWCmm, "f1", CropColour, Color.Gray, 
+                                                                ReadOnly:true, 
+                                                                ToolTips:StringManip.CreateStringArray("Calculated from crop LL and DUL", PAWCmm.Length));
                 DataGridViewColumn KL = GridUtility.AddColumn(Grid, CropName + " KL\r\n(/day)", Crop.KL, "f2", CropColour, ForeColour, ToolTips: Crop.KLMetadata, ReadOnly: IsReadonly);
                 DataGridViewColumn XF = GridUtility.AddColumn(Grid, CropName + " XF\r\n(0-1)", Crop.XF, "f1", CropColour, ForeColour, ToolTips: Crop.XFMetadata, ReadOnly: IsReadonly);
 
