@@ -23,10 +23,14 @@ namespace ApsimFile
         public double SorptionCoeff { get; set; }
 
         public double[] Thickness { get; set; }
+        [Units("mg/kg")]
         public double[] LabileP { get; set; }
-        public double[] Sorption { get; set; }
+        [Units("kg/ha")]
         public double[] BandedP { get; set; }
+        [Units("kg/ha")]
         public double[] RockP { get; set; }
+        [Units("-")]
+        public double[] Sorption { get; set; }
     }
 
 
