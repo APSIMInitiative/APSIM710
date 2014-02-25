@@ -633,8 +633,8 @@ namespace ApsimFile
         }
     }
     public class Factor
-    {
-        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, Component FactorComponent, string SimulationPath, string destFolder = "")
+    { 
+        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, Component FactorComponent, string SimulationPath, Configuration.architecture arch, string destFolder = "")
         {
             if (FactorComponent == null)
                 throw new Exception("Error initialising Factorials");
@@ -655,7 +655,7 @@ namespace ApsimFile
                     {
                         string factorsList = "";
 
-                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, (int)totalCount, Configuration.getArchitecture(), destFolder);
+                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, (int)totalCount, arch, destFolder);
                     }
                 }
                 catch (Exception ex)
@@ -676,13 +676,13 @@ namespace ApsimFile
             tmpFile.New(doc.OuterXml);
             return tmpFile;
         }
-        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, string[] SimsToRun, string destFolder = "")
+        public static List<SimFactorItem> CreateSimFiles(ApsimFile _F, string[] SimsToRun, Configuration.architecture arch, string destFolder = "")
         {
             List<SimFactorItem> SimFiles = new List<SimFactorItem>();
             //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
             ApsimFile tmpFile = CreateCopy(_F);
             foreach (String SimulationPath in SimsToRun)
-                Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath, destFolder);
+                Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath, arch, destFolder);
             return SimFiles;
         }
 
