@@ -307,7 +307,7 @@ namespace ApsimFile
         {
             if(!FactorialIsActive(AFile))
                 return 0;
-            List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths, Configuration.getArchitecture());
+            List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
             foreach (SimFactorItem item in SimFiles)
             {
                 Job J = CreateJob(item.SimFileName, Path.ChangeExtension(item.SimFileName, ".sum"));

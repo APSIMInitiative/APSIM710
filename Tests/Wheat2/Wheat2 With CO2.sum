@@ -324,15 +324,284 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
-1 June 1940(Day of year=153): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Could not load type 'ModelFramework.MetFile' from assembly 'DotNetProxies, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'. for event Sow in handleEvent()
-     Component name: wheat2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
+Crop Sow
+   ------------------------------------------------
+   cultivar                   = hartog
+   Phases:
+      SowingToGermination
+      GerminationToEmergence
+      EmergenceToEndOfJuvenile
+         Target                    =        1 (dd)
+      EndOfJuvenileToFloralInitiation
+         Target                    =      400 (dd)
+      FloralInitiationToFlowering
+         Target                    =      555 (dd)
+      FloweringToStartGrainFill
+         Target                    =      120 (dd)
+      StartGrainFillToEndGrainFill
+         Target                    =      545 (dd)
+      EndGrainFillToMaturity
+         Target                    =       35 (dd)
+      MaturityToHarvestRipe
+         Target                    =        1 (dd)
+      ReadyForHarvesting
+         Target                    =     1000 (dd)
+      EndCrop
+         Target                    =     1000 (dd)
+   grains_per_gram_stem           =       25.0 (/g)
+   potential_grain_filling_rate   =     0.0020 (g/grain/day)
+   potential_grain_growth_rate    =     0.0010 (g/grain/day)
+   max_grain_size                 =     0.0410 (g)
+   ------------------------------------------------
+
+
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   319mm in  3000mm total depth ( 11%).
+    Crop factor for bounding water use is set to   1.5 times eo.
+
+                 Crop Sowing Data
+    ------------------------------------------------
+    Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+    Day no   mm     m^2     mm   row   plant name
+    ------------------------------------------------
+       153   50.0  150.0  500.0   0.0   0.0 hartog
+    ------------------------------------------------
+
+2 June 1940(Day of year = 154), wheat2:
+      Germination
+11 June 1940(Day of year = 163), wheat2:
+      Emergence
+           biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.85 (%)     extractable sw =   19.17 (mm)
+12 June 1940(Day of year = 164), wheat2:
+      EndOfJuvenile
+           biomass =           1.00 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.55 (%)     extractable sw =   18.66 (mm)
+6 August 1940(Day of year = 219), wheat2:
+      FloralInitiation
+           biomass =          95.40 (g/m^2)   lai          =    0.85 (m^2/m^2)
+           stover N conc =     1.50 (%)     extractable sw =  195.76 (mm)
+11 September 1940(Day of year = 255), wheat2:
+      Flowering
+           biomass =         270.34 (g/m^2)   lai          =    0.43 (m^2/m^2)
+           stover N conc =     0.71 (%)     extractable sw =  217.78 (mm)
+17 September 1940(Day of year = 261), wheat2:
+      StartGrainFill
+           biomass =         300.67 (g/m^2)   lai          =    0.34 (m^2/m^2)
+           stover N conc =     0.52 (%)     extractable sw =  211.37 (mm)
+15 October 1940(Day of year = 289), wheat2:
+      EndGrainFill
+           biomass =         329.49 (g/m^2)   lai          =    0.15 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  203.14 (mm)
+16 October 1940(Day of year = 290), wheat2:
+      Maturity
+           biomass =         329.49 (g/m^2)   lai          =    0.13 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  202.93 (mm)
+17 October 1940(Day of year = 291), wheat2:
+      HarvestRipe
+           biomass =         329.49 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  202.71 (mm)
+17 October 1940(Day of year=291), Harvesting rule: 
+     Manager sending message :- wheat2 harvest
+
+ flowering day          =  255                           stover (kg/ha)         =     2170.3
+ maturity day           =  290                           grain yield (kg/ha)    =     1124.6
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=     1405.7
+ grain wt (g)           =    0.027                       grains/m^2             =     4205.6
+ grains/plant           =   28.0                         maximum lai            =      0.892
+ total above ground biomass (kg/ha)    =     3294.9
+ live above ground biomass (kg/ha)     =     3294.9
+ green above ground biomass (kg/ha)    =     2785.6
+ senesced above ground biomass (kg/ha) =      509.3
+ number of leaves       =     34.3
+ DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.34
+ Stover C:N ratio       =   111.56                       Root C:N ratio         =      42.00
+ grain N percent        =     1.60                       total N content (kg/ha)=      25.79
+ grain N uptake (kg/ha) =    18.01                       senesced N content (kg/ha)=    2.55
+ green N content (kg/ha)=     5.23
+
+ Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+                         SowingToGermination        0.000        0.000        0.000        0.000
+                      GerminationToEmergence        0.000        0.000        0.000        0.000
+                    EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.454        0.454
+                 FloralInitiationToFlowering        0.000        0.000        0.377        0.377
+                   FloweringToStartGrainFill        0.000        0.000        0.023        0.023
+                StartGrainFillToEndGrainFill        0.000        0.000        0.722        0.722
+                      EndGrainFillToMaturity        0.000        0.000        0.854        0.854
+                       MaturityToHarvestRipe        0.000        0.000        0.846        0.846
+
+
+Crop harvested.
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                2170.3                     0.0
+                      N  (kg/ha) =                   7.78                    0.00
+
+    Organic matter removed from system:-      From Tops               From Roots
+                      DM (kg/ha) =                1124.6                     0.0
+                      N  (kg/ha) =                  18.01                    0.00
+
+     Manager sending message :- wheat2 endcrop
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                   0.0                    62.5
+                      N  (kg/ha) =                   0.00                    0.59
+1 June 1941(Day of year=152), Sow on a fixed date: 
+     Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, rowspacing = 500, crop_class =
+Crop Sow
+   ------------------------------------------------
+   cultivar                   = hartog
+   Phases:
+      SowingToGermination
+      GerminationToEmergence
+      EmergenceToEndOfJuvenile
+         Target                    =        1 (dd)
+      EndOfJuvenileToFloralInitiation
+         Target                    =      400 (dd)
+      FloralInitiationToFlowering
+         Target                    =      555 (dd)
+      FloweringToStartGrainFill
+         Target                    =      120 (dd)
+      StartGrainFillToEndGrainFill
+         Target                    =      545 (dd)
+      EndGrainFillToMaturity
+         Target                    =       35 (dd)
+      MaturityToHarvestRipe
+         Target                    =        1 (dd)
+      ReadyForHarvesting
+         Target                    =     1000 (dd)
+      EndCrop
+         Target                    =     1000 (dd)
+   grains_per_gram_stem           =       25.0 (/g)
+   potential_grain_filling_rate   =     0.0020 (g/grain/day)
+   potential_grain_growth_rate    =     0.0010 (g/grain/day)
+   max_grain_size                 =     0.0410 (g)
+   ------------------------------------------------
+
+
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   319mm in  3000mm total depth ( 11%).
+    Crop factor for bounding water use is set to   1.5 times eo.
+
+                 Crop Sowing Data
+    ------------------------------------------------
+    Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+    Day no   mm     m^2     mm   row   plant name
+    ------------------------------------------------
+       152   50.0  150.0  500.0   0.0   0.0 hartog
+    ------------------------------------------------
+
+2 June 1941(Day of year = 153), wheat2:
+      Germination
+10 June 1941(Day of year = 161), wheat2:
+      Emergence
+           biomass =           0.69 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.85 (%)     extractable sw =   34.33 (mm)
+11 June 1941(Day of year = 162), wheat2:
+      EndOfJuvenile
+           biomass =           0.89 (g/m^2)   lai          =    0.03 (m^2/m^2)
+           stover N conc =     5.55 (%)     extractable sw =   32.42 (mm)
+11 August 1941(Day of year = 223), wheat2:
+      FloralInitiation
+           biomass =          94.39 (g/m^2)   lai          =    0.74 (m^2/m^2)
+           stover N conc =     1.31 (%)     extractable sw =  199.55 (mm)
+16 September 1941(Day of year = 259), wheat2:
+      Flowering
+           biomass =         211.80 (g/m^2)   lai          =    0.27 (m^2/m^2)
+           stover N conc =     0.68 (%)     extractable sw =  233.09 (mm)
+23 September 1941(Day of year = 266), wheat2:
+      StartGrainFill
+           biomass =         232.91 (g/m^2)   lai          =    0.20 (m^2/m^2)
+           stover N conc =     0.45 (%)     extractable sw =  226.52 (mm)
+20 October 1941(Day of year = 293), wheat2:
+      EndGrainFill
+           biomass =         246.43 (g/m^2)   lai          =    0.09 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  220.60 (mm)
+21 October 1941(Day of year = 294), wheat2:
+      Maturity
+           biomass =         246.43 (g/m^2)   lai          =    0.08 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  220.27 (mm)
+22 October 1941(Day of year = 295), wheat2:
+      HarvestRipe
+           biomass =         246.43 (g/m^2)   lai          =    0.00 (m^2/m^2)
+           stover N conc =     0.36 (%)     extractable sw =  219.93 (mm)
+22 October 1941(Day of year=295), Harvesting rule: 
+     Manager sending message :- wheat2 harvest
+
+ flowering day          =  259                           stover (kg/ha)         =     1682.5
+ maturity day           =  294                           grain yield (kg/ha)    =      781.8
+ grain % water content  =   12.5                         grain yield wet (kg/ha)=      977.3
+ grain wt (g)           =    0.023                       grains/m^2             =     3412.1
+ grains/plant           =   22.7                         maximum lai            =      0.825
+ total above ground biomass (kg/ha)    =     2464.3
+ live above ground biomass (kg/ha)     =     2464.3
+ green above ground biomass (kg/ha)    =     2050.3
+ senesced above ground biomass (kg/ha) =      414.0
+ number of leaves       =     33.9
+ DM Root:Shoot ratio    =     0.21                       Harvest Index          =       0.32
+ Stover C:N ratio       =   110.15                       Root C:N ratio         =      44.41
+ grain N percent        =     1.53                       total N content (kg/ha)=      18.09
+ grain N uptake (kg/ha) =    11.98                       senesced N content (kg/ha)=    2.07
+ green N content (kg/ha)=     4.04
+
+ Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+                         SowingToGermination        0.000        0.000        0.000        0.000
+                      GerminationToEmergence        0.000        0.000        0.000        0.000
+                    EmergenceToEndOfJuvenile        0.000        0.000        0.000        0.000
+             EndOfJuvenileToFloralInitiation        0.000        0.000        0.450        0.450
+                 FloralInitiationToFlowering        0.000        0.000        0.448        0.448
+                   FloweringToStartGrainFill        0.000        0.000        0.155        0.155
+                StartGrainFillToEndGrainFill        0.000        0.000        0.788        0.788
+                      EndGrainFillToMaturity        0.000        0.000        0.826        0.826
+                       MaturityToHarvestRipe        0.000        0.000        0.817        0.817
+
+
+Crop harvested.
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                1682.5                     0.0
+                      N  (kg/ha) =                   6.11                    0.00
+
+    Organic matter removed from system:-      From Tops               From Roots
+                      DM (kg/ha) =                 781.8                     0.0
+                      N  (kg/ha) =                  11.98                    0.00
+
+     Manager sending message :- wheat2 endcrop
+    Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                      DM (kg/ha) =                   0.0                    51.9
+                      N  (kg/ha) =                   0.00                    0.47
+31 December 1941(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 

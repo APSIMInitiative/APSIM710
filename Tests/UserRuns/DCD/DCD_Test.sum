@@ -468,31 +468,943 @@ Paddock:
 ------- Apply_DCD Initialisation ----------------------------------------------
 
 ------- DCD_action Initialisation ---------------------------------------------
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Type 'SWIM2ui' is not defined.. Line number: 202
-     Component name: DCD_action
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
 
 ------- CentrePivotIrrigation Initialisation ----------------------------------
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Type 'SWIM2ui' is not defined.. Line number: 61
+------- Irrigation Manager Initialisation ------------------------------------
 
-     Type 'SWIM2ui' is not defined.. Line number: 94
+   Irrigation season between 01 October and 30 April
+   Soil Layer to calculate irrigation is  500 mm
+   With plant available water of 92.01395 mm
+   Soil is considered Deep
 
-     Type 'Irrigation' is not defined.. Line number: 154
-     Component name: CentrePivotIrrigation
+
+------- ForAnalysis Initialisation --------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        nh4()
+        no3()
+        dcd()
+
+     Output file = DCD_Test Pdk_noDCD ForAnalysis.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 1 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 10 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 20 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 40 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 50 (mm), type = urea_n
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Cut or graze AgPasture Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     start_sim_date = today
+     days_after_cut = 21 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     
+     SECTION:- start_of_day
+     if today >= date('1/01/1900') and today <= date('1/12/2010') then
+        preharvest_dm = agpasture.abovegroundwt
+        preharvest_n = agpasture.abovegroundn
+        harvested_dm =0
+        harvested_n = 0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0
+        n_conc_total = 0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 21 then
+              do_cut = 'true'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2500 then
+              do_cut = 'true'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1250 then
+           agpasture graze type = 'residue', amount = 1250
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0
+              n_on_urine = return_n - n_on_dung
+              'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+        days_after_cut = 0
+        do_cut = 'false'
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : start_sim_date = 2429812.00000
+     Manager creating a new local real variable : days_after_cut = 20.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2ui Initialisation ------------------------------------------------
+     Initialising
      
      
-sendMessageToEngine() failed External component has thrown an exception.
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  0.88  0.593  0.229  0.417  0.593
+            10.0  0.88  0.593  0.229  0.417  0.593
+            10.0  0.88  0.593  0.229  0.417  0.593
+            15.0  0.88  0.593  0.229  0.417  0.593
+            20.0  0.88  0.593  0.229  0.417  0.593
+            20.0  0.88  0.593  0.229  0.417  0.593
+            20.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.86  0.600  0.195  0.381  0.601
+            30.0  0.85  0.605  0.172  0.357  0.606
+            30.0  0.85  0.605  0.172  0.357  0.606
+            40.0  0.85  0.605  0.172  0.357  0.606
+            50.0  0.85  0.605  0.172  0.357  0.606
+            50.0  0.91  0.577  0.164  0.347  0.578
+            50.0  1.01  0.535  0.154  0.332  0.535
+            50.0  1.03  0.521  0.145  0.322  0.521
+            50.0  1.05  0.500  0.133  0.308  0.500
+            50.0  1.05  0.500  0.133  0.308  0.500
+            50.0  1.05  0.496  0.101  0.247  0.498
+            75.0  1.05  0.493  0.079  0.207  0.497
+            75.0  1.05  0.493  0.079  0.207  0.497
+           100.0  1.05  0.493  0.079  0.207  0.497
+           100.0  0.88  0.452  0.046  0.145  0.455
+           100.0  0.84  0.442  0.037  0.130  0.444
+           100.0  0.72  0.380  0.036  0.115  0.384
+           100.0  0.69  0.364  0.036  0.112  0.369
+           100.0  0.69  0.364  0.036  0.112  0.369
+            60.0  0.69  0.364  0.036  0.112  0.369
+            40.0  0.69  0.364  0.036  0.112  0.369
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  H1_HortC      0.5926190     -0.001      9.902
+            10.0  H1_HortC      0.5926190     -0.001      9.902
+            20.0  H1_HortC      0.5926190     -0.001      9.902
+            30.0  H1_HortC      0.5926190     -0.001      9.902
+            50.0  H1_HortC      0.5926190     -0.001      9.902
+            70.0  H1_HortC      0.5926190     -0.001      9.902
+            90.0  H1_HortC      0.5926190     -0.001      9.902
+           110.0  H1_HortC      0.5926190     -0.001      9.902
+           140.0  H1_HortC      0.5926190     -0.001      9.902
+           160.0  H1_HortC      0.5926190     -0.001      9.902
+           190.0  -             0.5997539     -0.001     39.645
+           210.0  H2_HortC      0.6045104     -0.001     99.961
+           250.0  H2_HortC      0.6045104     -0.001     99.961
+           270.0  H2_HortC      0.6045104     -0.001     99.961
+           330.0  H2_HortC      0.6045104     -0.001     99.961
+           370.0  -             0.5765121     -0.001    117.923
+           430.0  H3_HortC      0.5345146     -0.001    151.095
+           470.0  -             0.5205946     -0.001    183.398
+           530.0  H4_HortC      0.4997146     -0.001    245.252
+           570.0  H4_HortC      0.4997146     -0.001    245.252
+           630.0  -             0.4956084     -0.001    404.432
+           670.0  H5_HortC      0.4928709     -0.001    564.504
+           780.0  H5_HortC      0.4928709     -0.001    564.504
+           820.0  H5_HortC      0.4928709     -0.001    564.504
+           980.0  -             0.4518851     -0.001   1064.821
+          1020.0  H6_HortC      0.4416386     -0.001   1247.898
+          1180.0  -             0.3798784     -0.001   1245.555
+          1220.0  H7_HortC      0.3644384     -0.001   1244.970
+          1380.0  H7_HortC      0.3644384     -0.001   1244.970
+          1420.0  H7_HortC      0.3644384     -0.001   1244.970
+          1500.0  H7_HortC      0.3644384     -0.001   1244.970
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.22947    0.22947    0.22947    0.22947    0.22947    0.22947    0.22947
+            -1.00 |    0.31517    0.31517    0.31517    0.31517    0.31517    0.31517    0.31517
+            -0.10 |    0.41670    0.41670    0.41670    0.41670    0.41670    0.41670    0.41670
+            -0.01 |    0.55496    0.55496    0.55496    0.55496    0.55496    0.55496    0.55496
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00001    0.00001    0.00001    0.00001    0.00001    0.00001    0.00001
+            -0.10 |    0.00138    0.00138    0.00138    0.00138    0.00138    0.00138    0.00138
+            -0.01 |    0.26085    0.26085    0.26085    0.26085    0.26085    0.26085    0.26085
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SoilTemperature2 Initialisation ---------------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass           20.0     8.0     0.5     0.0   0.008     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilNui Initialisation ------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.68    0.00    0.00    0.00
+             2     6.00  1.68    0.00    0.00    0.00
+             3     6.00  1.67    0.00    0.00    0.00
+             4     6.00  1.67    0.00    0.00    0.00
+             5     6.00  1.66    0.00    0.00    0.00
+             6     6.00  1.66    0.00    0.00    0.00
+             7     6.00  1.66    0.00    0.00    0.00
+             8     6.00  1.65    0.00    0.00    0.00
+             9     6.00  1.65    0.00    0.00    0.00
+            10     6.00  1.65    0.00    0.00    0.00
+            11     6.00  1.62    0.00    0.00    0.00
+            12     6.00  1.53    0.00    0.00    0.00
+            13     6.00  1.40    0.00    0.00    0.00
+            14     6.00  1.26    0.00    0.00    0.00
+            15     6.00  1.11    0.00    0.00    0.00
+            16     6.00  0.97    0.00    0.00    0.00
+            17     6.00  0.86    0.00    0.00    0.00
+            18     6.00  0.76    0.00    0.00    0.00
+            19     6.00  0.68    0.00    0.00    0.00
+            20     6.00  0.61    0.00    0.00    0.00
+            21     6.00  0.55    0.00    0.00    0.00
+            22     6.00  0.50    0.00    0.00    0.00
+            23     6.00  0.44    0.00    0.00    0.00
+            24     6.00  0.40    0.00    0.00    0.00
+            25     6.00  0.36    0.00    0.00    0.00
+            26     6.00  0.33    0.00    0.00    0.00
+            27     6.00  0.31    0.00    0.00    0.00
+            28     6.00  0.30    0.00    0.00    0.00
+            29     6.00  0.29    0.00    0.00    0.00
+            30     6.00  0.28    0.00    0.00    0.00
+            31     6.00  0.28    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals                0.00    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        684.4    52.6    54.8     6.8    26.6     0.9
+             2       1365.6   105.0   109.3    13.7    26.1     0.9
+             3       1363.2   104.9   109.1    13.6    25.6     0.9
+             4       2039.9   156.9   163.2    20.4    24.8     0.8
+             5       2713.3   208.7   217.1    27.1    23.9     0.8
+             6       2709.3   208.4   214.0    26.8    22.9     0.8
+             7       2709.5   208.4   208.6    26.1    22.0     0.7
+             8       3391.2   260.9   247.6    30.9    21.0     0.7
+             9       3408.5   262.2   221.5    27.7    19.9     0.7
+            10       3429.2   263.8   192.0    24.0    19.0     0.6
+            11       3344.9   257.3   150.5    18.8    18.0     0.6
+            12       3770.7   290.1   128.2    16.0    17.0     0.6
+            13       3480.4   267.7    87.0    10.9    16.0     0.5
+            14       4229.1   325.3    71.9     9.0    14.8     0.5
+            15       4687.6   360.6    46.9     5.9    13.4     0.4
+            16       4413.9   339.5    35.3     4.4    12.1     0.4
+            17       4289.3   329.9    34.3     4.3    10.9     0.4
+            18       3873.1   297.9    31.0     3.9     9.9     0.3
+            19       3548.1   272.9    28.4     3.5     9.0     0.3
+            20       3192.2   245.6    25.5     3.2     8.1     0.3
+            21       2899.2   223.0    23.2     2.9     7.3     0.2
+            22       3893.5   299.5    31.1     3.9     6.3     0.2
+            23       3469.6   266.9    27.8     3.5     5.4     0.2
+            24       4134.2   318.0    33.1     4.1     4.4     0.1
+            25       3124.5   240.3    25.0     3.1     3.6     0.1
+            26       2746.7   211.3    22.0     2.7     3.0     0.1
+            27       2240.3   172.3    17.9     2.2     2.4     0.1
+            28       2061.6   158.6    16.5     2.1     2.0     0.1
+            29       2006.4   154.3    16.1     2.0     1.6     0.1
+            30       1179.0    90.7     9.4     1.2     1.5     0.0
+            31        780.5    60.0     6.2     0.8     1.3     0.0
+          ---------------------------------------------------------
+           Totals   91178.8  7013.8  2604.4   325.6   400.0    13.3
+          ---------------------------------------------------------
+
+------- DCD Initialisation ----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- AgPasture Initialisation ----------------------------------------------
+
+------- Apply_DCD Initialisation ----------------------------------------------
+
+------- DCD_action Initialisation ---------------------------------------------
+
+------- CentrePivotIrrigation Initialisation ----------------------------------
+------- Irrigation Manager Initialisation ------------------------------------
+
+   Irrigation season between 01 October and 30 April
+   Soil Layer to calculate irrigation is  500 mm
+   With plant available water of 92.01395 mm
+   Soil is considered Deep
+
+
+------- ForAnalysis Initialisation --------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        nh4()
+        no3()
+        dcd()
+
+     Output file = DCD_Test Pdk_earlyDCD ForAnalysis.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 1 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 10 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 20 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 40 (mm), type = urea_n
+          02-Jul  Prepare      fertiliser apply amount = 7, depth = 50 (mm), type = urea_n
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Cut or graze AgPasture Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     start_sim_date = today
+     days_after_cut = 21 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     
+     SECTION:- start_of_day
+     if today >= date('1/01/1900') and today <= date('1/12/2010') then
+        preharvest_dm = agpasture.abovegroundwt
+        preharvest_n = agpasture.abovegroundn
+        harvested_dm =0
+        harvested_n = 0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0
+        n_conc_total = 0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 21 then
+              do_cut = 'true'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2500 then
+              do_cut = 'true'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1250 then
+           agpasture graze type = 'residue', amount = 1250
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surface organic matter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0
+              n_on_urine = return_n - n_on_dung
+              'surface organic matter' add_surfaceom name = dung, type = manure, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 20 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+        days_after_cut = 0
+        do_cut = 'false'
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : start_sim_date = 2429812.00000
+     Manager creating a new local real variable : days_after_cut = 20.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- SWIM2ui Initialisation ------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  0.88  0.593  0.229  0.417  0.593
+            10.0  0.88  0.593  0.229  0.417  0.593
+            10.0  0.88  0.593  0.229  0.417  0.593
+            15.0  0.88  0.593  0.229  0.417  0.593
+            20.0  0.88  0.593  0.229  0.417  0.593
+            20.0  0.88  0.593  0.229  0.417  0.593
+            20.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.88  0.593  0.229  0.417  0.593
+            25.0  0.86  0.600  0.195  0.381  0.601
+            30.0  0.85  0.605  0.172  0.357  0.606
+            30.0  0.85  0.605  0.172  0.357  0.606
+            40.0  0.85  0.605  0.172  0.357  0.606
+            50.0  0.85  0.605  0.172  0.357  0.606
+            50.0  0.91  0.577  0.164  0.347  0.578
+            50.0  1.01  0.535  0.154  0.332  0.535
+            50.0  1.03  0.521  0.145  0.322  0.521
+            50.0  1.05  0.500  0.133  0.308  0.500
+            50.0  1.05  0.500  0.133  0.308  0.500
+            50.0  1.05  0.496  0.101  0.247  0.498
+            75.0  1.05  0.493  0.079  0.207  0.497
+            75.0  1.05  0.493  0.079  0.207  0.497
+           100.0  1.05  0.493  0.079  0.207  0.497
+           100.0  0.88  0.452  0.046  0.145  0.455
+           100.0  0.84  0.442  0.037  0.130  0.444
+           100.0  0.72  0.380  0.036  0.115  0.384
+           100.0  0.69  0.364  0.036  0.112  0.369
+           100.0  0.69  0.364  0.036  0.112  0.369
+            60.0  0.69  0.364  0.036  0.112  0.369
+            40.0  0.69  0.364  0.036  0.112  0.369
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  H1_HortC      0.5926190     -0.001      9.902
+            10.0  H1_HortC      0.5926190     -0.001      9.902
+            20.0  H1_HortC      0.5926190     -0.001      9.902
+            30.0  H1_HortC      0.5926190     -0.001      9.902
+            50.0  H1_HortC      0.5926190     -0.001      9.902
+            70.0  H1_HortC      0.5926190     -0.001      9.902
+            90.0  H1_HortC      0.5926190     -0.001      9.902
+           110.0  H1_HortC      0.5926190     -0.001      9.902
+           140.0  H1_HortC      0.5926190     -0.001      9.902
+           160.0  H1_HortC      0.5926190     -0.001      9.902
+           190.0  -             0.5997539     -0.001     39.645
+           210.0  H2_HortC      0.6045104     -0.001     99.961
+           250.0  H2_HortC      0.6045104     -0.001     99.961
+           270.0  H2_HortC      0.6045104     -0.001     99.961
+           330.0  H2_HortC      0.6045104     -0.001     99.961
+           370.0  -             0.5765121     -0.001    117.923
+           430.0  H3_HortC      0.5345146     -0.001    151.095
+           470.0  -             0.5205946     -0.001    183.398
+           530.0  H4_HortC      0.4997146     -0.001    245.252
+           570.0  H4_HortC      0.4997146     -0.001    245.252
+           630.0  -             0.4956084     -0.001    404.432
+           670.0  H5_HortC      0.4928709     -0.001    564.504
+           780.0  H5_HortC      0.4928709     -0.001    564.504
+           820.0  H5_HortC      0.4928709     -0.001    564.504
+           980.0  -             0.4518851     -0.001   1064.821
+          1020.0  H6_HortC      0.4416386     -0.001   1247.898
+          1180.0  -             0.3798784     -0.001   1245.555
+          1220.0  H7_HortC      0.3644384     -0.001   1244.970
+          1380.0  H7_HortC      0.3644384     -0.001   1244.970
+          1420.0  H7_HortC      0.3644384     -0.001   1244.970
+          1500.0  H7_HortC      0.3644384     -0.001   1244.970
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.22947    0.22947    0.22947    0.22947    0.22947    0.22947    0.22947
+            -1.00 |    0.31517    0.31517    0.31517    0.31517    0.31517    0.31517    0.31517
+            -0.10 |    0.41670    0.41670    0.41670    0.41670    0.41670    0.41670    0.41670
+            -0.01 |    0.55496    0.55496    0.55496    0.55496    0.55496    0.55496    0.55496
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00001    0.00001    0.00001    0.00001    0.00001    0.00001    0.00001
+            -0.10 |    0.00138    0.00138    0.00138    0.00138    0.00138    0.00138    0.00138
+            -0.01 |    0.26085    0.26085    0.26085    0.26085    0.26085    0.26085    0.26085
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        0.050
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SoilTemperature2 Initialisation ---------------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass           20.0     8.0     0.5     0.0   0.008     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- SoilNui Initialisation ------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.68    0.00    0.00    0.00
+             2     6.00  1.68    0.00    0.00    0.00
+             3     6.00  1.67    0.00    0.00    0.00
+             4     6.00  1.67    0.00    0.00    0.00
+             5     6.00  1.66    0.00    0.00    0.00
+             6     6.00  1.66    0.00    0.00    0.00
+             7     6.00  1.66    0.00    0.00    0.00
+             8     6.00  1.65    0.00    0.00    0.00
+             9     6.00  1.65    0.00    0.00    0.00
+            10     6.00  1.65    0.00    0.00    0.00
+            11     6.00  1.62    0.00    0.00    0.00
+            12     6.00  1.53    0.00    0.00    0.00
+            13     6.00  1.40    0.00    0.00    0.00
+            14     6.00  1.26    0.00    0.00    0.00
+            15     6.00  1.11    0.00    0.00    0.00
+            16     6.00  0.97    0.00    0.00    0.00
+            17     6.00  0.86    0.00    0.00    0.00
+            18     6.00  0.76    0.00    0.00    0.00
+            19     6.00  0.68    0.00    0.00    0.00
+            20     6.00  0.61    0.00    0.00    0.00
+            21     6.00  0.55    0.00    0.00    0.00
+            22     6.00  0.50    0.00    0.00    0.00
+            23     6.00  0.44    0.00    0.00    0.00
+            24     6.00  0.40    0.00    0.00    0.00
+            25     6.00  0.36    0.00    0.00    0.00
+            26     6.00  0.33    0.00    0.00    0.00
+            27     6.00  0.31    0.00    0.00    0.00
+            28     6.00  0.30    0.00    0.00    0.00
+            29     6.00  0.29    0.00    0.00    0.00
+            30     6.00  0.28    0.00    0.00    0.00
+            31     6.00  0.28    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals                0.00    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1        684.4    52.6    54.8     6.8    26.6     0.9
+             2       1365.6   105.0   109.3    13.7    26.1     0.9
+             3       1363.2   104.9   109.1    13.6    25.6     0.9
+             4       2039.9   156.9   163.2    20.4    24.8     0.8
+             5       2713.3   208.7   217.1    27.1    23.9     0.8
+             6       2709.3   208.4   214.0    26.8    22.9     0.8
+             7       2709.5   208.4   208.6    26.1    22.0     0.7
+             8       3391.2   260.9   247.6    30.9    21.0     0.7
+             9       3408.5   262.2   221.5    27.7    19.9     0.7
+            10       3429.2   263.8   192.0    24.0    19.0     0.6
+            11       3344.9   257.3   150.5    18.8    18.0     0.6
+            12       3770.7   290.1   128.2    16.0    17.0     0.6
+            13       3480.4   267.7    87.0    10.9    16.0     0.5
+            14       4229.1   325.3    71.9     9.0    14.8     0.5
+            15       4687.6   360.6    46.9     5.9    13.4     0.4
+            16       4413.9   339.5    35.3     4.4    12.1     0.4
+            17       4289.3   329.9    34.3     4.3    10.9     0.4
+            18       3873.1   297.9    31.0     3.9     9.9     0.3
+            19       3548.1   272.9    28.4     3.5     9.0     0.3
+            20       3192.2   245.6    25.5     3.2     8.1     0.3
+            21       2899.2   223.0    23.2     2.9     7.3     0.2
+            22       3893.5   299.5    31.1     3.9     6.3     0.2
+            23       3469.6   266.9    27.8     3.5     5.4     0.2
+            24       4134.2   318.0    33.1     4.1     4.4     0.1
+            25       3124.5   240.3    25.0     3.1     3.6     0.1
+            26       2746.7   211.3    22.0     2.7     3.0     0.1
+            27       2240.3   172.3    17.9     2.2     2.4     0.1
+            28       2061.6   158.6    16.5     2.1     2.0     0.1
+            29       2006.4   154.3    16.1     2.0     1.6     0.1
+            30       1179.0    90.7     9.4     1.2     1.5     0.0
+            31        780.5    60.0     6.2     0.8     1.3     0.0
+          ---------------------------------------------------------
+           Totals   91178.8  7013.8  2604.4   325.6   400.0    13.3
+          ---------------------------------------------------------
+
+------- DCD Initialisation ----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- AgPasture Initialisation ----------------------------------------------
+
+------- Apply_DCD Initialisation ----------------------------------------------
+
+------- DCD_action Initialisation ---------------------------------------------
+
+------- CentrePivotIrrigation Initialisation ----------------------------------
+------- Irrigation Manager Initialisation ------------------------------------
+
+   Irrigation season between 01 October and 30 April
+   Soil Layer to calculate irrigation is  500 mm
+   With plant available water of 92.01395 mm
+   Soil is considered Deep
+
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : preharvest_dm = 2050.00000
+     Manager creating a new local real variable : preharvest_n = 68.10000
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+Agpasture.ongraze
+     Manager creating a new local real variable : n_conc_removed = 3.40658
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
+     Manager creating a new local real variable : preharvest_dm = 2050.00000
+     Manager creating a new local real variable : preharvest_n = 68.10000
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+Agpasture.ongraze
+     Manager creating a new local real variable : n_conc_removed = 3.40658
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
+     Manager creating a new local real variable : preharvest_dm = 2050.00000
+     Manager creating a new local real variable : preharvest_n = 68.10000
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+Agpasture.ongraze
+     Manager creating a new local real variable : n_conc_removed = 3.40658
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
+2 July 1940(Day of year=184), operations: 
+      Sending apply message to fertiliser
+2 July 1940(Day of year=184), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   20.00 (layer   3)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   40.00 (layer   4)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   5)
+2 July 1940(Day of year=184), operations: 
+      Sending apply message to fertiliser
+2 July 1940(Day of year=184), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   20.00 (layer   3)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   40.00 (layer   4)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   5)
+2 July 1940(Day of year=184), operations: 
+      Sending apply message to fertiliser
+2 July 1940(Day of year=184), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   20.00 (layer   3)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   40.00 (layer   4)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   5)
+02 July 1940 (Day of year=184), Apply_DCD:
+     DCD being applied. 10kg/ha added at depth 1mm
+05 July 1940 (Day of year=187), Apply_DCD:
+     DCD being applied. 10kg/ha added at depth 1mm
+05 July 1940 (Day of year=187), Apply_DCD:
+     DCD being applied. 0kg/ha added at depth 1mm
+22 July 1940(Day of year=204), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+Agpasture.ongraze
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 19.71844 (kg/ha), n = 0.74502 (kg/ha), cpr = 0
+22 July 1940(Day of year=204), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+Agpasture.ongraze
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 18.88196 (kg/ha), n = 0.70670 (kg/ha), cpr = 0
+22 July 1940(Day of year=204), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+Agpasture.ongraze
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 19.89453 (kg/ha), n = 0.75647 (kg/ha), cpr = 0
+31 July 1940(Day of year=213), clock: 
+     Simulation is terminating due to end criteria being met.
 

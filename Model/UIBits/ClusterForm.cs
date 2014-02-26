@@ -30,9 +30,9 @@ namespace UIBits
 
             sfxBox.Text = Configuration.Instance.RawSetting("ClusterSimulationSFX");
             if (sfxBox.Text == "")
-                sfxBox.Text = "http://bob.apsim.info/Files/Apsim" +
+                sfxBox.Text = "http://apsrunet.apsim.info/apsim/Apsim" +
                     Configuration.Instance.ExeVersion() + "-" +
-                    Configuration.Instance.ExeBuildNumber() + ".binaries.$((OpSys)).$((Arch)).exe";
+                    Configuration.Instance.ExeBuildNumber() + ".binaries.WINDOWS.exe";
 
             string s = Configuration.Instance.Setting("ClusterOutputFolder");
             if (s == "")

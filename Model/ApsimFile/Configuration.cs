@@ -109,6 +109,11 @@ namespace ApsimFile
                 if (ausfarmDir != "") result = result.Replace("%ausfarm%", ausfarmDir);
 
                 result = result.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+                if (Configuration.getArchitecture() == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
+                    result = result.Replace("%dllext%", "so");
+                else
+                    result = result.Replace("%dllext%", "dll");
+
             }
             return result;
         }

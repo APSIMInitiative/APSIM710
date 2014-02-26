@@ -288,53 +288,163 @@ Paddock:
      
 
 ------- MediumSedimentarySoil Nitrogen Initialisation -------------------------
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Could not load type 'ModelFramework.Clock' from assembly 'DotNetProxies, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
-     Component name: MediumSedimentarySoil Nitrogen
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
+
+        - Reading/checking parameters
+           - Using Generic medium sedimentary soil soil mineralisation specification
+           - Soil temperature calculated internally
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  0.00    5.00    5.00    0.00
+             2     6.50  0.00    5.00    5.00    0.00
+             3     6.50  0.00    5.00    5.00    0.00
+             4     6.50  0.00    5.00    5.00    0.00
+             5     6.50  0.00    5.00    5.00    0.00
+             6     6.50  0.00    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1          0.0     0.0     0.0     0.0     0.0     0.0
+             2          0.0     0.0     0.0     0.0     0.0     0.0
+             3          0.0     0.0     0.0     0.0     0.0     0.0
+             4          0.0     0.0     0.0     0.0     0.0     0.0
+             5          0.0     0.0     0.0     0.0     0.0     0.0
+             6          0.0     0.0     0.0     0.0     0.0     0.0
+          ---------------------------------------------------------
+           Totals       0.0     0.0     0.0     0.0     0.0     0.0
+          ---------------------------------------------------------
+
 
 ------- AgPasture Initialisation ----------------------------------------------
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Paddock.MediumSedimentarySoil Nitrogen The property no3 is not a gettable property. (Exception has been thrown by the target of an invocation.)
-      Error in readFromPropertyList(). Property: 18
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Paddock.MediumSedimentarySoil Nitrogen The property nh4 is not a gettable property. (Exception has been thrown by the target of an invocation.)
-      Error in readFromPropertyList(). Property: 16
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Paddock.MediumSedimentarySoil Nitrogen The property no3 is not a gettable property. (Exception has been thrown by the target of an invocation.)
-      Error in readFromPropertyList(). Property: 18
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Paddock.MediumSedimentarySoil Nitrogen The property nh4 is not a gettable property. (Exception has been thrown by the target of an invocation.)
-      Error in readFromPropertyList(). Property: 16
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 64.72500
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
+8/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -5.56136800500262E-09 will be reset to minimum value
+8/01/2000 - Attempt to change nh4[4] in Patch[base] to a value below the lower limit
+  The value -3.70493749568546E-09 will be reset to minimum value
+8/01/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -1.53979191619413E-08 will be reset to minimum value
+8/01/2000 - Attempt to change no3[3] in Patch[base] to a value below the lower limit
+  The value -1.27247737902181E-08 will be reset to minimum value
+8/01/2000 - Attempt to change no3[4] in Patch[base] to a value below the lower limit
+  The value -2.90708557226793E-08 will be reset to minimum value
+20 January 2000(Day of year=20), OperationsSchedule: 
+      Sending apply message to fertiliser
+20 January 2000(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+22 January 2000(Day of year=22), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 30.72790 (kg/ha), n = 1.01904 (kg/ha), cpr = 0
+29/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -2.44821360406711E-09 will be reset to minimum value
+29/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.93276367133066E-09 will be reset to minimum value
+30/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.41364484007589E-09 will be reset to minimum value
+31/01/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -3.16706390279808E-09 will be reset to minimum value
+31/01/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -2.13690001804601E-09 will be reset to minimum value
+2/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.36532178288229E-08 will be reset to minimum value
+2/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.91465999999085E-09 will be reset to minimum value
+3/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.29787433314988E-09 will be reset to minimum value
+6/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.04657182867329E-09 will be reset to minimum value
+7/02/2000 - Attempt to change no3[1] in Patch[base] to a value below the lower limit
+  The value -1.11158446336468E-09 will be reset to minimum value
+8/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -6.92000090563027E-09 will be reset to minimum value
+9/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.02191693890563E-09 will be reset to minimum value
+10/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -3.66138758201018E-09 will be reset to minimum value
+12 February 2000(Day of year=43), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 27.53467 (kg/ha), n = 0.88813 (kg/ha), cpr = 0
+12/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.82597419076769E-09 will be reset to minimum value
+14/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.80493237023072E-09 will be reset to minimum value
+14/02/2000 - Attempt to change nh4[2] in Patch[base] to a value below the lower limit
+  The value -2.10694044155968E-09 will be reset to minimum value
+16/02/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.47924958393553E-09 will be reset to minimum value
+4 March 2000(Day of year=64), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.73652 (kg/ha), n = 0.42342 (kg/ha), cpr = 0
+25 March 2000(Day of year=85), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 10.39849 (kg/ha), n = 0.26221 (kg/ha), cpr = 0
+30 March 2000(Day of year=90), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 March 2000(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 April 2000(Day of year=106), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 11.34143 (kg/ha), n = 0.35384 (kg/ha), cpr = 0
+19/04/2000 - Attempt to change no3[2] in Patch[base] to a value below the lower limit
+  The value -6.92787299749753E-09 will be reset to minimum value
+21/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -5.2007476103455E-09 will be reset to minimum value
+24/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -2.39664459111832E-09 will be reset to minimum value
+28/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.75389226059197E-09 will be reset to minimum value
+30/04/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.68513127757342E-09 will be reset to minimum value
+1/05/2000 - Attempt to change nh4[1] in Patch[base] to a value below the lower limit
+  The value -1.33980213035123E-09 will be reset to minimum value
+6 May 2000(Day of year=127), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 9.13416 (kg/ha), n = 0.29167 (kg/ha), cpr = 0
+27 May 2000(Day of year=148), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 6.29001 (kg/ha), n = 0.18688 (kg/ha), cpr = 0
+17 June 2000(Day of year=169), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 4.87037 (kg/ha), n = 0.13883 (kg/ha), cpr = 0
+8 July 2000(Day of year=190), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 3.42958 (kg/ha), n = 0.09736 (kg/ha), cpr = 0
+29 July 2000(Day of year=211), Cut or graze AgPasture: 
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
+Agpasture.ongraze
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 2.61847 (kg/ha), n = 0.07585 (kg/ha), cpr = 0
+31 July 2000(Day of year=213), clock: 
+     Simulation is terminating due to end criteria being met.
 

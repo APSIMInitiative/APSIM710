@@ -148,15 +148,2208 @@ Paddock:
      
 
 ------- DDRules Initialisation ------------------------------------------------
+Dubug Level = -1
+Predefined = paddock01
+i = 0
+Area = 5
+   Paddock ModelFramework.Paddock
+   Cover 0
+Done.
+Dubug Level = -1
+Predefined = paddock02
+i = 1
+Area = 5
+   Paddock ModelFramework.Paddock
+   Cover 0
+Done.
+
+---------- DDRules Initialisation ----------
+     General Farm Description
+             Effective Area          10.0 ha
+             Total Paddocks          2
+     Stock Management
+             Stocking Rate           0 cows/ha
+             Calving Date            
+             Paddock Count           2
+             Winter Off Dry Stock    True
+     Grazing Management
+             Residules               1600 kgDM/ha
+             Interval                30 days
+     Supplementary Feeding
+             ME Content              12.5 ME/kgDM
+             N Content               1.8%
+             Wastage                 0.0%
+     Conservation
+             Start Date              01-Jan
+             Finish Date             01-Jan
+             Trigger Residule        0 kgDM/ha
+             Cutting Residule        1500 kgDM/ha
+             Wastage at cutting      1.0%
+             Silage Stored on Farm   True
+             ME Content              0.0 ME/kgDM
+             N Content               3.5%
+             Wastage (at feeding)    0.2%
+     Debug Switches
+             Debug Level   0
+             Break Feeding 0
+             Avg length    7
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        HerbageGrowthWt
+        SpeciesLiveWt
+        LAI_total
+        LeafLiveWt
+        leafgreenwt
+        surfaceom_wt
+        surfaceom_n
+        surfaceom_c
+        AboveGroundWt
+        AboveGroundLiveWt
+        AboveGroundDeadWt
+        GLFwater
+        cover_green
+        AboveGroundNPct
+        fertiliser
+        dlt_nh4
+        surfaceom_nh4
+        nh4
+
+     Output file = DefaultPlusGraze1 paddock01.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_M  Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
+                      APSIM Warning Error
                       -------------------
-     Could not load type 'ModelFramework.Clock' from assembly 'DotNetProxies, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
-     Component name: DDRules
-     
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock01.Canterbury_M  Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-sendMessageToEngine() failed External component has thrown an exception.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock01.Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
+          ---------------------------------------------------------
+               Totals     166.90     152.95     152.95      98.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.37   71.05    4.21    0.00
+             2     6.00  0.49    4.57    0.91    0.00
+             3     6.00  0.23    4.95    0.99    0.00
+             4     6.00  0.20    1.17    0.23    0.00
+             5     6.00  0.20    1.37    0.27    0.00
+          ------------------------------------------------
+           Totals               83.11    6.62    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
+          ---------------------------------------------------------
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- ryegrass_clover Initialisation ----------------------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        HerbageGrowthWt
+        SpeciesLiveWt
+        LAI_total
+        LeafLiveWt
+        leafgreenwt
+        surfaceom_wt
+        surfaceom_n
+        surfaceom_c
+        AboveGroundWt
+        AboveGroundLiveWt
+        AboveGroundDeadWt
+        GLFwater
+        cover_green
+        AboveGroundNPct
+        fertiliser
+        dlt_nh4
+        surfaceom_nh4
+        nh4
+
+     Output file = DefaultPlusGraze1 paddock02.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_M  Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock02.Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock02.Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
+          ---------------------------------------------------------
+               Totals     166.90     152.95     152.95      98.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.37   71.05    4.21    0.00
+             2     6.00  0.49    4.57    0.91    0.00
+             3     6.00  0.23    4.95    0.99    0.00
+             4     6.00  0.20    1.17    0.23    0.00
+             5     6.00  0.20    1.37    0.27    0.00
+          ------------------------------------------------
+           Totals               83.11    6.62    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
+          ---------------------------------------------------------
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- ryegrass_clover Initialisation ----------------------------------------
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : totalnin = 0.00000
+     Manager creating a new local real variable : nintakebalance = 0.00000
+     Manager creating a new local real variable : totalnout = 0.00000
+     Manager creating a new local real variable : noutbalance = 0.00000
+     Manager creating a new local real variable : ntotalbalance = 0.00000
+CutToFeedWedge begin: Surplus = -390.250737933822
+CutToFeedWedge end: Surplus = -769.385737933822
+1 August 1989(Day of year=213), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 August 1989(Day of year=214), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 August 1989(Day of year=215), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 August 1989(Day of year=216), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 August 1989(Day of year=217), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 August 1989(Day of year=218), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 August 1989(Day of year=219), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 August 1989(Day of year=220), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 August 1989(Day of year=221), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 August 1989(Day of year=222), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 August 1989(Day of year=223), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 August 1989(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.86 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 August 1989(Day of year=225), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.47 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 August 1989(Day of year=226), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 August 1989(Day of year=227), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 August 1989(Day of year=227), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 August 1989(Day of year=228), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 August 1989(Day of year=229), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.07 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 August 1989(Day of year=230), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.07 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 August 1989(Day of year=231), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 August 1989(Day of year=232), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.75 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 August 1989(Day of year=233), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 August 1989(Day of year=234), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.53 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 August 1989(Day of year=235), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.56 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 August 1989(Day of year=236), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.44 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 August 1989(Day of year=237), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.62 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 August 1989(Day of year=238), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.45 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 August 1989(Day of year=239), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.46 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 August 1989(Day of year=240), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 August 1989(Day of year=241), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.66 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 August 1989(Day of year=241), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.44 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 August 1989(Day of year=242), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.09 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 August 1989(Day of year=243), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.10 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 September 1989(Day of year=244), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.28 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 September 1989(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.28 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 September 1989(Day of year=246), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.12 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 September 1989(Day of year=247), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.84 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 September 1989(Day of year=248), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.68 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 September 1989(Day of year=249), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.78 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 September 1989(Day of year=250), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 September 1989(Day of year=251), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.11 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 September 1989(Day of year=252), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.57 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 September 1989(Day of year=253), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.84 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 September 1989(Day of year=254), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 September 1989(Day of year=255), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.19 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 September 1989(Day of year=255), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.14 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 September 1989(Day of year=256), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 September 1989(Day of year=257), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 September 1989(Day of year=258), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 September 1989(Day of year=259), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 September 1989(Day of year=260), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.36 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 September 1989(Day of year=261), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.36 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 September 1989(Day of year=262), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.36 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 September 1989(Day of year=263), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.37 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 September 1989(Day of year=264), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.37 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 September 1989(Day of year=265), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.37 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 September 1989(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.37 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 September 1989(Day of year=267), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.37 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 September 1989(Day of year=268), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.38 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 September 1989(Day of year=269), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.38 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 September 1989(Day of year=270), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.39 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 September 1989(Day of year=271), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.39 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 September 1989(Day of year=272), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.39 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 September 1989(Day of year=273), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.39 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 October 1989(Day of year=274), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 October 1989(Day of year=275), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 October 1989(Day of year=276), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 October 1989(Day of year=277), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 October 1989(Day of year=278), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 October 1989(Day of year=279), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 October 1989(Day of year=280), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 October 1989(Day of year=281), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 October 1989(Day of year=282), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.58 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 October 1989(Day of year=283), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.56 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 October 1989(Day of year=284), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.55 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 October 1989(Day of year=285), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.53 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 October 1989(Day of year=286), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.50 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 October 1989(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 October 1989(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 October 1989(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 October 1989(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 October 1989(Day of year=289), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.47 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 October 1989(Day of year=290), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.43 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 October 1989(Day of year=291), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 October 1989(Day of year=291), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 October 1989(Day of year=292), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 October 1989(Day of year=292), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 October 1989(Day of year=293), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 October 1989(Day of year=293), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 October 1989(Day of year=294), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 October 1989(Day of year=294), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 October 1989(Day of year=295), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 October 1989(Day of year=295), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+CutToFeedWedge begin: Surplus = 470.122194734772
+CutToFeedWedge end: Surplus = -280.536805265229
+23 October 1989(Day of year=296), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 October 1989(Day of year=297), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.33 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 October 1989(Day of year=298), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.31 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 October 1989(Day of year=299), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.28 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 October 1989(Day of year=300), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.26 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 October 1989(Day of year=301), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.23 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 October 1989(Day of year=302), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 October 1989(Day of year=303), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 October 1989(Day of year=304), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.19 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 November 1989(Day of year=305), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.08 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 November 1989(Day of year=306), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.08 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 November 1989(Day of year=307), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.07 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 November 1989(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 November 1989(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.04 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 November 1989(Day of year=310), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 November 1989(Day of year=311), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 November 1989(Day of year=312), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 November 1989(Day of year=313), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 November 1989(Day of year=314), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.98 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 November 1989(Day of year=315), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 November 1989(Day of year=316), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+CutToFeedWedge begin: Surplus = 427.168721896036
+CutToFeedWedge end: Surplus = -253.838778103965
+13 November 1989(Day of year=317), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.93 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 November 1989(Day of year=318), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.93 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 November 1989(Day of year=319), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.91 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 November 1989(Day of year=320), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 November 1989(Day of year=321), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 November 1989(Day of year=322), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 November 1989(Day of year=323), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 November 1989(Day of year=324), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 November 1989(Day of year=325), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 November 1989(Day of year=326), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 November 1989(Day of year=327), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 November 1989(Day of year=328), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 November 1989(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 November 1989(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.87 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 November 1989(Day of year=331), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 November 1989(Day of year=332), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.84 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 November 1989(Day of year=333), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.84 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 November 1989(Day of year=334), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.83 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 December 1989(Day of year=335), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.78 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 December 1989(Day of year=336), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.77 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 December 1989(Day of year=337), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.77 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 December 1989(Day of year=338), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 December 1989(Day of year=339), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.76 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 December 1989(Day of year=340), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.76 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 December 1989(Day of year=341), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.76 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 December 1989(Day of year=342), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.76 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 December 1989(Day of year=343), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.76 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 December 1989(Day of year=344), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.77 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+CutToFeedWedge begin: Surplus = 423.692268855745
+CutToFeedWedge end: Surplus = -213.512231144255
+11 December 1989(Day of year=345), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 December 1989(Day of year=346), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 December 1989(Day of year=347), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 December 1989(Day of year=348), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.78 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 December 1989(Day of year=349), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.78 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 December 1989(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 December 1989(Day of year=351), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 December 1989(Day of year=352), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 December 1989(Day of year=353), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 December 1989(Day of year=354), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 December 1989(Day of year=355), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 December 1989(Day of year=356), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 December 1989(Day of year=357), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 December 1989(Day of year=358), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.81 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 December 1989(Day of year=359), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.81 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 December 1989(Day of year=360), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 December 1989(Day of year=361), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 December 1989(Day of year=362), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 December 1989(Day of year=363), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.79 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 December 1989(Day of year=364), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 December 1989(Day of year=365), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.80 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 January 1990(Day of year=1), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.87 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 January 1990(Day of year=2), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.87 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 January 1990(Day of year=3), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 January 1990(Day of year=4), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 January 1990(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 January 1990(Day of year=6), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 January 1990(Day of year=7), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 January 1990(Day of year=8), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 January 1990(Day of year=9), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 January 1990(Day of year=10), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 January 1990(Day of year=11), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 January 1990(Day of year=11), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 January 1990(Day of year=12), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 January 1990(Day of year=12), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 January 1990(Day of year=13), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 January 1990(Day of year=13), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 January 1990(Day of year=14), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 January 1990(Day of year=14), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+CutToFeedWedge begin: Surplus = 657.029271076663
+CutToFeedWedge end: Surplus = -181.409228923337
+15 January 1990(Day of year=15), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.88 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 January 1990(Day of year=16), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 January 1990(Day of year=17), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 January 1990(Day of year=18), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 January 1990(Day of year=19), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.91 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 January 1990(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.91 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 January 1990(Day of year=21), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.91 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 January 1990(Day of year=22), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.92 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 January 1990(Day of year=23), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.92 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 January 1990(Day of year=24), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.93 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 January 1990(Day of year=25), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.93 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 January 1990(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 January 1990(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 January 1990(Day of year=28), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 January 1990(Day of year=29), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 January 1990(Day of year=30), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.93 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 January 1990(Day of year=31), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.93 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 February 1990(Day of year=32), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.98 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 February 1990(Day of year=33), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 February 1990(Day of year=34), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 February 1990(Day of year=35), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 February 1990(Day of year=36), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 February 1990(Day of year=37), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 February 1990(Day of year=38), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 February 1990(Day of year=39), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.03 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 February 1990(Day of year=40), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.04 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 February 1990(Day of year=41), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.04 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 February 1990(Day of year=42), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.04 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 February 1990(Day of year=43), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.05 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 February 1990(Day of year=44), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 February 1990(Day of year=45), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 February 1990(Day of year=46), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 February 1990(Day of year=46), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 February 1990(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 February 1990(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 February 1990(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 February 1990(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 February 1990(Day of year=49), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 February 1990(Day of year=49), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 February 1990(Day of year=50), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 February 1990(Day of year=51), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 February 1990(Day of year=52), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 February 1990(Day of year=52), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 February 1990(Day of year=53), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 February 1990(Day of year=53), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 February 1990(Day of year=54), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 February 1990(Day of year=54), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 February 1990(Day of year=55), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 February 1990(Day of year=55), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 February 1990(Day of year=56), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 February 1990(Day of year=56), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.73 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+CutToFeedWedge begin: Surplus = 553.712494080342
+CutToFeedWedge end: Surplus = -214.115505919658
+26 February 1990(Day of year=57), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 February 1990(Day of year=58), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 February 1990(Day of year=59), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.02 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 March 1990(Day of year=60), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 March 1990(Day of year=61), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 March 1990(Day of year=62), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 March 1990(Day of year=63), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 March 1990(Day of year=64), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 March 1990(Day of year=65), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 March 1990(Day of year=66), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 March 1990(Day of year=67), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 March 1990(Day of year=68), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 March 1990(Day of year=69), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 March 1990(Day of year=70), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.98 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 March 1990(Day of year=71), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.98 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 March 1990(Day of year=72), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 March 1990(Day of year=73), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 March 1990(Day of year=74), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 March 1990(Day of year=75), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 March 1990(Day of year=76), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 March 1990(Day of year=77), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 March 1990(Day of year=78), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.00 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 March 1990(Day of year=79), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 March 1990(Day of year=80), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.94 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 March 1990(Day of year=81), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.95 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 March 1990(Day of year=82), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 March 1990(Day of year=83), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 March 1990(Day of year=84), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.96 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 March 1990(Day of year=85), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.97 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 March 1990(Day of year=86), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.97 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 March 1990(Day of year=87), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.97 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 March 1990(Day of year=88), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 March 1990(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.68 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 March 1990(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.68 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 March 1990(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.68 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 March 1990(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.68 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 April 1990(Day of year=91), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 April 1990(Day of year=91), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 April 1990(Day of year=92), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 April 1990(Day of year=93), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 April 1990(Day of year=94), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 April 1990(Day of year=95), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 April 1990(Day of year=96), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 April 1990(Day of year=97), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 April 1990(Day of year=98), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 April 1990(Day of year=99), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 April 1990(Day of year=100), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.91 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 April 1990(Day of year=101), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.92 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 April 1990(Day of year=102), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.92 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 April 1990(Day of year=103), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 April 1990(Day of year=104), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.07 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 April 1990(Day of year=105), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 April 1990(Day of year=106), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.07 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 April 1990(Day of year=107), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.01 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 April 1990(Day of year=107), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.87 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 April 1990(Day of year=108), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 April 1990(Day of year=108), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 April 1990(Day of year=109), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 April 1990(Day of year=109), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 April 1990(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 April 1990(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 April 1990(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 April 1990(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 April 1990(Day of year=112), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 April 1990(Day of year=112), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.64 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 April 1990(Day of year=113), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.89 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 April 1990(Day of year=114), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.98 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 April 1990(Day of year=115), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.99 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 April 1990(Day of year=116), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.05 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 April 1990(Day of year=117), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.22 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 April 1990(Day of year=118), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.25 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 April 1990(Day of year=119), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.21 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 April 1990(Day of year=120), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.14 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+1 May 1990(Day of year=121), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.31 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+2 May 1990(Day of year=122), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.47 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+3 May 1990(Day of year=123), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.40 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+4 May 1990(Day of year=124), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.41 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+5 May 1990(Day of year=125), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.36 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+6 May 1990(Day of year=126), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.33 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+7 May 1990(Day of year=127), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.41 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 May 1990(Day of year=128), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.59 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+8 May 1990(Day of year=128), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.57 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 May 1990(Day of year=129), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+9 May 1990(Day of year=129), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 May 1990(Day of year=130), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+10 May 1990(Day of year=130), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 May 1990(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+11 May 1990(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 May 1990(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+12 May 1990(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 May 1990(Day of year=133), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+13 May 1990(Day of year=133), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+14 May 1990(Day of year=134), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.06 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+15 May 1990(Day of year=135), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.30 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+16 May 1990(Day of year=136), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.31 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+17 May 1990(Day of year=137), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.31 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+18 May 1990(Day of year=138), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.35 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+19 May 1990(Day of year=139), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.43 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+20 May 1990(Day of year=140), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.46 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+21 May 1990(Day of year=141), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.47 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+22 May 1990(Day of year=142), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.43 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+23 May 1990(Day of year=143), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.44 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+24 May 1990(Day of year=144), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.42 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+25 May 1990(Day of year=145), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.45 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+26 May 1990(Day of year=146), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.42 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+27 May 1990(Day of year=147), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.43 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+28 May 1990(Day of year=148), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.43 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 May 1990(Day of year=149), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.49 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+29 May 1990(Day of year=149), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.70 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 May 1990(Day of year=150), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+30 May 1990(Day of year=150), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 May 1990(Day of year=151), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+31 May 1990(Day of year=151), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.74 of N as urea (urea_N)
+                                         added at depth  300.00 (layer   2)
+CutToFeedWedge begin: Surplus = 546.95837726342
+CutToFeedWedge end: Surplus = -62.2386227365798
+30 July 1990(Day of year=211), clock: 
+     Simulation is terminating due to end criteria being met.
 

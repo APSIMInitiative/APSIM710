@@ -131,7 +131,7 @@ namespace CSUserInterface
                 {
                     try
                     {
-                        List<SimFactorItem> SimFiles = ApsimFile.Factor.CreateSimFiles(Controller.ApsimData, SimsToConvert.ToArray(), Configuration.getArchitecture(), FolderChooser.SelectedPath);
+                        List<SimFactorItem> SimFiles = ApsimFile.Factor.CreateSimFiles(Controller.ApsimData, SimsToConvert.ToArray(), FolderChooser.SelectedPath);
                         if (SimFiles.Count == 1)
                             UserMsg = "1 Simulation created.";
                         else

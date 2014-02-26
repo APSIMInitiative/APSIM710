@@ -124,15 +124,469 @@ Paddock:
      
 
 ------- DDRules Initialisation ------------------------------------------------
+Dubug Level = -1
+Predefined = paddock01
+i = 0
+Area = 80
+   Paddock ModelFramework.Paddock
+   Cover 0
+Done.
+Dubug Level = -1
+Predefined = paddock02
+i = 1
+Area = 80
+   Paddock ModelFramework.Paddock
+   Cover 0
+Done.
+
+---------- DDRules Initialisation ----------
+     General Farm Description
+             Effective Area          160.0 ha
+             Total Paddocks          2
+     Stock Management
+             Stocking Rate           0 cows/ha
+             Calving Date            
+             Paddock Count           2
+             Winter Off Dry Stock    True
+     Grazing Management
+             Residules               1600 kgDM/ha
+             Interval                30 days
+     Supplementary Feeding
+             ME Content              12.5 ME/kgDM
+             N Content               1.8%
+             Wastage                 0.0%
+     Conservation
+             Start Date              01-Jan
+             Finish Date             01-Jan
+             Trigger Residule        0 kgDM/ha
+             Cutting Residule        1500 kgDM/ha
+             Wastage at cutting      0.1%
+             Silage Stored on Farm   True
+             ME Content              0.0 ME/kgDM
+             N Content               3.5%
+             Wastage (at feeding)    0.2%
+     Debug Switches
+             Debug Level   0
+             Break Feeding 0
+             Avg length    7
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        HerbageGrowthWt
+        SpeciesLiveWt
+        LAI_total
+        LeafLiveWt
+        leafgreenwt
+        surfaceom_wt
+        surfaceom_n
+        surfaceom_c
+        AboveGroundWt
+        AboveGroundLiveWt
+        AboveGroundDeadWt
+        GLFwater
+        cover_green
+        AboveGroundNPct
+        fertiliser
+        dlt_nh4
+        surfaceom_nh4
+        nh4
+
+     Output file = Default paddock01.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_M  Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
+                      APSIM Warning Error
                       -------------------
-     Could not load type 'ModelFramework.Clock' from assembly 'DotNetProxies, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
-     Component name: DDRules
-     
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock01.Canterbury_M  Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-sendMessageToEngine() failed External component has thrown an exception.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock01.Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
+          ---------------------------------------------------------
+               Totals     166.90     152.95     152.95      98.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.37   71.05    4.21    0.00
+             2     6.00  0.49    4.57    0.91    0.00
+             3     6.00  0.23    4.95    0.99    0.00
+             4     6.00  0.20    1.17    0.23    0.00
+             5     6.00  0.20    1.37    0.27    0.00
+          ------------------------------------------------
+           Totals               83.11    6.62    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
+          ---------------------------------------------------------
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- ryegrass_clover Initialisation ----------------------------------------
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        HerbageGrowthWt
+        SpeciesLiveWt
+        LAI_total
+        LeafLiveWt
+        leafgreenwt
+        surfaceom_wt
+        surfaceom_n
+        surfaceom_c
+        AboveGroundWt
+        AboveGroundLiveWt
+        AboveGroundDeadWt
+        GLFwater
+        cover_green
+        AboveGroundNPct
+        fertiliser
+        dlt_nh4
+        surfaceom_nh4
+        nh4
+
+     Output file = Default paddock02.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_M  Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock02.Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    7200.000
+     Component name: paddock02.Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
+          ---------------------------------------------------------
+               Totals     166.90     152.95     152.95      98.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.37   71.05    4.21    0.00
+             2     6.00  0.49    4.57    0.91    0.00
+             3     6.00  0.23    4.95    0.99    0.00
+             4     6.00  0.20    1.17    0.23    0.00
+             5     6.00  0.20    1.37    0.27    0.00
+          ------------------------------------------------
+           Totals               83.11    6.62    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
+          ---------------------------------------------------------
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- ryegrass_clover Initialisation ----------------------------------------
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : totalnin = 0.00000
+     Manager creating a new local real variable : nintakebalance = 0.00000
+     Manager creating a new local real variable : totalnout = 0.00000
+     Manager creating a new local real variable : noutbalance = 0.00000
+     Manager creating a new local real variable : ntotalbalance = 0.00000
+30 July 1990(Day of year=211), clock: 
+     Simulation is terminating due to end criteria being met.
 

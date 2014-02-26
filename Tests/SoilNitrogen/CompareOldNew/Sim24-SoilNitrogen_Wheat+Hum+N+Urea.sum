@@ -211,33 +211,127 @@ Paddock:
      
 
 ------- MediumSedimentarySoil Nitrogen Initialisation -------------------------
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Could not load type 'ModelFramework.Clock' from assembly 'DotNetProxies, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
-     Component name: MediumSedimentarySoil Nitrogen
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Paddock.MediumSedimentarySoil Nitrogen The property no3 is not a gettable property. (Exception has been thrown by the target of an invocation.)
-      Error in readFromPropertyList(). Property: 18
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Paddock.MediumSedimentarySoil Nitrogen The property nh4 is not a gettable property. (Exception has been thrown by the target of an invocation.)
-      Error in readFromPropertyList(). Property: 16
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-sendMessageToEngine() failed External component has thrown an exception.
+
+        - Reading/checking parameters
+           - Using Generic medium sedimentary soil soil mineralisation specification
+           - Soil temperature calculated internally
+           - Soil pH supplied by apsim
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.00    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      52995.7  4239.7  1004.3   125.5     0.0     0.0
+             2      26748.5  2139.9   251.5    31.4     0.0     0.0
+             3      18659.9  1492.8    90.1    11.3     0.0     0.0
+             4       9735.5   778.8    14.5     1.8     0.0     0.0
+             5       4048.0   323.8     2.0     0.3     0.0     0.0
+             6       4199.9   336.0     0.1     0.0     0.0     0.0
+          ---------------------------------------------------------
+           Totals  116387.6  9311.0  1362.4   170.3     0.0     0.0
+          ---------------------------------------------------------
+
 ------- Start of simulation  --------------------------------------------------
+5 January 2000(Day of year=5), OperationsSchedule: 
+      Sending sow message to wheat
+5 January 2000(Day of year=5), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.250          0.220       1.000
+         150.0     0.150          0.210       1.000
+         300.0     0.060          0.200       1.000
+         300.0     0.010          0.190       1.000
+         300.0     0.000          0.180       1.000
+         300.0     0.000          0.170       0.000
+         -----------------------------------------------
+         Extractable SW:   270mm in  1500mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+              5   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+6 January 2000(Day of year=6), wheat: 
+      stage 2.0 germination
+10 January 2000(Day of year=10), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   19.98 (mm)
+11 January 2000(Day of year=11), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.80 (g/m^2)   lai          =   0.095 (m^2/m^2)
+                     stover N conc =     5.82 (%)    extractable sw =   20.62 (mm)
+20 January 2000(Day of year=20), OperationsSchedule: 
+      Sending apply message to fertiliser
+20 January 2000(Day of year=20), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+30 March 2000(Day of year=90), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 March 2000(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+31 July 2000(Day of year=213), clock: 
+     Simulation is terminating due to end criteria being met.
 
