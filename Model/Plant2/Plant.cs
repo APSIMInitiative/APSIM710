@@ -69,6 +69,50 @@ public class Plant
     {
         get { return My.FullName; }
     }
+    [Output]
+    public AvailableToAnimalType AvailableToAnimal
+    {
+        get
+        {
+            AvailableToAnimalType avail = new AvailableToAnimalType();
+            avail.element = new AvailableToAnimalelementType[12];
+            int cohort = 0;
+            foreach (Organ O in Organs)
+            {
+                if (O is AboveGround)
+                {
+                    avail.element[cohort].CohortID = Name;
+                    avail.element[cohort].Organ = O.Name;
+                    avail.element[cohort].AgeID = "green";
+                    avail.element[cohort].Bottom = 0.0;
+                    avail.element[cohort].Top = Structure.Height;
+                    avail.element[cohort].Chem = "digestible";
+                    avail.element[cohort].Weight = O.Live.Wt * 0.1;
+                    avail.element[cohort].N = O.Live.N;
+                    avail.element[cohort].P = 0.0;
+                    avail.element[cohort].S = 0.0;
+                    avail.element[cohort].AshAlk = 0.0;
+
+                    cohort++;
+
+                    avail.element[cohort].CohortID = Name;
+                    avail.element[cohort].Organ = O.Name;
+                    avail.element[cohort].AgeID = "senesced";
+                    avail.element[cohort].Bottom = 0.0;
+                    avail.element[cohort].Top = Structure.Height;
+                    avail.element[cohort].Chem = "digestible";
+                    avail.element[cohort].Weight = O.Dead.Wt * 0.1;
+                    avail.element[cohort].N = O.Dead.N;
+                    avail.element[cohort].P = 0.0;
+                    avail.element[cohort].S = 0.0;
+                    avail.element[cohort].AshAlk = 0.0;
+
+                    cohort++;
+                }
+            } 
+            return avail; 
+        }
+    }
  #endregion
 
  #region Plant functions
