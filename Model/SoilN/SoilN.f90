@@ -2264,7 +2264,7 @@ subroutine soiln2_read_constants ()
    call read_real_array (section_name, 'dnit_wfps', max_wf_values, '(%)', c%dnit_wfps, numvals, 0.0, 100.0)
    call read_real_array (section_name, 'dnit_n2o_factor', max_wf_values, '()', c%dnit_n2o_factor, c%num_dnit_wfps, 0.0, 100.0)
 
-   call read_real_var (section_name, 'dnit_nitrf_loss', '(0-1)', c%dnit_nitrf_loss, numvals, 0.0, 1.0)
+   call read_real_var (section_name, 'nit_n2o_frac', '(0-1)', c%dnit_nitrf_loss, numvals, 0.0, 1.0)
    
    call pop_routine (my_name)
    return
