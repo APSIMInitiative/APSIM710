@@ -155,6 +155,7 @@ namespace ApsimFile
             get { return MyName; }
             set
             {
+                CheckFactorialsForRenamedSimulation(MyName, value);
                 MyName = value;
                 EnsureNameIsUnique();
                 CheckOutputFileNode();
@@ -742,6 +743,33 @@ namespace ApsimFile
                 Child.CheckOutputFileNode();
         }
 
+        /// <summary>
+        /// When a simulation is renamed in the GUI, we need to check the factors in factorial
+        /// and rename the targets in them.
+        /// </summary>
+        private void CheckFactorialsForRenamedSimulation(string oldSimName, string newSimName)
+        {
+            if (Type == "simulation" && oldSimName != null && MyFile != null && MyFile.RootComponent != null)
+            {
+                string oldFullPath = FullPath;
+                string newFullPath = FullPath.Replace(oldSimName, newSimName);
+
+                Component factorial = MyFile.RootComponent.Find("Factorials");
+                if (factorial != null)
+                {
+                    foreach (Component factor in factorial.ChildNodes)
+                    {
+                        XmlNode factorNode = factor.ContentsAsXML;
+                        XmlNode targetsNode = XmlHelper.Find(factorNode, "targets");
+                        foreach (XmlNode targetNode in XmlHelper.ChildNodes(targetsNode, "Target"))
+                        {
+                            targetNode.InnerText = targetNode.InnerText.Replace(oldFullPath, newFullPath);
+                        }
+                        factor.Contents = factorNode.OuterXml;
+                    }
+                }
+            }
+        }
         
         public bool IsAncestorOf(Component comp)
         // Returns true if comp is this component, or one of its ancestors
