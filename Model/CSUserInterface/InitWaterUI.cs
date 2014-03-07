@@ -22,7 +22,6 @@ namespace CSUserInterface
         private Soil Soil;
         private ApsimFile.Component OurComponent;
 
-
         /// <summary>
         /// constructor.
         /// </summary>
@@ -38,13 +37,44 @@ namespace CSUserInterface
 
             // We need not just the XML for this profile node but the whole soil XML.
             OurComponent = Controller.ApsimData.Find(NodePath);
-            ApsimFile.Component SoilComponent = OurComponent.Parent;
+            ApsimFile.Component SoilComponent;
+            if (OurComponent.Parent.Type == "factor")
+            {
+                XmlNode factorNode = OurComponent.Parent.ContentsAsXML;
+                string initWaterPath = XmlHelper.Value(factorNode, "targets/target");
+                int posLastSlash = initWaterPath.LastIndexOf('/');
+                if (posLastSlash != -1)
+                {
+                    string soilPath = initWaterPath.Remove(posLastSlash);
+                    SoilComponent = Controller.ApsimData.Find(soilPath);
+                }
+                else
+                    throw new Exception("Cannot find soil node under: " + OurComponent.FullPath);
+            }
+            else
+                SoilComponent = OurComponent.Parent;
+
             if (SoilComponent.Type.ToLower() != "soil")
                 SoilComponent = SoilComponent.Parent;
-            Soil = Soil.Create(SoilComponent.FullXMLNoShortCuts());
+            if (SoilComponent.Type.ToLower() != "soil")
+                throw new Exception("Cannot find soil node under: " + OurComponent.FullPath);
 
-            XmlDocument Doc = new XmlDocument();
-            Doc.LoadXml(SoilComponent.FullXMLNoShortCuts());
+            XmlDocument soilDoc = new XmlDocument();
+            soilDoc.LoadXml(SoilComponent.FullXMLNoShortCuts());
+
+            if (OurComponent.Parent.Type == "factor")
+            {
+                // Install this InitWater under the Soil, replacing the existing one.
+                XmlNode existingInitWater = XmlHelper.FindByType(soilDoc.DocumentElement, "InitialWater");
+                if (existingInitWater == null)
+                    throw new Exception("Cannot find InitWater under soil");
+                soilDoc.DocumentElement.RemoveChild(existingInitWater);
+                soilDoc.DocumentElement.AppendChild(soilDoc.ImportNode(OurComponent.ContentsAsXML, true));
+            }
+
+
+
+            Soil = Soil.Create(soilDoc.OuterXml);
 
             RelativeToCombo.Items.Clear();
             RelativeToCombo.Items.Add("ll15");
