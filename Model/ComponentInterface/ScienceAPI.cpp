@@ -478,6 +478,7 @@ class CMPSetter : public DeletableThing
       std::string name;
       std::string ddml;
       protocol::DataTypeCode typeCode;
+      protocol::Type type;
    public:
       CMPSetter(FT& fn, const string& n, protocol::DataTypeCode dt)
          {
@@ -485,6 +486,7 @@ class CMPSetter : public DeletableThing
          setter = fn;
          typeCode = dt;
          ddml = protocol::DDML(dummy);
+         type = protocol::Type(ddml.c_str());
          }
       bool CMPFunction(protocol::Component* component, protocol::QuerySetValueData &v)
          {
@@ -493,8 +495,8 @@ class CMPSetter : public DeletableThing
                               v.variant.getType().getCode(),
                               typeCode,
                               v.variant.getType().isArray(),
-                              false,
-                               converter);
+                              type.isArray(),
+                              converter);
          v.variant.unpack(converter, NULL, dummy);
          setter(dummy);
          if (converter) delete converter;
@@ -503,6 +505,18 @@ class CMPSetter : public DeletableThing
       const char* DDML() {return ddml.c_str();}
 
    };
+
+void ScienceAPI::exposeRWArray(const std::string& name, const std::string& units, const std::string& description, const std::vector<float>& variable,
+                               boost::function1<void, std::vector<float> > handler)
+{
+   typedef CMPSetter<boost::function1<void, std::vector<float> >, std::vector<float> > WrapperType;
+   WrapperType* wrapper = new WrapperType (handler, name, protocol::DTsingle);
+   stuffToDelete.push_back(wrapper);
+   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
+   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+
+   component->addRWVectorVar(name.c_str(), variable, fn, units.c_str(), description.c_str());
+}
 
 // -------------------------------------------------------------
 // Exposing a SETtable variable

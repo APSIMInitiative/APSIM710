@@ -175,6 +175,7 @@ class EXPORT fnSetInfo : public baseInfo {
 };
 typedef std::map<unsigned, baseInfo*>   UInt2InfoMap;
 typedef std::map<unsigned, fnSetInfo*>   UInt2SetInfoMap;
+typedef std::map<std::string, unsigned> NameToUIntMap;
 typedef boost::function3<void, unsigned &, unsigned &, protocol::Variant &> pfcall;
 typedef std::multimap<unsigned, pfcall, std::less<unsigned> >   UInt2EventMap;
 
@@ -489,6 +490,7 @@ class EXPORT Component
       UInt2InfoMap getVarMap;                  // List of variables we can send to system
       UInt2SetInfoMap setVarMap;                  // List of variables we can send to system
       UInt2EventMap eventMap;                  // List of events we handle
+      NameToUIntMap reverseGetVarMap;          
 
       const uintptr_t* callbackArg;
       CallbackType* messageCallback;
@@ -842,6 +844,11 @@ class EXPORT Component
          return false;
          };
 
+      void AddToGetVarMap(unsigned int id, baseInfo* v)
+      {
+          getVarMap.insert(UInt2InfoMap::value_type(id, v));
+          reverseGetVarMap.insert(NameToUIntMap::value_type(v->name(), id));
+      }
 
       // Add Variables to the Get list.
       // Function
@@ -856,7 +863,7 @@ class EXPORT Component
           unsigned int id = getReg(systemName, type, isArray, units, desc);
           // Add to variable map
           fnInfo *v = new fnInfo(systemName, type, isArray, ptr, units, desc);
-          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          AddToGetVarMap(id, v);
           };
      // Function with DDML
      void addGettableVar(const char *systemName,
@@ -869,7 +876,7 @@ class EXPORT Component
           unsigned int id = getReg(systemName, ddml);
           // Add to variable map
           fnInfo *v = new fnInfo(systemName, protocol::DTunknown, 0, ptr, units, desc);
-          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          AddToGetVarMap(id, v);
           };
 
 
@@ -883,7 +890,7 @@ class EXPORT Component
           DataTypeCode type = dataTypeCodeOf(value);
           unsigned int id = getReg(systemName, type, false, units, desc);
           varInfo *v = new varInfo(systemName, type, 1, &value, units, desc);
-          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          AddToGetVarMap(id, v);
           };
       // Special case for stl strings
       void addGettableVar(const char *systemName,
@@ -893,7 +900,7 @@ class EXPORT Component
           {
           unsigned int id = getReg(systemName, DTstring, false, units, desc);
           stringInfo *v = new stringInfo(systemName, &value, units, desc);
-          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          AddToGetVarMap(id, v);
           };
 
       // C array
@@ -907,7 +914,7 @@ class EXPORT Component
           DataTypeCode type = dataTypeCodeOf(* value);
           unsigned int id = getReg(systemName, type, 1, units, desc);
           varInfo *v = new varInfo(systemName, type, length, value, units, desc);
-          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          AddToGetVarMap(id, v);
           };
 
       // vector
@@ -920,7 +927,7 @@ class EXPORT Component
           DataTypeCode type = dataTypeCodeOf(value);
           unsigned int id = getReg(systemName, type, true, units, desc);
           varVectorFloatInfo *v = new varVectorFloatInfo(systemName, type, value, units, desc);
-          getVarMap.insert(UInt2InfoMap::value_type(id,v));
+          AddToGetVarMap(id, v);
            };
       // scalar
       void addSettableVar(const char *systemName,
@@ -934,6 +941,35 @@ class EXPORT Component
           fnSetInfo *fn = new fnSetInfo(systemName, type, false, ptr, units, desc);
           setVarMap.insert(UInt2SetInfoMap::value_type(id, fn));
           };
+
+      // Read-write vector
+      void addRWVectorVar(const char *systemName,
+                          const std::vector<float> &value,
+                          boost::function2<bool, Component *, QuerySetValueData &> ptr,
+                          const char *units,
+                          const char *desc)
+           {
+          DataTypeCode type = dataTypeCodeOf(value);
+          std::string ddml = "<type kind=\"single\" array=\"T\"";
+          if (strlen(units) > 0)
+	      {
+             ddml += " unit=\"";
+             ddml += units;
+             ddml += "\"";
+	      }
+          if (strlen(desc) > 0)
+          {
+             ddml += " description=\"";
+             ddml += desc;
+             ddml += "\"";
+          }
+          ddml += "/>";
+          unsigned int id = addRegistration(::respondToGetSet, componentID, systemName, ddml.c_str());
+          varVectorFloatInfo *v = new varVectorFloatInfo(systemName, type, value, units, desc);
+          AddToGetVarMap(id, v);
+          fnSetInfo *fn = new fnSetInfo(systemName, type, false, ptr, units, desc);
+          setVarMap.insert(UInt2SetInfoMap::value_type(id, fn));
+           };
 
       void removeGettableVar(const char *systemName);
 

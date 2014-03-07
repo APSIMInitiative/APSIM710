@@ -81,6 +81,9 @@ class EXPORT ScienceAPI
       void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function0<float> fn);
       void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function0<std::string> fn);
 
+      void exposeRWArray(const std::string& name, const std::string& units, const std::string& description, const std::vector<float>& variable,
+                               boost::function1<void, std::vector<float> > handler);
+
       // set methods
       void set(const std::string& name, const std::string& units, std::vector<float>& data);
 

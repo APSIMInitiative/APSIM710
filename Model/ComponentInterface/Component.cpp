@@ -116,6 +116,8 @@ void Component::clearReturnInfos(void)
 	 getVarMap.erase(v);
    }
 
+   reverseGetVarMap.clear();
+
    for (UInt2SetInfoMap::iterator v = setVarMap.begin();
 		v != setVarMap.end();
 		v = setVarMap.begin()) {
@@ -1129,16 +1131,17 @@ std::string Component::getDescription()
 void Component::removeGettableVar(const char *systemName)
     // remove a variable from our list of variables
 {
-    for (UInt2InfoMap::iterator i = getVarMap.begin(); i != getVarMap.end(); )  // the iterator is incremented below, as "erase" may make it invalid
+    NameToUIntMap::iterator n = reverseGetVarMap.find(systemName);
+    if (n != reverseGetVarMap.end())
     {
-        if (i->second->name() == systemName)
+        unsigned int id = n->second;
+        UInt2InfoMap::iterator i = getVarMap.find(id);
+        if (i != getVarMap.end())
         {
             delete i->second;
-            getVarMap.erase(i++);  // Note that the post increment increments the iterator before using the original value in the function
-            // and should probably deleteReg too..?? fixme
+            getVarMap.erase(i); 
         }
-        else
-            ++i;
+        reverseGetVarMap.erase(n);
     }
 }
 

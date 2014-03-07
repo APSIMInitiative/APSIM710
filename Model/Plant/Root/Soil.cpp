@@ -14,6 +14,21 @@ Soil::Soil(ScienceAPI& s, plantInterface& p)
    zero();
    }
 
+void Soil::xf_setter(const std::vector<float> values) {
+ for (unsigned i = 0; i < min(values.size(), xf.size()); i++)
+      xf[i] = values[i];
+}
+
+void Soil::kl_setter(const std::vector<float> values) {
+ for (unsigned i = 0; i < min(values.size(), kl.size()); i++)
+      kl[i] = values[i];
+}
+
+void Soil::ll_dep_setter(const std::vector<float> values) {
+ for (unsigned i = 0; i < min(values.size(), ll_dep.size()); i++)
+      ll_dep[i] = values[i];
+}
+
 void Soil::onInit1(protocol::Component *)
 //=======================================================================================
 // Perform all component initialisation.
@@ -21,9 +36,13 @@ void Soil::onInit1(protocol::Component *)
 
    scienceAPI.subscribe("new_profile", NewProfileFunction(&Soil::onNewProfile));
 
-   scienceAPI.expose("xf", "", "Root exploration factor", xf);
-   scienceAPI.expose("kl", "", "Root water uptake parameter", kl);
-   scienceAPI.expose("ll_dep", "mm", "Plant Lower Limit (mm/mm)", ll_dep);
+   #define FloatVectorSetter(address) boost::function1<void, std::vector<float> >(boost::bind(address, this, _1))
+   scienceAPI.exposeRWArray("xf", "", "Root exploration factor", xf, FloatVectorSetter(&Soil::xf_setter));
+   scienceAPI.exposeRWArray("kl", "", "Root water uptake parameter", kl, FloatVectorSetter(&Soil::kl_setter));
+   scienceAPI.exposeRWArray("ll_dep", "mm", "Plant Lower Limit", ll_dep, FloatVectorSetter(&Soil::ll_dep_setter));
+   //scienceAPI.expose("xf", "", "Root exploration factor", xf);
+   //scienceAPI.expose("kl", "", "Root water uptake parameter", kl);
+   //scienceAPI.expose("ll_dep", "mm", "Plant Lower Limit (mm)", ll_dep);
 
    }
 

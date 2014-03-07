@@ -146,8 +146,9 @@ class Soil
    protected:
       ScienceAPI& scienceAPI;
       plantInterface& plant;
-
-
+      void xf_setter(const std::vector<float> values);
+      void kl_setter(const std::vector<float> values);
+      void ll_dep_setter(const std::vector<float> values);
 
    private:
 
