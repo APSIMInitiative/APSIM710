@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
+using CSGeneral;
 using CMPServices;       //xml and TTypedValues (NOTE: TTypedValues are 1 based arrays!)
 
 namespace ManagedComponent.MvOZCOT
@@ -3561,6 +3563,25 @@ namespace ManagedComponent.MvOZCOT
             // get moist bulk density
             Array.Clear(bulkd, 0, bulkd.Length);
             sendDriverRequest(DRV_BULKD, iEventID);
+
+            XmlNode initDataNode = FSDMLComp.initDataOuterNode();
+            if (initDataNode != null)
+            {
+                XmlNode ll = FSDMLComp.firstElementChild(initDataNode, "ll");
+                if (ll != null)
+                {
+                    string vals = ll.InnerText;
+                    string[] Values = vals.Split(null as char[], StringSplitOptions.RemoveEmptyEntries);
+                    double[] DoubleValues = MathUtility.StringsToDoubles(Values);
+                    unul = new double[DoubleValues.Length + 1];
+                    unul[0] = 0;
+                    for (int i = 0; i < DoubleValues.Length; i++)
+                    {
+                        unul[i + 1] = DoubleValues[i];
+                    }
+                    num_ll_vals = DoubleValues.Length;
+                }
+            }
 
             // get unavailable g.sw - use ll15 because (if) crop ll is unavailable
             if (num_ll_vals == 0)

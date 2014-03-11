@@ -211,6 +211,19 @@ namespace CMPServices
 
             return buf;
         }
+
+        //=======================================================================
+        /// <summary>
+        /// Returns the whole &lt;initdata&gt; section node. This is available 
+        /// as a kludge for dealing with APSIM style init elements.
+        /// </summary>
+        /// <returns>The XML node of the initdata section text.</returns>
+        //=======================================================================
+        public XmlNode initDataOuterNode()
+        {
+            return firstElementChild(topElement, "initdata");
+        }
+
         //=======================================================================
         /// <summary>
         /// Get the SDML text for an init in the init section.
