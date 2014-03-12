@@ -99,6 +99,9 @@ namespace ApsimFile
             if (XmlHelper.Attribute(Node, "enabled") == "no")
                 MyEnabled = false;
 
+            if (XmlHelper.Attribute(Node, "description") != "")
+                MyDescription = XmlHelper.Attribute(Node, "description");
+
             foreach (XmlNode Child in Node.ChildNodes)
             {
                 if (Types.Instance.IsVisible(Child.Name) && XmlHelper.Attribute(Child, "invisible") != "yes")
@@ -141,6 +144,8 @@ namespace ApsimFile
                 XmlHelper.SetAttribute(Node, "enabled", "no");
             if (ShortCutTo != null)
                 XmlHelper.SetAttribute(Node, "shortcut", ShortCutTo.FullPath);
+            if (MyDescription != null && MyDescription != "")
+                XmlHelper.SetAttribute(Node, "description", MyDescription);
             Node.InnerXml = MyContents;
             foreach (Component Child in ChildNodes)
             {

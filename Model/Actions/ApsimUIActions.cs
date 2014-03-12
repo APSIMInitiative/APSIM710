@@ -494,6 +494,16 @@ namespace Actions
 
 			Cursor.Current = Cursors.Default;
 		}
+
+        public static void SetToolTip(BaseController Controller)
+        {
+            string Tooltip = UIBits.InputDialog.InputBox("Enter tooltip:", "", "", false);
+            if (Tooltip != "")
+            {
+                Controller.Selection.Description = Tooltip;
+            }
+
+        }
 	}
 }
 
