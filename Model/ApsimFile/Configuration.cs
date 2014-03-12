@@ -52,8 +52,6 @@ namespace ApsimFile
                 SettingsDoc.Load(SettingsFile);
                 SettingsNode = SettingsDoc.DocumentElement;
 			}
-			string ExecutableBuildDate = ApsimBuildDate();
-            string ExecutableBuildNumber = ApsimBuildNumber();
         }
         public static Configuration Instance
         {

@@ -96,10 +96,10 @@ namespace ApsimFile
                 Notifier(0, "Reading " + FileName);
                 XmlDocument Doc = new XmlDocument();
                 Doc.Load(FileName);
-                ApsimFile F = null;
+                ApsimFile F = null; 
                 if (XmlHelper.FindByType(Doc.DocumentElement, "factorial") != null) {
 				   F = new ApsimFile();
-				   F.Open(Doc.DocumentElement);
+				   F.OpenFile(FileName);
 				}
 
 				List<XmlNode> simulations = new List<XmlNode>();
@@ -109,9 +109,22 @@ namespace ApsimFile
 					if (XmlHelper.Attribute (simulation, "enabled") != "no") {
 						List<string> SimsToRun = new List<string> ();
 						if (F != null)
-							ApsimFile.ExpandSimsToRun (F.Find (XmlHelper.Name (simulation)), ref SimsToRun);
+                            {
+                            FactorBuilder builder = new FactorBuilder();
+						    foreach (FactorItem item in builder.BuildFactorItems(F.FactorComponent,
+						                                                         XmlHelper.FullPath (simulation)))
+                               {
+							   List<String> factorials = new List<string>();
+                               string factorsList = ""; 
+                               int counter = 0;
+
+                               item.CalcFactorialList(factorials, factorsList, ref counter);
+							   foreach (string factorial in factorials) 
+							       SimsToRun.Add(XmlHelper.FullPath (simulation) + "@factorial='" + factorial + "'");
+                               }
+                            }
 						else
-							SimsToRun.Add (XmlHelper.Name (simulation));
+							SimsToRun.Add (XmlHelper.FullPath (simulation));
 					
 						foreach (string simToRun in SimsToRun) {
 							XmlNode apsimFileNode = job.AppendChild (job.OwnerDocument.CreateElement ("apsimfile"));

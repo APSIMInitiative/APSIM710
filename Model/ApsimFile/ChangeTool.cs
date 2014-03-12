@@ -611,7 +611,7 @@ namespace ApsimFile
                 {
                     XmlNode NewNode = ShortCutNode.AppendChild(ShortCutNode.OwnerDocument.CreateElement(Child.Name));
                     string ShortCutPath = XmlHelper.FullPath(RealNode) + "/" + XmlHelper.Name(Child);
-                    XmlNode RealChildNode = XmlHelper.Find(RealNode, ShortCutPath);
+                    //XmlNode RealChildNode = XmlHelper.Find(RealNode, ShortCutPath);
                     XmlHelper.SetAttribute(NewNode, "shortcut", ShortCutPath);
                     MakeNodeShortcuts(NewNode, Child);
                 }
@@ -1756,7 +1756,6 @@ namespace ApsimFile
                     else if (d.Name.ToLower() == "simulation")
                         simulationName = XmlHelper.Attribute(d, "name");
                 }
-                string fqname = XmlHelper.FullPath(Node);
                 string fileName = simulationName;
                 if ((paddockName != null) && paddockName.ToLower() != "paddock")
                     fileName = fileName + " " + paddockName;
@@ -2350,7 +2349,6 @@ namespace ApsimFile
         {
             if (Node.Name.ToLower() == "soil")
             {
-                string SoilName = XmlHelper.Name(Node);
                 string LongitudeSt = XmlHelper.Value(Node, "Longitude");
                 double Longitude;
                 if (!double.TryParse(LongitudeSt, out Longitude))

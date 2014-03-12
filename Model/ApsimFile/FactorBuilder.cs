@@ -8,7 +8,8 @@ using CSGeneral;
 
 namespace ApsimFile
 {
-    public class FactorItem
+	
+	public class FactorItem
     {
         public FactorItem NextItem = null;
         public List<string> Targets = null;
@@ -85,10 +86,10 @@ namespace ApsimFile
            }
         }
 
-        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch, string destFolder)
+        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, 
+		                            SortedDictionary<string, string> factorsList, SortedDictionary<string, string> factorsToMatch, 
+		                            ref int counter, int totalCount, string destFolder)
         {
-            if (factorsList != "")
-                factorsList += ";";
             if (FactorComponent.Type != "folder")
             {
                 foreach (Component child in FactorComponent.ChildNodes)
@@ -106,33 +107,40 @@ namespace ApsimFile
                             ReplaceComponent(targetComp, child);
                         }
                     }
+					SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+					myFactors.Add(FactorComponent.Name, child.Name);
                     if (NextItem != null)
                     {
                         //call next factor in the list
-                        NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch, destFolder);
+                        NextItem.Process(SimFiles, Simulation, SimulationPath, myFactors, factorsToMatch, ref counter, totalCount, destFolder);
                     }
                     else
                     {
                         ++counter;
-                        CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch, destFolder);
+						if (factorsToMatch == null || FactorsMatch(myFactors, factorsToMatch))
+                          CreateJobFromSimulation(SimFiles, Simulation, myFactors, ref counter, totalCount,  destFolder);
                     }
                 }
             }
             else
             {
+                SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+				myFactors.Add(FactorComponent.Name, FolderLevel);
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch, destFolder);
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, myFactors, factorsToMatch, ref counter, totalCount,  destFolder);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch, destFolder);
+ 					if (factorsToMatch == null || FactorsMatch(myFactors, factorsToMatch))
+                       CreateJobFromSimulation(SimFiles, Simulation, myFactors, ref counter, totalCount, destFolder);
                 }
             }
         }
-        public void ReplaceComponent(Component targetComp, Component Source)
+
+		public void ReplaceComponent(Component targetComp, Component Source)
         {
            //replace the contents (innerxml).This doesn't affect child xml nodes that belong to child components
            targetComp.Contents = Source.Contents;
@@ -146,13 +154,60 @@ namespace ApsimFile
               ReplaceComponent(targetchild, comp);
            }
         }
+		
+		public virtual void resolveFactor(Component Simulation, string target, string level)
+		{
+             foreach (Component child in FactorComponent.ChildNodes)
+             {
+				if (child.Name == level) {
+                        //need to remove the path of this simulation from the target to get the relative path
+                        string relativePath = target.Substring(Simulation.FullPath.Length + 1);
+                        Component targetComp = Simulation.Find(relativePath);
+                        if (targetComp != null)
+                        {
+                            //replace target nodes with factor nodes - add child factor nodes if they don't exist 
+                            //don't remove any children from the target
+                            ReplaceComponent(targetComp, child);
+                        }
+				}
+			}
+            if (NextItem != null)
+            {
+                        //call next factor in the list
+                  NextItem.resolveFactor(Simulation, target, level);
+            }
+			
+		}
+		
+public static string ToKVString(IDictionary<string, string> dict)
+{
+   return string.Join(";", dict.Select(x => x.Key + "=" + x.Value));
+}		
+		
 
-      public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, string factorsList, ref int counter, int totalCount, Configuration.architecture arch, string destFolder)
+public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second)
+{
+    if (first == second) return true;
+    if ((first == null) || (second == null)) return false;
+    if (first.Count != second.Count) return false;
+
+    var comparer = EqualityComparer<TValue>.Default;
+
+    foreach (KeyValuePair<TKey, TValue> kvp in first)
+    {
+        TValue secondValue;
+        if (!second.TryGetValue(kvp.Key, out secondValue)) return false;
+        if (!comparer.Equals(kvp.Value, secondValue)) return false;
+    }
+    return true;
+}
+		
+      public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, SortedDictionary<string, string> factorsList, ref int counter, int totalCount, string destFolder)
       {
          string sInitialName = Simulation.Name;
          if (Builder.SaveExtraInfoInFilename)
          {
-            Simulation.Name = factorsList;
+            Simulation.Name = ToKVString(factorsList);
          }
          else
          {
@@ -208,7 +263,7 @@ namespace ApsimFile
                     constantsNode.AppendChild(factorNode);
                 }
                 XmlHelper.SetAttribute(factorNode, "name", "factors");
-                factorNode.InnerText = factorsList;
+                factorNode.InnerText = ToKVString(factorsList);
                 constantsComponent.Contents = componentNode.OuterXml;
             }
             else
@@ -232,18 +287,13 @@ namespace ApsimFile
                    //clean out existing nodes - will remove existing constants
                    constantsNode.RemoveAll();
                 }
-                List<string> factors = new List<string>(factorsList.Split(';'));
 
-                foreach (string factor in factors)
+                foreach (string factor in factorsList.Keys)
                   {
-                     List<string> nameValue = new List<string>(factor.Split('='));
-                     if (nameValue.Count > 1)
-                     {
                         XmlNode factorNode = constantsNode.OwnerDocument.CreateElement("constant");
                         constantsNode.AppendChild(factorNode);
-                        XmlHelper.SetAttribute(factorNode, "name", nameValue[0]);
-                        factorNode.InnerText = nameValue[1];
-                     }
+                        XmlHelper.SetAttribute(factorNode, "name", factor);
+                        factorNode.InnerText = factorsList[factor];
                   }
                 constantsComponent.Contents = componentNode.OuterXml;
             }
@@ -253,7 +303,7 @@ namespace ApsimFile
         if (destFolder != "" && Directory.Exists(destFolder))
             Directory.SetCurrentDirectory(destFolder);
 
-        string SimFileName = ApsimToSim.WriteSimFile(Simulation, arch);
+        string SimFileName = ApsimToSim.WriteSimFile(Simulation, Configuration.getArchitecture());
         SimFactorItem itm = new SimFactorItem(Simulation.Name, SimFileName);
         SimFiles.Add(itm);    
         //return simulation name to it's original
@@ -317,10 +367,9 @@ namespace ApsimFile
            }
         }
        
-        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch, string destFolder)
+        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, 
+		                             SortedDictionary<string, string> factorsList, SortedDictionary<string, string> factorsToMatch, ref int counter, int totalCount,  string destFolder)
         {
-            if (factorsList != "")
-                factorsList += ";";
             foreach (string par in Parameters)
             {
                 //replace each target that is within the provided simulation with the child's xml
@@ -354,15 +403,18 @@ namespace ApsimFile
                         targetComp.Contents = variablesNode.OuterXml;
                     }
                 }
+                SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+				myFactors.Add(Variable.Name, par);
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch, destFolder);
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, myFactors, factorsToMatch, ref counter, totalCount, destFolder);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch, destFolder);
+                    if (factorsToMatch == null || FactorsMatch(myFactors, factorsToMatch))
+                        CreateJobFromSimulation(SimFiles, Simulation, myFactors, ref counter, totalCount,  destFolder);
                 }
             }
         }
@@ -427,7 +479,6 @@ namespace ApsimFile
             else
             {
                 FactorItem lastItem = null;
-                List<FactorItem> items = new List<FactorItem>();
                 ProcessFactorNodes(factorial, ref lastItem, ref factorItems, SimulationPath);
             }
             return factorItems;
@@ -634,18 +685,28 @@ namespace ApsimFile
     }
     public class Factor
     {
-        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, Component FactorComponent, string SimulationPath, string destFolder = "")
+        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, 
+		                                               Component FactorComponent, string SimulationPath, string destFolder = "")
         {
             if (FactorComponent == null)
                 throw new Exception("Error initialising Factorials");
 
             if (FactorComponent.ChildNodes.Count > 0)
             {
+                SortedDictionary<string, string> myFactors = null;
+				if (SimulationPath.Contains("@factorial=")) {
+					string[] X = SimulationPath.Split(new string[] {"@factorial="}, StringSplitOptions.None);
+					SimulationPath = X[0];
+					var str = X[1].Trim(new char[] {'\'', ' '});
+					myFactors = new SortedDictionary<string, string>(str.Split(';').Select(s => s.Split('=')).ToDictionary(a => a[0].Trim(), a => a[1].Trim()));
+				}
+				
                 Component Simulation = copiedFile.Find(SimulationPath);
                 try
                 {
                     FactorBuilder builder = new FactorBuilder();
                     List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
+					
                     int counter = 0;
                     double totalCount = 0;
                     foreach (FactorItem item in items)
@@ -653,10 +714,12 @@ namespace ApsimFile
                     
                     foreach (FactorItem item in items)
                     {
-                        string factorsList = "";
-
-                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, (int)totalCount, Configuration.getArchitecture(), destFolder);
+                        SortedDictionary<string, string> factors = new SortedDictionary<string, string>();
+                        item.Process(SimFiles, Simulation, SimulationPath, factors, myFactors, ref counter, (int)totalCount, destFolder);
                     }
+
+                    if (SimFiles.Count == 0 && myFactors != null) 
+						throw new Exception(" Factor level '" + FactorItem.ToKVString(myFactors) + "' isnt present");
                 }
                 catch (Exception ex)
                 {
