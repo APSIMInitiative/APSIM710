@@ -775,10 +775,11 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
       std::string matchName;
       std::string componentName;
 
+      // Obtain the fully-qualified component name
       if (matches[i]->getComponentID() == componentID)
          componentName = getFQName();
-      else if (components.find(matches[i]->getComponentID()) != components.end())
-         componentName = components[matches[i]->getComponentID()]->getName();
+      else
+         componentName = registry.componentByID(matches[i]->getComponentID());
 
       if (componentName == "")
          matchName = matches[i]->getName();

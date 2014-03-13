@@ -500,7 +500,6 @@ void CMPComponentInterface::query(const std::string& pattern, std::vector<QueryM
       MessageData returnInfoData(*messages[i]);
 		unpack(returnInfoData, returnInfo);
       QueryMatch queryMatch;
-      queryMatch.owner = ApsimRegistry::getApsimRegistry().componentByID(returnInfo.ID);
       queryMatch.name = returnInfo.name;
       queryMatch.ddml = returnInfo.type;
 
@@ -547,7 +546,6 @@ void CMPComponentInterface::queryVariable(const std::string& pattern, std::vecto
       MessageData returnInfoData(*messages[i]);
 		unpack(returnInfoData, returnInfo);
       QueryMatch queryMatch;
-      queryMatch.owner = ApsimRegistry::getApsimRegistry().componentByID(returnInfo.compID);
       queryMatch.name = returnInfo.name;
       queryMatch.ddml = returnInfo.type;
 

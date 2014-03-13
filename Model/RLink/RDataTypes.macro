@@ -273,18 +273,14 @@ extern "C" void DLLEXPORT STDCALL apsimQueryRaw(const char *e, int *numReturned,
 
    int numBytes = 0;
    for (unsigned int i = 0; i < resultArray.size(); i++) {
-   	  numBytes += 2 + resultArray[i].owner.length() + 1 + resultArray[i].name.length() + resultArray[i].ddml.length();
+   	  numBytes += 2 + resultArray[i].name.length() + resultArray[i].ddml.length();
    }
 
    *returned = (numBytes == 0) ? NULL : (char *) malloc(numBytes);
    char *buf = (char *) *returned;
    for (unsigned int i = 0; i <  resultArray.size(); i++)
    {
-   	  std::string fqn;
-   	  if (resultArray[i].name.find('.') != std::string::npos) 
-   	    fqn  = resultArray[i].name ;
-   	  else  
-   	    fqn  = resultArray[i].owner + "." + resultArray[i].name ;
+   	  std::string fqn = resultArray[i].name ;
       strcpy(buf, fqn.c_str()); buf += strlen(buf) + 1;
       strcpy(buf, resultArray[i].ddml.c_str()); buf += strlen(buf) + 1;
    }
