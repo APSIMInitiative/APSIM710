@@ -133,19 +133,19 @@ void grazComponent::onPrepare(void)
       green_leaf = green_stem = dead_leaf = dead_stem = -1.0;
 //        cout << "getAvail:" << endl;
       for (unsigned cohort = 0; cohort < avail.element.size(); cohort++) 
-        {
+      { 
 //        cout << avail.Cohorts[cohort].Organ << " " << avail.Cohorts[cohort].AgeID << endl;
         if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
-            Str_i_Eq(avail.element[cohort].AgeID , "live")) 
+            Str_i_Eq(avail.element[cohort].AgeID , "green")) 
            green_leaf = avail.element[cohort].Weight;        // comes in kg/ha
         else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "live"))
+                 Str_i_Eq(avail.element[cohort].AgeID , "green"))
            green_stem = avail.element[cohort].Weight;
         else if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "dead"))
+                 Str_i_Eq(avail.element[cohort].AgeID , "senesced"))
            dead_leaf = avail.element[cohort].Weight;
         else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "dead")) 
+                 Str_i_Eq(avail.element[cohort].AgeID , "senesced")) 
            dead_stem = avail.element[cohort].Weight;
         }
       if (green_leaf < 0 || green_stem < 0 || dead_leaf < 0 || dead_stem < 0 )
@@ -360,20 +360,20 @@ void grazComponent::update (void)
 
       pool.CohortID = pasture_source;
       pool.Organ = "leaf";
-      pool.AgeID = "live";
+      pool.AgeID = "green";
       pool.WeightRemoved = green_leaf_eaten;
       pool.Top = 0;
       pool.Bottom = 0;
       pool.Chem = "";
       dmEaten.element.push_back(pool);
-      pool.AgeID = "dead";
+      pool.AgeID = "senesced";
       pool.WeightRemoved = dead_leaf_eaten;
       dmEaten.element.push_back(pool);
       pool.Organ = "stem";
-      pool.AgeID = "live";
+      pool.AgeID = "green";
       pool.WeightRemoved = green_stem_eaten;
       dmEaten.element.push_back(pool);
-      pool.AgeID = "dead";
+      pool.AgeID = "senesced";
       pool.WeightRemoved = dead_stem_eaten;
       dmEaten.element.push_back(pool);
       string s;

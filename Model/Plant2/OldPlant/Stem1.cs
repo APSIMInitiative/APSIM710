@@ -420,9 +420,9 @@ public class Stem1 : BaseOrgan1, AboveGround
             {
                 if (Cohort.Organ.Equals(My.Name, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (Cohort.AgeID.Equals("live", StringComparison.CurrentCultureIgnoreCase))
+                    if (Cohort.AgeID.Equals(LIVE_BIOMASS, StringComparison.CurrentCultureIgnoreCase))
                         GreenRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Live, My.Name);
-                    else if (Cohort.AgeID.Equals("dead", StringComparison.CurrentCultureIgnoreCase))
+                    else if (Cohort.AgeID.Equals(DEAD_BIOMASS, StringComparison.CurrentCultureIgnoreCase))
                         SenescedRemoved = Util.RemoveDM(Cohort.WeightRemoved * Conversions.kg2gm / Conversions.ha2sm, Dead, My.Name);
                 }
             }

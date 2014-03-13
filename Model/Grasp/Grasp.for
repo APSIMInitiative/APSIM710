@@ -2118,7 +2118,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%num_element = 4
       g%dmAvailable%element(1)%CohortID = p%crop_type
       g%dmAvailable%element(1)%organ = 'leaf'
-      g%dmAvailable%element(1)%AgeID = 'live'
+      g%dmAvailable%element(1)%AgeID = 'green'
       g%dmAvailable%element(1)%Bottom = 0.0
       g%dmAvailable%element(1)%Top =    g%canopy_height
       g%dmAvailable%element(1)%Chem =   'digestible'
@@ -2130,7 +2130,7 @@ c      need to be changed. FIXME!
 
       g%dmAvailable%element(2)%CohortID = p%crop_type
       g%dmAvailable%element(2)%organ = 'leaf'
-      g%dmAvailable%element(2)%AgeID = 'dead'
+      g%dmAvailable%element(2)%AgeID = 'senesced'
       g%dmAvailable%element(2)%Bottom = 0.0
       g%dmAvailable%element(2)%Top =    g%canopy_height
       g%dmAvailable%element(2)%Chem =   'digestible'
@@ -2142,7 +2142,7 @@ c      need to be changed. FIXME!
 
       g%dmAvailable%element(3)%CohortID = p%crop_type
       g%dmAvailable%element(3)%organ = 'stem'
-      g%dmAvailable%element(3)%AgeID = 'live'
+      g%dmAvailable%element(3)%AgeID = 'green'
       g%dmAvailable%element(3)%Bottom = 0.0
       g%dmAvailable%element(3)%Top =    g%canopy_height
       g%dmAvailable%element(3)%Chem =   'digestible'
@@ -2154,7 +2154,7 @@ c      need to be changed. FIXME!
 
       g%dmAvailable%element(4)%CohortID = p%crop_type
       g%dmAvailable%element(4)%organ = 'stem'
-      g%dmAvailable%element(4)%AgeID = 'dead'
+      g%dmAvailable%element(4)%AgeID = 'senesced'
       g%dmAvailable%element(4)%Bottom = 0.0
       g%dmAvailable%element(4)%Top =    g%canopy_height
       g%dmAvailable%element(4)%Chem =   'digestible'
@@ -3956,16 +3956,16 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
       deadStemPart = 0
       do pool = 1, RemovedByAnimal%num_element
         if (RemovedByAnimal%element(pool)%organ .eq. 'leaf' .and.
-     :      RemovedByAnimal%element(pool)%AgeID .eq. 'live') then
+     :      RemovedByAnimal%element(pool)%AgeID .eq. 'green') then
            greenLeafPart = pool
         elseif (RemovedByAnimal%element(pool)%organ .eq. 'leaf' .and.
-     :          RemovedByAnimal%element(pool)%AgeID .eq. 'dead') then
+     :     RemovedByAnimal%element(pool)%AgeID .eq. 'senesced') then
            deadLeafPart = pool
         elseif (RemovedByAnimal%element(pool)%organ .eq. 'stem' .and.
-     :          RemovedByAnimal%element(pool)%AgeID .eq. 'live') then
+     :        RemovedByAnimal%element(pool)%AgeID .eq. 'green') then
            greenStemPart = pool
         elseif (RemovedByAnimal%element(pool)%organ .eq. 'stem' .and.
-     :          RemovedByAnimal%element(pool)%AgeID .eq. 'dead') then
+     :     RemovedByAnimal%element(pool)%AgeID .eq. 'senesced') then
            deadStemPart = pool
         endif
       end do

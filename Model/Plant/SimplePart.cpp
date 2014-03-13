@@ -476,7 +476,7 @@ void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
 
    cohort.CohortID = plant->Name();
    cohort.Organ = myName;
-   cohort.AgeID = "live";
+   cohort.AgeID = "green";
    cohort.Bottom = 0.0;
    cohort.Top =    height();
    cohort.Chem =   "digestible";
@@ -486,7 +486,7 @@ void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
    cohort.S =      0.0;
    cohort.AshAlk = 0.0;
    avail.element.push_back(cohort);
-   cohort.AgeID = "dead";
+   cohort.AgeID = "senesced";
    cohort.Weight = Senesced.DM()* gm2kg / sm2ha;
    cohort.N =      Senesced.N()* gm2kg / sm2ha;
    cohort.P =      Senesced.P()* gm2kg / sm2ha;
@@ -498,10 +498,10 @@ void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm)
    {
       if (Str_i_Eq(cohort->Organ, myName) )
          {
-         if (Str_i_Eq(cohort->AgeID, "live") )
+         if (Str_i_Eq(cohort->AgeID, "green") )
             {//cout << myName << " avail = " << Green.DM() << ", wt removed = " << cohort->WeightRemoved << endl;
             giveDmGreenRemoved(  cohort->WeightRemoved * kg2gm / ha2sm);}
-         else if (Str_i_Eq(cohort->AgeID, "dead") )
+         else if (Str_i_Eq(cohort->AgeID, "senesced") )
              {//cout << myName << " avail = " << Senesced.DM() << ", wt removed = " << cohort->WeightRemoved << endl;
              giveDmSenescedRemoved( cohort->WeightRemoved * kg2gm / ha2sm);}
          }

@@ -5,6 +5,10 @@ using System.Text;
 
 abstract public class BaseOrgan1 : Organ1
 {
+    // match the strings from AvailableToAnimal type
+    protected const string LIVE_BIOMASS = "green";
+    protected const string DEAD_BIOMASS = "senesced";
+
     private Biomass _Live = null;
     private Biomass _Dead = null;
 
