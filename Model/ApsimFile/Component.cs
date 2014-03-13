@@ -192,6 +192,8 @@ namespace ApsimFile
                 string OuterContents = "<" + Type;
                 if (Name != Type)
                     OuterContents += " name=\"" + Name + "\"";
+                if (!Enabled)
+                    OuterContents += " enabled=\"no\"";
                 OuterContents += ">";
 
                 // Get the absolute base component.
