@@ -1,4 +1,4 @@
-<folder version="36" name="simulations">
+<folder version="36" creator="Apsim 7.6-r3301" name="simulations">
   <simulation name="Wether Lucerne Supplement">
     <metfile name="met">
       <filename name="filename" input="yes">%Apsim%/Examples/MetFiles/Goond.met</filename>
@@ -10,11 +10,12 @@
     <summaryfile />
     <area name="paddock">
       <Soil>
-        <Comment type="multiedit" description="Comments">estimated cotton LL</Comment>
-        <WaterFormat>VolumetricPercent</WaterFormat>
-        <SoilType description="Soil description">Black Vertosol</SoilType>
+        <RecordNumber>0</RecordNumber>
+        <SoilType>Black Vertosol</SoilType>
         <Site>Generic</Site>
         <Region>South East Queensland</Region>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
         <Water>
           <SoilCrop name="wheat">
             <Thickness>
@@ -1417,12 +1418,12 @@
             <cultivar type="cultivars" description="Enter cultivar : ">sceptre</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
         if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
          endif
-               </text>
+  </text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1438,19 +1439,20 @@
             <buy_age type="text" description="Age (months) : ">12</buy_age>
             <buy_weight type="text" description="Weight (kg) : ">45</buy_weight>
           </ui>
-          <script name="init">
+          <script>
             <text>
                sheep_presence = 'off'
-            </text>
+               outputfile do_output
+               abort run</text>
             <event>init</event>
           </script>
-          <script name="start_of_day">
-            <text><![CDATA[
-        if ([herbage_module].biomass >= [buy_feed_on_offer] AND sheep_presence = 'off') then
+          <script>
+            <text>
+        if ([herbage_module].biomass &gt;= [buy_feed_on_offer] AND sheep_presence = 'off') then
            [stockmodule]scienceconverter buystock number = [buy_number] (-), genotype = '[genotype]', sex = [sex], age = [buy_age] (months), weight = [buy_weight] (kg)
            sheep_presence = 'on'
          endif
-               ]]></text>
+               </text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1480,7 +1482,7 @@
             <max_feed_rate type="text" description="Maximum rate of feeding in kg FW/day; 1.0 is sensible for sheep : ">1</max_feed_rate>
             <feed_name type="list" listvalues="'barley- crushed','barley- whole','barley straw','beans- field','bran','brewers grains','canola meal','canola straw','citrus pulp- dry','coconut meal','cottonseed- whole','cottonseed meal','fish meal','groundnut meal','hay','lucerne pellets','lupins','linseed meal','maize','maize bran','maize gluten fd','maize straw','molasses','oats- crushed','oats- whole','oat bran','oat chaff','oat straw','peas','pea pod meal','pea straw','pellets','rice- crushed','rice- whole','rice bran','rice straw','rye','safflower meal','silage','sorghum','sorghum- whole','soya bean meal','sunflower meal','tallow','triticale- crushed','triticale- whole','urea','vetch grain','wheat- crushed','wheat- whole','wheat chaff','wheat pollard','wheat straw'" description="Name of the supplement to purchase : ">'lupins'</feed_name>
           </ui>
-          <script name="init">
+          <script>
             <text>
          FALSE = 0
          TRUE = 1
@@ -1494,8 +1496,8 @@
             </text>
             <event>init</event>
           </script>
-          <script name="start_of_day">
-            <text><![CDATA[
+          <script>
+            <text>
          dlt_cond_score = cond_score_all - yest_cond_score_all
          yest_cond_score_all = cond_score_all
             if (feeding = TRUE AND cond_score_all = 0.0) then
@@ -1503,10 +1505,10 @@
                feeding = FALSE
             endif
 
-            if (dlt_cond_score[[days]] < [crit_condition_change] AND crit_cs <= 0.0) then
+            if (dlt_cond_score[[days]] &lt; [crit_condition_change] AND crit_cs &lt;= 0.0) then
                crit_cs = cond_score_all
             endif
-            if ((feeding = FALSE) AND (cond_score_all < crit_cs)) then
+            if ((feeding = FALSE) AND (cond_score_all &lt; crit_cs)) then
                feeding = TRUE
                feed_rate = initial_feed_rate
             else
@@ -1515,12 +1517,12 @@
 
             if (feeding = TRUE) then
                feed_rate = feed_rate - feed_rate_factor * (cond_score_all + dlt_cond_score*est_lag_days - crit_cs)
-               if (feed_rate > [max_feed_rate]) then
+               if (feed_rate &gt; [max_feed_rate]) then
                   feed_rate = [max_feed_rate]
-               elseif (feed_rate < 0.0) then
+               elseif (feed_rate &lt; 0.0) then
                   feed_rate = 0.0
                endif
-               if (feed_rate > 0) then
+               if (feed_rate &gt; 0) then
                    feed_amount = feed_rate * number_all
                    [supplementmodule]scienceconverter feedsupplement  supplement = [feed_name], amount = feed_amount
                else
@@ -1530,7 +1532,7 @@
                feed_rate = 0.0
             endif
 
-               ]]></text>
+               </text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1542,13 +1544,13 @@
             <sell_on_weight_loss type="text" description="Weight (losing) : ">40</sell_on_weight_loss>
             <sell_number type="text" description="Number of stock : ">15</sell_number>
           </ui>
-          <script name="start_of_day">
-            <text><![CDATA[
-        if ((stock.weight >= [sell_on_weight_gain] OR stock.weight <= [sell_on_weight_loss]) AND sheep_presence = 'on') then
+          <script>
+            <text>
+        if ((stock.weight &gt;= [sell_on_weight_gain] OR stock.weight &lt;= [sell_on_weight_loss]) AND sheep_presence = 'on') then
            [stockmodule]scienceconverter sellstock number = [sell_number] (-)
            sheep_presence = 'off'
         endif
-               ]]></text>
+               </text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -1560,24 +1562,24 @@
         <filename output="yes">Wether Lucerne Supplement.out</filename>
         <title>Wether Lucerne Supplement</title>
         <variables name="My Variables">
-          <variable array="?" description="Date (dd/mmm/yyyy)">dd/mmm/yyyy as Date2</variable>
-          <variable array="Year" description="Year">year</variable>
-          <variable array="?" description="Dry matter of feed on offer (kg/ha)">dm_feed_on_offer()</variable>
-          <variable array="?" description="Dry matter of feed removed (kg/ha)">dm_feed_removed()</variable>
-          <variable array="?">stock.age</variable>
-          <variable array="?">stock.wt_change</variable>
-          <variable array="?">stock.weight</variable>
-          <variable array="?">stock.sex</variable>
-          <variable array="?">stock.past_intake</variable>
-          <variable array="?">stock.number</variable>
-          <variable array="?">stock.cond_score_all</variable>
-          <variable array="?">stock.past_intake_all</variable>
-          <variable array="?">stock.supp_intake_all</variable>
-          <variable array="?">stock.fleece_wt_all</variable>
-          <variable array="?">stock.fibre_diam_all</variable>
-          <variable array="?" description="Biomass">lucerne.biomass</variable>
-          <variable array="?" description="Plant stage">lucerne.stage</variable>
-          <variable array="?" description="Leaf area index">lucerne.lai</variable>
+          <variable>dd/mmm/yyyy as Date2</variable>
+          <variable>year</variable>
+          <variable>dm_feed_on_offer()</variable>
+          <variable>dm_feed_removed()</variable>
+          <variable>stock.age</variable>
+          <variable>stock.wt_change</variable>
+          <variable>stock.weight</variable>
+          <variable>stock.sex</variable>
+          <variable>stock.past_intake</variable>
+          <variable>stock.number</variable>
+          <variable>stock.cond_score_all</variable>
+          <variable>stock.past_intake_all</variable>
+          <variable>stock.supp_intake_all</variable>
+          <variable>stock.fleece_wt_all</variable>
+          <variable>stock.fibre_diam_all</variable>
+          <variable>lucerne.biomass</variable>
+          <variable>lucerne.stage</variable>
+          <variable>lucerne.lai</variable>
         </variables>
         <events name="My Variables Events">
           <event>daily</event>
