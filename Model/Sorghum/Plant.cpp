@@ -32,6 +32,7 @@ void Plant::initialize(void)
    dltDeadPlants = 0.0;
    vpd = 0.0;
    radnIntercepted  = 0.0;
+   ftn =    0.0;
    }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
