@@ -117,6 +117,7 @@ public class JobRunner
                 catch (Exception err)
                 {
                     Console.WriteLine("JobRunner exception when talking to " + Macros["Server"] + ":" + Macros["Port"] + " - " + err.Message + err.StackTrace);
+					OK = false;
                     Thread.Sleep(5000);
                 }
                 if (AutoClose && NumServerConnectErrors > 2)
