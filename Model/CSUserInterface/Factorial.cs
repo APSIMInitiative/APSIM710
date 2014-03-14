@@ -49,13 +49,10 @@ namespace CSUserInterface
                     treeNode.SelectedImageIndex = 0;
                     foreach(FactorItem item in items)
                     {
-                        List<String> factorials = new List<string>();
-                       string factorsList = ""; 
-                       int counter = 0;
-
-                       item.CalcFactorialList(factorials, factorsList, ref counter);
+                       List<String> factorials = new List<string>();
+                       item.CalcFactorialList(factorials);
                        AddFactorsToTreeNode(item, treeNode, factorials);
-                       tmpCounter += counter;
+                       tmpCounter += factorials.Count;
                     }
                 }
                 iTotalCount += tmpCounter;

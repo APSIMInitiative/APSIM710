@@ -51,36 +51,43 @@ namespace ApsimFile
                 return 1;
             return FactorComponent.ChildNodes.Count; 
         }
-        public virtual void CalcFactorialList(List<String> factorials, string factorsList, ref int counter)
+        
+        public virtual void CalcFactorialList(List<String> factorials)
         {
-           if (factorsList != "")
-              factorsList += ", ";
+			SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>();
+			CalcFactorialList(factorials, myFactors);
+			
+		}
+        public virtual void CalcFactorialList(List<String> factorials, SortedDictionary<string, string> factorsList)
+        {
            if (FactorComponent.Type == "folder")
            {
+				SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+				myFactors.Add(FactorComponent.Name, FolderLevel);
                if (NextItem != null)
                {
                    //call next factor in the list
-                   NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + FolderLevel, ref counter);
+                   NextItem.CalcFactorialList(factorials, myFactors);
                }
                else
                {
-                   ++counter;
-                   factorials.Add(factorsList + FactorComponent.Name + " = " + FolderLevel);
+                   factorials.Add(FactorItem.ToKVString(myFactors));
                }
            }
            else
            {
                foreach (Component child in FactorComponent.ChildNodes)
                {
+					SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+					myFactors.Add(FactorComponent.Name, child.Name);
                    if (NextItem != null)
                    {
                        //call next factor in the list
-                       NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + child.Name, ref counter);
+                       NextItem.CalcFactorialList(factorials, myFactors);
                    }
                    else
                    {
-                       ++counter;
-                       factorials.Add(factorsList + FactorComponent.Name + " = " + child.Name);
+                       factorials.Add(FactorItem.ToKVString(myFactors));
                    }
                }
            }
@@ -347,27 +354,26 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                 return NextItem.CalcCount() * Parameters.Count;
             return Parameters.Count;
         }
-        public override void CalcFactorialList(List<String> factorials, string factorsList, ref int counter)
+        public override void CalcFactorialList(List<String> factorials,  SortedDictionary<string, string> factorsList)
         {
-            if (factorsList != "")
-                factorsList += ", ";
-
             foreach (string par in Parameters)
             {
+			  SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+			  myFactors.Add(Variable.Name, par);
+
               if (NextItem != null)
               {
                  //call next factor in the list
-                 NextItem.CalcFactorialList(factorials, factorsList + Variable.Name + " = " + par, ref counter);
+                 NextItem.CalcFactorialList(factorials, myFactors);
               }
               else
               {
-                 ++counter;
-                 factorials.Add(factorsList + Variable.Name + " = " + par);
+                 factorials.Add(FactorItem.ToKVString(myFactors));
               }
            }
         }
-       
-        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, 
+
+		public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, 
 		                             SortedDictionary<string, string> factorsList, SortedDictionary<string, string> factorsToMatch, ref int counter, int totalCount,  string destFolder)
         {
             foreach (string par in Parameters)
