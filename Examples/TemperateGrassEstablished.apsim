@@ -1,4 +1,4 @@
-<folder version="36" name="Simulations">
+<folder version="36" creator="Apsim 7.6-r3301" name="Simulations">
   <simulation name="TemperateGrassEstablished">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -9,6 +9,7 @@
     </clock>
     <summaryfile />
     <area name="paddock">
+      <paddock_area>100.0</paddock_area>
       <Soil name="SandyLoam">
         <Comment type="multiedit" description="Comments">Hopetoun Landcare site 2005; lower slope; OC estimated for all layers; OC*1.3; CLL field measured; Observed rooting depth 70cm</Comment>
         <SoilType description="Soil description">Sandy Loam</SoilType>
@@ -565,15 +566,6 @@
         </AusfarmPastureSeeds>
       </AusfarmPasture>
       <folder name="Manager">
-        <manager name="Area">
-          <ui>
-            <area type="text" description="Area of paddock (ha) :">100</area>
-          </ui>
-          <script name="Init">
-            <text>area = [area]</text>
-            <event>Init</event>
-          </script>
-        </manager>
         <manager name="Reset">
           <ui>
             <category description="When should a reset be done" type="category" />

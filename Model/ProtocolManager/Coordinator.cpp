@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <stack>
+#include <boost/lexical_cast.hpp>
 
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
@@ -78,6 +79,7 @@ Coordinator::Coordinator(void)
    afterInit2 = false;
    doTerminate = false;
    printReport = false;
+   area = 1.0;
    }
 
 // ------------------------------------------------------------------
@@ -137,6 +139,17 @@ void Coordinator::doInit1(const protocol::Init1Data &init1Data)
       {
       //cout << "Paddock \"" << getName() << "\":" << endl;
       cout << "Paddock:" << endl;
+      areaID = addRegistration(::respondToGet, componentID, "area", "<type kind=\"single\" unit=\"ha\"/>");
+      std::string areaStr = componentData->getProperty("parameters", "paddock_area");
+      stripLeadingTrailing(areaStr, " \r\n\t");
+      if (areaStr != "" && areaStr != "[area.paddock_area]")
+         {
+         try {area = boost::lexical_cast<float> (areaStr); }
+         catch(boost::bad_lexical_cast & /* e */)
+            {
+            throw std::runtime_error("Bad value for paddock area: " + areaStr);
+            }
+         }
       }
    printReport = simulationData.doPrintReport();
    readAllRegistrations();
@@ -1065,6 +1078,8 @@ void Coordinator::respondToGet(unsigned int& fromID, protocol::QueryValueData& q
          }
       sendVariable(queryValueData, comps);
       }
+   else if ((int)queryValueData.ID == areaID)
+       sendVariable(queryValueData, area);
    else
       protocol::Component::respondToGet(fromID, queryValueData);
       // sendQueryValueMessage(fromID, queryValueData.ID);

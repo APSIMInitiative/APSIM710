@@ -37,6 +37,8 @@ namespace CSUserInterface
 		// ----------------------------------
 		public override void OnRefresh()
 		{
+            panelArea.Visible = Data.Name.ToLower() == "area";
+
 			ListView.Clear();
 			ListView.LargeImageList = Controller.ImageList("LargeIcon");
 
@@ -62,7 +64,50 @@ namespace CSUserInterface
 					UIUtility.ListViewAPI.SetListViewImage(ListView, TempFileName, UIUtility.ImagePosition.TopLeft);
 				}
 			}
+            textBoxArea.Text = "1.0";  // Default to a 1 ha area if none is provided
+            if (panelArea.Visible && Data.HasChildNodes)
+            {
+                foreach (XmlNode Child in Data.ChildNodes)
+                {
+                    if (Child.Name.ToLower() == "paddock_area")
+                    {
+                        textBoxArea.Text = Child.InnerText;
+                        break;
+                    }
+                }
+            }
 		}
+
+        /// <summary>
+        /// Save all our changes back to Data
+        /// </summary>
+        public override void OnSave()
+        {
+            if (textBoxArea.Modified)
+            {
+                XmlNode newArea = Data.OwnerDocument.CreateElement("paddock_area");
+                newArea.InnerText = textBoxArea.Text;
+                double area;
+                if (!Double.TryParse(textBoxArea.Text, out area))
+                    MessageBox.Show("Cannot convert string: " + textBoxArea.Text + " to an area", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else
+                {
+                    XmlNode areaNode = null;
+                    foreach (XmlNode Child in Data.ChildNodes)
+                    {
+                        if (Child.Name.ToLower() == "paddock_area")
+                        {
+                            areaNode = Child;
+                            break;
+                        }
+                    }
+                    if (areaNode == null)
+                        Data.AppendChild(newArea);
+                    else
+                        Data.ReplaceChild(newArea, areaNode);
+                }
+            }
+        }
 
 		// ---------------------------------------------------------
 		// User has double clicked an item - show user interface

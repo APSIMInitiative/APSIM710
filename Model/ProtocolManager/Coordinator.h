@@ -35,6 +35,8 @@ class Coordinator : public protocol::Component
       string title;
       int titleID;
       int componentsID;
+      int areaID;
+      float area;
       static vector<int> componentOrders;
       bool doTerminate;
       bool printReport;
