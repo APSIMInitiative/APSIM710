@@ -1583,6 +1583,90 @@ public class Script
    }  
 }
        </text></manager2>
+<manager2 name="Furrow irrigation">
+	<ui>
+		<asw_depth type="text" description="Number of soil layers used in calculating SW deficit">6</asw_depth>
+		<crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">.7</crit_fr_asw>
+		<start type="text" description="The earliest date irrigation will be applied (dd-mmm)">1-jan</start>
+		<end type="text" description="The latest date irrigation will be applied (dd-mmm)">31-dec</end>
+	</ui>
+	<text>// Applies irrigation into the second soil layer after a crop has been sown(lateral inflow from furrow into adjacent beds)
+// Irrigation is applied on a deficit defined by the number of soil layers (depth) and a deficit value [0-1]
+// Water is inserted lateral using "inflow" as would be expected under furrow irrigation of a crop on raised beds
+// Water applied is not reported as irrigation and requires a local variable to track applied irrigation
+// Local variable returned and available for reporting is: applied_furrow_irrigation
+
+using System;
+using ModelFramework;
+using CSGeneral;
+
+public class Script 
+{      
+   [Link] Irrigation Irrigation; 
+   [Input] DateTime today;
+   [Input] double[] dul_dep;     //drained upper limit (field capacity) 
+   [Input] double[] sw_dep;      //soil water
+   [Input] double[] ll15_dep;    //15 bar lower limit
+   [Input] int crop_in;
+   [Input] int DaysAfterSowing;  // Days after sowing used as a trigger to start irrigation
+
+
+   [Param] int asw_depth;        //available soilwater depth
+   [Param] double crit_fr_asw;   //critical fraction of available soilwater before applying irrigation
+
+   [Param] string start;         //no irrigation will be applied before this date
+   [Param] string end;           //no irrigation will be applied after this date
+
+   [Output] double[] inflow_lat;
+   [Output] double applied_furrow_irrigation;
+
+   // The following event handler will be called only once
+   [EventHandler] public void OnInitialised()
+   {
+      inflow_lat = new double[dul_dep.Length];
+      for(int i = 0; i &lt; dul_dep.Length; i++)
+      {
+         inflow_lat[i] = 0;
+      }      
+   }
+   // The following event handler will be called each day at the end of the day
+   [EventHandler] public void OnPost()
+   {
+      double SW_now = 0;
+      double CLL_now = 0;
+      double SW_full = 0;
+      double[] SW_add = new double[dul_dep.Length];
+
+      for(int i = 0; i &lt; asw_depth; i++)
+      {
+         SW_now = SW_now + sw_dep[i];
+         CLL_now = CLL_now + ll15_dep[i];
+         SW_full = SW_full + (dul_dep[i] - ll15_dep[i]);
+         SW_add[i] = dul_dep[i] - sw_dep[i];
+      }
+
+      //if the soil water deficit is greater than the critical SW fraction and today is within the irrigation window
+         if ((SW_now - CLL_now) &lt;= (SW_full * crit_fr_asw) &amp;&amp; DaysAfterSowing &gt; 0 &amp;&amp; DateUtility.WithinDates(start, today, end))
+
+      {
+         for(int i = 1; i &lt; asw_depth; i++)
+         {
+            inflow_lat[i] = SW_add[i] + (SW_add[0] / (asw_depth - 1));
+            applied_furrow_irrigation = applied_furrow_irrigation + inflow_lat[i];
+      }
+      }
+      else
+      {
+         for(int i = 0; i &lt; dul_dep.Length; i++)
+         {
+            inflow_lat[i] = 0;
+            applied_furrow_irrigation = 0;
+         }  
+      }
+   }  
+}
+	</text>
+</manager2>	   
 	   <manager2 name="Irrigate on event">
       <ui>
         <amount type="text" description="Amount of irrigation to apply (mm)">50</amount>
