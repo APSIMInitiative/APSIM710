@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Map.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > Map
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Map.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="Map.html" class="SkinObject">Map</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Map</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-529"><a name="529"></a>
+<div class="Invisible"><div id="dnn_ctr529_ContentPane"><!-- Start_Module_529 --><div id="dnn_ctr529_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr529_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;"><strong>How to Use Map</strong></p>
+<p>The Map module maps simulation soil layers onto output layers.<br />
+Numerical simulation of water and solute is likely to require many more layers than the user either wants to know about in the outputs or has data to compare against.<br />
+Map groups simulation layers into more useful output layers using an array of coefficients.<br />
+Output arrays may either be expressed as sums, averages, or concentrations of the contributing simulation layers.<br />
+Map can map the same array in several different ways (eg. Below nitrate, no3n, is converted to a sum, a concentration, and a concentration in the soil water) but there can be only one layer structure.<br />
+<br />
+<strong>Example</strong></p>
+<p>[test.map.parameters] </p>
+<p>arrays2sum_names = no3n nh4n dlayer </p>
+<p>arrays2ave_names = soil_temp </p>
+<p>arrays2conc_names = no3n </p>
+<p>arrays2concsw_names = no3n </p>
+<p>arrays2satpaste_names = </p>
+<p>core_start = 0 200 400 600 800&nbsp; </p>
+<p>core_end = 200 400 600 800 900</p>
+<p><strong>To Use Supply</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong><span style="text-decoration: underline;">arrays2sum</span></strong> A list of array names owned by other modules whose elements are to be summed into a more useful output range.<br />
+The name of the mapped array will be that of the original array but preceded by &lsquo;map_'. <br />
+Currently a maximum of 10 arrays can be summed. <br />
+<br />
+<br />
+<strong><span style="text-decoration: underline;">arrays2ave</span></strong> A list of array names owned by other modules whose elements are to be averaged into a more useful output range. <br />
+The name of the mapped array will be that of the original array but preceded by &lsquo;map_'.<br />
+Currently a maximum of 10 arrays can be averaged. <br />
+<br />
+<br />
+<strong><span style="text-decoration: underline;">arrays2conc</span></strong> A list of array names owned by other modules whose elements are to be converted into concentrations in the soil volume.<br />
+The name of the mapped array will be that of theoriginal array but preceded by &lsquo;conc_'. <br />
+Currently a maximum of 10 arrays can be converted to concentrations. <br />
+<br />
+<br />
+<strong><span style="text-decoration: underline;">arrays2concsw</span></strong> As above except the concentrations will be expressed as the concentration in the soil water. <br />
+The name of the mapped array will be that of the original array but preceded by &lsquo;concsw_'.<br />
+Currently a maximum of 10 arrays can be converted to concentrations. <br />
+<br />
+<br />
+<strong><span style="text-decoration: underline;">arrays2satpaste</span></strong> As above except the concentrations will be expressed as the concentration in a saturation paste. <br />
+Because there is no standard method of estimating the saturation paste water content from the soil's hydraulic properties the user must supply that water content. <br />
+Map will look for an array, satpaste_wc &ndash; the saturation paste gravimetric water content &ndash; units of g /g, to be provided from another module (e.g. Manager, Input). <br />
+The name of the mapped array will be that of the original array but preceeded by &lsquo;satpaste_'. <br />
+Currently a maximum of 10 arrays can be converted to saturation paste concentrations. <br />
+<br />
+<br />
+<strong><span style="text-decoration: underline;">core_start/core_end</span></strong> A list of the start and end depths (in mm) for each layer for which you want values reported.<br />
+There can be only one if you want - this is a simple way of finding the total amount of a substance to some depth which is not the simulation depth. <br />
+The depths do not have to be contiguous, there can be gaps on the layers, the layers do not have to be in increasing depth order, point depths (core_start = core_end) are acceptable (and in this case all Map does is to find the appropriate layer). <br />
+The only requirements are that there are pairs of core_start and core_end and that for any pair core_start &lt;= core_end.</p>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+</div>
+
+</div><!-- End_Module_529 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Map.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+</html>

@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/StockModuleDocumentation/Stock.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:19 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Stock Module Documentation > Stock
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/StockModuleDocumentation/Stock.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../StockModuleDocumentation.html" class="SkinObject">Stock Module Documentation</a><span class="Sep"></span><a href="Stock.html" class="SkinObject">Stock</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Stock</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-557"><a name="557"></a>
+<div class="Invisible"><div id="dnn_ctr557_ContentPane"><!-- Start_Module_557 --><div id="dnn_ctr557_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr557_HtmlModule_lblContent" class="Normal">
+	<h1><a name="_Toc350328247">Introduction</a></h1>
+<p>The Stock component in Apsim is taken from the Stock component in a CSIRO sister product to Apsim called AusFarm.<br />
+AusFarm is produced by the GrazPlan Decision Support Software group in CSIRO (Division of Plant Industry).<br />
+<a href="../../external.html?link=http://www.grazplan.csiro.au/">GrazPlan Official Website</a><br />
+<br />
+The Ausfarm-Stock (Stock) component is used in APSIM to graze APSIM-Plant derived crops, such as Lucerne, Lablab and Wheat.<br />
+<br />
+The Ausfarm-Supplement (Supplement) component can also be used as a supplementary feed source for stock.&nbsp;<br />
+<br />
+Management operations can be carried out such as buying and selling of stock, supplementary feeding and moving stock to another paddock.&nbsp;<br />
+<br />
+Currently the paddock sizes are fixed at one hectare.<br />
+<br />
+To use Stock in an APSIM simulation,&nbsp;three&nbsp;companion APSIMUI components are required</p>
+<p>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StockScienceConverter,</p>
+<p>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StockHerbageConverter&nbsp;and</p>
+<p>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FarmwiseSequencer.&nbsp;</p>
+<p> e.g.<br />
+<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image001.png" /><br />
+<br />
+<br />
+When Supplement is used, its companion&nbsp;<strong>SupplementScienceConverter</strong>&nbsp;is also required. e.g.<br />
+<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image002.png" /><br />
+<br />
+All of these components&nbsp;are found in the APSIMUI Standard Toolbox in the Animals Folder.&nbsp;e.g.<br />
+<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image003.png" /><br />
+<br />
+A sample simulation (Wether_Lucerne_Supplement) of grazing wethers on lucerne with supplementary feeding of wheat is provided under the<em>New</em>&nbsp;menu.<a href="../../../index-2.html"></a></p>
+<h1><a name="_Toc350328248">APSIMUI components</a><a href="../../../index-2.html"></a></h1>
+<h2>Stock</h2>
+<p> The Stockcomponent initialises with default properties and no animals.</p>
+<h2><span style="font-size: 16px;"><br />
+StockScienceConverter</span></h2>
+<p> The StockScienceConverter initialises with the values specified in its properties grid.&nbsp;e.g.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image004.png" /><br />
+<a href="../../../index-2.html"></a><strong></strong></p>
+<h2>StockHerbageConverter</h2>
+<p> The StockHerbageConverter initialises with the values specified in its properties grid. e.g.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image005.png" /></p>
+<p><a href="../../../index-2.html"></a></p>
+<h2>FarmwiseSequencer</h2>
+<p> The FarmwiseSequencer initialises with properties specified in its INI file.&nbsp;These properties translate APSIM events to Ausfarm events and should only be altered after consultation with the SEG.<a href="../../../index-2.html"></a></p>
+<h2>Supplement</h2>
+<p> Supplement initialises with the values specified in its properties grid. e.g.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image006.png" /></p>
+<p>The supplement store properties define the initial values of each supplement being used in the simulation. e.g.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image007.png" /><br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<h2>SupplementScienceConverter</h2>
+<p> <br />
+The SupplementScienceConverter initialises with values specified in its properties grid.&nbsp;e.g.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image008.png" /></p>
+<p>Pre-defined management rules of stock (cattle and sheep) and supplement feeding are found in the Stock folder under the Management folder in the Standard Toolbox.&nbsp;e.g.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image009.png" /><br />
+<br />
+<br />
+Pre-defined cattle management rules for buying, selling and moving stock.<br />
+<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image010.png" /><br />
+<br />
+Pre-defined sheep management rules for buying and selling stock.<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image011.png" /><br />
+<br />
+<br />
+Pre-defined supplement management rules for buying, mixing and feeding stock.<br />
+<br />
+<img alt="" src="../../portals/0/Documentation/Stock/image012.png" /><br />
+<br />
+<br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<h1><a name="_Toc350328249">Stock Component Description</a></h1>
+<p> <a href="../../external.html?link=http://www.apsim.info/Portals/0/Documentation/Stock Component Description.pdf">See the "Stock Component Description" PDF (also comes with your AusFarm installation)&nbsp;<br />
+</a><span style="font-size: 18px;"><br />
+Drivers for the Stock Component</span></p>
+<h2>Environmental information</h2>
+<p> The Stock component implements alternative interfaces to obtain weather data;&nbsp;<br />
+I have only provided the APSIM-compatible interface here.&nbsp;</p>
+<table cellspacing="10" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p>Property</p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p>Type</p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p>Units</p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p>Permitted number of values</p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p>Description</p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>time</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>record</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Current time step in standard format.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>latitude</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>deg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Latitude (south is negative).</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>daylength</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>hr</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Day length including civil twilight.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>maxt</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>oC</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Maximum air temperature.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>mint</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>oC</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Minimum air temperature.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>rain</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>mm</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Precipitation in all forms other than snow.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>wind</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>m/s</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Exactly 1</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Average wind speed</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p>waterlog</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Zero or more</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Waterlogging index for each paddock.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p> Note: The first&nbsp;six&nbsp;of these drivers will cause no difficulty.&nbsp;<br />
+<br />
+The&nbsp;wind&nbsp;driver is used in computing the energy requirement to maintain body temperature under cold conditions;<br />
+it can be set to (say) a constant 2.0 m/s if wind speed data are not available.&nbsp;<br />
+<br />
+The&nbsp;waterlog&nbsp;driver is an index that describes the degree of waterlogging of the soil (which is modelled as affecting the time spent grazing);<br />
+it is optional and can be ignored in your context.<br />
+<br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<p style="margin-bottom: 12pt; background: none repeat scroll 0% 0% white;"><span style="font-size: 16px;">Paddock information</span> </p>
+<table cellspacing="10" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Property</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Type</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Units</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Permitted number of values</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>area</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>ha</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Zero or more</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Area of each paddock.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>slope</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>deg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Zero or more</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Slope of each paddock</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p> In the Stock component, each group of animals is taken to reside in a paddock.&nbsp;<br />
+<br />
+The list of valid paddock names is obtained by looking for the components that have the&nbsp;area&nbsp;property and then obtaining the names of these components, i.e. a paddock is defined as any entity with an area.<br />
+If no component in the simulation has the&nbsp;area&nbsp;property, then the Stock component sets itself up with a single &ldquo;paddock&rdquo; that has the null string for its name, an area of 1.0 ha and zero slope.&nbsp;<br />
+<br />
+The&nbsp;slope&nbsp;values are used to compute the energy cost associated with movement.&nbsp;<br />
+<br />
+The usual configuration is to have the paddock components/systems at the same level in the component tree as the Stock component.&nbsp;<br />
+<br />
+<a href="../../../index-2.html"></a>Herbage information (plant2stock) <br />
+At each time step, the Stock component requests the&nbsp;plant2stock&nbsp;driving property. Each value of&nbsp;plant2stock&nbsp;is allocated to one of the paddocks by parsing the name of the component sending it. The herbage present in each paddock is then summarised before being used in the computations of animal intake. In the case where no paddocks have been identified, all the &ldquo;plant&rdquo; components that provide&nbsp;plant2stock&nbsp;are allocated to the null paddock.</p>
+<p>Once the intake rates of all animals have been computed, the rates for all animals in a paddock are summed and then allocated between the components in that paddock that provided a value for the&nbsp;plant2stock&nbsp;driver. Each such component is then sent a&nbsp;remove_herbage&nbsp;event that contains the rate of herbage removal for that plant component.&nbsp;</p>
+<p>The&nbsp;plant2stock&nbsp;driving property is a record with&nbsp;six&nbsp;fields:&nbsp;</p>
+<table cellspacing="10" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Field</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Type</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Units</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>herbage</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p><strong>array of records</strong></p>
+            </td>
+            <td style="padding: 0cm;"> </td>
+            <td style="padding: 0cm;">
+            <p>Mass and quality of the herbage on offer. The herbage is split into a number of pools that are distinguished by their DM digestibility; each of these pools is described by one element of the array. The fields of the sub-records are set out below.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>propn_green</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Proportion of the total herbage mass that is green</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>legume</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Proportion of the total herbage mass that is legume. Usually 0.0 or 1.0</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>select_factor</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Species-specific effect on the relationship between digestibility and voluntary intake. Typical values are 0.0 for C3 grasses and legumes and 0.16 for C4 grasses.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>seed</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p><strong>array of records</strong></p>
+            </td>
+            <td style="padding: 0cm;"> </td>
+            <td style="padding: 0cm;">
+            <p>Mass and quality of unripe and ripe seeds (elements 1 and 2, respectively). The fields of the sub-records are the same as for the&nbsp;<em>herbage&nbsp;</em>field.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>seed_class</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>array of integer4</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>&ldquo;Equivalent digestibility class&rdquo; for unripe and ripe seeds (elements 1 and 2, respectively). Valid values are 1-6 or 0, where 1 denotes that seeds will be selected at the same time as 80% digestible herbage, 2 corresponds to 70% herbage, etc. A zero value denotes that seeds are not grazed.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p> Both plant2stock:herbage&nbsp;and plant2stock:seed&nbsp;have&nbsp;array of records&nbsp;as a field.<br />
+The fields of the&nbsp;sub-records in them, are:&nbsp;</p>
+<table cellspacing="10" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Field</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Type</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Units</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>dm</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Mass (dry matter basis) of the herbage or seed pool</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>dmd</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Dry matter digestibility (0-1, not percentage)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>cp_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Crude protein concentration. Can be estimated as 6.25 x&nbsp;<a href="../../../index-2.html" title="N">N</a></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>p_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Phosphorus concentration. Can reasonably be estimated by assuming a fixed N:P ratio.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>s_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Sulphur concentration. Can reasonably be estimated by assuming a fixed N:S ratio.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>prot_dg</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Protein degradability. In the absence of better information, can be estimated as&nbsp;<em>dmd&nbsp;</em>+0.10</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>ash_alk</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>mol/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Ash alkalinity.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>height_ratio</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>An index of the bulk density of the herbage. The height ratio for herbage should be computed as 100/(0.03 x<em>BD</em>), where&nbsp;<em>BD&nbsp;</em>is the herbage bulk density in g/m 3 . This value should be set to 1.0 for seed pools.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p> One way to obtain a distribution of herbage mass into DMD classes is given on page 32 of the technical paper on&nbsp;GrazFeed&nbsp;that can be found at&nbsp;<br />
+<br />
+<a href="../../external.html?link=http://www.apsim.info/Portals/0/Documentation/TechPaperJan10.pdf">GrazFeed Technical Paper</a><br />
+<a href="../../../index-2.html"></a></p>
+<h3>Supplementary feed information (supp2stock)</h3>
+<p> At each time step, the Stock component requests the&nbsp;supp2stock&nbsp;driving property.&nbsp;This driving property is optional. The&nbsp;supp2stock&nbsp;property returns the amount and quality of supplementary feed that is present in each paddock. All animals resident in a paddock can access the corresponding quantity of supplementary feed (it is allocated between them in proportion to their maximum intake rate).&nbsp; To provide this property, include the Supplement component in the simulation.&nbsp;<br />
+<br />
+The&nbsp;supp2stock&nbsp;driving property is an&nbsp;array of records.&nbsp; Each&nbsp;sub-record has the following fields:&nbsp;</p>
+<table cellspacing="10" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Field</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Type</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Units</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color #999999; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #cccccc; padding: 1.1pt 2.7pt;">
+            <p style="text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>paddock</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>string</p>
+            </td>
+            <td style="padding: 0cm;"> </td>
+            <td style="padding: 0cm;">
+            <p>Name of a paddock</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>amount</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Amount of supplementary feed present in the paddock</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>roughage</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>boolean</p>
+            </td>
+            <td style="padding: 0cm;"> </td>
+            <td style="padding: 0cm;">
+            <p>TRUE i.f.f. the feed is a roughage.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>dm_content</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Dry matter content of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>dmd</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Dry matter digestibility of the feed (not including any portion that passes the gut undamaged).</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>me_content</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>MJ/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Metabolizable energy content of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>cp_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Crude protein content of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>prot_dg</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Protein degradability of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>p_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Phosphorus content of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>s_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Sulphur content of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>ee_conc</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Ether-extractable content of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>adip2cp</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Proportion of crude protein that is insoluble in acid detergent.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>ash_alk</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>mol/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Ash alkalinity of the feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm;">
+            <p><em>max_passage</em></p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>double</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>kg/kg</p>
+            </td>
+            <td style="padding: 0cm;">
+            <p>Maximum proportion of the feed that will pass undamaged through the gut of ruminants.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="background: none repeat scroll 0% 0% white;"> <a href="../../../index-2.html"></a></p>
+<h1><a name="_Toc350328250">DDML definitions</a></h1>
+<p style="background: none repeat scroll 0% 0% white;">This is for the programmers:&nbsp;<br />
+<span style="font-size: 16px;"><br />
+plant2stock:</span><br />
+<br />
+</p>
+<div class="reCodeBlock" style="border: 1px solid #7f9db9; overflow-y: auto;">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">type</code><code style="color: #000000;">&gt;</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code> <code style="color: #000000;">= </code><code style="color: blue;">"herbage"</code> <code style="color: #808080;">array</code><code style="color: #000000;">=</code><code style="color: blue;">"T"</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">element</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"dm"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/ha"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"dmd"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"cp_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"p_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"s_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"prot_dg"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"ash_alk"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"mol/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"height_ratio"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">element</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">field</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"propn_green"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"legume"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"select_factor"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code> <code style="color: #000000;">= </code><code style="color: blue;">"seed"</code> <code style="color: #808080;">array</code><code style="color: #000000;">=</code><code style="color: blue;">"T"</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">element</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"dm"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/ha"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"dmd"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"cp_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"p_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"s_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"prot_dg"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"ash_alk"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"mol/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"height_ratio"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">element</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">field</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code> <code style="color: #000000;">= </code><code style="color: blue;">"seed_class"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"integer4"</code> <code style="color: #808080;">array</code><code style="color: #000000;">=</code><code style="color: blue;">"T"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">type</code><code style="color: #000000;">&gt;</code></span></div>
+</div>
+<p> <br />
+<br />
+<span style="font-size: 16px;">supp2stock:</span><br />
+<br />
+</p>
+<div class="reCodeBlock" style="border: 1px solid #7f9db9; overflow-y: auto;">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">type</code> <code style="color: #808080;">array</code><code style="color: #000000;">=</code><code style="color: blue;">"T"</code><code style="color: #000000;">&gt; </code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">element</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"paddock"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"string"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"amount"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"roughage"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"boolean"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"dm_content"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"dmd"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"-"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt;' </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"me_content"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"MJ/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"cp_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"prot_dg"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"p_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"s_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"ee_conc"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"adip2cp"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"ash_alk"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"mol/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">field</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"max_passage"</code> <code style="color: #808080;">unit</code><code style="color: #000000;">=</code><code style="color: blue;">"kg/kg"</code> <code style="color: #808080;">kind</code><code style="color: #000000;">=</code><code style="color: blue;">"double"</code><code style="color: #000000;">/&gt; </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;</code><span style="margin-left: 6px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">element</code><code style="color: #000000;">&gt; </code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">type</code><code style="color: #000000;">&gt;</code></span></div>
+</div>
+</div>
+
+</div><!-- End_Module_557 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/StockModuleDocumentation/Stock.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:22 GMT -->
+</html>

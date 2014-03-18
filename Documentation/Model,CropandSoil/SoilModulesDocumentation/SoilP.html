@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilP.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > SoilP
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilP.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="SoilP.html" class="SkinObject">SoilP</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>SoilP</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-531"><a name="531"></a>
+<div class="Invisible"><div id="dnn_ctr531_ContentPane"><!-- Start_Module_531 --><div id="dnn_ctr531_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr531_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;"><strong>SoilP Module Scope</strong></p>
+<p>SoilP is a representation of the availability of phosphorus in soil that provides an index for the soil's ability to supply P to crops that can be used in crop modules to modify growth processes under P limiting conditions.<br />
+<br />
+The module is designed to handle inputs of fertiliser that are either immediately available or slow acting (e.g. rock phosphate), and the improved effectiveness of fertiliser due to placement effects.<br />
+<br />
+To link SoilP with the MANURE model, the MANURE module handles the release of P from manure on the soil surface as a function of time and moisture content.<br />
+This released P then becomes an input to the SoilP modules in the same manner that fertiliser P is an input. <br />
+Similarly the corresponding release of N from manure is transferred to the appropriate pools in SoilN. <br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>The dominant processes considered by SoilP are: </strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">loss of availability through time</li>
+    <li style="margin: 0cm 0cm 10pt;">removal by crops</li>
+    <li style="margin: 0cm 0cm 10pt;">addition by crop residues</li>
+    <li style="margin: 0cm 0cm 10pt;">mineralisation / immobilisation of soil organic P. </li>
+</ul>
+<p style="margin: 0cm 0cm 10pt;">SoilP is a multi-layer module that uses the same soil layer structure as SoilN. <br />
+This approach has been adopted in order that there can be a full accounting of the organic P components in the system. <br />
+<br />
+The availability of P in soil is dominantly influenced by the near-surface layers,<br />
+and crop response to fertiliser is often adequately described by soil tests, P sorption etc of surface soil samples, i.e. without consideration of subsoils. <br />
+<br />
+In most situations, <br />
+extractable P decreases with depth,<br />
+P sorption increases, <br />
+and root density decreases; <br />
+all three factors contribute to the relative unimportance of the subsoil for P nutrition. <br />
+<br />
+The multi-layer nature of the module requires assumptions to be made as to how P uptake by crops is to be partitioned between layers in the soil profile. <br />
+<br />
+<strong>SoilP Module History</strong></p>
+<p style="margin: 0cm 0cm 10pt;">Within the CARMASAT Project, there is a need to develop a capability for modelling the nutritional effects of manure,<br />
+and in particular to accommodate the effects of both nitrogen and phosphorus in manure on crop growth. <br />
+<br />
+In order that this can be achieved, an essential stepping stone is the incorporation into crop modules of routines that constrain growth under conditions of limiting P supply. <br />
+<br />
+This, in turn, requires a module that specifies the P supply from the soil, namely SoilP. <br />
+<br />
+<strong>Citations</strong></p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">Barrow, N.J. (1974). The slow reactions between soil and anions. 1. Effects of time, temperature, and water content of a soil on the decrease in effectiveness of phosphate for plant growth. <em>Soil Science</em> 118, 380-386.</li>
+    <li style="margin: 0cm 0cm 10pt;">Probert, M.E. (1985). A conceptual model for initial and residual responses to phosphorus fertilizers. <em>Fertilizer Research</em> <strong>6</strong>, 131-8. <em>(This paper contains the broad principles of how the availability of P is conceptualised in SOILP)</em></li>
+    <li style="margin: 0cm 0cm 10pt;">Probert, M.E. and Okalebo, J.R. (1992). Effects of phosphorus on the growth and development of maize. <em>In</em> &ldquo;A search for strategies for sustainable dryland cropping in semi-arid eastern Kenya&rdquo;. (Ed M.E. Probert). ACIAR Proceedings No 41. pp 55-62.</li>
+</ol>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilP Module Structure</strong></p>
+<p>
+<em></em></p>
+<p><em><img alt="" src="../../../portals/0/Documentation/Soil/image018.gif" />Figure 1. Schematic representation of the SoilP module showing the principal processes considered.</em> <br />
+<br />
+<strong>SoilP Module Components</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Initialising SoilP</strong></p>
+<p style="margin: 0cm 0cm 10pt;">Inputs required by the SoilP module are: </p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">Labile_p in each layer (ppm)</li>
+    <li style="margin: 0cm 0cm 10pt;">Sorption in each layer. These values are the total P sorbed at an equilibrium concentration of 1 ppm in solution, that is the value of <em>a</em> when the Freudlich equation is used to describe P sorption ( <em>Psorbed = ac b </em>).</li>
+    <li style="margin: 0cm 0cm 10pt;">Residue_cp which is the C:P ratio of the initial above ground crop residues.</li>
+    <li style="margin: 0cm 0cm 10pt;">Root_cp which is the C:P ratio of the initial roots.</li>
+</ul>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">Rate_dissol_rock_p which is the rate of dissolution of any rock phosphate present at initialisation. </li>
+    <li style="margin: 0cm 0cm 10pt;">The unavailable_p, banded_p and rock_p pools on a layer basis are optional inputs. In the absence of any of values, banded_p and rock_p will be initialised to zero and the unavailable_p pool will be set such that the labile_p <strong>&laquo; </strong>unavailable_p system is at a steady state. </li>
+</ul>
+<p>Currently labile_p is the only permitted input. In the future, input of extractable soil P (with options for different extractants) could be input and labile_p calculated. <br />
+<br />
+<br />
+<strong>Adding P as Fertiliser</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The nature of the P source and how it is placed determines how it modelled: </p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">water soluble and broadcast P is added into labile_p,</li>
+    <li style="margin: 0cm 0cm 10pt;">water soluble and placed P is added into banded_p,</li>
+    <li style="margin: 0cm 0cm 10pt;">any non water soluble P (eg rock phosphate) is added into rock_p </li>
+</ul>
+<p>Applied P fertiliser can be any combination of these three forms. <br />
+<br />
+</p>
+<p><strong>Processes of P in Soil</strong></p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;"><strong>Loss of availability with time</strong>. <br />
+    The rate for labile_p to unavail_P (and banded_p to unavail_p) is dependent on temperature and moisture (Barrow). <br />
+    The reverse process, unavail_p to labile_p will have a rate constant commensurate with the relative sizes of the two pools under steady state conditions.</li>
+    <li style="margin: 0cm 0cm 10pt;"><strong>Dissolution of rock_p</strong> to labile_p. <br />
+    The rate coefficient depends on the source and the soil type (soil pH, calcium status, etc.). <br />
+    It is an input for any source/soil combination.<br />
+    A typical value is about 0.2 yr <sup>-1</sup> .</li>
+    <li style="margin: 0cm 0cm 10pt;"><strong>Decrease in effect of placement with time</strong>, ie banded_p to labile_p. <br />
+    The effectiveness of placed P is assumed to decrease with time. <br />
+    Typically 50% of effect is lost in one year.<br />
+    A <strong>tillage event</strong> results in total transfer of banded_p to labile_p.</li>
+    <li style="margin: 0cm 0cm 10pt;"><strong>Mineralisation of organic P sources</strong>to labile P. <br />
+    This is linked to decomposition of carbon from HUM, BIOM and FOM pools of SoilN module and surface residues in Residue module. <br />
+    SoilP assumes constant C:P ratios in BIOM and HUM but tracks C:P ratios of FOM and surface residues as crops add residues of varying P concentration.</li>
+    <li style="margin: 0cm 0cm 10pt;"><strong>Removal of P by crop uptake</strong>. <br />
+    P uptake is taken from labile_p and banded_p in proportion to their contributions to effective_p (see below).</li>
+    <li style="margin: 0cm 0cm 10pt;"><strong>Addition of P by crop death/senescence</strong>. <br />
+    P in above and below ground parts of the plant are returned to the Residue and FOM pools respectively. </li>
+</ol>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Effective P in Soil</strong></p>
+<p>When P is banded, especially on soils of high sorptivity, it is more effective in increasing P uptake than a corresponding broadcast application. <br />
+<br />
+This effect is simulated in SoilP by placing a premium on banded-p. <br />
+<br />
+Hence, <br />
+effective_p = labile_p + eff_band * banded_p <br />
+<br />
+where, <br />
+eff_band is the relative effectiveness of banded_p (&gt;1) and would depend on the band spacing and the sorptivity of the soil.<br />
+Typically it is expected that eff_band has value of 2-3. <br />
+<br />
+<br />
+<strong>Module Interaction</strong></p>
+<p>An index of soil P status, as a function of effective_p, sorption, soil water, and rooting depth is made available to crop modules to determine whether the daily demand for P uptake can be met. <br />
+<br />
+SoilP receives back the actual P uptake for the day. </p>
+<p><a href="../../../index-2.html"></a><strong>SoilP Module Parameterisation</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Variable / Parameter </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Definition </strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>labile_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil P that is available for crop uptake </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>unavail_p (optional) </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil P that is not available for crop uptake but can become available with time to replenish P removal by crops. If not specified, then initialised to steady state. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>banded_p (optional) </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>water soluble fertiliser P applied as a band. If not specified then initialised to zero. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>rock_p (optional) </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>non water soluble fertiliser P. If not specified then initialised to zero. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>rate_dissol_rock_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>yr <sup>-1</sup></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>rate coefficient determining release of available P from non water soluble source </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>availP_ratio </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>- </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ratio of available P : unavailable P at a steady state </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sorption</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mg/kg </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil's P sorption characteristic </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>root_cp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>- </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>C:P ratio of roots at initialisation</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>residue_cp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>- </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>C:P ratio of surface residues at initialisation </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilP Module Dependencies</strong></p>
+<p>SOILP uses an APSIM water balance module (eg SOILWAT) to determine the soil water status. <br />
+<br />
+The dynamics of P in organic matter provided by SOILP requires the soil nitrogen (SOILN) and residue (RESIDUE) modules for carbon cycling.<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilP Module Outputs</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Variable Name </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description </strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>labile_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil P that is available for crop uptake </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>unavail_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil P that is not available for crop uptake but which can become available with time to replenish P removal by crops </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>banded_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>water soluble fertiliser P applied as a band </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>biom_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>hum_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fom_p </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>uptake_p_<strong><em>cropname</em></strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>P uptake for crop <strong><em>cropname</em></strong> </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p><strong>SoilP Module Special Considerations</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Simulation of crop growth under conditions of limiting P supply requires crop modules to provide the following:</p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">inclusion of P stress factors (derived from P content of the crop or part of crop, optimum and minimum P concentrations which are functions of stage of growth) <br />
+    to restrict growth rates and modify phenological development and partitioning of biomass between tops and roots</li>
+    <li style="margin: 0cm 0cm 10pt;">calculation of daily P uptake by crop which is passed to SoilP so that P can be taken up from appropriate pools/layers</li>
+    <li style="margin: 0cm 0cm 10pt;">when crop residues (tops or roots) cease to be part of the plant and are added to the soil or surface residues (e.g. at harvest or due to senescence), <br />
+    their P content has to be returned, along with mass and N content, to maintain the P balance for the crop/soil system.</li>
+</ol>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilP Module Validation</strong></p>
+<p>The qualitative response of SoilP in terms of decreasing availability with time, more rapid loss of availability at higher temperature, effect of P sorption on crop uptake (by maize) has been verified.<br />
+<br />
+The only data set where SoilP and a modified Maize module (which includes routines to enable the crop to respond to P limitations) have been tested against observed data is for an experiment in Kenya described by Probert and Okalebo (1992).</p>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+</div>
+
+</div><!-- End_Module_531 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilP.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:15 GMT -->
+</html>

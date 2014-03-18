@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/MANAGER2SCRIPT.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:06 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > MANAGER2 / SCRIPT
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/MANAGER2SCRIPT.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="MANAGER2SCRIPT.html" class="SkinObject">MANAGER2 / SCRIPT</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>MANAGER2 / SCRIPT</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-488"><a name="488"></a>
+<div class="Invisible"><div id="dnn_ctr488_ContentPane"><!-- Start_Module_488 --><div id="dnn_ctr488_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr488_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">1. Introduction</h1>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">APSIM&rsquo;s &lsquo;Manager2&rsquo; component is a powerful management tool for controlling APSIM simulations. It differs significantly from the original manager which had its own programming language by giving the user the option of coding their scripts in either VB.NET or C#, both of which are standardized languages developed by Microsoft for the .NET platform on Windows (also available on Linux via Mono). Whereas the initial manager had somewhat limited functionality yet was simpler to code, &lsquo;Manager2&rsquo; has vastly increased functionality with a small increase in complexity and the advantage of utilizing a well-known language that new-comers will hopefully be familiar with.<br />
+<br />
+Coding a new Manager2 script is identical to coding a new APSIM module in VB.NET or C#, however the environment you use is somewhat different. Where one would usually use an IDE such as Visual Studio or MonoDevelop to create a new APSIM module the Manager2 component provides an editor within APSIM that automatically imports the required DLLs and provides a code &lsquo;skeleton&rsquo; as a starting point. This tutorial will introduce some basics of the VisualBasic.NET programming language with the purpose of getting you into programming APSIM Manager2 modules as fast as possible. This is by no means a comprehensive introduction to VB.NET or object oriented programming, there are plenty of those available on the internet (a good starting place &ndash; and community &ndash; for learning to program in any language is<a title=" www.dreamincode.net" href="../../../index-2.html">&nbsp;www.dreamincode.net</a>). If you are already well-versed in either VB.NET or C# then it is still advisable to briefly skim this section to pick up a few APSIM-specific pieces.</p>
+<h1 style="margin: 24pt 0cm 0pt;">2. Programming Basics &ndash; VisualBasic.NET</h1>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">2.1 Imports</h2>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">As far as coding for APSIM Manager2 scripts goes most people will never need to modify the Imports section of the script as all the required Imports are already set. Imports are used to add references to external libraries you use within your code.</p>
+<h2 style="margin: 10pt 0cm 0pt;">2.2 Classes</h2>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">For the purpose of this tutorial a Class may be thought of as a &lsquo;container&rsquo; of sorts for your code. Defined using the following terminology it is compulsory to put everything except &lsquo;Imports&rsquo; statements inside a Class:<br />
+<br />
+VB.NET</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Class</code> <code style="color: #000000;">Script</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Class</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">2.3 Variables</h2>
+<p style="margin: 0cm 0cm 10pt;">A Variable is a container used to store information your code uses. Variables have names which can consist of any number of letters, underscores and numerals (but cannot begin with a numeral). In VB.NET all variables must be &lsquo;declared&rsquo; before they may be used. The general format for doing so is as follows:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">*var_name* </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">*VarType*</code></span></div>
+</div>
+<br />
+<p style="margin: 0cm 0cm 10pt;">Where *var_name* is the name of your variable and *VarType* is the type (see &lsquo;Types&rsquo; - 3.3.1). Optionally you may also set the value of this variable at the same time as you declare, example:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">limit </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Integer</code> <code style="color: #000000;">= 10&nbsp;&nbsp;&nbsp; </code><code style="color: #008200;">'declare a variable called &lsquo;limit&rsquo; and set it to 10</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Once the variable has been declared it may then be used just like any other programming language.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><span style="font-size: 16px;"><em>2.3.1 Types</em></span></h4>
+<p style="margin: 0cm 0cm 10pt;">In VB.NET and C# all variables have a Type and can only store values that are of the same Type (there are exceptions but these are beyond the scope of this tutorial). While there are a large number of types available to use, most of the time you will only be using a handful:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">a </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Integer</code>&nbsp;&nbsp;&nbsp; <code style="color: #008200;">'used for whole numbers between -2147483648 and 2147483647</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">b </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Long</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code style="color: #008200;">'used for very large whole numbers between +/- ~9.2e18</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">c </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code>&nbsp;&nbsp;&nbsp;&nbsp; <code style="color: #008200;">'used for holding string values (text)</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">d </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Single</code>&nbsp;&nbsp;&nbsp;&nbsp; <code style="color: #008200;">'used for holding numbers with decimal point</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">e </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code>&nbsp;&nbsp;&nbsp;&nbsp; <code style="color: #008200;">'as with single, but with greater precision </code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">f </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">DateTime&nbsp;&nbsp; </code><code style="color: #008200;">'used for holding/processing dates and times, very useful</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">There are also a number of &lsquo;APSIM&rsquo; types available for use, one for every APSIM model in fact. These are very useful as they allow the programmer easy access to that model&rsquo;s output variables as well as events that it subscribes to and publishes.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><span style="font-size: 16px;"><em>2.3.2 Arrays</em></span></h4>
+<p style="margin: 0cm 0cm 10pt;">Arrays are data structures used to hold any number of values of the same type that are usually all related, such as the soil water contents of multiple soil layers in the profile. Arrays can be &lsquo;n-dimensional&rsquo;, that is may consist of any number of dimension, however for the sake of simplicity we will only refer to 1-dimensional arrays here (numerous examples of arrays with more dimensions may be found online). When using arrays (1-D) it can be helpful to think of them as a collection of &lsquo;cells&rsquo;, similar to a row or column of data in a spreadsheet. Each &lsquo;cell&rsquo; can hold a single value and is accessed using the name of the array variable as well as an &lsquo;index&rsquo;. Arrays are declared and &lsquo;typed&rsquo; just like any other kind of variable, several examples of declaration and usage are below, of particular note is the &lsquo;.Length&rsquo; property that every array has which is very useful in &lsquo;For&rsquo; loops (see 3.5).</p>
+<h4 style="margin: 10pt 0cm 0pt;"><span style="font-size: 16px;"><em>2.3.3 Scope</em></span></h4>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">&lsquo;Scope&rsquo; is a concept that affects the availability of a given variable for use in different parts of code. A variable may be declared within a Class or Sub/Function (see 3.4), the exact location defines the &lsquo;scope&rsquo;. When a variable is declared within a Class (a &lsquo;global&rsquo; variable) it is accessible from any Sub or Function within that class, however when a variable is declared within a Sub or Function it is only accessible inside that Sub or Function. Global variables are usually used for model parameters, inputs and outputs. If it is at all possible to declare a variable inside a Sub or Function instead of globally it is best to do so, having too many global variables can lead to confusion.</p>
+<h2 style="margin: 10pt 0cm 0pt;">2.4 Subs and Functions</h2>
+<p style="margin: 0cm 0cm 10pt;">Sub is short for &lsquo;subroutine&rsquo; and is used to contain a piece of code within a class that performs a specific task. Subs are generally &lsquo;called&rsquo; (or &lsquo;run&rsquo;) from within other Subs; however some of the Subs in your manager script will be made visible to APSIM which will call them as part of the simulation (see section 4) &ndash; thus forming an &lsquo;entry point&rsquo; (a point where some external program calls your code). Depending on the intended function of the code within the sub you may want to pass some parameters into it when it is called, see the code example in section 3.5 to see how this is done. A &lsquo;Function&rsquo; is like a &lsquo;Sub&rsquo; except the code within it must return a value before it finishes. All code statements, barring variable declarations and &lsquo;Properties&rsquo; (beyond the scope of this tutorial), must be contained within either a &lsquo;Sub&rsquo; or a &lsquo;Function&rsquo;.</p>
+<h2 style="margin: 10pt 0cm 0pt;">2.5 For and While loops</h2>
+<p style="margin: 0cm 0cm 10pt;">&lsquo;For&rsquo; and &lsquo;While&rsquo; loops can be used for any number of repetitive tasks such as cycling through the elements of an array or the paddocks in a simulation. While technically they may be used interchangeably, &lsquo;For&rsquo; loops are usually used for rigidly defined tasks (such as processing every element in an array) whereas &lsquo;While&rsquo; loops are usually used for more open-ended tasks, such performing a given action until the required result is achieved. Examples:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #008200;">'sum an array</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;</code><span style="margin-left: 3px ! important;"><code style="color: #006699; font-weight: bold;">Function</code> <code style="color: #000000;">CalcArray(</code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">a </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">()) </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">result </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= 0</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">For</code> <code style="color: #000000;">i </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Integer</code> <code style="color: #000000;">= 0 </code><code style="color: #006699; font-weight: bold;">To</code> <code style="color: #000000;">a.Length - 1</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">result += a(i)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Next</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">result = Math.Sqrt(result)</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">result</code></span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Function</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Function</code> <code style="color: #000000;">CalcWhile(</code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">a </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">, </code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">max_err </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">) </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">prev_y </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= </code><code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">.MaxValue</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">y </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= 0</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">err </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= max_err + 1</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">x </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= 0</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'solve y = a / x, increasing x until (y - prev_y) &lt; max_err</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">While</code> <code style="color: #000000;">err &gt; max_err</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">x += 1</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">y = a / x</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">err = prev_y - y</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">prev_y = y</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">While</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">x</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Function</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">2.6 If Statements and Select/Case Blocks</h2>
+<p style="margin: 0cm 0cm 10pt;">&lsquo;If&rsquo; statements are simple conditional &lsquo;if something is true then do this&rsquo; with the option of saying &lsquo;else do something else&rsquo; if the given condition is false. It is possible to chain several &lsquo;If/Else&rsquo; statements together in order to define different actions depending on the value of a given variable. Sometimes if a lot of &lsquo;If/Else&rsquo; statements are chained together for this purpose it is more appropriate to use a &lsquo;Select/Case&rsquo; block. Examples (contained in 2 functions to give context):</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #008200;">'&rdquo;ByVal input As Double&rdquo; specifies that whatever calls this function must give it a</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #008200;">'double (or &lsquo;real&rsquo; number) as a parameter, example (assigning result to &lsquo;x&rsquo;):</code></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #008200;">'x = ExampleIf(3.2)</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Function</code> <code style="color: #000000;">ExampleIf(</code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">input </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">) </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'If</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">If</code> <code style="color: #000000;">input &gt; 2 </code><code style="color: #006699; font-weight: bold;">Then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">input * 0.5</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">If</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'If/Else</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">If</code> <code style="color: #000000;">input &lt; 1 </code><code style="color: #006699; font-weight: bold;">Then</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">input * 2</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Else</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">input</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">If</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'NOTE: Usually you would chain these two 'if' statements together into an </code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'If/ElseIf/Else' statement</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Function</code></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Function</code> <code style="color: #000000;">Calc (</code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">a </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">, </code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">b </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code><code style="color: #000000;">, </code><code style="color: #006699; font-weight: bold;">ByVal</code> <code style="color: #000000;">mthd </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code><code style="color: #000000;">) </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">If</code> <code style="color: #000000;">mthd = </code><code style="color: blue;">"method_A"</code> <code style="color: #006699; font-weight: bold;">Then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">a * b</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">ElseIf</code> <code style="color: #000000;">mthd = </code><code style="color: blue;">"method_B"</code> <code style="color: #006699; font-weight: bold;">Then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">ExampleIf(a * b)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">ElseIf</code> <code style="color: #000000;">mthd = </code><code style="color: blue;">"method_C"</code> <code style="color: #006699; font-weight: bold;">Then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">x </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= 2</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">x = x - a</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">x + b / a</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Else</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">0</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">If</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'does the same as above</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Select</code> <code style="color: #006699; font-weight: bold;">Case</code> <code style="color: #000000;">mthd</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Case</code> <code style="color: blue;">"method_A"</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">a * b</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Case</code> <code style="color: blue;">"method_B"</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">ExampleIf(a * b)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Case</code> <code style="color: blue;">"method_C"</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">x </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code> <code style="color: #000000;">= 2</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">x = x - a</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">x + b / a</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Case</code> <code style="color: #006699; font-weight: bold;">Else</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #006699; font-weight: bold;">Return</code> <code style="color: #000000;">0</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Select</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Function</code></span></div>
+</div>
+<h1 style="margin: 24pt 0cm 0pt;">3. Reflection Tags - Exposing Variables and Subs to APSIM</h1>
+<p style="margin: 0cm 0cm 10pt;">While all the concepts introduced so far are important for programming APSIM Models/Manager2 scripts we have not yet covered how you let APSIM know what data you need from the simulation, what events you want to subscribe to or what data and events you want to make available to other models. The way we do this is by inserting &lsquo;reflection tags&rsquo; above the variable/sub we want to expose. A reflection tag is simply a word surrounded by &lsquo;&lt;&rsquo; &lsquo;&gt;&rsquo; characters and there are several different tags that APSIM uses, each with its own meaning. While reading this section it is recommended you refer to section 5.1</p>
+<h2 style="margin: 10pt 0cm 0pt;">3.1 Input</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;Input()&gt; tag denotes that a value for this variable needs to be supplied by APSIM. APSIM will use the name of the variable you tag with &lsquo;Input&rsquo; to try and find a corresponding &lsquo;Output&rsquo; (3.1.3) from another model. If APSIM cannot find the specified variable, then it will throw a fatal error. This error can be prevented by specifying the Input as optional by setting the &lsquo;IsOptional&rsquo; parameter to &lsquo;true&rsquo; e.g.</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Input(IsOptional:=</code><code style="color: #006699; font-weight: bold;">True</code><code style="color: #000000;">)&gt;</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">3.2 Param</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;Param()&gt; tag denotes that the variable is a parameter. APSIM looks for parameters in the XML configuration for this model with the same name as the variable with the &lt;Param()&gt; tag. When the code is part of a script component the parameter values will be on the "Properties" tab. If APSIM cannot find the specified parameter then it will throw a fatal error. As with &lsquo;Input&rsquo;, this error can be prevented by specifying the Input as optional by setting the &lsquo;IsOptional&rsquo; parameter to &lsquo;true&rsquo;. In addition to &lsquo;IsOptional&rsquo; there are two other named parameters that can be used to &lsquo;bound&rsquo; the incoming data and another that allows us to use an alias for the expected Param so our internal variable can have a different name. Perhaps the best explanation for this is an example, the following example defines an optional parameter bounded between 1 and 10 that is called &lsquo;Param_1&rsquo; in the user interface but &lsquo;x&rsquo; in our code:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Param(IsOptional:=</code><code style="color: #006699; font-weight: bold;">True</code><code style="color: #000000;">, MaxVal:=10, MinVal:=1, Name:=</code><code style="color: blue;">"Param_1"</code><code style="color: #000000;">)&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #000000;">x </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code></span></div>
+</div>
+<h2 style="margin: 10pt 0cm 0pt;">3.3 Output</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;Output()&gt; tag denotes a variable that APSIM can supply to other APSIM models when requested. Like Param, an alias can be specified for the output if you want to use a different name for your variable e.g.</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Output(Name:=</code><code style="color: blue;">"Output1"</code><code style="color: #000000;">)&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #000000;">x </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">double</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">3.4 Units</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;Units("")&gt; tag supplies metadata to APSIM for an &lt;Output()&gt; and should be placed in between the &lt;Output()&gt; tag and the variable declaration. The REPORT module writes the units to the output file. Some examples:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Units(</code><code style="color: blue;">""</code><code style="color: #000000;">)&gt;:</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Units(</code><code style="color: blue;">"mm"</code><code style="color: #000000;">)&gt;</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Units(</code><code style="color: blue;">"g"</code><code style="color: #000000;">)&gt;</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Units(</code><code style="color: blue;">"kg/ha"</code><code style="color: #000000;">)&gt;</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">3.5 EventHandler</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;EventHandler()&gt; tag signals to APSIM that the following &lsquo;Sub&rsquo; is an event handler that needs to be called whenever the APSIM event is published. The convention is that all handlers will have an On prefix. The name of the method (minus the On prefix) denotes the APSIM event name that will be trapped. For example to handle the &lsquo;prepare&rsquo; event, name your Sub &lsquo;OnPrepare&rsquo; and insert an &lt;EventHandler()&gt; tag before it.</p>
+<h2 style="margin: 10pt 0cm 0pt;">3.6 Event</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;[Event]()&gt; tag signals that the following .NET event should be published to the whole APSIM simulation. Other components in APSIM will be able to subscribe to this event. The name of the event will be the name of the event that APSIM sees. Events must be declared using one of the APSIM types. The reason for the square brackets around &lsquo;Event&rsquo; is that &lsquo;Event&rsquo; is a reserved word in the VB.NET language and the square brackets &lsquo;escape&rsquo; it (this does not apply to C#)</p>
+<h2 style="margin: 10pt 0cm 0pt;">3.7 Link</h2>
+<p style="margin: 0cm 0cm 10pt;">The &lt;Link()&gt; tag tells APSIM to establish a permanent link between the variable tagged and a corresponding model in the simulation. Unlike inputs and parameters, APSIM doesn&rsquo;t care about the name of the variable and instead looks at its &lsquo;type&rsquo; to determine which model it should link into. Because each APSIM model has its own .NET &lsquo;type&rsquo; (2.3.1) this task is easy and the resulting variable allows access to all outputs, events and event handlers as well as some inputs of the model. The most common link used is that to the &lsquo;paddock&rsquo; in which the model/Manager2 script resides, however you may create a link to any other component that resides at the same level as yours, ie:</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Link()&gt; </code><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">mypaddock </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Paddock</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Link()&gt; </code><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">fert </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Fertiliser</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">The &lsquo;Paddock&rsquo; you get from this link is the parent paddock that contains your model or Manager2 script. From there you will be able to access other components at the same level as your component or cycle through sub-paddocks to retrieve the components within them &ndash; provided sub paddocks exist within the paddock you are in. If your component is at the &lsquo;Simulation&rsquo; level (above all paddocks) APSIM will treat the entire simulation as one &lsquo;Paddock&rsquo; and give you that.</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">For</code> <code style="color: #006699; font-weight: bold;">Each</code> <code style="color: #000000;">subpaddock </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Paddock </code><code style="color: #006699; font-weight: bold;">In</code> <code style="color: #000000;">mypaddock.ChildPaddocks</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'do someting with subpaddocks</code></span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Next</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;">&nbsp;</span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">For</code> <code style="color: #006699; font-weight: bold;">Each</code> <code style="color: #000000;">crop </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Component </code><code style="color: #006699; font-weight: bold;">In</code> <code style="color: #000000;">mypaddock.Crops</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'do something with each crop</code></span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Next</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Each paddock also has a Parent method that you can call to get the parent paddock. This is particular useful in multi paddock simulations.</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">ParentPaddock as Paddock = mypaddock.Parent;</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Apply fertiliser by getting the component via the paddock</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">fert </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Fertiliser = mypaddock.LinkByType(</code><code style="color: blue;">"fertiliser"</code><code style="color: #000000;">)</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">fert.Apply(50, 10, </code><code style="color: blue;">"NO3_N"</code><code style="color: #000000;">)</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">APSIM will look for these models within the current 'scope' of the component that is running. Currently, this will be in the current paddock or the parent paddock. Once you have a link or variable that represents another model in the simulation you can then query that model for the values of its variables. You can also set the values of some APSIM variables, i.e.</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;Link()&gt; </code><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">SoilWaterModel </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">SoilWat</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #008200;">'...&nbsp;&nbsp;&nbsp; </code></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">sw </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Single</code><code style="color: #000000;">() = SoilWaterModel.sw</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">sw(1) = 0.29</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">sw(2) = 0.28</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #008200;">'...</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">SoilWaterModel.sw = sw</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #008200;">'...</code></span></div>
+</div>
+<h1 style="margin: 24pt 0cm 0pt;">4. Hints and Helper Libraries</h1>
+<p style="margin: 0cm 0cm 10pt;">To retrieve a list of APSIM variables and events, use the "Variables" and "Events" components under the "Output file" in the simulation tree in the APSIM User Interface &ndash; pretend as though you are adding a variable to your output file (or changing the reporting frequency) and browse the lists of outputs and events.<br />
+<br />
+To investigate what accessible data or functions a variable has, simply type the name of the variable followed by &lsquo;.&rsquo; then hit &lsquo;CTRL-SPACE&rsquo; to bring up a box with more information.<br />
+<br />
+There are two main &lsquo;helper&rsquo; libraries available that contain several useful functions (for some examples see section 7)</p>
+<h2 style="margin: 10pt 0cm 0pt;">DateUtility</h2>
+<p style="margin: 0cm 0cm 10pt;">Contains functions for turning Julian Dates and day/month strings into &lsquo;DateTime&rsquo; or &lsquo;Date&rsquo; variables &ndash; essential for turning user inputs into usable variables. For a list of all functions type &lsquo;DateUtility.&rsquo; into the script editor and hit &lsquo;CTRL-SPACE&rsquo; to bring up a box with more information. Ensure that the line&nbsp;Imports CSGeneral&nbsp;for VB.NET or&nbsp;using CSGeneral;&nbsp;for C# is included at the top of the script.</p>
+<h2 style="margin: 10pt 0cm 0pt;">ManagerUtility</h2>
+<p style="margin: 0cm 0cm 10pt;">Contains a function that will take any delimited string (comma, space or tab) and turn it into an array of a given type. Very handy if the user-interface component of your manager script makes use of these strings. Also contains a function that will change the type of an array as well as a new &lsquo;Type&rsquo; that can be used to track the last &lsquo;x&rsquo; values of a given variable and return the average, sum or raw values. For a list of all functions type &lsquo;ManagerUtility.&rsquo; into the script editor and hit &lsquo;CTRL-SPACE&rsquo; to bring up a box with more information. Ensure that the line&nbsp;Imports CSGeneral&nbsp;for VB.NET or&nbsp;using CSGeneral;&nbsp;for C# is included at the top of the script.</p>
+<h1 style="margin: 24pt 0cm 0pt;">5. A Basic Shell for a Manager2 Script/APSIM Model</h1>
+<h2 style="margin: 10pt 0cm 0pt;">5.1 VB.NET</h2>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Imports</code> <code style="color: #000000;">System</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Imports</code> <code style="color: #000000;">ModelFramework</code></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Imports</code> <code style="color: #000000;">CSGeneral</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #006699; font-weight: bold;">Class</code> <code style="color: #000000;">Script</code></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;</code><span style="margin-left: 3px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Link()&gt; </code><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">MyPaddock </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Paddock</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Param&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">A </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code>&nbsp;&nbsp;&nbsp;&nbsp; <code style="color: #008200;">' The value for this will come from the Properties page.</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Output&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #000000;">B </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Double</code>&nbsp;&nbsp;&nbsp;&nbsp; <code style="color: #008200;">' An example of how to make a variable available to other APSIM modules</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Input&gt; </code><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">Today </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">DateTime&nbsp;&nbsp; </code><code style="color: #008200;">' Equates to the value of the current simulation date - value comes from CLOCK</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 15px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;EventHandler()&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #006699; font-weight: bold;">Sub</code> <code style="color: #000000;">OnInitialised()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' INITIALISATION</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' delete this Sub if not required</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Sub</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 15px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;EventHandler()&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #006699; font-weight: bold;">Sub</code> <code style="color: #000000;">OnPrepare()</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' START OF DAY</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' delete this Sub if not required</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 15px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;EventHandler()&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #006699; font-weight: bold;">Sub</code> <code style="color: #000000;">OnProcess()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' MAIN DAILY PROCESSING STEP</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' delete this Sub if not required</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Sub</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 15px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;EventHandler()&gt; </code><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #006699; font-weight: bold;">Sub</code> <code style="color: #000000;">OnPost()</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' END OF DAY</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">' delete this Sub if not required</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Class</code></span></div>
+</div>
+&nbsp;
+<h2 style="margin: 10pt 0cm 0pt;">5.2 C#</h2>
+<p>&nbsp;</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">using</code> <code style="color: #000000;">System;</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">using</code> <code style="color: #000000;">ModelFramework;</code></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">using</code> <code style="color: #000000;">CSGeneral;</code></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">public</code> <code style="color: #006699; font-weight: bold;">class</code> <code style="color: #000000;">Script</code></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">{</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[Link]&nbsp;&nbsp; Paddock MyPaddock;</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[Input]&nbsp; DateTime Today;&nbsp;&nbsp; </code><code style="color: #008200;">// Equates to the value of the current simulation date - value comes from CLOCK</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[Param]&nbsp; </code><code style="color: #006699; font-weight: bold;">string</code> <code style="color: #000000;">A;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code><code style="color: #008200;">// The value for this will come from the Properties page.</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[Output] </code><code style="color: #006699; font-weight: bold;">double</code> <code style="color: #000000;">B;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code><code style="color: #008200;">// An example of how to make a variable available to other APSIM modules</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[EventHandler]</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #006699; font-weight: bold;">public</code> <code style="color: #006699; font-weight: bold;">void</code> <code style="color: #000000;">OnInitialised()</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">{</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// INITIALISATION</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// can delete if not required</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">}</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[EventHandler]</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #006699; font-weight: bold;">public</code> <code style="color: #006699; font-weight: bold;">void</code> <code style="color: #000000;">OnPrepare()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">{</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// START OF DAY</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// can delete if not required</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">}</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[EventHandler]</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #006699; font-weight: bold;">public</code> <code style="color: #006699; font-weight: bold;">void</code> <code style="color: #000000;">OnProcess()</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">{</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// MAIN DAILY PROCESSING STEP</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// can delete if not required</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">}</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">[EventHandler]</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #006699; font-weight: bold;">public</code> <code style="color: #006699; font-weight: bold;">void</code> <code style="color: #000000;">OnPost()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">{</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// END OF DAY</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 18px ! important;"><code style="color: #008200;">// can delete if not required</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 9px ! important;"><code style="color: #000000;">}</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">}</code></span></div>
+</div>
+<h1 style="margin: 24pt 0cm 0pt;">6. Conversions from Original Manager in &lsquo;Continuous Wheat&rsquo; Simulation</h1>
+<p style="margin: 0cm 0cm 10pt;">Note that the &lsquo;Imports&rsquo; and &lsquo;using&rsquo;s have been removed from the top of the VB.NET and C# script examples to preserve space. They are the same as the &lsquo;Imports&rsquo; and &lsquo;using&rsquo;s in section 5.</p>
+<h2 style="margin: 10pt 0cm 0pt;">6.1 Sowing Rule</h2>
+<p style="margin: 0cm 0cm 10pt;">Original Code &ndash; Script Name = Sow on Date</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 15px ! important;"><code style="color: #000000;">if (date_within('[date1], [date2]') = 1) then</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 33px ! important;"><code style="color: #000000;">ChooseNextCrop = 'yes'&nbsp;&nbsp; ! for rotations</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 33px ! important;"><code style="color: #000000;">[crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">endif</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">if today = date('[date2]') then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 33px ! important;"><code style="color: #000000;">ChooseNextCrop = 'yes'</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">endif</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 15px ! important;"><code style="color: #000000;">endif</code></span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">endif</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><span style="font-size: 16px;">VB.NET</span></p>
+<span style="font-size: 16px;">
+</span>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">Public Class SowingRule</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private date1 As String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private date2 As String</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private must_sow As String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private raincrit As Double</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private rainnumdays As Integer</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private esw_amount As Double</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private crop As String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; &lt;</code><code style="color: #006699; font-weight: bold;">Output</code><code style="color: #000000;">()&gt; Private density As Double</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private depth As Double</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private cultivar As String</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private [class] As String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private row_spacing As Double</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Link</code><code style="color: #000000;">()&gt; Private mypaddock As Paddock</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Input</code><code style="color: #000000;">()&gt; Private Today As System.DateTime</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Input</code><code style="color: #000000;">()&gt; Private rain As Double</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Input</code><code style="color: #000000;">()&gt; Private esw As Double</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Output</code><code style="color: #000000;">()&gt; Private ChooseNextCrop As String = "no"</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">Private rain_tracker As ManagerUtility.Tracker(Of Double)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">Private default_sowtype As SowType</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">EventHandler</code><code style="color: #000000;">()&gt; _</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">Public Sub OnInitialised()</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">rain_tracker = New ManagerUtility.Tracker(Of Double)(rainnumdays)</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">End Sub</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">EventHandler</code><code style="color: #000000;">()&gt; _</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">Public Sub OnPost()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">rain_tracker.Add(rain)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">If ManagerUtility.PaddockIsFallow(mypaddock) Then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">If DateUtility.WithinDates(date1, Today, date2) Then</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 48px ! important;"><code style="color: #000000;">If rain_tracker.Sum() &gt; raincrit And esw &gt; esw_amount Or must_sow = "yes" And DateUtility.DatesEqual(date2, Today) Then</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">ChooseNextCrop = "yes"</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">Dim data As New SowType()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">data.plants = density</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">data.sowing_depth = depth</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">data.Cultivar = cultivar</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">data.row_spacing = row_spacing</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">data.crop_class = [class]</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">mypaddock.LinkByName(crop).Publish("sow", data)</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 48px ! important;"><code style="color: #000000;">End If</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 48px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 48px ! important;"><code style="color: #000000;">If DateUtility.DatesEqual(date2, Today) Then</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 60px ! important;"><code style="color: #000000;">ChooseNextCrop = "yes"</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 48px ! important;"><code style="color: #000000;">End If</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">End If</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">End If</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">End Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">End Class</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt; background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<h2 style="margin: 10pt 0cm 0pt;">6.2 Sowing Fertiliser</h2>
+<p style="margin: 0cm 0cm 10pt;">Original Code &ndash; Script Name = Fertilise on Event</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">[fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><span style="font-size: 16px;">VB.NET</span></p>
+<span style="font-size: 16px;">
+</span>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">Public</code> <code style="color: #006699; font-weight: bold;">Class</code> <code style="color: #000000;">Script </code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Param()&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">modulename </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Param()&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">eventname </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Param()&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">fertmodule </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Param()&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">fert_amount_sow </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">Single</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Param()&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">fert_type_sow </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;Link()&gt; </code><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">mypaddock </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Paddock</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #000000;">fert </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #000000;">Fertiliser</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;EventHandler()&gt; _</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #006699; font-weight: bold;">Sub</code> <code style="color: #000000;">OnInitialised()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">mypaddock.LinkByName(modulename).Subscribe(eventname, </code><code style="color: #006699; font-weight: bold;">AddressOf</code> <code style="color: #000000;">ApplyFertEventHandler)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #008200;">'grab a reference To the fertiliser Module specified so we can use it later</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">fert = </code><code style="color: #006699; font-weight: bold;">DirectCast</code><code style="color: #000000;">(mypaddock.LinkByName(fertmodule), Fertiliser)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">Private</code> <code style="color: #006699; font-weight: bold;">Sub</code> <code style="color: #000000;">ApplyFertEventHandler()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #006699; font-weight: bold;">Dim</code> <code style="color: #000000;">fert_type </code><code style="color: #006699; font-weight: bold;">As</code> <code style="color: #006699; font-weight: bold;">New</code> <code style="color: #000000;">FertiliserApplicationType()</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">fert_type.Amount = fert_amount_sow</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">fert_type.Depth = 50</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">fert_type.Type = fert_type_sow</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">fert.Apply(fert_type)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #006699; font-weight: bold;">End</code> <code style="color: #006699; font-weight: bold;">Class</code></span></div>
+</div>
+<h2 style="margin: 10pt 0cm 0pt;">6.3 Harvesting rule</h2>
+<p style="margin: 0cm 0cm 10pt;">Original Code &ndash; Script Name = Harvesting rule</p>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 42px ! important;"><code style="color: #000000;">[crop]&nbsp; harvest</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 42px ! important;"><code style="color: #000000;">[crop]&nbsp; end_crop</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">endif</code></span></div>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><span style="font-size: 16px;">VB.NET</span></p>
+<span style="font-size: 16px;">
+</span>
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">Public Class Script</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Param</code><code style="color: #000000;">()&gt; Private crop As String</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Input</code><code style="color: #000000;">(</code><code style="color: #808080;">IsOptional:</code><code style="color: #000000;">=</code><code style="color: blue;">True</code><code style="color: #000000;">)&gt; Private density As Double = 100</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">Link</code><code style="color: #000000;">()&gt; Private mypaddock As Paddock</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">Private mycrop As Wheat</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">EventHandler</code><code style="color: #000000;">()&gt; Private Sub OnInit2()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">mycrop = DirectCast(mypaddock.LinkByName(crop), Wheat)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">End Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;">&nbsp;</span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">EventHandler</code><code style="color: #000000;">()&gt; Private Sub OnPost()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">If mycrop.Variable("StageName").ToString() = "harvest_ripe" OrElse&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mycrop.Variable("plant_status").ToString() = "dead" Then</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">Dim ht As New HarvestType()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">ht.Height = 50</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">ht.Plants = density</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">ht.Remove = 0</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">ht.Report = "yes"</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">mycrop.Harvest(ht)</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 36px ! important;"><code style="color: #000000;">mycrop.EndCrop()</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 24px ! important;"><code style="color: #000000;">End If</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">End Sub</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">End Class</code></span></div>
+</div>
+</div>
+
+</div><!-- End_Module_488 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/MANAGER2SCRIPT.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:06 GMT -->
+</html>

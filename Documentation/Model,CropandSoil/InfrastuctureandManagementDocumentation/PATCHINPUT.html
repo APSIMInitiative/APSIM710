@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/PATCHINPUT.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:31 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > PATCHINPUT
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/PATCHINPUT.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="PATCHINPUT.html" class="SkinObject">PATCHINPUT</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>PATCHINPUT</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-491"><a name="491"></a>
+<div class="Invisible"><div id="dnn_ctr491_ContentPane"><!-- Start_Module_491 --><div id="dnn_ctr491_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr491_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">Introduction</h1>
+<p style="margin: 0cm 0cm 10pt;">Some simulations require weather data (or other types of data) to be patched on certain days. For example, to simulate a grower's paddock for a particular season, it is necessary to patch the nearby weather stations rainfall data with the actual grower's rainfall and temperature data.<br />
+<br />
+The PatchInput module does this patching automatically, without the need for running external patching tools. An example of where this functionality is used is in the Yield Prophet project.&nbsp;<br />
+<br />
+In this project, a grower does a soil sample on a pre-sowing date e.g. 1 April 2004 . During the wheat season, the grower enters their rainfall (from their rain guage) from the 1 April 2004 to the present day.&nbsp;</p>
+<h1 style="margin: 24pt 0cm 0pt;">The Yield Prophet project then:</h1>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Runs APSIM for the last 100 years. They reset the soil status to the measured value on 1 April every year.</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; They then use the PatchInput module to patch the current year (2004) rainfall (from rain guage) and maxt, mint and radn (from the nearest weather station) values over the last 100 years for dates between 1 April and the present date.</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; All climate data after the present day are not patched but left at the historical values.</p>
+&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This then gives provides a yield distribution for what could happen on their paddock for the remainder of the season.
+<h1 style="margin: 24pt 0cm 0pt;">Details</h1>
+<p style="margin: 0cm 0cm 10pt;">The PatchInput module is a derivative of the Input module and thus reads its own data file in exactly the same way as Input. It is specified in the control file like any other module:&nbsp;<br />
+<br />
+</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">&nbsp;module = PatchInput(patch) patch.dat [test] </pre>
+</div>
+<p  style="margin: 0cm 0cm 10pt;">
+The data file looks similar to any other APSIM data file:&nbsp;<br />
+<br />
+</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">[test.patch.data] </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">allow_sparse_data = true </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">patch_all_years = false </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">date patch_rain </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">() (mm) </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1988/1/10 55 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1988/1/15 66 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1988/1/20 77 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1988/1/25 88 </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">All variables in the data file (except year,day and date) should be prefixed with &lsquo;patch_'. This indicates that the corresponding variable in the Input module will be overwritten with the value in the patch file. In the above example the Input module's variable called &lsquo;rain' will be overwritten with the values from the patch data file.&nbsp;<br />
+<br />
+If a patch data file has a constant of patch_all_years = true, then the data will be overwritten on the specified days for all years. If patch_all_years = false, then the data will only be patched in the specific year mentioned. Sparse data, like in the above example, is supported.<br />
+Another optional parameter exists to patch other met variables for all years. Eg<br />
+<br />
+</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">[test.patch.data] </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">allow_sparse_data = true </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">patch_all_years = true </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">patch_variables_long_term = maxt mint radn</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">date patch_rain</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">() (mm) </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1988-12-30 55 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1988-12-31 66 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1989-1-1 77 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1989-1-2 88</pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">In this example rainfall will be overwritten on the days 30 Dec through to 2 Jan for all years. In addition, because of the &lsquo;patch_variables_long_term' parameter, the values of maxt, mint and radn will be read from the dates 30/12/1988 through to 2/1/1989 and patched over all other years of the climate record</p>
+</div>
+
+</div><!-- End_Module_491 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/PATCHINPUT.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:31 GMT -->
+</html>

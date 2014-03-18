@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/WaterSupply.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:19 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > WaterSupply
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/WaterSupply.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="WaterSupply.html" class="SkinObject">WaterSupply</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>WaterSupply</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-538"><a name="538"></a>
+<div class="Invisible"><div id="dnn_ctr538_ContentPane"><!-- Start_Module_538 --><div id="dnn_ctr538_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr538_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;"><strong>Description</strong></p>
+<p>APSIM WaterSupply is an instantiable module, capable of performing the role of water-source for the APSIM Irrigate module. <br />
+The module can be configured to simulate a dam, sump, river, bore or effluent source. <br />
+In any given APSIM simulation, different instances of WaterSupply can be configured to represent one or more of these water sources, at the same time.<br />
+<br />
+<strong>For example: </strong></p>
+<p>version = 3.1</p>
+<p>[apsim.sample_soilwat2]</p>
+<p>title=Soilwat2 Sample Simulation</p>
+<p>module = clock soilwat2.par [sample]</p>
+<p>module = report soilwat2.par [sample]</p>
+<p>module = Input(Met) %apsuite\apsim\met\sample\dalby.met[weather]</p>
+<p>module = manager soilwat2.par [sample]</p>
+<p>module = soilwat2 soilwat2.par [black_earth] soilwat2.ini [standard]</p>
+<p>module = soiln2 soilwat2.par [black_earth]oiln2.ini [standard]</p>
+<p>module = solute soilwat2.par [sample]solute.ini [standard]</p>
+<p>module = Screen soilwat2.par [sample]</p>
+<p>module = SummaryFile soilwat2.par [sample]</p>
+<p>module = WaterSupply(dam) soilwat2.par [sample] dam.ini [standard]</p>
+<p>module = WaterSupply(bore) soilwat2.par[sample]bore.ini [standard]</p>
+<p>module = WaterSupply(sump) soilwat2.par[sample] sump.ini [standard]</p>
+<p>module = irrigate</p>
+<p>In the above simulation, WaterSupply is being instantiated to simulate a dam, a bore, and a sump.<br />
+<br />
+Each instance of this module is capable of maintaining an available pool of water, with a dynamic solute composition, able to provide water or receive water as required.<br />
+<br />
+Transfers of water between WaterSupply and Irrigate, or between WaterSupply and other instances of itself (eg dam and sump), are driven by commands from the APSIM Manager module. <br />
+<br />
+The WaterSupply module is subject to various internal daily processes which produce a dynamic balance of both water and solutes in storage.<br />
+Depending on type of storage (eg dam or bore), these processes include direct capture of rainfall, <br />
+capture of surface runoff (both local and catchment), evaporation and seepage losses, and renewal of allocations.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>WaterSupply Parameterisation</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The first and most critical piece of information required by the APSIM WaterSupply module during configuration is a parameter called "storage_type". <br />
+<br />
+There are <strong>six</strong> discrete categories available, and each instance of this module must be configured as one of these:</p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">dam_gully - a open surface storage formed by damming a watercourse</li>
+    <li style="margin: 0cm 0cm 10pt;">dam_ring - a open-surface ring-tank into which water is pumped for storage</li>
+    <li style="margin: 0cm 0cm 10pt;">dam_exc - an open-surface excavated storage</li>
+    <li style="margin: 0cm 0cm 10pt;">sump - an open sump which generally collects local and/or catchment runoff</li>
+    <li style="margin: 0cm 0cm 10pt;">river - a watercourse from which an annual pumping allocation is granted</li>
+    <li style="margin: 0cm 0cm 10pt;">bore - a underground water-source from which similar allocation is granted</li>
+</ol>
+<p><strong>nb.</strong> An Effluent Source would best be configured as type "bore", since it will not be subject to daily processes such as evaporation, seepage etc. (see later). <br />
+<br />
+<br />
+Depending on which "storage_type" is configured, the following parameters are required by APSIM WaterSupply:<br />
+<br />
+<strong>For Dams and sumps</strong></p>
+<p>[sample.watersupply.parameters]</p>
+<p>&nbsp;</p>
+<p>source_type = dam_ring&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! type of water source</p>
+<p>receive_catchment_runoff = yes&nbsp; ! use "yes" if dam collects runoff from larger catchment area</p>
+<p>catchment_area = 120.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! catchment area (ha) (required only if "receive_catchment_runoff" equals "yes")</p>
+<p>catchment_runoff_factor = 0.5&nbsp;&nbsp; ! multiplier for soilwat2.runoff, applied to catchment area (required only if "receive_catchment_runoff" equals "yes")</p>
+<p>receive_crop_runoff = yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! use "yes" if dam collects runoff from simulated crop area</p>
+<p>max_available_water = 150.0&nbsp;&nbsp;&nbsp;&nbsp; ! capacity (ML)</p>
+<p>max_area = 20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! storage water surface area at capacity (ha)</p>
+<p>init_available_water = 144.0&nbsp; &nbsp;&nbsp;! supply volume available at start of simulation (ML)</p>
+<p>max_pump = 20.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! maximum pump delivery volume per day (ML/day)</p>
+<p>min_volume = 5.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! minimum volume in storage below which pump cannot access</p>
+<p>permeability = 0.00007&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;! permeability of sealing layer (m/day)</p>
+<p>seal_thickness = 0.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! thickness of low permeability seal (m)</p>
+<p>init_br_conc = 100.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! initial bromide concentration (ppm)</p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>For Bores and Rivers</strong></p>
+<p>[sample.watersupply.parameters]</p>
+<p>source_type = bore&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! type of water supply</p>
+<p>max_available_water = 400.0&nbsp; ! maximum allocation including carry-overs (ML)</p>
+<p>init_available_water = 200.0 ! volume available at start of simulation (ML)</p>
+<p>max_pump = 20.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! maximum pump delivery volume per day (ML/day)</p>
+<p>min_volume = 0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! minimum volume in storage below which pump cannot access</p>
+<p>annual_allocation = 200.0&nbsp;&nbsp;&nbsp; ! Annual Allocation in ML </p>
+<p>allocation_renewal_day = 270 ! Day of year on which allocation is granted</p>
+<p>init_br_conc = 100.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! initial bromide concentration (ppm)</p>
+<p>init_cl_conc = 8.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! initial chloride concentration (ppm)</p>
+<p><strong>Parameterising Solutes</strong></p>
+<p>As can be seen in of the above examples, initial concentrations of solutes in the storage water can be specified using the parameter "init_xxx_conc" in parts-per-million, <br />
+where "xxx" is the name of the solute. <br />
+<br />
+All solutes used in the system must also be initialized in the APSIM Solute module and given an initial distribution in the soil layers, even if this is zero in all layers.<br />
+As water is transferred between various elements in the simulation (sumps, dams, bores, irrigation, soil), solutes will be transferred accordingly.<br />
+<br />
+<strong>WaterSupply Processes</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Rainfall Capture</strong></p>
+<p>For open surface dams and sumps, rainfall results in a storage gain, expressed by:<br />
+<br />
+rain_capture = (area* rain)/100 (1)<br />
+<br />
+<strong>where,</strong> </p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">rain_capture = storage gain from rainfall event (Ml)</li>
+    <li style="margin: 0cm 0cm 10pt;">area = capture surface area of dam (ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">rain = precipitation (mm)</li>
+</ul>
+<p>Bore and river allocations are not affected by precipitation.<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Runoff Capture</strong></p>
+<p>For open dams and sumps, <br />
+<br />
+if the input parameter </p>
+<p>receive_crop_runoff = yes</p>
+<p>then <br />
+local runoff (soilwat2.runoff)<br />
+will be added to the storage water. <br />
+<br />
+Soilwat2.runoff <br />
+is calculated in mm, <br />
+hence <br />
+crop_area (ha) <br />
+must be provided as a manager variable whenever WaterSupply is being used, <br />
+to convert to ML. <br />
+<br />
+If the input parameter </p>
+<p>receive_catchment_runoff =&nbsp; yes </p>
+<p>then the user must also supply two further parameters <br />
+catchment_area (ha) <br />
+and <br />
+catchment_runoff_factor (0-1).<br />
+<br />
+The latter of these two subsequent inputs is a multiplier to the soilwat2.runoff parameter, <br />
+effectively describing the water-shedding potential of the catchment in comparison to the cropped area.<br />
+<br />
+If none of the instances of WaterSupply in a given simulation are configured to receive runoff,<br />
+then runoff is lost from the system. <br />
+<br />
+Runoff capture is calculated on a daily basis.<br />
+<br />
+</p>
+<p><strong>Evaporation</strong></p>
+<p>For open dams and sumps, loss of water to the atmosphere through evaporation is a daily occurrence. Evaporation is calculated in a two stage process as follows:<br />
+From CERES maize soil evaporation <br />
+<br />
+soil_evaporation = radn*23.8846*(0.000204-(0.000183*0.1)) *(29+(0.6* maxt+0.4* mint)) (2)<br />
+<br />
+<strong>where</strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">radn = incident solar radiation (Mj/m2)</li>
+    <li style="margin: 0cm 0cm 10pt;">maxt = maximum daily temperature (oC)</li>
+    <li style="margin: 0cm 0cm 10pt;">mint = minimum daily temperature (oC) </li>
+</ul>
+<p>The evaporation from the surface of the dam/sump is then calculated according to:<br />
+<br />
+<br />
+evaporation = vol-(area*((d-(0.7*se/1000))** b)) (3)<br />
+<br />
+<strong>where</strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">vol = current storage volume (Ml)</li>
+    <li style="margin: 0cm 0cm 10pt;">area = dam surface area at capacity (ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">d = current storage depth (m)</li>
+    <li style="margin: 0cm 0cm 10pt;">se = soil evaporation (as calculated above)</li>
+    <li style="margin: 0cm 0cm 10pt;">b = geometry factor for dam type (from ini file)</li>
+</ul>
+<p style="margin: 0cm 0cm 10pt;"><strong>Seepage</strong></p>
+<p>For open dams and sumps, loss of water through seepage out the base and sides is also a daily occurrence. Seepage is calculated as follows:<br />
+<br />
+seepage = vol-(area*((d-(k*(d/st)/365.0))** b)) (4)<br />
+<br />
+<strong>where</strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">vol = current storage volume (Ml)</li>
+    <li style="margin: 0cm 0cm 10pt;">area = dam surface area at capacity (ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">d = current storage depth (m)</li>
+    <li style="margin: 0cm 0cm 10pt;">k = permeability of base (m/day)</li>
+    <li style="margin: 0cm 0cm 10pt;">st = seal thickness (m)</li>
+    <li style="margin: 0cm 0cm 10pt;">b = geometry factor for dam type (from ini file)</li>
+</ul>
+<p style="margin: 0cm 0cm 10pt;"><strong>Overflow</strong></p>
+<p>For open dams and sumps, incoming water which takes the storage volume above capacity is reported daily as "overflow" (ML).<br />
+<br />
+<strong>Allocation Renewal</strong></p>
+<p>For bores and rivers, an allocation renewal check is made every day, and on the day specified as "renewal day" in the input parameters, the "annual_allocation" is cred to the available storage volume. The amount of carry-over allowed is specified by the user in setting "max_available water".<br />
+<br clear="all" style="page-break-before: always;" />
+</p>
+<p><strong>Using WaterSupply with APSIM Irrigate</strong></p>
+<p style="margin: 0cm 0cm 12pt;">APSIM Irrigate works on a "mm" basis, whereas APSIM WaterSupply works on real volumes (ML). <br />
+Hence, when an irrigation application is specified in mm, an "area of application" must be provided in order to calculate the required volume of water from the specified source instance of WaterSupply. <br />
+<br />
+As mentioned previously, whenever WaterSupply is used in a simulation for supply of irrigation water, a variable called "crop_area" (ha) must be specified in the manager logic.<br />
+<br />
+Irrigations using water from WaterSupply can only be initiated by using the "irrigate apply" action in manager. <br />
+<br />
+A new optional argument called "source" is added to the "apply" command line to trigger the use of water from WaterSupply. <br />
+The required syntax is as follows:<br />
+<br />
+</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>if day = 10 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; irrigate apply amount=10 (mm), source = dam bore dam2 ()</p>
+<p>endif </p>
+<p>The argument "source" specifies the sources from which to obtain the irrigation water, in preferential order. <br />
+In other words, in the above example, if the dam cannot fully supply the required water, the balance will be taken from the bore. <br />
+If there is still a shortage of water, then dam2 will be asked next to supply water. <br />
+There is no limit to the number of sources which can be specified. <br />
+<br />
+<br />
+When the irrigation water is applied to the soil, it will carry the solutes makeup of the water source being used. <br />
+<br />
+<br />
+<strong>Transfering Water between Instances of WaterSupply</strong></p>
+<p style="margin: 0cm 0cm 12pt;">In the general operation of an irrigation and water-storage system, there may be numerous occasions where the farmer wishes to transfer water between a sump and the dam, or to pump water from a bore or river into a dam. <br />
+<br />
+This is easily achieved in APSIM WaterSupply by employing the "TOP_UP" command from manager:</p>
+<br />
+<p style="margin: 0cm 0cm 12pt;">To transfer 5 megalitres of water from a sump to a dam, for example:<br />
+<br />
+</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>if day = 15 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; dam top_up amount=5 (Ml), source= sump </p>
+<p>endif </p>
+<p  style="margin: 0cm 0cm 12pt;">
+Or else, the dam (say, capacity =150 Ml) may need to be filled from the bore, without knowing the exact amount required:<br />
+<br />
+</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>dam_deficit = 150-dam.available_water</p>
+<p>&nbsp;</p>
+<p>if day = 15 then</p>
+<p>&nbsp;&nbsp;&nbsp; dam top_up amount=dam_deficit, source= bore</p>
+<p>endif</p>
+<p  style="margin: 0cm 0cm 12pt;">
+Or else, the farmer may wish to pump to the dam whenever the sump is full:<br />
+<br />
+</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>sump_volume = sump.available_water</p>
+<p>sump_deficit = sump.max_available_water - sump_volume</p>
+<p>&nbsp;</p>
+<p>if sump_deficit = 0 then</p>
+<p>&nbsp;&nbsp;&nbsp; dam top_up amount=sump_volume, source= sump</p>
+<p>endif </p>
+<p >
+The preferential ordering of sources is available with the "top_up" command, as for the Irrigate "apply" command. <br />
+In all of these examples, the "top_up" command will transfer the specified water from the source to the destination and calculate the new solute figures in the destination pool. <br />
+<br />
+&nbsp;
+</p>
+<p><strong>WaterSupply Actions and Events</strong></p>
+<p><strong><img alt="" src="../../../portals/0/Documentation/Soil/image062.gif" /></strong></p>
+<p><strong></strong></p>
+<p><strong>Figure 1: UML diagram for an Irrigate "apply" action (specifying "source = dam") showing responses from modules concerned.</strong><br />
+<br />
+<br />
+<br />
+<img alt="" src="../../../portals/0/Documentation/Soil/image063.gif" /></p>
+<p >
+<strong>Figure 2: UML diagram for a WaterSupply (dam) "top_up" action (specifying "source = bore") showing responses from modules concerned.</strong><br />
+<br />
+<br />
+<br />
+<br />
+</p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image064.gif" /></p>
+<strong></strong><strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p><strong></strong></p>
+<p><strong>Figure 3: UML diagram for a WaterSupply (dam) "top_up" action (specifying "source = sump bore") in the situation where the first specified source is not capable of supplying all of the water required. In this case supplementary water is required from the second specified source.</strong></p>
+<p><strong>WaterSupply Module Outputs</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><strong>Name </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><strong>Units </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>available_water </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Current storage volume </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>available_depth </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>m </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Current storage depth </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>max_available_water </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Storage capacity or max allocation carry-over </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>min_volume </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Storage volume below which pumping not allowed </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>max_pump </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml/day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Maximum daily pump delivery </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>annual_allocation </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Annual water allocation (bores, rivers)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>allocation_renewal_day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>doy </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Day of year for renewal of allocation (bores, rivers)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>rain_capture </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Rainfall captured by dam area </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>evaporation </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily water loss to atmosphere</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>seepage</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Dam seepage loss through base and sides</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>overflow </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Input water above storage capacity</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>runoff_input </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Ml </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily runoff added to storage </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>storage_xxx </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ppm</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Storage concentration of solute "xxx", eg storage_cl </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irrigation_water_supplied</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ML</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Water supplied from storage at request of APSIM Irrigate</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>full</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(0-1)</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Flag indicating whether a storage is full (1) or not full(0)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>filling_event</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(0-1)</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Flag indicating whether a filling event occurred today </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>References</strong></p>
+<p style="margin: 0cm 0cm 10pt;">Jones, C.A., and J.R. Kiniry. 1986. <br />
+CERES-Maize: A simulation model of maize growth and development. <br />
+Texas A&amp;M University Press, College Station, Texas.</p>
+</div>
+
+</div><!-- End_Module_538 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/WaterSupply.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:19 GMT -->
+</html>

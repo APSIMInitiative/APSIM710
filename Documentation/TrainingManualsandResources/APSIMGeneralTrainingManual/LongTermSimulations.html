@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/LongTermSimulations.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:15 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Training Manuals and Resources > APSIM General Training Manual > Long Term Simulations
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/LongTermSimulations.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../TrainingManualsandResources.html" class="SkinObject">Training Manuals and Resources</a><span class="Sep"></span><a href="../APSIMGeneralTrainingManual.html" class="SkinObject">APSIM General Training Manual</a><span class="Sep"></span><a href="LongTermSimulations.html" class="SkinObject">Long Term Simulations</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Long Term Simulations</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-468"><a name="468"></a>
+<div class="Invisible"><div id="dnn_ctr468_ContentPane"><!-- Start_Module_468 --><div id="dnn_ctr468_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr468_HtmlModule_lblContent" class="Normal">
+	<div style="page-break-after: always;"></div>
+<h1><span style="color: #548dd4;">Exercise 5: Chickpea Sowing Rates &ndash; 40 Year Runs</span></h1>
+<p>In this exercise you will use sowing rules to plant Chickpea crops and observe yield probabilities for a 40 year period given a half full soil moisture profile at sowing. We will compare two sowing rate strategies for these conditions with the goal of maximising yield. The weather will be different each year but the soil starting conditions will be the same.</p>
+<p>By default, in long term simulations (i.e. longer than one year), the end of one years&rsquo; simulation becomes the starting point of the next year. This is useful if you are interested in seeing the degradation or improvement of the soil over a long time period. But what if you wanted to work out what the best strategy would be for the current year using weather scenarios from the past 40 years? To do this we could create 40 different simulations all with the same starting conditions but a different weather file (which would be a lot of work), or we could run the same simulation over 40 years and just reset the starting conditions each year (much simpler).</p>
+<p>We can then try different management strategies to see which one would have worked best under the past 10 years weather scenarios.</p>
+<p>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Start a new simulation using "Continuous Wheat.apsim"</p>
+<p>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Save the file as "Module5.apsim"</p>
+<p>3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Change the simulation start and end dates to 1/01/1940 - 31/12/1980</p>
+<p>4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Select the Heavy Clay soil from the Training Soils toolbox. If you can&rsquo;t see it, see Module 1 to add it. Delete the old soil.</p>
+<p>5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set the Starting water to 50% full - filled from top.</p>
+<p>6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set the Starting nitrogen to 20 kg/ha NO<sub>3</sub> and 0 kg/ha NH<sub>4</sub>, evenly distributed.</p>
+<p>7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Change the surface residue type to sorghum (don't forget to rename the pool name to "sorghum" as well), initial surface residue: 550 kg/ha, C:N ratio of 76, leave the Fraction of residue standing as is.</p>
+<p>8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Replace the wheat crop with chickpea. (Standard toolbox -&gt; Crops)</p>
+<p>9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Replace the Sowing rule with the Sow using a variable rule from the toolbox and enter the values below: </p>
+<p> &nbsp;&nbsp;<img alt="" src="../../portals/0/Documentation/TrainingManual/5LongTermSimulations/image001.jpg" /></p>
+<p>The last three criteria mean that for a crop to sow within the given window at least 15mm of rain must have fallen in the last three days and there must be a minimum of 200mm soil water available.</p>
+<p>10.&nbsp;&nbsp; Run the simulation. You might see the following error. If you don't, have a look at the summary file, it will be there as well: </p>
+<p><img alt="" src="../../portals/0/Documentation/TrainingManual/5LongTermSimulations/image002.jpg" />&nbsp;</p>
+<p>This means Apsim is unable to find certain crop properties in the soil. This is because we&rsquo;re using a crop that has not been parameterised for this particular soil.</p>
+<p>11.&nbsp;&nbsp; Click ok to dismiss the error. Click on the Water node under Heavy Clay soil.</p>
+<p><img alt="" src="../../portals/0/Documentation/TrainingManual/5LongTermSimulations/image003.jpg" />&nbsp;</p>
+<p style="margin-left: 0cm;"> </p>
+<p>Every crop used in a simulation must have an entry in the Water node that specifies crop specific limits. To add extra crops, click &ldquo;Manage crops&rdquo;. Click &lsquo;wheat&rsquo; and rename it to &lsquo;chickpea&rsquo;. Copy the values from sorghum. The real values entered must be determined experimentally, but they really only affect the output in severe water stress so it won&rsquo;t matter here. Also note the PAWC column will update automatically when you click another node.</p>
+<p>12.&nbsp;&nbsp; Now we&rsquo;ve fixed the error we can continue. Remove the sowing fertiliser rule.</p>
+<p>13.&nbsp;&nbsp; Make sure the harvesting rule will harvest chickpea, not wheat.</p>
+<p>14.&nbsp;&nbsp; Add the rule: <strong>Reset water, nitrogen and surfaceOM on fixed date</strong>. Use 1-may for the reset. Make sure the name of the soil module and the name of the surface organic matter module is correct. We want to reset water, nitrogen and surface organic matter to remove the year to year effects. Move it up to make sure it&rsquo;s the first rule under the Manager component. The order is important in the Manager folder. It is the order the rules are run in (right click on the rule and select "Move up". You can also use the shortcut Ctrl + Up).<br clear="all" style="page-break-before: always;" />
+</p>
+<p>15.&nbsp;&nbsp; Report the following variables:</p>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 36pt; border-collapse: collapse; border: medium none;">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 82.8pt; border: 1pt solid windowtext; background: none repeat scroll 0% 0% #d9d9d9; padding: 0cm 5.4pt;">
+            <p style="margin: 0cm 0cm 0.0001pt;">Component</p>
+            </td>
+            <td valign="top" style="width: 49.65pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: windowtext windowtext windowtext -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% #d9d9d9; padding: 0cm 5.4pt;">
+            <p style="margin: 0cm 0cm 0.0001pt;">Variable</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 82.8pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p style="margin: 0cm 0cm 0.0001pt;">Clock</p>
+            </td>
+            <td valign="top" style="width: 49.65pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p style="margin: 0cm 0cm 0.0001pt;">year</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 82.8pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p style="margin: 0cm 0cm 0.0001pt;">Chickpea</p>
+            </td>
+            <td valign="top" style="width: 49.65pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p style="margin: 0cm 0cm 0.0001pt;">yield</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>16.&nbsp;&nbsp; Rename simulation to "Chickpea 10 plants"</p>
+<p>17.&nbsp;&nbsp; Make a copy of the simulation and create a new one with 15 plants/m2</p>
+<p>18.&nbsp;&nbsp; Rename this copy to "Chickpea 15 plants".</p>
+<p>19.&nbsp;&nbsp; Run the simulations.</p>
+<p>20.&nbsp;&nbsp; Graph both output files creating a Year vs Yield by using a Graph component. Drag an XY graph onto the Simulations component from the Graph toolbox. To get a bar graph, in the Plot component select "Bar" in the "Type" drop down list. </p>
+<img alt="" src="../../portals/0/Documentation/TrainingManual/5LongTermSimulations/image004.jpg" />&nbsp;
+<p>21.&nbsp;&nbsp; Create a Probability Exceedence plot of Yield by using a Graph component. Drag a Probability Exceedence component onto the Simulations component from the Graph toolbox. Select the Yield as the X variable and leave Probability as the Y variable. </p>
+<p style="margin-left: 0cm;"> </p>
+<img alt="" src="../../portals/0/Documentation/TrainingManual/5LongTermSimulations/image005.jpg" />
+</div>
+
+</div><!-- End_Module_468 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/LongTermSimulations.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:15 GMT -->
+</html>

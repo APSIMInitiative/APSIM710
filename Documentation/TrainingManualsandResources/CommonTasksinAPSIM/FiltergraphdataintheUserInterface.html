@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/CommonTasksinAPSIM/FiltergraphdataintheUserInterface.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:21 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Training Manuals and Resources > Common Tasks in APSIM > Filter graph data in the User Interface
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/TrainingManualsandResources/CommonTasksinAPSIM/FiltergraphdataintheUserInterface.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../TrainingManualsandResources.html" class="SkinObject">Training Manuals and Resources</a><span class="Sep"></span><a href="../CommonTasksinAPSIM.html" class="SkinObject">Common Tasks in APSIM</a><span class="Sep"></span><a href="FiltergraphdataintheUserInterface.html" class="SkinObject">Filter graph data in the User Interface</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Filter graph data in the User Interface</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-582"><a name="582"></a>
+<div class="Invisible"><div id="dnn_ctr582_ContentPane"><!-- Start_Module_582 --><div id="dnn_ctr582_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr582_HtmlModule_lblContent" class="Normal">
+	<div id="PageContentDiv"> The Filter module allows data in an output file to be filtered according to a user specified expression. Only those rows that evaluate as true will be passed to the parent component.<br />
+<br />
+<h3 class="separator"><span style="font-size: 18px;">Graph example:</span></h3>
+Suppose we have an output file that contains information on harvests for the years 1940-1980, but we only want to display data between 1950 and 1960. We already have a graph component in our simulation. <br />
+<br />
+<br />
+To use the Filter component, we drop it onto the Plot node then move the ApsimFileReader node onto the newly created Filter Node. The output file will now pass through the filter expression before being given to the Plot.<br />
+<br />
+In the filter component we then type in: Date &gt;= #1/1/1950# AND Date &lt; #1/1/1960# Note the # symbol when evaluating dates.</div>
+<div id="PageContentDiv"><strong>NOTE: Dates are in US format (mm/dd/yyyy)</strong><br />
+<br />
+<h3 class="separator"><span style="font-size: 18px;">Filter Expression Examples</span></h3>
+<p>Some basic filter expressions are shown below.&nbsp; Expressions can be combined with Boolean AND, OR and NOT keywords. Arithmetic expressions are also allowed. Full documentation can be found below.<br />
+<br />
+</p>
+<table>
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 253.5pt; border: 1pt solid windowtext; padding: 0cm 5.4pt;">
+            <p>To show:<br />
+            <br />
+            </p>
+            </td>
+            <td valign="top" style="width: 208.6pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: windowtext windowtext windowtext -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Expression<br />
+            <br />
+            </p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 253.5pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Yields greater than 1000 t/ha<br />
+            <br />
+            </p>
+            </td>
+            <td valign="top" style="width: 208.6pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>yield &gt; 1000<br />
+            <br />
+            </p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 253.5pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Yields greater than 1000 t/ha occurring after 1970<br />
+            <br />
+            </p>
+            </td>
+            <td valign="top" style="width: 208.6pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>yield &gt; 1000 AND Date &gt; #1/1/1970#<br />
+            <br />
+            </p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 253.5pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Yields that were less than 30% of the total biomass<br />
+            <br />
+            </p>
+            </td>
+            <td valign="top" style="width: 208.6pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>yield / biomass &lt; 0.3<br />
+            <br />
+            </p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 253.5pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Yields greater than the average yield<br />
+            <br />
+            </p>
+            </td>
+            <td valign="top" style="width: 208.6pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>yield &gt; AVG(yield)<br />
+            <br />
+            </p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 253.5pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>The maximum yield<br />
+            <br />
+            </p>
+            </td>
+            <td valign="top" style="width: 208.6pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>yield = MAX(yield)<br />
+            <br />
+            </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br />
+Note that all expressions must evaluate to either true or false which is why the last example is &ldquo;yield = MAX(yield)&rdquo; instead of just &ldquo;MAX(yield)&rdquo;.<br />
+<br />
+<span style="font-size: 18px;">Filter Expression Documentation</span><br />
+<br />
+The Filter component uses a subset of the C# DataColumn.Expression Property to evaluate expressions. The relevant subset of the MSDN documentation is reproduced below.<br />
+<br />
+<h4 class="separator"><span style="font-size: 16px;">Expression Syntax</span></h4>
+<p>When you create an expression, use the ColumnName property to refer to columns. For example, if the ColumnName for one column is "UnitPrice", and another "Quantity", the expression would be as follows:</p>
+<p>"UnitPrice * Quantity"</p>
+<p>If a column is used in an expression, then the expression is said to have a dependency on that column. If a dependent column is renamed or removed, no exception is thrown. An exception will be thrown when the now-broken expression column is accessed. When you create an expression for a filter, enclose strings with single quotation marks:</p>
+<p>"LastName = 'Jones'"</p>
+<p>If a column name contains any non-alphanumeric characters or starts with a digit or matches (case-insensitively) any of the following reserved words, it requires special handling, as described in the following paragraphs.</p>
+<p><span style="font-family: Courier New; color: #548dd4;">And, Between, Child, False, In, Is, Like, Not, Null, Or, Parent, True</span></p>
+<p>If a column name satisfies one of the above conditions, it must be wrapped in either square brackets or the "`" (grave accent) quotes. For example, to use a column named "Column#" in an expression, you would write either "<a class="unknownlink" href="../../../index-2.html#" title="Column">Column</a>":</p>
+<p>Total * <span class="unknownlink">Column</span></p>
+<p>or "`Column#`":</p>
+<p>Total * `Column#`</p>
+<br />
+<p>If the column name is enclosed in square brackets then any ']' and '\' characters (but not any other characters) in it must be escaped by prepending them with the backslash ("\") character. If the column name is enclosed in grave accent characters then it must not contain any grave accent characters in it. For example, a column named "Column[]\" would be written:</p>
+<p>Total * <span class="unknownlink">Column[\</span>\\"&gt;\"&gt;Column[\\\</p>
+<p>or</p>
+<p>Total * `Column[]\`</p>
+<p>&nbsp;</p>
+<p>Date values should be enclosed within pound signs (#) or single quotes (') based on the data provider. Decimals and scientific notation are permissible for numeric values. For example:</p>
+<p>FirstName = 'John'</p>
+<p>Price &lt;= 50.00</p>
+<p>Birthdate &lt; #1/31/82#</p>
+<br />
+<p>String literals are identified when there are single quotes surrounding the value. For example:</p>
+<p>'John'</p>
+<p>&nbsp;</p>
+<p>Boolean literals are true and false; they are not quoted in expressions.</p>
+<p>&nbsp;</p>
+<h4 class="separator"><span style="font-size: 16px;">Operators</span></h4>
+<p>Concatenation is allowed using Boolean AND, OR, and NOT operators. You can use parentheses to group clauses and force precedence. The AND operator has precedence over other operators. For example:</p>
+<p>(LastName = 'Smith' OR LastName = 'Jones') AND FirstName = 'John'</p>
+<p>When you create comparison expressions, the following operators are allowed:</p>
+<p>&lt; &gt;</p>
+<p>&lt;= &gt;=</p>
+<p>&lt;&gt; =</p>
+<p>IN, LIKE</p>
+<br />
+<br />
+<p>The following arithmetic operators are also supported in expressions:</p>
+<p>+ (addition) - (subtraction)</p>
+<p>* (multiplication) / (division)</p>
+<p>% (modulus)</p>
+<br />
+<h4 class="separator"><span style="font-size: 16px;">Wildcard Characters</span></h4>
+<p>Both the * and % can be used interchangeably for wildcard characters in a LIKE comparison. If the string in a LIKE clause contains a * or %, those characters should be enclosed in square brackets. If a bracket is in the clause, each bracket character should be enclosed in square brackets. A wildcard is allowed at the start and end of a pattern, or at the end of a pattern, or at the start of a pattern. For example:</p>
+<p>"ItemName LIKE '*product*'"</p>
+<p>"ItemName LIKE '*product'"</p>
+<p>"ItemName LIKE 'product*'"</p>
+<p>Wildcard characters are not allowed in the middle of a string. For example, 'te*xt' is not allowed.</p>
+<br />
+<h4 class="separator"><span style="font-size: 16px;">Aggregates</span></h4>
+<p>The following aggregate types are supported:</p>
+<p>Sum (Sum) </p>
+<p>Avg (Average)</p>
+<p>Min (Minimum)</p>
+<p> Max (Maximum)</p>
+<p>Count (Count) </p>
+<p>StDev (Statistical standard deviation)</p>
+<p>Var (Statistical variance)</p>
+</div>
+<div id="PageInternalFooterDiv"> </div>
+</div>
+
+</div><!-- End_Module_582 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/CommonTasksinAPSIM/FiltergraphdataintheUserInterface.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:21 GMT -->
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/TCLLINK.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:32 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > TCLLINK
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/TCLLINK.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="TCLLINK.html" class="SkinObject">TCLLINK</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>TCLLINK</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-496"><a name="496"></a>
+<div class="Invisible"><div id="dnn_ctr496_ContentPane"><!-- Start_Module_496 --><div id="dnn_ctr496_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr496_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">Description</h1>
+<p style="margin: 0cm 0cm 10pt;">This module provides a simple link between apsim and TCL interpreters. Variables are exchanged through a Get/Set mechanism.&nbsp;<br />
+<br />
+<strong>Settings</strong></p>
+<p style="margin: 0cm 0cm 10pt;">Rules are defined just like the manager: the rules in [xyz.tcllink.init] will be evaluated at the simulation's initialisation.&nbsp;<br />
+The other rules of interest are &ldquo;init&rdquo;, &ldquo;prepare&rdquo;, &ldquo;start_of_day&rdquo;, &ldquo;process&rdquo;,&ldquo; post&rdquo;, &ldquo;end_of_day&rdquo;, and "exit".<br />
+<br />
+Apsim messages are generated with the TCL procedure apsimSendMessage.&nbsp;<br />
+It has two mandatory arguments, the destination module, the message name, and optional message name/value pairs are encoded as list elements.&nbsp;<br />
+For example,</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">apsimSendMessage wheat sow {cultivar hartog} {plants 120} {sowing_depth 30} </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">Apsim variables are set/get with apsimGet, apsimSet.<br />
+The procedure&nbsp;apsimWriteToSummaryFile&nbsp;sends a log message to the current summary file</p>
+<h1 style="margin: 24pt 0cm 0pt;">Command Line Debugger</h1>
+<p style="margin: 0cm 0cm 10pt;">A simple &ldquo;command line&rdquo; debugger is provided in the sample directory.<br />
+It demonstrates the ability to examine apsim variables, step through simulations and set breakpoints.<br />
+<br />
+<br />
+<strong>nb</strong>.&nbsp;In the following samples,</p>
+<p>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; On the first line, the "(Sample) # %" (where # is just a number) part is just the command prompt. It is what comes after that is important. It is the command.</p>
+<p>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Also the next line underneath (if it exists) is the result or output(or the echo) of doing the command above.</p>
+<p>3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The final line (if it exists) is an explanation of the result or output(or echo).</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">&nbsp;(Sample) 1 % link clock.day day </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">Link the apsim variable &ldquo;clock.day&rdquo; to the tcl variable &ldquo;day&rdquo;. </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">(Sample) 2 % b {$day == 182} </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">{$day == 182} </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">Set a breakpoint for day 182. Equivalent to</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">&ldquo; b {[apsimGet clock.day] == 182} &rdquo; </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;"></p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">(Sample) 3 % c </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">-1 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">Continue. Control returns after a crop is planted </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">(Sample) 4 % p wheat.biomass </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">12.874</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">Print an apsim variable </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">(Sample) 5 % s </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">1 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;"></pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">Single step </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">(Sample) 6 % p wheat.biomass </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">14.095 </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">etc.. </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">(Sample) 7 % </pre>
+</div>
+<h1 style="margin: 24pt 0cm 0pt;">Missing features</h1>
+<p style="margin: 0cm 0cm 10pt;">Cannot uncrack messageData structures (eg newmet)</p>
+</div>
+
+</div><!-- End_Module_496 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/TCLLINK.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:32 GMT -->
+</html>

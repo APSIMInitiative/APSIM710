@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/VENLINK.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:32 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > VENLINK
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/VENLINK.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="VENLINK.html" class="SkinObject">VENLINK</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>VENLINK</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-498"><a name="498"></a>
+<div class="Invisible"><div id="dnn_ctr498_ContentPane"><!-- Start_Module_498 --><div id="dnn_ctr498_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr498_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">Linking APSIM and VENSIM using the Venlink module</h1>
+<p style="margin: 0cm 0cm 10pt;"><i>Patrick Smith and Dean Holzworth</i></p>
+<h1 style="margin: 24pt 0cm 0pt;">Overview</h1>
+<p style="margin: 0cm 0cm 10pt;">The ability to integrate diverse modules through the so-called &ldquo;plug-in-pull-out&rdquo; approach is one of APSIM's key strengths. This guide describes an enhancement of this functionality through the linkage of APSIM with VENSIM, an &lsquo;off the shelf' modelling package produced by Ventana Systems Inc. Enabling APSIM to call and execute VENSIM models allows researchers to quickly and easily develop new modules for APSIM, making full use of the functionality and intuitive icon-based interface of VENSIM. New VENSIM based modules fully interact with the APSIM Manager in the same manner as existing modules, but may be developed by the user without the need for significant interaction with the APSIM software engineers.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Procedure for producing a VENSIM-based module</h1>
+<p style="margin: 0cm 0cm 10pt;">To produce a new VENSIM-based module for APSIM the following three steps are recommended:&nbsp;</p>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Construct and test a fully functional stand-alone model in VENSIM</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Convert the &lsquo;shared' variables within the VENSIM model to &lsquo;APSIM settable' types</p>
+<p class="ListParagraphCxSpLast" style="margin: 0cm 0cm 10pt 36pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add the necessary sections and commands to the APSIM files.&nbsp;</p>
+<h1  style="margin: 24pt 0cm 0pt;">Step 1. Construct and test a fully functional stand-alone model in VENSIM</h1>
+<p style="margin: 0cm 0cm 10pt;">VENSIM is quite intuitive to use and previous users of icon-type modelling software should have little difficulty getting up to speed with it. New users are recommended to do the tutorials provided under VENSIM Help. As you design and build your model distinguish between two types of variables &ndash; those variables that will be used exclusively within the VENSIM module, and those variable that will be passed from VENSIM to APSIMand vice versa. It may be helpful to visually identify the latter &ldquo;shared&rdquo; variables in your VENSIM model diagram by using a special font, colour or outline.&nbsp;<br />
+<br />
+Before attempting to link a VENSIM model to APSIM it is important to ensure that the model is working properly in isolation. This means that all variables that eventually will be shared between the programs will initially need to have values allocated within VENSIM. For constants this is simply a matter of specifying a value in the VENSIM equation editor. For variables that require sequential data it may be useful to dynamically link VENSIM to a spreadsheet using the GET XLS DATA or GET 123 DATA functions in VENSIM. Doing a dummy APSIM run may be a convenient way to generate the data you need to test your VENSIM model, and in many cases it may be the same data that is eventually passed to VENSIM by APSIM (e.g. daily rainfall, soil moisture or crop biomass).&nbsp;<br />
+<br />
+The only rule that must be followed when constructing your VENSIM model is that:&nbsp;<br />
+<br />
+The initial value of all &lsquo;levels' (= &lsquo;stocks' or &lsquo;state variables') in VENSIM must be set indirectly by means of a constant linked to the level with a connecting arrow.&nbsp;<br />
+This is because APSIM cannot set VENSIM levels directly.&nbsp;<br />
+<br />
+In addition to the rule concerning levels, the following naming convention is encouraged:&nbsp;<br />
+<br />
+Names of variables in VENSIM models should be as descriptive as possible to assist other users and to help &lsquo;self document' the model. Spaces are permitted in VENSIM and these will be automatically converted within APSIM to underscores (eg. initial htt in VENSIM will become initial_htt in APSIM..&nbsp;</p>
+<h1 style="margin: 24pt 0cm 0pt;">Step 2. Convert the &lsquo;shared' variables within the VENSIM model to &lsquo;APSIM settable' types<a href="../../../index-2.html#Step_C_Convert_the_&lsquo;shared_variables_within_the_VENSIM_model_to_&lsquo;APSIM_settable_types_6" title="Link to this Section">&para;</a></h1>
+<p style="margin: 0cm 0cm 10pt;">Having established that your VENSIM model is working properly it is a simple matter to enable communication with APSIM. Variables that need to be set by APSIM during the course of a run should be converted to one of two variable types:&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Variables that require only the initial value to be set by APSIM (namely constants, including those that specify the initial values of levels (as described in Step 1)) should be set to &ldquo;Constant&rdquo; and &ldquo;Normal&rdquo; under the variable type selectors in the equation editor</p>
+<p style="margin: 0cm 0cm 10pt;">Variables that are required to be set by APSIM on a daily basis should be set to &ldquo;Auxiliary&rdquo; and &ldquo;Gaming&rdquo; under the variable type selectors in the equation editor.&nbsp;</p>
+<p  style="margin: 0cm 0cm 10pt;">Note that variables owned exclusively by VENSIM do not need to be changed from Auxiliary/Normal or Constant/Normal types. Such variables can still be retrieved by APSIM for calculations and reporting.&nbsp;</p>
+<h1 style="margin: 24pt 0cm 0pt;">Step 3. Add necessary sections to the APSIM files<a href="../../../index-2.html#Step_D_Add_necessary_sections_to_the_APSIM_files_7" title="Link to this Section">&para;</a></h1>
+<p style="margin: 0cm 0cm 10pt;">Firstly you need to drag and drop a VenLink component from the standard toolbox and drop it on your paddock.&nbsp;<br />
+Next you need to specify the model file name and the VENSIM variable names that you want to access from APSIM. This can be done by clicking on VenLink and editing the parameters on the right hand side.<br />
+<br />
+Next you need to give the VENSIM "constants" an initial value. Click on the&nbsp;ini&nbsp;node under VenLink and browse to a .ini file. The contents of the .ini file should look something like the following example:</p>
+<div style="padding-bottom: 5pt; padding-left: 5pt; padding-right: 5pt; background: #eeeeee; margin-left: 6.6pt;  margin-right: 6.6pt;  padding-top: 5pt;border: #dddddd 1pt solid;">
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">[standard.venlink.constants] </pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;"></pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">initial_sum_htt = 0 </pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">soil_moisture_threshold = -0.9 </pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">ll15 = 0.5 </pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">soil_temp_threshold = 20 </pre>
+</div>
+<p  style="margin: 0cm 0cm 10pt;">Finally, VENSIM variables that need to be set every day must be done through a&nbsp;logic&nbsp;component.&nbsp;<br />
+After dropping a&nbsp;Logic&nbsp;component from the standard toolbox onto your paddock enter script in the "Start_of_day" tab that looks like this example:&nbsp;<br />
+<br />
+<br />
+</p>
+<div style="padding-bottom: 5pt; padding-left: 5pt; padding-right: 5pt; background: #eeeeee; margin-left: 6.6pt;  margin-right: 6.6pt;  padding-top: 5pt;border: #dddddd 1pt solid;">
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">venlink.st1 = st(1) </pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">venlink.sw1 = sw(1) </pre>
+</div>
+</div>
+
+</div><!-- End_Module_498 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/VENLINK.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:33 GMT -->
+</html>

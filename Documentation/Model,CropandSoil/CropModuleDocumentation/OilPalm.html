@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/OilPalm.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:51 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Crop Module Documentation > Oil Palm
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/OilPalm.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../CropModuleDocumentation.html" class="SkinObject">Crop Module Documentation</a><span class="Sep"></span><a href="OilPalm.html" class="SkinObject">Oil Palm</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Oil Palm</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-711"><a name="711"></a>
+<div class="Invisible"><div id="dnn_ctr711_ContentPane"><!-- Start_Module_711 --><div id="dnn_ctr711_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr711_HtmlModule_lblContent" class="Normal">
+	<div class="WordSection1">
+<h1>Oil Palm</h1>
+<p><span><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">&nbsp;</span></strong></span></p>
+<h2><span style="font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Developers:</span></h2>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Neil I. Huth, </span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">CSIRO Ecosystem Sciences/Sustainable
+Agriculture Flagship, Toowoomba, Australia</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">&nbsp;</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Murom Banabas</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">PNG Oil Palm Research Association, Dami,
+Papua New Guinea</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">&nbsp;</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Paul N. Nelson</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Centre for Tropical Environmental and
+Sustainability Science, James Cook University, Cairns, Australia</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">&nbsp;</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Michael Webb</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">CSIRO Land and Water/Sustainable Agriculture
+Flagship, Townsville, Australia</span></strong></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">&nbsp;</span></strong></p>
+</div>
+<h2 class="WordSection1"><span style="font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Sensibility/Plausibility
+tests</span></h2>
+<div class="WordSection1">
+<p><em><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Apsim\tests\validation\oilpalm\oilpalmvalidation.apsim</span></em></p>
+<p><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Data is not available for sensibility testing
+of a wider range of environments.&nbsp; However, outputs for N and C cycling, and
+water balance have been output in the existing validation simulations runs.&nbsp;
+The validation set covers the main agronomic ranges (ranges in N and
+environment) and so serves much of the purpose of a sensibility set.&nbsp; The only
+data on material balances of C, N and water were also taken on the same sites
+in various PhD and MSc studies and so they are ideal for the sensibility test.&nbsp;
+Furthermore, a plant population trial has be reproduced in the same APSIM input
+file that seeks to mirror the study of Bruere et al (1988).&nbsp; It is difficult to
+directly relate these outputs to the original study given the genetic
+advancement since this early date, but responses can be compared.</span></p>
+<h2><span style="font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Validation tests</span></h2>
+<p><em><span style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">Apsim\tests\validation\oilpalm\oilpalmvalidation.apsim</span></em></p>
+<p>Data from three sites across Papua New Guinea (PNG) with
+different climate and soils were used for model testing (Fig. 2). Soils range
+from sandy clay (volcanic ash) to alluvial clay. Mean annual rainfall ranges
+from 2400 mm (Sagarai and Sangara) to 4350 mm (Hargy) with annual rainfall
+variability larger at Sagarai than the other two sites.&nbsp; Whilst there is only a
+small difference in temperature across the sites, rainfall patterns do impact
+on both annual mean daily (Hargy 15.9 MJ; Sangara 17.0 MJ; Sagarai 18.1 MJ) and
+seasonal variation in solar radiation (Fig 2).</p>
+<p><img alt="" src="../../../portals/0/Documentation/Crops/oilpalm1.gif" /></p>
+<p>Figure 2. Locations of the three fertiliser trials used to
+testAPSIM-Oil Palm. Soil type, mean annual rainfall, monthly average daily
+temperature and solar radiation (http://power.larc.nasa.gov/) and monthly
+average rainfall are also shown.</p>
+<p>Fertiliser trial data was obtained for each location from
+the PNG Oil Palm Research Association&nbsp; trial database (Table 1).&nbsp; All trials
+had commercial <em>dura</em> x <em>pisifera</em> palms planted in an equilateral
+triangular pattern.&nbsp; Trials included multiple rates of nitrogen including a
+control in which no nitrogen was applied.&nbsp; Fertilisers were applied in 2 to 3
+applications per year.&nbsp; Trial 324 evaluated the effect of nitrogen rate and
+source (5 sources). There was no significant effect of nitrogen source and so
+these data have been combined in this study. Trial 504 investigated nutrient
+interactions (N x K).&nbsp; Data from treatments for which potassium was not
+limiting were combined. Trial 212 investigated nitrogen rate only.&nbsp; All other
+macro- and micronutrients were maintained at sufficient levels in all trials.&nbsp;
+Plots in each trial consisted of 16 to 30 palms surrounded by guard rows
+between neighbouring plots. Levels of replication ranged from 2 to 4.&nbsp; In
+trials 324 and 504 trenches were dug around plots to minimise poaching of
+nutrients by palms from neighbouring plots. </p>
+<p>Table 1. Description of fertiliser trials and selected
+treatments used in model development and testing.</p>
+<table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 60.35pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Location</span></p>
+            </td>
+            <td valign="top" style="width: 53.05pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Trial Number&dagger;</span></p>
+            </td>
+            <td valign="top" style="width: 76.3pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Previous </span></p>
+            <p><span style="font-size: 8pt;">Land Use</span></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Year </span></p>
+            <p><span style="font-size: 8pt;">Planted</span></p>
+            </td>
+            <td valign="top" style="width: 67.2pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Treatment Commenced</span></p>
+            </td>
+            <td valign="top" style="width: 60.4pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Population</span></p>
+            <p><span style="font-size: 8pt;">(palms/ha)</span></p>
+            </td>
+            <td valign="top" style="width: 95.2pt; border-width: 1pt medium; border-style: solid none; border-color: windowtext -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">N Rates</span></p>
+            <p><span style="font-size: 8pt;">(kg N/palm/y)</span></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 60.35pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Hargy</span></p>
+            </td>
+            <td valign="top" style="width: 53.05pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">212</span></p>
+            </td>
+            <td valign="top" style="width: 76.3pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Oil Palm</span></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">1996</span></p>
+            </td>
+            <td valign="top" style="width: 67.2pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">2002</span></p>
+            </td>
+            <td valign="top" style="width: 60.4pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">140</span></p>
+            </td>
+            <td valign="top" style="width: 95.2pt; border: medium none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">0, 1.0, 2.0</span></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 60.35pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Sangara</span></p>
+            </td>
+            <td valign="top" style="width: 53.05pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">324</span></p>
+            </td>
+            <td valign="top" style="width: 76.3pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Oil Palm</span></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">1996</span></p>
+            </td>
+            <td valign="top" style="width: 67.2pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">2001</span></p>
+            </td>
+            <td valign="top" style="width: 60.4pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">135 </span></p>
+            </td>
+            <td valign="top" style="width: 95.2pt; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">0, 0.42,1.68</span></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 60.35pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Sagarai</span></p>
+            </td>
+            <td valign="top" style="width: 53.05pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">504</span></p>
+            </td>
+            <td valign="top" style="width: 76.3pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">Forest/Rubber Plantation</span></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">1991</span></p>
+            </td>
+            <td valign="top" style="width: 67.2pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">1995</span></p>
+            </td>
+            <td valign="top" style="width: 60.4pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">127 </span></p>
+            </td>
+            <td valign="top" style="width: 95.2pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color windowtext; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><span style="font-size: 8pt;">0, 0.42, 1.26</span></p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&dagger; PNG Oil Palm Research Association trial identification
+number</p>
+<p>&nbsp;</p>
+<p>Harvested ripe bunches were counted and weighed (together
+with loose fruits) fortnightly for every palm.&nbsp; Leaf samples were collected on
+frond 17 from selected palms in all plots at least once a year and were oven
+dried and analysed for nitrogen content.&nbsp; Petiole cross-sectional area, leaflet
+lengths and frond length of frond 17 was measured to allow calculation of leaf
+area and mass (<a title="Corley, 1971 #702" href="#_ENREF_8"><span style="text-decoration: none; color: windowtext;">Corley et al., 1971</span></a>).&nbsp; The total number of
+fronds was counted, and the first frond was marked twice a year to determine
+frond production rate. Stem heights of the same selected palms were measured periodically
+in two of the trials and these were combined with a single measurement of stem
+diameter to calculate stem mass, assuming a linear increase in stem density
+with plantation age (<a title="Corley, 1971 #702" href="#_ENREF_8"><span style="text-decoration: none; color: windowtext;">Corley et al., 1971</span></a>). </p>
+<p>Parameterisation of soil process models used information
+from a variety of sources. Soil hydraulic properties were derived from pressure
+plate water retention data.&nbsp; Runoff curve number (<a title="Hawkins, 1996 #236" href="#_ENREF_13"><span style="text-decoration: none; color: windowtext;">Hawkins, 1996</span></a>) was estimated to 72 for clay
+soils and 50 for ash soils using runoff data from PNG oil palm plantations (<a title="Banabas, 2008 #703" href="#_ENREF_3"><span style="text-decoration: none; color: windowtext;">Banabas et al., 2008</span></a>). Soil organic carbon
+data were available for Trials 324 and 504.&nbsp; Simulations of Trial 212 utilised
+carbon measurements available for a nearby planting.&nbsp; The fractionation of soil
+organic carbon into the various model pools is very important for model
+accuracy.&nbsp; It has been shown that it is possible to deduce, <em>a priori</em>,
+the apparent soil organic matter composition from observed patterns (<a title="Huth, 2010 #273" href="#_ENREF_15"><span style="text-decoration: none; color: windowtext;">Huth et al., 2010</span></a>).&nbsp; The inert fraction of the
+total soil organic matter is an important parameter and methods for its
+determination for the volcanic soils in Papua New Guinea have not been
+developed.&nbsp; In this study we have made the simple assumption that the inert
+carbon content does not vary significantly with depth and that it can be
+approximated using the carbon content at a depth of approximately 0.5 m. Most
+carbon cycling occurs above this depth and carbon contents vary less below this
+depth.&nbsp; Therefore we assume that carbon above this value is available for
+decomposition.&nbsp; Finally, as trials 212 and 324 were planted into existing
+plantations, we initialise the surface organic matter pools to consist of 24
+t/ha of fronds with a C:N of 39 and 63 t/ha of stems with a C:N of 145. In the
+absence of other information, the same initial surface organic matter was used
+for trial 504.</p>
+<p>Daily meteorological data
+(rainfall, sunshine hours, temperature) for Trial 324 was taken from the nearby
+research station of the PNG Oil Palm Research Association.&nbsp; Sunshine hour data
+was used to calculate incoming global shortwave radiation using the approach
+used by <a title="Banabas, 2007 #738" href="#_ENREF_2"><span style="text-decoration: none; color: windowtext;">Banabas (2007</span></a>). Complete daily meteorological
+datasets were not available for the other two sites apart from some monthly
+totals for sunshine hours and rainfall.&nbsp; Daily estimates of the required
+climate data for these sites were derived from estimates obtained from the NASA
+Langley Research Center POWER Project funded through the NASA Earth Science
+Directorate Applied Science Program (http://power.larc.nasa.gov/).&nbsp; Adequacy of
+this dataset was tested via comparison of satellite-derived estimates of
+monthly mean solar radiation with that calculated from measured monthly sunshine
+hours for Hargy (data not shown).&nbsp; No data on sunshine hours were available for
+Sagarai and neither site had measured temperature data for comparison.&nbsp;
+Satellite-derived estimates of monthly rainfall were found to be inadequate
+when compared to available monthly rainfall data. Therefore, observed monthly
+rainfall totals were disaggregated into daily data using the satellite-derived
+daily rainfall estimates.&nbsp; Satellite-derived estimates of daily temperatures
+were used for these two sites, but could not be tested for their accuracy.</p>
+<p><img alt="" src="../../../portals/0/Documentation/Crops/oilpalm2.gif" /></p>
+<p>Time
+series of observed and predicted annual frond production (a,d,g), leaf area
+index (b,e,h) and stem mass (c,f,i) for the three sites used in testing
+APSIM-Oil Palm. Zero (yellow), low (light green) and high (dark green) nitrogen
+rate treatments are shown.&nbsp; Shaded areas indicate the period before treatments
+were imposed.</p>
+<p>&nbsp;</p>
+<p><img alt="" src="../../../portals/0/Documentation/Crops/oilpalm3.gif" /></p>
+<p>Time series of observed (symbols) and predicted (lines)
+annual bunch production (a,d,g), bunch size (b,e,h) and fresh fruit bunch yield
+(c,f,i) for the three sites used in testing APSIM-Oil Palm. Zero (yellow), low
+(light green) and high (dark green) nitrogen rate treatments are shown.&nbsp;
+Symbols and lines both indicate results for the preceding 12-month period.
+Shaded areas indicate the period before treatments were imposed.</p>
+<p>&nbsp;</p>
+<p><img alt="" src="../../../portals/0/Documentation/Crops/oilpalm4.gif" /></p>
+<p>Plots of predicted <em>vs</em> observed yield and yield
+components for the three fertiliser trials used to test the model.&nbsp; Statistics
+(see text for description) for annual a) bunch production (/palm/y), b) mean
+bunch size (kg) and c) fresh fruit bunch yield (t/ha/y) include line of best
+fit, coefficient of determination (R<sup>2</sup>), Nash-Sutcliffe efficiency
+(NSE), mean error (ME), mean absolute error (MAE) and root mean square error to
+standard deviation ratio (RSR).</p>
+<em><span lang="FR" style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;">&nbsp;</span></em>&nbsp;
+<span lang="FR" style="font-size: 10pt; font-family: &quot;Cambria&quot;,&quot;serif&quot;;"></span><br />
+<p><strong><span lang="FR" style="font-size: 10pt; font-family: &quot;Arial&quot;,&quot;sans-serif&quot;;"></span></strong></p>
+</div>
+<h2 class="WordSection1">Description</h2>
+<div class="WordSection1">
+<p>APSIM-Oil Palm was developed using the Plant Modelling
+Framework (PMF) (<a title="Brown, these proceedings #743" href="#_ENREF_3"><span style="text-decoration: none; color: windowtext;">Brown et al., these proceedings</span></a>).&nbsp; The PMF
+provides the model developer with a library of objects describing commonly-used
+functions or algorithms for plant modelling.&nbsp; These are configured by the
+modeller into a model description using the eXtensible Markup Language (XML).&nbsp;
+APSIM-Oil Palm has been configured to simulate the growth of fronds, stem, roots
+and bunches in oil palm.&nbsp; The models for each of these are briefly described
+below.&nbsp; Fronds and fruit bunches are simulated in age-based cohorts created at
+the initiation of each successive frond and their subsequent development is
+traced via the rank of each cohort within the plant (Fig 1).&nbsp; Both the lowest
+(oldest) frond and lowest (oldest) bunch are removed at the harvest of a
+cohort. </p>
+<p><img alt="" src="../../../portals/0/Documentation/Crops/oilpalm5.gif" /></p>
+<p>Figure 1. a) Timing of key phases for the growth of each
+cohort of fronds and fruit bunches, as well as graphical presentation of key
+functions for b) maximum bunch size (BS<sub>max</sub>), c) maximum frond area
+(FA<sub>max</sub>), d) relative developmental rate (RDR) and e) plastochron at
+optimum temperature.</p>
+<h2>Canopy</h2>
+<p>Frond initiation is calculated using an age-dependent
+plastochron (Fig 1e) which increases until age 10 years (<a title="von Uexk&uuml;ll, 2003 #698" href="#_ENREF_16"><span style="text-decoration: none; color: windowtext;">von Uexk&uuml;ll et al., 2003</span></a>).&nbsp; This value
+represents the shortest time interval between the initiation of successive
+fronds.&nbsp; The impact of temperature on plastochron is captured via a daily
+relative developmental rate (RDR) which is calculated in a manner similar to
+that of <a title="Combres, 2013 #687" href="#_ENREF_5"><span style="text-decoration: none; color: windowtext;">Combres et al. (2013</span></a>).&nbsp; The four cardinal
+temperatures (Fig 1d) were fitted to frond appearance data from the three sites
+used in model testing.&nbsp; The model assumes plastochron and phyllochron are
+equivalent.&nbsp; After emerging as the &lsquo;spear leaf&rsquo;, the frond undergoes expansion
+for a further 5 phyllochrons.&nbsp; Each frond expands in a logistic fashion using
+the equations developed by <a title="Schultz, 1992 #699" href="#_ENREF_14"><span style="text-decoration: none; color: windowtext;">Schultz (1992</span></a>) for modelling leaf expansion in
+grapes.&nbsp; The maximum frond size increases to 14 m<sup>2</sup> at age 14 years
+(Fig 1c). </p>
+<p>Whilst seasonal variation in clear sky solar radiation is
+low in most regions located near the equator, variation from clouding in high
+rainfall environments is significant.&nbsp; Photosynthesis is calculated using a
+radiation use efficiency (RUE) of 1.22 g MJ<sup>-1</sup> of intercepted direct
+beam total short wave radiation.&nbsp; RUE for diffuse light increases from this
+direct beam value by up to 33%, in proportion to the fraction of daily
+intercepted radiation, corresponding with the observed impact of diffuse light
+penetration on forest growth (<a title="Alton, 2007 #742" href="#_ENREF_1"><span style="text-decoration: none; color: windowtext;">Alton et al., 2007</span></a>).&nbsp; Daily average RUE is
+calculated as the average of the direct and diffuse beam RUE values, weighted toward
+the diffuse light RUE using the square of the daily diffuse light fraction (<a title="Vankraalingen, 1989 #690" href="#_ENREF_15"><span style="text-decoration: none; color: windowtext;">Vankraalingen et al., 1989</span></a>).&nbsp; Light
+interception is calculated using the Beer-Lambert law using extinction
+coefficients derived from data from a nearby site in West New Britain, Papua New
+Guinea (<a title="Breure, 1988 #701" href="#_ENREF_2"><span style="text-decoration: none; color: windowtext;">Breure, 1988</span></a>) and other modelling (<a title="Vankraalingen, 1989 #690" href="#_ENREF_15"><span style="text-decoration: none; color: windowtext;">Vankraalingen et al., 1989</span></a>), and is assumed to
+increase from 0.175 to 0.35 for direct beam, and 0.225 to 0.45 for diffuse
+beam, from 56 palms/ha to 186 palms/ha.&nbsp; The fraction of intercepted incoming
+radiation is also used to calculate potential evapotranspiration (<a title="Priestley, 1972 #461" href="#_ENREF_11"><span style="text-decoration: none; color: windowtext;">Priestley and Taylor, 1972</span></a>).&nbsp; Photosynthate is
+partitioned to various organs (fronds, stem, roots, bunches) based on
+individual demands.&nbsp; Partitioning during periods of supply limitation is
+according to relative sink strengths. Biomass demand for growing fronds is
+calculated from potential frond expansion rates using a specific leaf area
+(0.003 m<sup>2</sup>/g) that accounts for both leaf and rachis mass.</p>
+<p>Frond nitrogen concentration (FNC), and its effect on
+photosynthesis and other growth processes, is specified using three cardinal
+concentrations.&nbsp; Uptake of nitrogen from the soil is sought to maintain the
+frond biomass at a maximum nitrogen concentration (FNC<sub>max</sub>).&nbsp; Under
+nitrogen limitation, the actual frond nitrogen concentration may drop below
+these levels.&nbsp; Growth is constrained when FNC is&nbsp; below the critical nitrogen
+concentration (FNC<sub>crit</sub>).&nbsp; Growth stops if FNC reaches the minimum
+nitrogen concentration (FNC<sub>min</sub>). The relative nitrogen concentration
+(RNC=(FNC &ndash; FNC<sub>min</sub>)/(FNC<sub>crit</sub>-FNC<sub>min</sub>)) is used
+as a nutritional growth factor for various plant processes including radiation
+use efficiency, leaf appearance rate, maximum bunch size and maximum frond
+size.</p>
+<p>The oldest cohort of fronds are removed with each harvest of
+bunches.&nbsp; Information on frond mass (including carbon and nitrogen content) is
+communicated to the APSIM surface organic matter model, which subsequently calculates
+the decomposition and return of carbon and nitrogen to the soil over time.&nbsp;
+Frond biomass on the soil surface will affect modelled processes such as
+evaporation, runoff and erosion (<a title="Probert, 1998 #464" href="#_ENREF_12"><span style="text-decoration: none; color: windowtext;">Probert et al., 1998</span></a>).</p>
+<p>&nbsp;</p>
+<h2>Stem</h2>
+<p>The proportion of daily assimilation partitioned to stem is
+calculated from daily frond growth using a stem to frond ratio which increases
+from 0 at planting to 0.25 by seven years of age.&nbsp; Studies of stem N content
+have demonstrated that N concentrations are high near the bases of growing
+fronds but decrease considerably to older parts of the stem.&nbsp; As a result,
+average whole stem N concentrations decrease with plant age.&nbsp; We use the
+equation of <a title="Goh, 2005 #694" href="#_ENREF_6"><span style="text-decoration: none; color: windowtext;">Goh (2005</span></a>) who state that stem N concentration
+decreases from 1.37% to 0.351% by the age of 8.5 years.</p>
+<h2>Roots</h2>
+<p>The roots in the palm model are used to calculate access to
+soil resources of water and nitrogen, provide a sink for plant biomass and
+nitrogen, and to calculate the return of this plant root material to the soil
+organic matter pools.&nbsp; Root mass in each of the soil layers is simulated.&nbsp; Root
+depth is set to an initial depth (D<sub>init</sub>) at planting and progress
+downward through the profile over time at a fixed root front velocity (RFV) of
+30 mm d<sup>-1</sup> until the base of the lowest soil layer is reached or the
+plant reaches a site-specific maximum rooting depth (D<sub>max</sub>) (<a title="Carr, 2011 #695" href="#_ENREF_4"><span style="text-decoration: none; color: windowtext;">Carr, 2011</span></a>).&nbsp; A fixed proportion of plant
+growth (10%) is partitioned to roots and this mass is distributed vertically
+into soil layers using the approach developed for simulating root proliferation
+by irrigated Eucalypts growing over water tables (<a title="Paydar, 2005 #445" href="#_ENREF_9"><span style="text-decoration: none; color: windowtext;">Paydar et al., 2005</span></a>).&nbsp; In this approach,
+further root mass is preferentially invested by the plant into soil layers
+where uptake of water and nitrogen per unit root mass is the highest.&nbsp; Root
+nitrogen concentration is set at 0.39% (<a title="Goh, 2005 #694" href="#_ENREF_6"><span style="text-decoration: none; color: windowtext;">Goh, 2005</span></a>) and a constant root turnover rate
+of 0.001 d<sup>-1</sup> is used for all soil layers.&nbsp; </p>
+<h2>Bunches</h2>
+<p>Cohorts of bunches are initiated with each new frond cohort
+and subsequently undergo phases of gender determination, flower abortion, bunch
+failure and bunch growth (<a title="Combres, 2013 #687" href="#_ENREF_5"><span style="text-decoration: none; color: windowtext;">Combres et al., 2013</span></a>; <a title="Jones, 1997 #737" href="#_ENREF_7"><span style="text-decoration: none; color: windowtext;">Jones, 1997</span></a>). As a result, the timing and
+duration of all phases can be expressed in terms of the rank of the related
+frond cohort within the plant (Fig. 1a) (<a title="Combres, 2013 #687" href="#_ENREF_5"><span style="text-decoration: none; color: windowtext;">Combres et al., 2013</span></a>). Sex determination is
+calculated during a phase occurring 49 to 57 fronds before bunch maturity.&nbsp;
+Similarly, flower abortion is calculated during a phase 10 to 12 fronds after
+spear leaf.&nbsp; Finally, bunch failure is determined 21 fronds after spear leaf
+over the course of a single frond. <a title="Combres, 2013 #687" href="#_ENREF_5"><span style="text-decoration: none; color: windowtext;">Combres et al. (2013</span></a>) showed that variation in
+the proportion of female flowers could be modelled in response to the ratio of
+assimilate supply to demand (RSD) within the whole plant. Therefore, the female
+flower fraction (FFF) for each cohort within the sex determination phase is
+decreased each day at a rate of 0.06 x (1 &ndash; RSD).&nbsp; In a similar manner, flower
+abortion and bunch failure fractions are calculated as 0.15 x (1 &ndash; RSD) during
+the abortion and bunch failure phases. Bunch growth rate is calculated from the
+ratio of the age dependent maximum bunch size (BS<sub>max</sub>, Fig 1b)&nbsp; to
+the duration of the bunch growth phase.</p>
+<h2>Understory</h2>
+<p>Models for a wide range of grain and pasture legume species
+are available within APSIM (<a title="Robertson, 2002 #496" href="#_ENREF_13"><span style="text-decoration: none; color: windowtext;">Robertson et al., 2002</span></a>).&nbsp; However, models do
+not exist for species commonly used in the understory of oil palm systems.&nbsp;
+Furthermore, these species are often grown as mixtures with other legume or
+grass species and the temporal dynamics of competition between overstory and
+understory are complex.&nbsp; Therefore, we have developed a very simple model for
+the understory to provide a basic level of functionality for simulating soil
+cover, carbon and nitrogen inputs and water use by the understory within oil
+palm plantations. Data on understory canopy cover (<a title="Pipai, 2013 #697" href="#_ENREF_10"><span style="text-decoration: none; color: windowtext;">Pipai, 2013</span></a>) show that understory cover
+decreases after palm planting, with the reduction closely related to cover
+provided by the palm overstory. For simplicity, a fixed, user-specified,
+proportion of legumes and non-legumes is assumed through the life of the plantation.&nbsp;
+Light interception by the understory is calculated, after accounting for light
+interception by the overstory, and used to calculate an understory growth rate
+using an understory light use efficiency (&epsilon;<sub>u</sub>) of 1.3 g/MJ which
+accounts for above- and below-ground growth.&nbsp; This biomass is returned to the
+soil surface as litter with a constant nitrogen concentration of 2.1% for
+legumes (<a title="Pipai, 2013 #697" href="#_ENREF_10"><span style="text-decoration: none; color: windowtext;">Pipai, 2013</span></a>) and 0.05% for non-legumes. A
+constant 44% of legume N comes from fixation (<a title="Pipai, 2013 #697" href="#_ENREF_10"><span style="text-decoration: none; color: windowtext;">Pipai, 2013</span></a>) with the remainder being taken up
+from the soil mineral N pools.&nbsp; </p>
+<h2>Other processes</h2>
+<p>The APSIM modelling framework provides the rest of the
+functionality required to simulate the oil palm system. The simulations
+presented here use the standard SoilWat, SoilN and SurfaceOM modules (<a title="Probert, 1998 #464" href="#_ENREF_12"><span style="text-decoration: none; color: windowtext;">Probert et al., 1998</span></a>) for simulating water, N
+and surface organic matter processes. Management of the palms, including
+planting and fertiliser management, is specified using a management scripting
+language (<a title="Moore, these proceedings #740" href="#_ENREF_8"><span style="text-decoration: none; color: windowtext;">Moore et al., these proceedings</span></a>). </p>
+<h2>Model Interface</h2>
+<h3><span style="font-size: 18px;">Parameters</span></h3>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 5.4pt; border-collapse: collapse; border: medium none;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium medium 1pt; border-style: solid none none solid; border-color: black -moz-use-text-color -moz-use-text-color black; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Parameter</span></strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Type</span></strong></p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Optional?</span></strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Units</span></strong></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt medium medium; border-style: solid solid none none; border-color: black black -moz-use-text-color -moz-use-text-color; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Description</span></strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: black -moz-use-text-color black black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryCoverGreen</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Green crop cover of the understory for the young
+            plantation</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium 1pt 1pt; border-style: none none solid solid; border-color: -moz-use-text-color -moz-use-text-color black black; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryLegumeFraction</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>Fraction of the initial understory that is legume</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<h2>Variables needed from other models</h2>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 5.4pt; border-collapse: collapse; border: medium none;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium medium 1pt; border-style: solid none none solid; border-color: black -moz-use-text-color -moz-use-text-color black; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Variable</span></strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Type</span></strong></p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Optional?</span></strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Units</span></strong></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt medium medium; border-style: solid solid none none; border-color: black black -moz-use-text-color -moz-use-text-color; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Description</span></strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: black -moz-use-text-color black black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>BD</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><sup>o</sup>C</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Bulk density</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>LL15_dep</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>15 Bar lower limit</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Dul_dep</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Drained Upper Limit</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Sat_dep</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Saturation water content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>dlayer</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Thickness of each soil layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Sw_dep</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Soil water content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>No3</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>kg/ha</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Soil nitrate content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>latitude</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>degrees</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Latitude</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>day</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Integer</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Day of year</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>rain</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily rainfall</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>radn</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>MJ/m<sup>2</sup>/day</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily incoming total shortwave radiation</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>eo</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily potential evapotranspiration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium 1pt 1pt; border-style: none none solid solid; border-color: -moz-use-text-color -moz-use-text-color black black; padding: 0cm 5.4pt;">
+            <p><strong>today</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>datetime</p>
+            </td>
+            <td valign="top" style="width: 62.1pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>Today&rsquo;s date</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<h2>Variables supplied to other models (e.g. for reporting)</h2>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 5.4pt; border-collapse: collapse; border: medium none;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium medium 1pt; border-style: solid none none solid; border-color: black -moz-use-text-color -moz-use-text-color black; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Variable</span></strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Type</span></strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Units</span></strong></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt medium medium; border-style: solid solid none none; border-color: black black -moz-use-text-color -moz-use-text-color; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Description</span></strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: black -moz-use-text-color black black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Plant_status</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>string</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p><sup>-</sup></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Plant status</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Crop_type</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>string</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Crop type</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>height</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Oilpalm canopy height</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Cover_tot</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Total canopy cover</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Interception</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Rainfall intercepted by canopies</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Root_depth</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Oil palm daily rooting depth</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>PotSWUptake</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Potential daily soil water uptake</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>SWUptake</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily soil water uptake</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>PEP</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Potential daily plant transpiration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>EP</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Actual daily plant transpiration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>DltDM</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily total biomass growth (above+below)</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FW</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily water stress factor for photosynthesis</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FWexpan</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily water stress factor for expansion</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Fn</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily nitrogen stress factor for photosynthesis</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>CumulativeFrondNumber</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Cumulative number of fronds grown</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>CumulativeBunchNumber</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Cumulative number of bunches grown</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>CumulativeYield</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Cumulative yield</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>ReproductiveGrowthFraction</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Fraction of daily growth going into bunches</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>CarbonStress</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily ratio of whole plant C supply:demand</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>HarvestBunches</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Number of bunches harvested today</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>HarvestYield</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Kg/palm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Fresh mass of bunches harvested today</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>HarvestFFB</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>t/ha</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Fresh mass of bunches harvested today</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>HarvestBunchSize</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Kg</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Average mass of bunches harvested today</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Age</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Years</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Age of crop</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryCoverGreen</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Green canopy cover of understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryPotSWUptake</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily potential water uptake of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstorySWUptake</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily water uptake of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryPotNUptake</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Kg/ha</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily potential N uptake of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryNUptake</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Kg/ha</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily N uptake of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryRootDepth</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily root depth of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryPEP</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily potential transpiration of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryEP</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily actual transpiration of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryFW</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Mm</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily water stress of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryDltDM</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily biomass growth</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>UnderstoryNFixation</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Kg/ha</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Daily N fixation of the understory</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>StemMass</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Stem mass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>StemN</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Stem nitrogen content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>StemNConc</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/g</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Stem nitrogen concentration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>LAI</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>M2/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Oil palm leaf area index</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FrondArea</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>M2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Average area of individual fronds on a palm</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Frond17Area</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>M2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Area of frond 17</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FrondMass</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Frond mass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FrondN</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Frond nitrogen content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FrondNConc</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double </p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/g</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Frond nitrogen concentration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>BunchMass</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>Double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Bunch mass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>BunchN</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Bunch nitrogen content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>BunchNConc</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/g</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Bunch nitrogen concentration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>RootMass</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Root mass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>RootN</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Root nitrogen content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>RootNConc</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/g</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Root nitrogen concentration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>PlantN</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>g/m2</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Total plant nitrogen content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>TotalFrondNumber</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Number of fronds on the palm</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FrondNumber</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Number of expanded fronds</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Cover_green</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>-</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Oil palm green canopy cover</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>SLA</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>cm2/g</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Frond specific leaf area</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>FFF</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Female flower fraction of the oldest bunch cohort</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Defoliationfraction</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Fraction of frond area removed today</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>DiffuseLightFraction</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>double</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>0-1</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Diffuse light fraction of incoming total short wave
+            radiation</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium 1pt 1pt; border-style: none none solid solid; border-color: -moz-use-text-color -moz-use-text-color black black; padding: 0cm 5.4pt;">
+            <p><strong>&nbsp;</strong></p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>&nbsp;</p>
+            </td>
+            <td valign="top" style="width: 49.6pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>&nbsp;</p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<h2>Events the model responds to (e.g. sow)</h2>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 5.4pt; border-collapse: collapse; border: medium none;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium medium 1pt; border-style: solid none none solid; border-color: black -moz-use-text-color -moz-use-text-color black; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Event</span></strong></p>
+            </td>
+            <td valign="top" style="width: 60.9pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">DataType</span></strong></p>
+            </td>
+            <td valign="top" style="width: 72.05pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Optional?</span></strong></p>
+            </td>
+            <td valign="top" style="width: 201.1pt; border-width: 1pt 1pt medium medium; border-style: solid solid none none; border-color: black black -moz-use-text-color -moz-use-text-color; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Description</span></strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: black -moz-use-text-color black black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>sow</strong></p>
+            </td>
+            <td valign="top" style="width: 60.9pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>SowType</p>
+            </td>
+            <td valign="top" style="width: 72.05pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>No</p>
+            </td>
+            <td valign="top" style="width: 201.1pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Sowing</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium 1pt 1pt; border-style: none none solid solid; border-color: -moz-use-text-color -moz-use-text-color black black; padding: 0cm 5.4pt;">
+            <p><strong>&nbsp;</strong></p>
+            </td>
+            <td valign="top" style="width: 60.9pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>&nbsp;</p>
+            </td>
+            <td valign="top" style="width: 72.05pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>&nbsp;</p>
+            </td>
+            <td valign="top" style="width: 201.1pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2>Events the model sends to other models</h2>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 5.4pt; border-collapse: collapse; border: medium none;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 101.5pt; border-width: 1pt medium medium 1pt; border-style: solid none none solid; border-color: black -moz-use-text-color -moz-use-text-color black; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Event</span></strong></p>
+            </td>
+            <td valign="top" style="width: 122.8pt; border-width: 1pt medium medium; border-style: solid none none; border-color: black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">DataType</span></strong></p>
+            </td>
+            <td valign="top" style="width: 170.25pt; border-width: 1pt 1pt medium medium; border-style: solid solid none none; border-color: black black -moz-use-text-color -moz-use-text-color; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Description</span></strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 101.5pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: black -moz-use-text-color black black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>BiomassRemoved</strong></p>
+            </td>
+            <td valign="top" style="width: 122.8pt; border-width: 1pt medium; border-style: solid none; border-color: black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>BiomassRemovedType</p>
+            </td>
+            <td valign="top" style="width: 170.25pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Biomass removed</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 101.5pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>IncorpFOM</strong></p>
+            </td>
+            <td valign="top" style="width: 122.8pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>IncorpFOMType</p>
+            </td>
+            <td valign="top" style="width: 170.25pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>FOM incorporated into soil</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 101.5pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Harvesting</strong></p>
+            </td>
+            <td valign="top" style="width: 122.8pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>NullType</p>
+            </td>
+            <td valign="top" style="width: 170.25pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Notify that harvesting has taken place</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 101.5pt; border-width: medium medium medium 1pt; border-style: none none none solid; border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Sowing</strong></p>
+            </td>
+            <td valign="top" style="width: 122.8pt; border: medium none; padding: 0cm 5.4pt;">
+            <p>NullType</p>
+            </td>
+            <td valign="top" style="width: 170.25pt; border-width: medium 1pt medium medium; border-style: none solid none none; border-color: -moz-use-text-color black -moz-use-text-color -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>Notify that sowing has taken place</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 101.5pt; border-width: medium medium 1pt 1pt; border-style: none none solid solid; border-color: -moz-use-text-color -moz-use-text-color black black; padding: 0cm 5.4pt;">
+            <p><strong>NewCrop</strong></p>
+            </td>
+            <td valign="top" style="width: 122.8pt; border-width: medium medium 1pt; border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>NewCropType</p>
+            </td>
+            <td valign="top" style="width: 170.25pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>Notify that a new crop exists</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<h1>Tests</h1>
+<table border="1" cellspacing="0" cellpadding="0" style="margin-left: 5.4pt; border-collapse: collapse; border: medium none;" class="MsoNormalTable">
+    <tbody>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium medium 1pt; border-style: solid none none solid; border-color: black -moz-use-text-color -moz-use-text-color black; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Type of test</span></strong></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt medium medium; border-style: solid solid none none; border-color: black black -moz-use-text-color -moz-use-text-color; background: none repeat scroll 0% 0% black; padding: 0cm 5.4pt;">
+            <p><strong><span style="color: white;">Folder location</span></strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: black -moz-use-text-color black black; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p><strong>Validation</strong></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; padding: 0cm 5.4pt;">
+            <p>%APSIM%\Tests\Validation\oilpalm</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 72.6pt; border-width: medium medium 1pt 1pt; border-style: none none solid solid; border-color: -moz-use-text-color -moz-use-text-color black black; padding: 0cm 5.4pt;">
+            <p><strong>Sensibility</strong></p>
+            </td>
+            <td valign="top" style="width: 217.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; padding: 0cm 5.4pt;">
+            <p>%APSIM%\Tests\Sensibility\oilpalm</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<h2>References</h2>
+<p>&nbsp;</p>
+<p><a name="_ENREF_1">Alton, P.B., North, P.R., Los, S.O.,
+2007. The impact of diffuse sunlight on canopy light-use efficiency, gross
+photosynthetic product and net ecosystem exchange in three forest biomes.
+Global Change Biology 13(4) 776-787.</a></p>
+<p><a name="_ENREF_2">Breure, C.J., 1988. The effect of
+different planting densities on yield trends in oil palm. Experimental
+Agriculture 24(1) 37-52.</a></p>
+<p><a name="_ENREF_3">Brown, H.E., Huth, N.I., Holzworth, D.P.,
+Teixeira, E.I., Zyskowski, R.F., Hargreaves, J.N.G., Moot, D.J., these
+proceedings. Plant Modelling Framework: Software for building and running crop
+models on the APSIM platform. Environmental Modelling &amp; Software.</a></p>
+<p><a name="_ENREF_4">Carr, M.K.V., 2011. The water relations
+and irrigation requirements of oil palm (Elaeis guineensis): A review.
+Experimental Agriculture 47(4) 629-652.</a></p>
+<p><a name="_ENREF_5">Combres, J.-C., Pallas, B., Rouan, L.,
+Mialet-Serra, I., Caliman, J.-P., Braconnier, S., Soulie, J.-C., Dingkuhn, M.,
+2013. Simulation of inflorescence dynamics in oil palm and estimation of
+environment-sensitive phenological phases: a model based analysis. Functional
+Plant Biology 40(3) 263-279.</a></p>
+<p><a name="_ENREF_6">Goh, K.J., 2005. Fertilizer
+recommendation systems for oil palm: estimating the fertilizer rates.</a></p>
+<p><a name="_ENREF_7">Jones, L.H., 1997. The effects of leaf
+pruning and other stresses on sex determination in the oil palm and their
+representation by a computer model. Journal of Theoretical Biology 187 241-260.</a></p>
+<p><a name="_ENREF_8">Moore, A., Holzworth, D., Herrmann, N.,
+Brown, H., deVoil, P., Snow, V., Zurcher, E., Huth, N., these proceedings.
+Modelling the manager: representing rule-based management in farming systems
+simulation models. Environmental Modelling &amp; Software.</a></p>
+<p><a name="_ENREF_9">Paydar, Z., Huth, N., Snow, V., 2005.
+Modelling irrigated Eucalyptus for salinity control on shallow watertables.
+Australian Journal of Soil Research 43(5) 587-597.</a></p>
+<p><a name="_ENREF_10">Pipai, R., 2013. Biological Nitrogen
+Fixation By Cover Legumes Under Oil Palm Plantations In Papua New Guinea,
+School of Agriculture, Food and Wine. Faculty of Sciences. The University of
+Adelaide: Australia.</a></p>
+<p><a name="_ENREF_11">Priestley, C.H.B., Taylor, R.J., 1972.
+On the assessment of surface heat flux and evaporation using large scale
+parameters. Monthly Weather Review 100 81-92.</a></p>
+<p><a name="_ENREF_12">Probert, M.E., Dimes, J.P., Keating,
+B.A., Dalal, R.C., Strong, W.M., 1998. APSIM's water and nitrogen modules and
+simulation of the dynamics of water and nitrogen in fallow systems.
+Agricultural Systems 56 1-18.</a></p>
+<p><a name="_ENREF_13">Robertson, M.J., Carberry, P.S., Huth,
+N.I., Turpin, J.E., Probert, M.E., Poulton, P.L., Bell, M., Wright, G.C.,
+Yeates, S.J., Brinsmead, R.B., 2002. Simulation of growth and development of
+diverse legume species in APSIM. Australian Journal of Agricultural Research 53
+429-446.</a></p>
+<p><a name="_ENREF_14">Schultz, H.R., 1992. An empirical model
+for the simulation of leaf appearance and leaf area development of promary
+shoots of several grapevine (Vitis-vinifera L) canopy systems. Scientia
+Horticulturae 52(3) 179-200.</a></p>
+<p><a name="_ENREF_15">Vankraalingen, D.W.G., Breure, C.J.,
+Spitters, C.J.T., 1989. Simulation of oil palm growth and yield. Agricultural
+and Forest Meteorology 46(3) 227-244.</a></p>
+<p><a name="_ENREF_16">von Uexk&uuml;ll, H., Henson, I.E.,
+Fairhurst, T., 2003. Canopy management to optimize yield, In: Fairhurst, T.,
+H&auml;rdter, R. (Eds.), The Oil Palm &ndash; Management for Large and Sustainable Yields.
+Potash &amp; Phosphate Institute of Canada, Potash &amp; Phosphate Institute,
+International Potash Institute: Singapore, pp. 163-180.</a></p>
+</div>
+</div>
+
+</div><!-- End_Module_711 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/OilPalm.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:53 GMT -->
+</html>

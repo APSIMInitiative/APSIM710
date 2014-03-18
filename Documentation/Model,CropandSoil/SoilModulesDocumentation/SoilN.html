@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilN.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > SoilN
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilN.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="SoilN.html" class="SkinObject">SoilN</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>SoilN</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-530"><a name="530"></a>
+<div class="Invisible"><div id="dnn_ctr530_ContentPane"><!-- Start_Module_530 --><div id="dnn_ctr530_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr530_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;"><strong>Description</strong></p>
+<p>The SoilN module describes the dynamics of <strong>both carbon and nitrogen</strong> in soil. <br />
+<br />
+The transformations considered in each layer are shown diagramatically in Figure 1. <br />
+<br />
+The major difference from the CERES model is that the soil organic matter is divided into two pools ( <strong>biom</strong> and <strong>hum</strong> ), <br />
+the <strong>biom</strong> pool notionally representing the more labile, soil microbial biomass and microbial products, whilst <strong>hum</strong> comprises the rest of the soil organic matter. <br />
+<br />
+The flows between the different pools are calculated in terms of carbon, the corresponding nitrogen flows depending on the C:N ratio of the receiving pool. <br />
+<br />
+The C:N ratios of the various pools are assumed to be constant through time; C:N for <strong>biom</strong> is specified in the ini file, whilst the C:N of <strong>hum</strong> is derived from the C:N ratio of the soil which is an input.</p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image007.gif" />&nbsp;<br />
+<br />
+<br />
+<br />
+<em>Figure 1. Diagram of transformations occuring in each soil layer</em><br />
+<br />
+Decomposition of <strong>biom</strong> and <strong>hum</strong> pools are calculated as first-order processes with the rate constants being modified by factors involving soil temperature and moisture in the layer. <br />
+<br />
+The fresh organic matter pool ( <strong>fom</strong>) is treated as in CERES-Maize (Jones and Kiniry, 1986), and its rate of decomposition also depends on a C:N ratio factor. <br />
+<br />
+Mineralisation or immobilisation of mineral-N is determined as the balance between the release of nitrogen during decomposition and immobilisation during microbial synthesis and humification. <br />
+<br />
+An inadequate supply of mineral-N to satisfy the immobilisation demand results in a slowing of the decomposition. <br />
+<br />
+Both ammonium- and nitrate-N are available for immmobilisation, though ammonium-N is used preferentially. <br />
+<br />
+Decomposition of any organic matter pool results in evolution of carbon dioxide to the atmosphere and transfers of carbon to the <strong>biom</strong> and <strong>hum</strong> pools. <br />
+<br />
+The flows are defined in terms of efficiency coefficients, representing the proportion of carbon retained in the system, <br />
+and the fraction of the retained carbon that is synthesised into the <strong>biom</strong> pool (see Table 1 for parameter definitions and values). <br />
+<br />
+When <strong>biom</strong> decomposes there is an internal cycling of carbon (microbes feeding on microbial products). <br />
+<br />
+At initialisation, the amounts of <strong>hum</strong> and <strong>biom</strong> in each layer are calculated from inputs (oc, finert, fbiom).<br />
+<br />
+To allow for slower rates of decomposition of soil organic matter in the deeper soil layers, <br />
+part of the <strong>hum</strong> pool is considered to be non-susceptible to decomposition; this is specified as finert, which typically will increase with depth. <br />
+<br />
+Fbiom specifies the <strong>biom</strong> pool carbon as a fraction of the <strong>hum</strong> carbon that is subject to decomposition,<br />
+i.e. fbiom = <strong>biom</strong>/(<strong>hum</strong> - inert_c)<br />
+<br />
+<br />
+<strong>Table 1. </strong></p>
+<p style="margin: 0cm 0cm 12pt;">Model parameters determining the flows of carbon during the decomposition of the soil organic matter pools and surface residues </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Parameter</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Value</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Definition </strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>mcn</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>8.0 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>C:N ratio of <strong>biom</strong> pool </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>ef_fom</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.4 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>efficiency of carbon retention when <strong>fom</strong> decomposes</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>fr_fom_biom</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.9 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>proportion of retained carbon from <strong>fom</strong> synthesised into <strong>biom</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>ef_biom</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.4 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>efficiency of carbon retention when <strong>biom</strong> decomposes</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>fr_biom_biom</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.6 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>proportion of retained carbon from <strong>biom</strong> resynthesised into <strong>biom</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>ef_hum</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.4 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>efficiency of carbon retention when <strong>hum</strong> decomposes </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>ef_res</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.4 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>efficiency of carbon retention when residues decompose</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>fr_res_biom</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.9 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>proportion of retained carbon from residues synthesised into <strong>biom</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>rd_carb</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.2/day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>maximum decomposition rate for carbohydrate-like C in <strong>fom</strong>. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>rd_cell</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.05/day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>maximum decomposition rate for cellulose-like C in <strong>fom</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>rd_lign</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.0095/day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>maximum decomposition rate for lignin-like C in <strong>fom</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>rdbiom</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.0081/day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>maximum decomposition rate for <strong>biom</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p><em>rdhum</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.00015/day </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>maximum decomposition rate for <strong>hum</strong></p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"><strong>Soil Temperature</strong></p>
+<p>Daily average soil temperature of each soil layer is calculated based on the soil temperature model of EPIC (Williams et al., 1984). <br />
+A sinusoidal function of day of year is assumed, with subsurface temperature changes lagging behind those at the soil surface. <br />
+The sinusoidal function is based on mean annual air temperature (tav), annual amplitude in mean monthly air temperature (amp) and latitude (included in met file). <br />
+The actual surface temperature is calculated from maximum and minimum temperatures, solar radiation and soil albedo. <br />
+Changes with depth are obtained from an exponential function of the ratio of depth and a temperature damping depth. <br />
+This damping depth is a function of the average bulk density of the soil and the amount of water above the lower limit. <br />
+<br />
+<strong>Decomposition of Soil Organic Matter Pools</strong><br />
+<br />
+<strong>fom</strong> decomposition = Fpool (carbohydrate,cellulose or lignin fraction) x decay rate for a given fraction (rd_carb, rd_cell, rd_lign) x Soil water factor x Soil temperature factor x C:N ratio factor<br />
+<br />
+<strong>biom</strong> decomposition = <strong>biom</strong> x rd_biom x Soil water factor x Soil temperature factor<br />
+<br />
+<strong>hum</strong> decomposition = (<strong>hum</strong> - inert_C) x rd_hum x Soil water factor x Soil temperature factor<br />
+<br />
+<br />
+</p>
+<strong>The factors affecting the individual decay rates are as follows: </strong>
+<p style="margin: 0cm 0cm 12pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(i) Soil Water</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p><em><img alt="" src="../../../portals/0/Documentation/Soil/image008.gif" /></em></p>
+<p><em>Figure 2. Water factor affecting mineralisation rates of the various soil organic matter pools.</em></p>
+<p style="margin: 0cm 0cm 12pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(ii) Soil Temperature</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image009.gif" /></em></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 3. Temperature factor affecting mineralisation rates of the various soil organic matter pools.</em> </p>
+<p style="margin: 0cm 0cm 12pt;">&nbsp;</p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(iii) C:N ratio</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p><em><img alt="" src="../../../portals/0/Documentation/Soil/image010.gif" /></em></p>
+<p><em>Figure 4. C:N ratio factor affecting mineralisation rate of soil FOM pools is calculated using a modified C:N ratio that includes the mineral nitrogen in the soil layer.</em> <br />
+<br />
+CNR = fom_C / (fom_N + min_N)<br />
+<br />
+<br />
+<strong>Nitrification</strong></p>
+<p>Nitrification is assumed to follow Michaelis-Menton kinetics (See Godwin and Jones 1991, though there is error in their equation 14).<br />
+<br />
+potential rate = nitrification_pot x NH4 ppm / (NH4 ppm + NH4_at_half_pot)<br />
+<br />
+where nitrification_pot (mg N/kg soil/ day) and NH4_at_half_pot (ppm) are specified in the SOILN ini file. Actual daily nitrification is reduced to allow for sub-optimal water, temperature and pH conditions. <br />
+<br />
+nitrification rate = potential rate x min (water factor, temperature factor, pH factor)<br />
+<br />
+(Unlike CERES, there is no provision for the potential rate of nitrification to change with time to represent a changing microbial population)</p>
+<p>&nbsp;</p>
+<p><strong>(i) Soil Water</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image011.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 5. Water factor affecting the nitrification rate of ammonium in each soil layer.</em></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(ii) Soil Temperature</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image012.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 6. Temperature factor affecting the nitrification rate of ammonium in each soil layer.</em> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(iii) pH</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image013.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 7. pH factor affecting the nitrification rate of ammonium in each soil layer.</em> <br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Nitrous oxide from nitrification:</strong><br />
+<br />
+<strong>Note:</strong> Nitrous oxide predictions has been tested under a limited range of soil/climate and production systems <br />
+and although this testing produced sensible results there should still be a higher degree of user caution attached to the predictions.<br />
+<br />
+Nitrous oxide (N2O) emission during nitrification (N2Onit) is calculated as a proportion (k2) of nitrified N (Li, 2000; Parton et al., 2001; Li et al., 2007): <br />
+<br />
+N2Onit = k2 * Rnit<br />
+<br />
+where Rnit is the rate of nitrification (kg N/ha/day).<br />
+<br />
+A wide range of values have been adopted for k2 in agricultural soils in other models, potentially reflecting the uncertainty in the process resulting in N2O emissions during nitrification </p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">Li, 2000; Li et al., 2000; Parton et al., 2001; Li et al., 2007). Following Li et al.(2007) we adopt a value of 0.002, but acknowledge that values may be soil-specific.</li>
+    <li style="margin: 0cm 0cm 10pt;">Li, C.S., 2000. Modeling trace gas emissions from agricultural ecosystems, Nutr. Cyc. Agroecosys. 58, 259-276.</li>
+    <li style="margin: 0cm 0cm 10pt;">Li, C., Aber, J., Stange, J., Butterbach-Bahl, K., Papen, H., 2000. A process-oriented model of N2O and NO emissions from forest soils: 1 Model development. J. Geophys. Res. 105(D4). 4369&ndash;4384.</li>
+    <li style="margin: 0cm 0cm 10pt;">Parton, W.J., Holland, E.A., Del Grosso, S.J., Hartman, M.D., Martin, R.E., Mosier, A.R., Ojima, D.S., Schimel, D.S., 2001. Generalized model for NOx and N2O emissions from soils. J. Geophys. Res. 106(D15),17403-17419.</li>
+    <li style="margin: 0cm 0cm 10pt;">Li, Y., White, R.E., Chen, D.L., Zhang, J.B., Li, B.G., Zhang, Y.M., Huang, Y.F. Edis, R., 2007. A spatially referenced water and nitrogen management model (WNMM) for (irrigated) intensive cropping systems in the North China Plain. Ecol. Mod. 203, 395-423.</li>
+</ol>
+<p style="margin: 0cm 0cm 10pt;"><strong>Denitrification</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The code comes from CERES-Maize V1 and has not been modified to allow for biom_c. <br />
+Under most situations, simulated denitrification rates are small. <br />
+The sensibleness of the simulations where significant amounts of denitrification occur has not been verified. <br />
+<br />
+denitrification rate = 0.0006 x NO 3 x active carbon ppm x water factor x temperature factor<br />
+<br />
+where, <br />
+active carbon ppm = 0.0031 x (hum_C ppm + FOM_C ppm ) + 24.5 </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(i) Soil Water</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image014.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 8. Water factor affecting the denitrification of nitrate in each soil layer.</em> </p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(ii) Soil Temperature</strong><a title="Link to this Section" href="../../../index-2.html#ii_Soil_Temperature_8"><strong>&para;</strong></a><strong></strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image015.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 9. Temperature factor affecting the denitrification of nitrate in each soil layer.</em> <br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Nitrous oxide from denitrification: </strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Note:</strong> Nitrous oxide predictions has been tested under a limited range of soil/climate and production systems <br />
+and although this testing produced sensible results there should still be a higher degree of user caution attached to the predictions.<br />
+<br />
+Nitrous oxide (N2O) emission during denitrification (N2Odenit) is calculated by combining predictions of denitrification with the ratio of N2 to N2O emitted during denitrification predicted by the model of Del Grosso et al. (2000): <br />
+<br />
+N2/N2Odenit = Max {(0.16 k1), (k1 exp(-0.8 NO3 ppm/CO2)) } * Max {0.1, ((1.5 WFPS) - 0.32) }<br />
+<br />
+where, <br />
+k1 is related to gas diffusivity in soil at field capacity, <br />
+NO3ppm (&micro;g/g) is the nitrate concentration of the soil on a dry weight basis, and <br />
+CO2 is the heterotrophic CO2 respiration (&micro;gC/g soil / day).<br />
+<br />
+</p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">Del Grosso, S.J., Parton, W.J., Mosier, A.R., Ojima, D.S., Kulmala, A.E., Phongpan, S., 2000. General model for N2O and N-2 gas emissions from soils due to denitrification. Glob. Biogeochem. Cycl. 14, 1045-1060. </li>
+</ol>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Urea hydrolysis: </strong></p>
+<p style="margin: 0cm 0cm 12pt;">potential hydrolysis fraction = -1.12 + 1.31xOC + 0.203xpH - 0.155xOCxpH<br />
+<br />
+This fraction is bound between 0 and 1. For OC=1% and pH=7 the fraction=0.526<br />
+<br />
+hydrolysis rate = Urea x potential hydrolysis fraction x min (temperature factor, water factor) </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(i) Soil Water</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><em><img alt="" src="../../../portals/0/Documentation/Soil/image016.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 10. Water factor affecting the hydrolysis of urea in each soil layer.</em> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>(ii) Soil Temperature</strong></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p><em><img alt="" src="../../../portals/0/Documentation/Soil/image017.gif" /></em></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 11. Temperature factor affecting hydrolysis of urea in each soil layer.</em> <br />
+<br />
+<br />
+<strong>SoilN module actions</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Reset</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The reset action can be invoked to reset the module to the state specified within the module's input data, <br />
+which includes the soil's organic carbon components (biom and hum), nitrate, ammonium and urea N, and FOM (specified as root weight). <br />
+<br />
+The Reset action is identical to the initialise action used by the simulation engine at the start of the simulation except that a description of the reinitialised state is not printed in the simulation summary file. <br />
+Where only mineral N concentrations need to be reinitialised the 'set' action is used (See below).<br />
+<br />
+APSIM Manager Example: </p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! reinitialise soil nitrogen at the beginning of each sowing window </p>
+<p>&nbsp;</p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp; soiln2 reset </p>
+<p>endif</p>
+<p><strong>Initialise</strong></p>
+<p>The initialise action has been replaced by the reset action (see above).<br />
+<br />
+</p>
+<p><strong>Set</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The set action is used to reinitialise single mineral N pools within the module (Nitrate, Ammonium or Urea). Only the particular mineral pools are reset.<br />
+<br />
+APSIM Manager Example:</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! reinitialise soil mineral nitrogen at given date</p>
+<p>&nbsp;</p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp; soiln2 set no3 = 10 5 1 (kg/ha) </p>
+<p>&nbsp;&nbsp; soiln2 set nh4 = 10 5 1 (kg/ha) </p>
+<p>endif</p>
+<p style="margin: 0cm 0cm 12pt;">or in terms of concentration</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp; soiln2 set no3ppm = 1.0 1.0 1.0 (ppm) </p>
+<p>&nbsp;&nbsp; soiln2 set nh4ppm = 1.0 1.0 1.0 (ppm) </p>
+<p>endif </p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Summary Report</strong></p>
+<p style="margin: 0cm 0cm 12pt;">At initialisation, at series of tables and useful information is printed to the simulation summary file for perusal by the user. <br />
+These tables can be printed to the summary file at any point during the simulation as a detailed record of the system state at a particular time.<br />
+<br />
+APSIM Manager Example:</p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! Print out a summary of module state to the summary file</p>
+<p>&nbsp;</p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp;&nbsp; soiln2 sum_report </p>
+<p>endif</p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Incorporate FOM</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Fresh organic matter can be incorporated into the soil using the incorp_fom action. <br />
+The amounts of FOM and FON are specified on a layered basis . <br />
+An optional FOM type can be specified to use any preset fractionations of FOM as specified in the module ini file. <br />
+A default fractionation is used if type is not specified. <br />
+FON content can be specified as either an amount or a C:N ratio.<br />
+<br />
+<br />
+APSIM Manager Example:<br />
+<br />
+<strong>NOTE: actions must be specified as a single line in the manager file</strong></p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp;&nbsp; soiln2 incorp_fom dlt_fom_type = manure, dlt_fom_wt = 100 50 0 (kg/ha), dlt_fom_n = 4 2 0 (kg/ha) </p>
+<p>endif</p>
+<p style="margin: 0cm 0cm 12pt;">or assuming that FOM is 40% carbon we can use a C:N ratio.</p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp; soiln2 incorp_fom dlt_fom_type = manure, dlt_fom_wt = 100 50 0 (kg/ha), dlt_fom_cnr = 10 10 0 (kg/ha) </p>
+<p>endif </p>
+<p></p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilN module outputs</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>no3</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of NO3 in each layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>no3ppm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ppm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>concentration of NO3 in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>no3_min </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ppm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>minimum amount of NO3 allowed in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>nh4 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of NH4 in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>nh4ppm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ppm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>concentration of NH4 in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>nh4_min </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ppm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>minimum amount of NH4 allowed in each layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>urea </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of urea in each layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fom_n </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of N in FOM in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>hum_n </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of humic N in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>biom_n </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of biomass N in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fom_c </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of C in FOM in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>hum_c </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of humic C in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>biom_c </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>amount of biomass C in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>carbon_tot </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total amount of C in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>nit_tot </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total amount of N in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlt_n_min </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Today's net N mineralisation in each layer from soil organic matter pools </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlt_n_min_res </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Today's net N mineralisation in each layer from surface residues</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlt_n_min_tot </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Today's net N mineralisation in each layer from soil organic matter pools and surface residues. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dnit </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Today's denitrification loss for each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlt_c_loss_in_sed </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Loss of C in sediment due to erosion</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlt_n_loss_in_sed</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Loss of N in sediment due to erosion </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+</div>
+
+</div><!-- End_Module_530 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilN.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+</html>

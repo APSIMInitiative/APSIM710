@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/Scenario.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:16 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Training Manuals and Resources > APSIM General Training Manual > Scenario
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/Scenario.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../TrainingManualsandResources.html" class="SkinObject">Training Manuals and Resources</a><span class="Sep"></span><a href="../APSIMGeneralTrainingManual.html" class="SkinObject">APSIM General Training Manual</a><span class="Sep"></span><a href="Scenario.html" class="SkinObject">Scenario</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Scenario</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-710"><a name="710"></a>
+<div class="Invisible"><div id="dnn_ctr710_ContentPane"><!-- Start_Module_710 --><div id="dnn_ctr710_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr710_HtmlModule_lblContent" class="Normal">
+	<h1>Scenario: Kingsthorpe Soil Water Evaporation Project</h1>
+<p>In this exercise you will model data from a real trial at Kingsthorpe, Queensland, Australia. Using observed data from the trial, you will create a met file, model three evaporation curves and compare the modelled output to the observed data.</p>
+<p>For more background on the trial see <a href="../../portals/0/Documentation/TrainingManual/AdvScenario/Scenario.pptx">this PowerPoint presentation</a>.</p>
+<h2>Getting Started</h2>
+<p>Extract the Scenario zip from the documentation folder in the APSIM installation folder (C:\Program Files(x86)\Apsim-r[revision]\Documentation by default) to somewhere you can work on it (Documents or Desktop for instance). We'll be editing and saving files and your security settings may prevent you from saving to the install folder.</p>
+<p>This scenario assumes familiarty with Excel and basic Windows functions such as renaming files. Step by step instructions are not given for these tasks. Further, the scenario has been designed for use in a class enviroment with a trainer. As such, some concepts may not be fully explained here. However, if you have successfully completed the basic exercises you should be able to complete the task without too much trouble. </p>
+<h2>Creating the Met File</h2>
+<p>The first step in modelling any trial is to ensure you have accurate climate data. The data you'll be working with was collected from a weather station at the trial site. The raw hourly data was processed into daily data and presented in the form you see here.</p>
+<ol>
+    <li>Open the file Data.xlsx and click on the Weather sheet. .CSV files of the data are also provided for those who do not use Excel. Refer to those when you're asked to click a tab.<br />
+    The first few lines look like this:
+    <table border="0" cellspacing="0" cellpadding="0" style="width: 899px; height: 321px;" class="telerik-reTable-4">
+        <colgroup><col width="94" style="width: 56pt;" /> <col width="86" style="width: 52pt;" /> <col width="80" span="2" style="width: 48pt;" /> <col width="105" style="width: 63pt;" /> <col width="80" span="2" style="width: 48pt;" /> <col width="104" style="width: 62pt;" /> <col width="85" style="width: 51pt;" /> <col width="105" style="width: 63pt;" /> </colgroup>
+        <tbody>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableHeaderRow-4">
+                <td style="height: 15pt; width: 56pt;" class="telerik-reTableHeaderFirstCol-4"><span style="font-size: 16px;">Date</span></td>
+                <td align="right" style="width: 52pt;" class="telerik-reTableHeaderOddCol-4"><span style="font-size: 16px;">max temp</span></td>
+                <td align="right" style="width: 48pt;" class="telerik-reTableHeaderEvenCol-4"><span style="font-size: 16px;">min temp</span></td>
+                <td align="right" style="width: 48pt;" class="telerik-reTableHeaderOddCol-4"><span style="font-size: 16px;">rain</span></td>
+                <td align="right" style="width: 63pt;" class="telerik-reTableHeaderEvenCol-4"><span style="font-size: 16px;">evaporation</span></td>
+                <td align="right" style="width: 48pt;" class="telerik-reTableHeaderOddCol-4"><span style="font-size: 16px;">rad</span></td>
+                <td align="right" style="width: 48pt;" class="telerik-reTableHeaderEvenCol-4"><span style="font-size: 16px;">vp</span></td>
+                <td align="right" style="width: 62pt;" class="telerik-reTableHeaderOddCol-4"><span style="font-size: 16px;">Windrun km</span></td>
+                <td align="right" style="width: 51pt;" class="telerik-reTableHeaderEvenCol-4"><span style="font-size: 16px;">RH at 9am</span></td>
+                <td align="right" style="width: 63pt;" class="telerik-reTableHeaderLastCol-4"><span style="font-size: 16px;">SVP at 9am</span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">1/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">28.5</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">19.5</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0.2</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">2.6</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">13</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">18.1</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableEvenRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">2/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">31.2</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">20.5</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0.6</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">4.4</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">15</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">22.1</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">3/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">33.6</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">22.3</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">5.8</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">20</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">24.3</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableEvenRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">4/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">27.1</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">21.2</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">3.4</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">4.6</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">11</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">21.5</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">5/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">27.8</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">18.4</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">3.6</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">14</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">19.2</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableEvenRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">6/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">30.4</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">18.6</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">5.2</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">16</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">20.9</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">7/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">30</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">20.7</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">6</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">15</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">20.3</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableEvenRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">8/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">30.5</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">20.2</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">7.4</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">1.488427948</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">26</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">19.1</span></td>
+                <td class="telerik-reTableOddCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableEvenCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+                <td class="telerik-reTableLastCol-4"><span style="font-size: 13px;"><br />
+                </span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">9/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">31.0125</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">19.4125</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0.2</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">1.524017467</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">31.0387</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">22.36807</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">357</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">73.67</span></td>
+                <td align="right" class="telerik-reTableLastCol-4"><span style="font-size: 13px;">30.36252161</span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableEvenRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">10/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">33.4625</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">14.935</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">1.855895197</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">31.39665</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">18.12882</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">248</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">52.9175</span></td>
+                <td align="right" class="telerik-reTableLastCol-4"><span style="font-size: 13px;">34.25864906</span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">11/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">32.665</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">17.0525</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">2.302183406</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">31.1444</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">19.55967</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">315</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">58.46</span></td>
+                <td align="right" class="telerik-reTableLastCol-4"><span style="font-size: 13px;">33.45821193</span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableEvenRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">12/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">32.7375</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">16.22</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">2.007423581</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">33.39598</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">19.56837</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">294</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">55.8875</span></td>
+                <td align="right" class="telerik-reTableLastCol-4"><span style="font-size: 13px;">35.01385634</span></td>
+            </tr>
+            <tr height="25" style="height: 15pt;" class="telerik-reTableOddRow-4">
+                <td align="right" style="height: 15pt;" class="telerik-reTableFirstCol-4"><span style="font-size: 13px;">13/01/2010</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">35.0375</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">17.115</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">0</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">6.348253275</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">31.1724</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">18.64869</span></td>
+                <td align="right" class="telerik-reTableOddCol-4"><span style="font-size: 13px;">213</span></td>
+                <td align="right" class="telerik-reTableEvenCol-4"><span style="font-size: 13px;">51.7725</span></td>
+                <td class="telerik-reTableLastCol-4" style="text-align: right;"><span style="font-size: 13px;">36.02044745</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <style id="telerik-reTable-4" type="text/css">
+        .telerik-reTable-4
+        {
+        border-collapse: collapse;
+        border: solid 0px;
+        font-family: Tahoma;
+        }
+        .telerik-reTable-4 tr.telerik-reTableHeaderRow-4
+        {
+        border-width: 1.0pt 1.0pt 3.0pt 1.0pt;
+        margin-top: 0in;
+        margin-right: 0in;
+        margin-bottom: 10.0pt;
+        margin-left: 0in;
+        line-height: 115%;
+        font-size: 11.0pt;
+        font-family: "Calibri" , "sans-serif";
+        width: 119.7pt;
+        background: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #FFFFFF;
+        }
+        .telerik-reTable-4 td.telerik-reTableHeaderFirstCol-4
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableHeaderLastCol-4
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableHeaderOddCol-4
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableHeaderEvenCol-4
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 tr.telerik-reTableOddRow-4
+        {
+        border-width: 1pt;
+        color: #666666;
+        font-size: 10pt;
+        vertical-align: top;
+        border-bottom-style: solid;
+        border-bottom-color: #4F81BD;
+        }
+        .telerik-reTable-4 tr.telerik-reTableEvenRow-4
+        {
+        color: #666666;
+        font-size: 10pt;
+        vertical-align: top;
+        }
+        .telerik-reTable-4 td.telerik-reTableFirstCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        border-bottom-style: solid;
+        border-left-style: solid;
+        }
+        .telerik-reTable-4 td.telerik-reTableLastCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        border-bottom-style: solid;
+        border-right-style: solid;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableOddCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        border-bottom-style: solid;
+        }
+        .telerik-reTable-4 td.telerik-reTableEvenCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        border-bottom-style: solid;
+        }
+        .telerik-reTable-4 tr.telerik-reTableFooterRow-4
+        {
+        color: #355C8C;
+        background-color: #FFFFFF;
+        font-size: 10pt;
+        vertical-align: top;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableFooterFirstCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        border-bottom-style: solid;
+        border-left-style: solid;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableFooterLastCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        border-bottom-style: solid;
+        border-right-style: solid;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableFooterOddCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        border-bottom-style: solid;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-4 td.telerik-reTableFooterEvenCol-4
+        {
+        border-width: 1pt;
+        border-color: #4F81BD;
+        border-bottom-style: solid;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+    </style>
+    </li>
+    <li>You may recall there are six columns that APSIM requires in order to function. You can have other data such as vapour pressure or wind speed and access them via scripting, but APSIM will not use them. The columns are: year, day, mint, maxt, rain and radn. Respectivly they are the year, day of year, minimum and maximum temperatures (in <sup>o</sup>C), rainfall (in mm) and incoming solar radiation (in MJ/m<sup>2</sup>/day). While these columns are mandatory, their position is not; they can be in any order.</li>
+    <li>Create a new sheet. It's always better to start a new sheet when creating a weather file so you don't overwrite your existing data.</li>
+    <li>On the new sheet type in 'year' and 'day' (no quotes) in the top cell of the first two columns.</li>
+    <li>Copy the max temp, min temp, rad and rain columns to the new sheet after the year and day columns. </li>
+    <li>Rename max temp, min temp and rad to maxt, mint and radn respectivly.</li>
+    <li>We don't need all those decimal places. Select all the columns with data (NOT the year and day columns), change the data type to Number and use the 'Decrease Decimal' option (Home -&gt; Number&nbsp; under Excel 2007+) to reduce the number of decimals to one. Note this will not cause a loss of data, it only affects the display. </li>
+    <li>You sheet should now look like the table below. Note that column names cannot contain spaces.<br />
+    <table width="414" height="282" border="0" cellspacing="0" cellpadding="0" class="telerik-reTable-4">
+        <colgroup><col width="94" style="width: 56pt;" /> <col width="80" span="4" style="width: 48pt;" /> </colgroup>
+        <tbody>
+            <tr height="25" class="telerik-reTableHeaderRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableHeaderFirstCol-4" style="height: 15pt; width: 56pt;">year <br />
+                </td>
+                <td align="right" class="telerik-reTableHeaderFirstCol-4" style="height: 15pt; width: 56pt;">day</td>
+                <td align="right" class="telerik-reTableHeaderOddCol-4" style="width: 48pt;">maxt</td>
+                <td align="right" class="telerik-reTableHeaderEvenCol-4" style="width: 48pt;">mint</td>
+                <td align="right" class="telerik-reTableHeaderOddCol-4" style="width: 48pt;">rain</td>
+                <td align="right" class="telerik-reTableHeaderLastCol-4" style="width: 48pt;">radn</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">28.5</td>
+                <td align="right" class="telerik-reTableEvenCol-4">19.5</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.2</td>
+                <td align="right" class="telerik-reTableLastCol-4">13.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">31.2</td>
+                <td align="right" class="telerik-reTableEvenCol-4">20.5</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.6</td>
+                <td align="right" class="telerik-reTableLastCol-4">15.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">33.6</td>
+                <td align="right" class="telerik-reTableEvenCol-4">22.3</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">20.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">27.1</td>
+                <td align="right" class="telerik-reTableEvenCol-4">21.2</td>
+                <td align="right" class="telerik-reTableOddCol-4">3.4</td>
+                <td align="right" class="telerik-reTableLastCol-4">11.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">27.8</td>
+                <td align="right" class="telerik-reTableEvenCol-4">18.4</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">14.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">30.4</td>
+                <td align="right" class="telerik-reTableEvenCol-4">18.6</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">16.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">30.0</td>
+                <td align="right" class="telerik-reTableEvenCol-4">20.7</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">15.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">30.5</td>
+                <td align="right" class="telerik-reTableEvenCol-4">20.2</td>
+                <td align="right" class="telerik-reTableOddCol-4">7.4</td>
+                <td align="right" class="telerik-reTableLastCol-4">26.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">31.0</td>
+                <td align="right" class="telerik-reTableEvenCol-4">19.4</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.2</td>
+                <td align="right" class="telerik-reTableLastCol-4">31.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">33.5</td>
+                <td align="right" class="telerik-reTableEvenCol-4">14.9</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">31.4</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">32.7</td>
+                <td align="right" class="telerik-reTableEvenCol-4">17.1</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">31.1</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">32.7</td>
+                <td align="right" class="telerik-reTableEvenCol-4">16.2</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">33.4</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;">&nbsp;</td>
+                <td align="right" class="telerik-reTableFirstCol-4" style="height: 15pt;"> <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">35.0</td>
+                <td align="right" class="telerik-reTableEvenCol-4">17.1</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">31.2</td>
+            </tr>
+        </tbody>
+    </table>
+    </li>
+    <li>We'll use a formula to calculate both of these. This will allow you to copy the formula for all of your days no matter how many years you have. Type this formula in the first cell beneath day: =Weather!A2 - DATE(2010,1,0) where Weather is the worksheet containing the weather data, A2 is the cell containg the first Date and 2010 is the first year of your weather data. You may need to change the format of the columns from 'Date' to 'General'. In the 'year' column use the formula: =YEAR(Weather!A2) again, A2 is the cell containing the first Date and Weather is the sheet containing the source data.</li>
+    <li>Copy the two formulae down to complete the columns. </li>
+    <li>Now we need to add units. Every column in the file must have an associated unit (note this does not allow you to change the units APSIM uses. For example, temperatures MUST be in Celcius, you can't make them Farenheight by putting oF in the units field. Add another row under the headings but before the first row of data so it looks like below. Note that unitless columns need to have empty brackets.
+    <table width="464" height="121" border="0" cellspacing="0" cellpadding="0" class="telerik-reTable-4">
+        <tbody>
+            <tr height="25" class="telerik-reTableHeaderRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableHeaderOddCol-4" style="width: 48pt;">year <br />
+                </td>
+                <td align="right" class="telerik-reTableHeaderOddCol-4" style="width: 48pt;">day</td>
+                <td align="right" class="telerik-reTableHeaderOddCol-4" style="width: 48pt;">maxt</td>
+                <td align="right" class="telerik-reTableHeaderEvenCol-4" style="width: 48pt;">mint</td>
+                <td align="right" class="telerik-reTableHeaderOddCol-4" style="width: 48pt;">rain</td>
+                <td align="right" class="telerik-reTableHeaderLastCol-4" style="width: 48pt;">radn</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableOddCol-4">()</td>
+                <td align="right" class="telerik-reTableOddCol-4">()</td>
+                <td align="right" class="telerik-reTableOddCol-4">(oC)</td>
+                <td align="right" class="telerik-reTableEvenCol-4">(oC) <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">(mm)</td>
+                <td align="right" class="telerik-reTableLastCol-4">(MJ/m^2)</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableOddCol-4">2010 <br />
+                </td>
+                <td align="right" class="telerik-reTableOddCol-4">1</td>
+                <td align="right" class="telerik-reTableOddCol-4">28.5</td>
+                <td align="right" class="telerik-reTableEvenCol-4">19.5</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.2</td>
+                <td align="right" class="telerik-reTableLastCol-4">13.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableOddCol-4">2010</td>
+                <td align="right" class="telerik-reTableOddCol-4">2</td>
+                <td align="right" class="telerik-reTableOddCol-4">31.2</td>
+                <td align="right" class="telerik-reTableEvenCol-4">20.5</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.6</td>
+                <td align="right" class="telerik-reTableLastCol-4">15.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableOddRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableOddCol-4">2010</td>
+                <td align="right" class="telerik-reTableOddCol-4">3</td>
+                <td align="right" class="telerik-reTableOddCol-4">33.6</td>
+                <td align="right" class="telerik-reTableEvenCol-4">22.3</td>
+                <td align="right" class="telerik-reTableOddCol-4">0.0</td>
+                <td align="right" class="telerik-reTableLastCol-4">20.0</td>
+            </tr>
+            <tr height="25" class="telerik-reTableEvenRow-4" style="height: 15pt;">
+                <td align="right" class="telerik-reTableOddCol-4">2010</td>
+                <td align="right" class="telerik-reTableOddCol-4">4</td>
+                <td align="right" class="telerik-reTableOddCol-4">27.1</td>
+                <td align="right" class="telerik-reTableEvenCol-4">21.2</td>
+                <td align="right" class="telerik-reTableOddCol-4">3.4</td>
+                <td align="right" class="telerik-reTableLastCol-4">11.0</td>
+            </tr>
+        </tbody>
+    </table>
+    </li>
+    <li>There's two more things we need to add. Insert two rows at the top of the sheet. In the first row type '[weather.met.weather]' (no quotes). This indicates to APSIM that this is a weather file. In the second line, type 'latitude = -27.478' (no quotes). You must provide a latitude as APSIM uses it to calculate day length. A longitude is recommended, but not required. If you do put one in, it goes on a seperate line.</li>
+    <li>Select all the data and make it right justified. This is not required, but it can stop alignment problems later. </li>
+    <li><strong>Make sure there is some space between the columns!</strong> In the table above there is a fair bit of white space between the data in each column and all the data is right justified. If there is not enough space Excel will save the final output file without spaces between the columns which will break the file. This is why we right justified the text; to make sure it doesn't bunch together.</li>
+    <li>Save the file.</li>
+    <li>Click File -&gt; Save As. Choose Formatted text (space delimited) (.prn) from the drop down list. </li>
+    <li>Save the file as Weather. You will get a few warnings about losing formatting. Click OK through them all. This is why you saved the file before changing the format.</li>
+    <li>Click File -&gt; Close. Note that now you're working in the .prn file, not your original file. Any changes made here will not reflect in the source file. The file must also be closed before loading into APSIM or you'll get an error. It will ask if you want to save, say no.</li>
+    <li>Go to the folder where you saved the file. It will be called Weather.prn. Change the name to Weather.met. You may need to unhide file extensions for this to work.</li>
+    <li>Our file needs a couple of constants in order to be complete: TAV (annual average ambient temperature) and AMP (annual amplitude of mean monthly temperature). We have provided a tool <a href="../../external.html?link=http://www.apsim.info/Portals/0/OtherProducts/TavAmpGUI.zip">here </a>so that you don't need to enter these yourself. Run the tool, choose the file you've just created and click Go. It will insert the required numbers for you. See the <a href="../../../Products/Utilities.html">Utilities</a> page for more information.</li>
+</ol>
+<p>&nbsp;The met file is now ready to be loaded into APSIM as usual. Note that we have removed the Date column from the original data. The met component expects numbers only so characters like the slash cannot be used.</p>
+<h2>Building the First Simulation</h2>
+<ol>
+    <li>Open APSIM. Click 'New' and choose 'Continuous Wheat' as the base simulation. We use this one because it has all the nodes we need plus a few more that we'll delete. Save it as 'Scenario.apsim' in the same folder as your met file.</li>
+    <li>This is a bare soil trial so we don't need a crop or fertiliser. Delete the fertiliser, wheat and Manager folder nodes.</li>
+    <li>We're modelling three curves starting in April, May and September. Rename your simulation to April and save. It should look like this: <br />
+    <p><img alt="" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario1.png" /></p>
+    </li>
+    <li> Click on met and choose the Weather.met file you just created. If it doesn't load check that the format is right and that there is enough space between columns.</li>
+    <li>Click on clock. Change start date to 02/04/2010 and end date to 03/05/2010.</li>
+    <li>We now need to change the soil parameters to those that were measured in the field. Open the Data.xlsx file if you don't already have it and go to the Soil tab. Click the Water node under Soil in your simulation, remove the crops and enter the values in the table. Leave the KS column blank. Note that the soil analysis has a lot of extra data that we won't be using. </li>
+    <li>Click on SoilWater. Set the values equal to the following table. These values were calculated for the current soil using measured data, but that process is not part of this exercise.<br />
+    <table align="left" class="telerik-reTable-2" style="width: 423px; height: 338px;">
+        <tbody>
+            <tr class="telerik-reTableEvenRow-2">
+                <td style="width: 80%;" class="telerik-reTableFirstCol-2">Summer Cona:</td>
+                <td class="telerik-reTableLastCol-2">5.3</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Summer U:</td>
+                <td class="telerik-reTableLastCol-2">2</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Summer Date:</td>
+                <td class="telerik-reTableLastCol-2">1-nov</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Winter Cona:</td>
+                <td class="telerik-reTableLastCol-2">3.71</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Winter U:</td>
+                <td class="telerik-reTableLastCol-2">2</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Winter Date:</td>
+                <td class="telerik-reTableLastCol-2">1-apr</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Diffusivity Constant:</td>
+                <td class="telerik-reTableLastCol-2">40</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Diffusivity Slope:</td>
+                <td class="telerik-reTableLastCol-2">16</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Soil albedo:</td>
+                <td class="telerik-reTableLastCol-2">0.12</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Bare soil runoff curve number:</td>
+                <td class="telerik-reTableLastCol-2">50</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Max. reduction in curve number due to cover:</td>
+                <td class="telerik-reTableLastCol-2">20</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Cover for max curve number reduction:</td>
+                <td class="telerik-reTableLastCol-2">0.8</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Slope:</td>
+                <td class="telerik-reTableLastCol-2"><br />
+                </td>
+            </tr>
+            <tr class="telerik-reTableOddRow-2">
+                <td class="telerik-reTableFirstCol-2">Discharge width:</td>
+                <td class="telerik-reTableLastCol-2"><br />
+                </td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-2">
+                <td class="telerik-reTableFirstCol-2">Catchment area:</td>
+                <td class="telerik-reTableLastCol-2"><br />
+                </td>
+            </tr>
+            <tr class="telerik-reTableFooterRow-2">
+                <td class="telerik-reTableFooterFirstCol-2">Maximum pond:</td>
+                <td class="telerik-reTableFooterLastCol-2"><br />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <style type="text/css" id="telerik-reTable-2">
+        .telerik-reTable-2
+        {
+        border-collapse: collapse;
+        border: solid 0px;
+        font-family: Tahoma;
+        }
+        .telerik-reTable-2 tr.telerik-reTableHeaderRow-2
+        {
+        border-width: 1.0pt 1.0pt 3.0pt 1.0pt;
+        margin-top: 0in;
+        margin-right: 0in;
+        margin-bottom: 10.0pt;
+        margin-left: 0in;
+        line-height: 115%;
+        font-size: 11.0pt;
+        font-family: "Calibri" , "sans-serif";
+        width: 119.7pt;
+        border: solid white 1.0pt;
+        border-bottom: solid white 3.0pt;
+        background: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #FFFFFF;
+        }
+        .telerik-reTable-2 td.telerik-reTableHeaderFirstCol-2
+        {
+        border-width: 1.0pt 1.0pt 3.0pt 1.0pt;
+        border: solid white 1.0pt;
+        border-bottom: solid white 3.0pt;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableHeaderLastCol-2
+        {
+        border-width: 1.0pt 1.0pt 3.0pt 1.0pt;
+        border: solid white 1.0pt;
+        border-bottom: solid white 3.0pt;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableHeaderOddCol-2
+        {
+        border-width: 1.0pt 1.0pt 3.0pt 1.0pt;
+        border: solid white 1.0pt;
+        border-bottom: solid white 3.0pt;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableHeaderEvenCol-2
+        {
+        border-width: 1.0pt 1.0pt 3.0pt 1.0pt;
+        border: solid white 1.0pt;
+        border-bottom: solid white 3.0pt;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 tr.telerik-reTableOddRow-2
+        {
+        color: #666666;
+        background-color: #F2F3F4;
+        font-size: 10pt;
+        vertical-align: top;
+        }
+        .telerik-reTable-2 tr.telerik-reTableEvenRow-2
+        {
+        color: #666666;
+        background-color: #E7EBF7;
+        font-size: 10pt;
+        vertical-align: top;
+        }
+        .telerik-reTable-2 td.telerik-reTableFirstCol-2
+        {
+        margin-top: 0in;
+        margin-right: 0in;
+        margin-bottom: 10.0pt;
+        margin-left: 0in;
+        line-height: 115%;
+        font-size: 11.0pt;
+        font-family: "Calibri" , "sans-serif";
+        width: 119.7pt;
+        border-top: none;
+        border-left: solid white 1.0pt;
+        border-bottom: none;
+        border-right: solid white 3.0pt;
+        background: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #FFFFFF;
+        }
+        .telerik-reTable-2 td.telerik-reTableLastCol-2
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableOddCol-2
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableEvenCol-2
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 tr.telerik-reTableFooterRow-2
+        {
+        color: #666666;
+        background-color: #FFFFFF;
+        font-size: 10pt;
+        vertical-align: top;
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableFooterFirstCol-2
+        {
+        margin-top: 0in;
+        margin-right: 0in;
+        margin-bottom: 10.0pt;
+        margin-left: 0in;
+        line-height: 115%;
+        font-size: 11.0pt;
+        font-family: "Calibri" , "sans-serif";
+        width: 119.7pt;
+        border-top: none;
+        border-left: solid white 1.0pt;
+        border-bottom: none;
+        border-right: solid white 3.0pt;
+        background: #4F81BD;
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #FFFFFF;
+        }
+        .telerik-reTable-2 td.telerik-reTableFooterLastCol-2
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableFooterOddCol-2
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-2 td.telerik-reTableFooterEvenCol-2
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+    </style>
+    <table align="left" class="telerik-reTable-1">
+        <tbody>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">&nbsp;Depth</td>
+                <td class="telerik-reTableOddCol-1">SWCON <br />
+                </td>
+                <td class="telerik-reTableLastCol-1">&nbsp;MWCON</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">0-10</td>
+                <td class="telerik-reTableOddCol-1">0.400</td>
+                <td class="telerik-reTableLastCol-1"><br />
+                </td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">10-30</td>
+                <td class="telerik-reTableOddCol-1">0.400</td>
+                <td class="telerik-reTableLastCol-1"> <br />
+                </td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">30-60</td>
+                <td class="telerik-reTableOddCol-1">0.400</td>
+                <td class="telerik-reTableLastCol-1"> <br />
+                </td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">60-80</td>
+                <td class="telerik-reTableOddCol-1">0.000</td>
+                <td class="telerik-reTableLastCol-1">0.000</td>
+            </tr>
+        </tbody>
+    </table>
+    </li>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    We're setting SWCON and MWCON to 0 for the bottom layer to reflect the fact there is no drainage out of the lysimeter (steel plate).
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <li>Delete the Initial water node. We will be specifying starting water content by layer.</li>
+    <li>Click Initial nitrogen. Set all starting N to 0, we're not looking at N in this trial. Change the layers to use the same structure you had in the water node.</li>
+    <li>Add the following values to the SW column:
+    <table class="telerik-reTable-1">
+        <tbody>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">0-10</td>
+                <td class="telerik-reTableLastCol-1">0.569</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">10-30</td>
+                <td class="telerik-reTableLastCol-1">0.523</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">30-60</td>
+                <td class="telerik-reTableLastCol-1">0.492</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">60-80</td>
+                <td class="telerik-reTableLastCol-1">0.481</td>
+            </tr>
+        </tbody>
+    </table>
+    <style id="telerik-reTable-1" type="text/css">
+        .telerik-reTable-1
+        {
+        border-width: 0px;
+        border-style: none;
+        border-collapse: collapse;
+        font-family: Tahoma;
+        }
+        .telerik-reTable-1 tr.telerik-reTableHeaderRow-1
+        {
+        margin: 10px;
+        padding: 10px;
+        color: #3F4D6B;
+        background: #D6E8FF;
+        text-align: left;
+        font-size: 10pt;
+        font-style: normal;
+        font-family: Tahoma;
+        text-transform: capitalize;
+        font-weight: bold;
+        border-spacing: 10px;
+        line-height: 14pt;
+        vertical-align: top;
+        }
+        .telerik-reTable-1 td.telerik-reTableHeaderFirstCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #3a4663;
+        line-height: 14pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableHeaderLastCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #3a4663;
+        line-height: 14pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableHeaderOddCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #3a4663;
+        line-height: 14pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableHeaderEvenCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        color: #3a4663;
+        line-height: 14pt;
+        }
+        .telerik-reTable-1 tr.telerik-reTableOddRow-1
+        {
+        color: #666666;
+        background-color: #F2F3F4;
+        font-size: 10pt;
+        vertical-align: top;
+        }
+        .telerik-reTable-1 tr.telerik-reTableEvenRow-1
+        {
+        color: #666666;
+        background-color: #E7EBF7;
+        font-size: 10pt;
+        vertical-align: top;
+        }
+        .telerik-reTable-1 td.telerik-reTableFirstCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableLastCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableOddCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableEvenCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        }
+        .telerik-reTable-1 tr.telerik-reTableFooterRow-1
+        {
+        background-color: #D6E8FF;
+        color: #4A5A80;
+        font-weight: 500;
+        font-size: 10pt;
+        font-family: Tahoma;
+        line-height: 11pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableFooterFirstCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        border-top: solid gray 1.0pt;
+        text-align: left;
+        }
+        .telerik-reTable-1 td.telerik-reTableFooterLastCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        border-top: solid gray 1.0pt;
+        text-align: left;
+        }
+        .telerik-reTable-1 td.telerik-reTableFooterOddCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        text-align: left;
+        border-top: solid gray 1.0pt;
+        }
+        .telerik-reTable-1 td.telerik-reTableFooterEvenCol-1
+        {
+        padding: 0in 5.4pt 0in 5.4pt;
+        text-align: left;
+        border-top: solid gray 1.0pt;
+        }
+    </style>
+    We want the simulation to start at the same soil water content that the observed soil did. These values were found by running each curve with a different starting value and using the one that matched the observed value. For the full trial approximately 20,000 simulations were run to determine starting conditions for all curves. To save time, the final values are provided here.</li>
+    <li>Change SurfaceOrganicMatter -&gt; Initial surface residue to 0.</li>
+    <li>Delete all output variables EXCEPT Date and add sw_dep().</li>
+    <li>Change Reporting Frequency to end_day.</li>
+    <li>Run the simulation to ensure there are no errors.</li>
+</ol>
+<h2>Preparing Observed Data</h2>
+<p>Using observed data in APSIM is very similar to creating a met file. You will need a table containing your data with headings that match the outputs in APSIM as well as a row of units under the headings. You will also need a column that contains data that APSIM can use to match observed and modelled data. In this example, Date will be the column we match on.</p>
+<p>In the Data.xlsx file, there are two sheets, Kings daily and Kings sw_dep. Kings daily is the raw data gathered from the load meters in the lysimeters. There are also four columns for a correction factor (one for each rep), columns for sum of correction factors and columns for the corrected mass. During the trial there were periods were the load cells did not measure correctly (some factors included broken regulators, flooding, adding known weight for load cell testing and local fauna standing on the cells when a reading was taken). These errors showed in the data as large drops or spikes that rectified themselves after a day or two. The correction factor used removes these large deltas. You will notice periods of straight lines in the graph. These period represent missing data; either due to broken or missing load cells (they were removed from time to time for repairs) or due to the data being so noisy it was not possible to extract a reliable signal from it.</p>
+<p>With any data set there are always sources of error that need to be accounted for before trying to model it. Don't forget that both the model and the real data can be sources of error. If your modelled results do not give a good fit for your observed results it can be a good idea to check that your measured data are as free of errors as possible. In fact, you can expect that most of your time modelling will actually be spent cleaning up data. It took a week or two to build the model of this trial. It took nearly three months to clean the data, and even then a lot was rejected due to unquantifiable errors. In the end 38 drying curves were selected from a maximum of just over 60 possible curves. The other curves were rejected due to excessive errors in measured data.</p>
+<ol>
+    <li>Open Data.xlsx and click the Kings sw_dep tab. The data you will be using has already been error corrected.</li>
+    <li>We will be modelling the average of all four reps. Rename the mean column to sw_dep(). By having the names of the columns in both observed and modelled data the same APSIM can plot them on the same graph.</li>
+    <li>Adjust the number of decimal places to 3.</li>
+    <li>Add another row under the headings and add the units. () For date, (mm) for the rest. </li>
+    <li>The columns are a little close together. Adjust the column witdth so we'll get enough space between them when we save. </li>
+    <li>Save the file.</li>
+    <li>Use Save As to save the file as 'observed.prn'. </li>
+    <li>Close the file in Excel. </li>
+</ol>
+<h2>Adding Observed Data</h2>
+<p>&nbsp;Now that we have our observed data in a format APSIM can handle, we want to graph it on the same plot as our modelled data to see how well the model holds up.</p>
+<ol>
+    <li>Open Scenario.apsim if it isn't already.</li>
+    <li>Open the Graph toolbox and drop an XY plot onto the 'April' simulation node.</li>
+    <li>Open the XY node and click 'Plot'.</li>
+    <li>Make the X variable Date and Y variable sw_dep(). Change 'point type' to 'none'.</li>
+    <li>Rename the plot to sw_dep. It should look like this:<br />
+    <img alt="" width="652" height="326" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario2.png" /></li>
+    <li>Copy the plot node and paste on the sw_dep graph to create a second node. Rename the first Plot to predicted and the second to observed.<br />
+    <img alt="" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario3.png" /></li>
+    <li>We have all the observed data in a single file but we only want to graph part of it. Drop a Filter component on the observed node (Graph &gt; GraphBits &gt; Filter).</li>
+    <li>Open the observed node and cut the ApsimFileReader node. Paste it onto the Filter node. It should now look like this:<br />
+    <img alt="" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario4.png" /></li>
+    <li>Click on ApsimFileReader and select your observerd.prn file. If the file is in the correct format you will see your data in a list.</li>
+    <li>Click on the filter node. In 'Enter filter expression' enter the following:&nbsp;&nbsp; <span style="background-color: #d8d8d8;">Date &gt;= #4/2/2010# AND Date &lt;= #5/3/2010#</span>. Note that the dates are now in US format (MM/DD/YYYY) and that the hashes are required to denote a date. For more information on the filter node, refer to the <a href="../CommonTasksinAPSIM/FiltergraphdataintheUserInterface.html">Filter</a> documentation.</li>
+    <li>Click the observed node and change 'point type' to 'circle' and 'line type' to 'none'.</li>
+    <li>Click on the sw_dep plot node and you should see the following graph:<br />
+    <img alt="" width="780" height="402" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario5.png" /><br />
+    If your graph does not look like this, check the previous steps; you've proabably missed something. </li>
+</ol>
+<p> </p>
+<h2>Build the Other Simulations</h2>
+<p>The hard work is done, the other two simulations will use this one as a base and all we'll change is the start and end dates of the simulation, the filter expression to match those dates and the starting water. </p>
+<ol>
+    <li>Create two linked simulations using April as the base. Call one May and the other September. Unlink the clock node, the Initial nitrogen node under soil and the filter on the graph node for both simulations.</li>
+    <li>Change the start and end dates of May to&nbsp; 05/05/2010 and 02/07/2010 respectivly. Change September to 11/09/2010 and 06/10/2010.</li>
+    <li>Click on the unlinked filter node. For May, change the filter expression to <span style="background-color: #d8d8d8;">Date &gt;= #5/5/2010# AND Date &lt;= #7/1/2010#</span>. Again, note the day and month are reversed.</li>
+    <li>For September the filter expression becomes: <span style="background-color: #d8d8d8;">Date &gt;= #9/11/2010# AND Date &lt;= #10/6/2010#</span>.</li>
+    <li>Change the SW column in Initial nitrogen to
+    <table class="telerik-reTable-1">
+        <tbody>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">0.510</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">0.509</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">0.494</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">0.454</td>
+            </tr>
+        </tbody>
+    </table>
+    for the May simulation and
+    <table class="telerik-reTable-1">
+        <tbody>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">0.509</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">0.508</td>
+            </tr>
+            <tr class="telerik-reTableEvenRow-1">
+                <td class="telerik-reTableFirstCol-1">0.493</td>
+            </tr>
+            <tr class="telerik-reTableOddRow-1">
+                <td class="telerik-reTableFirstCol-1">0.453</td>
+            </tr>
+        </tbody>
+    </table>
+    for September.
+    </li>
+    <li>Run the two new simulations and compare your results with the graphs below.</li>
+</ol>
+<img alt="" width="691" height="341" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario6.png" /><br />
+<img alt="" width="691" height="341" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario7.png" /><br />
+<img alt="" width="691" height="341" src="../../portals/0/Documentation/TrainingManual/AdvScenario/scenario8.png" /><br />
+</div>
+
+</div><!-- End_Module_710 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/Scenario.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:16 GMT -->
+</html>

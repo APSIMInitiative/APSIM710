@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Irrigation.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > Irrigation
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Irrigation.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="Irrigation.html" class="SkinObject">Irrigation</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Irrigation</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-528"><a name="528"></a>
+<div class="Invisible"><div id="dnn_ctr528_ContentPane"><!-- Start_Module_528 --><div id="dnn_ctr528_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr528_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 0cm 0cm 10pt;"><strong>Irrigation Using Manager Scripts (APSIM 7.5 only)</strong></h1>
+<p>Apsim 7.5 introduced a number of new manager rules to control irrigation. They cover a number of common application scenarios and do not need any scripting experience to use. You can find them in the Management tool box under Manger .NET (common tasks).</p>
+<p><hr />
+&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>The APSIM irrigate module allows the user to: </strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">specify irrigation schedules spanning multiple years</li>
+    <li style="margin: 0cm 0cm 10pt;">configure an automatic irrigation schedule calculated on soil moisture</li>
+    <li style="margin: 0cm 0cm 10pt;">specify both schedules to be turned on or off at any time in a simulation</li>
+    <li style="margin: 0cm 0cm 10pt;">apply solutes in irrigation water for redistribution via the water balance module.</li>
+</ul>
+<p><strong>Apply Command</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The 'apply' command allows you to apply an irrigation in a management component in your simulation (Manager module).<br />
+<br />
+The simplest way to apply an irrigation is to use the 'apply' command of the irrigation module.<br />
+<br />
+nb. This is very similar to the 'apply' command of the fertiliser module.</p>
+<p>&nbsp;&nbsp;&nbsp; irrigation apply amount = 50 (mm)</p>
+<p>
+<strong>There are some optional arguments that you can use with the apply command.</strong><br />
+<br />
+<strong>Irrigation to runoff like rain does</strong></p>
+<p style="margin: 0cm 0cm 12pt;">By default all the irrigation enters the soil. <br />
+It is left up to the user to take the efficiency of irrigation (water lost due to method of irrigation used) into account by decreasing the amount applied when irrigating using an apply command.<br />
+<br />
+However there is an option to allow an irrigation to runoff in exactly the same way that rain does. This runoff amount is added to the existing output variable for rain called 'runoff'.<br />
+<br />
+You can specify this runoff to occur with the irrigation by using the 'will_runoff' argument. 0 means no runoff, 1 means runoff like rain does.</p>
+<p>&nbsp;&nbsp; irrigation apply amount = 50 (mm), will_runoff = 1</p>
+<p>If this argument is not provided, it defaults to 0 (the irrigation does not runoff)</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Subsurface Irrigation</strong></p>
+<p style="margin: 0cm 0cm 12pt;">You can apply an irrigation to be a subsurface irrigation by using the optional 'depth' argument.</p>
+<p>&nbsp;&nbsp; irrigation apply amount = 50 (mm), depth = 3000 (mm)</p>
+<p>The SoilWater module will work out what layer of the soil that this depth corresponds to, and will put the water directly into this soil layer
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Solutes in Irrigation</strong></p>
+<p style="margin: 0cm 0cm 12pt;">You can apply solutes with the irrigation by using the optional 'no3', 'nh4' and 'cl' arguments.</p>
+<p>&nbsp;&nbsp; irrigation apply amount = 50 (mm), no3 = 50 (kg/ha), nh4 = 60 (kg/ha), cl = 70 (kg/ha)</p>
+<p style="margin: 0cm 0cm 12pt;">nb. cl is chloride.<br />
+<br />
+You can use this in conjunction with the depth argument. </p>
+<p>&nbsp;&nbsp; irrigation apply amount = 50 (mm), depth = 3000 (mm), no3 = 50 (kg/ha), nh4 = 60 (kg/ha), cl = 70 (kg/ha)</p>
+<p>nb. each one of these solutes is an optional argument. So you do not need to provide all three. You can provide just one or two of them if you want.<br />
+<br />
+<br />
+<strong>Resetting Schedules</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Manual and automatic schedules can be enabled and disabled within a simulation via the message system. The syntax of a standard manager message to turn off the manual irrigation schedule would be as follows:</p>
+<p>&nbsp;&nbsp;&nbsp; irrigation set manual_irrigation = off</p>
+<p style="margin: 0cm 0cm 12pt;">Other related data is unaffected by this switch resetting and so, for example, the automatic irrigation scheduling can be set on and off for set windows in time using a pair of if statements in the manager file.<br />
+Parameters for the automatic irrigation calculations can be reset similarly:<br />
+<br />
+</p>
+<p>&nbsp;&nbsp;&nbsp; irrigation set crit_fr_asw = 0.9 (0-1)</p>
+<p>&nbsp;&nbsp;&nbsp; irrigation set asw_depth = 150 (mm)</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Working with Irrigation Allocation Budgets</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The following example shows how the allocation mechanisms are utilized in the APSIM Irrigate module.<br />
+Note that only automatic irrigation scheduling and remote scheduling (eg via the manager or operations modules) is taken into account. <br />
+The mechanism cannot be used in conjunction with a manual irrigation schedule. <br />
+The example shows an annual allocation set on the first of July each year, which is applied using automatic irrigation scheduling.<br />
+<br />
+</p>
+<p>user_data_group.irrigate .parameters</p>
+<p>&nbsp;</p>
+<p>automatic_irrigation = on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (on/off) ! switch schedule on or off</p>
+<p>crit_fr_asw = 0.66&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0-1) ! critical fraction of</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! available soil water</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! to trigger irrigation</p>
+<p>asw_depth = 600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mm) ! depth for available</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! soil water calculations</p>
+<p>&nbsp;</p>
+<p>user_data_group.manager .start_of_day</p>
+<p>if today = date('1_jul') then</p>
+<p>&nbsp; irrigation set allocation = 1000 (mm)</p>
+<p>endif</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Working with Irrigation Efficiency</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The following example shows how the irrigation efficiency is utilized in the APSIM Irrigate module. <br />
+The example shows an irrigation_efficiency setting of 75%. <br />
+This means that only 75% of the irrigation is actually being applied due to approximated losses due to evaporation, wind loss or runoff.<br />
+<br />
+</p>
+<p>user_data_group.manager .start_of_day</p>
+<p>&nbsp;</p>
+<p>irrigation.irrigation_efficiency = 0.75</p>
+<p>&nbsp;</p>
+<p>if today = date('1_jul') then</p>
+<p>&nbsp; irrigation apply amount = 50</p>
+<p>endif</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Using APSIM Irrigate with APSIM WaterStorage</strong></p>
+<p style="margin: 0cm 0cm 12pt;">There is an option to use APSIM Irrigate in conjunction with the APSIM WaterStorage module. Please also read the documentation for APSIM WaterStorage.<br />
+<br />
+APSIM Irrigate works on a &lsquo;mm' basis, whereas APSIM WaterStorage works on real volumes (Ml). Hence, when an irrigation application is specified in mm, an &lsquo;area of application' must be provided in order to calculate the required volume of water from the specified source instance of WaterStorage. As mentioned previously, whenever WaterStorage is used in a simulation for supply of irrigation water, a variable called &lsquo;crop_area' (ha) must be specified in the manager logic.<br />
+<br />
+Irrigations using water from WaterStorage can only be initiated by using the &lsquo;irrigation apply' action in manager. A new optional argument called &lsquo;source' is added to the &lsquo;apply' command line to trigger the use of water from WaterStorage. The required syntax is as follows:</p>
+<p>sample.manager.start_of_day</p>
+<p>if day = 10 then</p>
+<p>&nbsp; irrigation apply amount=10 (mm), source = dam bore dam2 ()</p>
+<p>endif</p>
+<p>The argument &lsquo;source' specifies the sources from which to obtain the irrigation water, in preferential order. In other words, in the above example, if the dam cannot fully supply the required water, the balance will be taken from the bore. If there is still a shortage of water, then dam2 will be asked next to supply water. There is no limit to the number of sources which can be specified.<br />
+When the irrigation water is applied to the soil, it will carry the solutes makeup of the water source being used.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Irrigation Module Outputs</strong></p>
+<p style="margin: 0cm 0cm 10pt;">The Irrigation module outputs the following variables.</p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Variable Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irrigation</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total amount of irrigation added to profile during any timestep (mm) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>manual_irrigation</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Current state of the fixed irrigation schedule (on/off) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>automatic_irrigation</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Current state of the automatic irrigation schedule (on/off) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>crit_fr_asw</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Critical fraction of available soil water (ie. above a 15 bar lower limit) below which irrigation is automatically applied. (0-1) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>asw_depth</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Depth to which available soil water fraction is calculated. (mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>allocation</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Current amount of irrigation allocation available for use (mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>allocation_ml</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Current amount of irrigation allocation available for use (ML) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>carry_over</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of irrigation allocation unused as at reset of allocation (mm) (Value will be zero for days on which allocation is not reset) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>carry_over_ml</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of irrigation allocation unused as at reset of allocation (ML) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irr_fasw</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Fraction of available soil water within the critical irrigation soil depth </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irr_deficit</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Deficit of soil water within the critical irrigation soil depth (mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irrig_loss</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Losses resulting from and application of irrigation in conjunction with the irrigation_efficiency mechanism. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irrig_tot</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total irrigation specified, not including losses due to irrigation efficiency (mm) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>irrigation_XXX</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Applied quantity of solute XXX, (kg/ha)</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<br clear="all" style="page-break-before: always;" />
+</div>
+
+</div><!-- End_Module_528 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Irrigation.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+</html>

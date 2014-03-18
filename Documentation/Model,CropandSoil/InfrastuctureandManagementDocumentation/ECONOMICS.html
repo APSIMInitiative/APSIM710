@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/ECONOMICS.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:29 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > ECONOMICS
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/ECONOMICS.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="ECONOMICS.html" class="SkinObject">ECONOMICS</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>ECONOMICS</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-484"><a name="484"></a>
+<div class="Invisible"><div id="dnn_ctr484_ContentPane"><!-- Start_Module_484 --><div id="dnn_ctr484_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr484_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">Applicability</h1>
+<p style="margin: 0cm 0cm 10pt;">The economics module in APSIM was developed primarily to serve as another input to the management module - as an index of farm "stress" that modifies the risk aversion of the farm manager.&nbsp;<br />
+<br />
+To this end, it simply maintains a cash balance through the simulation, which monitors all financial activity (eg. income, expenses, loan repayments).<br />
+<br />
+The bottom line is that all events that occur on a farm have a cost, and these events MUST be captured by the economics module for a realistic simulation.&nbsp;<br />
+<br />
+This includes not only crop income &amp; expenses, but also annual operating expenses and capital replacement.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Operation</h1>
+<p style="margin: 0cm 0cm 10pt;">As with all apsim modules, the economics module responds to events. The main events of interest are "income" and "expenditure" events. The module will generate an "end_financial_year" event that other modules may have an interest in, internally it will calculate loan repayments on this date.<br />
+<br />
+Typically, these events are generated from within the manager module, for instance when sowing or harvesting a crop, preparing a seedbed, spraying for weeds and so on.&nbsp;<br />
+<br />
+The events contain parameters; typically most define a rate, category and area. The module will write a line to the summary file describing the outcome of the event, and alos a line in the cash journal.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Expenditure Events</h1>
+<div style="padding-bottom: 5pt; padding-left: 5pt; padding-right: 5pt; background: #eeeeee; margin-left: 6.6pt;  margin-right: 6.6pt;  padding-top: 5pt;border: #dddddd 1pt solid;">
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">economics expenditure category = seedcost, name = wheat, rate = 120 (kg/ha), area = 200 (ha)</pre>
+</div>
+<p  style="margin: 0cm 0cm 10pt;">Here the module will look up the entry "wheat" in its "seedcost" section, multiply by rate by area and subtract the total from the current balance.&nbsp;<br />
+Note that while units are specified, no unit conversion is performed. As well the paddock area must be specified.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Income Events</h1>
+<div style="padding-bottom: 5pt; padding-left: 5pt; padding-right: 5pt; background: #eeeeee; margin-left: 6.6pt;  margin-right: 6.6pt;  padding-top: 5pt;border: #dddddd 1pt solid;">
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">cropyieldTONNES = wheat.yield / 1000.0</pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">protein = wheat.grain_protein</pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">economics income category= cropprice, name = wheat, yield = cropyieldTONNES, protein = protein, area = 200 (ha)</pre>
+</div>
+<p  style="margin: 0cm 0cm 10pt;">...<br />
+<br />
+<br />
+</p>
+<div style="padding-bottom: 5pt; padding-left: 5pt; padding-right: 5pt; background: #eeeeee; margin-left: 6.6pt;  margin-right: 6.6pt;  padding-top: 5pt;border: #dddddd 1pt solid;">
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">cropyieldTONNES = sorghum.yield / 1000.0</pre>
+<pre style="padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; background: #eeeeee;   padding-top: 0cm;border: medium none;">economics income category= cropprice, name = sorghum, yield = cropyieldTONNES, area = 200 (ha)</pre>
+</div>
+<p  style="margin: 0cm 0cm 10pt;">The first example shows the manager calculating a crop yield in tonnes and grain protein content, then telling the economics module (wheat price is dependent on quality). The second is a simpler version of the same.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Capital replacement</h1>
+<p style="margin: 0cm 0cm 10pt;">The simulation starts with an initial capital investment loan. All machinery items have an initial age, and are replaced when they exceeds thier useful life. Payments for these loans are made at the end of each financial year.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Additional machinery</h1>
+<p style="margin: 0cm 0cm 10pt;">Additional machinery is created by duplicating an existing node in the the ApsimUI tree. Simply rename the node, and check that the "Apsim Name" is unique.</p>
+<p><br clear="all" style="page-break-before: always;" />
+</p>
+</div>
+
+</div><!-- End_Module_484 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/ECONOMICS.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:29 GMT -->
+</html>

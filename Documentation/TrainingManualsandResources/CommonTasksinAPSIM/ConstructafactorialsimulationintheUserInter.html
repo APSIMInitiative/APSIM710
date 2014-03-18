@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/CommonTasksinAPSIM/ConstructafactorialsimulationintheUserInter.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:18 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Training Manuals and Resources > Common Tasks in APSIM > Construct a factorial simulation in the User Inter
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/TrainingManualsandResources/CommonTasksinAPSIM/ConstructafactorialsimulationintheUserInter.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../TrainingManualsandResources.html" class="SkinObject">Training Manuals and Resources</a><span class="Sep"></span><a href="../CommonTasksinAPSIM.html" class="SkinObject">Common Tasks in APSIM</a><span class="Sep"></span><a href="ConstructafactorialsimulationintheUserInter.html" class="SkinObject">Construct a factorial simulation in the User Inter</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Construct a factorial simulation in the User Inter</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-581"><a name="581"></a>
+<div class="Invisible"><div id="dnn_ctr581_ContentPane"><!-- Start_Module_581 --><div id="dnn_ctr581_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr581_HtmlModule_lblContent" class="Normal">
+	When running an Apsim simulation for analysis it is often necessary to run the model multiple times whilst changing a few key variables to get results that show a wider range of possible outcomes. An example of this would be to run the model with a range of Initial Water levels for a soil, a range of fertiliser rates, and a range of planting dates. For the best results, it would be necessary to run all possible combinations of the three. <br />
+<br />
+The difficulty encountered in this situation is that each possible combination would require it's own simulation in the simulations tree. Assuming 3 different planting dates, 3 different fertiliser levels and 3 different Initial Water values and you would need 27 unique simulations in the tree. If a change is required to the original simulation, it will also need to be repeated in 26 other simulations. With the use of linking, the number of changes could be reduced, unless it is a change to the structure - in which case the addition or removal of a component will result in changes still being necessary for every simulation. <br />
+<br />
+Factorials attempt to solve this problem by allowing the user to define the variables to be replaced - called "Factors", as well as the collection of values to replace them with - called "Levels". It will then run the model with all possible combinations of those "Levels". It will do this using only a single simulation.<br />
+<br />
+<br />
+<a href="../../../index-2.html" class="unknownlink"></a>
+<div class="imageleft"><img alt="A Single Simulation with Factorials" src="../../portals/0/Documentation/TrainingManual/CommonTasks/Simulationsx1.jpg" class="image" />
+<p class="imagedescription">A Single Simulation with Factorials</p>
+</div>
+<br />
+<h3 class="separator"><span style="font-size: 16px;"><strong>Factor Nodes</strong></span></h3>
+A Factor node represents one or more "Factors"; each factor containing one or more "Level". Each "Level" can be as simple as a single number, or as complex as an entire Soil component, depending on how the Factor node is configured. The factor node can be configured to behave in two possible ways; by replacing entire components, or by replacing individual variables within a component.<br />
+<br />
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent"><strong>Component Replacement</strong></div>
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent">The default behaviour of a factor node is to treat each of it's child nodes as a "Level". The level is applied to a simulation by completely replacing an entire component. It can also handle more complex components such as a Soil component. Selection of a component underneath the factor will enable the component to be displayed and editted as per usual.</div>
+<div style="margin: 0px; padding: 0px 0px 0px 30px;" class="indent"><a href="../../../index-2.html" class="unknownlink"></a>
+<table cellspacing="0" cellpadding="0" class="imageauto">
+    <tbody>
+        <tr>
+            <td><img alt="Component Replacement" src="../../portals/0/Documentation/TrainingManual/CommonTasks/Component.jpg" class="image" />
+            <p class="imagedescription">Component Replacement</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br />
+</div>
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent"><strong>Variable Replacement</strong></div>
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent">There are some components that store variables within their internal structure. If a factor node has a single child of one of these components, it will display a table of variables and their values. Each line in the table has a checkbox, which when checked will cause the variable to be treated as a factor. So it is possible for a factor node to have multiple factors by checking multiple rows in the table. The levels are defined in the Parameters column by comma separated values.</div>
+<div style="margin: 0px; padding: 0px 0px 0px 30px;" class="indent"><a href="../../../index-2.html" class="unknownlink"></a>
+<table cellspacing="0" cellpadding="0" class="imageauto">
+    <tbody>
+        <tr>
+            <td><img alt="Variable Replacement" src="../../portals/0/Documentation/TrainingManual/CommonTasks/Variables.jpg" class="image" style="width: 686px; height: 593px;" />
+            <p class="imagedescription">Variable Replacement</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br />
+</div>
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent">The component types that can be used this way are defined in factor.xml. At the time this documentation was written, a factor node could recognise 5 types of components which were defined like so:</div>
+<br />
+<pre><div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock"><div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">FactorVariables</code><code style="color: #000000;">&gt;</code></span></div><div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;manager&lt;/</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;</code></span></span></div><div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;rule&lt;/</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;</code></span></span></div><div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;cropui&lt;/</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;</code></span></span></div><div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;sorghumconstants&lt;/</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;</code></span></span></div><div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;sorghumgenotype&lt;/</code><code style="color: #006699; font-weight: bold;">facvar</code><code style="color: #000000;">&gt;</code></span></span></div><div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">FactorVariables</code><code style="color: #000000;">&gt;</code></span></div></div> </pre>
+<br />
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent">Manager, rule and cropui components all store a list of variables within . The variable name is stored as the node name (no spaces), value is stored as inner text. The factorial component substitutes those variable values by replacing the inner text property of the variable - Apsim then does it's own substitution of the variables into the relevant manager logic as it runs.</div>
+<br />
+<div style="margin: 0px; padding: 0px 0px 0px 15px;" class="indent">The two sorghum components are a list of variables, each defined by a node named "property". The name of the variable is contained in the "name" attribute (which allows spaces) and the value is again stored in the inner text property of the node. The factorial component again simply replaces the inner text property of the appropriate variable.</div>
+<br />
+<div style="border: 1px solid #7f9db9; overflow-y: auto;" class="reCodeBlock">
+<div style="background-color: #ffffff;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">SorghumConstants</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"standard"</code><code style="color: #000000;">&gt;</code></span></div>
+<div style="background-color: #f8f8f8;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">property</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"crop_type"</code><code style="color: #000000;">&gt;sorghum&lt;/</code><code style="color: #006699; font-weight: bold;">property</code><code style="color: #000000;">&gt;</code></span></span></div>
+<div style="background-color: #ffffff;"><span><code>&nbsp;&nbsp;&nbsp;</code><span style="margin-left: 12px ! important;"><code style="color: #000000;">&lt;</code><code style="color: #006699; font-weight: bold;">property</code> <code style="color: #808080;">name</code><code style="color: #000000;">=</code><code style="color: blue;">"default_crop_class"</code><code style="color: #000000;">&gt;plant&lt;/</code><code style="color: #006699; font-weight: bold;">property</code><code style="color: #000000;">&gt;</code></span></span></div>
+<div style="background-color: #f8f8f8;"><span style="margin-left: 0px ! important;"><code style="color: #000000;">&lt;/</code><code style="color: #006699; font-weight: bold;">SorghumConstants</code><code style="color: #000000;">&gt;</code></span></div>
+</div>
+<br />
+<h3 class="separator"><span style="font-size: 16px;"><strong>Targets</strong></span></h3>
+Each factor node has a list of one or more targets attached to it. Each target is the location of a component that will either be replaced, or updated depending on the type of factor node. When a target is selected in the list, the designated component will be highlighted in the selections tree. A target can be created by selecting the component in the simulations tree and dropping it onto the list of targets. This will add that component onto the list. A target is also added to the list automatically when dragging an item from the selections tree to be a level underneath a factor node.<br />
+<br />
+Please note: At present, renaming a component within the targets path will cause the target to be invalid. <br />
+<br />
+Targets can enable more complex scenarios to be configured. Using the initial example that used Initial Water, Fertiliser and Planting Date as variables, what would happen if a second simulation was added to model a different soil type at the same location. The simulation can be created by dragging the current simulation to the simulations folder, causing a copy to be made. A different soil needs to be added to the new simulation and the old one removed. The Initial Water factor will be invalid for the new simulation as it uses a different soil type - Note: the model won't be able to determine that it is wrong. A new Initial Water factor based on the new soil type will need to be created.<br />
+<div style="clear: both;"></div>
+<a href="../../../index-2.html" class="unknownlink"></a>
+<div class="imageleft"><img alt="Target is in Site 1" src="../../portals/0/Documentation/TrainingManual/CommonTasks/Target-Sim1.jpg" class="image" />
+<p class="imagedescription">Target is in Site 1</p>
+</div>
+<a href="../../../index-2.html" class="unknownlink"></a>
+<div class="imageleft"><img alt="Target is in Site 2" src="../../portals/0/Documentation/TrainingManual/CommonTasks/Target-Sim2.jpg" class="image" />
+<p class="imagedescription">Target is in Site 2</p>
+</div>
+<div style="clear: both;"></div>
+<a href="../../../index-2.html" class="unknownlink"></a>
+<table cellspacing="0" cellpadding="0" class="imageauto">
+    <tbody>
+        <tr>
+            <td><img alt="Both Simulations are Targets" src="../../portals/0/Documentation/TrainingManual/CommonTasks/Target-Sims.jpg" class="image" />
+            <p class="imagedescription">Both Simulations are Targets</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<span style="font-size: 16px;"><strong>Targets Walkthrough</strong></span>
+<ol>
+    <li>If renaming the new simulation, please do so before setting up the factors.</li>
+    <li>Right click on the factorials node and select Add Factor (rename it to "Initial Water Site 2")</li>
+    <li>Select and drag the Soil component added to the new simulation onto the new factor.</li>
+    <li>Repeat step 3 twice more (there should be 3 Soil components under the new factor).</li>
+    <li>Expand the first soil node under the new factor and select the Initial water component</li>
+    <li>In the text box within the group titled "Specifying a fraction of maximum avaialble water", make sure the value is 100.</li>
+    <li>Repeat steps 5 and 6 on the second soil node, but this time enter 75%.</li>
+    <li>Repeat steps 5 and 6 on the third soil node, but this time enter 50%.</li>
+    <li>Rename the soil nodes 100%, 75% and 50% respectively.</li>
+    <li>Select the factorials node, it should show two simulations, with a count at the end of each one. The first simulation should still be showing (27) - which is the number of simulations it will create and run. The new simulation should be showing (3). When the soil node was dragged to the new Initial Water factor, it automatically added the soil as a target to the Factors target list.</li>
+    <li>Select the Planting Dates factor node to display it's list of Targets.</li>
+    <li>Add the Sorghum Sowing rule in the new simulation to the Targets list of the Planting Dates by<br />
+    selecting it and dragging it across to the Planting Dates Targets list.</li>
+    <li>Repeat this process using the Fertilise at sowing node in the new simulation and dragging it to the Targets list of the Fertiliser factor.</li>
+    <li>Select the factorials node and it should show 2 simulations with (27) each.</li>
+</ol>
+<a class="editsectionlink" href="../../../index-2.html"></a>
+<h3 class="separator"><strong>Current Limitations</strong></h3>
+At present it is difficult to model different locations using a single simulation through the use of factors. The factorial component will iterate through all possible combinations of factors that have targets to a given simulation. Using the walkthrough example, if the soil component is added to the targets list of "Initial Water Site 2", it will result in 81 runs instead of 54. This number can be calculated by 3 (Inital Water) x 3 (Planting Dates) x 3 (Fertiliser) x 3 (Initial Water Site 2). It would have been possible to add 3 new soils to the existing Initial Water, which would have resulted in 6x3x3, or 54 runs as was desired. When dealing with different locations though, there is a 2nd factor that will normally need to be changed between sites - rainfall data (which is defined within the met component). Adding a factor node for met files with 2 Levels, each representing a different location will result in 108 simulations (6x3x3x2). It would combine both met files, with both soil types, which was not desired. It would be necessary to create 2 simulations to provide a valid solution.<br />
+<br />
+<h3 class="separator"><strong>Future Development</strong></h3>
+Having to create a separate simulation for each location defeats the initial goal of reducing the time required to create and maintain complex combinations. <br />
+<br />
+<h4 class="separator"><strong>Complex Factors</strong></h4>
+Complex factors will allow multiple components to be attached to a single factor eg: a met file and soil component. To provide a solution to the last example, 6 complex factors could be created, each containing a soil and a met file, resulting in 54 runs (6x3x3). It would also be able to handle multiple met files (climate forecasting) by adding more complex factors to the list. <br />
+<br />
+<h4 class="separator"><strong>Factor Hierarchy</strong></h4>
+Complex factors will provide a solution to multiple locations that all use the same set of variables. When dealing with multiple locations though, not all of the variables might be relevant to all locations. Sowing dates can vary between locations, which can be modelled using the whole range of possible dates, but results in extra simulations being run and then needing to be removed from the results as they are invalid. In order to do this, there needs to be a way to create separation between the factors, while still being able to use those factors that are common to all situations. This result can be achieved through the use of a hierarchial structure that allows both separation via folders, and inheritance via parent nodes. The easiest way to explain this is to look at an example image. <a href="../../../index-2.html" class="unknownlink"></a>
+<table cellspacing="0" cellpadding="0" class="imageauto">
+    <tbody>
+        <tr>
+            <td><img alt="Image" src="../../portals/0/Documentation/TrainingManual/CommonTasks/AdvancedFactorials.jpg" class="image" /></td>
+        </tr>
+    </tbody>
+</table>
+The following walk through explains how this structure was created.
+<ol>
+    <li>Start with the Continuous Sorghum Example project, and enable Factorials</li>
+    <li>Add those factors that will be common to all scenarios. Use a factor with a manager component to define planting dates (inheritance will be used to override the base factor), density and skip row status.</li>
+    <li>Add a Factor folder and rename it to "Region" which will represent a factor.</li>
+    <li>Add 3 Level folders to the "Region" factor called "CQ", "SQ", "NNSW" respectively</li>
+    <li>Add a Factor folder to each region called "Site"</li>
+    <li>Add a number of Level Folders to each "Site" factor to represent different sites in that region.</li>
+    <li>Each site should have a "met" factor which will have a met component pointing to that particular sites met data</li>
+    <li>Each site should have a "Initial Water" factor, which will contain 3 copies of the same soil, except the Initial Water value will be different for each one (100%, 75%, 50%).</li>
+    <li>CQ has different planting dates to the other two regions, so the Planting factor is copied to the CQ factor folder.</li>
+    <li>Change the planting dates for the CQ Planting factor, and uncheck the density and skiprow rows. This will overwrite the Planting dates, but not the density and skiprow values.</li>
+    <li>The first line of output should now be "Region=CQ,Site=Clermont,date1=15-oct,density=5,skiprow=solid,met=Clermont Met,Initial Water=100%</li>
+</ol>
+</div>
+
+</div><!-- End_Module_581 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/CommonTasksinAPSIM/ConstructafactorialsimulationintheUserInter.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:20 GMT -->
+</html>

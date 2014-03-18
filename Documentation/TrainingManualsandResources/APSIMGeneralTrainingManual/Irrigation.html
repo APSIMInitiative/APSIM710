@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/Irrigation.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:15 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Training Manuals and Resources > APSIM General Training Manual > Irrigation
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/Irrigation.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../TrainingManualsandResources.html" class="SkinObject">Training Manuals and Resources</a><span class="Sep"></span><a href="../APSIMGeneralTrainingManual.html" class="SkinObject">APSIM General Training Manual</a><span class="Sep"></span><a href="Irrigation.html" class="SkinObject">Irrigation</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Irrigation</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-691"><a name="691"></a>
+<div class="Invisible"><div id="dnn_ctr691_ContentPane"><!-- Start_Module_691 --><div id="dnn_ctr691_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr691_HtmlModule_lblContent" class="Normal">
+	<h1><span style="color: #548dd4;">Irrigation</span></h1>
+<h2>Setting Up Irrigation</h2>
+<ol>
+    <li>This exercise will show you how to get started with irrigation. Start by creating a new simulation using Continuous Wheat as a base. Save the file.</li>
+    <li>Change the start date of the simulation to 1/01/1950 to run a single year.</li>
+    <li>Change Initial Water in the Soil component to 50% full, evenly distributed.</li>
+    <li>Change Reporting Frequency in outputfile to 'end_day'. </li>
+    <li>Add the irrigation component to your paddock. You will find it in the standard toolbox under Water Components. <strong>NB</strong>: make sure you use Irrigation, not Irrigation ML allocation.<br />
+    <img alt="" src="../../portals/0/Documentation/TrainingManual/AdvIrrigation/1.png" /></li>
+    <li>By default, Irrigation will automatically irrigate back to DUL. Since we're going to control it via scripts, turn off automatic irrigation.<br />
+    <img alt="" src="../../portals/0/Documentation/TrainingManual/AdvIrrigation/2.png" /></li>
+    <li>Run the simulation. </li>
+</ol>
+<h2>Using Irrigation Scripts</h2>
+<ol>
+    <li>A number of pre defined management scripts are available to cover a range of irrigation scenarios. Let's look at the effect irrigation has on soil water content. Click the Checkpoint button to save the current state of the simulation.<br />
+    <img alt="" src="../../portals/0/Documentation/TrainingManual/AdvIrrigation/3.png" /></li>
+    <li>Drag an 'Irrigate on date' script from the Management toolbox into the Manager folder. You'll find it under Manager.NET (common tasks).</li>
+    <li>Enter the following dates: 01-mar 01-aug 01-nov</li>
+    <li>Change 'Amount of irrigation to apply' to 100. </li>
+    <li>Run the simulation.</li>
+    <li>Create a graph of Date vs esw. Note how the soil water content jumps as irrigation is applied.</li>
+</ol>
+<img alt="" width="772" height="501" src="../../portals/0/Documentation/TrainingManual/AdvIrrigation/4.png" />
+<p>Application of irrigation is not listed in the summary file. To check that irrigation is being applied correctly, add the 'irrigation' variable to your outputfile.</p>
+<p>As has been mentioned, a number of scripts to assist with applying irrigation have been provided as part of APSIM. While this covers many common scenarios, there will invaribly be times when you want to apply irrigation in a manner that the scripts do not provide for. In these cases you can use the provided scripts as a base and extend them to cover your own situation. Try extending the 'Irrigate on event' rule to irrigate 5 days after the event occurs.&nbsp;<strong> You will need experience in C# programming to do this.</strong></p>
+</div>
+
+</div><!-- End_Module_691 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/TrainingManualsandResources/APSIMGeneralTrainingManual/Irrigation.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:15 GMT -->
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SurfaceOM.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:18 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > SurfaceOM
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SurfaceOM.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="SurfaceOM.html" class="SkinObject">SurfaceOM</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>SurfaceOM</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-536"><a name="536"></a>
+<div class="Invisible"><div id="dnn_ctr536_ContentPane"><!-- Start_Module_536 --><div id="dnn_ctr536_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr536_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;"><strong>Description</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The processes included in the SurfaceOM module are depicted in Figure 1.<br />
+<br />
+<br />
+Briefly, the above ground material can be burnt (or removed from the system in some other way, e.g. baling), incorporated into the soil during tillage operations, or decomposed.<br />
+<br />
+<br />
+Above ground residues are considered as consisting of a mixture of one or more different materials (or component parts), each of which is defined in terms of:<br />
+<br />
+</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">Mass (kg/ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">Overall C:N ratio ()</li>
+    <li style="margin: 0cm 0cm 10pt;">Overall C:P ratio ()</li>
+    <li style="margin: 0cm 0cm 10pt;">Standing Fraction (0-1)</li>
+    <li style="margin: 0cm 0cm 10pt;">Type (eg wheat, lucerne, eucalyptus leaves etc) &ndash; from which SURFACEOM will determine the following information:
+    <ul style="list-style-type: circle;">
+        <li style="margin: 0cm 0cm 10pt;">Overall Carbon fraction (0-1)</li>
+        <li style="margin: 0cm 0cm 10pt;">Specific Area (ha/kg)</li>
+        <li style="margin: 0cm 0cm 10pt;">Potential Decomposition Rate (/day)</li>
+        <li style="margin: 0cm 0cm 10pt;">Mineral Composition (nh4, no3,and po4 (in ppm))</li>
+        <li style="margin: 0cm 0cm 10pt;">C,N,P fractions in each of the fresh organic matter (FOM) pools (i.e. carbohydrate, cellulose, lignin)</li>
+    </ul>
+    </li>
+</ul>
+<p style="margin: 0cm 0cm 12pt;">SURFACEOM module outputs can either refer to the entire mixture of surface materials, or to specific components.<br />
+<br />
+When new material is added (e.g. at harvest), the material will either enter an existing surface organic matter component (eg wheat) or may start a new component, if that residue is a new addition to what is already present in the system (for example, wheat trash being added to existing lucerne residues, at harvest).<br />
+<br />
+Each component is kept separate for calculations of C:N ratio, decomposition, and specific area.<br />
+<br />
+An overall effective cover value (0-1) is calculated using all surface organic matter components present, for the purposes of subsequently calculating surface material effect on soil evaporation and runoff. <br />
+<br />
+If a particular surface organic matter type has soluble inorganic N components (NO3-N and NH4-N), these may be transferred to the respective soil pools by leaching due to rainfall or irrigation.<br />
+<br />
+The cumulative amount of rain and irrigation to transfer all of the soluble components is specified as an input; the amount leached is proportional to cumulative rain.<br />
+<br />
+It is possible to specify that a certain proportion of any particular surface organic matter is 'standing', that is, inert from the processes of decomposition.<br />
+The default value for this proportion is zero, in other words, all the material is decomposable. <br />
+See section below on 'Standing/Lying Components'<br />
+<br />
+<br />
+Tillage results in a transfer of some surface OM into the soil FOM pool.<br />
+With tillage, surfaceOM N and C is incorporated into soil layers to the nominated tillage depth, and added to the respective soil mineral N and the fresh organic matter pools (FOM). <br />
+Incorporated surfaceOM C and N is partitioned into the rapid, medium and slowly decomposing FOM pools according to nominated fractions.<br />
+This fractionation is dependant upon the type of OM and so differences between crop residues and animal manures, for example, can be specified.<br />
+<br />
+<br />
+Decomposition results in loss of some carbon as CO<sub>2</sub> and transfer of carbon and nitrogen to the soil.<br />
+Decomposition of residues with a high C:N ratio creates an immobilisation demand, which is satisfied from mineral-N in the uppermost soil layers;<br />
+in extreme situations, inadequate mineral-N in soil restricts decomposition of residues.</p>
+<p><em></em></p>
+<p><em><img alt="" src="../../../portals/0/Documentation/Soil/image049.gif" /></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em></em></p>
+<p style="margin: 0cm 0cm 12pt;"><em>Figure 1. Schematic representation of the processes in the SURFACEOM module. (Note that default values of zero are used for mineral N and P components in plant residues)</em><strong><br clear="all" style="page-break-before: always;" />
+</strong>
+</p>
+<br />
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Surface Organic Material Decomposition</strong></p>
+<p>Decomposition of surface OM's is calculated using a simple exponential decay algorithm <br />
+where the fraction of each component decaying on any day (F<sub>decomp</sub>) is calculated as follows:<br />
+<br />
+F<sub>decomp</sub> = Potential Decomposition Rate x <strong>Moisture Factor</strong> x <strong>Temperature Factor</strong> x <strong>C:N ratio Factor</strong> x <strong>Contact Factor</strong><br />
+<br />
+<br />
+From this fraction, potential amounts of carbon and nitrogen to move into the soil are calculated for each component. <br />
+Any module responsible for soil organic matter pools (such as the SOILN module) can use this potential supply of carbon and nitrogen in its calculations.<br />
+The actual value of decomposition (that is a final soil limited value) for each component is passed back to the SURFACEOM module and above-ground component pools are updated using this value of decomposition.<br />
+<br />
+<strong>The moisture factor for decomposition</strong></p>
+<p>The moisture factor affecting decomposition in the SURFACEOM module uses cumulative potential soil evaporation (E<sub>OS</sub>) to capture the effect that dry residues decompose more slowly than wet residues.<br />
+<br />
+It is assumes that residues dry out at a rate proportional to E<sub>os</sub>, and that a critical cumulative evaporation (cum_eos_max) results in residues becoming so dry that decomposition ceases.<br />
+<br />
+<strong>Moisture Factor</strong> = 1.0 - SE<sub>OS</sub>/cum_eos_max<br />
+<br />
+The factor is constrained to values between 0 and 1.<br />
+<br />
+<strong>The temperature factor for decomposition</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The effect of temperature on residue decomposition is described by:<br />
+<br />
+<strong>Temperature Factor</strong> = (average air temperature / opt_temp)<sup>2</sup><br />
+<br />
+<strong>where:</strong> average air temperature = (maxt + mint) / 2 <br />
+<br />
+This factor is then constrained to values between 0 and 1. <br />
+<br />
+The resultant relationship is shown in the following figure for three values of optimum temperature.<br />
+<br />
+(tf = 20 is the default).<br />
+<br />
+If average temperature is less than zero, the temperature factor is zero.</p>
+<p style="margin: 0cm 0cm 10pt; text-align: center;">&nbsp;</p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image050.gif" /></p>
+<p><strong>The C:N ratio factor for decomposition</strong></p>
+<p>&nbsp;</p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image051.gif" /><br />
+<strong>where</strong> </p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">CN = C:N ratio of surface residues</li>
+    <li style="margin: 0cm 0cm 10pt;">CN<sub>opt</sub> = Optimum C:N ratio for decomposition</li>
+    <li style="margin: 0cm 0cm 10pt;">k = coefficient determining slope of curve.</li>
+</ul>
+<p style="margin: 0cm 0cm 12pt;">This factor is calculated for individual residue types rather than for the entire mixture and is constrained to values between 0 and 1.<br />
+<br />
+The standard values used with SURFACEOM are k = 0.277 and CN<sub>opt</sub> = 25.<br />
+<br />
+The resultant curve is as follows:</p>
+<p style="margin: 0cm 0cm 12pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 12pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image052.gif" /></p>
+<p style="margin: 0cm 0cm 10pt; text-align: center;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>The soil contact factor on decomposition</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Where large amounts of surface residues are present, overall rates of decomposition will be lower.<br />
+It is presumed that the material in immediate contact with the soil decomposes more rapidly than that piled on top (a "haystack" effect).<br />
+<br />
+To account for this a <strong>Contact Factor</strong> discounts decomposition according to the amount of residue. <br />
+The relation currently used is based on work by Thorburn et al.(2001) , and involves the concept of a critical mass of surface organic matter at which the "haystack effect" is deemed to become relevant. <br />
+It may be summarized as:<br />
+<br />
+</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">If surfaceom_wt &lt; critical mass then cf = 1.0<br />
+    or</li>
+    <li style="margin: 0cm 0cm 10pt;">If surfaceom_wt &gt; critical mass then cf = critical mass/surfaceom_wt</li>
+</ul>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image053.gif" /></p>
+<p >
+Not all surface residues contribute to this "haystack effect".<br />
+Standing residues are excluded, and some residues on the soil surface can be specified to only contribute partially to the effect. <br />
+For example, course woody debris would not contribute but fine leaf litter would.</p>
+<p><a href="../../../index-2.html"></a><strong>Tillage of above-ground residues</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Residues are incorporated into the soil profile using a tillage command.<br />
+For example, the following manager command will incorporate 50% of residues into the top 100mm of soil. <br />
+(Note: the following information needs to be specified on a single line in APSIM manager logic)</p>
+<p>surfaceom tillage type = ''user_defined'', f_incorp = 0.5 (0-1), tillage_depth = 100. (mm)</p>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">Alternatively, the user can specify tillage operations in terms of an implement, with the corresponding values of f_incorp and tillage_depth being defined in the SURFACEOM module's constants file. <br />
+Some examples are:</p>
+<p>surfaceom tillage type = disc ()</p>
+<p style="margin: 0cm 0cm 12pt;">or</p>
+<p>surfaceom tillage type = burn ()</p>
+<p style="margin: 0cm 0cm 12pt;">In the "burn" example, the tillage type is specified to incorporate to a zero depth, and the fraction of organic matter specified to be incorporated will be lost from the system.<br />
+<br />
+Each time a "tillage" is specified, all surface organic materials are effected.<br />
+<br />
+If the user is wanting to simulate a situation where only one of the surface materials is incorporated (eg. Digging manure into row spaces between existing crop stubbles) leaving the remainder intact, there is a specific command available called "tillage_single". <br />
+The syntax is as follows:</p>
+<p>surfaceom tillage_single name = manure , type = ''disc''()</p>
+<p>The "name"refers to the specific name in the system of the surfaceom to be tilled.<br />
+Subsequent arguments are as for the standard "tillage" command (see above).<br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SurfaceOM Cover</strong></p>
+<p>SurfaceOM cover is calculated by combining the individual masses of surface OM types and their specific areas (i.e. an area of cover per unit mass)<br />
+Currently, both "standing" and "lying" fractions are considered to contribute to cover. <br />
+<br />
+However, increasing amounts of surface OM have diminishing effects due to the additional residue overlaying other residues rather than covering bare soil. <br />
+This can be described as:<br />
+<br />
+dC/dS = 1 - C (1)<br />
+<br />
+<strong>where</strong> <br />
+C is the effective fractional residue cover, and<br />
+S is the total surface area of residues per unit area<br />
+<br />
+and hence<br />
+<br />
+C = 1 - e<sup>S</sup> (2)<br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SurfaceOM Input Parameters</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>name</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Individual residue name</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>type</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Specific residue type (referenced to .ini file)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mass</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Initial amount of surface OM</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>cnr</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Initial C:N ratio of surface OM</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>cpr (optional)*</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>-</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Initial C:P ratio of surface OM</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>standing_fraction (optional)*</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(0-1)</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Standing or inert component of surface material</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;">* - if optional parameters are not supplied then defaults from constants file are used.<br />
+<br />
+All SurfaceOM module input parameters are arrays, hence several surface OM types can be initially specified as existing in the simulation. <br />
+For example:</p>
+<p>[all.surfaceom.parameters]</p>
+<p>name = wheat_old wheat_new lucerne&nbsp; ! name of surface OM material</p>
+<p>type = wheat&nbsp;&nbsp;&nbsp;&nbsp; wheat&nbsp;&nbsp;&nbsp;&nbsp; lucerne&nbsp; ! type of surface OM material</p>
+<p>mass = 350.0&nbsp;&nbsp;&nbsp;&nbsp; 2000.0&nbsp;&nbsp;&nbsp; 400.0&nbsp;&nbsp;&nbsp; ! mass of surface OM (kg/ha)</p>
+<p>cnr =&nbsp; 100.0&nbsp;&nbsp;&nbsp;&nbsp; 75.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 35.0 ()&nbsp; ! C:N ratio of surface OM</p>
+<p>If desired, only a single surface OM may be specified (in similar fashion to the old APSIM RESIDUE2 module), or up to a maximum of 100 materials.<br />
+<br />
+The "name" of the surfaceom is a unique identifier of that surfaceom pool.<br />
+The "type" is the specific type of material, used to reference further information for that type. <br />
+<br />
+In other words, there can be several surfaceom's of the same "type" in the system, but only one instance of each "name" is allowed. <br />
+See the above example, where residues from an old wheat crop are present together with new residues from a more recent wheat crop. <br />
+They are both of the same "type", but are considered as separate pools, each with an individual "name", <em>wheat_old</em> and <em>wheat_new</em>.<br />
+<br />
+<br />
+When a crop discards leaves/stems etc, they are added to the SURFACEOM module in a pool with the "name" and "type" equal to the crop name, i.e. wheat, chickpea.<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SurfaceOM Standing/Lying Components</strong></p>
+<p style="margin: 0cm 0cm 12pt;">For individual surface materials, it is possible to specify how much of that material is "standing" using an optional input parameter called "standing_fraction".<br />
+<br />
+If it is not supplied, the default value of 0.0 is applied. <br />
+<br />
+The standing fraction is considered to be the inert component of the material, i.e. not subject to daily decomposition. <br />
+<br />
+It is however, subject to incorporation during tillage events. <br />
+<br />
+Currently there is no algorithm describing the movement of material from the "standing" pool to the "lying" (decomposable) pool, however in future it is planned to convert standing material to lying material on a daily basis as a function of such parameters as time, rainfall, stocking rates, field operations. etc.<br />
+<br />
+Information on the "standing" component can be supplied to the SurfaceOM module as follows:</p>
+<p>[all.surfaceom.parameters]</p>
+<p>name = wheat_old wheat_new ! name of surface OM material</p>
+<p>type = wheat&nbsp;&nbsp;&nbsp;&nbsp; wheat&nbsp;&nbsp;&nbsp;&nbsp; ! type of surface OM </p>
+<p>mass = 350.0&nbsp;&nbsp;&nbsp;&nbsp; 2000.0&nbsp;&nbsp;&nbsp; ! mass of surface OM (kg/ha)</p>
+<p>cnr&nbsp; = 100.0&nbsp;&nbsp;&nbsp;&nbsp; 75.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! C:N ratio of surface OM</p>
+<p>standing_fraction = 0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! standing (or inert) fraction </p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SurfaceOM Phosphorus</strong></p>
+<p style="margin: 0cm 0cm 12pt;">It is possible to trace the addition and decomposition of phosphorus through surface residues in conjunction with the APSIM SoilP module.<br />
+<br />
+The user is required to provide an extra parameter to state the initial C:P ratio for surface residues.</p>
+<p>[all.surfaceom.parameters]</p>
+<p>name = maize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! name of surface OM material</p>
+<p>type = maize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! type of surface OM material</p>
+<p>mass = 2000 (kg/ha)&nbsp;&nbsp; ! mass of surface OM material</p>
+<p>cnr&nbsp; = 75.0 ()&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;! C:N ratio surface OM material</p>
+<p>cpr&nbsp; = 250.0 ()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! C:P ratio surface OM material</p>
+<p>The addition of this extra parameter will result in the SurfaceOM module becoming aware of the need for maintaining a phosphorus balance, and daily interactions with the SoilP module will occur.<br />
+<br />
+(Note, if the "cpr" parameter is provided, the SoilP module must be included in the simulation). <br />
+<br />
+In the above example, 2000 kg/ha of maize residue is added with a C:P ratio of 250.<br />
+This will result in 2000kg x 0.4 (kg C/kg biomass)/250 (kg C/kg P) = 3.2 kg P/ha in surface OM.<br />
+<br />
+<strong>Resetting SurfaceOM</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The reset action can be invoked to reset the module to the state specified within the module's input data, which includes the surfaceom weight, nitrogen and phosphorus contents, and cover. <br />
+<br />
+This is identical to the initialise action used by the simulation engine at the start of the simulation except that a description of the reinitialised state is not printed in the simulation summary file.<br />
+<br />
+<em>APSIM Manager Example:</em></p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! reinitialise residues at the beginning of each sowing window</p>
+<p>&nbsp;</p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp; surfaceom reset</p>
+<p>endif</p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Summary Report</strong></p>
+<p style="margin: 0cm 0cm 12pt;">At initialisation, at series of tables and useful information is printed to the simulation summary file for perusal by the user.<br />
+<br />
+These tables can also be printed to the summary file at any instance during the simulation as a detailed record of the system state at a particular time.<br />
+<br />
+For the surfaceom module, this output consists of surfaceom names, types, weights, organic carbon, nitrogen, and phosphorus, mineral components, and standing fraction.<br />
+<br />
+<em>APSIM Manager Example:</em></p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! Print out a summary of module state to the summary file</p>
+<p>&nbsp;</p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom sum_report</p>
+<p>endif</p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Addition of Surface Organic Materials</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Organic materials can be added to the soil surface using the add_surfaceom action. <br />
+<br />
+<em>APSIM Manager Example:</em><br />
+<br />
+<em>NOTE: actions must be specified as a single line in the manager file rather than as shown below.</em></p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name = wheat, type = wheat, mass = 1000. (kg/ha), n = 5 (kg/ha)</p>
+<p>endif</p>
+<p style="margin: 0cm 0cm 12pt;">or<br />
+<br />
+to specify nitrogen content using a C:N ratio </p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name = wheat, type = wheat, mass = 1000. (kg/ha), cnr = 80 ()</p>
+<p>endif</p>
+<p  style="margin: 0cm 0cm 12pt;">
+If the simulation is to contain a phosphorus balance then the phosphorus content of the added residue must also be added.<br />
+For the examples above the user would add the extra information as follows:</p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name = wheat,type = wheat,mass = 1000. (kg/ha),n = 5 (kg/ha),p = 2 (kg/ha)</p>
+<p>endif</p>
+<p style="margin: 0cm 0cm 12pt;">or<br />
+<br />
+to specify phosphorus content using a C:P ratio </p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name = wheat,type = wheat,mass = 1000. (kg/ha),n = 5 (kg/ha),cpr = 200 (kg/ha)</p>
+<p>endif</p>
+<p  style="margin: 0cm 0cm 12pt;">
+An example of how a source of manure (named FYM which will have its C content specified in the surfaceOM.ini file)<br />
+would be applied at 10 t ha<sup>-1</sup> and incorporated using the C:N and C:P ratios to specify the N and P contents is:</p>
+<p>If day = 100 then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom add_surfaceom name = fym1,type = fym,mass = 10000. (kg/ha),cnr = 15 (),cpr = 30 ()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; surfaceom tillage_single name = fym1, type = hoe ()</p>
+<p>endif</p>
+<p></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p>Note that the "tillage_single" action will only incorporate the surface OM specified by "name" as fym1.<br />
+<br />
+Guidelines on characterization of manures are provided in Appendix 1.<br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Use of variables in user-defined manager commands</strong></p>
+<p style="margin: 0cm 0cm 12pt;"><em>APSIM Manager Example:</em></p>
+<p>if surfaceom.surfaceom_wt &gt; 4.0 then </p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; remove_amount = surfaceom.surfaceom_wt - 4.0</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; remove_fraction = remove_amount/surfaceom.surfaceom_wt</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; surfaceom tillage type=user_defined, f_incorp = remove_fraction , tillage_depth=0.0 </p>
+<p>&nbsp;</p>
+<p>endif</p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SurfaceOM module outputs</strong></p>
+<p style="margin: 0cm 0cm 12pt;"><strong>TOTAL Surface OM</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_wt </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of all surface organic materials</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_c</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of organic carbon </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_n</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of organic nitrogen </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_p</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of organic nitrogen </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_no3</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of nitrate </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_nh4</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of ammonium </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_labile_p</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Total mass of labile phosphorus </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_cover</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Fraction of ground covered by all surface OM's</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>tf</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Temperature factor for decomposition</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>wf</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Water factor for decomposition</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>cf</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Contact factor for decomposition</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p  style="margin: 0cm 0cm 12pt;">
+<br />
+<br />
+<br />
+<strong>INDIVIDUAL Surface Om's</strong> </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_wt_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of the SurfaceOM named "<em>xxxx</em>" *</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_c_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic carbon in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_n_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic nitrogen in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_p_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic nitrogen in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_no3_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of nitrate in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_nh4_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of ammonium in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_labile_p_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of labile phosphorus in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_c1_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic carbon in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_c2_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic carbon in "<em>xxxx</em>" in fpool2</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_c3_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic carbon in "<em>xxxx</em>" in fpool3</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_n1_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic nitrogen in "<em>xxxx</em>" in fpool1</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_n2_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic nitrogen in "<em>xxxx</em>" in fpool2</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_n3_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic nitrogen in "<em>xxxx</em>" in fpool3</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_p1_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic phosphorus in "<em>xxxx</em>" in fpool1</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_p2_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic phosphorus in "<em>xxxx</em>" in fpool2</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_p3_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha&lt;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Mass of organic phosphorus in "<em>xxxx</em>" in fpool3</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>pot_c_decomp_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Potential organic C decomposition in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>pot_n_decomp_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Potential organic N decomposition in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>pot_p_decomp_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Potential organic P decomposition in "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>standing_fraction_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Fraction of "<em>xxxx</em>" which is inert, ie not in contact with the ground</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>surfaceom_cover_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Fraction of ground covered by "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>cnrf_<em>xxxx</em></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0-1</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>C:Nratio factor for decomposition for "<em>xxxx</em>" </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p >
+<br />
+* - <em>"xxxx"</em> is the "name" of an individual surface organic material, <br />
+for example "wheat" , "lucerne", "ox_manure" etc.<br />
+<br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>References</strong></p>
+<p>Probert M.E., Dimes J.P., Keating B.A., Dalal R.C., Strong W.M. <em>APSIM's water and nitrogen modules and simulation of the dynamics of water and nitrogen in fallow systems,</em> Agric. Syst. 56 (1998), pp 1-28.<br />
+<br />
+Thorburn P.J., Probert M.E., Robertson F.A. <em>Modelling decomposition of sugar cane surface residues with APSIM-Residue,</em> Field Crops Research 70 (2001), pp 223-232.<br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>APPENDIX</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Guidelines for characterizing manure</strong></p>
+<p  style="margin: 0cm 0cm 12pt;">
+In APSIM the organic forms of C, N and P in OM additions are distributed between three pools.<br />
+Upon incorporation these pools are added to the corresponding FPOOLs (i.e. carbohydrate, cellulose, lignin) that comprise FOM (fresh organic matter) in the SoilN module. <br />
+<br />
+To date all efforts to simulate the effects of manure have been for situations where the manure has been fully incorporated soon after application.<br />
+<br />
+The minimum data required to specify a manure source are the same as those required for any other OM source:<br />
+a name (to specify a particular batch of manure), <br />
+a type (to distinguish the type of manure), its composition (C, N and P) and <br />
+the allocation of C, N and P to the three pools.<br />
+<br />
+The fraction of C in the manure and the allocation of C, N and P between the pools is stipulated for the particular manure type in the SurfaceOM.ini file <br />
+(as in the example below) <br />
+but the contents of N and P are input as part of the manager command when manure is added to the system (either as amounts (kg/ha) or as C:N and C:P ratios) <br />
+as shown in the previous sections of this document.<br />
+<br />
+</p>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p>[standard.surfaceom.fym]</p>
+<p>fom_type = fym</p>
+<p>fraction_C = 0.30</p>
+<p>! The fraction of carbon in HQM (0-1)</p>
+<p>pot_decomp_rate = 0.01 ! Decomposition rate (day<sup>-1</sup>) for manure on soil surface</p>
+<p>fr_c = 0.1 0.5 0.4! The fractional allocation of carbon to each of the three pools</p>
+<p>&nbsp;</p>
+<p>fr_n = 0.1 0.5 0.4 ! The fractional allocation of nitrogen to each of the three pools</p>
+<p>fr_p = 0.1 0.5 0.4 ! The fractional allocation of phosphorus to each of the three pools</p>
+<p>po4ppm = 10.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! labile P concentration (ppm)</p>
+<p>nh4ppm = 100.0&nbsp;&nbsp;&nbsp;&nbsp; ! ammonium-N concentration (ppm)</p>
+<p>no3ppm = 10.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! nitrate-N concentration (ppm)</p>
+<p>specific_area = 0.0001&nbsp;&nbsp; ! specific area (ha/kg)</p>
+<p>cf_contrib =&nbsp; 1</p>
+<p>In this example, <br />
+the allocation of C, N and P to the three pools is identical <br />
+and so the C:N and C:P ratios of all three pools will be equal to those based on the total C, N and P concentrations.</p>
+<p><a href="../../../index-2.html"></a><strong>Modelling short-term dynamics</strong></p>
+<p  style="margin: 0cm 0cm 12pt;">
+Using data from laboratory incubation studies, it has been shown that the assumption of the same allocation of C and N across all three pools is not consistent with the observed pattern of mineralization for a range of manures (Probert et al. 2005).<br />
+<br />
+The initial period of immobilization of N (in the first few weeks) and the period before the system showed net mineralization could be simulated only if the FPOOLs had different C:N ratios.<br />
+<br />
+Probert et al. (2005) used information from proximate analysis of the manures to distribute C and N between the pools. <br />
+They identified FPOOL1 with the soluble C and N components, FPOOL3 with the lignin carbon (ADL), and FPOOL3 by difference.<br />
+<br />
+An example: </p>
+<p>fr_c = 0.10 0.70 0.20&nbsp; ! The fractional allocation of carbon to each of the three pools</p>
+<p>&nbsp;</p>
+<p>fr_n = 0.04 0.86 0.10&nbsp; ! The fractional allocation of nitrogen to each of the three pools</p>
+<p style="margin: 0cm 0cm 10pt;">In this example there is relatively less N than C in pool 1 so that this pool will have a wider C:N ratio than the whole manure.<br />
+Because pool 1 is the fraction that decomposes fastest, there will be greater initial immobilization than if C:N ratio was the same in all three pools. <br />
+<br />
+<strong>Modelling long-term multi-season dynamics</strong></p>
+<p  style="margin: 0cm 0cm 12pt;">
+To date, modelling exercises have not been done to investigate whether distribution of C, N and P between the pools affects the effectiveness of manures as sources of nutrients for crops in the longer&ndash;term.<br />
+Experimental data to explore such effects are also lacking.<br />
+<br />
+<br />
+<br />
+Simulation of short-term effects suggest that the consequence of different allocation of C and N between the pools diminishes over time <br />
+so that the longer-term effects can be expected to be dependent more on the overall C:N ratio than the C:N ratios of the different pools.<br />
+<br />
+<br />
+<br />
+In modelling field studies of the response by crops to inputs of manure (Dimes and Revanuru 2004),<br />
+the quality aspect has been limited to varying the distribution of OM between the three pools,<br />
+with the C:N being the same in each pool.<br />
+<br />
+<br />
+Lower quality manures are assumed to have a greater proportion of C in FPOOL3 thereby releasing its nutrients more slowly.<br />
+The values used to simulate the high (HQM) and low (LQM) quality manures were as shown in the Table. <br />
+<br />
+<br />
+<br />
+<strong>Table.</strong> Values used by Dimes and Revanuru (2004) to simulate high and low quality manures.<br />
+<br />
+<br />
+</p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Quality</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>fract_C</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>cnr</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Allocation to pools</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>HQM</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.16</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>22</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fr_c = 0.0 0.20 </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fr_n = 0.0 0.20</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>LQM</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.25</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>35</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fr_c = 0.0 0.01</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fr_n = 0.0 0.01</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">HQM - High Quality Manure</li>
+    <li style="margin: 0cm 0cm 10pt;">LQM - Low Quality Manure</li>
+</ul>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>References</strong></p>
+<p  style="margin: 0cm 0cm 10pt;">
+Dimes, J.P. and Revanuru, S. (2004). <br />
+Evaluation of APSIM to simulate plant growth response to applications of organic and inorganic N and P on an Alfisol and Vertisol in India.<br />
+In "Modelling Nutrient Management in Tropical Cropping Systems" (eds R.J. Delve and M.E. Probert) pp 118-125. ACIAR Proceedings No. 114. (ACIAR: Canberra).<br />
+<br />
+Probert, M.E., Delve, R.J., Kimani, S.K. and Dimes, J.P. (2005).<br />
+Modelling nitrogen mineralization from manures: representing quality aspects by varying C:N ratios of sub-pools. <br />
+<em>Soil Biology &amp; Biochemistry <strong>37</strong>, 279-287</em>.</p>
+<br clear="all" style="page-break-before: always;" />
+</div>
+
+</div><!-- End_Module_536 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SurfaceOM.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:19 GMT -->
+</html>

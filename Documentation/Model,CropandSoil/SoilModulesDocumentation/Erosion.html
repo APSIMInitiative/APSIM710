@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Erosion.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:13 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > Erosion
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Erosion.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="Erosion.html" class="SkinObject">Erosion</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Erosion</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-526"><a name="526"></a>
+<div class="Invisible"><div id="dnn_ctr526_ContentPane"><!-- Start_Module_526 --><div id="dnn_ctr526_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr526_HtmlModule_lblContent" class="Normal">
+	<p>Simulates daily soil erosion, and (optionally) the effect of soil loss on the soil profile. Code and this document are derived from PERFECT. </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Methods: </strong></p>
+<p>The calculation of daily soil loss is performed by one of <strong>two</strong> submodels:<br />
+<br />
+<strong>Sub Model 1: Freebairn</strong></p>
+<p>A modified MUSLE (Freebairn and Wockner) cover concentration function determined from QDPI field data to predict soil movement from the inter-contour bank area for clay soils in situations where peak discharge cannot be adequately predicted.<br />
+<br />
+It accounts for variation in soil loss with cover and runoff volume (the main factors that can be managed), and uses the MUSLE slope-length, erodibility and practise factors to provide generality. <br />
+<br />
+<br />
+The model has the following form:<br />
+<br />
+{Equation 1} </p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image001.gif" /><br />
+<br />
+Where;</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">E: Event soil loss (t/ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">COV: Cover (%)</li>
+    <li style="margin: 0cm 0cm 10pt;">Q: Event runoff (mm)</li>
+    <li style="margin: 0cm 0cm 10pt;">K: Soil erodibility factor (t/ha/EI30 )</li>
+    <li style="margin: 0cm 0cm 10pt;">LS: Slope length and steepness factor</li>
+    <li style="margin: 0cm 0cm 10pt;">P: Supporting practice factor </li>
+</ul>
+<p>The LS factor from Wishmeier and Smith (1978) is related to catchment slope and length by: <br />
+<br />
+{Equation 2} </p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"></p>
+<img alt="" src="../../../portals/0/Documentation/Soil/image002.gif" /><br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">Where;</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">LS: Slope length and steepness factor</li>
+    <li style="margin: 0cm 0cm 10pt;">S: Sine of slope angle</li>
+    <li style="margin: 0cm 0cm 10pt;">L: Length of catchment (m)</li>
+</ul>
+<p style="margin: 0cm 0cm 10pt;"><strong>Dimensional Correctness of Modified MUSLE</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Note that the equation for E is not dimensionally correct (the units of E (t/ha) do not match those on the right hand side of the equation). &nbsp;To be dimensionally correct E should be in units of (mm t)/(ha EI30) instead of t/ha. The existance of the EI30 unit can be traced back to the original USLE(Wischmeier and Smith, 1978) equation on which this equation is based. &nbsp;In the USLE EI30 unit is cancelled out because both R (Soil Erosivity) and K (Soil Erodibility) have EI30 as units. The unit remains in the new equation because E (Erosion) is calculated using Q (Runoff) not R (Soil Erosivity). The new equation still uses K however, which means the EI30 unit from the K is no longer cancelled out. For consistency, K is kept in the same units in the new equation. so that users who have measured the values of K for use in USLE can use the same measured values (in the same units) in the new equation. However, keeping these same units for consistency results in the new equation being dimensionally incorrect. &nbsp;The other extra dimension, the mm unit, is also gained as a consequence of using Q (Runoff) instead of R.<br />
+<br />
+<br />
+To resolve these dimensional issues we firstly define K as a being unit less however with the same value as for K used in USLE.</p>
+<p style="margin: 0cm 0cm 12pt;">From first principles the equation above starts out as, </p>
+<p>&nbsp;</p>
+<p>In USLE equation it is R x K which gives us Erosion in t/ha.</p>
+<p>Therefore we need to replace R such that (R_runoff x Q) x K still equals t/ha of erosion.</p>
+<p>K is now unitless however,</p>
+<p>Therefore R_runoff must be in t/(ha x mm) which means R_runoff x Q(mm) x K = t/ha</p>
+<p>R_runoff is therefore the tons of soil lost per ha per millimeter of runoff.</p>
+<p>&nbsp;</p>
+<p>E = R_runoff x Q x K x LS x P</p>
+<p>OR</p>
+<p>E = (sediment erosion in t/(ha x mm)) x Q x K x LS x P</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>From R_runoff, we can remove a unit conversion for (grams of water as runoff) to (mm of water as runoff) </p>
+<p>and reduce R_runoff to a fraction of (grams of soil lost(sediment)) per (gram of water as runoff).</p>
+<p>&nbsp;</p>
+<p>sediment concentration = 1 gram of sediment / 1 gram of water </p>
+<p>&nbsp;</p>
+<p>1 gram of sediment = (1/10^6) tons of sediment</p>
+<p>&nbsp;</p>
+<p>1000Kg of Water = 1m^3</p>
+<p>10^6 grams of water = 1000mm x 1m^2</p>
+<p>1gram of water = (1000 x (mm x m^2))/10^6</p>
+<p>&nbsp;</p>
+<p>1 ha = 100m x 100m = 10^4m^2</p>
+<p>1m^2 = 1/(10^4)</p>
+<p>&nbsp;</p>
+<p>1 gram of water = (1000 x (mm x ha)) / (10^6 x 10^4)</p>
+<p>1 gram of water = (1/10^7) x (mm x ha)</p>
+<p>&nbsp;</p>
+<p>frac_to_(t/ha mm) =&nbsp; 1 gram of sediment/ 1 gram of water = (tonnes/(10^6)) x (10^7 / (mm x ha) = 10 t/(mm x ha)</p>
+<p>&nbsp;</p>
+<p>We are now left with</p>
+<p>&nbsp;</p>
+<p>E = sediment concentration function x (10 t/(ha mm)) x Q(mm) x K x LS x P </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The remaining sediment concentration function however is going to be a function of the cover fraction. </p>
+<p>Rather than using cover fraction in the function it would be nicer to use the cover percentage and </p>
+<p>just move this conversion out of the function so that the function now has cover as a percentage.</p>
+<p>&nbsp;</p>
+<p>E =&nbsp; [sediment concentration function x percent_to_frac x frac_to_(t/(ha mm))] x Q(mm) x K x LS x P </p>
+<p>&nbsp;</p>
+<p>E&nbsp; = [sediment concentration function x (1/100) x (10 t/(ha mm))] x Q(mm) x K x LS x P </p>
+<p>&nbsp;</p>
+<p>E&nbsp; = [sediment concentration function x (1/10) t/ha/mm] x Q(mm) x K x LS x P </p>
+<p>&nbsp;</p>
+<p>This matches the simpler form at the start of this section {Equation 1} <br />
+where, </p>
+<p>&nbsp;sediment concentration function = 16.52 - 0.46 * cover + 0.0031 cover^2&nbsp; </p>
+<p>and (1/10) actually has its units removed, </p>
+<p>(1/10) t/(ha mm) = (1/10)</p>
+<p>We now see Equation 1 in its full, dimensionally correct form: </p>
+<p>E (t/ha) = 16.52 - 0.46 * cover + 0.0031 cover^2 x (1/10)(t/(ha mm)) x LS x K x P x Q(mm) </p>
+<p>&nbsp;</p>
+<p>(when cover is less than 50%)</p>
+<p>&nbsp;</p>
+<p>AND</p>
+<p>&nbsp;</p>
+<p>E (t/ha) = -0.0254 * cover + 2.54 x (1/10)(t/(ha mm)) x LS x K x P x Q(mm) </p>
+<p>&nbsp;</p>
+<p>(when cover is greater than 50%)</p>
+<p style="margin: 0cm 0cm 12pt;">QDPI field data was used to obtain the form and the coefficients for sediment concentration function. This is possible because E, Q, K, LS, P are all known via measurement.<br />
+<br />
+<br />
+As mentioned above, We do not publish the full dimensionally correct form. <br />
+For consistency sake we replace the unitless K with the same dimensions as the USLE definition of K.<br />
+We then ignore the t/(ha mm) units on the (1/10) as well.<br />
+This results in a dimensionally incorrect form of the equation but one that is easier to understand for users of the USLE. <br />
+<br />
+<strong>Right Units for K</strong></p>
+<p style="margin: 0cm 0cm 12pt;">In the section above about dimensional correctness we stated,<br />
+"To resolve these dimensional issues we firstly define K as a being unitless however with the same value as for K used in USLE."<br />
+<br />
+Even though when using the modified MUSLE (Freebairn and Wockner) we don't care about the <strong>units</strong> of K <br />
+(because to keep modified MUSLE (Freebairn and Wockner) dimensionally correct we drop off the units) <br />
+the <strong>value</strong> of K still needs to be the <strong>value in the correct units</strong>. <br />
+<br />
+As a result of the history of the USLE there are 3 possible units for K.<br />
+Originally the USLE equation was in Imperial units. Or rather the units of R and K were in Imperial units. (because all the other variables in USLE are unitless)<br />
+The Equation was later converted to Metric units. Or rather the units for R and K were converted to Metric units. <br />
+Finally the Equation was converted to SI units (which are metric but are in the Official SI metric units). So once again R and K were converted into SI units.<br />
+<br />
+At this point we need to state that the <strong>correct units of K</strong> for the modified MUSLE (Freebairn and Wockner) is K in <strong>Metric</strong> units.<br />
+<br />
+So if you have K in either Imperial units or SI units,<strong>YOU MUST CONVERT IT TO METRIC BEFORE USING IT</strong>. <br />
+<strong>Note:</strong> There is no R in the modified MUSLE (Freebairn and Wockner) so we don't need to worry about converting the units of R, like we would if we were using the USLE.<br />
+<br />
+<br />
+<strong>To convert K(SI) to K(Metric)</strong> simply multiply the K(SI) by Gravity (9.81 m/s^2).<br />
+<br />
+The sensible range of values for K(SI)<br />
+is <strong>between 0.001 and 0.09</strong><br />
+<br />
+The sensible range of values for K(Metric) <br />
+is <strong>between 0.01 and 0.88</strong><br />
+<br />
+<br />
+<br />
+</p>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 12pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 12pt;">You can derive the above conversion from SI to Metric as follows,<br />
+<br />
+According to the USLE, <br />
+the units of K (the Erodability of the Soil) are in t/(ha EI30)<br />
+where EI30 is the unit of R (the Erosivity of the Soil).<br />
+The idea of this being that the units of R which are EI30 will be cancelled out by the EI30 in K and just leave the t/ha for the result of the equation (because all the other variables in USLE are unitless).<br />
+<br />
+Therefore if we wish to convert K(SI) into K(Metric) <br />
+we first must work out the conversion of units of EI30(SI) to EI30(Metric) (or to state another way, we must first work out the conversion of units of R(SI) to R(Metric))<br />
+because EI30(SI) are part of the units of K(SI). </p>
+<p>Since,</p>
+<p>R(SI) = EI30(SI) = (MJ/ha) x (mm/h)</p>
+<p>R(Metric) = EI30(Metric) = 100m x (t/ha) x (cm/h)</p>
+<p>&nbsp;</p>
+<p>EI30 is a measure of Kinetic Energy of falling rain and Rainfall Intensity. </p>
+<p>Joules is the unit of the Kinetic Energy of the falling rain.</p>
+<p>We divide this Energy over the area it falls which is why we get MJ/ha.</p>
+<p>The mm/h is the Maximum Rainfall intensity falling over 30min period. </p>
+<p>&nbsp;</p>
+<p>Joules = Work = Force x Distance =&nbsp; (Mass x Acceleration) x Distance = Mass x Gravity x Distance = Kg x 9.81 (m/s^2) x m </p>
+<p>&nbsp;</p>
+<p>Starting with R(SI) we want to get to R(Metric)</p>
+<p>R(SI) = EI30(SI) = (MJ/ha) x (mm/h)</p>
+<p>&nbsp;</p>
+<p>Therefore,</p>
+<p>&nbsp;</p>
+<p>using </p>
+<p>Joules = Kg x 9.81 (m/s^2) x m</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>R(SI) = 10^6 x Kg x 9.81 (m/s^2) x m x (1/ha) x (mm/h)</p>
+<p>&nbsp;</p>
+<p>R(SI)/(9.81 m/s^2) = 10^6 x Kg x m x (1/ha) x (mm/h)</p>
+<p>&nbsp;</p>
+<p>= 10^3 x t x m x (1/ha) x (mm/h)</p>
+<p>= 10^2 x m x (t/ha) x (10 x mm/h)</p>
+<p>= 100m x (t/ha) x (cm/h)</p>
+<p>= R(Metric)</p>
+<p>&nbsp;</p>
+<p>hence,</p>
+<p>R(SI)/ (9.81 m/s^2)&nbsp; = R(Metric)</p>
+<p>or </p>
+<p>R(SI)/Gravity = R(Metric)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>or</p>
+<p>EI30(SI)/Gravity = EI30(Metric)</p>
+<p>&nbsp;</p>
+<p style="margin: 0cm 0cm 12pt;"></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 12pt;">Now that we have worked out the conversion of R(SI) to R(Metric) we can now work out the conversion of K(SI) to K(Metric).<br />
+<br />
+</p>
+<p>K(SI) = t/(ha x EI30(SI))</p>
+<p>K(Metric) = t/(ha x EI30(Metric))</p>
+<p>&nbsp;</p>
+<p>using, EI30(Metric) = EI30(SI)/Gravity</p>
+<p>&nbsp;</p>
+<p>K(Metric) = t/(ha (EI30(SI)/Gravity) )</p>
+<p>&nbsp;</p>
+<p>K(Metric) = (t x Gravity)/(ha x EI30(SI))</p>
+<p>&nbsp;</p>
+<p>K(Metric) = Gravity x t/(ha x EI30(SI))</p>
+<p>&nbsp;</p>
+<p>K(Metric) = Gravity x K(SI)</p>
+<p>&nbsp;</p>
+<p>K(Metric) = 9.81 (m/s^2) x K(SI)</p>
+<p>&nbsp;</p>
+<p><strong>Sub Model 2: Rose </strong><br />
+<br />
+A simplified version of the sediment concentration function contained in GUESS (Carroll). <br />
+<br />
+The equation is given as: </p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image003.gif" /></p>
+<p style="margin: 0cm 0cm 12pt;">Where;</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">E: Event soil loss (t/ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">S: Sine of slope angle</li>
+    <li style="margin: 0cm 0cm 10pt;">cover: Fractional surface cover (0-1)</li>
+    <li style="margin: 0cm 0cm 10pt;">Q: Event runoff (mm)</li>
+    <li style="margin: 0cm 0cm 10pt;">Factor approximating efficiency of entrainment </li>
+</ul>
+<p style="margin: 0cm 0cm 12pt;">The cover term <em>cover</em> in the rose equation does not fully account for the effect of cover. <br />
+Therefore, the efficiency of entrainment&nbsp;<img alt="" src="../../../portals/0/Documentation/Soil/image004.gif" /> is further modified by cover by Rose (1985):</p>
+<p style="margin: 0cm 0cm 12pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image005.gif" /><br />
+<br />
+Where;</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image004.gif" />&nbsp;Factor approximating efficiency of entrainment</li>
+    <li style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image006.gif" />&nbsp;Efficiency of entrainment (bare surface)</li>
+    <li style="margin: 0cm 0cm 10pt;">COV Surface cover (%)</li>
+</ul>
+<p style="margin: 0cm 0cm 12pt;">The submodels parameters are (rose_lambda), and the &lsquo;-0.15' exponential term (rose_b2).</p>
+<p style="margin: 0cm 0cm 12pt;">Feedback from erosion on the soil profile<br />
+The module is capable of eroding the soil profile as soil loss occurs (see profile_reduction). <br />
+The module remains ignorant of what other modules may be doing through the profile, all it does is send a delta to whichever module owns dlayer - typically soilwat2. <br />
+It is the responsibility of other modules to ensure they remain consistent with this new profile.<br />
+The calculation of "dlt_depth_mm" describing the change in each profile layer for the given amount of soil loss is given by:<br />
+dlt_depth_mm(i) = (100.0*soil_loss) / (1000.0*bd(i)) Where;</p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">soil_loss Event soil loss (t/ha)</li>
+    <li style="margin: 0cm 0cm 10pt;">bd Bulk density of the respective profile layer (g/cc)<br />
+    <br />
+    The bulk density for each layer is used to maintain mass balance of soil movement up through the (constant) soil layer thicknesses.<br />
+    <br />
+    <br />
+    Erosion continues replacing the lowest profile layer with &ldquo;imaginary&rdquo; material of the same properties until a limit (see bed_depth) is reached. <br />
+    <br />
+    Once the lowest profile layer rests against bedrock, further soil erosion reduces the thickness of this layer until it is a fraction (see profile_layer_merge) of its original thickness. <br />
+    <br />
+    Once this fraction is reached, the layer is merged into the next highest layer. <br />
+    <br />
+    (Currently, many apsim modules cannot sensibly deal with the last scenario.)<br />
+    <br />
+    This process continues until the parameter minimum_depth is reached, at which the simulation stops with a fatal error.</li>
+</ul>
+<p style="margin: 0cm 0cm 10pt;"><strong>Splitting soil loss into suspended and bed loads. </strong></p>
+<p>There is provision to split soil loss into two components: suspended and bed loads. This reflects how soil loss is measured. <br />
+Each soil loss submodel is performed twice: once for suspended ediment, and once for heavy particles.<br />
+<br />
+For the modified MUSLE model, the parameter K is replaced by K_bed and K_susp <br />
+( NB. It's important to remove or comment out the original K parameter, otherwise the module assumes you are still trying to use a single soil loss equation)<br />
+<br />
+For the rose model, parameters lambda and b2 are replaced by lambda_bed, lambda_susp, b2_bed and b2_susp. <br />
+Once again, you must remove the original definitions of lambda and b2. Reporting the separate losses is through soil_loss_bed, soil_loss_susp, both in units of t/ha, and sed_conc_bed, sed_conc_susp (g/l).<br />
+soil_loss returns total soil loss, and sed_conc returns total sediment concentration. <br />
+<br />
+<br />
+<strong>Communicating with water balance modules</strong></p>
+<p><strong></strong></p>
+<p style="margin: 0cm 0cm 12pt;">As the erosion module was derived substantially from PERFECT (ie. a daily timestep), <br />
+it does not use the advanced features of APSIM's apswim and surface modules (eg. hydrographs or peak runoff rate). <br />
+SWIM users should be aware that peak runoff rate is not used in calculation of soil erosion at this time. <br />
+Surface users should be aware that surface roughness factors do not enter erosion or runoff.<br />
+The calculation of cover used in the soil loss equation should be the same cover as used in runoff prediction. <br />
+When soilwat provides water balance, this cover is exported to the system (and thus erosion) as &ldquo;total_cover&rdquo;. However, SWIM does not provide this variable. <br />
+If the surface module is active, it will provide a variable &ldquo;surf_cover&rdquo;, which is the combined crop and residue covers on the soil surface. <br />
+To use this cover as the cover term in the soil loss equation, add the following to the manager's rules:</p>
+<p>[xxx.manager.init]</p>
+<p>&nbsp;</p>
+<p>total_cover = 0.0</p>
+<p>&nbsp;</p>
+<p>[xxx.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>total_cover = surface.surf_cover</p>
+<p style="margin: 0cm 0cm 12pt;">To use erosion with apswim, add the following rules:</p>
+<p>[xxx.manager.init]</p>
+<p>&nbsp;</p>
+<p>total_cover = 0.0</p>
+<p>&nbsp;</p>
+<p>[xxx.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>total_cover = 1.0 &ndash; (1.0 - crop1.cover_tot) * (1.0 &ndash; crop2.cover_tot) * &hellip; * (1.0 - residue2.residue_cover)</p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Procedures: </strong></p>
+<p style="margin: 0cm 0cm 12pt;">The module follows these steps at initialisation:</p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">All variables are set to zero.</li>
+    <li style="margin: 0cm 0cm 10pt;">The parameter file is read, if necessary, ls factor is calculated for the freebairn model.</li>
+    <li style="margin: 0cm 0cm 10pt;">The static parameters are written to the summary file.</li>
+</ol>
+<p style="margin: 0cm 0cm 12pt;">During daily processing, the following procedures occur:</p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">The daily state variables are reset.</li>
+    <li style="margin: 0cm 0cm 10pt;">Today's inputs are requested from the system.</li>
+    <li style="margin: 0cm 0cm 10pt;">Soil loss is calculated as a function of cover and runoff.</li>
+    <li style="margin: 0cm 0cm 10pt;">If there is soil loss, the profile is changed and sent back to its owner.</li>
+    <li style="margin: 0cm 0cm 10pt;">The new depth to bedrock is calculated.</li>
+    <li style="margin: 0cm 0cm 10pt;">Control returns to the system.</li>
+</ol>
+<p style="margin: 0cm 0cm 10pt;"><strong>System interface names</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>model</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Either <strong>'rose' </strong>or <strong>'freebairn' </strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>profile_reduction</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Either 'on' or 'off'</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>profile_layer_merge</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Fraction of original size below which the lowest layer is merged into the layer above </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(0-1)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>minimum_depth</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>If the profile erodes to this depth, the simulation is stopped </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>slope</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Slope of plot </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(%)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>slope_length</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>length of plot </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(m)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>bed_depth</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>depth to bedrock </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>cover_extra (optional)</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>fudge factor added to total_cover </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(-1.0,1.0)</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p><strong>Freebairn specific parameters (model = 'freebairn') </strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>p_factor </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Supporting practise factor </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(unitless)</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<p>Either </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>k_factor </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Soil erodibility factor </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(t/ha/EI 30 )</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>or </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>k_factor_bed </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Soil erodibility factor for bed load </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(t/ha/EI 30 )</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>k_factor_susp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Soil erodibility factor for suspended load </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(t/ha/EI 30 )</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"><strong>Rose specific parameters (model = 'rose') </strong></p>
+<p style="margin: 0cm 0cm 12pt;">Either </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>entrain_eff </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Efficiency of entrainment - bare surface </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>()</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;">or </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td colspan="2" style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="2" style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>entrain_eff _bed </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Efficiency of entrainment - bare surface - bed load </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>()</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>entrain_eff _susp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Efficiency of entrainment - bare surface - suspended load </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>()</p>
+            </td>
+        </tr>
+        <tr height="0">
+            <td style="background-color: transparent; width: 20px; border: medium none #ece9d8;"> </td>
+            <td style="background-color: transparent; width: 112px; border: medium none #ece9d8;"> </td>
+            <td style="background-color: transparent; width: 353px; border: medium none #ece9d8;"> </td>
+            <td style="background-color: transparent; width: 49px; border: medium none #ece9d8;"> </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;">Either </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>eros_rose_b2 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>??</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 12pt;">or </p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>eros_rose_b2_bed </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>??</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>eros_rose_b2_susp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>??</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Inputs from other modules on a daily timestep: </strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>day</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>year</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>runoff </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>daily runoff </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>total_cover </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>combined crop and residue cover </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(0 - 1)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>bd(mxlayr) </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>moist bulk density of soil </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(g/cm^3)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlayer(mxlayr)</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>thickness of soil layer i </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"><strong>Outputs to other modules as requested: </strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil_loss </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays soil loss </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(t/ha)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil_loss_bed </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays soil loss in bedload </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(t/ha)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil_loss_susp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays soil loss in suspension </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(t/ha)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>soil_loss_mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays soil loss from the topmost profile layer </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sed_conc </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays sediment concentration </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(g/l)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sed_conc_bed </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays sediment concentration in bedload </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(g/l)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sed_conc_susp </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays sediment concentration in suspended load </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(g/l)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>bed_depth </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays depth to bedrock </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>erosion_cover </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>todays cover used to drive soil loss equations </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(0 - 1)</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p  style="margin: 0cm 0cm 10pt;">
+<br />
+&nbsp;&nbsp;
+<strong>Resets to other modules: </strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units</strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlt_dlayr() </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>thickness of soil layer i </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>(mm)</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>dlt_dlayr is delta layer depth or change in layer depth.<br />
+<br />
+It allows you to alter the layer depths from their current values by a certain amounts specified in this array variable.<br />
+<br />
+ie. if </p>
+<p>dlayer = 10 20 30 40 50</p>
+<p>and </p>
+<p>dlt_dlayr = 6 -7 -8 9 10</p>
+<p>then dlayer would become,</p>
+<p>dlayer = 16 13 22 49 60</p>
+<p >
+<strong>Typical, sample parameters</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Dataset </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>slope</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Slope length</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>P factor </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>soil erodibility K</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Lambda_bare</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>b2</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>% </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>m</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong></strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>(t/ha/EI30)</strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong></strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong></strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Greenmount</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>6.5</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>60</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>1.0</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.38 (1)*</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.77 (2)*</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>15 (3)*</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Greenwood </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>4.5</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>37</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>1.0</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.38 (1)*</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>0.70 (3)*</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>15 (3)*</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>* See the corresponding examples below.<br />
+<br />
+</p>
+<p><strong>The following are examples of Apsim Erosion parameters in the Published Scientific Literature:</strong><br />
+(1) Freebairn, Silburn &amp; Loch (1989). Aust.J.Soil Res. 27: 199-211 <strong></strong></p>
+<p>[gmtf.erosion.parameters]</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; model = freebairn (1)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; slope = 6.5 (%)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; slope_length = 60.0 (m)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; bed_depth = 1500. (mm)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; profile_reduction = off</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; profile_layer_merge = 0.05 ()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; minimum_depth = 100.0 (mm)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; k_factor = 0.38 ()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; p_factor = 1.0 ()</p>
+<p>(2) Silburn &amp; Loch (1992) 5th Aust. Soil con. Conf. </p>
+<p>[gmtr.erosion.parameters]</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; model = rose (2)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; slope = 6.5 (%)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; slope_length = 60.0 (m)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; bed_depth = 1500. (mm)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; profile_reduction = off</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; profile_layer_merge = 0.05 ()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; minimum_depth = 100.0(mm)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; entrain_eff = 0.77 ()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; eros_rose_b2 = 0.15 ()</p>
+<p>(3) Rose (1985) Adv. in Soil Science Vol 2 </p>
+<p>[gwd.erosion.parameters]</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; model = rose (3)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; slope = 4.5 (%)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; slope_length = 37.0 (m)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; bed_depth = 1500. (mm)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; profile_reduction = off</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; profile_layer_merge = 0.05 ()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; minimum_depth = 100.0(mm)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; entrain_eff = 0.7 ()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; eros_rose_b2 = 0.15 ()</p>
+<p><strong>Bibliography</strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">Carroll, C., Rose, C.W. and Crawford, S.J. (1986). GUESS - Theory Manual. School of Australian Environmental Studies, Griffith University , Queensland ,</li>
+    <li style="margin: 0cm 0cm 10pt;">Freebairn, D.F. and Wockner, G.H. (1986). A study of soil erosion on Vertisols of the Eastern Darling Downs, Australian Journal of Soil Research , 19 , 133-46</li>
+    <li style="margin: 0cm 0cm 10pt;">Littleboy, M., Silburn, D.M., Freebairn, D.M., Woodruff, D.R., and Hammer, G.L. (1989) PERFECT - A computer simulation model of Productivity Erosion Runoff Functions to Evaluate Conservation Techniques. QDPI, Brisbane.</li>
+    <li style="margin: 0cm 0cm 10pt;">Rose, C.W. (1985). Developments in soil erosion and deposition models. Advances in Soil Science , Volume 2 , 1-63.</li>
+    <li style="margin: 0cm 0cm 12pt;">Wischmeier, W.H. and Smith, D.D. (1978). Predicting rainfall erosion losses, a guide to conservation planning. Agricultural Handbook number 537 , USDA, 58pp.</li>
+</ul>
+<p style="margin: 0cm 0cm 10pt;"><strong>Programmers notes</strong></p>
+<p>The calculation of soil loss ends up in two variables, soil_loss_bed and soil_loss_susp. <br />
+<br />
+When the user describes a single soil loss equation, the result is left in soil_loss_bed, with soil_loss_susp left at 0. <br />
+<br />
+All reporting is done as the sum of these two variables.<br />
+<br />
+<strong>Nutrient reduction: </strong></p>
+<p>Nutrient reduction is represented by "moving" the soil layers downwards through the soil profile <br />
+(the same as moving the nutrient pools of the soil layers upwards through the soil). <br />
+<br />
+Layers take on the nutrient characteristics of the layer below in proportion to the depth increment gained from that layer. <br />
+<br />
+If there is no "bedrock", all layers would eventually all end up with the nutrient properties of the subsoil (bottom layer). <br />
+<br />
+If the accumulated depth loss due to erosion exceeds the depth between the bottom of the profile and the depth to bedrock (and profile reduction is on), <br />
+the bottom layer does not contain nutrients from below and its nutrient content will diminish (as nutrients are exported upwards through the soil)<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>The Algorithm for "Top Down" Removal&nbsp;</strong><a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>1. Determine the loss for each layer.</strong></p>
+<p><strong>1.1 For the top layer, this is given by: </strong></p>
+<p>&nbsp; conc_kg_kg = variable(1)/(1000.0*bd(1)*dlayr(1)*10.0)</p>
+<p>&nbsp; loss_kg_ha = soil_loss * 1000.0* enr * conc_kg_kg</p>
+<p>where: conc_kg_kg = kg of nutrient per kg of soil (kg/kg)<br />
+variable = content of particular nutrient (kg/ha),<br />
+bd = bulk density in (g/cm^3)<br />
+dlayr = depth of layer in (mm)<br />
+soil_loss = soil loss (t/ha)<br />
+enr = enrichment ratio.<br />
+"enr" is calculated from </p>
+<p>&nbsp; enr = enr_a_coeff * (1000.0 * soil_loss)**(-1.0 * enr_b_coeff)</p>
+<p>and is bounded to (1.0 &lt; enr &lt; enr_a_coeff): </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; enr = amin1(enr_a_coeff, enr)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; enr = amax1(enr, 1.0)<br />
+<br />
+<strong>1.2 For the remaining layers, the loss from each layer is that which moved into the layer above </strong></p>
+<p>&nbsp;</p>
+<p>&nbsp; layer_loss = variable(i) * layer_divide(dlt_depth_mm(i), dlayr(i))</p>
+<p>where <br />
+i is the index of the layer we are working on, and <br />
+layer_divide(a,b) bounds the result of (a/b) to 0.0 -&gt; 1.0. <br />
+This prevents taking away more than is present in the layer. "dlt_depth_mm(i)" is an array of deltas describing the change in each profile depth for the given amount of soil loss, given by: </p>
+<p>&nbsp; dlt_depth_mm(i) = (100.0*soil_loss) / (1000.0*bd(i))</p>
+<p>The bulk density for each layer is used to maintain mass balance of soil movement up through the (constant) soil layer thicknesses.<br />
+<br />
+<strong>2. The gain to each layer is found in a similar manner, ie, the fraction of the layer below that moves into this layer: </strong></p>
+<p><strong>2.2 </strong></p>
+<p><strong></strong></p>
+<p>&nbsp; layer_gain = variable(i+1) *&nbsp; layer_divide(dlt_depth_mm(i+1), dlayr(i+1))</p>
+<p style="margin: 0cm 0cm 12pt;"><strong>2.3</strong> Obviously, the lowest layer cannot use this formula, as there is no layer beneath, and we have to cater for bedrock. <br />
+<br />
+The procedure is to assume that the lowest layer gains a fraction of itself, so long as it is not resting on bedrock:</p>
+<p>&nbsp; layer_gain = variable(i) * layer_divide(dlt_depth_mm(i), dlayr(i))</p>
+<p>&nbsp;</p>
+<p>&nbsp; ! check we're not going into bedrock</p>
+<p>&nbsp; if (suml(dlayr, mxlayr) + dlt_depth_mm(n_layrs) .gt. bed_depth .and. profile_reduction .eq. on ) then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; layer_gain = 0.0</p>
+<p></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>3. At this point, we find the new value of the variable for this layer in the new profile:</strong></p>
+<p><strong>3.1 </strong></p>
+<p>&nbsp; variable(i) = variable(i) + layer_gain - layer_loss</p>
+<p style="margin: 0cm 0cm 12pt;">Two more steps follow,:-<br />
+<br />
+<strong>3.2</strong> If profile reduction is on, check to see if the bottom layer is too thin, and merge it into the next layer up if so.<br />
+<br />
+<strong>3.3</strong> Perform a mass balance check:</p>
+<p>\Sum{yesterdays variable} + loss from layer 1 - gain to lowest layer&nbsp; = \Sum{Todays variable}</p>
+<p><strong>3.4</strong> This procedure is repeated for all the nitrogen / carbon variables:<br />
+<br />
+snh4(mxlayr)<br />
+inert_c(mxlayr)<br />
+biom_c(mxlayr)<br />
+biom_n(mxlayr)<br />
+hum_c(mxlayr)<br />
+hum_n(mxlayr)<br />
+fom_n(mxlayr)<br />
+fpool1(mxlayr)<br />
+fpool2(mxlayr)<br />
+fpool3(mxlayr)<br />
+<br />
+<br />
+The total amounts of N and C lost on eroded soil is calculated by summing losses from the relevant N and C pools: </p>
+<p>&nbsp; n_loss_in_sed = snh4_loss + biom_n_loss + hum_n_loss + fom_n_loss</p>
+<p>&nbsp;</p>
+<p>&nbsp; c_loss_in_sed = biom_c_loss + hum_c_loss + fpool1_loss + fpool2_loss + fpool3_loss</p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4. Finally, reducing the profile layer depth (dlayr) takes place following a similar method to before; by reducing from the bottom until the profile rests against bedrock:</strong></p>
+<p>&nbsp; tot_depth = suml(dlayr, n_layrs) + dlt_depth_mm(n_layrs)</p>
+<p>&nbsp;</p>
+<p>&nbsp; if (tot_depth .gt. bed_depth ) then</p>
+<p>&nbsp;&nbsp;&nbsp; overrun = tot_depth - bed_depth</p>
+<p>&nbsp;&nbsp;&nbsp; do 2000 i = n_layrs, 1, -1</p>
+<p>&nbsp;&nbsp;&nbsp; if (overrun .gt. 0.0) then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(overrun .le. dlayr(i)) then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlayr(i) = dlayr(i) - overrun</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; overrun = 0.0</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; overrun = overrun - dlayr(i)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlayr(i) = 0.0</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; endif</p>
+<p>&nbsp;&nbsp;&nbsp; endif</p>
+<p>&nbsp;&nbsp;&nbsp; 2000 continue</p>
+<p>&nbsp; endif</p>
+<p>and the lowest profile layer is merged if necessary.<br />
+<br />
+The threshold for merging layers is specified in the parameter file as a proportion of the original layer, <br />
+so after a merge, this threshold must be recalculated as a proportion of the next upper layer. </p>
+<br clear="all" style="page-break-before: always;" />
+</div>
+
+</div><!-- End_Module_526 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Erosion.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:13 GMT -->
+</html>

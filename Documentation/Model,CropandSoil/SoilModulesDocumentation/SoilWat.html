@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilWat.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:16 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > SoilWat
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilWat.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="SoilWat.html" class="SkinObject">SoilWat</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>SoilWat</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-533"><a name="533"></a>
+<div class="Invisible"><div id="dnn_ctr533_ContentPane"><!-- Start_Module_533 --><div id="dnn_ctr533_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr533_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;"><strong>Description</strong></p>
+<p style="margin: 0cm 0cm 10pt;">The SoilWater module is a cascading water balance model that owes much to its precursors in CERES (Jones and Kiniry, 1986) and PERFECT(Littleboy <em>et al</em>, 1992). <br />
+<br />
+The algorithms for redistribution of water throughout the soil profile have been inherited from the CERES family of models. <br />
+<br />
+The water characteristics of the soil are specified in terms of the lower limit (ll15), drained upper limit (dul) and saturated (sat) volumetric water contents. <br />
+<br />
+Water movement is described using separate algorithms for saturated or unsaturated flow. <br />
+It is notable that redistribution of solutes, such as nitrate- and urea-N, is carried out in this module. <br />
+<br />
+Modifications adopted from PERFECT include <br />
+(i) the effects of surface residues and crop cover on modifying runoff and reducing potential soil evaporation, <br />
+(ii) small rainfall events are lost as first stage evaporation rather than by the slower process of second stage evaporation, and <br />
+(iii) specification of the second stage evaporation coefficient (cona) as an input parameter, providing more flexibility for describing differences in long term soil drying due to soil texture and environmental effects. <br />
+<br />
+The module is interfaced with the RESIDUE and crop modules so that simulation of the soil water balance responds to change in the status of surface residues and crop cover (via tillage, decomposition and crop growth). <br />
+<br />
+<strong>Enhancements beyond CERES and PERFECT include</strong></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">the specification of swcon for each layer, being the proportion of soil water above dul that drains in one day</li>
+    <li style="margin: 0cm 0cm 10pt;">isolation from the code of the coefficients determining diffusivity as a function of soil water (used in calculating unsaturated flow). Choice of diffusivity coefficients more appropriate for soil type have been found to improve model performance.</li>
+    <li style="margin: 0cm 0cm 10pt;">Unsaturated flow is permitted to move water between adjacent soil layers until some nominated gradient in soil water content is achieved, thereby accounting for the effect of gravity on the fully drained soil water profile. </li>
+</ul>
+<br clear="all" style="page-break-before: always;" />
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p>SoilWater is called by APSIM on a daily basis, and typical of such models the various processes are calculated consecutively<br />
+(This contrasts with models such as SWIM that solve simultaneously a set of differential equations that describe the flow processes). <br />
+<br />
+<em></em></p>
+<p><em><img alt="" src="../../../portals/0/Documentation/Soil/image041.gif" /></em></p>
+<p><em>Figure 1. The subroutine structure of SoilWater.</em> </p>
+<p>
+<img alt="" src="../../../portals/0/Documentation/Soil/image042.gif" /></p>
+<p>
+<em>Figure 2. A diagram showing the communication between SoilWater and other APSIM modules.</em><br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Soil Moisture Properties</strong></p>
+<p style="margin: 0cm 0cm 12pt;">An example some soil properties used to configure the SoilWater soil water "bucket" is as follows. </p>
+<p style="margin: 0cm 0cm 12pt;"><img alt="" src="../../../portals/0/Documentation/Soil/image043.gif" /></p>
+<ul style="list-style-type: disc;">
+    <li style="margin: 0cm 0cm 10pt;">LL15 is the 15Bar lower limit of soil water content . It is approximately the driest water content achievable by plant extraction. This defines the &ldquo;bottom of the bucket&rdquo;.</li>
+    <li style="margin: 0cm 0cm 10pt;">DUL is the drained upper limit of soil water content . It is the content of water retained after gravitational flow. DUL is sometimes referred to as &ldquo;Field Capacity&rdquo;.</li>
+    <li style="margin: 0cm 0cm 10pt;">SAT is the Saturated water content . This defines the &ldquo;top of the bucket&rdquo; </li>
+</ul>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Initial Soil Water</strong></p>
+<p>There are <strong>five</strong> ways to parameterise initial soil water in SoilWater.<br />
+<br />
+These can also be specified in the Manager module sections using the &lsquo;set' command<br />
+e.g </p>
+<p>SoilWater set insoil = 0.5 () </p>
+<p> </p>
+<p style="margin: 0cm 0cm 10pt;"><strong>1. Initial Soil Water as User Specified Soil Water Content</strong></p>
+<p>The user can initialise soil water content to any initial volumetric soil water content for each layer. <br />
+This can be done by setting the soil water parameter (sw) for each layer to a value between SAT and LL15. <br />
+To use this option the <strong>insoil parameter must be set to &gt; 1. </strong><br />
+<br />
+<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>2. Initial Soil Water as a Fraction of Available Soil Water distributed evenly down the profile</strong></p>
+<p>Initial soil water can be set to a fraction of the maximum available soil water in each layer. <br />
+Setting the insoil parameter to a fraction (0 = LL15, 1 = DUL) initialises the soil water parameter (initial sw values are ignored) to this fraction for each layer. <br />
+<br />
+ie. If <strong>0.0 &lt;= Insoil &lt;= 1.0</strong>, then <br />
+in each layer <br />
+Soil water (sw) = LL15 + ((DUL-LL15) x Insoil) <br />
+<br />
+<br />
+</p>
+<p><strong>3. Initial Soil Water as a Fraction of Available Soil Water filling the profile from the top.</strong></p>
+<p>Initial soil water can be set to a fraction of the maximum extractable soil water in the whole profile. <br />
+The profile is filled from the top down until the <strong>fraction</strong> is reached. Setting the profile_fesw parameter to a fraction of total extractable soil water initialises the soil water for layers starting at the top of the profile to DUL, until the <strong>fraction</strong> is reached. <br />
+The remaining layers are set to LL15. This parameter is exclusive of the others. <br />
+<br />
+<br />
+eg. If <br />
+the soil profile has layers of 150, 150, 300 and 300 mm, <br />
+giving a total profile depth of 900 mm <br />
+with corresponding DUL of 67.5, 67.5, 135, 120 mm and <br />
+corresponding LL15 of 34.5, 34.5, 72, 75 mm giving <br />
+ESW of 33, 33, 63, 45 mm with a <br />
+Total ESW in the profile of 174 mm. <br />
+And<br />
+<strong>profile_fesw = 0.5</strong>, <br />
+Then<br />
+The ESW of each layer is set to 33, 33, 21, 0 mm giving <br />
+A total of 87 mm in the profile. <br />
+<br />
+<br />
+</p>
+<p><strong>4. Initial Soil Water as a depth of available Soil Water from the top of the profile. </strong></p>
+<p>Initial soil water can be set to a depth of available soil water in the whole profile. <br />
+The profile is filled from the top down until the <strong>soilwater</strong> depth is reached. <br />
+Setting the profile_esw_depth parameter to a total available soil water initialises the soil water for layers starting at the top of the profile to DUL, until the <strong>amount of water</strong> is reached. <br />
+The remaining layers are set to LL15. This parameter is exclusive of the others. <br />
+<br />
+eg. Using the soil parameters of the previous example and <br />
+<strong>profile_esw_depth = 87mm</strong>, <br />
+Then <br />
+The ESW of each layer is set to 33, 33, 21, 0 mm. </p>
+<p><strong>5. Initial Soil Water as a depth of wet soil, filled to field capacity. </strong></p>
+<p>Initial soil water can be set to a depth of wet soil. <br />
+The profile is filled from the top down until the <strong>soil</strong> depth is reached. <br />
+Setting the wet_soil_depth parameter to a depth of soil filled to field capacity (DUL) initialises the soil water for layers starting at the top of the profile to DUL, until the <strong>soil depth</strong> is reached. <br />
+The remaining layers are set to LL15. This parameter is exclusive of the others. <br />
+<br />
+<br />
+e.g. Using the soil parameters of the previous example and <br />
+<strong>wet_soil_depth = 400 mm</strong>, <br />
+Then <br />
+The ESW of each layer is set to 33, 33, 21, 0 mm giving <br />
+A total of 87 mm in the profile. <br />
+<br />
+<strong>Runoff</strong></p>
+<p>Runoff from rainfall is calculated using the USDA-Soil Conservation Service procedure known as the curve number technique. <br />
+The procedure uses total precipitation from one or more storms occurring on a given day to estimate runoff. <br />
+The relation excludes duration of rainfall as an explicit variable, and so rainfall intensity is ignored. <br />
+When irrigation is applied it is assumed to be at low intensity and therefore no runoff is calculated. </p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image044.gif" /><br />
+<br />
+<br />
+Runoff response curves (ie runoff as a function of total daily rainfall) are specified by numbers from 0 (no runoff) to 100 (all runoff). <br />
+Response curves for three runoff curve numbers for rainfall varying between 0 and 100 mm per day <br />
+<br />
+<br />
+The user supplies a curve number for average antecedent rainfall conditions (CN2Bare). <br />
+From this value the wet (high runoff potential) response curve and the dry (low runoff potential) response curve are calculated. <br />
+The SoilWater module will then use the family of curves between these two extremes for calculation of runoff depending on the daily moisture status of the soil. <br />
+The effect of soil moisture on runoff is confined to the effective hydraulic depth as specified in the module's ini file and is calculated to give extra weighting to layers closer to the soil surface.</p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image045.gif" /><br />
+<br />
+<br />
+<br />
+Runoff response curve for average antecedent rainfall condition curve number (CN2) of 75 for a range of soil moisture conditions <br />
+(0 - dry, 1 - wet). <br />
+<br />
+<img alt="" src="../../../portals/0/Documentation/Soil/image046.gif" /></p>
+<p>
+Residue cover effect on runoff curve number where bare soil curve number is 75 and total reduction in curve number is 20 at 80% cover. <br />
+<br />
+Surface residues inhibit the transport of water across the soil surface during runoff events and so different families of response curves are used according to the amount of crop and residue cover. The extent of the effect on runoff is specified by:<br />
+a threshold surface cover (CNCov), above which there is no effect,<br />
+and the corresponding curve number reduction (CNRed). <br />
+<br />
+<br />
+Tillage of the soil surface also reduces runoff potential, and a similar modification of Curve Number is used to represent this process. <br />
+A tillage event is directed to the module, specifying cn_red, the CN reduction, and cn_rain, the rainfall amount required to remove the tillage roughness. <br />
+CN2 is immediately reduced and increases linearly with cumulative rain, ie. roughness is smoothed out by rain. <br />
+<br />
+<br />
+The effect of these processes is seen in the daily output variable CN2_new - the curve number used to calculate runoff on any particular day.<br />
+<br />
+<strong>Evaporation</strong></p>
+<p>Soil evaporation is assumed to take place in two stages: the constant and the falling rate stages. <br />
+<br />
+In the <strong>first stage</strong> the soil is sufficiently wet for water to be transported to the surface at a rate at least equal to the potential evaporation rate. <br />
+Potential evapotranspiration is calculated using an equilibrium evaporation concept as modified by Priestly and Taylor(1972).<br />
+<br />
+<br />
+<br />
+Once the water content of the soil has decreased below a threshold value the rate of supply from the soil will be less than potential evaporation (<strong>second stage evaporation</strong>).<br />
+These behaviors are described in SoilWater through the use of two parameters: <strong>U</strong> and <strong>cona</strong>.<br />
+<br />
+<br />
+The parameter <strong>U</strong> (as from CERES) represents the amount of cumulative evaporation before soil supply decreases below atmospheric demand. <br />
+<br />
+The rate of soil evaporation during the second stage is specified as a function of time since the end of first stage evaporation. <br />
+<br />
+The parameter <strong>Cona</strong> (from PERFECT) specifies the change in cumulative second stage evaporation against the square root of time. <br />
+<br />
+ie. E<sub>s</sub> = cona t<sup>1/2</sup> <br />
+<br />
+Water lost by evaporation is removed from the surface layer of the soil profile thus this layer can dry below the wilting point or lower limit (LL) to a specified air-dry water content (air_dry). <br />
+<br />
+SoilWater uses two parameters, <strong>U</strong> and <strong>CONA</strong>, to specify soil evaporation. <br />
+<strong>U</strong>(as in CERES) is the amount of cumulative evaporation, since soil wetting, before soil supply becomes limiting. <br />
+Subsequently soil evaporation is a fraction of the square root of time since the end of first stage evaporation, using the regression coefficient <strong>CONA</strong> ( from PERFECT). </p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image047.gif" /><br />
+<br />
+<br />
+Cumulative Soil Evaporation through time for U = 6 mm and CONA = 3.5.<br />
+<br />
+For t <strong>&lt;=</strong> t<sub>1</sub> <br />
+E<sub>s</sub> = E<sub>os</sub> <br />
+<br />
+<br />
+For t <strong>&gt;</strong> t<sub>1</sub> </p>
+<p><img alt="" src="../../../portals/0/Documentation/Soil/image048.gif" /><br />
+<br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Saturated Water Flow (between SAT and DUL) </strong></p>
+<p>When water content in any layer is below SAT but above DUL, a fraction of the water drains to the next deepest layer each day. <br />
+<br />
+Flux = SWCON x (SW - DUL)<br />
+<br />
+Infiltration or water movement into any layer that exceeds the saturation capacity of the layer automatically cascades to the next layer. <br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Unsaturated Water Flow (below DUL) </strong></p>
+<p>For water contents below DUL, movement depends upon the water content gradient between adjacent layers and the diffusivity,<br />
+which is a function of the average water contents of the two layers. <br />
+<br />
+Unsaturated flow may occur both towards the surface and downwards, but cannot move water out of the bottom of the deepest layer in the profile. <br />
+Flow between adjacent layers ceases at a soil water gradient (gravity_gradient) specified in the SoilWater ini file. <br />
+<br />
+The diffusivity is defined by two parameters set by the user (diffus_const, diffus_slope) in the SoilWater parameter set <br />
+(Default values, from CERES, are 88 and 35.4, but 40 and 16 have been found to be more appropriate for describing water movement in cracking clay soils). <br />
+<br />
+Diffusivity = diffus_const x exp (diffus_slope x thet_av)<br />
+<br />
+where, <br />
+thet_av is the average of SW - LL15 across the two layers. <br />
+Flow = Diffusivity x Volumetric Soil Water Gradient <br />
+<br />
+<strong>Solute Movement</strong></p>
+<p>SoilWater can move any solute within the APSIM simulation. <br />
+Solutes are defined to be either mobile or immobile, according to specifications in the SoilWater module's ini file. <br />
+<br />
+The saturated and unsaturated flows of soil water are used to calculate the redistribution of solutes throughout the soil using a &ldquo;mixing&rdquo; algorithm which assumes that all water and solute entering or leaving a layer is completely mixed. <br />
+This means that solute movement can simply be calculated as the product of the water flow and the solute concentration in that water. <br />
+<br />
+Fluxes of solutes are associated with both saturated and unsaturated water fluxes. <br />
+In both cases a simple mixing algorithm is used whereby incoming water and solute is fully mixed with that already present in any layer to obtain concentrations for solutes that are applied to the water leaving the layer. <br />
+<br />
+Efficiency factors (flux_eff and flow_eff) are specified in the SoilWater ini file to adjust the effectiveness of mixing for either saturated or unsaturated flows.<br />
+<br />
+<strong></strong></p>
+<p><strong>Leaching</strong></p>
+<p>The amount of solute dissolved in water can move to the layer below. This is considered by the model to be leaching. <br />
+Individual solutes leached from each layer can be tracked by reporting the solute leaving the layer.<br />
+An example may include reporting no3_leach(7). <br />
+If there are 7 layers defined in the soil profile then this variable will represent the leaching of no3 out of the root zone. <br />
+<br />
+<strong>Solutes in Rainfall</strong></p>
+<p>Solutes can be applied to the soil via rainfall using the optional parameter 'rainfall_XXX_conc' in parts per million, <br />
+where 'XXX' is the solute name.<br />
+<br />
+<br />
+As many solutes as desired can be applied in this way, however any solutes used must first be initialised in the system with the SOLUTE module. <br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Above Saturation Flow (above SAT) </strong></p>
+<p>When the soil water rises above Saturation there are two different parameters that can be specified: MWCON or KS.<br />
+Both of these are layered values, so you need to enter a value for each layer in the soil.<br />
+<br />
+MWCON allows you to specify either 1 or 0 for each layer in the soil. <br />
+<br />
+<strong>A value of 1</strong> means that all water above saturation for that layer immediately flows straight into the layer below. <br />
+If this layer below is filled above saturation by water coming in from above and MWCON for that layer is 1 then this water then flows to the next layer and so forth for each of the layers below. <br />
+Eventually water will run out of the bottom layer as drainage (report "drain" to see this). <br />
+This is the tipping or cascading part of the classical tipping bucket or cascading flow analogy.<br />
+<br />
+<br />
+<strong>A value of 0</strong> means that all water above saturation is NOT allowed to flow into the layer below. ie it is an impermeable layer. <br />
+Water will then begin to backup. <br />
+Note that depending on how SWCON is set, water will still be able to be lost from the layer via the process of Saturated Flow (the flow that occurs between DUL and SAT).<br />
+If both MWCON and SWCON prevent the water from flowing out of the layer then the water will begin to back up and will either become a pond on the surface or a water table beneath the surface.<br />
+<br />
+KS allows you to specify <strong>a number of millimeters per day</strong> that is allowed to drain from the layer when the the soil water is above saturation.<br />
+Once again depending upon how SWCON is set, Saturated Flow may still occur, and once again if soil water backs up a pond or water table is generated.<br />
+<br />
+<strong>nb. If <span style="text-decoration: underline;">neither</span> MWCON or KS is set, then an MWCON value of 1 for each layer is assumed. ie. any water above saturation flows straight into the layer below.<br />
+If <span style="text-decoration: underline;">both</span> MWCON and KS are set, then KS overrides MWCON.</strong><br />
+<br />
+<strong>Surface Ponding and Water Table Functionality</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Soilwat has the functionality of simulating an impermeable layer(s) within the soil profile, above which a water table may perch.<br />
+The impermeable layer(s) is specified by setting either MWCON or KS (as mentioned in the previous section).<br />
+<br />
+If the water-table happens to reach the surface, then Soilwat also has the ability to simulate a surface-storage (or &lsquo;ponding') pool.<br />
+The surface-water storage capacity is specified by the parameter <strong>max_pond</strong>, the maximum available surface water storage. <br />
+This <strong>max_pond</strong> is applied to both runoff from rainfall events and also to runoff generated by water backing-up above an impermeable layer (mxcon or ks) below. <br />
+Any surface water backing-up over &lsquo;max_pond' is added to the runoff pool.<br />
+<br />
+There is also an output value called "pond_evap" which tells you the evaporation from the pond. This is separate from es which does NOT include pond evaporation in it.<br />
+<br />
+MWCON, KS and max_pond are all optional parameters and if not provided, they are set to defaults (0.0 for max_pond).<br />
+<br />
+Here is an example of setting up a pond: <br />
+<br />
+</p>
+<p>[black_earth.soilwat2.parameters]</p>
+<p>!layer 1 2 3 4 5 6 7 </p>
+<p>dlayer = 150 150 300 300 300 300 300&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! layer thickness mm soil </p>
+<p>bd&nbsp; = 1.30 1.30 1.29 1.31 1.35 1.36 1.36&nbsp;&nbsp;&nbsp; ! bulk density gm dry soil/cc moist soil </p>
+<p>sat = .500 .509 .510 .505 .490 .480 .480&nbsp;&nbsp;&nbsp; ! saturation mm water/mm soil </p>
+<p>dul = .450 .459 .45 .44 .42 .41 .41&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! drained upper limit mm water/mm soil </p>
+<p>sw = .280 .364 .43 .43 .40 .41 .41&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! initial soil water mm water/mm soil </p>
+<p>ll15 = .230 .240 .240 .250 .260 .270 .280&nbsp;&nbsp; ! lower limit mm water/mm soil </p>
+<p>air_dry = .10 .20 .20 .20 .20 .20 .20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! air dry mm water/ mm soil </p>
+<p>swcon = 0.02 0.02 0.02 0.02 0.02 0.02 0.02&nbsp; ! drainage coefficient </p>
+<p>mwcon = 1.0 0.0 1.0 1.0 1.0 1.0 1.0 </p>
+<p>max_pond = 15.0&nbsp;&nbsp;&nbsp;&nbsp; ! maximum depth of surface storage </p>
+<p><strong>nb.</strong> The two lines, </p>
+<p>mwcon = 1.0 0.0 1.0 1.0 1.0 1.0 1.0 </p>
+<p>max_pond = 15.0&nbsp;&nbsp;&nbsp;&nbsp; ! maximum depth of surface storage </p>
+<p>Note, in layer 2 of mwcon, mwcon is set to 0.0 <strong>not</strong> 1.0 like all the other layers and therefore this layer is impermeable to &lsquo;cascading' flow, hence water cascading down the soil profile will reach this layer and begin to back-up towards the surface. Drainage is still allowed through this layer unless &lsquo;swcon' is also set to zero. <br />
+<br />
+<br />
+If the impermeable layer is specified deep down in the soil, then the water table might not reach the surface and pond. The output variable &lsquo;water_table' reports the depth of the water-table below the surface as measured from the ground surface. If there is no water table, &lsquo;water_table' = 10000 by default. <br />
+<br />
+NB. There is a Pond module in APSIM. This Pond module calculates all the solute and nitrogen effects of having a pond above your soil. It grows algae etc and modfies the chemical processes going on in the soil (The processes that normally occur in the Soil Nitrogen module SoilN). The ponding we are discussing here are just the parts that effect the water balance and hence are dealt with in this Soil Water module.<br />
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Runon, Lateral Inflow and Outflow on a layer basis</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Runon Capability</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Surface 'runon' can now be input from a data file. <br />
+Soilwat2 does a daily 'get' to retrieve this information from the input module.<br />
+From a user's point of view this means that 'runon' can be provided on a daily basis from the met file or from a separate input file. <br />
+<br />
+For example :<br />
+[runon.sparse.data]</p>
+<p>runon = 0 </p>
+<p>allow_sparse_data = true </p>
+<p>&nbsp;year&nbsp; day&nbsp; runon </p>
+<p>&nbsp;()&nbsp;&nbsp;&nbsp; ()&nbsp;&nbsp; (mm) </p>
+<p>&nbsp;1988&nbsp; 1&nbsp;&nbsp;&nbsp; 20 </p>
+<p>&nbsp;1988&nbsp; 5&nbsp;&nbsp;&nbsp; 17 </p>
+<p>&nbsp;1988&nbsp; 6&nbsp;&nbsp;&nbsp; 22 </p>
+<p>&nbsp;1988&nbsp; 10&nbsp;&nbsp; 25 </p>
+<p>&nbsp;1988&nbsp; 11&nbsp;&nbsp; 22 </p>
+<p><strong>Lateral Inflow Capability</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Lateral Inflow can be input as a layer-based array via the same method as 'runon'. The parameter name is 'inflow_lat(layer)'. <br />
+<br />
+For example:<br />
+<br />
+</p>
+<p>[runon.sparse.data]</p>
+<p>runon = 0 </p>
+<p>allow_sparse_data = true </p>
+<p>year&nbsp; day runon&nbsp; inflow_lat(1)&nbsp; inflow_lat(2) inflow_lat(3) </p>
+<p>&nbsp;()&nbsp;&nbsp;&nbsp; ()&nbsp; (mm)&nbsp; (mm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mm)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mm)</p>
+<p>&nbsp;1988&nbsp; 1&nbsp;&nbsp; 20&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; </p>
+<p>&nbsp;1988&nbsp; 5&nbsp;&nbsp; 17&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; </p>
+<p>&nbsp;1988&nbsp; 6&nbsp;&nbsp; 22&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp; </p>
+<p>&nbsp;1988&nbsp; 10&nbsp; 25&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp; </p>
+<p>&nbsp;1988&nbsp; 11&nbsp; 22&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; </p>
+<p>Both 'runon' and 'inflow_lat(layer)' are optional inputs to the model. <br />
+<br />
+<strong>NB. with Lateral Inflow it is assumed that ALL the water goes straight into the layer. Irrespective of the layers ability to hold it. It is like an irrigation. Klat has no effect and does not alter the amount of water coming into the layer. Klat only alters the amount of water flowing out of the layer</strong></p>
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Lateral Outflow Capability</strong></p>
+<p style="margin: 0cm 0cm 12pt;">Lateral Outflow is the flow that occurs as a result of the soil water going above DUL and the soil being on a slope. So if there is no slope and the water goes above DUL there is no lateral outflow. KLAT is just the lateral resistance of the soil to this flow. It is a soil water conductivity.<br />
+<br />
+The calculation of lateral outflow on a layer basis is now performed using the equation: <br />
+<br />
+<strong>Lateral flow for a layer = Klat * d * s/(1+s^2)^0.5 * L/A * unit conversions</strong>.<br />
+<br />
+Where: <br />
+<strong>Klat</strong> = lateral conductivity (mm/day)<br />
+<br />
+<strong>d</strong> = depth of saturation in the layer (mm)= dlayer*(sw-dul)/(sat-dul) if sw &gt; dul. <br />
+<strong>Note this allows lateral flow in any "saturated" layer, not just those inside a water table.</strong><br />
+<br />
+<strong>s</strong> = slope (m/m)<br />
+<strong>L</strong>= catchment discharge width. Basically, it's the width of the downslope boundary of the catchment. (m)<br />
+<strong>A</strong> = catchment area. (m2)<br />
+<br />
+<br />
+An example of the new soilwat2 input parameters (optional - if not included, lateral outflow = zero) are : <br />
+<br />
+</p>
+<p>[black_earth.soilwat2.parameters]</p>
+<p>slope =0.1 </p>
+<p>discharge_width = 50 </p>
+<p>catchment_area = 1000 </p>
+<p>klat = 0.5 </p>
+<p><strong>There is a new reportable variable called outflow_lat(layer). This can be summed by reporting outflow_lat().</strong><br />
+<br />
+NB. Lateral outflow only occurs when the soil water for the layer is above Drained Upper Limit (DUL). The above calculation involving klat, slope, discharge width, and catchment area is used to calculate the Lateral Outflow from each layer.<br />
+<strong><br clear="all" style="page-break-before: always;" />
+</strong>
+</p>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilWater Module Outputs</strong></p>
+<table cellspacing="8" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Name </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Units </strong></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p style="text-align: center;"><strong>Description </strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Es </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily soil evaporation </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Eo </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily potential evapotranspiration </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Eos </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily potential soil evaporation </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>cn2_new </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily value CN2 adjusted for surface cover </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Runoff </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily runoff </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Drain </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily drainage from bottom of soil profile </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>infiltration </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Daily infiltration across the soil surface </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>eff_rain </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Effective Rainfall (Rainfall - Runoff - Drainage). </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>salb </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>&nbsp;</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Bare soil albedo </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>bd </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>g/cm<sup>3</sup> </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Bulk density of the soil for each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>esw </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Extractable soil water in each layer (ie. sw_dep - ll15_dep) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sw_dep </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of water in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sw </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm<sup>3</sup> /mm<sup>3</sup></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Volumetric water content in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dlayer </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Thickness of each soil layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ll15_dep </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of water corresponding to a soil potential of 15 bar </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>ll15 </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm<sup>3</sup> /mm<sup>3</sup> </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Volumetric water content for each layer corresponding to a soil potential of 15 bar </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dul_dep </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of water at drained upper limit for each soil layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>dul </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm<sup>3</sup> /mm<sup>3</sup></p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Volumetric water content at drained upper limit for each soil layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sat_dep </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of water in each layer at saturation</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>sat</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm<sup>3</sup> /mm<sup>3</sup> </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Volumetric water content at saturation for each soil layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>air_dry_dep</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of water retained at air_dry for each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>air_dry </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm<sup>3</sup> /mm<sup>3</sup> </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Volumetric water content for air dry soil in each layer </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>flux </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Saturated water flux from each layer to the layer below </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>flow </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Unsaturated water movement between layers (+ve up) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>flow_nnnn </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>kg/ha </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Amount of solute nnnn in saturated water movement from each layer to the layer below (where 'nnnn' is the name of the solute)(eg. flow_no3) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>water_table </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm</p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Depth of the water table (10000 if no water table present) </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>pond </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Surface ponding</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>outflow_lat </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>mm </p>
+            </td>
+            <td style="padding: 0.75pt; background-color: transparent; border: medium none #ece9d8;">
+            <p>Lateral outflow from each layer </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"><strong>SoilWater module actions</strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Reset</strong></p>
+<p style="margin: 0cm 0cm 12pt;">The reset action can be invoked to reset the module to the state specified within the module's input data, which includes the soil moisture characteristics, runoff and evaporation parameters and the initial soil water profile. <br />
+<br />
+The Reset action is identical to the initialise action used by the simulation engine at the start of the simulation except that a description of the reinitialised state is not printed in the simulation summary file.<br />
+<br />
+APSIM Manager Example: </p>
+<p>[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! reinitialise residues at the beginning of each sowing window </p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp; SoilWater reset </p>
+<p>endif<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Initialise</strong></p>
+<p>The initialise action has now been replaced by the reset action (see above).<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Summary Report</strong></p>
+<p style="margin: 0cm 0cm 12pt;">At initialisation, at series of tables and useful information is printed to the simulation summary file for perusal by the user. These tables can be printed to the summary file at any point during the simulation as a detailed record of the system state at a particular time.<br />
+<br />
+APSIM Manager Example: </p>
+<p style="margin: 0cm 0cm 12pt;">[sample.manager.start_of_day]</p>
+<p>&nbsp;</p>
+<p>! Print out a summary of module state to the summary file </p>
+<p>If day = 100 then </p>
+<p>&nbsp;&nbsp; SoilWater sum_report </p>
+<p>endif </p>
+<p>
+<strong>References</strong></p>
+<ol style="list-style-type: decimal;">
+    <li style="margin: 0cm 0cm 10pt;">Jones, C.A., and J.R. Kiniry. 1986. CERES-Maize: A simulation model of maize growth and development. Texas A&amp;M University Press, College Station, Texas.</li>
+    <li style="margin: 0cm 0cm 10pt;">Littleboy, M., D.M. Silburn, D.M. Freebairn, D.R. Woodruff, G.L. Hammer, and J.K. Leslie. 1992. Impact of soil erosion on production in cropping systems. I. Development and validation of a simulation model. Aust. J. Soil Res. 30, 757-774.</li>
+    <li style="margin: 0cm 0cm 10pt;">Priestly, C.H.B., and Taylor, R.J. (1972) On the assessment of surface heat and evaporation using large-scale parameters. <em>Monthly Weather Review</em>. <strong>100</strong>, 81</li>
+    <li style="margin: 0cm 0cm 10pt;">Ritchie, J.T. (1972) Model for predicting evaporation from a row crop with incomplete cover. <em>Water Resources Research.</em> <strong>8</strong> , 1204.</li>
+    <li style="margin: 0cm 0cm 10pt;">Soil Conservation Service (1972) National Engineering Handbook Section 4: Hydrology, Soil Conservation Service, USDA, Washington.</li>
+</ol>
+</div>
+
+</div><!-- End_Module_533 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/SoilWat.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:17 GMT -->
+</html>

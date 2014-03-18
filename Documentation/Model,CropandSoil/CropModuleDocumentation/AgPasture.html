@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/AgPasture.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Crop Module Documentation > AgPasture
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/AgPasture.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../CropModuleDocumentation.html" class="SkinObject">Crop Module Documentation</a><span class="Sep"></span><a href="AgPasture.html" class="SkinObject">AgPasture</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>AgPasture</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-499"><a name="499"></a>
+<div class="Invisible"><div id="dnn_ctr499_ContentPane"><!-- Start_Module_499 --><div id="dnn_ctr499_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr499_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">1. Introduction</h1>
+<p style="margin: 0cm 0cm 10pt;">AgPasture is a pasture growth model developed and integrated in APSIM. It is largely based on the physiological model of Thornley &amp; Johnston (2000) as implemented in SGS/DairyMod/EcoMod (Johnson et al. 2008), but some changes have been incorporated in describing plant growth in relation with environmental factors, and in model structures for plug-in the APSIM system. Also, a set of management tools has been developed for modelling pasture management such as grazing, cutting and renewal.&nbsp;<br />
+<br />
+AgPasture is primarily designed for the simulation of mixed pastures of C3 and C4 grasses and legumes. The default module has been parameterised for any combination of perennial ryegrass, white clover and paspalum.&nbsp;<br />
+<strong>2.&nbsp;Setting up a simulation</strong></p>
+<p style="margin: 0cm 0cm 10pt;">The easiest way to set up a pasture simulation is to open the example simulation (agpasture.apsim), and save it as new simulation and modify it according to the pasture to be simulated.&nbsp;<br />
+<br />
+Same as with other crop models in APSIM, simulation of a pasture paddock needs to include a minimum set of other modules in APSIM system in addition to AgPasture. These include Micromet, Soil (SoilN and SoilWat or SWIM), Surface Organic Matter (SurfaceOM) and Fertiliser, and optionally Irrigation and pasture Managers (e.g., &ldquo;Regular harvest or grazing with return&rdquo; in Fig 1). AgPasture relies on Micromet to calculate solar radiation interception and water demand of pasture plants, and uses Fertiliser to return animal urine to soil profile.&nbsp;<br />
+<strong>3. Pasture Parameters</strong></p>
+<p style="margin: 0cm 0cm 10pt;">The AgPasture component is listed under the &lsquo;Crop&rsquo; folder in the &lsquo;Standard&rsquo; tool box. The default AgPasture is an established pasture of perennial ryegrass and white clover, with initial pasture status (See AgPasture GUI in Fig 2). The parameters include pasture species, and their initial shoot mass and litter mass (kg DM/ha). The parameter values are specified by species in different columns and can be adjusted by users. Also, plant root depth and the assumed distribution profile of relative root mass in soil profiles (with maximum = 1) can be specified. The root distribution profile should have the same number of layers as that described in the soil module, but a minimum number of layers will be used in calculation when they are not the same. The last parameter specifies if the plant water uptake is calculated by the AgPasture module itself (default as &lsquo;calc&rsquo;) or by another module in APSIM.</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image001.jpg" />&nbsp;&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Fig 2 Graphical User Interface for setting up the initial state of AgPasture</p>
+<p style="margin: 0cm 0cm 10pt;">After dragging an AgPasture component into a paddock, users may specify the initial state. Users may also cultivate the soil and sow pasture using the &lsquo;Sow pasture&rsquo; Manager described below.&nbsp;<br />
+<strong>4. Pasture managers</strong></p>
+<p style="margin: 0cm 0cm 10pt;">The Manager module of APSIM provides a flexible approach to allow the user to set up pasture management practices or rules. A set of Managers have been setup to go with the AgPasture module with GUI for convenience, which is in the Standard toolbox, under &lsquo;Management\AgPasture management&rsquo; folder. These include:</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image002.jpg" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Fig 3 Specification of pasture management &ndash; Regular cut and remove (with no return)</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4.1 Regular cut and remove (with no return) (Fig 3)<br />
+</strong><br />
+&nbsp;It shows that the pasture is not harvested before 1/07/1995, the harvest frequency is once every 21 days and the harvest residual is 1250 kg/ha. In this case, the harvested herbage is assumed as removed from the pasture.&nbsp;<br />
+<br />
+<img alt="" src="../../../portals/0/Documentation/Crops/image003.jpg" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Fig 4 Specification of pasture management &ndash; regular harvest or grazing (with return)</em></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4.2 Regular harvest or grazing (with return) (Fig 4)&nbsp;<br />
+</strong><br />
+It shows that the pasture is not harvested before 1/07/1995, the harvest frequency is once every 21 days and the harvest residual is 1000 kg DM/ha. 85% of grazed/harvested nitrogen is returned to soil, of which 60% is in urine and returned to the soil profile to a depth of 150 mm. The return of animal ingested nitrogen depends on animal type, age and health conditions, as well as management. Default nitrogen removal is 15% for sheep &amp; beef, and 25% for dairy grazed pastures but it remains the user&rsquo;s choice to set a sensible value for their system.&nbsp;<br />
+<img alt="" src="../../../portals/0/Documentation/Crops/image004.jpg" /></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Fig 5 Specification of pasture management &ndash; cut and remove on fixed dates (with no return)</em></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4.3 Cut and remove on fixed dates (no return) (Fig 5)&nbsp;<br />
+</strong><br />
+It shows the two harvests at specified dates, with a residual of 1000 kg DM/ha left after each harvest. The user may right-click on the panel to change it into &lsquo; Mode&rsquo;, and add more dates on the &lsquo;Properties&rsquo; tab, and open the &lsquo;end_of_day&rsquo; to copy and paste the script for the added dates, for setting up the harvests on multiple dates.<br />
+<br />
+<img alt="" src="../../../portals/0/Documentation/Crops/image005.jpg" /><br />
+<br />
+<br />
+</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Fig 6 Specification of pasture management &ndash; rotational grazing with herbage mass between two limits</em></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4.4 Rotational grazing with herbage mass between two limits (Fig 6)&nbsp;<br />
+</strong><br />
+It specifies: </p>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to start grazing when herbage mass reaches 1800 kg DM/ha;&nbsp; </p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the daily herbage harvest (grazed) is 400 kg DM/ha; </p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to stop grazing when the herbage mass is reduced to a residual of 1000 kg DM/ha; </p>
+<p style="margin: 0cm 0cm 10pt 36pt;" class="ListParagraphCxSpLast">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;85% of grazed/harvested nitrogen returns to soil, of which 60% is in urine and returned to soil profile to a depth of 300 mm.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em><img alt="" src="../../../portals/0/Documentation/Crops/image006.jpg" /></em></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Fig 7 Specification for sowing a pasture</em></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4.5 Sow pasture on a fixed date (Fig 7)&nbsp;<br />
+</strong><br />
+The default initial state of AgPasture is established perennial pasture as described above. If an user wants to establish a pasture from sowing, the manager described above (Fig 7) could be used.</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image006.jpg" />&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Fig 8 Specification for ending a pasture</em></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>4.6 End pasture on a fixed date (Fig 8)&nbsp;<br />
+</strong><br />
+This manager simply terminates he pasture, making the paddock available for other uses.&nbsp;<br />
+<br />
+<strong>5. Model output variables</strong></p>
+<p style="margin: 0cm 0cm 10pt;">AgPasture model output variables are described in table 1. Note that some variables are arrays, which are either an array of plant properties for different species, or an array of soil properties for different soil layers.<br />
+<br />
+Table 1 Output variables of AgPasture module<br />
+<br />
+<strong>Variables names&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Descriptions&nbsp;</strong></p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundDeadN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nitrogen in plant standing dead (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundDeadWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant aboveground dead mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundLiveN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrogen in plant live shoots (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundLiveWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant aboveground live mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrogen in plant aboveground mass (shoots) (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundNConcentration&nbsp;Plant shoot N concentration (%)</p>
+<p style="margin: 0cm 0cm 10pt;">AboveGroundWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant aboveground mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">BelowGroundN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrogen in plant roots (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">BelowGroundWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant below ground mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">Biomass&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( = AboveGroundWt) (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">Cover_dead&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cover of dead leaf area (%)</p>
+<p style="margin: 0cm 0cm 10pt;">Cover_green&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cover of green leaf area (%)</p>
+<p style="margin: 0cm 0cm 10pt;">Cover_tot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cover of total leaf area (%)</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;Crop_Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crop type</p>
+<p style="margin: 0cm 0cm 10pt;">DefoliatedDigestibilty&nbsp;&nbsp;&nbsp;&nbsp;Digestibility of defoliated plant material (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">GLFn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant growth limiting factor due to nitrogen stress (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">GLFnConcentration&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant growth reduction factor due to low N concentration (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">GLFrgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant growth limiting factor due to other factors (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">GLFtemp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant growth limiting factor due to temperature (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">GLFwater&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant growth limiting factor due to water deficit (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">HarvestN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Daily plant nitrogen harvest (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">HarvestWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Daily herbage harvest (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">Height&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pasture height (mm)</p>
+<p style="margin: 0cm 0cm 10pt;">HerbageDigestibility &nbsp;&nbsp;&nbsp;&nbsp; Digestibility of standing herbage (0-1)</p>
+<p style="margin: 0cm 0cm 10pt;">HerbageME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Metabolic energy of standing herbage (MJ/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">IntRadn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Intercepted solar radiation (MJ)</p>
+<p style="margin: 0cm 0cm 10pt;">LAI_dead&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dead leaf area index (m2/m2)</p>
+<p style="margin: 0cm 0cm 10pt;">LAI_green&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Green leaf area index (m2/m2)</p>
+<p style="margin: 0cm 0cm 10pt;">LAI_total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total leaf area index (m2/m2)</p>
+<p style="margin: 0cm 0cm 10pt;">LeafDeadWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant dead leaf mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">LeafLiveWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant green leaf mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">LeafN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nitrogen in plant leaves (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">LeafWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant aboveground leaf mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">LitterDepositionN&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; Daily plant shoot nitrogen deposition in litter (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">LitterDepositionWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Daily litter deposition (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">NetHerbageGrowthWt&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Daily net herbage accumulation (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">NitrogenDemand&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant nitrogen demand (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">NitrogenSupply&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant available nitrogen in soil (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">NitrogenSupplyLayers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant available nitrogen in soil layers (array, kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">NitrogenUptake&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant nitrogen uptake (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">NitrogenUptakeLayers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant nitrogen uptake from soil layers (array, kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">PlantFixedN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Daily plant nitrogen fixation (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">PlantRemobilisedN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant N remobilisation (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">PlantStatus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant status &ndash; &lsquo;live&rsquo; or &lsquo;dead&rsquo;</p>
+<p style="margin: 0cm 0cm 10pt;">PotentialGrowthWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Daily plant potential growth (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">RootSenescenceN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Daily plant root nitrogen deposition in senescent roots (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">RootSenescenceWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Daily root senescence (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">SpeciesGreenLAI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Species - total leaf area index (array, m2/m2)</p>
+<p style="margin: 0cm 0cm 10pt;">SpeciesHarvestPct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Species - percentage in harvested plant material (array, %)</p>
+<p style="margin: 0cm 0cm 10pt;">SpeciesLiveWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Species - total aboveground live mass (array, kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">SpeciesTotalWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Species - total aboveground mass (array, kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">StemDeadWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant dead stem mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">StemLiveWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant live stem mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">StemN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nitrogen in plant stems (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">StemWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant aboveground stem mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">StolonN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nitrogen in plant stolons (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">StolonWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant stolon mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">TotalPlantN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant total nitrogen (kg N/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">TotalPlantWt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant total mass (kg DM/ha)</p>
+<p style="margin: 0cm 0cm 10pt;">WaterDemand&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant water demand (mm)</p>
+<p style="margin: 0cm 0cm 10pt;">WaterSupply&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant extractable soil water (mm)</p>
+<p style="margin: 0cm 0cm 10pt;">WaterSupplyLayers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant extractable water in soil layers (array, mm)</p>
+<p style="margin: 0cm 0cm 10pt;">WaterUptake&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Plant water uptake (mm)</p>
+<p style="margin: 0cm 0cm 10pt;">WaterUptakeLayers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Plant water uptake from soil layers (array, mm)&nbsp;<br />
+<strong>6. Model structure and scientific base</strong></p>
+<p style="margin: 0cm 0cm 10pt;">AgPasture is largely based on the physiological model of Thornley and Johnson (2000) as implemented in SGS/DairyMod/EcoMod (Johnson et al. 2008). Most of the processes and functions in plant growth have been described in these publications and in documents of Johnson (2008). Here we briefly describe the module structure and the daily pasture growth process in relation with other modules in the APSIM system. Emphasis is on the structures, processes and functions that are different from the previous model descriptions.&nbsp;<br />
+<br />
+AgPasture is majorly a temperate pasture model of ryegrass-clover type, but C4 species can be added. Plant growth processes include photosynthesis and respiration followed by tissue turnover and senescence. Effects of water and nitrogen stress are incorporated. All the plant functions and processes, such as carbon assimilation, tissue turnover, water and nitrogen uptake, are modeled at a species level. The species compete for resources (e.g., solar radiation, soil moisture and nitrogen) and simulated species properties are aggregated into that of the pasture module (Fig 9)<br />
+<a target="_blank" title="http://www.apsim.info/Wiki/" href="../../../Wiki/index.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image007.jpg" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Fig.9 Pasture module of multiple species</em></p>
+<p style="margin: 0cm 0cm 10pt;">Fig 9 Pasture module consisting of one to many species. Plant processes are implemented at species level, while pasture (community) is responsible for resources partitioning among species and aggregating of species proporties into that of pasture swards.&nbsp;<br />
+<br />
+APSIM is a daily time-step simulation system. The program flow of AgPasture in APSIM during a one day time-step are as follows. The underlined words or terms are other APSIM modules related or used in the process. Those modules are documented separately.<br />
+<br />
+(1) Update weather data (Met):&nbsp;<br />
+<br />
+(2) Calculate site-specific pasture potential growth (Gpot) : This includes gross photosysnthesis, growth and maintenaince respiration and their realtions with environmental conditions (solar radiation and temperature).<br />
+<br />
+(3) Calculate soil moisture deficit: Daily pasture water demand (potential transpiration) is calculated using Penman-Menteith equations (Micromet). Plant uptakable water in soil profile (SW) may be calculated using the soil water capacity module (SoilWat) or alternatively the soil water infiltration and movement module (SWIM). The SW is partitioned to different species relative to their demands. Actual plant water uptake equals to water demand if the demand is bigger than supply (PT&lt; SW); otherwise plant water uptake equals thewater supply (SW), and in this case, the soil moisture limiting factor (GLFw) is defined using the ratio of plant water uptake to demand. Soil moisture uptake from the soil profile is removed.&nbsp;<br />
+<br />
+(4) Pasture N demand and soil N supply: Plant N demand is calculated according to maximum and optimum N concentration of potential new growth tissues, plant N status and N remobilisation. Soil N supply is the mineral N in the root zone of soil profile (SoilN). Nitrogen limitation occurs when plant available N is less than demand, and a N limiting factor (GLFn) for pasture growth is defined as the ratio of plant available N to plant N demand. However, before partitioning plant available N among species, the N-fixation of legume species is calculated. The fraction of actual N fixation of legume species against its total N demand under N stress (GLFn) is calculated as:&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>&nbsp;&nbsp; F = Fmax + (1 - Fmin) &times; GLFn&nbsp;</em><br />
+<br />
+where Fmax and Fmin are the fractions of N-fixation in total N-demand when soil N is unavailable and sufficient. Plant available N in soil layers is partitioned among species relative to their demands, and GLFn of each species are updated separately as the ratio of actual plant N uptake to demand.&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>&nbsp;GFLn = N uptake/ N demand.&nbsp;</em>&nbsp;<br />
+<br />
+Plant N uptake is removed from soil profile.&nbsp;<br />
+<br />
+(5) Effects of water and N limitation on pasture growth: Nitrogen limitation affects plant growth by both reducing new plant tissue growth (reducing green leaf area expansion ) and diluting N concentration in existing plant tissues, which in turn reduce plant raditation efficiency (Lemaire and Salette 1984). The effect is calculated by constructing a N concentration factor (FNc) as follows:&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>FNc = (N &ndash; Nmin)/(Nopt &ndash; Nmin)</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>if N&lt;nopt&lt; i="" style="padding: 0px; margin: 0px;"&gt;&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FNc = 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N&ge;Nopt<br />
+<br />
+where N, Nopt and Nmin are actual, optimum and minimum N concentration of plant leaf tissue. So plant new growth incoporating N concentration and water-deficit effects, but not N shortage for the daily uptake, is calculated as:&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gw = Gpot &times; minimum (GLFw , FNc)<br />
+<br />
+Then the effects of soil mineral N shortage against plant daily demand is added by multiplying the square root of GLFn.&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;G = Gw &times; sqrt (GLFn)<br />
+<br />
+The square root is used to partition the effects of N limitation on plant growth (i.e. the effect on plant tissue increase including green leaf area expansion and the dilution of N concentration in plant tissue). The N concentration in different plant tissue pools are updated daily.&nbsp;<br />
+<br />
+(6) Partitioning of plant new growth Plant new growth is partitioned to plant shoots and roots using a dynamic partitioning coefficient towards a target root/shoot ratio as described in Johnson (2008). A variable target root/shoot ratio is used for partitioning more assimilates to shoots in spring (roughly coresponsding to reproductive stages) and less in autumn, as experimentally evidenced by (Parsons and Robson 1981). The assimilates partitioned to shoots are partitioned again among stem (+sheat), stolon and leaf.&nbsp;<br />
+<br />
+(7) Plant tissue turnover Plant shoot tissue is traced as four pools (growing, mature, scenesing, and dead). Plant new growth are transferred among these pools and finally scenesced and transferred to litter, surface organic matter pool (SurfaceOM). Senecent root returns to soil fresh organic matter pool (FOM).</em></p>
+<p style="margin: 0cm 0cm 10pt;"><em><br />
+</em><strong>7. Acknowledgement</strong></p>
+<p style="margin: 0cm 0cm 10pt;">This work was funded under the Foundation for Research Science and Technology of New Zealand as a part of &ldquo;Rural Futures&rdquo; programme (C10X0809) with assistance from the WFSAT.&nbsp;</p>
+<p  style="margin: 0cm 0cm 10pt;">
+<strong>8. References</strong></p>
+<p style="margin: 0cm 0cm 10pt;">Li FY, Snow VO, Holzworth DR (2011) Modelling the seasonal and geographical pattern of pasture production in New Zealand. New Zealand Journal of Agricultural Research 54: 331-352.<br />
+<br />
+Li FY, Snow VO, Holzworth D, Johnson IR (2010) Integration of a pasture model into APSIM,&nbsp;Proceedings of the 13th Australian Agronomy Conference, Lincoln, New Zealand (doi: http://www. regional.org.au/au/asa/2010/farming-systems/simulation-decision-support/6993_lifyrevis.htm).<br />
+<br />
+Li, FY, Snow VO (2010) Nitrogen processes and nitrogen use efficiency in pastoral systems under differing management &ndash; a modelling analysis. In: Currie L.D. and C.L. Lindsay (Eds), Farming&rsquo;s Future:&nbsp;Minimising Footprints and Maximising Margins &ndash; The 23rd FLRC conference proceedings. Massey University, New Zealand. pp. 219-226.<br />
+<br />
+Johnson IR (2008) Biophysical pasture simulation model documentation - Model documentation for the SGS Pasture Model, DaityMod and EcoMod (WAFSAT project report).<br />
+<br />
+Johnson IR, Chapman DF, Snow VO, Eckard RJ, Parsons AJ, Lambert MG, Cullen BR (2008) DairyMod and EcoMod: biophysical pasture simulation models for Australia and New Zealand.&nbsp;Australian Journal of Experimental Agriculture&nbsp;48, 621-631.</p>
+<p style="margin: 0cm 0cm 10pt;">Lemaire G, Salette J (1984) Relation entre dynamique de croissance et dynamique de prelevement d&rsquo;azote pour un peuplement de graminees fourageres I. Edude de l&lsquo;effet du milieu.&nbsp;Agronomie&nbsp;4, 423-430.<br />
+<br />
+Parsons AJ, Robson MJ (1981) Seasonal changes in the physiology of S24 perennial ryegrass (Lolium perenne L.) 3 Partition of assimilates between root and shoot during the transition from vegetative to reprodcutive growth.&nbsp;Annals of Botany&nbsp;48, 733-744.<br />
+<br />
+Thornley JHM, Johnson IR (2000)&nbsp;Plant and crop modelling - a mathematical approach to plant and crop physiology.'(The Blackburn Press: New Jersey).</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p><br clear="all" style="page-break-before: always;" />
+&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+</div>
+
+</div><!-- End_Module_499 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/AgPasture.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:34 GMT -->
+</html>

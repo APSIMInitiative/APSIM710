@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Barley.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Crop Module Documentation > Barley
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Barley.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../CropModuleDocumentation.html" class="SkinObject">Crop Module Documentation</a><span class="Sep"></span><a href="Barley.html" class="SkinObject">Barley</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Barley</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-500"><a name="500"></a>
+<div class="Invisible"><div id="dnn_ctr500_ContentPane"><!-- Start_Module_500 --><div id="dnn_ctr500_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr500_HtmlModule_lblContent" class="Normal">
+	<p style="margin: 0cm 0cm 10pt;">The APSIM-Barley module simulates the growth and development of a barley crop in a daily time-step on an area basis (per square meter, not single plant). Barley growth and development in this module respond to weather (radiation, temperature), soil water and soil nitrogen. The barley module returns information on its soil water and nitrogen uptake to the soil water and nitrogen modules on a daily basis for reset of these systems. Information on crop cover is also provided to the water balance module for calculation of evaporation rates and runoff. Barley stover and root residues are &lsquo;passed' from barley to the surface residue and soil nitrogen modules respectively at harvest of the barley crop.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;Approaches used in modelling crop processes balance the need for comprehensive description of the observed variation in crop performance over diverse production environments and the need to avoid reductionist approaches of ever-greater complexity with large numbers of parameters that are difficult to measure.</p>
+<p style="margin: 0cm 0cm 10pt;">A list of the module outputs is provided in the &lsquo;Barley module outputs' section below. Basically the module simulates phenological development, leaf area growth, biomass and N concentration of leaves, stems, roots and grains on a daily basis. It also predicts grain size and grain number.</p>
+<p style="margin: 0cm 0cm 10pt;"><a href="Plant.html">Goto generic Plant model documentation</a></p>
+<h1 style="margin: 24pt 0cm 0pt;">Barley Module History</h1>
+<p style="margin: 0cm 0cm 10pt;">APSIM-Barley was developed from a combination of the approaches used in previous APSIM barley modules: Asseng et al. 1998a,b, Meinke et al. 1997a,b and Wang et al. 2003. The current version of the model is implemented within the APSIM Plant model framework which is currently used for other crops such as grain legumes and canola. Most of the model constants (species-specific) and parameters (cultivar specific) are externalised from the code.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Barley Module Structure</h1>
+<h2 style="margin: 10pt 0cm 0pt;">Phenology</h2>
+<p style="margin: 0cm 0cm 10pt;">APSIM-Barley uses 11 crop stages and ten phases (time between stages). It can output stage code and names as well as equivalent Zadok's stage. Table 2 lists the stage code, name and the key processes starting at the commencement of each stage.</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Table 2: Stages of phenological development simulated in APSIM_Barley.</em></p>
+<p>&nbsp;</p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;<strong>Stage Code</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Stage Name</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Starting processes</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Equivalent Zadok's</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Sowing</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Seed germination</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Germination</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Emergence, leaf initiation</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">5</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">3</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Emergence</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Vegetative growth (LAI, DM), water/N uptake</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">10</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">4</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End of Juvenile Stage</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Photoperiodism</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">10</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">5</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Floral Initiation / terminal spikelet*</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Spikelet initiation /</p>
+            <p style="margin: 0cm 0cm 10pt;">Rapid stem growth</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">15 /</p>
+            <p style="margin: 0cm 0cm 10pt;">30</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">6</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Anthesis</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Setting grain numbers</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">60</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">7</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Start of Grain Filling</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Active grain growth</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">71</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">8</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End of Grain Filling</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Maturity</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">87</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">9</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Physiological Maturity</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Grain moisture loss</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">90</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">10</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Harvest Ripe</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">93</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">11</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 106.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End Crop</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 191.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 63.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">100</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>*Because the CERES-Wheat phenology approach is used (see text below), terminal spikelet, instead of floral initiation, is simulated in the current barley model.</em></p>
+<p style="margin: 0cm 0cm 10pt;">The commencement of each stage (except for sowing to germination, which is driven by soil water content) is determined by accumulation of thermal time. Each day the phenology routines calculate today's thermal time (in degree-days) from 3-hourly air temperatures interpolated from the daily maximum and minimum crown temperatures. Crown temperatures are simulated according to the original routines in CERES-Wheat. Thermal time is calculated using the relationship in Figure 2 with the eight 3-hour estimates averaged to obtain the daily value of thermal time (in degree-days) for the day. These daily thermal time values are cumulated into a thermal time sum, which is used to determine the duration of each phase.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>&nbsp;<img alt="" src="../../../portals/0/Documentation/Crops/image008.gif" /></em></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 2. Relationship between crown temperature and thermal time used in APSIM-Barley.</em></p>
+<p style="margin: 0cm 0cm 10pt;">Between the stage of emergence and flowering the calculated daily_thermal_time can be reduced by water or nitrogen stresses, resulting in delayed phenology when the plant is under stress. These stress factors can be specified in barley.ini by changing the values of<em>x_sw_avail_ratio/y_swdef_pheno&nbsp;</em>and&nbsp;<em>N_fact_pheno&nbsp;</em>. Currently these values are set so that there are no water and nitrogen stress effects on phenological development. Research showed that moderate water stress may accelerate development, while severe water stress may delay phenology (Angus, 1977).</p>
+<p style="margin: 0cm 0cm 10pt;">Germination is considered as a quick process. Germination is assumed to occur as long as the extractable soil water in the seed layer is above a given value&nbsp;<em>pesw_germ&nbsp;</em>specified in Barley.ini.&nbsp;<em>pesw_germ&nbsp;</em>is the soil water content above the crop lower limit (mm/mm) in the seed layer inadequate for germination. The default setting is zero, meaning that germination will occur one day after sowing regardless of soil water content.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">The phase between germination and emergence includes an effect of the depth of sowing on the thermal time target. The phase is comprised of an initial period of fixed thermal time during which shoot elongation is slow (the &ldquo;lag&rdquo; phase) and a linear period, where the rate of shoot elongation towards the soil surface is linearly related to air temperature (measured in o Cd mm -1 ). Most studies on seedling emergence have simply recorded the accumulated thermal time between germination and 50% emergence from a given sowing depth. For the purposes of model parameterisation the value of&nbsp;<em>shoot_lag&nbsp;</em>has been assumed to be around 40 o Cd, while&nbsp;<em>shoot_rate&nbsp;</em>has been derived from studies where thermal time to emergence was measured and where sowing depth was known and it is set to 1.5 o Cd per mm. This means that at a sowing depth of 4 cm emergence occurs 100 o Cd after germination (40+1.5*40).</p>
+<p style="margin: 0cm 0cm 10pt;">There is the capability of increasing the time taken to reach emergence due to a dry soil layer in which the seed is germinating, through the relationship between&nbsp;<em>fasw_emerg&nbsp;</em>and&nbsp;<em>rel_emerg_rate&nbsp;</em>. Currently this effect is &ldquo;turned off&rdquo; in the Barley.ini file.</p>
+<p style="margin: 0cm 0cm 10pt;">The phase between emergence and end of juvenile stage is composed of a cultivar-specific period of fixed thermal time, commonly called the basic vegetative or juvenile phase, which is a period when development rate is not affected by photoperiod. The end of the juvenile phase in barley is currently timed as occurring on the day after emergence, because it is known that the development rate of barley is sensitive to photoperiod from emergence. The end of the juvenile phase is included in the model to make the stages compatible with other cereal crops in APSIM that do have a definable juvenile phase.</p>
+<p style="margin: 0cm 0cm 10pt;">After the end of the juvenile phase the crop takes 400 o Cdays to reach terminal spikelet stage. The rate at which the crop attains this target depends upon photoperiod and vernalisation. The daily rate of accumulation of thermal development rate is sensitive to photoperiod and accumulation of vernalising days. The sensitivities to photoperiod (&nbsp;<em>photop_sens&nbsp;</em>) and vernalisation (&nbsp;<em>vern_sens&nbsp;</em>) are cultivar-specific. The model assumes that barley, as a long day plant, will have a longer phase (dependent upon cultivar) between the end of the juvenile phase and terminal spikelet under short days.</p>
+<p style="margin: 0cm 0cm 10pt;">Photoperiod is calculated from day of year and latitude using standard astronomical equations accounting for civil twlight using the parameter<em>twilight,&nbsp;</em>which is assumed to be &ndash;6 o . Twilight is defined as the interval between sunrise or sunset and the time when the true centre of the sun is 2.2 degrees below the horizon.</p>
+<p style="margin: 0cm 0cm 10pt;">Vernalisation is simulated from daily average crown temperature and daily maximum and minimum temperatures using the original CERES approach.</p>
+<p style="margin: 0cm 0cm 10pt;">Devernalisation can occur if daily maximum temperature is above 30 o C.</p>
+<p style="margin: 0cm 0cm 10pt;">There are fixed thermal time durations for the subsequent phases between terminal spikelet and flag leaf (3 phyllochrons), from flag leaf to flowering (2 phyllochrons + 80 o C days). In the original CERES phenology routines, 2 phyllochrons from flag leaf marked the end of ear growth and then 80 o C days was required to reach anthesis. From flowering to the start of grain fill the thermal duration is assumed to be 120 o C days (= 200-80 o C days, in CERES 200 o C days was assumed to elapse between the end of ear growth and the start of grain filling). The duration of grain filling (&nbsp;<em>tt_startgf_to_mat&nbsp;</em>) is cultivar specific and usually lies between 500 and 800 o C days.</p>
+<h2 style="margin: 10pt 0cm 0pt;">&nbsp;</h2>
+<h2 style="margin: 10pt 0cm 0pt;">Biomass accumulation (Photosynthesis)</h2>
+<h3 style="margin: 10pt 0cm 0pt;">Radiation interception</h3>
+<p style="margin: 0cm 0cm 10pt;">Radiation interception is calculated from leaf area index and a radiation extinction coefficient (&nbsp;<em>extinct_coeff&nbsp;</em>) that varies with row spacing.&nbsp;</p>
+<h3 style="margin: 10pt 0cm 0pt;">Radiation Use Efficiency</h3>
+<p style="margin: 0cm 0cm 10pt;">The intercepted radiation is converted to above ground biomass via a RUE (radiation-use efficiency), which is 1.24 g MJ -1 from emergence to the end of grain-filling, and does not vary as a function of daily incident radiation as in NBARLEY. RUE is reduced by extremes of daily mean temperature as sown in the following figure. It is also reduced by a nitrogen stress factor&nbsp;<em>n_fact_photo&nbsp;</em>specified in Barley.ini.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;<img alt="" src="../../../portals/0/Documentation/Crops/image009.gif" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 3: Response of barley radiation-use efficiency to temperature</em></p>
+<h3 style="margin: 10pt 0cm 0pt;">Water-nonlimiting</h3>
+<p style="margin: 0cm 0cm 10pt;">Under water non-limiting condition, the biomass growth rate is given by:</p>
+<p style="margin: 0cm 0cm 10pt;">dlt_dm_rue = RUE *radiation_interception eqn 1.</p>
+<h3 style="margin: 10pt 0cm 0pt;">&nbsp;Water-limiting</h3>
+<p style="margin: 0cm 0cm 10pt;">Each day two estimates of the daily biomass production are calculated, one limited by available water for transpiration (eqn 2), and the other limited by radiant energy (eqn 1). The minimum of these two estimates is the actual biomass production for the day.</p>
+<p style="margin: 0cm 0cm 10pt;">dlt_dm_water = soil_ water_ supply * transpiration_efficiency eqn 2.</p>
+<p style="margin: 0cm 0cm 10pt;">dlt_dm = min(dlt_dm_water, dlt_dm_rue)</p>
+<p style="margin: 0cm 0cm 10pt;">transpiration_efficiency is derived from the transpiration_efficiency_coefficient (=0.006 kPa) and the vapour pressure deficit (vpd) estimated from daily temperatures.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<h3 style="margin: 10pt 0cm 0pt;">Biomass partitioning and retranslocation</h3>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Partitioning</em></h4>
+<p style="margin: 0cm 0cm 10pt;">On the day of emergence, biomass in plant parts (leaf, root, and stem) is initialised to user-specified values. Daily biomass production is then partitioned to different plant parts in different ratios depending on crop stage. In the barley module, leaf includes only leaf blade. Stem is defined in a functional rather than a morphological manner and includes stem proper, leaf sheaths and stem-like petioles.</p>
+<p style="margin: 0cm 0cm 10pt;">The biomass increase calculated each day only accounts for the above ground organs. The minimum fraction of biomass going to roots is calculated from the stage dependent&nbsp;root_shoot_ratio&nbsp;specified in Barley.ini.</p>
+<p style="margin: 0cm 0cm 10pt;">Between emergence and grain filling, the above ground biomass is partitioned to leaf, stem and head based on stage dependant partitioning rules. If, on any day, the estimated specific leaf area (based on leaf biomass and LAI deltas) goes below the minimum specific leaf area, the extra biomass is diverted to stems.</p>
+<p style="margin: 0cm 0cm 10pt;">At anthesis, the number of grains set per plant is determined by the stem weight. From start to end of grain filling biomass increase is used to meet grain demand first, the rest is put into stems.&nbsp;<strong>Grain demand for carbohydrate&nbsp;</strong>(biomass) is calculated by multiplying the grain number by the potential grain growth rate (&nbsp;potential_grain_filling_rate, g/grain/degree day&nbsp;) specified in Barley.ini .</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Re-translocation</em></h4>
+<p style="margin: 0cm 0cm 10pt;">If the supply of assimilate (daily biomass increase) is insufficient to meet grain demand then re-translocation may be used to meet the shortfall. The barley module allows a total retranslocation of no more than 20% of stem biomass present at the start of grainfilling</p>
+<p style="margin: 0cm 0cm 10pt;">Grain yield on a commercial moisture basis is calculated using the parameter&nbsp;grn_water_cont&nbsp;= 0.125.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Leaf initiation/appearance and tillering</h3>
+<p style="margin: 0cm 0cm 10pt;">Leaves appear at a fixed phyllochron of thermal time, currently set to 95 o Cd in the barley.ini. No effect from water and N stress on leaf appearance is accounted for.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Leaf area growth</h3>
+<p style="margin: 0cm 0cm 10pt;">On the day of emergence leaf area per plant is initialised to a value of 200 mm 2 per plant.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Potential LAI growth rate</h3>
+<p style="margin: 0cm 0cm 10pt;">Potential increase in plant leaf area is calculated from main stem node appearance rate multiplied by the leaf size (as a function of node number) multiplied by the number of leaves per main stem node (i.e. tiller number)</p>
+<h3 style="margin: 10pt 0cm 0pt;">Leaf area growth rate under stress</h3>
+<p style="margin: 0cm 0cm 10pt;">Water and nitrogen limitations affect leaf area development directly rather than via dry matter production. Water and nitrogen limitations result in either a reduction of leaf expansion or in number of tillers produced.</p>
+<p style="margin: 0cm 0cm 10pt;">Two stress factors are introduced to account for the effect of water and nitrogen stress respectively on leaf area growth. It is assumed that leaf expansion growth is reduced when the supply/demand ratio for water is below 1.1 and stops when supply/demand ratio reaches 0.1. This relationship is specified in Barley.ini in the look-up table&nbsp;<em>x_sw_demand_ratio/y_swdef_leaf&nbsp;</em>. The nitrogen stress factor is defined as:</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">where n_conc_ratio_leaf is the relative N concentration in leaves (N_conc_leaf - N_conc_leaf_min)/(N_conc_leaf_crit - N_conc_leaf_min). N_fact_expansion is a modifying constant specified in Barley.ini. It is currently set to 1.0, ie. leaf expansion is reduced once leaf N concentration is below the critical N concentration, and stops when leaf minimum concentration is reached.</p>
+<p style="margin: 0cm 0cm 10pt;">The leaf area growth rate under stress is given by:</p>
+<p style="margin: 0cm 0cm 10pt;">g_dlt_lai_stressed = g_dlt_LAI_pot * min (g_swdef_expansion, g_nfact_expansion)&nbsp;</p>
+<h3 style="margin: 10pt 0cm 0pt;">Actual leaf area growth rate</h3>
+<p style="margin: 0cm 0cm 10pt;">Actual leaf area growth rate differs from stressed leaf area expansion rate (g_dlt_lai_stressed) only if carbon supply is insufficient to meet a maximum specific leaf area for the daily increase in leaf area (&nbsp;<em>sla_max&nbsp;</em>). Carbon supply may become limiting, for example, at high plant population densities. The current model specifies&nbsp;<em>sla_max&nbsp;</em>as varying from 27 000 to 22000 mm 2 g -1 t o constrain daily leaf area increase where carbon is limiting. However, as the value of the maximum specific leaf area operates on the daily increase in leaf area it is not readily derived from experimental data and must be calibrated by trial-and error.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Root growth and distribution</h3>
+<p style="background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Root depth growth</em></h4>
+<p style="margin: 0cm 0cm 10pt;">Between germination and start of grain filling, the increase in root depth is a daily rate multiplied by a number of factors. Root depth is constrained by the soil profile depth.</p>
+<p style="margin: 0cm 0cm 10pt;">The optimum rate of elongation is 30mm d -1 . This can be limited by supra- or sub-optimal temperatures. Dry soil can slow roots through a layer if the soil water content is less than 25% of the way between the lower limit and drained upper limit. The increase of root depth through a layer can be constrained by known soil constraints through the use of the 0-1 parameter&nbsp;<strong>xf,&nbsp;</strong>which is input for each soil layer.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Root length density</em></h4>
+<p style="margin: 0cm 0cm 10pt;">Growth of root biomass is partitioned with depth using a branching function and converted to root length density using a fixed specific root length of 105,000 mm g -1 .</p>
+<p style="margin: 0cm 0cm 10pt;">Root biomass is grown daily in proportion to the tops production. This proportion (&nbsp;ratio_root_shoot&nbsp;) is specified for each growth stage, and varies from 1.0 at emergence, to 0.09 at flowering.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Senescence</h3>
+<p style="background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Root senescence</em></h4>
+<p style="margin: 0cm 0cm 10pt;">A rate of 0.5% of root biomass and root length is senesced each day and detaches immediately being sent to the soil nitrogen module and distributed as fresh organic matter in the profile.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Leaf senescence</em></h4>
+<p style="margin: 0cm 0cm 10pt;">There are four causes of leaf senescence: age, water stress, nitrogen stress and high temperature stress. The barley senescence routines calculate stress factors for water, N and high temperature. The maximum of these is multiplied by the senesced LAI due to age each day to obtain the day's total senescence.</p>
+<p style="margin: 0cm 0cm 10pt;">The stress factor for water is calculated from&nbsp;swdef_photo&nbsp;, for N from&nbsp;nfact_photo.&nbsp;Senescence due to frost commences when temperatures decrease below -5 &ordm; C.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Nitrogen in seneseced leaves</em></h4>
+<p style="margin: 0cm 0cm 10pt;">When leaf is senesced, only a small amount of nitrogen is retained in the senesced leaf, the rest is made available for re-translocation by putting it into stem N pool. The concentration of nitrogen in senesced material is specified in the barley ini file.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Crop Water Relations</h3>
+<p style="background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Potential water extraction rate</em></h4>
+<p style="margin: 0cm 0cm 10pt;">When the Barley module is coupled to APSIM-SOILWAT2, potential soil water uptake is calculated using the approach first advocated by Monteith (1986). It is the sum of root water uptake from each profile layer occupied by roots. If roots are only partially through a layer available soil water is scaled to that portion that contains roots. The potential rate of extraction in a layer is calculated using a rate constant (&nbsp;kl&nbsp;), which defines the fraction of available water able to be extracted per day. The kl factor is empirically derived, incorporating both plant and soil factors which limit rate of water uptake. Root water extraction constants (&nbsp;kl&nbsp;) must be defined for each combination of crop species and soil type.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Crop water demand</em></h4>
+<p style="margin: 0cm 0cm 10pt;">Following Sinclair (1986) and Monteith (1986), transpiration demand is modelled as a function of the current day's crop growth rate (dlt_dm_rue, see Biomass Accumulation Section), divided by the transpiration efficiency. Transpiration efficiency is related to the daylight averaged vapour pressure deficit (&nbsp;vpd&nbsp;). Transpiration demand is calculated from the daily crop growth rate limited by RUE (dlt_dm_rue),&nbsp;vpd&nbsp;, and the transpiration efficiency coefficient. In the model&nbsp;vpd&nbsp;is estimated using the method proposed by Tanner and Sinclair (1983), which requires only daily maximum and minimum temperatures. In this method, it is assumed that the air is saturated at the minimum temperature. The saturated vapour pressure is calculated at both the maximum and minimum temperatures, and the default vapour pressure deficit for the day is taken as 75% of the difference between these two vapour pressures. Crop water demand is capped to below a given multiple of potential ET (taken as Priestly-Taylor Eo from the water balance module) as specified in the barley ini file. This limits water use to reasonable values on days with high VPD or in more arid environments.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Water uptake</em></h4>
+<p style="margin: 0cm 0cm 10pt;">The actual rate of water extraction is the lesser of the potential extraction rate and the transpiration demand. If the computed potential extraction rate from the profile exceeds demand, then the extracted water is removed from the occupied layers in proportion to the values of potential root water uptake in each layer. If the computed potential extraction from the profile is less than the demand then, and the actual root water uptake from a layer is equal to the computed potential uptake.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Water stresses affecting plant growth</em></h4>
+<p style="margin: 0cm 0cm 10pt;">Soil water deficit factors are calculated to simulate the effects of water stress on different plant growth processes. Three water deficit factors are calculated which correspond to four plant processes each having different sensitivity to water stress i.e. photosynthesis (photo), leaf-expansion (expansion), phenology (pheno), and tillering (tiller). A factor of 0 is complete stress and 1 no stress. Leaf expansion is considered more sensitive to stress than photosynthesis.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Nitrogen uptake and re-translocation</h3>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Potential nitrogen supply</em></h4>
+<p style="margin: 0cm 0cm 10pt;">The model uses a simplified formulation for NO3 uptake somewhat similar in structure to that employed in water uptake.</p>
+<p style="margin: 0cm 0cm 10pt;">Potential NO3 uptake in a layer is given as</p>
+<p style="margin: 0cm 0cm 10pt;">Uptake = NO3 kg/ha x (Kln x NO3 ppm x SWFAC)</p>
+<p style="margin: 0cm 0cm 10pt;">Where Kln is a parameter constant and SWFAC is a soil water content factor based on relative soil water content between lower limit and drained upper limit.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Nitrogen demand by vegetative organs</em></h4>
+<p style="margin: 0cm 0cm 10pt;">The crop has a defined minimum, critical and maximum N concentration for each plant part. These concentration limits change with phenological stages. The maximum and minimum N concentrations can be found in Barley.ini. Demand for N in each part attempts to maintain N at the critical (non-stressed) level. N demand on any day is the sum of the demands from the pre-existing biomass of each part required to reach critical N content, plus the N required to maintain critical N concentrations in that day's produced biomass. For each plant part (leaf, stem, root) the N demand is given by:</p>
+<p style="margin: 0cm 0cm 10pt;">N_demand = dm_green * (n_conc_critic - n_conc) + dlt_dm_green * n_conc_critic.&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Where dm_green and dlt_dm_green are the existing live biomass and biomass growth rate today. N_conc and n_conc_critic are the actual and critical N concentration respectively of this plant part.</p>
+<p style="margin: 0cm 0cm 10pt;">Total crop N demand is the sum of the n demand in all vegetative parts.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Nitrogen partition in the plant</em></h4>
+<p style="margin: 0cm 0cm 10pt;">Daily total nitrogen uptake is distributed to the plant parts in proportion to their individual demands.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Grain N demand</em></h4>
+<p style="margin: 0cm 0cm 10pt;">Grain nitrogen demand starts at anthesis and is calculated from grain number, thermal time and a potential grain nitrogen filling rate (g/grain/degree day).</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Nitrogen re-translocation</em></h4>
+<p style="margin: 0cm 0cm 10pt;">If there is insufficient nitrogen supplied from senescing material or soil nitrogen uptake, grain nitrogen demand is met by re-translocating nitrogen from other plant parts. Nitrogen is available for re-translocation from leaves and stems until they reach their defined minimum N concentration.</p>
+<h4 style="margin: 10pt 0cm 0pt;"><em>Nitrogen deficits affecting plant growth</em></h4>
+<p style="margin: 0cm 0cm 10pt;">There are four N availability factors (0-1), one each for the photosynthesis, expansion, phenology and tillering. A N concentration ratio is calculated for the stover (stem + leaf) which is used as a measure of N stress, then different constants are used to convert that ratio to a deficit factor for each of the processes. A factor of 1.5 is used to restrict photosynthesis (reduces rue), 1.0 for expansion (reduces leaf area expansion) and 100 to slow phenological development (effectively disabled). For tillering a squared n_conc_ratio is used as the stress factor. As a value of 1 is no stress and 0 complete stress, phenology is least sensitive to nitrogen deficiency and grain N the most.</p>
+<p style="margin: 0cm 0cm 10pt;">N_conc_ratio=(N_conc_stover-N_conc_stover_min)/(N_conc_stover_crit-N_conc_stover_min)</p>
+<h3 style="margin: 10pt 0cm 0pt;">Plant death</h3>
+<p style="margin: 0cm 0cm 10pt;">All or some of the plants can be killed due to a variety of stresses.</p>
+<p style="margin: 0cm 0cm 10pt;">If the crop hasn't germinated within 40 days of sowing, due to lack of germinating moisture, all plants are killed.</p>
+<p style="margin: 0cm 0cm 10pt;">If the crop does not emerge with 300 o Cdays of sowing, because it was sown too deep, then all plants are killed.</p>
+<p style="margin: 0cm 0cm 10pt;">If crop is past floral initiation and LAI = 0, then all plants are killed due to total senescence.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Detachment</h3>
+<p style="margin: 0cm 0cm 10pt;">The detachment routines in&nbsp;<strong>barley&nbsp;</strong>are disabled in the barley.ini file, except the detachment of senesced roots.</p>
+<h3 style="margin: 10pt 0cm 0pt;">Effects of elevated atmospheric CO<sub>2</sub></h3>
+<p style="margin: 0cm 0cm 10pt;">Elevated levels of atmospheric CO<sub>2</sub>&nbsp;affect plant growth in this module via three mechanisms. Carbon dioxide concentration can affect radiation use efficiency, transpiration efficiency and critical leaf nitrogen concentration. The following graph shows the relative change in RUE for C4 and C3 plants (at 20 o C), TE and critical nitrogen concentration. More information can be found in Reyenga et al (1999).</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image010.gif" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="background: none repeat scroll 0% 0% white;">&nbsp;</p>
+<p style="background: none repeat scroll 0% 0% white;">&nbsp;</p>
+</div>
+
+</div><!-- End_Module_500 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Barley.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:34 GMT -->
+</html>

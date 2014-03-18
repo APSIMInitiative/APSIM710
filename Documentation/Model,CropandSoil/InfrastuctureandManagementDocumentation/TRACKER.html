@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/TRACKER.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:32 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > TRACKER
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/TRACKER.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="TRACKER.html" class="SkinObject">TRACKER</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>TRACKER</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-497"><a name="497"></a>
+<div class="Invisible"><div id="dnn_ctr497_ContentPane"><!-- Start_Module_497 --><div id="dnn_ctr497_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr497_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">What is the Data Tracker Module?</h1>
+<p style="margin: 0cm 0cm 10pt;">The tracker module allows the user to track information through a simulation and perform simple statistics to that data prior to recording it in an APSIM output file.&nbsp;<br />
+For example, tracker can record and accumulate flows of matter (e.g. rainfall, irrigation, drainage, fertiliser) between simulation outputs.&nbsp;</p>
+<h1 style="margin: 24pt 0cm 0pt;">2 Definition of statistical types</h1>
+<p style="margin: 0cm 0cm 10pt;">Statistics can be provided on either events or the states of variables within simulation execution.<br />
+In both cases, the statistic can be based upon a single &ldquo;spot&rdquo; sample at some defined point or it can be based upon an accumulated sample of values for a defined timeframe within model execution.<br />
+In all cases the statistical variable is defined in the parameter file via a specification of the form,&nbsp;<br />
+&ldquo;specification&rdquo;&nbsp;<br />
+where&nbsp;specification&nbsp;is a description of the statistic via a predefined grammar.</p>
+<h1 style="margin: 24pt 0cm 0pt;">2.1 Event Statistics</h1>
+<h2 style="margin: 10pt 0cm 0pt;">2.1.1 Spot Sample</h2>
+<p></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Statistic</strong>&nbsp;of&nbsp;<strong>Event</strong>&nbsp;as&nbsp;<strong>Alias</strong>&nbsp;<br />
+<br />
+where:<br />
+<strong>Statistic</strong>&nbsp;: is the type of statistic to be applied. Currently the only option here is &ldquo;date&rdquo;.&nbsp;<br />
+<strong>Event</strong>&nbsp;: is the event on which the statistic is to be applied. This can be any event within the APSIM simulation.&nbsp;<br />
+<strong>Alias</strong>&nbsp;: is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic.&nbsp;<br />
+<br />
+<br />
+Sample 1 &ndash; Report the sowing date of the last wheat crop</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">date of wheat.sowing as wheat_sowing_date </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 2 &ndash; Report the harvesting date of the last wheat crop</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">date of wheat.harvesting as wheat_harvest_date</pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;"></p>
+<h2 style="margin: 10pt 0cm 0pt;">2.1.2 Accumulated Samples</h2>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Statistic</strong>&nbsp;of&nbsp;<strong>Event</strong>&nbsp;from&nbsp;<strong>StartEvent</strong>&nbsp;to&nbsp;<strong>EndEvent</strong>&nbsp;as&nbsp;<strong>Alias</strong><br />
+<br />
+where<br />
+<strong>Statistic</strong>&nbsp;: is the type of statistic to be applied. Currently the only option here is &ldquo;count&rdquo;.&nbsp;<br />
+<strong>Event</strong>&nbsp;: is the event on which the statistic is to be applied. This can be any event within the APSIM simulation.&nbsp;<br />
+<strong>StartEvent</strong>&nbsp;: is the APSIM event which signals the start of the sampling window.&nbsp;<br />
+<strong>EndEvent</strong>&nbsp;: is the APSIM event which signals the start of the sampling window.&nbsp;<br />
+<strong>Alias</strong>&nbsp;: is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic.&nbsp;<br />
+<br />
+Sample 1 &ndash; Count the number of lucerne cuts since the last report to the output file.</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">count of lucerne.harvesting from reported to now as number_of_cuts </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 2 &ndash; Count the number of days since chickpea was last sown</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">count of tick from chickpea.sowing to now as days_since_chickpea_sowing </pre>
+</div>
+<h2 style="margin: 10pt 0cm 0pt;">2.2 State Variable Statistics</h2>
+<h3 style="margin: 10pt 0cm 0pt;"><span style="font-size: 16px;">2.2.1 Spot Sample</span>&nbsp;</h3>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Statistic</strong>&nbsp;of&nbsp;<strong>Variable</strong>&nbsp;on&nbsp;<strong>Event</strong>&nbsp;as&nbsp;<strong>Alias</strong><br />
+<br />
+where<br />
+<strong>Statistic</strong>&nbsp;: is the type of statistic to be applied. Currently the only option for the user is &ldquo;value&rdquo;.&nbsp;<br />
+<strong>Variable</strong>&nbsp;: is the APSIM state variable upon which statistics are calculated. This can be any variable within the APSIM simulation.&nbsp;<br />
+<strong>Event</strong>&nbsp;: is the event on which the statistic is to be applied. This can be any event within the APSIM simulation.&nbsp;<br />
+<strong>Alias</strong>&nbsp;: is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic. <br />
+<br />
+Sample 1 &ndash; Report the yield of the last wheat crop</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">value of wheat.yield on wheat.harvesting as wheat_yield </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 2 &ndash; Report the total soil water at the sowing of the last wheat crop</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">value of sw_dep() on wheat.sowing as wheat_sowing_sw </pre>
+</div>
+<h3 style="margin: 10pt 0cm 0pt;"><span style="font-size: 16px;">2.2.2 Accumulated Samples</span></h3>
+<p style="margin: 0cm 0cm 10pt;"><strong></strong></p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Statistic</strong>&nbsp;of&nbsp;<strong>Variable</strong>&nbsp;on [&nbsp;<strong>last</strong> nnn&nbsp;]&nbsp;<strong>Event</strong>&nbsp;[from&nbsp;<strong>StartEvent</strong>&nbsp;to&nbsp;<strong>EndEvent</strong>] as&nbsp;<strong>Alias</strong><br />
+<br />
+where<br />
+<strong>Statistic</strong>&nbsp;: is the type of statistic to be applied. Currently the user can choose from &ldquo;sum&rdquo;, &ldquo;average&rdquo;, &ldquo;maximum&rdquo; and &ldquo;minimum&rdquo;.&nbsp;<br />
+<strong>Variable</strong>&nbsp;: is the APSIM state variable upon which statistics are calculated. This can be any variable within the APSIM simulation.&nbsp;<br />
+<strong>last</strong> nnn&nbsp;: is an optional specification to allow the user to specify a moving sample set.&nbsp;<br />
+<strong>Event</strong>&nbsp;: is the event on which the statistic is to be applied. This can be any event within the APSIM simulation.&nbsp;<br />
+<strong>StartEvent</strong>&nbsp;: is the APSIM event which signals the start of the sampling window.&nbsp;<br />
+<strong>EndEvent</strong>&nbsp;: is the APSIM event which signals the start of the sampling window.&nbsp;<br />
+<strong>Alias</strong>&nbsp;: is the tracker output variable alias to be applied to this statistic. This is the name by which other modules can access the value of this statistic.&nbsp;<br />
+<br />
+Note:&nbsp;the &ldquo;from&nbsp;StartEvent&nbsp;to&nbsp;EndEvent" is optional only if the &ldquo;&nbsp;last nnn&rdquo; is specified.&nbsp;<br />
+<br />
+Sample 1 &ndash; Report the accumulated rainfall since the last report to the output file</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">sum of rain on start_of_day from reported to now as rainfall </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 2 &ndash; Report the accumulated rainfall for the last 3 days</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">sum of rain on last 3 start_of_day as rain3 </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 3 &ndash; Report the accumulated lucerne harvest since the last report to the output file</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">sum of lucerne.biomass on lucerne.harvesting from reported to now &hellip; </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">as cut_biomass </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 4 &ndash; Report the in-crop rainfall for the last wheat crop</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">sum of met.rain on met.newmet from wheat.sowing to wheat.harvesting as wheat_incrop_rain </pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Sample 5 &ndash; Report the 7 day moving average of the wheat crop water stress factor</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">average of wheat.swdef_photo on last 7 end_of_day from wheat.sowing &hellip; </pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">to wheat.harvesting as wheat_weekly_stress </pre>
+</div>
+</div>
+
+</div><!-- End_Module_497 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/TRACKER.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:32 GMT -->
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/StockModuleDocumentation/StockScienceConverter.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:23 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Stock Module Documentation > Stock Science Converter
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/StockModuleDocumentation/StockScienceConverter.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../StockModuleDocumentation.html" class="SkinObject">Stock Module Documentation</a><span class="Sep"></span><a href="StockScienceConverter.html" class="SkinObject">Stock Science Converter</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Stock Science Converter</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-558"><a name="558"></a>
+<div class="Invisible"><div id="dnn_ctr558_ContentPane"><!-- Start_Module_558 --><div id="dnn_ctr558_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr558_HtmlModule_lblContent" class="Normal">
+	<h1><a name="_Toc350328252">Summary</a></h1>
+<p>The Stock Science Converter APSIM module provides science conversions between the Ausfarm-Stock component and APSIM modules. This is done on an as-needed basis, converting incompatible data names, units and structures, translating events and transforming data to fit the science model. Compatible data communications occur directly between Ausfarm-Stock and APSIM modules.</p>
+<p>The Stock Science Converter (Converter) must handle a number of two-way conversions. The stock can eat herbage from a number of sources within the field, such as multiple APSIM crops and surface organic matter. This requires the respective herbage sources being identified and the herbage stored into pools of digestibility classes. After the stock have eaten and removed herbage from these pools, the appropriate amounts must be removed from each of the herbage sources. To handle this, the APSIM module containing the herbage is represented to the stock by a copy (instance) of the converter. For example, suppose lablab is on offer as a herbage pool in the module APSIM-lablab. An instance of the converter, named cattlelablab, would represent APSIM-lablab to Ausfarm-Stock, acting as an intermediary or translator between the two modules. </p>
+<p>Another set of conversions relate to the herd of stock in the field, which include management and the return of organic and inorganic matter to the field through excreta. These conversions are independent of the herbage sources and here the Converter interacts with the appropriate APSIM modules, such as SoilN, SurfaceOM and Manager. In this case, another instance or copy of the Converter handles these whole of herd conversions e.g. cattleconverter.</p>
+<p>To achieve these different conversions, the Converter has two major components, non-herbage and herbage. </p>
+<p>The non-herbage component services the whole of herd information not directly related to herbage, such as return of excreta components, management events for buy, move and sell and data translation such as daylength.</p>
+<p>The herbage component services information directly related to grazing of APSIM crops and surface organic matter. Because the data relating to each is different, the herbage component consists of two sub-components, plant and surfaceOM.&nbsp; The plant and surfaceOM sub-components service the removal of herbage and residues by the stock module from the plant and surface organic matter modules respectively.</p>
+<h1><a name="_Toc350328253">Introduction</a></h1>
+<p>Plug-n-Play simulation architectures such as APSIM provide the framework and protocol for data exchange between modules. This facilitates the adaptation of other models by providing an APSIM communications protocol interface and creating a system boundary to the model that aligns with the system boundaries of the APSIM modules it communicates with. </p>
+<p>APSIM uses a common modelling protocol which allows components from other systems using the same protocol to be plugged into APSIM without modification, such as AusFarm components, one being a Stock component. </p>
+<p>&nbsp;</p>
+<p>Models adapted to the APSIM environment sometimes have different system boundaries and more commonly their science communication is not compatible with other APSIM modules. This incompatibility is often in the form of data content, data units, data structure or events which can be corrected by converting the science each way. One approach would be to enclose the module in a wrapper which would provide a complete interface between the module and the APSIM system, thus hiding the modules interface from other APSIM modules. The approach taken here is to provide a science converter module which interacts with the introduced module and other APSIM modules on an as-needed basis, thus only providing conversions for the incompatible data. This approach relies on the names of the incompatible data being different to data names and events elsewhere in the system.</p>
+<p>The Stock Science Converter APSIM module provides science conversions between the Ausfarm-Stock component and APSIM modules. This is done on an as-needed basis, converting incompatible data names, units and structures, translating events and transforming data to fit the science model. Compatible data communications occur directly between Ausfarm-Stock and APSIM modules.</p>
+<h1><a name="_Toc350328254">Module components</a></h1>
+<p>The Stock Science Converter (Converter) must handle a number of two-way conversions. The stock can eat herbage from a number of sources within the field, such as multiple APSIM crops and surface organic matter. This requires the respective herbage sources being identified and the herbage stored into pools of digestibility classes. After the stock have eaten and removed herbage from these pools, the appropriate amounts must be removed from each of the herbage sources. To handle this, the converter represents the sources with instances of itself, each instance representing a herbage source provided to the stock e.g. <em>cattlelablab</em>.</p>
+<p>Another set of conversions relate to the herd of stock in the field, which include management and the return of organic and inorganic matter to the field through excreta. These conversions are independent of the herbage sources and the Converter interacts with the appropriate APSIM modules, such as SoilN, SurfaceOM and Manager. Another instance of the Converter handles these whole of herd conversions e.g. <em>cattleconverter</em>.</p>
+<p>To achieve these different conversions, the Converter has two major components, non-herbage and herbage. </p>
+<p>The non-herbage component services the whole of herd information not directly related to herbage, such as return of excreta components to surface organic matter, soilN and soilP, management events for buy, move and sell and data translation such as daylength.</p>
+<p>The herbage component services information directly related to grazing of APSIM crops and surface organic matter. Because the data relating to each is different, the herbage component consists of two sub-components, plant and surfaceOM.&nbsp; The plant and surfaceOM sub-components service the removal of herbage and residue by the stock module from the plant and surface organic matter modules respectively.</p>
+<h1><a name="_Toc350328255">StockScienceConverter Module</a></h1>
+The Stock Science Converter APSIM module provides science conversions between the Ausfarm-Stock component and APSIM modules. This is done on an as-needed basis, converting incompatible data names, units and structures, translating events and transforming data to fit the science model. The module is instantiated once for the non-herbage conversions and then for herbage conversions for each crop being grazed.
+<h2>Non-herbage component</h2>
+<p>The non-herbage component services the information not directly related to herbage, such as return of excreta components to surface organic matter, soilN and soilP, management events for buy, move and sell and data translation such as daylength.<br />
+<br />
+When an <em>add_excreta</em> event is received from the stock module, the converter extracts the urea N and phosphate P from the <em>urine</em> component of the excreta and deposits a nominated fraction of the amounts into the top layers of soilN and soilP modules. Currently, the sulphate S and ash alkalinity amounts are ignored.<br />
+The converter extracts the faeces_om component and sends an <em>add_surfaceom</em> event along with the organic matter component. The SurfaceOM module receives this event and adds the DM etc to its pools.<br />
+<br />
+<em>Buystock</em>, <em>sellstock</em> and <em>movestock</em> events received from the manager module are sent on to stock as <em>buy</em>, <em>sell</em> and <em>move</em> events respectively with reconstructed parameters.</p>
+<h2>Herbage component</h2>
+<p>The herbage component services information directly related to the actions of stock on APSIM plant and surface organic matter. The Herbage component exchanges data with the stock module and instantiates a sub-component (herbage model) for either plant or surfaceom (surface organic matter)&nbsp; interactions. This sub-component exchanges data with plant or surface organic matter modules and carries out the appropriate translations between stock and herbage science<br />
+<br />
+When the Herbage component receives a request from stock for <em>plant2stock</em> data, it fills this property with data from the herbage model and sends it to stock. <br />
+<br />
+When the Herbage component receives a <em>Remove_herbage</em> event, it gives the associated data about quantity of herbage removed to the herbage model.<strong></strong></p>
+<h2>Plant sub-component</h2>
+<p>The plant sub-component (herbage model) services the removal of herbage by the stock module from the plant module. It identifies the crop it interacts with and represents to stock by the <em>herbage_module_name</em> property. <br />
+<br />
+When its parent Herbage component requests herbage data, it obtains the dry weights from the nominated crop, for green and senesced material, along with the associated N, P and digestibility. It then transforms the science to that of stock and gives this data to the Herbage component.<br />
+<br />
+When its parent Herbage component passes the herbage removed by the stock, it transforms this data to plant science form and sends it as deltas with a <em>remove_crop_biomass</em> event to the crop it represents. A trampling effect is calculated and sent with a <em>detach_crop_biomass_rate</em> event to the crop for detachment of senesced leaf.<br />
+<br />
+Conversion of plant science to stock science consists of <strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; distributing the plant part dry-weights over six digestibility class pools defined by the minimum, maximum and average digestibilites of each plant part. The distribution is calculated using a bell shaped polynomial, with the average digestibility determining the class with the highest proportion of dry-matter and the minimum and maximum digestibilities determining the highest and lowest digestibility classes&nbsp; (Freer <em>et al</em>, 1997; Freer <em>et al</em>, 2003). <br />
+<br />
+As plant parts are distributed into the stock digestibility class pools, a record of the proportions of each plant part put into each class pool is kept. The plant part dry-weights and these proportions are then used to calculate the contribution of each plant part to each digestibility class pool. These contributions are then used to distribute the herbage removed from the six digestibility class pools into the plant part deltas. The assumption is that all plant parts in a digestibility class pool are removed or grazed proportionally to their contribution to that pool.<br />
+<br />
+Seeds (meal and oil) are distributed into two digestibility classes (ripe/unripe) (Moore, 2005). The crop stage is used to determine the class, so at and after maturity the seeds are put into the ripe class, otherwise they are stored in the unripe class.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each digestibility class pool, calculating crude protein (Cp) concentration from the N content and a Cp:N ratio.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each digestibility class pool, calculating phosphorus (P) concentration if P is not available from the plant module, using a default N:P ratio.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each digestibility class pool, calculating sulphur concentration using a default N:S ratio.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each digestibility class pool, calculating protein degradability as dry-matter digestibility + 0.1 (Moore, pers. com.).<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each digestibility class pool, calculating ash alkalinity, using default values if it is not available from the plant module.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each digestibility class pool, calculating the height ratio, an index of the bulk density of the herbage (Moore, pers. com.).<strong></strong></p>
+<h2>Surfaceom sub-component</h2>
+<p>The surfaceOM sub-component services the removal of residue by the stock module from surface organic matter module.</p>
+<h1><a name="_Toc350328256">References</a></h1>
+<p>Freer M, Moore AD &amp; Donnelly JR (1997). GRAZPLAN: decision support systems for Australian grazing enterprises. II. The animal biology model for feed intake, production and reproduction and the GrazFeed DSS. <em>Agricultural Systems</em> <strong>54</strong>, 77-126.</p>
+<p>Freer M, Moore AD &amp; Donnelly JR (2003). The GRAZPLAN animal biology model for sheep and cattle and the GrazFeed decision support tool. <em>CSIRO Plant Industry Technical Paper</em>, September 2003.</p>
+<p>Moore AD, Donnelly JR &amp; Freer M, (1997). GRAZPLAN: decision support systems for Australian grazing enterprises. III. Pasture Growth and Soil Moisture Submodels, and the GrassGro DSS. <em>Agricultural Systems</em> <strong>54</strong>, 77-126.</p>
+<p>Moore AD (2005). Component Description &ndash; Stock. Internal document, March 2005.</p>
+<h1><a name="_Toc350328257">Appendix 1</a></h1>
+<p>The components can be described in terms of properties and events. Properties and events can be described in terms of published and subscribed with properties additionally having initialisation and owned.</p>
+<ul style="margin-top: 0cm; list-style-type: disc;">
+    <li>Initialisation properties are parameters read at the start of the simulation.</li>
+    <li>Owned properties are owned by the module. These properties are passively available to other modules.</li>
+    <li>Published properties and events are owned by the module. These properties and events are actively sent to the system.</li>
+    <li>Subscribed properties and events are those the module requires to start. These properties are actively sought from the system when needed while these events are passively received and acted upon.</li>
+</ul>
+<p>&nbsp;</p>
+<h2>StockScienceConverter</h2>
+<h3>Properties - Initialisation</h3>
+<p>Conversion_model (nonherbage/herbage) &ndash; instantiates a nonherbage or herbage component.</p>
+<h3>Non-herbage</h3>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Properties</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Initialisation</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Debug</em> (on/off) - for producing detailed daily information in summary file.</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>stock_module</em> &ndash; simulation name of stock module</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>fraction_urine_added</em> &ndash; fraction of excreted urine added to soil. The remainder is assumed to be dropped at shade and watering points.</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>fraction_faeces_added</em> - fraction of excreted faeces added to surface organic matter. The remainder is assumed to be dropped at shade and watering points.</p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Owned</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Daylength</em> (hr) &ndash; daylength including civil twilight for use by stock (Moore, 2005).<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Published</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Dlt_urea</em> (kg/ha) &ndash; adds Urea N excreted in urine to soilN.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Dlt_labile_p</em> (kg/ha) &ndash; adds phosphate P excreted in urine to soilP.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Day_length</em> (hr) daylength including civil twilight<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Urea</em> &ndash; to obtain number of layers in urea profile for publishing dlt_urea<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Labile_p</em> -&nbsp; to obtain number of layers in P profile for publishing dlt_labile_p<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Events</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Published</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Buy</em> &ndash; sends a buy event to stock (Moore, 2005).<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Sell</em> &ndash; sends a sell event to stock (Moore, 2005).<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Move</em> &ndash; sends a move event to stock (Moore, 2005).<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Add_surfaceom</em> &ndash; adds faeces drymatter with its N, P, S content and ash alkalinity to surface organic matter.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Buystock</em> &ndash; event from the manager to buy stock. Parameters are the same as for the buy event.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Sellstock</em> &ndash; event from manager to sell stock. Parameters are the same as for the sell event.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Movestock</em> &ndash; event from manager to move stock. Parameters are the same as for the move event.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Add_excreta</em> &ndash;event from stock describing excretion of faeces and urine (Moore, 2005). <strong></strong></p>
+<h3>Herbage</h3>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Properties</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Initialisation</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Debug</em> (on/off) - for producing detailed daily information in summary file.</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>herbage_model</em><strong> </strong>(plant/ surfaceom) &ndash; instantiates a plant or surfaceom sub-component.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Events</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Remove_herbage</em> &ndash; event from stock describing removal of herbage and seeds (Moore, 2005).</p>
+<p style="margin: 0cm 0cm 0.0001pt 18pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Properties</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Owned</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>plant2stock</em> &ndash; description of feed on offer for use by stock (Moore, 2005).</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>herbage_trampling </em>&ndash; trampling factor by stock for reporting.</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>dm_feed_on_offer </em>&ndash; drymatter array of feed on offer to stock in each of the 6 herbage digestibility classes and 2 seed digestibility classes, for reporting.</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>dm_feed_removed </em>&ndash; drymatter array of feed removed by stock in each of the 6 herbage digestibility classes and 2 seed digestibility classes, for reporting. </p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>dmd_avg_feed_removed </em>&ndash; weighted average drymatter digestibility of feed removed by stock.</p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Trampling</em> &ndash; obtained from stock as trampling effect on herbage (Moore, 2005; Moore <em>et al</em>, 1997). Currently receiving 0. NEEDS FIXING<strong></strong></p>
+<h3>Plant</h3>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Properties</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Initialisation</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Debug</em> (on/off) - for producing detailed daily information in summary file.</p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>herbage_module_name</em> (lablab/wheat/&hellip;) &ndash; identifies the crop this instance represents to stock. This allows multiple instances representing multiple crops in the system.<strong></strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Owned</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>dm_parts_removed</em> &ndash; array of drymatter grazed from each plant part, for reporting. In order of green (leaf, stem, pod, meal, oil) and senesced.</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For each plant part (Leaf, Stem, Pod, Meal, Oil), green and senesced drymatter (<em>GreenWt</em>, <em>SenescedWt</em>) along with the N and P content (<em>GreenN</em>, <em>SenescedN</em>, <em>GreenP</em>, <em>SenescedP</em>) and digestibilities (<em>digestibility_max_dm_green</em>/<em>senesced</em>, <em>digestibility_avg_dm_green</em>/<em>senesced</em>, <em>digestibility_min_dm_green</em>/<em>senesced</em>)</p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Stage</em> and <em>stage_name</em> &ndash; from plant, used to determine seed class (ripe/unripe)</p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>Height</em> &ndash; from plant, used to calculate height ratio for herbage description in plant2stock property (Moore, 2005).</p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Events</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Published</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>remove_crop_biomass</em> &ndash; event to plant describing the drymatter of each plant component removed.</p>
+<p style="margin: 0cm 0cm 0.0001pt 126pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>detach_crop_biomass_rate</em> &ndash; event to plant describing the fraction of senesced material to detach from trampling (Moore <em>et al</em>, 1997).</p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<h3>Surfaceom</h3>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Properties</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Initialisation</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Published</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 54pt; text-indent: -18pt;">o&nbsp;&nbsp; <strong>Events</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Published</strong></p>
+<p style="margin: 0cm 0cm 0.0001pt 90pt; text-indent: -18pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Subscribed</strong></p>
+<h1><a name="_Toc350328258">Appendix 2</a></h1>
+<p>The plant sub-component (herbage model) initialises with the following parameters located in the StockScienceConverter.ini file. </p>
+<ul style="margin-top: 0cm; list-style-type: disc;">
+    <li><em>dmdValue</em>&nbsp; <br />
+    This is set to six digestibility classes into which the herbage is classified. Usually 0.8, 0.7, 0.6 0.5, 0.4, 0.3.</li>
+    <li><em>specific_detach_rate</em> <br />
+    Daily detachment rate of senesced herbage due to trampling by stock. Set to 0.000002 (ha/kg animal/day) (Moore <em>et al</em>, 1997)</li>
+    <li><em>proportion_legume</em> <br />
+    This is the proportion of legume in this herbage. Usually 0.0 or 1.0</li>
+    <li><em>dmd_seed</em> <br />
+    The digestibility of unripe and ripe seed. Usually 0.80, 0.80 (Moore, pers. com.).</li>
+    <li><em>seed_class</em> <br />
+    Equivalent digestibility class for concurrence with selective grazing of herbage classes - 1 = 0.8, 2 = 0.7, etc. Usually 1, 1. (Moore, pers. com.)</li>
+    <li><em>cp_n_ratio</em> <br />
+    The crude protein to Nitrogen ratio used to estimate the crude protein content of herbage. Set to 6.25(Moore, pers. com.). </li>
+    <li>default P concentration for each plant part. <br />
+    Inactivated. This is read but currently over-ridden by n:P ratio. E.g. <em>p_conc_green_leaf_default</em></li>
+    <li>default Ash alkalinity for each plant part. <br />
+    E.g.<em> ash_alk_green_leaf_default</em></li>
+    <li>default N:S concentration ratio for each plant part. <br />
+    Used to estimate the Sulphur content of the herbage for its Nitrogen content. E.g.<em> ns_ratio_green_leaf_default</em></li>
+    <li>default N:P concentration ratio for each plant part. <br />
+    Used to estimate the Phosphorus content of the herbage from its Nitrogen content. E.g. <em>np_ratio_green_leaf_default</em></li>
+</ul>
+<p>&nbsp;<img alt="" src="../../portals/0/Documentation/Stock/image013.png" /></p>
+</div>
+
+</div><!-- End_Module_558 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/StockModuleDocumentation/StockScienceConverter.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:23 GMT -->
+</html>

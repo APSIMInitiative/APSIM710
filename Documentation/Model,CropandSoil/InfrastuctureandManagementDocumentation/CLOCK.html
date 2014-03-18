@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/CLOCK.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:28 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > CLOCK
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/CLOCK.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="CLOCK.html" class="SkinObject">CLOCK</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>CLOCK</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-483"><a name="483"></a>
+<div class="Invisible"><div id="dnn_ctr483_ContentPane"><!-- Start_Module_483 --><div id="dnn_ctr483_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr483_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">Description</h1>
+<p style="margin: 0cm 0cm 10pt;">The APSIM Clock module is a mandatory module for having the simulation progress through time.&nbsp;<br />
+<br />
+<strong>Module Output Variables</strong></p>
+<p style="margin: 0cm 0cm 10pt;">The APSIM Time Clock Module can provide the values of several state variables for reporting to an output file or use by other modules.<br />
+<img alt="" src="../../../portals/0/Documentation/Infrastructure/image001.jpg" /><br />
+<br />
+&dagger; This assumes a 52 week year with the duration of each week is adjusted so that the first week starts on 1 st of January and the last week ends on the 31st of December.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Using Sub-Daily Timesteps</h1>
+<p style="margin: 0cm 0cm 10pt;">It is possible to use timesteps to one minute in resolution within the current APSIM framework with the following constraints.</p>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The timestep is constant throughout the simulation</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The timestep is a factor of 1440 mins/day (rational fraction of one day)</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The met file contains data at the same timestep resolution for all days within the simulation period</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The simulation will start at the beginning of a day and finish at the end of a day</p>
+<p style="margin: 0cm 0cm 10pt 36pt;" class="ListParagraphCxSpLast">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It is the user's responsibility to ensure that all modules with the simulation are both capable and appropriately configured to operate on these timesteps.<br />
+<br />
+</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">start_date = 1/1/1988&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! simulation starting date</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">end_date = 31/12/1988&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! simulation ending date</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">time-step = 60 (min)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ! simulation timestep</pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">The example above will specify the clock to step through the simulation essentially with 24 tick cycles per day.&nbsp;There is no thorough testing for synchrony of modules though some modules will give error messages if they perceive possible timestep errors. If the timestep parameter is not specified the clock module will default to a timestep of 1 day (1440 mins), that is, one tick cycle per day.<br />
+<br />
+</p>
+<h1 style="margin: 24pt 0cm 0pt;">Events</h1>
+<p style="margin: 0cm 0cm 10pt;">The clock module produces several events that can be useful, particularly when using the TRACKER module.<br />
+<img alt="" src="../../../portals/0/Documentation/Infrastructure/image002.jpg" /></p>
+</div>
+
+</div><!-- End_Module_483 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/CLOCK.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:28 GMT -->
+</html>

@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Sorghum.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Crop Module Documentation > Sorghum
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Sorghum.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../CropModuleDocumentation.html" class="SkinObject">Crop Module Documentation</a><span class="Sep"></span><a href="Sorghum.html" class="SkinObject">Sorghum</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Sorghum</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-521"><a name="521"></a>
+<div class="Invisible"><div id="dnn_ctr521_ContentPane"><!-- Start_Module_521 --><div id="dnn_ctr521_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr521_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">SORGHUM Module Scope</h1>
+<p style="margin: 0cm 0cm 10pt;">The&nbsp;sorghum&nbsp;module simulates the growth of a sorghum crop in a daily time-step (on an area basis not single plant). Sorghum growth in this model responds to climate (temperature, rainfall and radiation from the&nbsp;met&nbsp;module), soil water supply (from the&nbsp;soilwat&nbsp;module) and soil nitrogen (from the&nbsp;soiln&nbsp;module). The&nbsp;sorghum&nbsp;module returns information on its soil water and nitrogen uptake to the&nbsp;soilwat&nbsp;and&nbsp;soilnmodules on a daily basis for reset of these systems. Information on crop cover is also provided to the&nbsp;soilwat&nbsp;module for calculation of evaporation rates and runoff. Sorghum stover and root residues are &lsquo;passed' from&nbsp;sorghum&nbsp;to the&nbsp;residue&nbsp;and&nbsp;soiln&nbsp;module respectively at harvest of the sorghum crop.</p>
+<p style="margin: 0cm 0cm 10pt;">A list of the module outputs is provided in the &lsquo;Sorghum module outputs' section below, but basically the module will predict leaf area development, N% and biomass of stover; depth, N% and biomass of roots; grain N% and biomass; grain yield and N%, grain size and grain number all on a daily basis.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Sorghum Module History</h1>
+<p style="margin: 0cm 0cm 10pt;">The sorghum module was originally developed from the QSORG model (Hammer and Muchow 1991) with features of the AUSIM model (Carberry and Arbrecht 1991) but has been extensively revised and improved since then.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Sorghum Module Structure</h1>
+<p style="margin: 24pt 0cm 0pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image049.gif" /></p>
+<p style="margin: 24pt 0cm 0pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 1: Order of key simulation steps in the sorghum module.</em></p>
+<h1 style="margin: 24pt 0cm 0pt;">Sorghum Module Components<a href="../../../index-2.html"></a></h1>
+<h2 style="margin: 10pt 0cm 0pt;">Phenology</h2>
+<p style="margin: 0cm 0cm 10pt;">There are 11 crop stages and nine phases (time between stages) in the&nbsp;<strong>sorghum&nbsp;</strong>module (Table 1), and commencement of each stage (except for sowing to germination which is driven by soil moisture) is determined by accumulation of thermal time. Each day the phenology routines calculate today's thermal time (in degree days) from 3-hourly air temperatures interpolated from the daily maximum and minimum temperatures. Thermal time is calculated using the relationship in Figure 1 with the eight 3-hour estimates averaged to obtain the daily value of thermal time (in growing degree days) for the day. Different thermal time relationships are used for development before and during drain-filling. These daily thermal time values are cumulated into a thermal time sum which is used to determine the duration of each phase. Between the stage of emergence and flowering the calculated daily_thermal_time is reduced by water or nitrogen stresses, resulting in delayed phenology when the plant is under stress.</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image050.gif" />&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 2: Relationship between temperature and thermal time accumulation. In the sorghum module different relationships are used for development before and during grainfilling.</em></p>
+<p style="margin: 0cm 0cm 10pt;"><a href="../../../index-2.html"></a><em>Table 1: Phenological stages simulated in the sorghum module.&nbsp;</em></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Stage code</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Stage name</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Stage description</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">sow</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Sowing</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">germ</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Germination</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">3</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">emerg</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Seedling emergence</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">4</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End_juv</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End of the juvenile phase</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">5</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">fi</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Floral initiation</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">6</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">flag</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Appearance of the flag leaf</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">7</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Start_grain_fill</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Start of linear phase of grain filling</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">8</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End_grain_fill</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End of linear phase of grain filling</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">9</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">maturity</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Physiological maturity</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">10</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Harvest_ripe</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Ready for harvest</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 64.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">11</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 77.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">End_crop</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 189pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Crop finished and absent from simulation</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">The thermal time between sowing and germination is dependent upon soil water status. The phase between germination and emergence includes an effect of the depth of sowing on the thermal time target. The duration between emergence and flag leaf appearance is determined by the total number of leaves destined to appear on the plant, and the rate at which they appear, which is determined by temperature (see below). The total number of leaves is equal to the number in the seed at germination (4) plus the number subsequently initiated at a rate of 21 o Cdays per leaf, until floral initiation is reached. Hence the timing of floral initiation will determine the total leaf number and the timing of the appearance of the flag leaf and flowering. The phase between emergence and floral initiation is composed of a cultivar-specific period of fixed thermal time, commonly called the basic vegetative or juvenile phase. Between the end of the juvenile phase and floral initiation the thermal development rate is sensitive to photoperiod (calculated as a function of day of year and latitude) if the cultivar is photoperiod sensitive. The model assumes that sorghum, as a short day plant, will have a longer phase (dependent upon cultivar) between the end of the juvenile phase and initiation if photoperiods exceed the base photoperiod. There are cultivar-specific fixed thermal time durations for the subsequent phases between flowering and the start of grain fill, between the start and end of grainfill, between the end of grainfill and maturity, and between maturity and harvest ripe. Table 2 gives phenology parameters currently available in the sorghum module.</p>
+<h2 style="margin: 10pt 0cm 0pt;">Biomass accumulation (Photosynthesis)</h2>
+<p style="margin: 0cm 0cm 10pt;">Each day two estimates of the daily biomass production are calculated, one limited by available water for transpiraton (eqn 1), and the other limited by radiant energy (eqn 2). The minimum of these two estimates is the actual biomass production for the day.</p>
+<p style="margin: 0cm 0cm 10pt;">delta_drymatter_transpiration = soil_ water_ supply * transpiration_efficiency eqn 1.</p>
+<p style="margin: 0cm 0cm 10pt;">Note: transpiration_efficiency is derived from the transpiration_efficiency_coefficient (=0.009 kPa) and the vapour pressure deficit (vpd) estimated from daily temperatures.</p>
+<p style="margin: 0cm 0cm 10pt;">dlt_drymatter_potential = rue *radiation_interception eqn 2.</p>
+<p style="margin: 0cm 0cm 10pt;">Note rue (radiation-use efficiency) is 1.25 g MJ-1 from emergence to end of grain filling. Radiation interception is calculated from leaf area index and a radiation extinction coefficient, which varies with row spacing (Fig. 3). If row spacing is not supplied in the sowing command, the default row spacing of 0.75 m is used, corresponding to an extinction coefficient of 0.40.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em><img alt="" src="../../../portals/0/Documentation/Crops/image051.gif" /></em></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 3: Relationship between the radiation extinction coefficient and row spacing used in the sorghum module.</em><a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Biomass partitioning</h2>
+<p style="margin: 0cm 0cm 10pt;">Daily biomass production is partitioned to different plant parts in different ratios depending on crop stage.</p>
+<p style="margin: 0cm 0cm 10pt;">Until the end of juvenile phase the root:shoot ratio is maintained at 1.0, and then decreases to a value of 0.087 at flowering.</p>
+<p style="margin: 0cm 0cm 10pt;">Between emergence and flag leaf appearance the proportion of biomass produced that is partitioned to leaf increases exponentially as leaves appear (Fig. 4).</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image052.gif" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Between the stage floral initiation and flag leaf appearance, the biomass remaining after allocation to leaf is allocated between stem and developing panicle in the ration 1:0.30. After leaf growth has ceased at flag leaf appearance, biomass is partitioned between stem and panicle only until the start of grain filling, whereupon partitioning to grain only occurs. The sorghum module allows a total retranslocation of no more than 15 and 20% of leaf and stem biomass present at the start of grainfilling, respectively</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 4: Fraction of daily biomass produced that is partitioned to leaf as a function of leaf number.</em></p>
+<p style="margin: 0cm 0cm 10pt;">Grain demand for carbohydrate (biomass) is calculated as a function of grain number. The number of grains set per plant is determined by the average daily growth rate per plant between floral initiation and the start of grain filling.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Leaf development<a href="../../../index-2.html#Leaf_development_7" title="Link to this Section"></a></h2>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Leaf appearance rate&nbsp;</strong>is driven by thermal time, the last 3.5 leaves before the flag leaf appear each 20 o Cdays, before which a leaf appears every 41 o Cdays.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Potential LAI&nbsp;</strong>is a product of leaf area per plant, number of plants per m2 and the water stress factor for expansion (see water deficits section below). Leaf area per plant is simulated as a sigmoidal function of thermal time since emergence, the parameters of which are cultivar-specific (see Table 2).</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Actual LAI&nbsp;</strong>is less than the potential LAI if there is not sufficient biomass partitioned to leaf on that day. Maximum specific leaf area (SLA_MAX) defines the maximum leaf area (m 2 ) that can be expanded per gram of biomass, and is set to a value of 450 cm 2 g -1 .</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Leaf senescence&nbsp;</strong>There are four causes of leaf senesence; age, light competition, water stress and frost. The&nbsp;<strong>sorghum&nbsp;</strong>senescence routines calculate a senesced LAI for each stress each day and take the maximum of the four values as the day's total senescence.</p>
+<p style="margin: 0cm 0cm 10pt;">This&nbsp;<strong>senescence due to age&nbsp;</strong>occurs on a per plant basis and is a function of thermal time elapsed since flowering. The parameters defining the rate of whole-plant leaf area senescence due to age are cultivar-specific.</p>
+<p style="margin: 0cm 0cm 10pt;">Above an LAI of 4.0&nbsp;<strong>light competition&nbsp;</strong>causes leaf area to be lost. The LAI senesced because of light competition is related to the amount LAI exceeds 4.0 (see eqns 3 and 4).</p>
+<p style="margin: 0cm 0cm 10pt;">sensLAI_light_fac = 0.008 *(LAI- 4.0) eqn 3.</p>
+<p style="margin: 0cm 0cm 10pt;">delta_sensLAI_light = LAI * sensLAI_light_fac eqn 4.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Water stress&nbsp;</strong>during crop growth will cause leaf senescence (eqns 5 and 6).</p>
+<p style="margin: 0cm 0cm 10pt;">sensLAI_water_fac = 0.05 * (1 - sorghum_swdef(photo)) eqn. 5.</p>
+<p style="margin: 0cm 0cm 10pt;">delta_sensLAI_water = LAI * sensLAI_water_fac eqn 6.</p>
+<p style="margin: 0cm 0cm 10pt;">Note: the calculation of the water stress factor sorghum_swdef(photo) is descibed in the &lsquo;water deficits' section below.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Frost senescence.&nbsp;</strong>Temperatures between 6.0 and 0 o C will cause a linearly increasing loss of leaf area from 0 to 100% respectively.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">From the values of senesced LAI the sorghum module calculates the biomass and nitrogen in that leaf area that is senesced, however a proportion of the carbon and nitrogen of these leaves is retranslocated to stem before senescence.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Tillering</h2>
+<p style="margin: 0cm 0cm 10pt;">Tiller number is not dynamically-determined in the&nbsp;<strong>sorghum&nbsp;</strong>module but is set in the sowing command As temperature during the early part of the season and plant density is known to influence the number of tillers produced, it is necessary for the user to set the potential tiller number given an understanding of the likely tiller number produced. As a guideline in cool environments and/or early sowings under low density where maximum tillering would be expected, tiller number would vary between 1.5 and 2 m -2. With low density this would be around 0.3 tillers m -2 . On the other hand in warm environments or late sowings tiller number could vary between 0.75 and 1 m -2 at low population density and around 0.15 m -2 at high density.</p>
+<h2 style="margin: 10pt 0cm 0pt;">Row Configuration</h2>
+<p style="margin: 0cm 0cm 10pt;">Sorghum row configuration can be set to solid, single skip or double skip.</p>
+<p style="margin: 0cm 0cm 10pt;">In simulating skip row sorghum the assumption of a horizontally distributed leaf area does not hold. To account for this the equation for calculating the percentage green cover of the plant is changed from equation 1 to equation 2</p>
+<p style="margin: 0cm 0cm 10pt;">Eq1 %green cover =&nbsp; <img alt="" src="../../../portals/0/Documentation/Crops/image053.gif" />where k is the extinction coefficient of the crop at that row spacing and l is the leaf area index</p>
+<p style="margin: 0cm 0cm 10pt;">Eq2 % green cover =&nbsp; <img alt="" src="../../../portals/0/Documentation/Crops/image054.gif" />where k is the extinction coefficient of the crop at that row spacing, l = is the leaf area index and s is the skip index (1 for no skipped rows, 1.5 for one skipped row, and 2 for two skipped rows)</p>
+<p style="margin: 0cm 0cm 10pt;">With a skip row planting configuration, the wide gap between plants implies that root expansion is multi-directional, allowing more time for the roots to reach the centre of the skip rows. The root expansion front is described by a semi circular front expanding from the base of the plant at a rate of 2 cm per day in all directions. (see the output variable "root_proportion").</p>
+<h2 style="margin: 10pt 0cm 0pt;">Regrowth</h2>
+<p style="margin: 0cm 0cm 10pt;">Although in practice it is possible to ratoon sorghum, there are no regrowth routines in&nbsp;<strong>sorghum.</strong><a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Water uptake</h2>
+<p style="margin: 0cm 0cm 10pt;">To determine the amount of water supply to the crop on any day, first the total available water above the lower limit for all soil layers with roots is summed (eqn 7). If roots are only partially through a layer available soil water is scaled to that portion that contains roots. The kl constant (value differs for each soil layer) is then used to limit the amount of water available on any day (eqn 8). The kl factor is emphirically derived, incorporating both plant and soil factors which limit rate of water uptake.</p>
+<p style="margin: 0cm 0cm 10pt;">do layer = 1, deepest_layer (do loop to calculate available water for all layers)</p>
+<p style="margin: 0cm 0cm 10pt;">sw_avail = sw(layer) - ll (layer) eqn 7.</p>
+<p style="margin: 0cm 0cm 10pt;">sw_supply(layer) = sw_avail * kl (layer) eqn 8.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Soil water demand&nbsp;</strong>is calculated as in the &lsquo;biomass accumulation' section above where potentail biomass production is a function of light interception and rue (eqn 1). This potential biomass production is converted to water demand using transpiration efficiency.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Water uptake&nbsp;</strong>is the minimum of the supply and demand.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Water deficits affecting plant growth</h2>
+<p style="margin: 0cm 0cm 10pt;">Soil water deficit factors are calculated to simulate the effects of water stress on different plant growth processes. Three water deficit factors are calculated which correspond to four plant processes each having different sensitivity to water stress i.e. photosynthesis (photo), phenology (pheno), and leaf-expansion (expansion) (Figure 5).</p>
+<p style="margin: 0cm 0cm 10pt;">A water availability ratio is calculated by dividing actual soil water supply (sw - ll) by the potential soil water supply (dul - ll). This ratio is used in the relationships illustrated to derive the stress factors for photosynthesis and leaf expansion. A factor of 0 is complete stress and 1 no stress.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><em><img alt="" src="../../../portals/0/Documentation/Crops/image055.gif" /></em></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Figure 5: Relationship between daily soil water supply:demand ratio and the level of stress on photosynthesis and leaf expansion.</em></p>
+<p style="margin: 0cm 0cm 10pt;">A fraction of plants (0.044) will be killed each day due to water stress once the cumulative water stress factor for photosynthesis exceeds 4.6.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Nitrogen uptake and retranslocation</h2>
+<p style="margin: 0cm 0cm 10pt;">In order to calculate&nbsp;<strong>nitrogen demand&nbsp;</strong>today, first potential biomass production is re-calculated unlimited by water, nitrogen or temperature i.e. as a function of rue and radiation-interception (eqn 2). This dry matter (biomass) is then partition into plant parts according to their current relative weights.</p>
+<p style="margin: 0cm 0cm 10pt;">Nitrogen demand by root and flower is the N required to attain a Nitrogen target concentration.</p>
+<table width="499" cellspacing="0" cellpadding="0" border="0" style="width: 374pt;">
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; width: 198pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 60.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Root</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 115.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Flower</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; width: 198pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Nitrogen target concentration =</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 60.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.002</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 115.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.005</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Stem Nitrogen demand is N required to achieve a Nitrogen target concentration depending on current phenological stage.</p>
+<table width="371" cellspacing="0" cellpadding="0" border="0" style="width: 278.25pt;">
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; width: 128.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 57pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Emergence</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 46.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Flowering</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Stem Nitrogen target concentration =</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.055</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.010</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Nitrogen demand in the leaf up to Flag leaf stage is N required to keep leaf at target SLN of 1.5. After flag, N Required to maintain SLN.</p>
+<h2 style="margin: 10pt 0cm 0pt;">Grain Demand</h2>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;Grain Fill rate 0.001 mg/grain / degreeday for first 100 dd</p>
+<p style="margin: 0cm 0cm 10pt;">Grain N demand attempts to stay at this fill rate.</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Nitrogen supply&nbsp;</strong>is the sum of nitrogen available via mass flow (eqn 9) and by diffusion (eqn 10).</p>
+<p style="margin: 0cm 0cm 10pt;">no3_massflow (layer) = no3_conc * delta_sw (layer) eqn 9.</p>
+<p style="margin: 0cm 0cm 10pt;">no3_diffusion (layer) = sw_avail_frac *no3_conc eqn 10.</p>
+<p style="margin: 0cm 0cm 10pt;">note: these layer values are summed to root depth and sw_avail_frac is ratio of extractable soil-water over total soil-water.</p>
+<p style="margin: 0cm 0cm 10pt;">If nitrogen demand cannot be satisfied by mass flow then it is supplied by diffusion. Demand can only be exceeded by supply from mass flow (up to the nitrogen uptake maximum</p>
+<p style="margin: 0cm 0cm 10pt;">Nitrogen available for uptake is distributed to plant parts in proportion to their individual demands.</p>
+<p style="margin: 0cm 0cm 10pt;">Grain N demand is a function of the grain number and a specific N demand per grain.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Nitrogen deficits affecting plant growth</h2>
+<p style="margin: 0cm 0cm 10pt;">There are three N availability factors (0-1), one each for the photosynthesis, expansion, phenology and grain filling processes. A N concentration ratio is calculated for the stover (stem + leaf) in eqn 14 which is used as a measure of N stress, then different constants are used to convert that ratio to a deficit factor for each of the processes. A factor of 1 is used for effecting grain N concentration, 1.25 for photosynthesis (reduces rue), 0.8 for expansion (reduces leaf area expansion) and 5.75 to slow phenological development. As a value of 1 is no stress and 0 complete stress, phenology is least sensitive to nitrogen deficiency and grain N the most.</p>
+<p style="margin: 0cm 0cm 10pt;">N_conc_ratio = (N_conc_stover - N_conc_stover_min) / (N_conc_stover_crit - N_conc_stover_min) eqn14.</p>
+<br />
+<h2 style="margin: 10pt 0cm 0pt;">Root growth and distribution</h2>
+<p style="margin: 0cm 0cm 10pt;">Root depth is initialised at the depth of sowing. Between emergence and grain filling, the increase in root depth is a daily rate multiplied a soil water availability factor. The daily rate is 10-15 mm/day during emergence and 33mm/day from end-of-juvenile to the start of grain-filling. Root depth is constrained by the soil profile depth. The increase of root depth through a layer can be constrained by known soil constraints through the use of the 0-1 parameter&nbsp;<strong>xf,&nbsp;</strong>which is input for each soil layer.</p>
+<p style="margin: 0cm 0cm 10pt;">Growth of root biomass is partitioned with depth using an exponential decay function from the soil surface and converted to root length density using a fixed specific root length.</p>
+<p style="margin: 0cm 0cm 10pt;">Roots are not senesced during the life of the crop, but are incorporated in the&nbsp;<strong>soiln&nbsp;</strong>module at harvest and distributed as fresh organic matter in the profile</p>
+<h2 style="margin: 10pt 0cm 0pt;">Temperature stress</h2>
+<p style="margin: 0cm 0cm 10pt;">There are no generic temperature factors, as for water and nitrogen stress, but as discussed in sections above temperature does influence the rate of leaf senescence and radiation use efficiency.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Plant death</h2>
+<p style="margin: 0cm 0cm 10pt;">All or some of the plants can be killed due to a variety of stresses;</p>
+<p style="margin: 0cm 0cm 10pt;">If the crop hasn't germinated within 40 days of sowing, due to lack of germinating moisture, all plants are killed.</p>
+<p style="margin: 0cm 0cm 10pt;">If the crop does not emerge with 150 o Cdays of sowing, because it was sown too deep, then all plants are killed.</p>
+<p style="margin: 0cm 0cm 10pt;">If crop is past floral initiation and LAI = 0, then all plants are killed due to total senescence.</p>
+<p style="margin: 0cm 0cm 10pt;">If the cumulative phenological water stress factors exceed 25, all plants are killed due to water stress prolonging phenology.</p>
+<p style="margin: 0cm 0cm 10pt;">A fraction of plants will be killed by high temperatures immediately following emergence.<a href="../../../index-2.html"></a></p>
+<h2 style="margin: 10pt 0cm 0pt;">Detachment</h2>
+<p style="margin: 0cm 0cm 10pt;">The detachment routines in&nbsp;<strong>sorghum&nbsp;</strong>are disabled in the current code.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Sorghum Module Parameterisation</h1>
+<p style="margin: 0cm 0cm 10pt;">Crop lower limit (ll), root water extraction constants (kl) and root extension factors (0-1, xf) values are needed for each soil layer</p>
+<p style="margin: 0cm 0cm 10pt;"><em>test.sorghum.parameters</em></p>
+<p style="margin: 0cm 0cm 10pt;">ll = 0.200 0.200 0.200 0.220 0.250 () ! crop lower limit</p>
+<p style="margin: 0cm 0cm 10pt;">kl = 012 0.08 0.06 0.04 0.02 () ! kl need calibrating for each crop and soil type</p>
+<p style="margin: 0cm 0cm 10pt;">xf = 1.0 1.0 1.0 1.0 1.0 ()</p>
+<p style="margin: 0cm 0cm 10pt;">Phenology, leaf area and grainfilling parameters are needed for each cultivar. An example is given below of those for the three generic maturity classes.</p>
+<p style="margin: 0cm 0cm 10pt;"><em>Table 2: Cultivar parameters for generic early, mid and late-season cultivars in the sorghum module.</em></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 234.75pt; border: medium none #ece9d8;" colspan="3">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Parameter values for cultivars of maturity classes</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Parameter name</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Parameter units</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Early</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Medium</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Late</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tt_emerg_to_endjuv</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C day)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">100</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">100</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">100</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">est_days_endjuv_to_init</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">()</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">15</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">20</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">20</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">pp_endjuv_to_init</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">30</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">30</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">30</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tt_endjuv_to_init</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C day)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">115</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">120</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">255</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">photoperiod_crit1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(hours)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">12.3</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">12.3</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">12.3</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">photoperiod_crit2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(hours)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">14.6</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">14.6</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">14.6</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">photoperiod_slope</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C/hour)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">25</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">38.4</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">38.4</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tt_flower_to_maturity</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C day)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">695</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">695</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">695</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tt_flag_to_flower</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C day)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">100</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">100</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">80</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tt_flower_to_start_grain</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C day)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">30</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">30</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">50</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tt_maturity_to_ripe</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( o C day)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Main_stem_coeff</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(1/oC)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">2.95</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">2.88</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">2.95</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Tpla_prod_coef</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(1/oC)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.015</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.018</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.018</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Tpla_inflection</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(oC)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">320</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">355.7</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">400.8</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Spla_prod_coef</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(1/oC)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.007</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.007</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.005</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Spla_intercept</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-250</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-250</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-280</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-321</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dm_per_seed</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">(g)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.00083</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.00083</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.00083</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 118.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">x_stem_wt vs y_height</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 83.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Mm vs g</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 87.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0 80</p>
+            <p style="margin: 0cm 0cm 10pt;">0 2000</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 80.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0 80</p>
+            <p style="margin: 0cm 0cm 10pt;">0 2000</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 66pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0 80</p>
+            <p style="margin: 0cm 0cm 10pt;">0 2000</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<h1 style="margin: 24pt 0cm 0pt;">Module Dependencies</h1>
+<p style="margin: 0cm 0cm 10pt;">The minimum module configuration required to run&nbsp;<strong>sorghum&nbsp;</strong>in APSIM is the inclusion of the report, met, manager, soilwat2, soiln2 and residue2 and sorghum modules.</p>
+<p style="margin: 0cm 0cm 10pt;">Within the manager file the following syntax is used for harvest and planting the sorghum crop:</p>
+<p style="margin: 0cm 0cm 10pt;">if (sorghum.stage_name = 'harvest_ripe' and sorghum.plant_status = 'alive') then</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;sorghum harvest</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;sorghum kill_crop</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;sorghum end_crop</p>
+<p style="margin: 0cm 0cm 10pt;">endif</p>
+<p style="margin: 0cm 0cm 10pt;">if (sorghum.plant_status = 'dead') then</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;report do_output</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;sorghum harvest</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;sorghum end_crop</p>
+<p style="margin: 0cm 0cm 10pt;">endif</p>
+<p style="margin: 0cm 0cm 10pt;">if (day &gt; 120 and day &lt; 240 and sorghum.plant_status = status_out ) then</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;sorghum sow plants = 15 (p/m2), sowing_depth = 50 (mm), row_spacing = 0.35 (m), cultivar = early</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;, fertile_tiller_no = 1.5, skip = double</p>
+<p style="margin: 0cm 0cm 10pt;">endif</p>
+<p style="margin: 0cm 0cm 10pt;">(note: row_spacing and skip in sowing command is optional)</p>
+<h1 style="margin: 24pt 0cm 0pt;">Sorghum Module Outputs</h1>
+<p style="margin: 0cm 0cm 10pt;"><em>Table 3: The following Sorghum variable can be output through the report module</em></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Variable Name</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Units</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Description</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">stage</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">current phenological stage</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">stage_code</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">stage_name</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">crop_type</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">leaf_no</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">number of fully expanded leaves</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">leaf_no_dead</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">no of dead leaves</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">leaf_area (max_leaf = 1000)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">leaf area of each leaf</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">height</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">canopy height</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">root_depth</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">depth of roots</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">rlv</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm.mm -3</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">root length per volume of soil in each soil layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">hi</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">Harvest index</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">plants</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">plants/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">plant density</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">grain_no</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">grains/plant</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">grain number</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">grain_size</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">individual grain wt</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">cover_green</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">fraction of radiation reaching the canopy that is intercepted by green leaves</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">cover_tot</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">total crop cover fraction</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">lai_sum</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">leaf area index of all leaf material live + dead</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tlai</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">tot lai</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">slai</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">area of leaf that senesces from plant</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">lai</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">m 2 /m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">live plant green lai</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">tlai_dead</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">m 2 /m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">total lai of dead plants</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">root_wt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">root biomass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">leaf_wt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">leaf biomass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">stem_wt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">stem biomass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">grain_wt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">grain biomass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">grain_wt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">grain biomass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dm_green (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">live plant dry weight (biomass)</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dm_senesced (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">senesced plant dry wt</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dm_dead (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">dry wt of dead plants</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">yield</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">kg/ha</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">grain yield dry wt</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">biomass</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">kg/ha</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">total above-ground biomass</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_dm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">the daily biomass production</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_dm_green (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">plant biomass growth</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_green (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">plant nitrogen content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_senesced (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">plant n content of senesced plant</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_dead (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">plant n content of dead plants</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_n_green (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">actual n uptake into plant</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_n_retrans (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">nitrogen retranslocated out from parts to grain</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_n_detached (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">actual n loss with detached plant</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_n_dead_detached (max_part = 6)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">actual n loss with detached dead plant</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">swdef_pheno</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">water deficit factor for phenology</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">swdef_photo</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">water deficit factor fo photosynthesis</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">swdef_expan</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">water deficit factor for leaf expansion</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">ep (num_layers)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">water uptake in each layer</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">cep</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">cumulative water uptake</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">sw_demand</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">total crop demand for water</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">sw_supply</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">total supply over profile</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">esw_layr (num_layers)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">mm</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">plant extractable soil water</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_conc_stover</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">%</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">sum of tops actual n concentration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_conc_crit</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">%</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">sum of tops critical n concentration</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_grain_pcnt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">%</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">grain n concentration percent</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_uptake_grain</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">n uptake by grain</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_uptake</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">cumulative total n uptake by plant</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_uptake_stover</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">n uptake by stover</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">no3_tot</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">total no3 in the root profile</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_demand</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">sum n demand for plant parts</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_supply</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">n supply for grain</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_supply_soil</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">n supply from soil</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_fix_pot</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">g/m 2</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">potential N fixation</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">nfact_photo</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">N deficit factor for photosynthesis</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">nfact_grain</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">N deficit factor for grain N content</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">nfact_photo</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">Nitrogen stress factor for photosynthesis</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">nfact_expan</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0-1</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 236.25pt; border: medium none #ece9d8;" colspan="2">
+            <p style="margin: 0cm 0cm 10pt;">Nitrogen stress factor for cell expansion</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">dlt_tt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">o Cday</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 231.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">daily thermal time</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 4.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 176.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">das</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 65.25pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; background-color: transparent; width: 231.75pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">days after sowing</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; width: 4.5pt; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<h1 style="margin: 24pt 0cm 0pt;">Sorghum Module Validation<a href="../../../index-2.html#Sorghum_Module_Validation_20" title="Link to this Section"></a></h1>
+<p style="margin: 0cm 0cm 10pt;">The following are some examples of module validation.</p>
+<p style="margin: 0cm 0cm 10pt;">Katherine &ndash; effects of water deficit</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image056.gif" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image057.gif" /></p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Gatton &ndash; differences in applied nitrogen. The rate of 240 kgN/ha is in the LHS graphs and 0 kgN/ha on the RHS.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image058.gif" />&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;"><img alt="" src="../../../portals/0/Documentation/Crops/image059.gif" /></p>
+<h1 style="margin: 24pt 0cm 0pt;">REFERENCES<a href="../../../index-2.html#REFERENCES_21" title="Link to this Section"></a></h1>
+<p style="margin: 0cm 0cm 10pt;">Hammer, G. L., &amp; Muchow, R.C. (1991). Quantifying climatic risk to sorghum in Australia's semi-arid tropics and subtropics: model development and simulation. In&nbsp;<em>Climatic Risk in Crop Production: Models and Management for the Semi-arid Tropics and Subtropics,&nbsp;</em>eds R.C. Muchow &amp; J.A. Mellamy. Ch. 16, Wallingford, CAB International, pp 205-32.</p>
+<p style="margin: 0cm 0cm 10pt;">Carberry, P.S. &amp; Abrecht, D.G. (1991) Tailoring crop models to the semi-arid tropics. In&nbsp;<em>Climatic Risk in Crop Production: Models and Management for the Semi-arid Tropics and Subtropics,&nbsp;</em>eds R.C. Muchow &amp; J.A. Bellamy. CAB International, Wallingford, pp 157-82.</p>
+</div>
+
+</div><!-- End_Module_521 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Sorghum.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:00 GMT -->
+</html>

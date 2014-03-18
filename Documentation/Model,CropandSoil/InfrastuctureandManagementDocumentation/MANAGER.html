@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/MANAGER.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:29 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Infrastucture and Management Documentation > MANAGER
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/MANAGER.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../InfrastuctureandManagementDocumentation.html" class="SkinObject">Infrastucture and Management Documentation</a><span class="Sep"></span><a href="MANAGER.html" class="SkinObject">MANAGER</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>MANAGER</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-487"><a name="487"></a>
+<div class="Invisible"><div id="dnn_ctr487_ContentPane"><!-- Start_Module_487 --><div id="dnn_ctr487_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr487_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">What is the manager module?</h1>
+<p style="margin: 0cm 0cm 10pt;">The manager module provides the capability to specify a set of rules using conditional logic during simulations to control the actions of modules within APSIM.&nbsp;<br />
+It does this by using &ldquo;if&rdquo; constructs created by the user. It also allows the user to create their own variables and define these as a function of other variables within APSIM.<br />
+This documentation only gives a brief insight into the possibilities achievable via the APSIM manager module.</p>
+<h1 style="margin: 24pt 0cm 0pt;">How does it manage?</h1>
+<p style="margin: 0cm 0cm 10pt;">This module manages by issuing messages to modules in the system, many of which are conditional upon states or events within the modules during simulation.<br />
+For example:-<br />
+<br />
+</p>
+<div style="padding: 5pt; background: none repeat scroll 0% 0% #eeeeee; margin-left: 6.6pt; margin-right: 6.6pt; border: 1pt solid #dddddd;">
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">if (day = 100) then</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">&nbsp; fertilise apply amount = 10 (kg/ha), type = urea (), depth = 50(mm)</pre>
+<pre style="padding: 0cm; background: none repeat scroll 0% 0% #eeeeee; border: medium none;">endif</pre>
+</div>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Here the fertilise module will be sent a message containing a directive to apply (the action) fertiliser when the condition is satisfied. It receives a data string (the underlined text) which further describes the action. The manager module can broadcast a message to all modules by substituting the keyword 'act_mods' in the place of the module name.&nbsp;<br />
+This capability is useful for multi-point simulations where a sow message needs to be sent to multiple points.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Mathematical operators</h1>
+<p style="margin: 0cm 0cm 10pt;">The following mathematical operators and reserved words are allowed in APSIM manager files</p>
+<p style="margin: 0cm 0cm 10pt;"><strong>Operator</strong></p>
+<table cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: #ece9d8 #ece9d8 #999999; padding: 1.3pt 3.3pt; background: none repeat scroll 0% 0% #cccccc;">
+            <br />
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: #ece9d8 #ece9d8 #999999; padding: 1.3pt 3.3pt; background: none repeat scroll 0% 0% #cccccc;">
+            <p style="margin: 0cm 0cm 10pt; text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Subtraction</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">+</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Addition</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">*</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Multiplication</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">/</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Division</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">^ or **</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Exponent (eg. x**2 is the same as x ^ 2 )</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">=</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Equality</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&lt;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Less than</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&gt;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Greater than</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&lt;&gt;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Not equal to</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&lt;=</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Less than or equal to</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&gt;=</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Greater than or equal to</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">( )</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Brackets</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">If</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical IF</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">then</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical THEN</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">elseif</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical ELSEIF</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">else</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical ELSE (for alternate logic)</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">endif</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical ENDIF</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">or</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical OR</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">and</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Logical AND</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<h1 style="margin: 24pt 0cm 0pt;">Rules</h1>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Names must begin with a letter.</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Numbers must begin with a digit.</p>
+&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Literals must begin and end with an apostrophe.
+<h1 style="margin: 24pt 0cm 0pt;">Character set</h1>
+<p style="margin: 0cm 0cm 10pt;">The manager uses the following character set:<br />
+<br />
+</p>
+<table cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: #ece9d8 #ece9d8 #999999; padding: 1.3pt 3.3pt; background: none repeat scroll 0% 0% #cccccc;">
+            <p style="margin: 0cm 0cm 10pt; text-align: center;"><strong>Character</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: #ece9d8 #ece9d8 #999999; padding: 1.3pt 3.3pt; background: none repeat scroll 0% 0% #cccccc;">
+            <p style="margin: 0cm 0cm 10pt; text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">a to z</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">letters &ndash; case insensitive</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0 to 9</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Digits</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">_</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Underscore</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">%</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Percent sign</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">.</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Period or decimal point</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">[]</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Square brackets</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">()</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Parentheses</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Minus sign</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">+</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Plus sign</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">*</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Asterisk</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">/</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Slash</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&lsquo;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Apostrophe</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">=</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Equal sign</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&lt;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Less than</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&gt;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Greater than</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Blank</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">^</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Caret</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<h1 style="margin: 24pt 0cm 0pt;">Manager Functions</h1>
+<p style="margin: 0cm 0cm 10pt;">Manager functions may not have any spaces. This applies from the first character of the function name to the terminating bracket. The manager has the following functions:-</p>
+<table cellspacing="10" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: #ece9d8 #ece9d8 #999999; padding: 1.3pt 3.3pt; background: none repeat scroll 0% 0% #cccccc;">
+            <p style="margin: 0cm 0cm 10pt; text-align: center;"><strong>Function name</strong><strong></strong></p>
+            </td>
+            <td style="border-width: medium medium 1pt; border-style: none none solid; border-color: #ece9d8 #ece9d8 #999999; padding: 1.3pt 3.3pt; background: none repeat scroll 0% 0% #cccccc;">
+            <p style="margin: 0cm 0cm 10pt; text-align: center;"><strong>Description</strong><strong></strong></p>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">date</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">returns the julian day number of specified date.<br />
+            eg. date(&lsquo;1-oct').<br />
+            The date must be a literal enclosed in single quotes.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">date_within</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">returns 1 if &ldquo;today's&rdquo; date is within the range specified, otherwise returns 0.<br />
+            eg. date_within('1-oct,31-oct')<br />
+            The pair of dates must be two date literals separated by a comma, and the whole argument must be enclosed in quotes. Note the lack of quotes near the comma.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">nearest_int</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Returns the nearest integer to the value specified.<br />
+            eg. nearest_int(var1).&nbsp;<br />
+            Here &lsquo;var1' must be a numeric variable. It cannot be a literal or an expression.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">paddock_is_fallow</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Returns 1 if there are no crops in the ground.<br />
+            e.g. if (paddock_is_fallow() = 1 and today = date('1-jun')) then&nbsp;<br />
+            wheat sow ...<br />
+            endif</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">add_months</p>
+            </td>
+            <td style="padding: 0cm; background-color: transparent; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Takes 2 parameters, a date and the number of months to add to the date. The new date is then returned.<br />
+            e.g. gsrDate = date('1/9/2005')<br />
+            gsrDate = add_months('gsrDate, 1')<br />
+            The whole argument to add_months must be enclosed in single quotes. The number of months can be positive or negative.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<h1 style="margin: 24pt 0cm 0pt;">Dates may take the following forms:</h1>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30/6/95</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30/6/1995</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jun</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30_Jun</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30_Jun_1995</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30-jun</p>
+<p>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30-jun-1995
+</p>
+<p>&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">For example:</p>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; date('30/6/95') returns the julian day number for 30 jun 1995</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; date('Jun') returns the julian day number for 1 jun for current year.</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; date('30_jun') returns the julian day number for 30 jun for current year.</p>
+<p class="ListParagraphCxSpLast" style="margin: 0cm 0cm 10pt 36pt;">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; date('30_jun_1995') returns the julian day number for 30 jun 1995</p>
+<p style="margin: 0cm 0cm 10pt;">For related chronological or date variables which can be used by the manager module, see the documentation for the CLOCK module. </p>
+<p style="margin: 0cm 0cm 10pt;">For example</p>
+<p style="margin: 0cm 0cm 10pt;">day - returns the day of the month</p>
+<p style="margin: 0cm 0cm 10pt;">dd/mm/yyy - returns the day, month and year of the given day.</p>
+<p style="margin: 0cm 0cm 10pt;">See the CLOCK module for further details.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Using the manager to send actions to other modules</h1>
+<p style="margin: 0cm 0cm 10pt;">The APSIM manager module can be used to invoke any action available by any module. Possible actions include:</p>
+<p class="ListParagraphCxSpFirst">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Resetting individual module values</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reinitialising all data in modules to a given state</p>
+<p class="ListParagraphCxSpMiddle">&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sowing, harvesting or killing crops.</p>
+<p>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Applications of fertiliser, irrigation or tillage to soil.
+</p>
+<p>&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">Refer to the individual module's documentation for a list of available actions and examples of usage. Refer also to the module's sample files for further examples.</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p><br clear="all" style="page-break-before: always;" />
+</p>
+</div>
+
+</div><!-- End_Module_487 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/InfrastuctureandManagementDocumentation/MANAGER.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:12:30 GMT -->
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Weed.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:05 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Crop Module Documentation > Weed
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css"></style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Weed.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../CropModuleDocumentation.html" class="SkinObject">Crop Module Documentation</a><span class="Sep"></span><a href="Weed.html" class="SkinObject">Weed</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Weed</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane"><div class="DnnModule DnnModule-DNN_HTML DnnModule-524"><a name="524"></a>
+<div class="Invisible"><div id="dnn_ctr524_ContentPane"><!-- Start_Module_524 --><div id="dnn_ctr524_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr524_HtmlModule_lblContent" class="Normal">
+	<h1 style="margin: 24pt 0cm 0pt;">WEED Module Scope</h1>
+<p style="margin: 0cm 0cm 10pt;">The&nbsp;<strong>weed&nbsp;</strong>module simulates the growth of a weed crop in a daily time-step (on an area basis not single plant). Weed growth in this model responds to climate (temperature, rainfall and radiation from the&nbsp;<strong>input&nbsp;</strong>module), soil water supply (from the&nbsp;<strong>soilwat&nbsp;</strong>module) and soil nitrogen (from the&nbsp;<strong>soiln&nbsp;</strong>module). The&nbsp;<strong>weed&nbsp;</strong>module returns information on its soil water and nitrogen uptake to the&nbsp;<strong>soilwat&nbsp;</strong>and&nbsp;<strong>soiln&nbsp;</strong>modules on a daily basis for reset of these systems. Information on crop cover is also provided to the&nbsp;<strong>soilwat&nbsp;</strong>module for calculation of evaporation rates and runoff. Weed stover and root residues are &lsquo;passed' from&nbsp;<strong>weed&nbsp;</strong>to the&nbsp;<strong>residue&nbsp;</strong>and&nbsp;<strong>soiln&nbsp;</strong>module respectively at harvest of the weed crop.</p>
+<p style="margin: 0cm 0cm 10pt;">The module predicts leaf area development, N% and biomass of stover; depth, N% and biomass of roots; grain N% and biomass; grain yield and N%, grain size and grain number all on a daily basis.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Weed Competition Documentation</h1>
+<p style="margin: 0cm 0cm 10pt;">Click&nbsp;<a href="../../external.html?link=http://www.apsim.info/Portals/0/Documentation/Simulating weeds in APSIM.pdf">here</a>&nbsp;for documentation on running crop simulations in competition with weeds. Note that some of the models referenced my not be generally available yet, but any crop class model will work. APSIM 7.4 or above is required.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Weed Module History</h1>
+<p style="margin: 0cm 0cm 10pt;">There are a range of APSIM applications that have an emerging need for a simulation capability for weeds. For example:</p>
+<p style="margin: 0cm 0cm 10pt;">Weed competition is becoming recognised as an important part of the low-input cropping systems of smallholder agriculture, and must be simulated when, for instance, accounting for responses to fertility inputs</p>
+<p style="margin: 0cm 0cm 10pt;">Examining the risks of releasing herbicide-tolerant crop cultivars and associated spread of herbicide tolerant weeds</p>
+<p style="margin: 0cm 0cm 10pt;">In studies of soil water balance accounting for water use by fallow-growing weeds has been crucial in some circumstances</p>
+<p style="margin: 0cm 0cm 10pt;">The weedy component of some vegetation types we simulate can be significant at some situations (eg annual ryegrass in lucerne stands)</p>
+<p style="margin: 0cm 0cm 10pt;">Across the spectrum of applications there is a need to be able to specify the weed component to various levels of detail. In some circumstances it is necessary to specify the weed's biology and lifecycle, and for a selection of well-studied weeds this ought to be possible. In other circumstances all that may be required is something to use water and nitrogen in about the &ldquo;right&rdquo; amounts.</p>
+<p style="margin: 0cm 0cm 10pt;">Currently, where weeds are being simulated users are using an existing crop module that is most like the dominant weed in the system. While this has proved satisfactory for those cases, it is not a sustainable situation. In particular, for users of APSFRONT, who do not have the capability to engineer a weed on the run, there is a need to provide a ready-made weeds capability. APSIM_Weed provides that capability.</p>
+<p style="margin: 0cm 0cm 10pt;">APSIM_Weed is based upon APSIM-Plant. APSIM-Plant was used because of a number of features:</p>
+<p style="margin: 0cm 0cm 10pt;">Its documented ability to simulate a range of vegetation types, from cool-season to warm-season adaptation, annuals and perennials, broadleaf and gramineacious crops.</p>
+<p style="margin: 0cm 0cm 10pt;">The &lsquo;crop_class&rdquo; feature coupled with the inheritance capability of APSIM crop modules means that a range of weed types can be configured ready-made for users, as well as set up easily on the run by more experienced users. The inheritance feature means that only those parameters known to differ from the base class parameters set need to be specified.</p>
+<p style="margin: 0cm 0cm 10pt;"><a href="Plant.html">Goto generic Plant model documentation</a></p>
+<h1 style="margin: 24pt 0cm 0pt;">Weed Module Science</h1>
+<p style="margin: 0cm 0cm 10pt;">As the Weed module is an instantiation of the plant module the science is identical. Users are referred to APSIM-Plant documentation for details on science.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Weed types</h1>
+<p style="margin: 0cm 0cm 10pt;">At present four generic types of weeds can be grown in the module, as different crop_classes. They are listed below with their distinguishing characteristics.</p>
+<p style="margin: 0cm 0cm 10pt;">A grassy, C 3 annual weed designed to represent annual ryegrass. Parameters have been taken from the wheat module, with some additions from the literature on ryegrass.</p>
+<p style="margin: 0cm 0cm 10pt;">A grassy, C 4 annual weed designed to represent Johnson grass. Parameters have largely been taken from the sorghum module.</p>
+<p style="margin: 0cm 0cm 10pt;">A broadleaf, C 3 annual weed designed to represent wild radish. Parameters have been taken from the canola module.</p>
+<p style="margin: 0cm 0cm 10pt;">A broadleaf, C 3 N-fixing perennial weed designed to represent volunteer lucerne or similar legume.<a href="../../../index-2.html"></a></p>
+<p style="margin: 0cm 0cm 10pt;"><em>Table 1:Functionalities possible for the weed types in APSIM-Weed and how these are operationalised through parameters.</em></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 141pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Desired functionality</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 190.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>How this is achieved operationally in APSIM-Weed</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 132.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Parameters</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 141pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Perenniality</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 190.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">The crop either dies or regrows after a harvest operation or complete leaf senescence</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 132.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Min_tpla</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 141pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Temperature sensitivity (cool-season vs warm-season adaptation)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 190.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Tolerance to low/high temperature through</p>
+            <p style="margin: 0cm 0cm 10pt;">&bull;&nbsp; thermal time vs temperature relationship</p>
+            <p style="margin: 0cm 0cm 10pt;">&bull;&nbsp; rue vs temperature</p>
+            <p style="margin: 0cm 0cm 10pt;">&bull;&nbsp; leaf senescence vs minimum temperature</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 132.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><em>y_tt vs x_temp</em></p>
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            <p style="margin: 0cm 0cm 10pt;"><em>y_rue vs x_temp</em></p>
+            <p style="margin: 0cm 0cm 10pt;"><em>x_temp_senescence vs</em></p>
+            <p style="margin: 0cm 0cm 10pt;"><em>y_senescence_fac</em></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 141pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Broadleaf versus grass-type</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 190.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Crop has small/large individual leaf sizes</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 132.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Leaf_size</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 141pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Nitrogen requirements</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 190.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Critical N requirements</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 132.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><em>n_conc_crit_leaf, stem etc</em></p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"><em>Table 2:The four weed crop_classes (i.e. types) and their differing characteristics.</em></p>
+<table cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Parameter</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Winter_dicot</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Summer_grass</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Perennial_legume</strong></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Perenniality</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">min_tpla</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">50</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">ratio_root_shoot</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.50 to 0.33</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.50 to 0.33</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.50 to 0.33</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1.0 to 0.53</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;"><strong>Determinacy</strong></p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">frac_leaf_post_flower</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.2</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">frac_leaf_grain_fill</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.2</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">C 3 vs C 4</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">transp_eff_cf</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.005</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.005</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.009</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.005</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Legume vs non-legume</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">N_fix_rate</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.002</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_conc_crit_leaf</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.039 to 0.018</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.039 to 0.018</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.039 to 0.018</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.060 to 0.020</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">n_init_conc (root, leaf, stem)</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.018 0.06 0.060</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.025 0.060 0.060</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">leaf_size</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1400 to 6000</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1000 to 20000</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">1000 to 60000</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">400 to 1200</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Temperature sensitivity</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">ave_temp vs stress_photo</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&bull;&nbsp; 15.0 30.0 40.0</p>
+            <p style="margin: 0cm 0cm 10pt;">0.0 1.0 1.0 0.0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&bull;&nbsp; 15.0 30.0 40.0</p>
+            <p style="margin: 0cm 0cm 10pt;">0.0 1.0 1.0 0.0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">8.0 25.0 35.0 40.0</p>
+            <p style="margin: 0cm 0cm 10pt;">0.0 1.0 1.0 0.0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">&bull;&nbsp; 15.0 30.0 40.0</p>
+            <p style="margin: 0cm 0cm 10pt;">0.0 1.0 1.0 0.0</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Cardinal temps for tt</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.0 30.0 40.0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.0 30.0 40.0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">10.0 35.0 45.0</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">0.0 30.0 40.0</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="padding: 0cm; width: 111.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">Minimum temps for leaf senescence</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-5 to -15 o C</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-5 to &ndash;15 o C</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 88.5pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">6 to 0 o C</p>
+            </td>
+            <td valign="top" style="padding: 0cm; width: 96.75pt; background: none repeat scroll 0% 0% white; border: medium none #ece9d8;">
+            <p style="margin: 0cm 0cm 10pt;">-5 to -15 o C</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin: 0cm 0cm 10pt;"> </p>
+<h1 style="margin: 24pt 0cm 0pt;">Issues that users should be aware of</h1>
+<p style="margin: 0cm 0cm 10pt;">Due to the way that crop residues are handles in APSIM, it is possible to only pass one fixed value for residue&nbsp;<em>specific_areas&nbsp;</em>regardless of the weed type being simulated.</p>
+<p style="margin: 0cm 0cm 10pt;">Cultivars would differ in terms of height (and hence competitive ability) and short/long season.</p>
+<p style="margin: 0cm 0cm 10pt;">Using the module parameter inheritance characteristics of APSIM-Legume, it is possible to create other permutations eg a warm-season dicot.</p>
+<h1 style="margin: 24pt 0cm 0pt;">Weed Module Parameterisation<a href="../../../index-2.html#Weed_Module_Parameterisation_10" title="Link to this Section"></a></h1>
+<p style="margin: 0cm 0cm 10pt;">As with APSIM-Legume, crop lower limit (LL) and water extraction coefficients (KL) and root exploration factors (XF) values are need for each soil layer.</p>
+<p style="margin: 0cm 0cm 10pt;"><em>test.weed.parameters</em></p>
+<p style="margin: 0cm 0cm 10pt;">ll = 0.200 0.200 0.200 0.220 0.250 () ! crop lower limit</p>
+<p style="margin: 0cm 0cm 10pt;">kl = 012 0.08 0.06 0.04 0.02 () ! kl need calibrating for each crop and soil type</p>
+<p style="margin: 0cm 0cm 10pt;">xf = 1 1 1 1 0.5 () ! root exploration factor</p>
+<p style="margin: 0cm 0cm 10pt;">Phenology, grainfilling and crop height parameters are needed for each cultivar. An example is given below of those for the early culltivar. At present the module contains two cultivars only &ndash; early and late.</p>
+<p style="margin: 0cm 0cm 10pt;"><em>standard.weed.early</em></p>
+<p style="margin: 0cm 0cm 10pt;">hi_incr = 0.010 (1/days)</p>
+<p style="margin: 0cm 0cm 10pt;">x_hi_max_pot_stress = 0.00 1.00 ()</p>
+<p style="margin: 0cm 0cm 10pt;">y_hi_max_pot = 0.15 0.15 ()</p>
+<p style="margin: 0cm 0cm 10pt;">cum_vernal_days = 0 100</p>
+<p style="margin: 0cm 0cm 10pt;">tt_emerg_to_endjuv = 400 700</p>
+<p style="margin: 0cm 0cm 10pt;">est_days_emerg_to_init = 83.0 (d)</p>
+<p style="margin: 0cm 0cm 10pt;">photoperiod = 1 24</p>
+<p style="margin: 0cm 0cm 10pt;">phase_tt_init = 500 500</p>
+<p style="margin: 0cm 0cm 10pt;">tt_flower_to_maturity = 500.0 (oCd)</p>
+<p style="margin: 0cm 0cm 10pt;">tt_init_to_flower = 50.0 (oCd)</p>
+<p style="margin: 0cm 0cm 10pt;">tt_flower_to_start_grain = 120.0 (oCd)</p>
+<p style="margin: 0cm 0cm 10pt;">tt_maturity_to_ripe = 1.0 (oCd)</p>
+<p style="margin: 0cm 0cm 10pt;">x_stem_wt = 0 300 (g/m2)</p>
+<p style="margin: 0cm 0cm 10pt;">y_height = 0 800 (mm)</p>
+<h1 style="margin: 24pt 0cm 0pt;">Module Dependencies</h1>
+<p style="margin: 0cm 0cm 10pt;">The minimum module configuration required to run&nbsp;<strong>weed&nbsp;</strong>in APSIM is the inclusion of the report, input, manager, soilwat2, soiln2, residue2 and weed modules.</p>
+<p style="margin: 0cm 0cm 10pt;">Within the manager file the following syntax is used for harvest and planting the weed crop:</p>
+<p style="margin: 0cm 0cm 10pt;">if (weed.stage_name = 'harvest_ripe' and weed.plant_status = 'alive') then</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;weed harvest</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;weed kill_crop</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;weed end_crop</p>
+<p style="margin: 0cm 0cm 10pt;">endif</p>
+<p style="margin: 0cm 0cm 10pt;">if (weed.plant_status = 'dead') then</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;report do_output</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;weed harvest</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;weed end_crop</p>
+<p style="margin: 0cm 0cm 10pt;">endif</p>
+<p style="margin: 0cm 0cm 10pt;">if (day &gt; 120 and day &lt; 240 and weed.plant_status = 'out' ) then</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;&nbsp;weed sow plants = 15 (p/m2), crop_class=winter_grass, sowing_depth = 50 (mm), row_spacing = 0.35 (m), cultivar = late</p>
+<p style="margin: 0cm 0cm 10pt;">endif</p>
+<p style="margin: 0cm 0cm 10pt;">&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt;">(note: row_spacing in sowing command is optional)</p>
+<p style="margin: 0cm 0cm 10pt;">As with any of the PLANT crop modules it is possible to kill a fraction of plants upon a manager action, for instance killing by herbicide. The following line in the manager module:</p>
+<p style="margin: 0cm 0cm 10pt;">weed kill_crop, kill_fr = 0.6</p>
+<p style="margin: 0cm 0cm 10pt;">would kill 60% of plants</p>
+</div>
+
+</div><!-- End_Module_524 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/CropModuleDocumentation/Weed.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:05 GMT -->
+</html>
