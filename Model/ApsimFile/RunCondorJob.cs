@@ -98,9 +98,13 @@ namespace ApsimFile
 				Notifier (0, "Reading " + FileName);
 				XmlDocument Doc = new XmlDocument ();
 				Doc.Load (FileName);
+
+				if (!File.Exists (Path.Combine (WorkingFolder, Path.GetFileName (FileName))))
+					File.Copy (FileName, Path.Combine (WorkingFolder, Path.GetFileName (FileName)));
+
 				List<XmlNode> simulations = new List<XmlNode> ();
 				XmlHelper.FindAllRecursivelyByType (Doc.DocumentElement, "simulation", ref simulations);
-					
+				
 				foreach (XmlNode simulation in simulations)
 				if (XmlHelper.Attribute (simulation, "enabled") != "no") {
 					List<string> simsToRun = new List<string>();
@@ -128,6 +132,7 @@ namespace ApsimFile
 						XmlNode simulationNode = apsimFileNode.AppendChild (apsimFileNode.OwnerDocument.CreateElement ("simulation"));
 						XmlHelper.SetAttribute (simulationNode, "name", simToRun);
 						XmlHelper.SetAttribute (simulationNode, "source", XmlHelper.Attribute (apsimFileNode, "source"));
+
 						var filenames = new List<XmlNode>();
 						filenames = simulation.SelectNodes(".//filename").Cast<XmlNode>().ToList();
 					
@@ -177,7 +182,7 @@ namespace ApsimFile
 			if (arch == (Configuration.architecture.win32 | Configuration.architecture.unix))
 				SubWriter.Write (" ((OpSys == \"LINUX\") || Regexp(\"^WIN\", OpSys))");
 			SubWriter.WriteLine (" && ((Arch == \"INTEL\") || (Arch == \"X86_64\"))");
-			SubWriter.WriteLine ("executable = Apsim.$$(OpSys)).$$(Arch)).bat");
+			SubWriter.WriteLine ("executable = Apsim.$$(OpSys).$$(Arch).bat");
 
 
 			// Create a top level batch file.
@@ -216,8 +221,8 @@ namespace ApsimFile
 				if (numSims == 0) {
 					//SubWriter.WriteLine("output = " + "Apsim" + Convert.ToString(jobCounter) + ".stdout");
 					//SubWriter.WriteLine("error = " + "Apsim" + Convert.ToString(jobCounter) + ".stderr");
-					SubWriter.WriteLine ("arguments = " + Path.GetFileName (SelfExtractingExecutableLocation) + " " + "Apsim.$((OpSys))." + Convert.ToString (jobCounter) + ".bat");
-					inputfiles.Add ("Apsim.$((OpSys))." + Convert.ToString (jobCounter) + ".bat");
+					SubWriter.WriteLine ("arguments = " + Path.GetFileName (SelfExtractingExecutableLocation) + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
+					inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 					WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
 					LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
 					LinuxExeWriter.WriteLine ("#!/bin/bash");

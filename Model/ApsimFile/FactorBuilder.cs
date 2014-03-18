@@ -93,6 +93,65 @@ namespace ApsimFile
            }
         }
 
+		public virtual void FindInputs(List<string> inputfiles, ApsimFile F, string SimulationPath, string factorsToMatch)
+		{
+			SortedDictionary<string, string> factors = new SortedDictionary<string, string>();
+			SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsToMatch.Split(';').Select(s => s.Split('=')).ToDictionary(a => a[0].Trim(), a => a[1].Trim()));		
+			Component Simulation = F.Find(SimulationPath);
+			FindInputs(inputfiles, Simulation, SimulationPath, factors,  myFactors);
+		}
+
+        public virtual void FindInputs(List<string> inputfiles, Component Simulation, string SimulationPath, 
+		                               SortedDictionary<string, string> factorsList, SortedDictionary<string, string> factorsToMatch)
+		{
+			if (FactorComponent.Type != "folder")
+			{
+				foreach (Component child in FactorComponent.ChildNodes)
+                {
+                    //replace each target that is within the provided simulation with the child's xml
+                    foreach (string target in Targets)
+                    {
+                        //need to remove the path of this simulation from the target to get the relative path
+                        string relativePath = target.Substring(Simulation.FullPath.Length + 1);
+                        Component targetComp = Simulation.Find(relativePath);
+                        if (targetComp != null)
+                        {
+                            //replace target nodes with factor nodes - add child factor nodes if they don't exist 
+                            //don't remove any children from the target
+                            ReplaceComponent(targetComp, child);
+                        }
+                    }
+					SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+					myFactors.Add(FactorComponent.Name, child.Name);
+					if (NextItem != null)
+						NextItem.FindInputs(inputfiles, Simulation, SimulationPath, myFactors, factorsToMatch);
+                    else 
+						if (FactorsMatch(myFactors, factorsToMatch))
+							FindInputs(inputfiles, Simulation);
+                }
+			}
+			else
+			{
+                SortedDictionary<string, string> myFactors = new SortedDictionary<string, string>(factorsList);
+				myFactors.Add(FactorComponent.Name, FolderLevel);
+                if (NextItem != null)
+                    NextItem.FindInputs(inputfiles, Simulation, SimulationPath, myFactors, factorsToMatch);
+                else
+ 					if (FactorsMatch(myFactors, factorsToMatch))
+                       FindInputs(inputfiles, Simulation);
+            }
+		}
+		
+        public virtual void FindInputs(List<string> inputfiles, Component Simulation)
+		{
+			XmlNode componentNode = Simulation.ContentsAsXML; 
+			XmlNode fileNode = componentNode.SelectSingleNode("//filename");
+			if (fileNode != null && XmlHelper.Attribute(fileNode, "input") == "yes")
+				inputfiles.Add(fileNode.InnerText);
+			foreach (Component comp in Simulation.ChildNodes) 
+				FindInputs(inputfiles, comp);
+		}
+
         public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, 
 		                            SortedDictionary<string, string> factorsList, SortedDictionary<string, string> factorsToMatch, 
 		                            ref int counter, int totalCount, string destFolder)
@@ -324,6 +383,15 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
          foreach (Component comp in node.ChildNodes)
          {
             AddOutputFilesToList(comp, outputfiles);
+         }
+      }
+      public void AddInputFilesToList(Component node, List<Component> inputfiles)
+      {
+         if (node.Type == "met")
+            inputfiles.Add(node);
+         foreach (Component comp in node.ChildNodes)
+         {
+            AddInputFilesToList(comp, inputfiles);
          }
       }
    }
