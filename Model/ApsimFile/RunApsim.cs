@@ -51,10 +51,10 @@ namespace ApsimFile
                     throw new Exception("Unknown APSIM file type: " + FileName + ". Cannot run APSIM.");
             }
 
-            // If there is only one job then run it now - don't need job scheduler.
-            if (ApsimJobs.Count == 1)
-                ApsimJobs[0].Run();
-            else
+            // If there is only one job then run it now - don't need job scheduler. (the second job is the .sim deletion)
+            if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
+                foreach (Job x in ApsimJobs) { x.Run(); }
+            else if (ApsimJobs.Count > 2)
             {
                 Project P = new Project();
                 Target T = new Target();
@@ -71,9 +71,9 @@ namespace ApsimFile
         /// </summary>
         public void WaitUntilFinished()
         {
-            if (ApsimJobs.Count == 1)
+            if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
                 ApsimJobs[0].WaitUntilExit();
-            else
+            else if (ApsimJobs.Count > 2)
                 Scheduler.WaitForFinish();
         }
 
@@ -84,7 +84,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1)
+                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
                     return ApsimJobs[0].PercentComplete;
                 else
                     return Scheduler.PercentComplete;
@@ -109,7 +109,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1)
+                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
                     return ApsimJobs[0].HasErrors;
                 else if (Scheduler != null)
                     return Scheduler.HasErrors;
@@ -125,7 +125,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1)
+                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
                     return ApsimJobs[0].HasExited;
                 else if (Scheduler != null)
                     return Scheduler.HasFinished;
@@ -152,7 +152,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1)
+                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
                     if (ApsimJobs[0].HasExited)
                         return 1;
                     else
@@ -169,7 +169,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1 && ApsimJobs[0].HasErrors)
+                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2 && ApsimJobs[0].HasErrors)
                     {
                         string path = ApsimJobs[0].Name;
                         int pos = path.LastIndexOf("/");
@@ -178,7 +178,7 @@ namespace ApsimFile
 
                         return path;
                     }
-                else if (ApsimJobs.Count > 1)
+                else if (ApsimJobs.Count > 2)
                     return Scheduler.FirstJobWithError;
                 return "";
             }
@@ -186,7 +186,7 @@ namespace ApsimFile
 
         public void SaveLogFile(string FileName)
         {
-            if (ApsimJobs.Count == 1)
+            if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
             {
                 XmlSerializer x = new XmlSerializer(typeof(Job));
                 StreamWriter s = new StreamWriter(FileName);
@@ -305,8 +305,6 @@ namespace ApsimFile
         /// </summary>
         private int FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
         {
-            if(!FactorialIsActive(AFile))
-                return 0;
             List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
             foreach (SimFactorItem item in SimFiles)
             {
@@ -315,16 +313,7 @@ namespace ApsimFile
                 J = CleanupJob(item.SimFileName, J.Name);
                 ApsimJobs.Add(J);
             }
-            return ApsimJobs.Count;
-        }
-
-        private bool FactorialIsActive(ApsimFile AFile)
-        {
-            //This test should only return true if "active" is present - running from the command line will run the entire set by default
-            XmlNode varNode = AFile.FactorComponent.ContentsAsXML.SelectSingleNode("//active");
-            if(varNode != null)
-                return XmlHelper.Value(AFile.FactorComponent.ContentsAsXML, "active") == "1";
-            return true;
+            return SimFiles.Count;
         }
 
         /// <summary>

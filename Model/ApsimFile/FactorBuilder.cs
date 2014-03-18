@@ -627,7 +627,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                                 item.Targets = targets;
                                 item.FactorComponent = comp;
                                 item.Variable = node;
-                                string[] pars = node.InnerText.Split(",".ToCharArray());
+                                string[] pars = node.InnerText.Split(new char[] {','});
+                                pars =  pars.Select(x => x.Trim(new char[] {'\"', ' '})).ToArray();
                                 List<string> parameters = new List<string>();
                                 parameters.AddRange(pars);
                                 item.Parameters = parameters;
@@ -690,7 +691,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                             item.Targets = targets;
                             item.FactorComponent = factor;
                             item.Variable = node;
-                            string[] pars = node.InnerText.Split(",".ToCharArray());
+                            string[] pars = node.InnerText.Split(new char[] {','});
+                            pars =  pars.Select(x => x.Trim(new char[] {'\"', ' '})).ToArray();
                             List<string> parameters = new List<string>();
                             parameters.AddRange(pars);
                             item.Parameters = parameters;
