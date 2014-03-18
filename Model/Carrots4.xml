@@ -214,22 +214,18 @@
       </Root>
       <GenericAboveGroundOrgan name="Stem">
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.2</Value>
+          <Value type="text" description="Value">0.85</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
           <Constant name="StructuralFraction">
             <Value type="text" description="Value">0.5</Value>
             <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
           </Constant>
         </Constant>
-        <LinearInterpolationFunction name="MaximumNConc">
-          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>0 0.017</XY>
-            <XY>4 0.017</XY>
-            <XY>6 0.017</XY>
-          </XYPairs>
-          <Memo>Values estimated from Westerveld et al 2006, HortScience 41(5)</Memo>
-        </LinearInterpolationFunction>
+        <Constant name="MaximumNConc">
+          <Value type="text" description="Value">0.017</Value>
+          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+          <Memo name="Memo1">Values estimated from Westerveld et al 2006, HortScience 41(5)</Memo>
+        </Constant>
         <Constant name="MinimumNConc">
           <Value type="text" description="Value">0.014</Value>
           <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
@@ -796,7 +792,7 @@ General Format:
           </PhaseLookupValue>
         </PhaseLookup>
         <Constant name="NConc">
-          <Value type="text" description="Value">0.02</Value>
+          <Value type="text" description="Value">0.03</Value>
           <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
         </Constant>
         <PhaseLookup name="NitrogenDemandSwitch">

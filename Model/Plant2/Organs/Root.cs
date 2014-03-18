@@ -38,6 +38,7 @@ public class Root : BaseOrgan, BelowGround
     Function MinimumNConc = null;
     [Link]
     Function KLModifier = null;
+  
  #endregion
 
  #region Class Fields
@@ -165,8 +166,8 @@ public class Root : BaseOrgan, BelowGround
         int RootLayer = LayerIndex(Depth);
         double TEM = (TemperatureEffect == null)? 1: TemperatureEffect.Value;
         Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TEM;
-        if (MaximumRootDepth != null)
-          Math.Min(MaximumRootDepth.Value,Depth);
+        if (!(MaximumRootDepth == null))
+            Depth = Math.Min(Depth, MaximumRootDepth.Value);
         double MaxDepth = 0;
         for (int i = 0; i < dlayer.Length; i++)
             if (xf[i] > 0)

@@ -302,7 +302,13 @@ class SimpleLeaf : BaseOrgan, AboveGround
              // return _LAI;
             _LAI = (Math.Log(1 - CoverGreen) / -K);
         if (LaiFunction != null)
-             _LAI = LaiFunction.Value;
+        {
+            _LAI = LaiFunction.Value;
+        }
+ 
+        if (_LAI > 0)
+         PublishNewCanopyEvent();
+ 
     }
     [EventHandler]
     public void OnCut()
