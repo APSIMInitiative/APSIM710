@@ -549,7 +549,6 @@ Public Class SoilTemperature2
         ReDim Preserve gC1(gNz)     ' C1 dimensioned for nodes 0 to Nz
         ReDim Preserve gC2(gNz)     ' C2 dimensioned for nodes 0 to Nz
         ReDim Preserve gC3(gNz)     ' C3 dimensioned for nodes 0 to Nz
-        ReDim Preserve gC3(gNz)     ' C3 dimensioned for nodes 0 to Nz
         ReDim Preserve gC4(gNz)     ' C4 dimensioned for nodes 0 to Nz
 
         For layer As Integer = 1 To gNumLayers + 1
@@ -638,6 +637,15 @@ Public Class SoilTemperature2
         Dim RnTot As Double = 0.0
         'calc dt
         gDt = Math.Round(gTimeStepSec / CDbl(ITERATIONSperDAY))
+
+        'These two call used to be inside the timestep loop. I've taken them outside,
+        'as the results do not appear to vary over the course of the day.
+        'The results would vary if soil water content were to vary, so if future versions
+        'to more communication within subday time steps, these may need to be moved
+        'back into the loop. EZJ March 2014
+        doVolumetricSpecificHeat()      'RETURNS gVolSpecHeatSoil() (volumetric heat capacity of nodes)
+        doThermConductivity()     'RETURNS gThermConductivity_zb()
+
         For timeStepIteration As Integer = 1 To ITERATIONSperDAY
             gTimeOfDaySecs = gDt * CDbl(timeStepIteration)
             If gTimeStepSec < DAYsecs Then
@@ -652,9 +660,6 @@ Public Class SoilTemperature2
             gRadnNet = radnNetInterpolate(solarRadn(timeStepIteration), cloudFr, cva)
             RnTot += gRadnNet   ' for debugging only
 
-            doVolumetricSpecificHeat()      'RETURNS gVolSpecHeatSoil() (volumetric heat capacity of nodes)
-
-            doThermConductivity()     'RETURNS gThermConductivity_zb()
             Select Case BoundaryLayerConductanceSource.ToLower()
                 Case "constant"
                     gThermConductivity_zb(AIRnode) = boundaryLayerConductanceConst()
@@ -1559,20 +1564,22 @@ Public Class SoilTemperature2
     ''' Notes
     '''     reports err if value GT upper or value LT lower or lower GT upper
     ''' </remarks>
-    Private Overloads Sub BoundCheck(ByVal VariableValue As Double, ByVal Lower As Double, ByVal Upper As Double, ByVal VariableName As String)
+    Private Overloads Sub BoundCheck(ByRef VariableValue As Double, ByRef Lower As Double, ByRef Upper As Double, ByRef VariableName As String)
 
         Const MARGIN As Double = 0.00001          ' margin for precision err of lower
         Dim LowerBound As Double = Lower - MARGIN       ' calculate a margin for precision err of lower.
         Dim UpperBound As Double = Upper + MARGIN   ' calculate a margin for precision err of upper.
 
-        If (LowerBound > UpperBound) Then     ' are the upper and lower bounds valid?
-            Throw New Exception("Lower bound (" + Lower.ToString() + ") exceeds upper bound (" + Upper.ToString() + ") in bounds checking: Variable is not checked")
+        If (VariableValue > UpperBound Or VariableValue < LowerBound) Then       ' is the value outside range?
+            If (LowerBound > UpperBound) Then     ' are the upper and lower bounds valid?
+                Throw New Exception("Lower bound (" + Lower.ToString() + ") exceeds upper bound (" + Upper.ToString() + ") in bounds checking: Variable is not checked")
 
-        ElseIf (VariableValue > UpperBound Or VariableValue < LowerBound) Then       ' is the value outside range?
-            Throw New Exception(VariableName + " = " + VariableValue.ToString() + " is outside range of " + Lower.ToString() + " to " + Upper.ToString())
+            Else
+                Throw New Exception(VariableName + " = " + VariableValue.ToString() + " is outside range of " + Lower.ToString() + " to " + Upper.ToString())
 
-            'ElseIf (VariableValue < LowerBound) Then       ' is the value too small?
-            '    Throw New Exception(VariableName + " = " + VariableValue.ToString() + " less than lower limit of " + Lower.ToString())
+                'ElseIf (VariableValue < LowerBound) Then       ' is the value too small?
+                '    Throw New Exception(VariableName + " = " + VariableValue.ToString() + " less than lower limit of " + Lower.ToString())
+            End If
         Else
             'all(ok!)
         End If
