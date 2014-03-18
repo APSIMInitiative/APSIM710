@@ -202,24 +202,24 @@ namespace CSUserInterface
             sRule += "      more = false;\n";
             sRule += "      Node s = g.FindNode(currentState);\n";
             sRule += "      //Console.WriteLine(\" state=\" + s.Name);\n";
-            sRule += "      int bestScore = -1; string bestTarget = \"\";\n";
-            sRule += "      foreach (string target in s.neighbors.Keys) {\n";
+            sRule += "      int bestScore = -1; string bestArc = \"\";\n";
+            sRule += "      foreach (string _arc in s.arcs.Keys) {\n";
             sRule += "         int score = -1;\n";
-            sRule += "         if (s.neighbors[target].testCondition == null)\n";
+            sRule += "         if (s.arcs[_arc].testCondition == null)\n";
             sRule += "            score = 1;\n";
             sRule += "         else\n";
-            sRule += "            MyPaddock.Get(s.neighbors[target].testCondition, out score);\n";
-            sRule += "         //Console.WriteLine(\" t=\" + target + \" score=\" + score);\n";
+            sRule += "            MyPaddock.Get(s.arcs[_arc].testCondition, out score);\n";
+            sRule += "         //Console.WriteLine(\" a=\" + _arc + \" score=\" + score);\n";
             sRule += "         if (score > bestScore) {\n";
             sRule += "            bestScore = score;\n";
-            sRule += "            bestTarget = target;\n";
+            sRule += "            bestArc = _arc;\n";
             sRule += "         }\n";
             sRule += "      }\n";
             sRule += "      if (bestScore > 0) {\n";
-            sRule += "          //Console.WriteLine(\" best=\" + bestTarget + \" action=\" + s.neighbors[bestTarget].action);\n";
-            sRule += "          if (s.neighbors[bestTarget].action != null)\n";
-            sRule += "             MyPaddock.Publish(s.neighbors[bestTarget].action);\n";
-            sRule += "          currentState = bestTarget;\n";
+            sRule += "          //Console.WriteLine(\" best=\" + bestTarget + \" action=\" + s.arcs[bestTarget].action);\n";
+            sRule += "          if (s.arcs[bestArc].action != null)\n";
+            sRule += "             MyPaddock.Publish(s.arcs[bestArc].action);\n";
+            sRule += "          currentState = g.FindArcTarget(bestArc);\n";
             sRule += "          more = true;\n";
             sRule += "      }\n";
             sRule += "   }\n";
@@ -227,16 +227,16 @@ namespace CSUserInterface
 
             sRule += "  public class ruleAction\n";
             sRule += "  {\n";
+            sRule += "     public string Target;\n";
             sRule += "     public string testCondition;\n";
-            sRule += "      public string action;\n";
+            sRule += "     public string action;\n";
             sRule += "  }\n";
 
             sRule += "   public class Node : IEquatable<Node>\n";
             sRule += "   {\n";
             sRule += "      private string data /*, alias*/;\n";
             sRule += "      public Node(string _data) { data = _data; }\n";
-            sRule += "      //public Node(string _data, string _alias) { data = _data; alias = _alias; }\n";
-            sRule += "      public Dictionary<string, ruleAction> neighbors = new Dictionary<string, ruleAction>();\n";
+            sRule += "      public Dictionary<string, ruleAction> arcs = new Dictionary<string, ruleAction>();\n";
             sRule += "      public bool Equals(Node other)\n";
             sRule += "      {\n";
             sRule += "         return ( this.data == other.data );\n";
@@ -251,8 +251,8 @@ namespace CSUserInterface
             sRule += "      public void print() {\n";
             sRule += "         foreach (Node n in vertices) {\n";
             sRule += "            Console.WriteLine(n.Name + \":\"); \n";
-            sRule += "            foreach (string k in n.neighbors.Keys) {\n";
-            sRule += "               Console.WriteLine(\" \" + k + \":\" + n.neighbors[k]); \n";
+            sRule += "            foreach (string k in n.arcs.Keys) {\n";
+            sRule += "               Console.WriteLine(\"  \" + k); \n";
             sRule += "            }\n";
             sRule += "         }\n";
             sRule += "      }\n";
@@ -277,12 +277,31 @@ namespace CSUserInterface
             sRule += "         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));\n";
             sRule += "      }\n";
 
-            sRule += "      public void AddDirectedEdge(string value1, string value2, ruleAction value3)\n";
+            sRule += "      public void AddDirectedEdge(string source, string dest, ruleAction value)\n";
             sRule += "      {\n";
-            sRule += "         Node node1 = AddNode(value1);\n";
-            sRule += "         AddNode(value2);\n";
-            sRule += "         node1.neighbors.Add(value2, value3);\n";
+            sRule += "         int i = 0;\n";
+            sRule += "         foreach (Node n in vertices) {\n";
+            sRule += "            foreach (string arc in n.arcs.Keys) {\n";
+            sRule += "               i++;\n";
+            sRule += "            }\n";
+            sRule += "         }\n";
+            sRule += "         Node node1 = AddNode(source);\n";
+            sRule += "         AddNode(dest);\n";
+            sRule += "         value.Target = dest;\n";
+            sRule += "         node1.arcs.Add(\"arc\" + i.ToString(), value);\n";
             sRule += "      }\n";
+            sRule += "      public string FindArcTarget(string arc)\n";
+            sRule += "      {\n";
+            sRule += "         foreach (Node n in vertices) {\n";
+            sRule += "            foreach (string a in n.arcs.Keys) {\n";
+            sRule += "               if (a == arc) { return (n.arcs[a].Target); }\n";
+            sRule += "            }\n";
+            sRule += "         }\n";
+            sRule += "         Console.WriteLine(\"Aiee - no target for arc \" + arc ); \n";
+            sRule += "         return(\"\");\n";
+            sRule += "      }\n";
+
+
             sRule += "   }\n";
             sRule += "}\n";
 
