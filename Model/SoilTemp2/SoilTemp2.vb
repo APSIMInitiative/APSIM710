@@ -525,7 +525,8 @@ Public Class SoilTemperature2
         BoundCheck(DefaultInstrumentHeight, 0.0, 5.0, "default_instrum_height")
         BoundCheck(BareSoilHeight, 0.0, 150.0, "bare_soil_height")     ' "canopy height" when no canopy is present. FIXME - need to test if canopy is absent and set to this.
         gSoilRoughnessHeight = BareSoilHeight
-        Select Case BoundaryLayerConductanceSource.ToLower()
+        BoundaryLayerConductanceSource = BoundaryLayerConductanceSource.ToLower()
+        Select Case BoundaryLayerConductanceSource
             Case "calc", "constant"
                 ' ok, legal values
             Case Else
@@ -534,7 +535,8 @@ Public Class SoilTemperature2
         BoundCheck(BoundaryLayerConductanceIterations, 0, 10, "boundary_layer_conductance_iterations")
         BoundCheck(BoundaryLayerConductance, 10.0, 40.0, "boundary_layer_cond")
         gBoundaryLayerConductanceIterations = CInt(BoundaryLayerConductanceIterations)
-        Select Case NetRadiationSource.ToLower()
+        NetRadiationSource = NetRadiationSource.ToLower()
+        Select Case NetRadiationSource
             Case "calc", "eos"
                 ' ok, legal values
             Case Else
@@ -660,7 +662,7 @@ Public Class SoilTemperature2
             gRadnNet = radnNetInterpolate(solarRadn(timeStepIteration), cloudFr, cva)
             RnTot += gRadnNet   ' for debugging only
 
-            Select Case BoundaryLayerConductanceSource.ToLower()
+            Select Case BoundaryLayerConductanceSource
                 Case "constant"
                     gThermConductivity_zb(AIRnode) = boundaryLayerConductanceConst()
                 Case "calc"
@@ -806,7 +808,7 @@ Public Class SoilTemperature2
         ' latent heat flux. Eqn. 4.17
 
         Dim RadnNet As Double = 0.0     ' (W/m)
-        Select Case NetRadiationSource.ToLower()
+        Select Case NetRadiationSource
             Case "calc"
                 RadnNet = gRadnNet * MJ2J / gDt       ' net Radiation Rn heat flux (J/m2/s or W/m2).
             Case "eos"
@@ -1026,7 +1028,7 @@ Public Class SoilTemperature2
     ''' to reduce sensible heat exchange between the soil surface and the air to almost nothing. If stability
     ''' corrections are not made, soil temperature profiles can have large errors.
     ''' </remarks>
-    Private Function boundaryLayerConductanceF(ByVal TNew_zb() As Double) As Double
+    Private Function boundaryLayerConductanceF(ByRef TNew_zb() As Double) As Double
 
         Const VONK As Double = 0.41                 ' VK; von Karman's constant
         Const GRAVITATIONALconst As Double = 9.8    ' GR; gravitational constant (m/s/s)
@@ -1564,7 +1566,7 @@ Public Class SoilTemperature2
     ''' Notes
     '''     reports err if value GT upper or value LT lower or lower GT upper
     ''' </remarks>
-    Private Overloads Sub BoundCheck(ByRef VariableValue As Double, ByRef Lower As Double, ByRef Upper As Double, ByRef VariableName As String)
+    Private Overloads Sub BoundCheck(ByVal VariableValue As Double, ByVal Lower As Double, ByVal Upper As Double, ByRef VariableName As String)
 
         Const MARGIN As Double = 0.00001          ' margin for precision err of lower
         Dim LowerBound As Double = Lower - MARGIN       ' calculate a margin for precision err of lower.
@@ -1606,7 +1608,7 @@ Public Class SoilTemperature2
     '''  Assumptions
     '''     each element has same bounds.
     ''' </remarks>
-    Private Overloads Sub BoundCheckArray(ByVal array() As Double, ByVal LowerBound As Double, ByVal UpperBound As Double, ByVal ArrayName As String)
+    Private Overloads Sub BoundCheckArray(ByRef array() As Double, ByVal LowerBound As Double, ByVal UpperBound As Double, ByVal ArrayName As String)
 
         If UBound(array) >= 1 Then
             For index As Integer = LBound(array) To UBound(array)
