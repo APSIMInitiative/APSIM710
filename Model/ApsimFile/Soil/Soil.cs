@@ -792,7 +792,7 @@ namespace ApsimFile
                     {
                         double[] Values = Sample.NO3ppm(this);
                         double[] Thicknesses = Sample.Thickness;                
-                        return Map(Values, Thicknesses, Thickness, MapType.Concentration, 1.0);
+                        return Map(Values, Thicknesses, Thickness, MapType.Concentration, 0.01);
                     }
                 }
                 return null;
@@ -812,7 +812,7 @@ namespace ApsimFile
                     {
                         double[] Values = Sample.NH4ppm(this);
                         double[] Thicknesses = Sample.Thickness;                
-                        return Map(Values, Thicknesses, Thickness, MapType.Concentration, 0.2);
+                        return Map(Values, Thicknesses, Thickness, MapType.Concentration, 0.01);
                     }
                 }
                 return null;
