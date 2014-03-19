@@ -69,6 +69,11 @@ namespace Actions
                     response.Close();
             }
 		}
+        public static void OfflineHelpDocumentation(BaseController Controller)
+        {
+            string offline = Configuration.Instance.Setting("docfile");
+            Process.Start(offline);
+        }
 		public static void ClusterHelpDocumentation(BaseController Controller)
 		{
 			string HelpURL = Configuration.Instance.Setting("ClusterHelpPage");
