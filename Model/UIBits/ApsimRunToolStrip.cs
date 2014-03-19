@@ -153,7 +153,17 @@ public class ApsimRunToolStrip
             return;
         }
         if (SimsToRun.Count >= 1)
-            Apsim.Start(new string[] {_F.FileName}, SimsToRun.ToArray());
+		{
+			//See if the factorial component is "active" - whether the user wants just one or all simulations
+			bool doAllFactors = true;
+			if (_F.FactorComponent != null)
+			{
+				XmlNode varNode = _F.FactorComponent.ContentsAsXML.SelectSingleNode("//active");
+				if(varNode != null)
+					doAllFactors = XmlHelper.Value(_F.FactorComponent.ContentsAsXML, "active") == "1";
+			}
+            Apsim.Start(new string[] {_F.FileName}, SimsToRun.ToArray(), doAllFactors);
+		}
         
         Timer.Enabled = true;
     }

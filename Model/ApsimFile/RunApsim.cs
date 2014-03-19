@@ -32,14 +32,14 @@ namespace ApsimFile
         /// for .apsim and .con files. They can be a full path or just a simulation name.
         /// Full path eg. /simulations/Continuous Wheat
         /// </summary>
-        public void Start(string[] FileNames, string[] SimulationPaths)
+        public void Start(string[] FileNames, string[] SimulationPaths, bool doAllFactors)
         {
             ApsimJobs.Clear();
             NumApsimRuns = 0;
             foreach (string FileName in FileNames)
             {
                 if (Path.GetExtension(FileName).ToLower() == ".apsim")
-                    CreateJobsFromAPSIM(FileName, SimulationPaths, ref ApsimJobs);
+                    CreateJobsFromAPSIM(FileName, SimulationPaths, ref ApsimJobs, doAllFactors);
 
                 else if (Path.GetExtension(FileName).ToLower() == ".sim")
                     CreateJobsFromSIM(FileName, ref ApsimJobs);
@@ -169,7 +169,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2 && ApsimJobs[0].HasErrors)
+                if ((ApsimJobs.Count == 1 || ApsimJobs.Count == 2) && ApsimJobs[0].HasErrors)
                     {
                         string path = ApsimJobs[0].Name;
                         int pos = path.LastIndexOf("/");
@@ -201,7 +201,7 @@ namespace ApsimFile
         /// <summary>
         /// Create, and add to ApsimJobs, a series of jobs to run APSIM for each simulation.
         /// </summary>
-        private void CreateJobsFromAPSIM(string FileName, string[] SimulationPaths, ref List<Job> ApsimJobs)
+        private void CreateJobsFromAPSIM(string FileName, string[] SimulationPaths, ref List<Job> ApsimJobs, bool doAllFactors)
         {
             // Load all plugin (.xml) files.
             if (Types.Instance.TypeNames.Length == 0)
@@ -217,7 +217,7 @@ namespace ApsimFile
             }
 
             // Look for factorials.
-            if (AFile.FactorComponent != null && FillProjectWithFactorialJobs(AFile, SimulationPaths, ref ApsimJobs) > 0)
+            if (AFile.FactorComponent != null && doAllFactors && FillProjectWithFactorialJobs(AFile, SimulationPaths, ref ApsimJobs) > 0)
             {
                 // If there were factorial jobs, we are done, but if the factor component had no jobs to run, we'll want
                 // to process the simulation normally 
@@ -305,7 +305,11 @@ namespace ApsimFile
         /// </summary>
         private int FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
         {
-            List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
+#if false
+			if(!FactorialIsActive(AFile))
+                return 0;
+#endif
+			List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
             foreach (SimFactorItem item in SimFiles)
             {
                 Job J = CreateJob(item.SimFileName, Path.ChangeExtension(item.SimFileName, ".sum"));
@@ -315,7 +319,16 @@ namespace ApsimFile
             }
             return SimFiles.Count;
         }
-
+#if false
+		private bool FactorialIsActive(ApsimFile AFile)
+        {
+            //This test should only return true if "active" is present - running from the command line will run the entire set by default
+            XmlNode varNode = AFile.FactorComponent.ContentsAsXML.SelectSingleNode("//active");
+            if(varNode != null)
+                return XmlHelper.Value(AFile.FactorComponent.ContentsAsXML, "active") == "1";
+            return true;
+		}
+#endif
         /// <summary>
         /// delete a file after a job has finished
         /// </summary>

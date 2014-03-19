@@ -184,13 +184,12 @@ namespace ApsimFile
 			SubWriter.WriteLine (" && ((Arch == \"INTEL\") || (Arch == \"X86_64\"))");
 			SubWriter.WriteLine ("executable = Apsim.$$(OpSys).$$(Arch).bat");
 
-
 			// Create a top level batch file.
 			StreamWriter ExeWriter;
 			ExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX.INTEL.bat"));
 			ExeWriter.NewLine = "\n";
 			ExeWriter.WriteLine ("#!/bin/bash");
-			ExeWriter.WriteLine ("for i in $@; do chmod +x $i; ./$i; rm -f $i; done");
+			ExeWriter.WriteLine ("for i in $@; do if [ ! -f $i ]; then wget -nd $i; i=`basename $i`; fi ; chmod +x $i; ./$i; rm -f $i; done");
 			ExeWriter.WriteLine ("if [ -d Temp ]; then rm -rf Temp; fi");
 			ExeWriter.Close ();
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.LINUX.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.LINUX.X86_64.bat"));
@@ -199,17 +198,31 @@ namespace ApsimFile
 			ExeWriter.NewLine = "\r\n";
 			ExeWriter.WriteLine (":top");
 			ExeWriter.WriteLine ("IF (%1) == () GOTO END");
-			ExeWriter.WriteLine ("%1");
+			ExeWriter.WriteLine ("IF not exist %1 (");
+			ExeWriter.WriteLine ("wget -nd %1");
+			ExeWriter.WriteLine (")");
+			
+			ExeWriter.WriteLine ("set DirPath=%1");
+			ExeWriter.WriteLine ("set filename=");
+			ExeWriter.WriteLine (":loop");
+			ExeWriter.WriteLine ("  If \"%DirPath%\" == \"\" GoTo :done");
+			ExeWriter.WriteLine ("  For /F \"tokens=1* delims=/\" %%a in (\"%DirPath%\") Do set filename=%%a");
+			ExeWriter.WriteLine ("  For /F \"tokens=1* delims=/\" %%a in (\"%DirPath%\") Do Set DirPath=%%b");
+			ExeWriter.WriteLine ("  GoTo :loop");
+
+			ExeWriter.WriteLine (":done");
+			ExeWriter.WriteLine ("%filename%");
 			ExeWriter.WriteLine ("SHIFT");
 			ExeWriter.WriteLine ("GOTO TOP");
 			ExeWriter.WriteLine (":END");
-			ExeWriter.WriteLine ("rmdir /s /q Temp");
+			ExeWriter.WriteLine ("DEL /s /q /f Temp");
 			
 			ExeWriter.Close ();
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
 
-			List<string> inputfiles = new List<string> ();
-			inputfiles.Add (SelfExtractingExecutableLocation);
+			List<string> inputfiles = new List<string>();
+			if (File.Exists (SelfExtractingExecutableLocation)) 
+				inputfiles.Add (SelfExtractingExecutableLocation);
 
 			// Number of simulations in the current job
 			int numSims = 0;
@@ -219,9 +232,9 @@ namespace ApsimFile
 
 			foreach (XmlNode simNode in jobDoc.SelectNodes("//simulation")) {
 				if (numSims == 0) {
-					//SubWriter.WriteLine("output = " + "Apsim" + Convert.ToString(jobCounter) + ".stdout");
-					//SubWriter.WriteLine("error = " + "Apsim" + Convert.ToString(jobCounter) + ".stderr");
-					SubWriter.WriteLine ("arguments = " + Path.GetFileName (SelfExtractingExecutableLocation) + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
+					SubWriter.WriteLine("output = " + "Apsim" + Convert.ToString(jobCounter) + ".stdout");
+					SubWriter.WriteLine("error = " + "Apsim" + Convert.ToString(jobCounter) + ".stderr");
+					SubWriter.WriteLine ("arguments = " + SelfExtractingExecutableLocation + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 					inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 					WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
 					LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
@@ -230,7 +243,7 @@ namespace ApsimFile
 
 				string apsimFile = Path.GetFileName (XmlHelper.Attribute (simNode, "source"));
 				WinExeWriter.WriteLine (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\" \"Simulation=" + XmlHelper.Attribute (simNode, "name") + "\"");
-				LinuxExeWriter.WriteLine ("./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=" + XmlHelper.Attribute (simNode, "name") + "\"");
+				LinuxExeWriter.WriteLine ("./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=" + XmlHelper.Attribute (simNode, "name") + "\""); // SaveProfileOutput=true
 				if (!inputfiles.Contains (apsimFile))
 					inputfiles.Add (apsimFile);
 
@@ -247,7 +260,8 @@ namespace ApsimFile
 					LinuxExeWriter.Close ();
 					numSims = 0;
 					inputfiles.Clear ();
-					inputfiles.Add (SelfExtractingExecutableLocation);
+					if (File.Exists (SelfExtractingExecutableLocation)) 
+						inputfiles.Add (SelfExtractingExecutableLocation);
 					jobCounter++;
 				}
 			}
