@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 
 using System.IO;
+using System.Net;
 using System.Collections.Specialized;
 using System.Windows.Forms;
 
@@ -48,17 +49,34 @@ namespace Actions
 
 		public static void HelpDocumentation(BaseController Controller)
 		{
-			string HelpURL = Configuration.Instance.Setting("docfile");
-			Process.Start(HelpURL);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://www.apsim.info");
+            HttpWebResponse response = null;
+			string offline = Configuration.Instance.Setting("docfile");
+            string website = Configuration.Instance.Setting("ApsimWebSite");
+
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+                Process.Start(website + "/Documentation");
+            }
+            catch (Exception e)
+            {
+                Process.Start(offline);
+            }
+            finally
+            {
+                if (response != null)
+                    response.Close();
+            }
 		}
 		public static void ClusterHelpDocumentation(BaseController Controller)
 		{
 			string HelpURL = Configuration.Instance.Setting("ClusterHelpPage");
 			Process.Start(HelpURL);
 		}
-		public static void ApsimSearchEngine(BaseController Controller)
+        public static void ApsimWebSite(BaseController Controller)
 		{
-			string url = Configuration.Instance.Setting("ApsimSearchEngine");
+			string url = Configuration.Instance.Setting("ApsimWebSite");
 			Process.Start(url);
 		}
 		public static void ApsimInternetGroup(BaseController Controller)
