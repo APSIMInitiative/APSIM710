@@ -1,0 +1,808 @@
+<folder version="36" creator="Apsim 7.6-r3350" name="simulations">
+  <simulation name="Population110">
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Tests\Validation\OilPalm\Hargy.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/03/1996</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">29/09/2010</end_date>
+    </clock>
+    <summaryfile />
+    <area name="Block">
+      <OilPalm>
+        <UnderstoryCoverGreen type="text" description="UnderstoryCoverGreen">0.4</UnderstoryCoverGreen>
+        <UnderstoryLegumeFraction type="text" description="UnderstoryLegumeFraction">0.5</UnderstoryLegumeFraction>
+      </OilPalm>
+      <fertiliser />
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">oilpalm oilpalmstem</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">oilpalm oilpalmstem</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">24000 63000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">39 145</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0 0</standing_fraction>
+        <memo>
+24 t Fronds at 1.14% N = 274 kgN
+63 t Trunk at 0.3% N = 189 kg N
+
+Overall N% = 0.533% = C:N 75</memo>
+      </surfaceom>
+      <manager name="Palm Management">
+        <ui>
+          <planting_date type="date" description="Planting date">01/03/1996</planting_date>
+          <population type="text" description="Plant Population (/ha)">110</population>
+          <cultivar type="cultivars" description="Cultivar">Dami</cultivar>
+          <year1N type="text" description="N applied in year 1 (kg/palm)">0.14</year1N>
+          <year2N type="text" description="N applied in year 2 (kg/palm)">0.3</year2N>
+          <year3N type="text" description="N applied in year 3 (kg/palm)">0.6</year3N>
+          <year4N type="text" description="N applied in year 4 (kg/palm)">0.9</year4N>
+          <MatureN type="text" description="N applied to mature palms (kg/palm)">1.05</MatureN>
+        </ui>
+        <script>
+          <text>ppsm = [population]/10000
+
+! Add Trunk from previous plantation
+!'surface organic matter' add_surfaceom type=OilPalm, name=trunk, mass=63000, cnr=133, cpr=200
+
+
+endif
+
+if today = date('[planting_date]') then
+    OilPalm sow population = ppsm, depth = 200, cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+
+
+if today = date('15-jan') or today = date('15-may') or today = date('15-sep') then
+   if age &lt;= 1 then
+      Nrate = [population] * [year1N] / 3
+   elseif age &lt;= 2 then
+      Nrate = [population] * [year2N] / 3
+   elseif age &lt;= 3 then
+      Nrate = [population] * [year3N] / 3
+   elseif age &lt;= 4 then
+      Nrate = [population] * [year4N] / 3
+   else
+      Nrate = [population] *  [MatureN]/ 3
+   endif           
+
+   fertiliser apply amount = Nrate, type = nh4no3, depth = 1
+endif
+
+
+      
+</text>
+          <event>start_of_day</event>
+        </script>
+        <script>
+          <text>Plant_population = 0
+</text>
+          <event>Init</event>
+        </script>
+      </manager>
+      <Soil>
+        <RecordNumber>0</RecordNumber>
+        <SoilType>Higaturu Series </SoilType>
+        <Site>Sangara Estate</Site>
+        <NearestTown>Popondetta</NearestTown>
+        <Region>Oro Province</Region>
+        <Country>Papua New Guinea</Country>
+        <Latitude>-8.7667</Latitude>
+        <Longitude>148.2333</Longitude>
+        <DataSource>Soil OC from OPRA 2009 Annual Report. BD from Banabas PhD Thesis. SAT = total porosity, DUL = SAT - 0.05, LL = DUL-0.1, AD = LL/3</DataSource>
+        <Comments>Volcanic Ash alluvial deposited</Comments>
+        <Water>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>500</double>
+            <double>500</double>
+            <double>500</double>
+            <double>500</double>
+            <double>500</double>
+            <double>1000</double>
+          </Thickness>
+          <BD>
+            <double>1.22</double>
+            <double>1.22</double>
+            <double>1.43</double>
+            <double>1.14</double>
+            <double>1.15</double>
+            <double>1.15</double>
+            <double>1.43</double>
+            <double>1.43</double>
+            <double>1.43</double>
+            <double>1.43</double>
+            <double>1.43</double>
+            <double>1.43</double>
+          </BD>
+          <AirDry>
+            <double>0.127</double>
+            <double>0.127</double>
+            <double>0.1</double>
+            <double>0.137</double>
+            <double>0.135</double>
+            <double>0.135</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </AirDry>
+          <LL15>
+            <double>0.38</double>
+            <double>0.38</double>
+            <double>0.3</double>
+            <double>0.41</double>
+            <double>0.406</double>
+            <double>0.406</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+          </LL15>
+          <DUL>
+            <double>0.48</double>
+            <double>0.48</double>
+            <double>0.4</double>
+            <double>0.51</double>
+            <double>0.506</double>
+            <double>0.506</double>
+            <double>0.4</double>
+            <double>0.4</double>
+            <double>0.4</double>
+            <double>0.4</double>
+            <double>0.4</double>
+            <double>0.4</double>
+          </DUL>
+          <SAT>
+            <double>0.53</double>
+            <double>0.53</double>
+            <double>0.45</double>
+            <double>0.56</double>
+            <double>0.556</double>
+            <double>0.556</double>
+            <double>0.45</double>
+            <double>0.45</double>
+            <double>0.45</double>
+            <double>0.45</double>
+            <double>0.45</double>
+            <double>0.45</double>
+          </SAT>
+          <SoilCrop name="OilPalm">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>500</double>
+              <double>500</double>
+              <double>500</double>
+              <double>500</double>
+              <double>500</double>
+              <double>1000</double>
+            </Thickness>
+            <LL>
+              <double>0.38</double>
+              <double>0.38</double>
+              <double>0.3</double>
+              <double>0.41</double>
+              <double>0.406</double>
+              <double>0.406</double>
+              <double>0.3</double>
+              <double>0.3</double>
+              <double>0.3</double>
+              <double>0.3</double>
+              <double>0.3</double>
+              <double>0.3</double>
+            </LL>
+            <KL>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+        </Water>
+        <SoilWater>
+          <SummerCona>5</SummerCona>
+          <SummerU>5</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>5</WinterCona>
+          <WinterU>5</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35.4</DiffusSlope>
+          <Salb>0.18</Salb>
+          <CN2Bare>68</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>0</Slope>
+          <DischargeWidth>0</DischargeWidth>
+          <CatchmentArea>0</CatchmentArea>
+          <MaxPond>0</MaxPond>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.7</double>
+            <double>0.7</double>
+            <double>0.7</double>
+            <double>0.7</double>
+            <double>0.7</double>
+            <double>0.7</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>30</RootCN>
+          <RootWt>3000</RootWt>
+          <SoilCN>10</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>100</double>
+            <double>100</double>
+            <double>100</double>
+            <double>300</double>
+            <double>300</double>
+            <double>4100</double>
+          </Thickness>
+          <OC>
+            <double>2.3</double>
+            <double>1.06</double>
+            <double>0.65</double>
+            <double>0.5</double>
+            <double>0.4</double>
+            <double>0.4</double>
+          </OC>
+          <FBiom>
+            <double>0.04</double>
+            <double>0.03</double>
+            <double>0.015</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.18</double>
+            <double>0.4</double>
+            <double>0.62</double>
+            <double>0.8</double>
+            <double>0.99</double>
+            <double>0.99</double>
+          </FInert>
+          <OCUnits>Total</OCUnits>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>100</double>
+            <double>100</double>
+            <double>100</double>
+            <double>300</double>
+            <double>300</double>
+            <double>4100</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>6.3</double>
+            <double>6.4</double>
+            <double>6.7</double>
+            <double>6.8</double>
+            <double>6.8</double>
+            <double>6.8</double>
+          </PH>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <InitialWater name="Initial water">
+          <FractionFull>1</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>EvenlyDistributed</PercentMethod>
+        </InitialWater>
+        <Sample name="Initial nitrogen">
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>3800</double>
+          </Thickness>
+          <NO3>
+            <double>217</double>
+            <double>30</double>
+            <double>5</double>
+            <double>5</double>
+            <double>0</double>
+            <double>0</double>
+          </NO3>
+          <NH4>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </NH4>
+          <NO3Units>kgha</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
+        </Sample>
+      </Soil>
+      <outputfile name="AnnualOutput">
+        <filename output="yes">Population110 Block AnnualOutput.out</filename>
+        <title>Population110 Block AnnualOutput</title>
+        <variables name="Variables">
+          <variable>year</variable>
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>OilPalm.Age</variable>
+          <variable>AnnualYield</variable>
+          <variable>CumulativeFrondNumber</variable>
+          <variable>AnnualBunches</variable>
+          <variable>AnnualRain</variable>
+          <variable>AnnualEo</variable>
+          <variable>AnnualNPP</variable>
+          <variable>AnnualNFixation</variable>
+          <variable>UnderstoryCoverGreen</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_year</event>
+        </events>
+      </outputfile>
+      <outputfile name="MonthlyOutput">
+        <filename output="yes">Population110 Block MonthlyOutput.out</filename>
+        <title>Population110 Block MonthlyOutput</title>
+        <variables name="Variables">
+          <variable>year</variable>
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>Age</variable>
+          <variable>Month</variable>
+          <variable>MonthlyRain</variable>
+          <variable>MonthlyPalmBunches</variable>
+          <variable>MonthlyPalmYield</variable>
+          <variable>MonthlyPalmBunchSize</variable>
+          <variable>LAI</variable>
+          <variable>Stemmass</variable>
+          <variable>oc(1)</variable>
+          <variable>oc(2)</variable>
+          <variable>oc(3)</variable>
+          <variable>carbon_tot()</variable>
+          <variable>nit_tot()</variable>
+          <variable>MonthlyN2O</variable>
+          <variable>MonthlyNLeach</variable>
+          <variable>MonthlyDenit</variable>
+          <variable>surfaceom_wt_oilpalmstem as FelledStemMass</variable>
+          <variable>surfaceom_wt_oilpalm as FrondPileMass</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_month</event>
+        </events>
+      </outputfile>
+      <tracker>
+        <variable>sum of HarvestFFB on harvesting from AnnualOutput.reported to now as AnnualYield</variable>
+        <variable>sum of HarvestBunches on harvesting from AnnualOutput.reported to now as AnnualBunches</variable>
+        <variable>sum of Rain on post from AnnualOutput.reported to now as AnnualRain</variable>
+        <variable>sum of eo on post from AnnualOutput.reported to now as AnnualEo</variable>
+        <variable>sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP</variable>
+        <variable>sum of n2o_atm() on post from MonthlyOutput.reported to now as MonthlyN2O</variable>
+        <variable>sum of leach_no3 on post from MonthlyOutput.reported to now as MonthlyNLeach</variable>
+        <variable>sum of dnit() on post from MonthlyOutput.reported to now as MonthlyDenit</variable>
+        <variable>sum of UnderstoryNFixation on post from AnnualOutput.reported to now as AnnualNFixation</variable>
+        <variable>sum of Rain on post from MonthlyOutput.reported to now as MonthlyRain</variable>
+        <variable>sum of HarvestFFB on harvesting from MonthlyOutput.reported to now as MonthlyYield</variable>
+      </tracker>
+    </area>
+    <Graph name="AnnualYield">
+      <Legend>
+        <CheckedTitles>Rainfall,  AnnualRain</CheckedTitles>
+        <CheckedTitles>Yield,  AnnualYield</CheckedTitles>
+        <CheckedTitles>Yield,  AnnualBunches</CheckedTitles>
+      </Legend>
+      <Plot name="Rainfall">
+        <SeriesType>Bar</SeriesType>
+        <PointType>None</PointType>
+        <colour>-4144897</colour>
+        <X>Date</X>
+        <YRight>AnnualRain</YRight>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Yield">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>AnnualYield</Y>
+        <Y>AnnualBunches</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="N Losses">
+      <Legend>
+        <CheckedTitles>Rainfall, AnnualRain,OilPalm Block AnnualOutput</CheckedTitles>
+        <CheckedTitles>NLoss, MonthlyNLeach,OilPalm Block MonthlyOutput</CheckedTitles>
+        <CheckedTitles>NLoss, MonthlyDenit,OilPalm Block MonthlyOutput</CheckedTitles>
+        <CheckedTitles>NLoss, MonthlyN2O,OilPalm Block MonthlyOutput</CheckedTitles>
+      </Legend>
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFhUZWVDaGFydC5DbGllbnQsIFZlcnNpb249NC4xLjIwMTEuNzI4MywgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ01AAAAA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uEC5DdXN0b21DaGFydFJlY3QXLlBhbmVsLkltYWdlQmV2ZWwuV2lkdGgVLlBhbmVsLkJldmVsLkNvbG9yT25lGy5QYW5lbC5CZXZlbC5TdHJpbmdDb2xvck9uZRUuUGFuZWwuQmV2ZWwuQ29sb3JUd28bLlBhbmVsLkJldmVsLlN0cmluZ0NvbG9yVHdvEi5QYW5lbC5CZXZlbC5PdXRlchIuUGFuZWwuQnJ1c2guQ29sb3ISLkxlZ2VuZC5DaGVja0JveGVzES5MZWdlbmQuQWxpZ25tZW50Ei5MZWdlbmQuTWF4TnVtUm93cxwuTGVnZW5kLlRpdGxlLkJldmVsLkNvbG9yT25lIi5MZWdlbmQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUcLkxlZ2VuZC5UaXRsZS5CZXZlbC5Db2xvclR3byIuTGVnZW5kLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvFi5MZWdlbmQuQmV2ZWwuQ29sb3JPbmUcLkxlZ2VuZC5CZXZlbC5TdHJpbmdDb2xvck9uZRYuTGVnZW5kLkJldmVsLkNvbG9yVHdvHC5MZWdlbmQuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkxlZ2VuZC5TaGFkb3cuVmlzaWJsZRMuTGVnZW5kLlRyYW5zcGFyZW50DS5IZWFkZXIuTGluZXMRLkhlYWRlci5Gb250Lk5hbWURLkhlYWRlci5Gb250LlNpemUWLkhlYWRlci5Gb250LlNpemVGbG9hdBYuSGVhZGVyLkJldmVsLkNvbG9yT25lHC5IZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUWLkhlYWRlci5CZXZlbC5Db2xvclR3bxwuSGVhZGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5TdWJIZWFkZXIuQmV2ZWwuQ29sb3JPbmUfLlN1YkhlYWRlci5CZXZlbC5TdHJpbmdDb2xvck9uZRkuU3ViSGVhZGVyLkJldmVsLkNvbG9yVHdvHy5TdWJIZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkZvb3Rlci5CZXZlbC5Db2xvck9uZRwuRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yT25lFi5Gb290ZXIuQmV2ZWwuQ29sb3JUd28cLkZvb3Rlci5CZXZlbC5TdHJpbmdDb2xvclR3bxkuU3ViRm9vdGVyLkJldmVsLkNvbG9yT25lHy5TdWJGb290ZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUZLlN1YkZvb3Rlci5CZXZlbC5Db2xvclR3bx8uU3ViRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5Bc3BlY3QuQ29sb3JQYWxldHRlSW5kZXgOLkFzcGVjdC5WaWV3M0QIU2VyaWVzLjAZLlNlcmllcy4wLkJhcldpZHRoUGVyY2VudBUuU2VyaWVzLjAuQnJ1c2guQ29sb3ITLlNlcmllcy4wLkNvbG9yRWFjaBIuU2VyaWVzLjAuVmVydEF4aXMPLlNlcmllcy4wLkNvbG9yDy5TZXJpZXMuMC5UaXRsZSsuU2VyaWVzLjAuTWFya3MuU3ltYm9sLkJldmVsLlN0cmluZ0NvbG9yT25lKy5TZXJpZXMuMC5NYXJrcy5TeW1ib2wuQmV2ZWwuU3RyaW5nQ29sb3JUd28kLlNlcmllcy4wLk1hcmtzLkJldmVsLlN0cmluZ0NvbG9yT25lJC5TZXJpZXMuMC5NYXJrcy5CZXZlbC5TdHJpbmdDb2xvclR3bxcuU2VyaWVzLjAuTWFya3MuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IXLlNlcmllcy4xLlBvaW50ZXIuU3R5bGUXLlNlcmllcy4xLkxpbmVQZW4uV2lkdGgTLlNlcmllcy4xLkNvbG9yRWFjaA8uU2VyaWVzLjEuQ29sb3IPLlNlcmllcy4xLlRpdGxlCFNlcmllcy4yFS5TZXJpZXMuMi5CcnVzaC5Db2xvchcuU2VyaWVzLjIuUG9pbnRlci5TdHlsZRcuU2VyaWVzLjIuTGluZVBlbi5XaWR0aBMuU2VyaWVzLjIuQ29sb3JFYWNoDy5TZXJpZXMuMi5Db2xvcg8uU2VyaWVzLjIuVGl0bGUIU2VyaWVzLjMVLlNlcmllcy4zLkJydXNoLkNvbG9yFy5TZXJpZXMuMy5Qb2ludGVyLlN0eWxlFy5TZXJpZXMuMy5MaW5lUGVuLldpZHRoEy5TZXJpZXMuMy5Db2xvckVhY2gPLlNlcmllcy4zLkNvbG9yDy5TZXJpZXMuMy5UaXRsZRouV2FsbHMuTGVmdC5CZXZlbC5Db2xvck9uZSAuV2FsbHMuTGVmdC5CZXZlbC5TdHJpbmdDb2xvck9uZRouV2FsbHMuTGVmdC5CZXZlbC5Db2xvclR3byAuV2FsbHMuTGVmdC5CZXZlbC5TdHJpbmdDb2xvclR3bxsuV2FsbHMuUmlnaHQuQmV2ZWwuQ29sb3JPbmUhLldhbGxzLlJpZ2h0LkJldmVsLlN0cmluZ0NvbG9yT25lGy5XYWxscy5SaWdodC5CZXZlbC5Db2xvclR3byEuV2FsbHMuUmlnaHQuQmV2ZWwuU3RyaW5nQ29sb3JUd28aLldhbGxzLkJhY2suQmV2ZWwuQ29sb3JPbmUgLldhbGxzLkJhY2suQmV2ZWwuU3RyaW5nQ29sb3JPbmUaLldhbGxzLkJhY2suQmV2ZWwuQ29sb3JUd28gLldhbGxzLkJhY2suQmV2ZWwuU3RyaW5nQ29sb3JUd28cLldhbGxzLkJvdHRvbS5CZXZlbC5Db2xvck9uZSIuV2FsbHMuQm90dG9tLkJldmVsLlN0cmluZ0NvbG9yT25lHC5XYWxscy5Cb3R0b20uQmV2ZWwuQ29sb3JUd28iLldhbGxzLkJvdHRvbS5CZXZlbC5TdHJpbmdDb2xvclR3bw4uV2FsbHMuVmlzaWJsZRwuQXhlcy5MZWZ0LkxhYmVscy5TZXBhcmF0aW9uHS5BeGVzLkxlZnQuTGFiZWxzLlZhbHVlRm9ybWF0Gy5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuTmFtZRsuQXhlcy5MZWZ0LkxhYmVscy5Gb250LlNpemUgLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplRmxvYXQgLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuQ29sb3JPbmUmLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUgLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28mLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28YLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAXLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IaLkF4ZXMuTGVmdC5UaXRsZS5Gb250Lk5hbWUaLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNpemUfLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNpemVGbG9hdCguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yIS5BeGVzLkxlZnQuVGl0bGUuRm9udC5CcnVzaC5Db2xvch8uQXhlcy5MZWZ0LlRpdGxlLkJldmVsLkNvbG9yT25lJS5BeGVzLkxlZnQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUfLkF4ZXMuTGVmdC5UaXRsZS5CZXZlbC5Db2xvclR3byUuQXhlcy5MZWZ0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvGy5BeGVzLlRvcC5MYWJlbHMuU2VwYXJhdGlvbhwuQXhlcy5Ub3AuTGFiZWxzLlZhbHVlRm9ybWF0Gi5BeGVzLlRvcC5MYWJlbHMuRm9udC5OYW1lGi5BeGVzLlRvcC5MYWJlbHMuRm9udC5TaXplHy5BeGVzLlRvcC5MYWJlbHMuRm9udC5TaXplRmxvYXQfLkF4ZXMuVG9wLkxhYmVscy5CZXZlbC5Db2xvck9uZSUuQXhlcy5Ub3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lHy5BeGVzLlRvcC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28lLkF4ZXMuVG9wLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxcuQXhlcy5Ub3AuQXhpc1Blbi5XaWR0aBguQXhlcy5Ub3AuQXhpc1Blbi5FbmRDYXAWLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUeLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2l6ZUZsb2F0IC5BeGVzLlRvcC5UaXRsZS5Gb250LkJydXNoLkNvbG9yHi5BeGVzLlRvcC5UaXRsZS5CZXZlbC5Db2xvck9uZSQuQXhlcy5Ub3AuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUeLkF4ZXMuVG9wLlRpdGxlLkJldmVsLkNvbG9yVHdvJC5BeGVzLlRvcC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3bxEuQXhlcy5Ub3AuVmlzaWJsZR0uQXhlcy5SaWdodC5MYWJlbHMuU2VwYXJhdGlvbh4uQXhlcy5SaWdodC5MYWJlbHMuVmFsdWVGb3JtYXQcLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuTmFtZRwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5TaXplIS5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemVGbG9hdCEuQXhlcy5SaWdodC5MYWJlbHMuQmV2ZWwuQ29sb3JPbmUnLkF4ZXMuUmlnaHQuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lIS5BeGVzLlJpZ2h0LkxhYmVscy5CZXZlbC5Db2xvclR3bycuQXhlcy5SaWdodC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28ZLkF4ZXMuUmlnaHQuQXhpc1Blbi5XaWR0aBouQXhlcy5SaWdodC5BeGlzUGVuLkVuZENhcBguQXhlcy5SaWdodC5HcmlkLlZpc2libGUZLkF4ZXMuUmlnaHQuTWF4aW11bU9mZnNldB4uQXhlcy5SaWdodC5NaW5vclRpY2tzLlZpc2libGUXLkF4ZXMuUmlnaHQuVGlja3MuQ29sb3IbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5OYW1lGy5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2l6ZSAuQXhlcy5SaWdodC5UaXRsZS5Gb250LlNpemVGbG9hdCIuQXhlcy5SaWdodC5UaXRsZS5Gb250LkJydXNoLkNvbG9yIC5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLkNvbG9yT25lJi5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIC5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLkNvbG9yVHdvJi5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUiLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemVGbG9hdCIuQXhlcy5Cb3R0b20uTGFiZWxzLkJldmVsLkNvbG9yT25lKC5BeGVzLkJvdHRvbS5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUiLkF4ZXMuQm90dG9tLkxhYmVscy5CZXZlbC5Db2xvclR3byguQXhlcy5Cb3R0b20uTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvFi5BeGVzLkJvdHRvbS5BdXRvbWF0aWMdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwGS5BeGVzLkJvdHRvbS5HcmlkLlZpc2libGUaLkF4ZXMuQm90dG9tLk1heGltdW1PZmZzZXQULkF4ZXMuQm90dG9tLk1heGltdW0ULkF4ZXMuQm90dG9tLk1pbmltdW0aLkF4ZXMuQm90dG9tLk1pbmltdW1PZmZzZXQfLkF4ZXMuQm90dG9tLk1pbm9yVGlja3MuVmlzaWJsZRguQXhlcy5Cb3R0b20uVGlja3MuQ29sb3IcLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuTmFtZRwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5TaXplIS5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemVGbG9hdCMuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5CcnVzaC5Db2xvciEuQXhlcy5Cb3R0b20uVGl0bGUuQmV2ZWwuQ29sb3JPbmUnLkF4ZXMuQm90dG9tLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIS5BeGVzLkJvdHRvbS5UaXRsZS5CZXZlbC5Db2xvclR3bycuQXhlcy5Cb3R0b20uVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28kLkF4ZXMuRGVwdGhUb3AuTGFiZWxzLkJldmVsLkNvbG9yT25lKi5BeGVzLkRlcHRoVG9wLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvck9uZSQuQXhlcy5EZXB0aFRvcC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28qLkF4ZXMuRGVwdGhUb3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvIy5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLkNvbG9yT25lKS5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIy5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLkNvbG9yVHdvKS5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvIS5BeGVzLkRlcHRoLkxhYmVscy5CZXZlbC5Db2xvck9uZScuQXhlcy5EZXB0aC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUhLkF4ZXMuRGVwdGguTGFiZWxzLkJldmVsLkNvbG9yVHdvJy5BeGVzLkRlcHRoLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3byAuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5Db2xvck9uZSYuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZSAuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5Db2xvclR3byYuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3bwAABAAABAEEAQQEAAQABAEEAQQBBAEAAAYBAAAEAQQBBAEEAQQBBAEEAQQBAAABAAQABAQBAQEBAQABBAQAAAQBAQQEAAAEAQEEBAAABAEEAQQBBAEEAQQBBAEEAQQBAAABAQAABAEEAQAEAAAABAEAAAQEBAEEAQABAQAABAEEAQAEAAAEAQAABAQBBAEAAAEBAAAEAQQBAAQAAAAEAQAABAQBBAEAAQEBAAAEAQQBAAAAAAQAAAAAAAAEAQAABAQBBAEEAQQBBAEEAQQBBAEEAQQBAQghU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAwAAAAEIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAjU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAACBRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASNTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlZlcnRpY2FsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAAAEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAAQgGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAACAAAAAQQAAAAF+////yFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMBAAAAB3ZhbHVlX18ACAMAAAAAAEAAAAEAAAAF+v///xRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAEbmFtZQV2YWx1ZQprbm93bkNvbG9yBXN0YXRlAQAAAAkHBwQAAAAK/////wAAAAAAAAIABgcAAAAIRkZGRkZGRkYB+P////r///8KgICA/wAAAAAAAAIABgkAAAAIRkY4MDgwODAF9v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAB9f////r///8K/////wAAAAAAAAIAAQX0////IFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAQAAAAd2YWx1ZV9fAAgCAAAAAwAAAAgAAAAB8/////r///8K/////wAAAAAAAAIABg4AAAAIRkZGRkZGRkYB8f////r///8KgICA/wAAAAAAAAIABhAAAAAIRkY4MDgwODAB7/////r///8K/////wAAAAAAAAIABhIAAAAIRkZGRkZGRkYB7f////r///8KgICA/wAAAAAAAAIABhQAAAAIRkY4MDgwODAAAQkVAAAABhYAAAAGVGFob21hDAAAAAAAQEEB6f////r///8K/////wAAAAAAAAIABhgAAAAIRkZGRkZGRkYB5/////r///8KgICA/wAAAAAAAAIABhoAAAAIRkY4MDgwODAB5f////r///8K/////wAAAAAAAAIABhwAAAAIRkZGRkZGRkYB4/////r///8KgICA/wAAAAAAAAIABh4AAAAIRkY4MDgwODAB4f////r///8K/////wAAAAAAAAIABiAAAAAIRkZGRkZGRkYB3/////r///8KgICA/wAAAAAAAAIABiIAAAAIRkY4MDgwODAB3f////r///8K/////wAAAAAAAAIABiQAAAAIRkZGRkZGRkYB2/////r///8KgICA/wAAAAAAAAIABiYAAAAIRkY4MDgwODADAAAAAAYnAAAAGlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQmFyLQAAAAHY////+v///wr/wMD/AAAAAAAAAgAABdf///8jU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5WZXJ0aWNhbEF4aXMBAAAAB3ZhbHVlX18ACAIAAAABAAAAAdb////6////Cv/AwP8AAAAAAAACAAYrAAAAO1JhaW5mYWxsLCBBbm51YWxSYWluLE9pbCBQYWxtIFBsYW50YXRpb24gQmxvY2sgQW5udWFsT3V0cHV0BiwAAAAIRkZGRkZGRkYGLQAAAAhGRjgwODA4MAYuAAAACEZGRkZGRkZGBi8AAAAIRkY4MDgwODAABjAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAc/////6////CgAAAAAAAAAAjQABAAXO////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAACAAAAAAHN////+v///woAAAAAAAAAAI0AAQAGNAAAADxOTG9zcywgTW9udGhseU5MZWFjaCxPaWwgUGFsbSBQbGFudGF0aW9uIEJsb2NrIE1vbnRobHlPdXRwdXQJMAAAAAHK////+v///woAAAAAAAAAAH8AAQAByf///87///8JAAAAAgAAAAAByP////r///8KAAAAAAAAAAB/AAEABjkAAAA7Tkxvc3MsIE1vbnRobHlEZW5pdCxPaWwgUGFsbSBQbGFudGF0aW9uIEJsb2NrIE1vbnRobHlPdXRwdXQJMAAAAAHF////+v///woAAAAAAAAAADAAAQABxP///87///8JAAAAAgAAAAABw/////r///8KAAAAAAAAAAAwAAEABj4AAAA5Tkxvc3MsIE1vbnRobHlOMk8sT2lsIFBhbG0gUGxhbnRhdGlvbiBCbG9jayBNb250aGx5T3V0cHV0AcH////6////Cv////8AAAAAAAACAAZAAAAACEZGRkZGRkZGAb/////6////CoCAgP8AAAAAAAACAAZCAAAACEZGODA4MDgwAb3////6////Cv////8AAAAAAAACAAZEAAAACEZGRkZGRkZGAbv////6////CoCAgP8AAAAAAAACAAZGAAAACEZGODA4MDgwAbn////6////Cv////8AAAAAAAACAAZIAAAACEZGRkZGRkZGAbf////6////CoCAgP8AAAAAAAACAAZKAAAACEZGODA4MDgwAbX////6////Cv////8AAAAAAAACAAZMAAAACEZGRkZGRkZGAbP////6////CoCAgP8AAAAAAAACAAZOAAAACEZGODA4MDgwAFAAAAAGTwAAAAgjIyMwLiMjIwkWAAAACQAAAAAAEEEBr/////r///8K/////wAAAAAAAAIABlIAAAAIRkZGRkZGRkYBrf////r///8KgICA/wAAAAAAAAIABlQAAAAIRkY4MDgwODABAAAABav///8gU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXABAAAAB3ZhbHVlX18ACAQAAAACAAAAAAoAAAAAAar////6////CgAAAP8AAAAAAAACAAkWAAAACwAAAAAAMEEBqP////r///8KwAAA/wAAAAAAAAIAAaf////6////Cv8AAP8AAAAAAAACAAGm////+v///wr/////AAAAAAAAAgAGWwAAAAhGRkZGRkZGRgGk////+v///wqAgID/AAAAAAAAAgAGXQAAAAhGRjgwODA4MFAAAAAJTwAAAAkWAAAACQAAAAAAEEEBoP////r///8K/////wAAAAAAAAIABmEAAAAIRkZGRkZGRkYBnv////r///8KgICA/wAAAAAAAAIABmMAAAAIRkY4MDgwODABAAAAAZz///+r////AgAAAAAAAZv////6////CgAAAP8AAAAAAAACAAkWAAAACwAAAAAAMEEBmf////r///8K/wAA/wAAAAAAAAIAAZj////6////Cv////8AAAAAAAACAAZpAAAACEZGRkZGRkZGAZb////6////CoCAgP8AAAAAAAACAAZrAAAACEZGODA4MDgwAFAAAAAJTwAAAAkWAAAACQAAAAAAEEEBkv////r///8K/////wAAAAAAAAIABm8AAAAIRkZGRkZGRkYBkP////r///8KgICA/wAAAAAAAAIABnEAAAAIRkY4MDgwODABAAAAAY7///+r////AgAAAAAKAAAAAAGN////+v///woAAAD/AAAAAAAAAgAJFgAAAAsAAAAAADBBAYv////6////Cv8AAP8AAAAAAAACAAGK////+v///wr/////AAAAAAAAAgAGdwAAAAhGRkZGRkZGRgGI////+v///wqAgID/AAAAAAAAAgAGeQAAAAhGRjgwODA4MFAAAAAGegAAAAlkL01NL3l5eXkJTwAAAAkWAAAACQAAAAAAEEEBg/////r///8K/////wAAAAAAAAIABn4AAAAIRkZGRkZGRkYBgf////r///8KgICA/wAAAAAAAAIABoAAAAAIRkY4MDgwODAAAAABAAAAAX////+r////AgAAAAAKAAAAAAAAAADM40AAAAAAIB/hQAoAAAAAAX7////6////CgAAAP8AAAAAAAACAAkWAAAACwAAAAAAMEEBfP////r///8K/wAA/wAAAAAAAAIAAXv////6////Cv////8AAAAAAAACAAaGAAAACEZGRkZGRkZGAXn////6////CoCAgP8AAAAAAAACAAaIAAAACEZGODA4MDgwAXf////6////Cv////8AAAAAAAACAAaKAAAACEZGRkZGRkZGAXX////6////CoCAgP8AAAAAAAACAAaMAAAACEZGODA4MDgwAXP////6////Cv////8AAAAAAAACAAaOAAAACEZGRkZGRkZGAXH////6////CoCAgP8AAAAAAAACAAaQAAAACEZGODA4MDgwAW/////6////Cv////8AAAAAAAACAAaSAAAACEZGRkZGRkZGAW3////6////CoCAgP8AAAAAAAACAAaUAAAACEZGODA4MDgwAWv////6////Cv////8AAAAAAAACAAaWAAAACEZGRkZGRkZGAWn////6////CoCAgP8AAAAAAAACAAaYAAAACEZGODA4MDgwERUAAAABAAAABpkAAAAACw==</Format>
+      <Plot name="Rainfall">
+        <SeriesType>Bar</SeriesType>
+        <PointType>None</PointType>
+        <colour>-4144897</colour>
+        <X>Date</X>
+        <YRight>AnnualRain</YRight>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="NLoss">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>MonthlyNLeach</Y>
+        <Y>MonthlyDenit</Y>
+        <Y>MonthlyN2O</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Litter">
+      <Legend>
+        <CheckedTitles>Rainfall, AnnualRain,OilPalm Block AnnualOutput</CheckedTitles>
+        <CheckedTitles>Litter, FelledStemMass,OilPalm Block MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Litter, FrondPileMass,OilPalm Block MonthlyOutput</CheckedTitles>
+      </Legend>
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFhUZWVDaGFydC5DbGllbnQsIFZlcnNpb249NC4xLjIwMTEuNzI4MywgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0xgAAAA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uEC5DdXN0b21DaGFydFJlY3QXLlBhbmVsLkltYWdlQmV2ZWwuV2lkdGgVLlBhbmVsLkJldmVsLkNvbG9yT25lGy5QYW5lbC5CZXZlbC5TdHJpbmdDb2xvck9uZRUuUGFuZWwuQmV2ZWwuQ29sb3JUd28bLlBhbmVsLkJldmVsLlN0cmluZ0NvbG9yVHdvEi5QYW5lbC5CZXZlbC5PdXRlchIuUGFuZWwuQnJ1c2guQ29sb3ISLkxlZ2VuZC5DaGVja0JveGVzES5MZWdlbmQuQWxpZ25tZW50Ei5MZWdlbmQuTWF4TnVtUm93cxwuTGVnZW5kLlRpdGxlLkJldmVsLkNvbG9yT25lIi5MZWdlbmQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUcLkxlZ2VuZC5UaXRsZS5CZXZlbC5Db2xvclR3byIuTGVnZW5kLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvFi5MZWdlbmQuQmV2ZWwuQ29sb3JPbmUcLkxlZ2VuZC5CZXZlbC5TdHJpbmdDb2xvck9uZRYuTGVnZW5kLkJldmVsLkNvbG9yVHdvHC5MZWdlbmQuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkxlZ2VuZC5TaGFkb3cuVmlzaWJsZRMuTGVnZW5kLlRyYW5zcGFyZW50DS5IZWFkZXIuTGluZXMRLkhlYWRlci5Gb250Lk5hbWURLkhlYWRlci5Gb250LlNpemUWLkhlYWRlci5Gb250LlNpemVGbG9hdBYuSGVhZGVyLkJldmVsLkNvbG9yT25lHC5IZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUWLkhlYWRlci5CZXZlbC5Db2xvclR3bxwuSGVhZGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5TdWJIZWFkZXIuQmV2ZWwuQ29sb3JPbmUfLlN1YkhlYWRlci5CZXZlbC5TdHJpbmdDb2xvck9uZRkuU3ViSGVhZGVyLkJldmVsLkNvbG9yVHdvHy5TdWJIZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkZvb3Rlci5CZXZlbC5Db2xvck9uZRwuRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yT25lFi5Gb290ZXIuQmV2ZWwuQ29sb3JUd28cLkZvb3Rlci5CZXZlbC5TdHJpbmdDb2xvclR3bxkuU3ViRm9vdGVyLkJldmVsLkNvbG9yT25lHy5TdWJGb290ZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUZLlN1YkZvb3Rlci5CZXZlbC5Db2xvclR3bx8uU3ViRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5Bc3BlY3QuQ29sb3JQYWxldHRlSW5kZXgOLkFzcGVjdC5WaWV3M0QIU2VyaWVzLjAZLlNlcmllcy4wLkJhcldpZHRoUGVyY2VudBUuU2VyaWVzLjAuQnJ1c2guQ29sb3ITLlNlcmllcy4wLkNvbG9yRWFjaBIuU2VyaWVzLjAuVmVydEF4aXMPLlNlcmllcy4wLkNvbG9yDy5TZXJpZXMuMC5UaXRsZSsuU2VyaWVzLjAuTWFya3MuU3ltYm9sLkJldmVsLlN0cmluZ0NvbG9yT25lKy5TZXJpZXMuMC5NYXJrcy5TeW1ib2wuQmV2ZWwuU3RyaW5nQ29sb3JUd28kLlNlcmllcy4wLk1hcmtzLkJldmVsLlN0cmluZ0NvbG9yT25lJC5TZXJpZXMuMC5NYXJrcy5CZXZlbC5TdHJpbmdDb2xvclR3bxcuU2VyaWVzLjAuTWFya3MuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IXLlNlcmllcy4xLlBvaW50ZXIuU3R5bGUXLlNlcmllcy4xLkxpbmVQZW4uV2lkdGgTLlNlcmllcy4xLkNvbG9yRWFjaA8uU2VyaWVzLjEuQ29sb3IPLlNlcmllcy4xLlRpdGxlGi5XYWxscy5MZWZ0LkJldmVsLkNvbG9yT25lIC5XYWxscy5MZWZ0LkJldmVsLlN0cmluZ0NvbG9yT25lGi5XYWxscy5MZWZ0LkJldmVsLkNvbG9yVHdvIC5XYWxscy5MZWZ0LkJldmVsLlN0cmluZ0NvbG9yVHdvGy5XYWxscy5SaWdodC5CZXZlbC5Db2xvck9uZSEuV2FsbHMuUmlnaHQuQmV2ZWwuU3RyaW5nQ29sb3JPbmUbLldhbGxzLlJpZ2h0LkJldmVsLkNvbG9yVHdvIS5XYWxscy5SaWdodC5CZXZlbC5TdHJpbmdDb2xvclR3bxouV2FsbHMuQmFjay5CZXZlbC5Db2xvck9uZSAuV2FsbHMuQmFjay5CZXZlbC5TdHJpbmdDb2xvck9uZRouV2FsbHMuQmFjay5CZXZlbC5Db2xvclR3byAuV2FsbHMuQmFjay5CZXZlbC5TdHJpbmdDb2xvclR3bxwuV2FsbHMuQm90dG9tLkJldmVsLkNvbG9yT25lIi5XYWxscy5Cb3R0b20uQmV2ZWwuU3RyaW5nQ29sb3JPbmUcLldhbGxzLkJvdHRvbS5CZXZlbC5Db2xvclR3byIuV2FsbHMuQm90dG9tLkJldmVsLlN0cmluZ0NvbG9yVHdvDi5XYWxscy5WaXNpYmxlHC5BeGVzLkxlZnQuTGFiZWxzLlNlcGFyYXRpb24dLkF4ZXMuTGVmdC5MYWJlbHMuVmFsdWVGb3JtYXQbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5OYW1lGy5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2l6ZSAuQXhlcy5MZWZ0LkxhYmVscy5Gb250LlNpemVGbG9hdCAuQXhlcy5MZWZ0LkxhYmVscy5CZXZlbC5Db2xvck9uZSYuQXhlcy5MZWZ0LkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvck9uZSAuQXhlcy5MZWZ0LkxhYmVscy5CZXZlbC5Db2xvclR3byYuQXhlcy5MZWZ0LkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxguQXhlcy5MZWZ0LkF4aXNQZW4uV2lkdGgZLkF4ZXMuTGVmdC5BeGlzUGVuLkVuZENhcBcuQXhlcy5MZWZ0LkdyaWQuVmlzaWJsZRguQXhlcy5MZWZ0Lk1heGltdW1PZmZzZXQdLkF4ZXMuTGVmdC5NaW5vclRpY2tzLlZpc2libGUWLkF4ZXMuTGVmdC5UaWNrcy5Db2xvchouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZR8uQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZUZsb2F0KC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuQnJ1c2guQ29sb3IhLkF4ZXMuTGVmdC5UaXRsZS5Gb250LkJydXNoLkNvbG9yHy5BeGVzLkxlZnQuVGl0bGUuQmV2ZWwuQ29sb3JPbmUlLkF4ZXMuTGVmdC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZR8uQXhlcy5MZWZ0LlRpdGxlLkJldmVsLkNvbG9yVHdvJS5BeGVzLkxlZnQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28bLkF4ZXMuVG9wLkxhYmVscy5TZXBhcmF0aW9uHC5BeGVzLlRvcC5MYWJlbHMuVmFsdWVGb3JtYXQaLkF4ZXMuVG9wLkxhYmVscy5Gb250Lk5hbWUaLkF4ZXMuVG9wLkxhYmVscy5Gb250LlNpemUfLkF4ZXMuVG9wLkxhYmVscy5Gb250LlNpemVGbG9hdB8uQXhlcy5Ub3AuTGFiZWxzLkJldmVsLkNvbG9yT25lJS5BeGVzLlRvcC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUfLkF4ZXMuVG9wLkxhYmVscy5CZXZlbC5Db2xvclR3byUuQXhlcy5Ub3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBYuQXhlcy5Ub3AuR3JpZC5WaXNpYmxlHC5BeGVzLlRvcC5NaW5vclRpY2tzLlZpc2libGUVLkF4ZXMuVG9wLlRpY2tzLkNvbG9yGS5BeGVzLlRvcC5UaXRsZS5Gb250Lk5hbWUZLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2l6ZR4uQXhlcy5Ub3AuVGl0bGUuRm9udC5TaXplRmxvYXQgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLkJldmVsLkNvbG9yT25lJC5BeGVzLlRvcC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZR4uQXhlcy5Ub3AuVGl0bGUuQmV2ZWwuQ29sb3JUd28kLkF4ZXMuVG9wLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUhLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2l6ZUZsb2F0IS5BeGVzLlJpZ2h0LkxhYmVscy5CZXZlbC5Db2xvck9uZScuQXhlcy5SaWdodC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUhLkF4ZXMuUmlnaHQuTGFiZWxzLkJldmVsLkNvbG9yVHdvJy5BeGVzLlJpZ2h0LkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwGC5BeGVzLlJpZ2h0LkdyaWQuVmlzaWJsZRkuQXhlcy5SaWdodC5NYXhpbXVtT2Zmc2V0Hi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplIC5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2l6ZUZsb2F0Ii5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IgLkF4ZXMuUmlnaHQuVGl0bGUuQmV2ZWwuQ29sb3JPbmUmLkF4ZXMuUmlnaHQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUgLkF4ZXMuUmlnaHQuVGl0bGUuQmV2ZWwuQ29sb3JUd28mLkF4ZXMuUmlnaHQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28eLkF4ZXMuQm90dG9tLkxhYmVscy5TZXBhcmF0aW9uIi5BeGVzLkJvdHRvbS5MYWJlbHMuRGF0ZVRpbWVGb3JtYXQfLkF4ZXMuQm90dG9tLkxhYmVscy5WYWx1ZUZvcm1hdB0uQXhlcy5Cb3R0b20uTGFiZWxzLkZvbnQuTmFtZR0uQXhlcy5Cb3R0b20uTGFiZWxzLkZvbnQuU2l6ZSIuQXhlcy5Cb3R0b20uTGFiZWxzLkZvbnQuU2l6ZUZsb2F0Ii5BeGVzLkJvdHRvbS5MYWJlbHMuQmV2ZWwuQ29sb3JPbmUoLkF4ZXMuQm90dG9tLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvck9uZSIuQXhlcy5Cb3R0b20uTGFiZWxzLkJldmVsLkNvbG9yVHdvKC5BeGVzLkJvdHRvbS5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkF4ZXMuQm90dG9tLkF1dG9tYXRpYx0uQXhlcy5Cb3R0b20uQXV0b21hdGljTWF4aW11bR0uQXhlcy5Cb3R0b20uQXV0b21hdGljTWluaW11bRouQXhlcy5Cb3R0b20uQXhpc1Blbi5XaWR0aBsuQXhlcy5Cb3R0b20uQXhpc1Blbi5FbmRDYXAZLkF4ZXMuQm90dG9tLkdyaWQuVmlzaWJsZRouQXhlcy5Cb3R0b20uTWF4aW11bU9mZnNldBQuQXhlcy5Cb3R0b20uTWF4aW11bRQuQXhlcy5Cb3R0b20uTWluaW11bRouQXhlcy5Cb3R0b20uTWluaW11bU9mZnNldB8uQXhlcy5Cb3R0b20uTWlub3JUaWNrcy5WaXNpYmxlGC5BeGVzLkJvdHRvbS5UaWNrcy5Db2xvchwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUhLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2l6ZUZsb2F0Iy5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LkJydXNoLkNvbG9yIS5BeGVzLkJvdHRvbS5UaXRsZS5CZXZlbC5Db2xvck9uZScuQXhlcy5Cb3R0b20uVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUhLkF4ZXMuQm90dG9tLlRpdGxlLkJldmVsLkNvbG9yVHdvJy5BeGVzLkJvdHRvbS5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3byQuQXhlcy5EZXB0aFRvcC5MYWJlbHMuQmV2ZWwuQ29sb3JPbmUqLkF4ZXMuRGVwdGhUb3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lJC5BeGVzLkRlcHRoVG9wLkxhYmVscy5CZXZlbC5Db2xvclR3byouQXhlcy5EZXB0aFRvcC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28jLkF4ZXMuRGVwdGhUb3AuVGl0bGUuQmV2ZWwuQ29sb3JPbmUpLkF4ZXMuRGVwdGhUb3AuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUjLkF4ZXMuRGVwdGhUb3AuVGl0bGUuQmV2ZWwuQ29sb3JUd28pLkF4ZXMuRGVwdGhUb3AuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28hLkF4ZXMuRGVwdGguTGFiZWxzLkJldmVsLkNvbG9yT25lJy5BeGVzLkRlcHRoLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvck9uZSEuQXhlcy5EZXB0aC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28nLkF4ZXMuRGVwdGguTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvIC5BeGVzLkRlcHRoLlRpdGxlLkJldmVsLkNvbG9yT25lJi5BeGVzLkRlcHRoLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIC5BeGVzLkRlcHRoLlRpdGxlLkJldmVsLkNvbG9yVHdvJi5BeGVzLkRlcHRoLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvAAAEAAAEAQQBBAQABAAEAQQBBAEEAQAABgEAAAQBBAEEAQQBBAEEAQQBBAEAAAEABAAEBAEBAQEBAAEEBAAABAEEAQQBBAEEAQQBBAEEAQQBAAABAQAABAEEAQAEAAAABAEAAAQEBAEEAQABAQAABAEEAQAEAAAEAQAABAQBBAEAAAEBAAAEAQQBAAQAAAAEAQAABAQBBAEAAQEBAAAEAQQBAAAAAAQAAAAAAAAEAQAABAQBBAEEAQQBBAEEAQQBBAEEAQQBAQghU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAwAAAAEIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAjU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAACBRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASNTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlZlcnRpY2FsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAAAEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAAQgGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAACAAAAAQQAAAAF+////yFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMBAAAAB3ZhbHVlX18ACAMAAAAAAEAAAAEAAAAF+v///xRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAEbmFtZQV2YWx1ZQprbm93bkNvbG9yBXN0YXRlAQAAAAkHBwQAAAAK/////wAAAAAAAAIABgcAAAAIRkZGRkZGRkYB+P////r///8KgICA/wAAAAAAAAIABgkAAAAIRkY4MDgwODAF9v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAB9f////r///8K/////wAAAAAAAAIAAQX0////IFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAQAAAAd2YWx1ZV9fAAgCAAAAAwAAAAgAAAAB8/////r///8K/////wAAAAAAAAIABg4AAAAIRkZGRkZGRkYB8f////r///8KgICA/wAAAAAAAAIABhAAAAAIRkY4MDgwODAB7/////r///8K/////wAAAAAAAAIABhIAAAAIRkZGRkZGRkYB7f////r///8KgICA/wAAAAAAAAIABhQAAAAIRkY4MDgwODAAAQkVAAAABhYAAAAGVGFob21hDAAAAAAAQEEB6f////r///8K/////wAAAAAAAAIABhgAAAAIRkZGRkZGRkYB5/////r///8KgICA/wAAAAAAAAIABhoAAAAIRkY4MDgwODAB5f////r///8K/////wAAAAAAAAIABhwAAAAIRkZGRkZGRkYB4/////r///8KgICA/wAAAAAAAAIABh4AAAAIRkY4MDgwODAB4f////r///8K/////wAAAAAAAAIABiAAAAAIRkZGRkZGRkYB3/////r///8KgICA/wAAAAAAAAIABiIAAAAIRkY4MDgwODAB3f////r///8K/////wAAAAAAAAIABiQAAAAIRkZGRkZGRkYB2/////r///8KgICA/wAAAAAAAAIABiYAAAAIRkY4MDgwODADAAAAAAYnAAAAGlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQmFyLQAAAAHY////+v///wr/wMD/AAAAAAAAAgAABdf///8jU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5WZXJ0aWNhbEF4aXMBAAAAB3ZhbHVlX18ACAIAAAABAAAAAdb////6////Cv/AwP8AAAAAAAACAAYrAAAAO1JhaW5mYWxsLCBBbm51YWxSYWluLE9pbCBQYWxtIFBsYW50YXRpb24gQmxvY2sgQW5udWFsT3V0cHV0BiwAAAAIRkZGRkZGRkYGLQAAAAhGRjgwODA4MAYuAAAACEZGRkZGRkZGBi8AAAAIRkY4MDgwODAABjAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAc/////6////CgAAAAAAAAAAjQABAAXO////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAACAAAAAAHN////+v///woAAAAAAAAAAI0AAQAGNAAAAEdOTG9zcywgc3VyZmFjZW9tX3d0X29pbHBhbG1zdGVtLE9pbCBQYWxtIFBsYW50YXRpb24gQmxvY2sgTW9udGhseU91dHB1dAHL////+v///wr/////AAAAAAAAAgAGNgAAAAhGRkZGRkZGRgHJ////+v///wqAgID/AAAAAAAAAgAGOAAAAAhGRjgwODA4MAHH////+v///wr/////AAAAAAAAAgAGOgAAAAhGRkZGRkZGRgHF////+v///wqAgID/AAAAAAAAAgAGPAAAAAhGRjgwODA4MAHD////+v///wr/////AAAAAAAAAgAGPgAAAAhGRkZGRkZGRgHB////+v///wqAgID/AAAAAAAAAgAGQAAAAAhGRjgwODA4MAG/////+v///wr/////AAAAAAAAAgAGQgAAAAhGRkZGRkZGRgG9////+v///wqAgID/AAAAAAAAAgAGRAAAAAhGRjgwODA4MABQAAAABkUAAAAIIyMjMC4jIyMJFgAAAAkAAAAAABBBAbn////6////Cv////8AAAAAAAACAAZIAAAACEZGRkZGRkZGAbf////6////CoCAgP8AAAAAAAACAAZKAAAACEZGODA4MDgwAQAAAAW1////IFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAAKAAAAAAG0////+v///woAAAD/AAAAAAAAAgAJFgAAAAsAAAAAADBBAbL////6////CsAAAP8AAAAAAAACAAGx////+v///wr/AAD/AAAAAAAAAgABsP////r///8K/////wAAAAAAAAIABlEAAAAIRkZGRkZGRkYBrv////r///8KgICA/wAAAAAAAAIABlMAAAAIRkY4MDgwODBQAAAACUUAAAAJFgAAAAkAAAAAABBBAar////6////Cv////8AAAAAAAACAAZXAAAACEZGRkZGRkZGAaj////6////CoCAgP8AAAAAAAACAAZZAAAACEZGODA4MDgwAQAAAAGm////tf///wIAAAAAAAGl////+v///woAAAD/AAAAAAAAAgAJFgAAAAsAAAAAADBBAaP////6////Cv8AAP8AAAAAAAACAAGi////+v///wr/////AAAAAAAAAgAGXwAAAAhGRkZGRkZGRgGg////+v///wqAgID/AAAAAAAAAgAGYQAAAAhGRjgwODA4MABQAAAACUUAAAAJFgAAAAkAAAAAABBBAZz////6////Cv////8AAAAAAAACAAZlAAAACEZGRkZGRkZGAZr////6////CoCAgP8AAAAAAAACAAZnAAAACEZGODA4MDgwAQAAAAGY////tf///wIAAAAACgAAAAABl/////r///8KAAAA/wAAAAAAAAIACRYAAAALAAAAAAAwQQGV////+v///wr/AAD/AAAAAAAAAgABlP////r///8K/////wAAAAAAAAIABm0AAAAIRkZGRkZGRkYBkv////r///8KgICA/wAAAAAAAAIABm8AAAAIRkY4MDgwODBQAAAABnAAAAAJZC9NTS95eXl5CUUAAAAJFgAAAAkAAAAAABBBAY3////6////Cv////8AAAAAAAACAAZ0AAAACEZGRkZGRkZGAYv////6////CoCAgP8AAAAAAAACAAZ2AAAACEZGODA4MDgwAAAAAQAAAAGJ////tf///wIAAAAACgAAAAAAAAAAzONAAAAAACAf4UAKAAAAAAGI////+v///woAAAD/AAAAAAAAAgAJFgAAAAsAAAAAADBBAYb////6////Cv8AAP8AAAAAAAACAAGF////+v///wr/////AAAAAAAAAgAGfAAAAAhGRkZGRkZGRgGD////+v///wqAgID/AAAAAAAAAgAGfgAAAAhGRjgwODA4MAGB////+v///wr/////AAAAAAAAAgAGgAAAAAhGRkZGRkZGRgF/////+v///wqAgID/AAAAAAAAAgAGggAAAAhGRjgwODA4MAF9////+v///wr/////AAAAAAAAAgAGhAAAAAhGRkZGRkZGRgF7////+v///wqAgID/AAAAAAAAAgAGhgAAAAhGRjgwODA4MAF5////+v///wr/////AAAAAAAAAgAGiAAAAAhGRkZGRkZGRgF3////+v///wqAgID/AAAAAAAAAgAGigAAAAhGRjgwODA4MAF1////+v///wr/////AAAAAAAAAgAGjAAAAAhGRkZGRkZGRgFz////+v///wqAgID/AAAAAAAAAgAGjgAAAAhGRjgwODA4MBEVAAAAAQAAAAaPAAAAAAs=</Format>
+      <Plot name="Rainfall">
+        <SeriesType>Bar</SeriesType>
+        <PointType>None</PointType>
+        <colour>-4144897</colour>
+        <X>Date</X>
+        <YRight>AnnualRain</YRight>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Litter">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>FelledStemMass</Y>
+        <Y>FrondPileMass</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Soil Carbon">
+      <Legend>
+        <CheckedTitles> oc(1)</CheckedTitles>
+        <CheckedTitles> oc(2)</CheckedTitles>
+        <CheckedTitles> oc(3)</CheckedTitles>
+      </Legend>
+      <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFhUZWVDaGFydC5DbGllbnQsIFZlcnNpb249NC4xLjIwMTEuNzI4MywgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ01AAAAA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uEC5DdXN0b21DaGFydFJlY3QXLlBhbmVsLkltYWdlQmV2ZWwuV2lkdGgVLlBhbmVsLkJldmVsLkNvbG9yT25lGy5QYW5lbC5CZXZlbC5TdHJpbmdDb2xvck9uZRUuUGFuZWwuQmV2ZWwuQ29sb3JUd28bLlBhbmVsLkJldmVsLlN0cmluZ0NvbG9yVHdvEi5QYW5lbC5CZXZlbC5PdXRlchIuUGFuZWwuQnJ1c2guQ29sb3ISLkxlZ2VuZC5DaGVja0JveGVzES5MZWdlbmQuQWxpZ25tZW50Ei5MZWdlbmQuTWF4TnVtUm93cxwuTGVnZW5kLlRpdGxlLkJldmVsLkNvbG9yT25lIi5MZWdlbmQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUcLkxlZ2VuZC5UaXRsZS5CZXZlbC5Db2xvclR3byIuTGVnZW5kLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvFi5MZWdlbmQuQmV2ZWwuQ29sb3JPbmUcLkxlZ2VuZC5CZXZlbC5TdHJpbmdDb2xvck9uZRYuTGVnZW5kLkJldmVsLkNvbG9yVHdvHC5MZWdlbmQuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkxlZ2VuZC5TaGFkb3cuVmlzaWJsZRMuTGVnZW5kLlRyYW5zcGFyZW50DS5IZWFkZXIuTGluZXMRLkhlYWRlci5Gb250Lk5hbWURLkhlYWRlci5Gb250LlNpemUWLkhlYWRlci5Gb250LlNpemVGbG9hdBYuSGVhZGVyLkJldmVsLkNvbG9yT25lHC5IZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUWLkhlYWRlci5CZXZlbC5Db2xvclR3bxwuSGVhZGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5TdWJIZWFkZXIuQmV2ZWwuQ29sb3JPbmUfLlN1YkhlYWRlci5CZXZlbC5TdHJpbmdDb2xvck9uZRkuU3ViSGVhZGVyLkJldmVsLkNvbG9yVHdvHy5TdWJIZWFkZXIuQmV2ZWwuU3RyaW5nQ29sb3JUd28WLkZvb3Rlci5CZXZlbC5Db2xvck9uZRwuRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yT25lFi5Gb290ZXIuQmV2ZWwuQ29sb3JUd28cLkZvb3Rlci5CZXZlbC5TdHJpbmdDb2xvclR3bxkuU3ViRm9vdGVyLkJldmVsLkNvbG9yT25lHy5TdWJGb290ZXIuQmV2ZWwuU3RyaW5nQ29sb3JPbmUZLlN1YkZvb3Rlci5CZXZlbC5Db2xvclR3bx8uU3ViRm9vdGVyLkJldmVsLlN0cmluZ0NvbG9yVHdvGS5Bc3BlY3QuQ29sb3JQYWxldHRlSW5kZXgOLkFzcGVjdC5WaWV3M0QIU2VyaWVzLjAZLlNlcmllcy4wLkJhcldpZHRoUGVyY2VudBUuU2VyaWVzLjAuQnJ1c2guQ29sb3ITLlNlcmllcy4wLkNvbG9yRWFjaBIuU2VyaWVzLjAuVmVydEF4aXMPLlNlcmllcy4wLkNvbG9yDy5TZXJpZXMuMC5UaXRsZSsuU2VyaWVzLjAuTWFya3MuU3ltYm9sLkJldmVsLlN0cmluZ0NvbG9yT25lKy5TZXJpZXMuMC5NYXJrcy5TeW1ib2wuQmV2ZWwuU3RyaW5nQ29sb3JUd28kLlNlcmllcy4wLk1hcmtzLkJldmVsLlN0cmluZ0NvbG9yT25lJC5TZXJpZXMuMC5NYXJrcy5CZXZlbC5TdHJpbmdDb2xvclR3bxcuU2VyaWVzLjAuTWFya3MuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IXLlNlcmllcy4xLlBvaW50ZXIuU3R5bGUXLlNlcmllcy4xLkxpbmVQZW4uV2lkdGgTLlNlcmllcy4xLkNvbG9yRWFjaA8uU2VyaWVzLjEuQ29sb3IPLlNlcmllcy4xLlRpdGxlCFNlcmllcy4yFS5TZXJpZXMuMi5CcnVzaC5Db2xvchcuU2VyaWVzLjIuUG9pbnRlci5TdHlsZRcuU2VyaWVzLjIuTGluZVBlbi5XaWR0aBMuU2VyaWVzLjIuQ29sb3JFYWNoDy5TZXJpZXMuMi5Db2xvcg8uU2VyaWVzLjIuVGl0bGUIU2VyaWVzLjMVLlNlcmllcy4zLkJydXNoLkNvbG9yFy5TZXJpZXMuMy5Qb2ludGVyLlN0eWxlFy5TZXJpZXMuMy5MaW5lUGVuLldpZHRoEy5TZXJpZXMuMy5Db2xvckVhY2gPLlNlcmllcy4zLkNvbG9yDy5TZXJpZXMuMy5UaXRsZRouV2FsbHMuTGVmdC5CZXZlbC5Db2xvck9uZSAuV2FsbHMuTGVmdC5CZXZlbC5TdHJpbmdDb2xvck9uZRouV2FsbHMuTGVmdC5CZXZlbC5Db2xvclR3byAuV2FsbHMuTGVmdC5CZXZlbC5TdHJpbmdDb2xvclR3bxsuV2FsbHMuUmlnaHQuQmV2ZWwuQ29sb3JPbmUhLldhbGxzLlJpZ2h0LkJldmVsLlN0cmluZ0NvbG9yT25lGy5XYWxscy5SaWdodC5CZXZlbC5Db2xvclR3byEuV2FsbHMuUmlnaHQuQmV2ZWwuU3RyaW5nQ29sb3JUd28aLldhbGxzLkJhY2suQmV2ZWwuQ29sb3JPbmUgLldhbGxzLkJhY2suQmV2ZWwuU3RyaW5nQ29sb3JPbmUaLldhbGxzLkJhY2suQmV2ZWwuQ29sb3JUd28gLldhbGxzLkJhY2suQmV2ZWwuU3RyaW5nQ29sb3JUd28cLldhbGxzLkJvdHRvbS5CZXZlbC5Db2xvck9uZSIuV2FsbHMuQm90dG9tLkJldmVsLlN0cmluZ0NvbG9yT25lHC5XYWxscy5Cb3R0b20uQmV2ZWwuQ29sb3JUd28iLldhbGxzLkJvdHRvbS5CZXZlbC5TdHJpbmdDb2xvclR3bw4uV2FsbHMuVmlzaWJsZRwuQXhlcy5MZWZ0LkxhYmVscy5TZXBhcmF0aW9uHS5BeGVzLkxlZnQuTGFiZWxzLlZhbHVlRm9ybWF0Gy5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuTmFtZRsuQXhlcy5MZWZ0LkxhYmVscy5Gb250LlNpemUgLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplRmxvYXQgLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuQ29sb3JPbmUmLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUgLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28mLkF4ZXMuTGVmdC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28YLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAXLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IaLkF4ZXMuTGVmdC5UaXRsZS5Gb250Lk5hbWUaLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNpemUfLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNpemVGbG9hdCguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yIS5BeGVzLkxlZnQuVGl0bGUuRm9udC5CcnVzaC5Db2xvch8uQXhlcy5MZWZ0LlRpdGxlLkJldmVsLkNvbG9yT25lJS5BeGVzLkxlZnQuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUfLkF4ZXMuTGVmdC5UaXRsZS5CZXZlbC5Db2xvclR3byUuQXhlcy5MZWZ0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvGy5BeGVzLlRvcC5MYWJlbHMuU2VwYXJhdGlvbhwuQXhlcy5Ub3AuTGFiZWxzLlZhbHVlRm9ybWF0Gi5BeGVzLlRvcC5MYWJlbHMuRm9udC5OYW1lGi5BeGVzLlRvcC5MYWJlbHMuRm9udC5TaXplHy5BeGVzLlRvcC5MYWJlbHMuRm9udC5TaXplRmxvYXQfLkF4ZXMuVG9wLkxhYmVscy5CZXZlbC5Db2xvck9uZSUuQXhlcy5Ub3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lHy5BeGVzLlRvcC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28lLkF4ZXMuVG9wLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3bxcuQXhlcy5Ub3AuQXhpc1Blbi5XaWR0aBguQXhlcy5Ub3AuQXhpc1Blbi5FbmRDYXAWLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUeLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2l6ZUZsb2F0IC5BeGVzLlRvcC5UaXRsZS5Gb250LkJydXNoLkNvbG9yHi5BeGVzLlRvcC5UaXRsZS5CZXZlbC5Db2xvck9uZSQuQXhlcy5Ub3AuVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JPbmUeLkF4ZXMuVG9wLlRpdGxlLkJldmVsLkNvbG9yVHdvJC5BeGVzLlRvcC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3bxEuQXhlcy5Ub3AuVmlzaWJsZR0uQXhlcy5SaWdodC5MYWJlbHMuU2VwYXJhdGlvbh4uQXhlcy5SaWdodC5MYWJlbHMuVmFsdWVGb3JtYXQcLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuTmFtZRwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5TaXplIS5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemVGbG9hdCEuQXhlcy5SaWdodC5MYWJlbHMuQmV2ZWwuQ29sb3JPbmUnLkF4ZXMuUmlnaHQuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yT25lIS5BeGVzLlJpZ2h0LkxhYmVscy5CZXZlbC5Db2xvclR3bycuQXhlcy5SaWdodC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JUd28ZLkF4ZXMuUmlnaHQuQXhpc1Blbi5XaWR0aBouQXhlcy5SaWdodC5BeGlzUGVuLkVuZENhcBguQXhlcy5SaWdodC5HcmlkLlZpc2libGUZLkF4ZXMuUmlnaHQuTWF4aW11bU9mZnNldB4uQXhlcy5SaWdodC5NaW5vclRpY2tzLlZpc2libGUXLkF4ZXMuUmlnaHQuVGlja3MuQ29sb3IbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5OYW1lGy5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2l6ZSAuQXhlcy5SaWdodC5UaXRsZS5Gb250LlNpemVGbG9hdCIuQXhlcy5SaWdodC5UaXRsZS5Gb250LkJydXNoLkNvbG9yIC5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLkNvbG9yT25lJi5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIC5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLkNvbG9yVHdvJi5BeGVzLlJpZ2h0LlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUiLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemVGbG9hdCIuQXhlcy5Cb3R0b20uTGFiZWxzLkJldmVsLkNvbG9yT25lKC5BeGVzLkJvdHRvbS5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUiLkF4ZXMuQm90dG9tLkxhYmVscy5CZXZlbC5Db2xvclR3byguQXhlcy5Cb3R0b20uTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvFi5BeGVzLkJvdHRvbS5BdXRvbWF0aWMdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwGS5BeGVzLkJvdHRvbS5HcmlkLlZpc2libGUaLkF4ZXMuQm90dG9tLk1heGltdW1PZmZzZXQULkF4ZXMuQm90dG9tLk1heGltdW0ULkF4ZXMuQm90dG9tLk1pbmltdW0aLkF4ZXMuQm90dG9tLk1pbmltdW1PZmZzZXQfLkF4ZXMuQm90dG9tLk1pbm9yVGlja3MuVmlzaWJsZRguQXhlcy5Cb3R0b20uVGlja3MuQ29sb3IcLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuTmFtZRwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5TaXplIS5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemVGbG9hdCMuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5CcnVzaC5Db2xvciEuQXhlcy5Cb3R0b20uVGl0bGUuQmV2ZWwuQ29sb3JPbmUnLkF4ZXMuQm90dG9tLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIS5BeGVzLkJvdHRvbS5UaXRsZS5CZXZlbC5Db2xvclR3bycuQXhlcy5Cb3R0b20uVGl0bGUuQmV2ZWwuU3RyaW5nQ29sb3JUd28kLkF4ZXMuRGVwdGhUb3AuTGFiZWxzLkJldmVsLkNvbG9yT25lKi5BeGVzLkRlcHRoVG9wLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvck9uZSQuQXhlcy5EZXB0aFRvcC5MYWJlbHMuQmV2ZWwuQ29sb3JUd28qLkF4ZXMuRGVwdGhUb3AuTGFiZWxzLkJldmVsLlN0cmluZ0NvbG9yVHdvIy5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLkNvbG9yT25lKS5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yT25lIy5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLkNvbG9yVHdvKS5BeGVzLkRlcHRoVG9wLlRpdGxlLkJldmVsLlN0cmluZ0NvbG9yVHdvIS5BeGVzLkRlcHRoLkxhYmVscy5CZXZlbC5Db2xvck9uZScuQXhlcy5EZXB0aC5MYWJlbHMuQmV2ZWwuU3RyaW5nQ29sb3JPbmUhLkF4ZXMuRGVwdGguTGFiZWxzLkJldmVsLkNvbG9yVHdvJy5BeGVzLkRlcHRoLkxhYmVscy5CZXZlbC5TdHJpbmdDb2xvclR3byAuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5Db2xvck9uZSYuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvck9uZSAuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5Db2xvclR3byYuQXhlcy5EZXB0aC5UaXRsZS5CZXZlbC5TdHJpbmdDb2xvclR3bwAABAAABAEEAQQEAAQABAEEAQQBBAEAAAYBAAAEAQQBBAEEAQQBBAEEAQQBAAABAAQABAQBAQEBAQABBAQAAAQBAQQEAAAEAQEEBAAABAEEAQQBBAEEAQQBBAEEAQQBAAABAQAABAEEAQAEAAAABAEAAAQEBAEEAQABAQAABAEEAQAEAAAEAQAABAQBBAEAAAEBAAAEAQQBAAQAAAAEAQAABAQBBAEAAQEBAAAEAQQBAAAAAAQAAAAAAAAEAQAABAQBBAEEAQQBBAEEAQQBBAEEAQQBAQghU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAwAAAAEIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAjU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEgU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMCAAAACBRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASNTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlZlcnRpY2FsQXhpcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAAAEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgICxRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAABCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICAsUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAAQgGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgLFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAACAAAAAQQAAAAF+////yFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMBAAAAB3ZhbHVlX18ACAMAAAAAAEAAAAEAAAAF+v///xRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAEbmFtZQV2YWx1ZQprbm93bkNvbG9yBXN0YXRlAQAAAAkHBwQAAAAK/////wAAAAAAAAIABgcAAAAIRkZGRkZGRkYB+P////r///8KgICA/wAAAAAAAAIABgkAAAAIRkY4MDgwODAF9v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAB9f////r///8K/////wAAAAAAAAIAAQX0////IFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAQAAAAd2YWx1ZV9fAAgCAAAAAwAAAAgAAAAB8/////r///8K/////wAAAAAAAAIABg4AAAAIRkZGRkZGRkYB8f////r///8KgICA/wAAAAAAAAIABhAAAAAIRkY4MDgwODAB7/////r///8K/////wAAAAAAAAIABhIAAAAIRkZGRkZGRkYB7f////r///8KgICA/wAAAAAAAAIABhQAAAAIRkY4MDgwODAAAQkVAAAABhYAAAAGVGFob21hDAAAAAAAQEEB6f////r///8K/////wAAAAAAAAIABhgAAAAIRkZGRkZGRkYB5/////r///8KgICA/wAAAAAAAAIABhoAAAAIRkY4MDgwODAB5f////r///8K/////wAAAAAAAAIABhwAAAAIRkZGRkZGRkYB4/////r///8KgICA/wAAAAAAAAIABh4AAAAIRkY4MDgwODAB4f////r///8K/////wAAAAAAAAIABiAAAAAIRkZGRkZGRkYB3/////r///8KgICA/wAAAAAAAAIABiIAAAAIRkY4MDgwODAB3f////r///8K/////wAAAAAAAAIABiQAAAAIRkZGRkZGRkYB2/////r///8KgICA/wAAAAAAAAIABiYAAAAIRkY4MDgwODADAAAAAAYnAAAAGlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQmFyLQAAAAHY////+v///wr/wMD/AAAAAAAAAgAABdf///8jU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5WZXJ0aWNhbEF4aXMBAAAAB3ZhbHVlX18ACAIAAAABAAAAAdb////6////Cv/AwP8AAAAAAAACAAYrAAAAO1JhaW5mYWxsLCBBbm51YWxSYWluLE9pbCBQYWxtIFBsYW50YXRpb24gQmxvY2sgQW5udWFsT3V0cHV0BiwAAAAIRkZGRkZGRkYGLQAAAAhGRjgwODA4MAYuAAAACEZGRkZGRkZGBi8AAAAIRkY4MDgwODAABjAAAAAbU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5MaW5lAc/////6////CgAAAAAAAAAAjQABAAXO////JFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAkAAAACAAAAAAHN////+v///woAAAAAAAAAAI0AAQAGNAAAADxOTG9zcywgTW9udGhseU5MZWFjaCxPaWwgUGFsbSBQbGFudGF0aW9uIEJsb2NrIE1vbnRobHlPdXRwdXQJMAAAAAHK////+v///woAAAAAAAAAAH8AAQAByf///87///8JAAAAAgAAAAAByP////r///8KAAAAAAAAAAB/AAEABjkAAAA7Tkxvc3MsIE1vbnRobHlEZW5pdCxPaWwgUGFsbSBQbGFudGF0aW9uIEJsb2NrIE1vbnRobHlPdXRwdXQJMAAAAAHF////+v///woAAAAAAAAAADAAAQABxP///87///8JAAAAAgAAAAABw/////r///8KAAAAAAAAAAAwAAEABj4AAAA5Tkxvc3MsIE1vbnRobHlOMk8sT2lsIFBhbG0gUGxhbnRhdGlvbiBCbG9jayBNb250aGx5T3V0cHV0AcH////6////Cv////8AAAAAAAACAAZAAAAACEZGRkZGRkZGAb/////6////CoCAgP8AAAAAAAACAAZCAAAACEZGODA4MDgwAb3////6////Cv////8AAAAAAAACAAZEAAAACEZGRkZGRkZGAbv////6////CoCAgP8AAAAAAAACAAZGAAAACEZGODA4MDgwAbn////6////Cv////8AAAAAAAACAAZIAAAACEZGRkZGRkZGAbf////6////CoCAgP8AAAAAAAACAAZKAAAACEZGODA4MDgwAbX////6////Cv////8AAAAAAAACAAZMAAAACEZGRkZGRkZGAbP////6////CoCAgP8AAAAAAAACAAZOAAAACEZGODA4MDgwAFAAAAAGTwAAAAgjIyMwLiMjIwkWAAAACQAAAAAAEEEBr/////r///8K/////wAAAAAAAAIABlIAAAAIRkZGRkZGRkYBrf////r///8KgICA/wAAAAAAAAIABlQAAAAIRkY4MDgwODABAAAABav///8gU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXABAAAAB3ZhbHVlX18ACAQAAAACAAAAAAoAAAAAAar////6////CgAAAP8AAAAAAAACAAkWAAAACwAAAAAAMEEBqP////r///8KwAAA/wAAAAAAAAIAAaf////6////Cv8AAP8AAAAAAAACAAGm////+v///wr/////AAAAAAAAAgAGWwAAAAhGRkZGRkZGRgGk////+v///wqAgID/AAAAAAAAAgAGXQAAAAhGRjgwODA4MFAAAAAJTwAAAAkWAAAACQAAAAAAEEEBoP////r///8K/////wAAAAAAAAIABmEAAAAIRkZGRkZGRkYBnv////r///8KgICA/wAAAAAAAAIABmMAAAAIRkY4MDgwODABAAAAAZz///+r////AgAAAAAAAZv////6////CgAAAP8AAAAAAAACAAkWAAAACwAAAAAAMEEBmf////r///8K/wAA/wAAAAAAAAIAAZj////6////Cv////8AAAAAAAACAAZpAAAACEZGRkZGRkZGAZb////6////CoCAgP8AAAAAAAACAAZrAAAACEZGODA4MDgwAFAAAAAJTwAAAAkWAAAACQAAAAAAEEEBkv////r///8K/////wAAAAAAAAIABm8AAAAIRkZGRkZGRkYBkP////r///8KgICA/wAAAAAAAAIABnEAAAAIRkY4MDgwODABAAAAAY7///+r////AgAAAAAKAAAAAAGN////+v///woAAAD/AAAAAAAAAgAJFgAAAAsAAAAAADBBAYv////6////Cv8AAP8AAAAAAAACAAGK////+v///wr/////AAAAAAAAAgAGdwAAAAhGRkZGRkZGRgGI////+v///wqAgID/AAAAAAAAAgAGeQAAAAhGRjgwODA4MFAAAAAGegAAAAlkL01NL3l5eXkJTwAAAAkWAAAACQAAAAAAEEEBg/////r///8K/////wAAAAAAAAIABn4AAAAIRkZGRkZGRkYBgf////r///8KgICA/wAAAAAAAAIABoAAAAAIRkY4MDgwODAAAAABAAAAAX////+r////AgAAAAAKAAAAAAAAAADM40AAAAAAIB/hQAoAAAAAAX7////6////CgAAAP8AAAAAAAACAAkWAAAACwAAAAAAMEEBfP////r///8K/wAA/wAAAAAAAAIAAXv////6////Cv////8AAAAAAAACAAaGAAAACEZGRkZGRkZGAXn////6////CoCAgP8AAAAAAAACAAaIAAAACEZGODA4MDgwAXf////6////Cv////8AAAAAAAACAAaKAAAACEZGRkZGRkZGAXX////6////CoCAgP8AAAAAAAACAAaMAAAACEZGODA4MDgwAXP////6////Cv////8AAAAAAAACAAaOAAAACEZGRkZGRkZGAXH////6////CoCAgP8AAAAAAAACAAaQAAAACEZGODA4MDgwAW/////6////Cv////8AAAAAAAACAAaSAAAACEZGRkZGRkZGAW3////6////CoCAgP8AAAAAAAACAAaUAAAACEZGODA4MDgwAWv////6////Cv////8AAAAAAAACAAaWAAAACEZGRkZGRkZGAWn////6////CoCAgP8AAAAAAAACAAaYAAAACEZGODA4MDgwERUAAAABAAAABpkAAAAACw==</Format>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>oc(1)</Y>
+        <Y>oc(2)</Y>
+        <Y>oc(3)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </simulation>
+  <simulation name="Population148" shortcut="/simulations/Population110">
+    <metfile name="met" shortcut="/simulations/Population110/met" />
+    <clock shortcut="/simulations/Population110/clock" />
+    <summaryfile shortcut="/simulations/Population110/summaryfile" />
+    <area name="Block" shortcut="/simulations/Population110/Block">
+      <OilPalm shortcut="/simulations/Population110/Block/OilPalm" />
+      <fertiliser shortcut="/simulations/Population110/Block/fertiliser" />
+      <surfaceom name="surface organic matter" shortcut="/simulations/Population110/Block/surface organic matter">
+        <memo shortcut="/simulations/Population110/Block/surface organic matter/memo" />
+      </surfaceom>
+      <manager name="Palm Management">
+        <ui>
+          <planting_date type="date" description="Planting date">01/03/1996</planting_date>
+          <population type="text" description="Plant Population (/ha)">148</population>
+          <cultivar type="cultivars" description="Cultivar">Dami</cultivar>
+          <year1N type="text" description="N applied in year 1 (kg/palm)">0.14</year1N>
+          <year2N type="text" description="N applied in year 2 (kg/palm)">0.3</year2N>
+          <year3N type="text" description="N applied in year 3 (kg/palm)">0.6</year3N>
+          <year4N type="text" description="N applied in year 4 (kg/palm)">0.9</year4N>
+          <MatureN type="text" description="N applied to mature palms (kg/palm)">1.05</MatureN>
+        </ui>
+        <script>
+          <text>ppsm = [population]/10000
+
+! Add Trunk from previous plantation
+!'surface organic matter' add_surfaceom type=OilPalm, name=trunk, mass=63000, cnr=133, cpr=200
+
+
+endif
+
+if today = date('[planting_date]') then
+    OilPalm sow population = ppsm, depth = 200, cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+
+
+if today = date('15-jan') or today = date('15-may') or today = date('15-sep') then
+   if age &lt;= 1 then
+      Nrate = [population] * [year1N] / 3
+   elseif age &lt;= 2 then
+      Nrate = [population] * [year2N] / 3
+   elseif age &lt;= 3 then
+      Nrate = [population] * [year3N] / 3
+   elseif age &lt;= 4 then
+      Nrate = [population] * [year4N] / 3
+   else
+      Nrate = [population] *  [MatureN]/ 3
+   endif           
+
+   fertiliser apply amount = Nrate, type = nh4no3, depth = 1
+endif
+
+
+      
+</text>
+          <event>start_of_day</event>
+        </script>
+        <script>
+          <text>Plant_population = 0
+</text>
+          <event>Init</event>
+        </script>
+      </manager>
+      <Soil shortcut="/simulations/Population110/Block/Soil">
+        <Water shortcut="/simulations/Population110/Block/Soil/Water" />
+        <SoilWater shortcut="/simulations/Population110/Block/Soil/SoilWater" />
+        <SoilOrganicMatter shortcut="/simulations/Population110/Block/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/Population110/Block/Soil/Analysis" />
+        <InitialWater name="Initial water" shortcut="/simulations/Population110/Block/Soil/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/Population110/Block/Soil/Initial nitrogen" />
+      </Soil>
+      <outputfile name="AnnualOutput" shortcut="/simulations/Population110/Block/AnnualOutput">
+        <filename output="yes">Population148 Block AnnualOutput.out</filename>
+        <title>Population148 Block AnnualOutput</title>
+        <variables name="Variables" shortcut="/simulations/Population110/Block/AnnualOutput/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Population110/Block/AnnualOutput/Reporting Frequency" />
+      </outputfile>
+      <outputfile name="MonthlyOutput" shortcut="/simulations/Population110/Block/MonthlyOutput">
+        <filename output="yes">Population148 Block MonthlyOutput.out</filename>
+        <title>Population148 Block MonthlyOutput</title>
+        <variables name="Variables" shortcut="/simulations/Population110/Block/MonthlyOutput/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Population110/Block/MonthlyOutput/Reporting Frequency" />
+      </outputfile>
+      <tracker shortcut="/simulations/Population110/Block/tracker" />
+    </area>
+    <Graph name="AnnualYield" shortcut="/simulations/Population110/AnnualYield">
+      <Plot name="Rainfall" shortcut="/simulations/Population110/AnnualYield/Rainfall">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/AnnualYield/Rainfall/ApsimFileReader" />
+      </Plot>
+      <Plot name="Yield" shortcut="/simulations/Population110/AnnualYield/Yield">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/AnnualYield/Yield/ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="N Losses" shortcut="/simulations/Population110/N Losses">
+      <Plot name="Rainfall" shortcut="/simulations/Population110/N Losses/Rainfall">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/N Losses/Rainfall/ApsimFileReader" />
+      </Plot>
+      <Plot name="NLoss" shortcut="/simulations/Population110/N Losses/NLoss">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/N Losses/NLoss/ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Litter" shortcut="/simulations/Population110/Litter">
+      <Plot name="Rainfall" shortcut="/simulations/Population110/Litter/Rainfall">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/Litter/Rainfall/ApsimFileReader" />
+      </Plot>
+      <Plot name="Litter" shortcut="/simulations/Population110/Litter/Litter">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/Litter/Litter/ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Soil Carbon" shortcut="/simulations/Population110/Soil Carbon">
+      <Plot name="Predicted" shortcut="/simulations/Population110/Soil Carbon/Predicted">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/Soil Carbon/Predicted/ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </simulation>
+  <simulation name="Population186" shortcut="/simulations/Population110">
+    <metfile name="met" shortcut="/simulations/Population110/met" />
+    <clock shortcut="/simulations/Population110/clock" />
+    <summaryfile shortcut="/simulations/Population110/summaryfile" />
+    <area name="Block" shortcut="/simulations/Population110/Block">
+      <OilPalm shortcut="/simulations/Population110/Block/OilPalm" />
+      <fertiliser shortcut="/simulations/Population110/Block/fertiliser" />
+      <surfaceom name="surface organic matter" shortcut="/simulations/Population110/Block/surface organic matter">
+        <memo shortcut="/simulations/Population110/Block/surface organic matter/memo" />
+      </surfaceom>
+      <manager name="Palm Management">
+        <ui>
+          <planting_date type="date" description="Planting date">01/03/1996</planting_date>
+          <population type="text" description="Plant Population (/ha)">186</population>
+          <cultivar type="cultivars" description="Cultivar">Dami</cultivar>
+          <year1N type="text" description="N applied in year 1 (kg/palm)">0.14</year1N>
+          <year2N type="text" description="N applied in year 2 (kg/palm)">0.3</year2N>
+          <year3N type="text" description="N applied in year 3 (kg/palm)">0.6</year3N>
+          <year4N type="text" description="N applied in year 4 (kg/palm)">0.9</year4N>
+          <MatureN type="text" description="N applied to mature palms (kg/palm)">1.05</MatureN>
+        </ui>
+        <script>
+          <text>ppsm = [population]/10000
+
+! Add Trunk from previous plantation
+!'surface organic matter' add_surfaceom type=OilPalm, name=trunk, mass=63000, cnr=133, cpr=200
+
+
+endif
+
+if today = date('[planting_date]') then
+    OilPalm sow population = ppsm, depth = 200, cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+
+
+if today = date('15-jan') or today = date('15-may') or today = date('15-sep') then
+   if age &lt;= 1 then
+      Nrate = [population] * [year1N] / 3
+   elseif age &lt;= 2 then
+      Nrate = [population] * [year2N] / 3
+   elseif age &lt;= 3 then
+      Nrate = [population] * [year3N] / 3
+   elseif age &lt;= 4 then
+      Nrate = [population] * [year4N] / 3
+   else
+      Nrate = [population] *  [MatureN]/ 3
+   endif           
+
+   fertiliser apply amount = Nrate, type = nh4no3, depth = 1
+endif
+
+
+      
+</text>
+          <event>start_of_day</event>
+        </script>
+        <script>
+          <text>Plant_population = 0
+</text>
+          <event>Init</event>
+        </script>
+      </manager>
+      <Soil shortcut="/simulations/Population110/Block/Soil">
+        <Water shortcut="/simulations/Population110/Block/Soil/Water" />
+        <SoilWater shortcut="/simulations/Population110/Block/Soil/SoilWater" />
+        <SoilOrganicMatter shortcut="/simulations/Population110/Block/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/Population110/Block/Soil/Analysis" />
+        <InitialWater name="Initial water" shortcut="/simulations/Population110/Block/Soil/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/Population110/Block/Soil/Initial nitrogen" />
+      </Soil>
+      <outputfile name="AnnualOutput" shortcut="/simulations/Population110/Block/AnnualOutput">
+        <filename output="yes">Population186 Block AnnualOutput.out</filename>
+        <title>Population186 Block AnnualOutput</title>
+        <variables name="Variables" shortcut="/simulations/Population110/Block/AnnualOutput/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Population110/Block/AnnualOutput/Reporting Frequency" />
+      </outputfile>
+      <outputfile name="MonthlyOutput" shortcut="/simulations/Population110/Block/MonthlyOutput">
+        <filename output="yes">Population186 Block MonthlyOutput.out</filename>
+        <title>Population186 Block MonthlyOutput</title>
+        <variables name="Variables" shortcut="/simulations/Population110/Block/MonthlyOutput/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Population110/Block/MonthlyOutput/Reporting Frequency" />
+      </outputfile>
+      <tracker shortcut="/simulations/Population110/Block/tracker" />
+    </area>
+    <Graph name="AnnualYield" shortcut="/simulations/Population110/AnnualYield">
+      <Plot name="Rainfall" shortcut="/simulations/Population110/AnnualYield/Rainfall">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/AnnualYield/Rainfall/ApsimFileReader" />
+      </Plot>
+      <Plot name="Yield" shortcut="/simulations/Population110/AnnualYield/Yield">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/AnnualYield/Yield/ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="N Losses" shortcut="/simulations/Population110/N Losses">
+      <Plot name="Rainfall" shortcut="/simulations/Population110/N Losses/Rainfall">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/N Losses/Rainfall/ApsimFileReader" />
+      </Plot>
+      <Plot name="NLoss" shortcut="/simulations/Population110/N Losses/NLoss">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/N Losses/NLoss/ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Litter" shortcut="/simulations/Population110/Litter">
+      <Plot name="Rainfall" shortcut="/simulations/Population110/Litter/Rainfall">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/Litter/Rainfall/ApsimFileReader" />
+      </Plot>
+      <Plot name="Litter" shortcut="/simulations/Population110/Litter/Litter">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/Litter/Litter/ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Soil Carbon" shortcut="/simulations/Population110/Soil Carbon">
+      <Plot name="Predicted" shortcut="/simulations/Population110/Soil Carbon/Predicted">
+        <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/Population110/Soil Carbon/Predicted/ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </simulation>
+  <Graph name="AnnualYield">
+    <Legend>
+      <CheckedTitles> AnnualYield, Population110 Block AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualYield, Population148 Block AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualYield, Population186 Block AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualBunches, Population110 Block AnnualOutput</CheckedTitles>
+      <CheckedTitles> AnnualBunches, Population148 Block AnnualOutput</CheckedTitles>
+    </Legend>
+    <Plot name="Yield">
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <Y>AnnualYield</Y>
+      <Y>AnnualBunches</Y>
+      <X>Age</X>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="LAI">
+    <Legend>
+      <CheckedTitles> Population110 Block MonthlyOutput</CheckedTitles>
+      <CheckedTitles> Population148 Block MonthlyOutput</CheckedTitles>
+      <CheckedTitles> Population186 Block MonthlyOutput</CheckedTitles>
+    </Legend>
+    <Plot name="LAI">
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Age</X>
+      <Y>LAI</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+</folder>
