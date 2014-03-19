@@ -23,14 +23,14 @@ copy  %APSIM%\UserInterface\ToolBoxes\*.xml %dest%\UserInterface\ToolBoxes
 "C:\Program Files\7-Zip\7z.exe" a -mx=7 -mmt=on Temp.7z %dest%
 
 if [%1] == [] goto noargs
-   copy /b 7zsd_All.sfx + 7zWinConfig.txt + Temp.7z %1.binaries.WINDOWS.INTEL.exe
-   copy /b 7zsd_All_x64.sfx + 7zWinConfig.txt + Temp.7z %1.binaries.WINDOWS.X86_64.exe
+   copy /b "C:\Program Files (x86)\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z %1.binaries.WINDOWS.INTEL.exe
+   copy /b "C:\Program Files\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z %1.binaries.WINDOWS.X86_64.exe
    goto done
 
 :noargs
    call %APSIM%\Model\Build\VersionInfo.bat
-   copy /b 7zsd_All.sfx + 7zWinConfig.txt + Temp.7z Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.INTEL.exe
-   copy /b 7zsd_All_x64.sfx + 7zWinConfig.txt + Temp.7z Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.X86_64.exe
+   copy /b "C:\Program Files (x86)\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.INTEL.exe
+   copy /b "C:\Program Files\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.X86_64.exe
 
 :done
 
