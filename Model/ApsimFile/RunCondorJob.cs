@@ -237,8 +237,12 @@ namespace ApsimFile
 					SubWriter.WriteLine ("arguments = " + SelfExtractingExecutableLocation + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 					inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 					WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
+					WinExeWriter.NewLine = "\r\n";
+					WinExeWriter.WriteLine ("echo Running on %COMPUTERNAME%");
 					LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
+					LinuxExeWriter.NewLine = "\n";
 					LinuxExeWriter.WriteLine ("#!/bin/bash");
+					LinuxExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
 				}
 
 				string apsimFile = Path.GetFileName (XmlHelper.Attribute (simNode, "source"));
@@ -307,40 +311,5 @@ namespace ApsimFile
 
 			return Path.Combine (DestinationFolder, ZipFileName);
 		}
-#if false
-
-////##########		TEST
-using System;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
-using ApsimFile;
-
-namespace test
-{
-	class MainClass
-	{
-		public static void Main (string[] args)
-		{
-			Console.WriteLine ("Hello World!");
-			CondorJob c = new CondorJob();
-			c.unix = false;
-			c.ApsimVersion = "Apsim73-r1387";
-			List<string> files = new  List<string>();
-			files.Add("/home/devoilp/src/apsim/Tests/Validation/Wheat/Files/WheatValidation.apsim");
-			 //  /home/devoilp/src/apsim/Examples/Continuous Wheat.apsim
-			Console.Write(c.Go(files, progress));
-		}
-		
-		public static void progress (int percent, string message) 
-		{
-			Console.WriteLine(message + ": " + percent.ToString() + "%");
-		}
 	}
-}
-
-
-#endif
-	}
-
 }
