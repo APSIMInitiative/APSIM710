@@ -1757,18 +1757,9 @@ public class Script
 }
        </text>
     </manager2>
-    <manager2 name="Irrigate based on rainfall">
-      <ui>
-        <category type="category" description="When should irrigation be applied" />
-        <pastDays type="text" description="If rainfall over the past number of days">7</pastDays>
-        <amount type="text" description="Is less than (mm)">100</amount>
-        <eff type="text" description="Irrigation efficiency (0-1) : ">1</eff>
-        <wait type="text" description="Do not attempt to apply irrigation again until this many days have passed.">7</wait>
-        <start type="text" description="The earliest date irrigation will be applied (dd-mmm)">1-jan</start>
-        <end type="text" description="The latest date irrigation will be applied (dd-mmm)">31-dec</end>
-      </ui>
-      <text>using System;
+<manager2 name="Irrigate based on rainfall"><ui><category type="category" description="When should irrigation be applied" /><pastDays type="text" description="If rainfall over the past number of days">7</pastDays><amount type="text" description="Is less than (mm)">10</amount><apply type="text" description="Apply mm of irrigation">5</apply><eff type="text" description="Irrigation efficiency (0-1) : ">1</eff><wait type="text" description="Do not attempt to apply irrigation again until this many days have passed.">7</wait><start type="text" description="The earliest date irrigation will be applied (dd-mmm)">1-jan</start><end type="text" description="The latest date irrigation will be applied (dd-mmm)">31-dec</end></ui><text>using System;
 using ModelFramework;
+using System.Collections.Generic;
 using CSGeneral;
 
 public class Script 
@@ -1778,28 +1769,32 @@ public class Script
    [Input] double rain;
    [Param] int pastDays;         //check for rain over this period
    [Param] int wait;             //only consider irrigating if this many days have passed since last irrigation
-   [Param] float amount;        //amount of irrigation to apply (mm)
-   [Param] float eff;           //irrigation efficiency
+   [Param] float amount;         //amount of rain
+   [Param] float eff;            //irrigation efficiency
    [Param] string start;         //no irrigation will be applied before this date
    [Param] string end;           //no irrigation will be applied after this date
+   [Param] float apply;          //apply mm of irrigation        
+   [Output] double sum;
 
-   private ManagerUtility.Tracker&lt;double&gt; rainTracker; //set up a variable to track rainfall over the last [pastDays] days
-   private int dai = 0; //days after irrigation, set up a counter
+   private int dai = 0; //days after irrigation, set up a counter  
+   private List&lt;double&gt; tracker = new List&lt;double&gt;();
    
-   [EventHandler] public void OnInitialised()
+   [EventHandler] public void OnPost()
    {
-      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(pastDays); //initialise out tracker, telling it what data type to expect and how many days to track
-   }
-          
-   // The following event handler will be called each day at the start of the day
-   [EventHandler] public void OnPrepare()
-   {
-      rainTracker.Add(rain); //add the variable we want to track (rain) this has to be done every day
-      //if we've waited long enough, the rainfall is below the desired level and we're in the irrigation window
-      if (dai &gt; wait &amp;&amp; rainTracker.Sum() &lt; amount &amp;&amp; DateUtility.WithinDates(start, today, end))
+      tracker.Add(rain);
+      if (tracker.Count &gt; pastDays)
+         tracker.RemoveAt(0);
+      
+      sum = 0;
+      
+      foreach(double d in tracker)
+      {
+         sum += d;
+      }
+      if (dai &gt; wait &amp;&amp; sum &lt; amount &amp;&amp; DateUtility.WithinDates(start, today, end))
          {
             IrrigationApplicationType data = new IrrigationApplicationType();
-            data.Amount = amount - (float)rainTracker.Sum(); // irrigate to the difference between rainfall and desired amount
+            data.Amount = apply;
             Irrigation.Set("irrigation_efficiency", eff);
             Irrigation.Apply(data);
             dai = 0; //reset the counter
@@ -1807,9 +1802,7 @@ public class Script
       dai++; //increase the counter by one
    }  
 }
-       </text>
-    </manager2>
-    <manager2 name="Irrigate at start of week">
+       </text></manager2>    <manager2 name="Irrigate at start of week">
       <ui>
         <category type="category" description="Irrigation parameters" />
         <amount type="text" description="Amount of irrigation to apply (mm)">50</amount>
