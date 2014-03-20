@@ -39,7 +39,7 @@ namespace ApsimFile
             return 0;
         }
         //CalcCount returns the number of parameters for the chain of factors
-        public virtual double CalcCount()
+        public virtual int CalcCount()
         {
             if (NextItem != null)
             {
@@ -191,7 +191,7 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
          if (Builder.SaveExtraInfoInFilename)
          {
             Simulation.Name = sInitialName + ";" + ToKVString(factorsList);
-            Console.WriteLine (Simulation.Name);
+            Console.WriteLine (counter.ToString() + Simulation.Name);
          }
          else
          {
@@ -293,7 +293,7 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
         Simulation.Name = sInitialName;
         Directory.SetCurrentDirectory(currDirectory);
       }
-      public void AddOutputFilesToList(Component node, List<Component> outputfiles)
+        public void AddOutputFilesToList(Component node, List<Component> outputfiles)
       {
          if (node.Type == "outputfile")
             outputfiles.Add(node);
@@ -302,6 +302,7 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
             AddOutputFilesToList(comp, outputfiles);
          }
       }
+#if false
       public void AddInputFilesToList(Component node, List<Component> inputfiles)
       {
          if (node.Type == "met")
@@ -311,7 +312,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
             AddInputFilesToList(comp, inputfiles);
          }
       }
-   }
+#endif
+    }
     public class ManagerFactorItem : FactorItem
     {
         public ManagerFactorItem(FactorBuilder b)
@@ -333,7 +335,7 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
             return 0;
         }
         //CalcCount returns the number of parameters for the chain of factors
-        public override double CalcCount()
+        public override int CalcCount()
         {
             if (NextItem != null)
                 return NextItem.CalcCount() * Parameters.Count;
@@ -547,7 +549,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                                 string[] pars = node.InnerText.Split(new char[] {','});
                                 pars =  pars.Select(x => x.Trim(new char[] {'\"', ' '})).ToArray();
                                 List<string> parameters = new List<string>();
-                                parameters.AddRange(pars);
+                                var unique_pars = new HashSet<string>(pars);
+                                parameters.AddRange(unique_pars.OrderBy(a => a));
                                 item.Parameters = parameters;
                                 if (lastItem == null)
                                     items.Add(item);
@@ -611,7 +614,7 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                             string[] pars = node.InnerText.Split(new char[] {','});
                             pars =  pars.Select(x => x.Trim(new char[] {'\"', ' '})).ToArray();
                             List<string> parameters = new List<string>();
-                            parameters.AddRange(pars);
+                            parameters.AddRange(pars.OrderBy(a => a));
                             item.Parameters = parameters;
                             if ((from f in factorItems where f.getDesc() == item.getDesc() select f).Count() == 0)
                             {
@@ -701,22 +704,25 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                     List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
 					
                     int counter = 0;
-                    double totalCount = 0;
+                    int totalCount = 0;
                     foreach (FactorItem item in items)
                         totalCount += item.CalcCount();
                     
                     foreach (FactorItem item in items)
                     {
                         SortedDictionary<string, string> factors = new SortedDictionary<string, string>();
-                        item.Process(SimFiles, Simulation, SimulationPath, factors, myFactors, ref counter, (int)totalCount, destFolder);
+                        item.Process(SimFiles, Simulation, SimulationPath, factors, myFactors, ref counter, totalCount, destFolder);
                     }
 
                     if (SimFiles.Count == 0 && myFactors != null) 
 						throw new Exception(" Factor level '" + FactorItem.ToKVString(myFactors) + "' isnt present");
 
-					if (SimFiles.Count != 1 && myFactors != null)
-						throw new Exception(" Whoops - '" + SimulationPath + "@" + FactorItem.ToKVString(myFactors) + "' produced " + 
-						                    SimFiles.Count + " sim files");
+                    if (SimFiles.Count != 1 && myFactors != null)
+                    {
+                        Console.WriteLine(" Whoops - '" + SimulationPath + "@" + FactorItem.ToKVString(myFactors) + "' produced " +
+                                            SimFiles.Count + " sim files");
+                        SimFiles = SimFiles.GetRange(0,1);
+                    }
                 }
                 catch (Exception ex)
                 {
