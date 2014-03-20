@@ -99,9 +99,6 @@ namespace ApsimFile
 				XmlDocument Doc = new XmlDocument ();
 				Doc.Load (FileName);
 
-				if (!File.Exists (Path.Combine (WorkingFolder, Path.GetFileName (FileName))))
-					File.Copy (FileName, Path.Combine (WorkingFolder, Path.GetFileName (FileName)));
-
 				List<XmlNode> simulations = new List<XmlNode> ();
 				XmlHelper.FindAllRecursivelyByType (Doc.DocumentElement, "simulation", ref simulations);
 				
@@ -151,6 +148,8 @@ namespace ApsimFile
 							XmlHelper.SetAttribute (input, "source", src); 
 							XmlHelper.SetAttribute (input, "name", dest);
 							node.InnerText = dest;
+							if (!File.Exists (src))
+								throw new Exception("File '" + src + "' doesnt exist - cant send it to the cluster.");
 							if (!File.Exists (Path.Combine (WorkingFolder, dest)))
 								File.Copy (src, Path.Combine (WorkingFolder, dest));
 						} else {
@@ -159,6 +158,7 @@ namespace ApsimFile
 						}
 					}
 				}
+				Doc.Save(Path.Combine (WorkingFolder, Path.GetFileName (FileName)));
 			}
 		}
 
