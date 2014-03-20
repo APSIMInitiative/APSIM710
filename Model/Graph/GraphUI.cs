@@ -162,22 +162,25 @@ namespace Graph
             }
 
             // Select legend items if previously saved.
-            XmlNode LegendSettings = XmlHelper.Find(Data, "Legend");
-            if (LegendSettings != null)
+            if (Chart.Legend.Visible)
             {
-                List<string> LegendTitlesChecked = XmlHelper.Values(LegendSettings, "CheckedTitles");
-                bool SomeActive = false;
-                foreach (Series S in Chart.Series)
+                XmlNode LegendSettings = XmlHelper.Find(Data, "Legend");
+                if (LegendSettings != null)
                 {
-                    S.Active = LegendTitlesChecked.Contains(S.Title);
-                    if (S.Active)
-                        SomeActive = true;
-                }
-
-                // If non are ticked then make them all ticked.
-                if (!SomeActive)
+                    List<string> LegendTitlesChecked = XmlHelper.Values(LegendSettings, "CheckedTitles");
+                    bool SomeActive = false;
                     foreach (Series S in Chart.Series)
-                        S.Active = true;
+                    {
+                        S.Active = LegendTitlesChecked.Contains(S.Title);
+                        if (S.Active)
+                            SomeActive = true;
+                    }
+
+                    // If non are ticked then make them all ticked.
+                    if (!SomeActive)
+                        foreach (Series S in Chart.Series)
+                            S.Active = true;
+                }
             }
             Chart.Legend.Invalidate();
             Chart.Legend.FirstValue = 0;
