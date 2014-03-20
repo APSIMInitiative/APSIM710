@@ -53,7 +53,11 @@ namespace ApsimFile
 
             // If there is only one job then run it now - don't need job scheduler. (the second job is the .sim deletion)
             if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-                foreach (Job x in ApsimJobs) { x.Run(); }
+            {
+				ApsimJobs[0].Run ();
+				if (!ApsimJobs[0].HasErrors) 
+					ApsimJobs[1].Run ();
+			}
             else if (ApsimJobs.Count > 2)
             {
                 Project P = new Project();
@@ -251,7 +255,7 @@ namespace ApsimFile
                     fp.Close();
 
                     Job J = CreateJob(simFileName,
-                                      Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"), null);
+                                      Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"));
                     J.IgnoreErrors = false;
                     ApsimJobs.Add(J);
                     J = CleanupJob(simFileName, J.Name);
@@ -305,10 +309,6 @@ namespace ApsimFile
         /// </summary>
         private int FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
         {
-#if false
-			if(!FactorialIsActive(AFile))
-                return 0;
-#endif
 			List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
             foreach (SimFactorItem item in SimFiles)
             {
@@ -319,17 +319,8 @@ namespace ApsimFile
             }
             return SimFiles.Count;
         }
-#if false
-		private bool FactorialIsActive(ApsimFile AFile)
-        {
-            //This test should only return true if "active" is present - running from the command line will run the entire set by default
-            XmlNode varNode = AFile.FactorComponent.ContentsAsXML.SelectSingleNode("//active");
-            if(varNode != null)
-                return XmlHelper.Value(AFile.FactorComponent.ContentsAsXML, "active") == "1";
-            return true;
-		}
-#endif
-        /// <summary>
+
+		/// <summary>
         /// delete a file after a job has finished
         /// </summary>
         private Job CleanupJob(string FileName, string JobName)
