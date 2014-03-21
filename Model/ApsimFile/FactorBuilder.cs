@@ -548,10 +548,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                                 item.Variable = node;
                                 string[] pars = node.InnerText.Split(new char[] {','});
                                 pars =  pars.Select(x => x.Trim(new char[] {'\"', ' '})).ToArray();
-                                List<string> parameters = new List<string>();
                                 var unique_pars = new HashSet<string>(pars);
-                                parameters.AddRange(unique_pars.OrderBy(a => a));
-                                item.Parameters = parameters;
+                                item.Parameters = unique_pars.OrderBy(a => a).ToList<string>();
                                 if (lastItem == null)
                                     items.Add(item);
                                 else
@@ -612,10 +610,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                             item.FactorComponent = factor;
                             item.Variable = node;
                             string[] pars = node.InnerText.Split(new char[] {','});
-                            pars =  pars.Select(x => x.Trim(new char[] {'\"', ' '})).ToArray();
-                            List<string> parameters = new List<string>();
-                            parameters.AddRange(pars.OrderBy(a => a));
-                            item.Parameters = parameters;
+                            var unique_pars = new HashSet<string>(pars.Select(x => x.Trim(new char[] {'\"', ' '})));
+                            item.Parameters = unique_pars.OrderBy(a => a).ToList<string>();
                             if ((from f in factorItems where f.getDesc() == item.getDesc() select f).Count() == 0)
                             {
                                 item.NextItem = factorItems[0];
