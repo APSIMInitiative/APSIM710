@@ -56,7 +56,7 @@ namespace ApsimFile
             {
 				ApsimJobs[0].Run ();
                 ApsimJobs[0].WaitUntilExit();
-				if (! ApsimJobs[0].HasErrors ) 
+				if (! ApsimJobs[0].HasErrors && ApsimJobs.Count == 2) 
 					ApsimJobs[1].Run ();
 			}
             else if (ApsimJobs.Count > 2)
