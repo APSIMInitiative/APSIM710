@@ -89,6 +89,11 @@ namespace Actions
 			string url = Configuration.Instance.Setting("ApsimInternetGroup");
 			Process.Start(url);
 		}
+        public static void ReleaseNotes(BaseController Controller)
+        {
+            string url = Configuration.Instance.Setting("ReleaseNotes");
+            Process.Start(url);
+        }
         public static void CombineMultiple(BaseController Controller)
         {
             string LastDir = null;

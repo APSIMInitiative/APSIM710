@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html  lang="en-AU">
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Irrigation.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head id="Head"><title>
+	APSIM > Documentation > Model, Crop and Soil > Soil Modules Documentation > Irrigation
+</title><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta content="text/javascript" http-equiv="Content-Script-Type" /><meta content="text/css" http-equiv="Content-Style-Type" /><meta id="MetaDescription" name="DESCRIPTION" content="Agriculture Production Systems Simulator" /><meta id="MetaCopyright" name="COPYRIGHT" content="Copyright 2014 APSIM" /><meta id="MetaAuthor" name="AUTHOR" content="APSIM" /><meta name="RESOURCE-TYPE" content="DOCUMENT" /><meta name="DISTRIBUTION" content="GLOBAL" /><meta id="MetaRobots" name="ROBOTS" content="INDEX, FOLLOW" /><meta name="REVISIT-AFTER" content="1 DAYS" /><meta name="RATING" content="GENERAL" /><meta http-equiv="PAGE-ENTER" content="RevealTrans(Duration=0,Transition=1)" /><style id="StylePlaceholder" type="text/css">
+																																																																																																																																																																																											   </style><link href="../../DependencyHandler.axd/b0e9bcca91a071945a9daa4998ffc22c.46.css" type="text/css" rel="stylesheet"/><!--[if LT IE 8]><link id="IE7Minus" rel="stylesheet" type="text/css" href="/Portals/0/Skins/APSIM_2012/ie7skin.css" /><![endif]-->     
+        
+			    
+
+        
+		  </head>
+<body id="Body">
+    
+    <form method="post" action="../../external.html?link=http://www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Irrigation.aspx" id="Form" enctype="multipart/form-data">
+
+
+     
+<div id="DNN6" class="ThreeCol">
+    <div id="Header">
+        <div id="ContentBG">
+            <div id="ControlPanelWrapper">
+                
+		    </div>
+            <!-- START: Header -->
+<div id="Header">
+	<h1><a href="../../../index-2.html">APSIM</a></h1>
+    <div id="dnn_Banner" class="Banner DNNEmptyPane"></div>
+		<div id="search">
+		
+
+<div id="dnn_dnnSearch_DropDownSearch" class="SearchContainer">
+  <div class="SearchBorder">
+  <div id="SearchIcon" class="SearchIcon">
+    <img id="dnn_dnnSearch_downArrow" title="Select the search type" src="../../../icons/sigma/Action_16X16_Standard.png" alt="Select the search type" />
+  </div>
+  <input name="dnn$dnnSearch$txtSearchNew" type="text" maxlength="255" id="dnn_dnnSearch_txtSearchNew" class="SearchTextBox" onkeydown="return __dnn_KeyDown(&#39;13&#39;, &#39;javascript:__doPostBack(%27dnn$dnnSearch$cmdSearchNew%27,%27%27)&#39;, event);" />&nbsp;
+  <ul id="SearchChoices">
+    <li id="SearchIconSite">Site</li>
+    <li id="SearchIconWeb">Web</li>
+  </ul>
+  </div>
+  <a id="dnn_dnnSearch_cmdSearchNew" class="SkinObject SearchButton" href="javascript:__doPostBack(&#39;dnn$dnnSearch$cmdSearchNew&#39;,&#39;&#39;)">Go</a>
+</div>
+
+		</div>
+		<div class="clear">&nbsp;</div>
+</div>
+		    <div class="Content">
+                <div id="Nav">
+				     <!-- DDRmenu v02.00.01 - DNNStandard template --><!--SEO NOINDEX-->
+
+
+
+
+			    </div> 
+		    </div>
+        </div>
+	</div>
+    <div class="wrapper">
+    <div id="Content">   
+        <div class="LogoRowRight">
+            <div id="Login">
+                
+                
+
+                
+
+            </div> 
+        </div>    
+        <div id="Breadcrumb"><span id="dnn_dnnBreadcrumb_lblBreadCrumb"><a href="../../default.html" class="SkinObject">Documentation</a><span class="Sep"></span><a href="../../Model%2cCropandSoil.html" class="SkinObject">Model, Crop and Soil</a><span class="Sep"></span><a href="../SoilModulesDocumentation.html" class="SkinObject">Soil Modules Documentation</a><span class="Sep"></span><a href="Irrigation.html" class="SkinObject">Irrigation</a></span>
+</div>
+        <div id="PageTitle">
+        	<h1>Irrigation</h1>
+        </div>
+ 
+             <div id="Panes">
+            <div id="dnn_ContentPane">
+				<div class="DnnModule DnnModule-DNN_HTML DnnModule-528" style="left: 0px; top: 0px"><a name="528"></a>
+<div class="Invisible"><div id="dnn_ctr528_ContentPane"><!-- Start_Module_528 --><div id="dnn_ctr528_ModuleContent" class="DNNModuleContent ModDNNHTMLC">
+	<div id="dnn_ctr528_HtmlModule_lblContent" class="Normal">
+
+<div class=WordSection1>
+
+<p class=MsoTitle><span lang=EN-US style='font-variant:normal !important;
+text-transform:uppercase'>SWIM3: Model Documentation</span></p>
+
+<p class=History style='line-height:normal'><span lang=EN-US>N. I. Huth, K. L. Bristow,
+K. Verburg</span></p>
+
+<p class=Abstract style='line-height:normal'><b><span lang=EN-US>Information
+taken from Huth, N.I., Bristow, K.L., Verburg, K., 2012. SWIM3: Model use,
+calibration, and validation. Transactions of the ASABE 55, 1303-1313.</span></b></p>
+
+<h1><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Introduction
+</span></h1>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>SWIM3 is the
+latest release in the family of SWIM (Soil Water Infiltration and Movement)
+models developed for simulating water and solute movement within soils.  These
+models have been used predominantly for studies into management options for water
+and solutes in agricultural systems or for evaluating alternate numerical
+methods for efficiently solving complex systems of flow equations.  SWIMv1 </span><span
+lang=EN-US>(Ross, 1990b)</span><span lang=EN-US> provided an efficient solution
+to the 1-dimensional Richards’ equation for the simulation of water movement
+and uptake by plants.  SWIMv2 </span><span
+lang=EN-US>(Verburg<i> et al.</i>, 1996b)</span><span lang=EN-US> extended the
+functionality of SWIMv1 through the provision of a wider range in boundary
+conditions, the ability to specify soil hydraulic properties as the sum of
+simple functions </span><span
+lang=EN-US>(Ross and Smettem, 1993)</span><span lang=EN-US> described using
+piecewise cubic approximations </span><span
+lang=EN-US>(Ross, 1992)</span><span lang=EN-US>, and a solution of the
+convection-dispersion equation for solute transport.  The utility of this model
+code was further enhanced by its incorporation into the APSIM (Agricultural Production
+Systems Simulator) framework </span><span
+lang=EN-US>(Keating<i> et al.</i>, 2003)</span><span lang=EN-US> to create the
+APSIM-SWIM version of the model </span><span
+lang=EN-US>(McCown<i> et al.</i>, 1995; Huth<i> et al.</i>, 1996)</span><span
+lang=EN-US>. With this move, SWIM ceased to be developed as a standalone
+product, but was redeveloped for use as a component within integrated modeling
+frameworks.  Whilst much of the numerical approach used within the APSWIM-SWIM model
+was retained from the parent SWIMv2 model, further enhancements were included
+to facilitate application to various farming systems.  These included the
+simulation of multiple non-interacting solutes</span><span
+lang=EN-US>(Verburg<i> et al.</i>, 1996a)</span><span lang=EN-US>, the effects
+of surface residues on evaporation or surface sealing </span><span
+lang=EN-US>(Connolly<i> et al.</i>, 2002)</span><span lang=EN-US> and equations
+for simulating subsurface drains </span><span
+lang=EN-US>(Malone<i> et al.</i>, 2007; Snow<i> et al.</i>, 2007)</span><span
+lang=EN-US> or local groundwater interactions </span><span
+lang=EN-US>(Paydar<i> et al.</i>, 2005b)</span><span lang=EN-US>.  SWIM3 builds
+upon the work of APSIM-SWIM and provides a new approach to specify soil
+hydraulic properties for a broad range of soil types from simple measures of
+soil water behavior.  The simplicity of this new approach makes this mechanistically-based
+numerical model more accessible to farming systems researchers within the APSIM
+modeling community who, until now, have limited their use of APSIM-SWIM due to perceived
+difficulties of parameterization.  SWIM3 is developed and maintained within the
+APSIM Community Source Framework (<a href="http://www.apsim.info">www.apsim.info</a>)
+by the APSIM Initiative.  This initiative provides a transparent and open-source
+approach to combine broadly based collaborative science with best practice
+software development and maintenance, and science quality control.  APSIM is
+freely available for research and development, extension or educational use. 
+APSIM training is provided via regular international workshops as a fee for
+service activity.  However, all workshop materials, user documentation and a
+model user support forum are also freely available via the APSIM website (<a
+href="http://www.apsim.info">www.apsim.info</a>). </span></p>
+
+<h1><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>SWIM3
+Description</span></h1>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>  The APSIM
+modeling framework has been developed to simulate biophysical process in
+farming systems, in particular where there is interest in the economic and
+environmental outcomes of management practice in the face of climatic risk,
+climate change or changes in policy.  APSIM’s component-based design allows
+individual models to interact via a common communications protocol </span><span
+lang=EN-US>(Moore<i> et al.</i>, 2007)</span><span lang=EN-US>.  The role of
+SWIM3 within an APSIM simulation is to calculate fluxes and storage of soil
+water and solutes and to communicate this information to other models within
+the simulation. Whilst SWIM generally uses much smaller time steps in computing
+its numerical solutions, most communications to other models within a
+simulation occur on a daily frequency.    SWIM3 is available for use in APSIM
+Version 7.3 or later.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>SWIM3 is a
+1-dimensional lumped physically-based model.  Some sub models within SWIM3
+capture simple spatial processes and so it can also be described as a quasi
+2-dimensional model.   SWIM3 provides a 1-dimensional simulation of water
+fluxes through a numerical solution to Richards’ equation </span><span
+lang=EN-US>(Richards, 1931)</span><span lang=EN-US> (Eq. 1) </span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>                                                                        </span><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif";
+position:relative;top:19.0pt'><img width=170 height=44
+src="../../Portals/0/Documentation/Soil/SWIM3/image001.png"></span><span lang=EN-US>                                                       (1)</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>where &#952; is
+volumetric water content (cm<sup>3</sup>cm<sup>-3</sup>), x and t describe
+space (cm) and time (h), K is hydraulic conductivity (cm h<sup>-1</sup>), z and
+&#968; are the gravitational and matric potentials (cm), and S is the
+source/sink term for water  (cm<sup>3</sup>cm<sup>-3</sup>h<sup>-1</sup>). 
+Solute fluxes are calculated using a solution to the Convection-Dispersion
+equation (Eq. 2)</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>                                                              </span><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif";
+position:relative;top:19.0pt'><img width=230 height=44
+src="../../Portals/0/Documentation/Soil/SWIM3/image002.png"></span><span lang=EN-US>                                            (2)</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>where c and s
+are solute concentrations (ppm) in solution or adsorbed to the soil surface, D
+is the combined dispersion and diffusion coefficient (cm<sup>2</sup> h<sup>-1</sup>),
+q is the water flux (cm h<sup>-1</sup>) and &#961; is the soil bulk density (g
+cm<sup>-3</sup>), and &#966; is the source/sink term for solute (ppm h<sup>-1</sup>). 
+The mixed &#968; and &#952; form of Richards’ equation shown in equation 1 is
+highly non-linear, especially in dry soils, and so it is solved using a
+hyperbolic sine transform of &#968; </span><span
+lang=EN-US>(Ross, 1990a)</span><span lang=EN-US>.  A detailed description of
+the numerical methods used in solving equations 1 and 2 is included in </span><span
+lang=EN-US>(Verburg<i> et al.</i>, 1996b)</span><span lang=EN-US>.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Various losses
+from the overall water balance, such as canopy interception or losses from
+irrigation infrastructure are calculated in other modules within APSIM.  Potential
+crop water use is calculated by each crop model using methods appropriate to
+the crop being simulated as specified by each crop model developer.  Evaporation,
+drainage and runoff losses are calculated via sub-models within SWIM3 and
+incorporated into the numerical solution through the sink term, S.  Evaporation
+is calculated using the approach of  Campbell </span><span
+lang=EN-US>(1985)</span><span lang=EN-US> assuming isothermal vapor transport. 
+Potential evaporation rate is calculated using the method of Priestly and
+Taylor (1972).  Plant water uptake is calculated using the approach of  Campbell
+</span><span
+lang=EN-US>(1985)</span><span lang=EN-US> which treats the
+soil-plant-atmosphere continuum as a resistance network.  Uptake from each
+layer is calculated using the analogue of a single cylindrical root surrounded
+by a homogeneous cylinder of soil </span><span
+lang=EN-US>(Cowan, 1965)</span><span lang=EN-US>. Partitioning of water uptake
+between layers is obtained by calculation of a xylem potential, up to a
+species-specific maximum value, required to meet daily plant water demand.  Loss
+via subsurface drainage networks is calculated using the steady-state Hooghoudt
+equation </span><span
+lang=EN-US>(Malone<i> et al.</i>, 2007)</span><span lang=EN-US>, formulated in
+a way similar to that found in DRAINMOD </span><span
+lang=EN-US>(Skaggs, 1989)</span><span lang=EN-US>.  Vertical losses from the
+soil profile are calculated depending on the chosen bottom boundary condition. 
+A zero matric potential gradient is assumed to exist below the bottom boundary
+for simulations where no water table exists within the soil profile. 
+Otherwise, ground water flow is calculated from the simulated water potential
+at the bottom boundary using a lumped parameter describing the rate of flow per
+unit potential difference to capture ground water behavior </span><span
+lang=EN-US>(Paydar<i> et al.</i>, 2005b)</span><span lang=EN-US>.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Runoff losses
+were previously calculated in SWIMv1 and SWIMv2 using detailed models of
+surface water storage and soil surface crust dynamics in response to detailed
+data on storm rainfall intensity </span><span
+lang=EN-US>(Connolly<i> et al.</i>, 2002)</span><span lang=EN-US>.  These
+approaches often required parameters and input data not available to many users. 
+SWIM3 makes use of the SCS Runoff Curve Number technique </span><span
+lang=EN-US>(Hawkins, 1996)</span><span lang=EN-US> for calculating daily runoff
+losses from more readily available daily rainfall totals.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The
+convection-dispersion equation (Eq.2) is used to calculate the fluxes of all
+solutes within the APSIM simulation (usually NO<sub>3</sub>, NH<sub>4</sub>,
+Cl, and Urea).  No interaction or competition for exchange surfaces by solutes
+is considered.  Adsorption of solute to soil surfaces is specified via a
+Freundlich isotherm and soil pore space tortuosity effects on solute diffusion
+are captured in a simple user-defined function of soil water content which can
+reproduce many of the common forms </span><span
+lang=EN-US>(Moldrup<i> et al.</i>, 2005)</span><span lang=EN-US>. </span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Simulations can be
+applied to a field, or to a section within a field, depending on the intended use
+of the model.  Field variability is captured within the lumped parameterization
+approach.  If field variability is large, separate simulations are conducted
+for the main soil types within the field and results are aggregated in an
+appropriate manner.  The timescale of an APSIM simulation generally ranges from
+a few days to over a century in duration if suitable input data, such as
+weather information, exists.  The user selects the depth of the soil profile to
+be simulated and the way in which this profile is discretized into soil layers
+for numerical solution.  Soil properties can be input at different levels of
+spatial information (detailed spatial disaggregation <i>vs</i> simple soil
+horizons) and these are mapped into the simulation layer structure by the user
+interface, ensuring conservation of mass of water and solutes, and appropriate
+interpolation of model parameters.</span></p>
+
+<h1><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>SWIM3
+Calibration and Validation</span></h1>
+
+<h2><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>SWIM3
+Calibration</span></h2>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>SWIM3 has been
+developed for use within the APSIM modeling framework and so the requirements
+for model parameterisation are set by the requirements for farming systems
+analysis.  Soil water balance is a critical component in the simulation of many
+farming systems and the functional requirements of soil water models vary.  Because
+of this, APSIM has provided both detailed (e.g. Richards’ equation) and simple
+(e.g. capacity or ‘bucket’) models to suit the various problem domains and uses
+of the model.  Detailed models rely on information on soil hydraulic
+properties, which are often determined using laboratory techniques, pedotransfer
+functions or inverse methods.   From these basic properties the hydraulic
+behavior is determined via solutions to the flow equations.  However, history
+has shown that simple soil water models are more extensively used, despite their
+shortcomings, because they are easier to parameterize and provide a much
+simpler conceptual model of soil water behavior.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Simple ‘cascading’
+water balance models, such as the Soilwat model </span><span
+lang=EN-US>(Probert<i> et al.</i>, 1998)</span><span lang=EN-US>, make use of
+well known properties of soils such as the Drained Upper Limit (DUL) or Field
+Capacity, the Lower Limit (LL) of plant water extraction, and the saturated water
+content (SAT) and saturated hydraulic conductivity (K<sub>S</sub>).  The
+difference between DUL and LL is referred to as the Plant Available Water (PAW)
+content and is a very important soil property in agronomic assessment.  The
+first advantage of this way of describing soils is that these parameters align
+very closely to the conceptual model employed by many users of farming systems
+models </span><span
+lang=EN-US>(Gardner, 1988; Dalgliesh and Foale, 1998)</span><span lang=EN-US>. 
+The second advantage is that long standing and geographically broad usage of
+these simple models provides a very large database of readily accessible soil
+data for use with these simple models.  Furthermore, options exist for deriving
+properties from simple <i>in situ</i> field measurements </span><span
+lang=EN-US>(Dalgliesh and Foale, 1998)</span><span lang=EN-US> and so many
+modelers are continually adding to the information available for future model
+users.  However, the simulation of some problem domains requires more detailed
+hydrological models to describe certain boundary conditions (e.g. fluctuating
+water tables), detailed solute fluxes (e.g. salt or nitrate leaching), complex
+flow processes (e.g. sub-surface drains), or processes occurring at much
+smaller time and spatial scales.  There is therefore an advantage to be gained
+from providing a means for farming systems modelers to use a Richards’ equation
+model within their agronomic understanding of soil function.  SWIM3 provides
+such an approach.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The values of
+SAT, DUL and LL are used to describe three points on the soil water retention
+curve, &#952;(&#968;). These three water contents are assumed to correspond to
+soil matric potentials of 1 cm, 100 cm and 15000 cm respectively, though the
+user can choose to vary the value used at DUL.  A fourth and very important
+point on the retention curve is the zero water content assumed in oven drying
+of soil samples for determination of soil water content.  The nature of the
+retention curve approaching dryness is important for simulating evaporation
+from the soil surface </span><span
+lang=EN-US>(Ross<i> et al.</i>, 1991)</span><span lang=EN-US>.  The
+corresponding matric potential for oven dry soil, assuming air of 25° C and 50%
+relative humidity, is 6.09x10<sup>6</sup> cm, though the impact of these
+assumptions is likely to be low </span><span
+lang=EN-US>(Ross<i> et al.</i>, 1991)</span><span lang=EN-US>.  Two further
+assumptions are made from general observations of soil water retention data.
+The slope of the retention curve is assumed to be zero at saturation and almost
+constant between LL and oven dry.  From these six pieces of information a
+series of monotonic cubic Hermite splines are constructed for describing the
+retention curve across the entire water range (See Appendix for more details). 
+The use of splines ensures that the retention curve exactly matches the model
+user’s specification of ranges of water contents for near saturation, plant
+available and near dry conditions.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The hydraulic
+conductivity function, K(&#952;), is inferred from the model user’s
+specification of DUL and K<sub>S</sub>.  K<sub>S</sub> describes the drainage
+rate at saturation.  By definition, DUL describes the water content at which
+drainage rate is reduced to some nominal low value, hereafter K<sub>DUL</sub>. 
+This information then provides two points on the soil hydraulic conductivity
+function with which we develop a two-region model of hydraulic conductivity
+incorporating the effect of macropores and micropores.  This approach is very
+similar to the three-region model of Poulsen<i> et al.</i></span><span
+lang=EN-US>(2002)</span><span lang=EN-US>.  Both this model, and that of
+Poulsen<i> et al.</i> </span><span
+lang=EN-US>(2002)</span><span lang=EN-US>, avoid errors caused by extrapolating
+a single function from saturation to dry soil by anchoring and interpolating
+the function at intermediate water contents using extra information.  Here, we
+assume that the conductivity function is related to the retention curve when
+the soil water content is below DUL and that the conductivity is a notional
+value of 0.1 mm d<sup>-1</sup> at DUL. A function for macropore contribution to
+K is calculated such that it is significant only above DUL, and results in
+total conductivity equaling K<sub>S</sub> at saturation.  This approach ensures
+that drainage rates approach K<sub>S</sub> at saturation and that water content
+approaches DUL after drainage </span><span
+lang=EN-US>(Gardner, 1988)</span><span lang=EN-US>. A more detailed description
+of the method is included in the Appendix.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Figure 1
+illustrates how the four moisture contents (SAT, DUL, LL, Oven Dry) are used to
+create a continuous soil water retention curve (Fig. 1a) and how the two-region
+conductivity function is constructed from the SAT-K<sub>S</sub> and DUL-K<sub>DUL</sub>
+pairs (Fig. 1b) representative of a silt-loam soil.</span></p>
+
+<p class=Figure style='line-height:normal'><img border=0 width=578 height=330
+id="Picture 1" src="../../Portals/0/Documentation/Soil/SWIM3/image003.png"> </p>
+
+<p class=FigureCaption style='line-height:normal'><span lang=EN-US>Figure 1.
+Demonstration of how basic soil properties (SAT = 0.5 cm<sup>3</sup>cm<sup>-3</sup>,
+DUL= 0.4 cm<sup>3</sup>cm<sup>-3</sup>, LL= 0.12 cm<sup>3</sup>cm<sup>-3</sup>,
+Oven Dry, K<sub>S</sub>=1000 mm d<sup>-1</sup>, K<sub>DUL</sub>=0.1 mm d<sup>-1</sup>)
+are mapped into continuous hydraulic property functions for a) water content
+and b) hydraulic conductivity. See appendix for definition of K<sub>matrix</sub>.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<h2><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Calibration
+Parameters</span></h2>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The main
+parameters used in calibrating SWIM3 are therefore SAT, DUL, LL and Ks.  Several
+methods are commonly used to determine these parameters.  SAT is often
+estimated as a fixed proportion of the total porosity of the soil calculated from
+the soil bulk density.  Bulk density is a mandatory parameter for several APSIM
+models and so it is not a data requirement particular to SWIM3.  DUL and LL are
+often determined in the field: DUL via measurement of soil water content after
+an extended period of drainage following saturation and LL after maximal
+drawdown of soil water content by plants </span><span
+lang=EN-US>(Dalgliesh and Foale, 1998)</span><span lang=EN-US>. Alternatively DUL
+and LL can be estimated from laboratory measurements of soil water content at
+100 cm and 15000 cm matric suctions respectively </span><span
+lang=EN-US>(Gardner, 1988)</span><span lang=EN-US>. Finally, SAT, DUL and LL
+can all be estimated from regular observations of soil water content including
+periods of wetting up and drainage, and periods of drying down by plants.  Soil
+water content will often vary between SAT and DUL during periods of frequent
+rewetting, and decrease to LL during periods of high crop water use and minimal
+water input.  In cases where long term information on soil water variation is
+available, rapid estimates of soil hydraulic properties can be obtained from
+direct interpretation of soil behavior.  This approach will be demonstrated in
+the two case studies below.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The saturated
+conductivity of the soil, K<sub>S</sub>, can be estimated from infiltration
+studies, laboratory measurements or relationships based on soil texture.  As
+stated above, the method used to derive the conductivity function within SWIM3
+removes some of the sensitivity of the model to errors in estimates of K<sub>S</sub>
+by anchoring the conductivity curve at DUL.  The model will still be sensitive
+to estimated K<sub>S</sub> values near saturation and so the parameter will be
+important under situations of high water input.  Under dry land conditions,
+parameters for soil water holding capacity are likely to be more important.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The following
+remaining parameters are of some importance.  The runoff curve number </span><span
+lang=EN-US>(Hawkins, 1996)</span><span lang=EN-US>, used in partitioning
+rainfall between infiltration and runoff, is usually derived from guidelines
+based on soil texture and soil surface characteristics </span><span
+lang=EN-US>(Ringrose-Voase<i> et al.</i>, 2003)</span><span lang=EN-US>.  Many
+of the parameters for the convection-dispersion equation are taken from the
+literature or physical tables and so are available as default values for the
+user.  Defaults are also provided for parameters used in the numerical solution
+of Richards’ equation.  These include error tolerances, limits for the
+magnitude in iterative increments, space weighting factors and user selections
+for handling numerical dispersion and oscillations.  In most cases the
+recommended default values can be adopted by the model users.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>It should be
+noted that a great number of other parameters are required by other models
+within an APSIM simulation.  These are outside the scope of this paper. 
+However, the reader can refer to other publications for information on
+parameters for crop growth </span><span
+lang=EN-US>(Robertson<i> et al.</i>, 2002; Wang<i> et al.</i>, 2002)</span><span
+lang=EN-US>,  soil organic matter and nutrient dynamics </span><span
+lang=EN-US>(Probert<i> et al.</i>, 1998; Huth<i> et al.</i>, 2010)</span><span
+lang=EN-US>, rules for agronomic management </span><span
+lang=EN-US>(Keating<i> et al.</i>, 2003)</span><span lang=EN-US> and various climatic
+data (Jeffrey <i>et al.</i>, 2001).  </span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<h1><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Discussion</span></h1>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The strength in
+SWIM3 comes from the mechanistic numerical model based on solutions of the 1-dimensional
+Richards’ and Convection-Dispersion equations.  The main advantages of SWIM3 over
+the early versions of the model come from its implementation within the APSIM
+framework.  The large number of crop and soil modules available to the user
+allows the SWIM water balance to be used in model applications across a wide
+range of problem domains.  These benefits have been used in many previous
+studies using the earlier APSIM-SWIM model as mentioned in the introduction to
+this paper.  However, this new implementation of the SWIM model brings with it
+new benefits arising from the approach used for soil parameterization.  SWIM3
+can now be parameterized using fairly simple measures of soil attributes for
+which formalized techniques are readily available </span><span
+lang=EN-US>(Dalgliesh and Foale, 1998)</span><span lang=EN-US>.  These
+attributes, which describe the plant available water holding capacity of a
+soil, are also very important determinants of the productivity of a soil,
+especially for dry land farming systems </span><span
+lang=EN-US>(Dalgliesh and Foale, 1998)</span><span lang=EN-US>.  It is
+therefore logical that these parameters will also be very important
+determinants of modeled crop production.  Previous studies have shown that
+grain yield changes in response to water supply by an average 20 kg ha<sup>-1</sup>
+mm <sup>-1</sup> for wheat in southern Australia (French and Schultz, 1984). 
+Responses from crop models are likely to be comparable and so errors in
+predictions of soil water supply will likely cause significant errors in crop
+production.  However, parameterization of SWIM3 directly from data on plant
+available water contents provides the user with close control of modeled water
+balance and the resulting crop production.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>As has been
+shown in this paper, the model can also be very easily parameterized from very
+simple data on soil water behavior such as observed ranges in soil water
+content.  These approaches have been used with simple ‘cascading’ water balance
+models such as SoilWat </span><span
+lang=EN-US>(Probert<i> et al.</i>, 1998)</span><span lang=EN-US> in APSIM.  In
+this case, we use this same approach of parameterization from simple observations
+of soil water behavior but combine this with a more robust physically-based numerical
+model.  One consequence of this approach is a reduced number of soil parameters
+to that required by the cascading water balance for some soil processes.  For
+example, two parameters used in Soilwat to describe evaporation, two for
+unsaturated flow, and one for near-saturated water flow are not required when
+we parameterize SWIM3 from the same basic field observations because these processes
+are now captured by the solution of Richards’ equation.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>One weakness of
+SWIM3 when compared to the simpler soil water balance models is the increased
+execution time required for the iterative solution of a series of highly
+non-linear differential equations.  In many applications this computation
+overhead is of little consequence and the benefit of the extra model
+capabilities outweighs this cost.  However, this will be a limitation to its
+use for large scale spatial analyses or large suites of long term simulations,
+as is increasingly required of modern farming systems models.  Solutions to this
+constraint are available (Ross, 2011) and will be explored for a future release
+of the model.  A second weakness of the model is the lack of any consideration
+of the impact of soil chemistry on soil hydraulic properties.  Chemical impacts
+on hydraulic properties, as is the case in sodic subsoils, are captured using
+empirical relationships in simple water balance models (Hochman <i>et al.</i>,
+2007).  The effects of soil chemistry on the assumptions used in describing
+soil hydraulic properties in SWIM3 will be considered in future work.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>This paper also highlights
+the issues in model parameterization.  While there is much value in efforts to
+provide laboratory measurement or numerical optimization of soil hydraulic
+properties, we have demonstrated that simple logic applied to soil water behavior
+can be used in a similar way.  Soil properties can be deduced from soil behavior. 
+Both approaches, measurement or rational deduction, are valid (Williams et al.,
+1991).  A soil’s water content after drainage, and its plant available water
+holding capacity, are often consistent and well understood emergent properties
+of a soil and so model parameterization should take these into account in a
+simple but meaningful way.  The method employed in this model, and the case
+studies shown above, provides such a framework.</span></p>
+
+<h1><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Future
+Developments</span></h1>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Future
+development of SWIM3 will address the deficiencies identified above to provide
+increased numerical efficiency and the effect of soil chemistry on soil
+hydraulic processes.  There are also efforts underway to allow rapid laboratory
+or field measurements to further inform model parameterization using
+commercially available apparatus.  Modelers interested in assisting further
+development of SWIM3 can do so via contacting the authors or involvement in the
+APSIM Community Source Framework (www.apsim.info).</span></p>
+
+<h2><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Acknowledgements</span></h2>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>Peter Ross
+provided much of the specialist design of the numerical methods used in SWIMv2
+and hence SWIM3.  </span></p>
+
+<p class=RefTitle><span lang=EN-US style='font-variant:normal !important;
+text-transform:uppercase'>References</span></p>
+
+<p class=RefListing style='margin-left:36.0pt;text-indent:-36.0pt;line-height:
+normal'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Campbell, G.S.
+1985<i>. Soil Physics with BASIC</i>. New York, USA: Elsevier.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Connolly, R.D.,
+M. Bell, N. Huth, D.M. Freebairn, and G. Thomas. 2002. Simulating infiltration
+and the water balance in cropping systems with APSIM-SWIM. <i>Australian
+Journal of Soil Research</i> 40:221-242.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Cowan, I.R.
+1965. Transport of water in the soil-plant-atmosphere system. <i>Journal of
+Applied Ecology</i> 2:221-239.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Dalgliesh, N.P.
+and M.A. Foale. 1998. <i>Soil Matters – monitoring soil water and nitrogen in
+dryland farming</i>. Toowoomba, Australia: Agricultural Production Systems
+Research Unit.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Fritsch, F.N.,
+Carlson, R.E. 1980. Monotone piecewise cubic interpolation.  <i>Siam Journal on
+Numerical Analysis</i> 17: 238-246.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Gardner, E.A.
+1988. Soil Water. In <i>Understanding soils and soils data,</i> 153-186. I.F. Fergus
+ed., Brisbane, Queensland : Australian Society of Soil Science Inc.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Hawkins, R.H.
+1996. Runoff Curve Number: Has It Reached Maturity? <i>Journal of hydrologic
+engineering</i> 1:11-19.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Hochman, Z., Y.P.
+Dang, G.D. Schwenke, N.P. Dalgliesh, R. Routley, M. McDonald, I.G. Daniells, W.
+Manning and  P.L. Poulton. 2007. Simulating the effects of saline and sodic
+subsoils on wheat crops growing on Vertosols. <i>Australian Journal of
+Agricultural Research</i> 58: 802-810.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Huth, N.I., B.A.
+Keating, K.L. Bristow, K. Verburg, and P.J. Ross. 1996. SWIMv2 in APSIM: An
+integrated plant, soil water and solute modelling framework. <i>Proc. 8th Aust.
+Agron. Conf.</i>, p. 667. Toowoomba, Australia: Australian Agronomy Society.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Keating, B.A., P.S.
+Carberry, G.L. Hammer, M.E. Probert, M.J. Robertson, D. Holzworth, N.I. Huth, J.N.G.
+Hargreaves, H. Meinke, Z. Hochman, G. McLean, K. Verburg, V. Snow, J.P. Dimes, M.
+Silburn, E. Wang,  S. Brown, K.L. Bristow, S. Asseng, S. Chapman, R.L. McCown, D.M.
+Freebairn and  C.J.Smith.  2003. An overview of APSIM, a model designed for
+farming systems simulation. <i>European Journal of Agronomy</i> 18: 267-288.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Malone, R.W., N.
+Huth, P.S. Carberry, L. Ma, T.C. Kaspar, D.L. Karlen, T. Meade, R.S. Kanwar, and
+P. Heilman. 2007. Evaluating and predicting agricultural management effects
+under tile drainage using modified APSIM. <i>Geoderma</i> 140: 310-322.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Moldrup, P., T.
+Olesen, S. Yoshikawa, T. Komatsu, A.M. McDonald and D.E. Rolston.  2005.
+Predictive-descriptive models for gas and solute diffusion coefficients in
+variably saturated porous media coupled to pore-size distribution: III.
+Inactive pore space interpretations of gas diffusivity. <i>Soil Science</i> 170:
+867-880.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Moore, A.D., D.P.
+Holzworth, N.I. Herrmann, N.I. Huth and M.J. Robertson. 2007. The Common
+Modelling Protocol: A hierarchical framework for simulation of agricultural and
+environmental systems. <i>Agricultural Systems</i> 95: 37-48.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Mualem, Y.
+1976. New model for predicting hydraulic conductivity of unsaturated porous
+media. <i>Water Resources Research </i>12: 513-522.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Paydar, Z., N. Huth,
+and V. Snow. 2005b. Modelling irrigated Eucalyptus for salinity control on
+shallow watertables. <i>Australian Journal of Soil Research</i> 43:587-597.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Poulsen, T.G., P.
+Moldrup, B.V.  Iversen, and O.H. Jacobsen. 2002. Three-region Campbell model
+for unsaturated hydraulic conductivity in undisturbed soils. <i>Soil Science
+Society of America Journal</i> 66:744-752.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Priestley,
+C.H.B. and R. J. Taylor, 1972. On the assessment of surface heat flux and
+evaporation using large scale parameters. <i>Monthly Weather Review</i> 100:
+81-92.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Probert, M.E., J.P.
+Dimes, B.A. Keating, R.C. Dalal and W.M. Strong. 1998. APSIM's water and
+nitrogen modules and simulation of the dynamics of water and nitrogen in fallow
+systems. <i>Agricultural Systems</i> 56:1-18.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Richards, L.A.
+1931. Capillary conduction of liquids through porous mediums. <i>Physics-a
+Journal of General and Applied Physics</i> 1: 318-333.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Ross, P.J.
+1990a. Efficient numerical methods for infiltration using Richards equation. <i>Water
+Resources Research</i> 26:279-290.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Ross, P.J.
+1990b<i>. SWIM - A simulation model for soil water infiltration and movement.
+Reference manual to SWIMv1. </i>Canberra, Australia: CSIRO Division of Soils.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Ross, P.J.
+1992. Cubic approximation of hydraulic properties for simulations of
+unsaturated flow. <i>Water Resources Research</i> 28:2617-2620.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Ross, P.J.
+2011. Numerical Solution of the Continuity Equation for Soil Water Flow Using
+Precomputed Steady-State Fluxes. <i>Vadose Zone Journal</i> 10:760-766.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Ross, P.J. and
+K.R.J. Smettem. 1993. Describing soil hydraulic properties with sums of simple
+functions. <i>Soil Science Society of America Journal</i> 57:26-29.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Ross, P.J., J. Williams
+and K.L. Bristow. 1991. Equation for extending water-retension curves to
+dryness. <i>Soil Science Society of America Journal</i> 55: 923-927.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Skaggs, R.
+1989. <i>DRAINMOD user's manual. Interim Technical Release</i>. Raleigh, NC: Biological
+and Agricultural Engineering Department, North Carolina State University.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Snow, V.O., D.J.
+Houlbrooke and N.I. Huth. 2007. Predicting soil water, tile drainage, and
+runoff in a mole-tile drained soil. <i>New Zealand Journal of Agricultural
+Research</i> 50:13-24.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>Verburg, K., P.J.
+Ross and K.L. Bristow 1996b. SWIM V2.1 User Manual: Divisional Report No. 130. Canberra,
+Australia: CSIRO Division of Soils.</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<span lang=EN-US style='font-size:10.0pt;font-family:"Times New Roman","serif";
+color:red'><br clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='text-indent:0cm;line-height:normal'><span lang=EN-US
+style='color:red'>&nbsp;</span></p>
+
+<p class=RefListing style='line-height:normal'><span lang=EN-US
+style='color:red'>&nbsp;</span></p>
+
+<p class=Appendix><span lang=EN-US style='font-variant:normal !important;
+text-transform:uppercase'>Appendix</span></p>
+
+<h2><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Describing
+The Soil Water Retention Curve using Hermite Splines</span></h2>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>SWIM3 uses a
+series of monotonic cubic Hermite splines </span><span
+lang=EN-US>(Fritsch and Carlson, 1980)</span><span lang=EN-US> to describe the
+soil water retention curve.  Values for &#952; are interpolated between the
+four points for 1) Saturation, 2) Drained Upper Limit, 3) Lower Limit, and 4)
+Oven Dry.  The method is as follows:</span></p>
+
+<p class=MsoListParagraph style='margin-left:48.0pt;text-indent:-36.0pt;
+line-height:normal'><span lang=EN-US>i)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Calculate the slope of the secant lines between
+each successive point.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=135 height=49 src="../../Portals/0/Documentation/Soil/SWIM3/image004.png"></span></p>
+
+<p class=MsoListParagraph style='margin-left:48.0pt;text-indent:-36.0pt;
+line-height:normal'><span lang=EN-US>ii)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Calculate the slope at each successive point as
+the average of the secants either side of this point.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=266 height=46 src="../../Portals/0/Documentation/Soil/SWIM3/image005.png"></span></p>
+
+<p class=MsoListParagraph style='margin-left:48.0pt;text-indent:-36.0pt;
+line-height:normal'><span lang=EN-US>iii)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>The resultant cubic spline will not be monotonic
+if either of the following is true</span></p>
+
+<p class=MsoNormal style='text-indent:0cm;line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=156 height=46 src="../../Portals/0/Documentation/Soil/SWIM3/image006.png"></span></p>
+
+<p class=MsoNormal style='text-indent:36.0pt;line-height:normal'><span
+lang=EN-US>If so set</span></p>
+
+<p class=MsoNormal style='text-indent:0cm;line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=154 height=31 src="../../Portals/0/Documentation/Soil/SWIM3/image007.png"></span></p>
+
+<p class=MsoNormal style='text-indent:36.0pt;line-height:normal'><span
+lang=EN-US>Where</span></p>
+
+<p class=MsoNormal style='text-indent:0cm;line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=82 height=52 src="../../Portals/0/Documentation/Soil/SWIM3/image008.png"></span></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-left:48.0pt;text-indent:-36.0pt;
+line-height:normal'><span lang=EN-US>iv)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Interpolate the value of &#952; following the
+standard method for evaluating a cubic Hermite spline for the relevant region between
+&#968;<sub>i</sub> and &#968;<sub>i+1</sub> within the interpolation set.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:48.0pt;text-indent:0cm;
+line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:48.0pt;text-indent:0cm;
+line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=333 height=31 src="../../Portals/0/Documentation/Soil/SWIM3/image009.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:48.0pt;text-indent:0cm;
+line-height:normal'><span lang=EN-US>Where</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:48.0pt;text-indent:0cm;
+line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=227 height=46 src="../../Portals/0/Documentation/Soil/SWIM3/image010.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:48.0pt;text-indent:0cm;
+line-height:normal'><span lang=EN-US>and the basis functions for the cubic
+Hermite spline are:</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-left:48.0pt;text-indent:0cm;
+line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=417 height=31 src="../../Portals/0/Documentation/Soil/SWIM3/image011.png"></span></p>
+
+<span lang=EN-US style='font-size:10.0pt;font-family:"Times New Roman","serif"'><br
+clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal style='text-indent:0cm;line-height:normal'><b><span
+lang=EN-US style='text-transform:uppercase'>&nbsp;</span></b></p>
+
+<h2><span lang=EN-US style='font-variant:normal !important;text-transform:uppercase'>Describing
+Hydraulic Conductivity from Basic Drainage Information</span></h2>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>SWIM3 describes
+hydraulic conductivity as the sum of two functions describing the conductivity
+of the soil matrix and macropores </span><span
+lang=EN-US>(Ross and Smettem, 1993)</span><span lang=EN-US>.  The function for the
+soil matrix is related to the shape of the soil water retention curve </span><span
+lang=EN-US>(Mualem, 1976)</span><span lang=EN-US> as expressed by Campbell </span><span
+lang=EN-US>(1985)</span><span lang=EN-US>.  A simple power function is used for
+the contribution of macropores.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=263 height=52 src="../../Portals/0/Documentation/Soil/SWIM3/image012.png"></span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>where</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=99 height=75 src="../../Portals/0/Documentation/Soil/SWIM3/image013.png"></span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The contribution
+of the micropore component is calculated from the assumption that the
+conductivity at DUL (K<sub>DUL</sub>) is almost entirely due to the soil matrix. 
+Thus, the conductivity of the soil matrix component at saturation is</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=122 height=65 src="../../Portals/0/Documentation/Soil/SWIM3/image014.png"></span></p>
+
+<p class=MsoNormal style='line-height:normal'><span lang=EN-US>The value of P
+is calculated using the assumption that, at the drained upper limit, the
+conductivity of the macropores is negligible.  A value of P is therefore
+determined such that the conductivity of the macropores at DUL contributes only
+1% of the overall value of K<sub>DUL</sub>.</span></p>
+
+<p class=MsoNormal style='line-height:normal'><span
+lang=EN-US style='font-size:10.0pt;line-height:200%;font-family:"Times New Roman","serif"'><img
+width=135 height=75 src="../../Portals/0/Documentation/Soil/SWIM3/image015.png"></span></p>
+
+<p class=MsoNormal style='text-indent:0cm;line-height:normal'><span lang=EN-US>&nbsp;</span></p>
+
+</div>	
+<br clear="all" style="page-break-before: always;" />
+</div>
+
+</div><!-- End_Module_528 --></div></div></div></div>
+            
+            	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td id="dnn_MenuPane" width="20%" valign="top" class="MenuPane DNNEmptyPane"></td>
+
+						<td id="dnn_LeftPane" width="50%" valign="top" class="LeftPane DNNEmptyPane"></td>
+
+						<td id="dnn_CenterPane" valign="top" class="CenterPane DNNEmptyPane"></td>
+
+						<td id="dnn_RightPane" width="50%" valign="top" class="RightPane DNNEmptyPane"></td>
+
+					</tr>
+				</table>
+		    
+		    <div id="dnn_BottomPane" class="DNNEmptyPane"></div>
+        </div>
+    </div>
+    </div> 
+	<div id="Footer">
+    	<div class="container">        
+			<div id="dnn_FooterPane" class="DNNEmptyPane"></div>
+			<div class="clearboth">
+			</div>
+    	</div>
+    </div>
+</div>
+
+
+
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop" />
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`SearchIconWebUrl`:`url(/icons/sigma/GoogleSearch_16X16_Standard.png)`,`SearchIconSiteUrl`:`url(/icons/sigma/DnnSearch_16X16_Standard.png)`,`SearchIconSelected`:`S`}" />
+        
+    
+</form>
+    
+    
+</body>
+
+<!-- Mirrored from www.apsim.info/Documentation/Model,CropandSoil/SoilModulesDocumentation/Irrigation.aspx by HTTrack Website Copier/3.x [XR&CO'2013], Tue, 18 Mar 2014 02:13:14 GMT -->
+</html>

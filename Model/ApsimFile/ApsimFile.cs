@@ -238,8 +238,9 @@ namespace ApsimFile
             RootComponent.Write(RootNode);
             try { doc.Save(FileName); } //Win 7 - do not allow saving to Program Files directory
             catch (Exception e) 
-            { 
-                System.Windows.Forms.MessageBox.Show("Error: " + e.Message + " Try saving in a different location."); 
+            {
+                if (!FileName.Contains("UserInterface")) //do not try to save files in UserInterface directory as it's write protected in the default install (old versions of APSIM toolboxes will try to do this).
+                    System.Windows.Forms.MessageBox.Show("Error: " + e.Message + " Try saving in a different location.");
                 return false; 
             }
             Dirty = true;
