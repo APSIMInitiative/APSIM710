@@ -7,6 +7,8 @@
 #include <stdint.h>
 #include <stdexcept>
 
+#include <boost/lexical_cast.hpp>
+
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/FortranString.h>
 
@@ -192,19 +194,15 @@ inline void pack(MessageData& messageData, const std::string& value)
 inline std::string DDML(const std::string& value)
    {return "<type kind=\"string\"/>";}
 inline void Convert(bool source, std::string& dest)  {if (source) dest = "1"; else dest = "0"; }
-inline void Convert(int source, std::string& dest)   {dest = itoa(source);}
+inline void Convert(int source, std::string& dest)   {dest = boost::lexical_cast<std::string>(source);}
 inline void Convert(const std::string& source, std::string& dest) {dest = source;}
 inline void Convert(float source, std::string& dest)
    {
-   char st[100];
-   sprintf(st, "%f", source);
-   dest = st;
+   dest = boost::lexical_cast<std::string>(source);
    }
 inline void Convert(double source, std::string& dest)
    {
-   char st[100];
-   sprintf(st, "%f", source);
-   dest = st;
+   dest = boost::lexical_cast<std::string>(source);
    }
 
 // ------ std::vector ------
