@@ -34,11 +34,11 @@
     <SoilNitrogen>
       <!-- Values typically read from soil's interface  -->
       <soiltype> default </soiltype>
-      <root_cn> 30 </root_cn>
+      <!-- <root_cn> 30 </root_cn>
       <root_wt> 0.0 </root_wt>
       <soil_cn> 12.0 </soil_cn>
       <enr_a_coeff> 7.4 </enr_a_coeff>
-      <enr_b_coeff> 0.2 </enr_b_coeff>
+      <enr_b_coeff> 0.2 </enr_b_coeff>  -->
       <oc> 3.0  1.0 </oc>
       <ph> 6.0  6.0 </ph>
       <fbiom> 0.05  0.01 </fbiom>
@@ -46,16 +46,38 @@
       <no3ppm> 5.0  2.0 </no3ppm>
       <nh4ppm> 1.0  0.5 </nh4ppm>
 
+      <!-- additions by RCichota - temporary? -->
+      <useNewFunctions description="whether the new set of functions will be used (include processes and factors)"> no </useNewFunctions>
 
       <!-- General setting parameters -->
-      <profile_reduction> off </profile_reduction>
-      <fom_min description="minimum allowable FOM (kg/ha)"> 0.5 </fom_min>
+      <SoilParamSet description="the parameter set used to initialise SoilNitrogen"> standard </SoilParamSet>
+      <allowSimpleSoilTemp description="whether internal soilTemp can be used, otherwise the SoilTemp has to be present"> yes </allowSimpleSoilTemp>
+      <profile_reduction description="whether soil profile reduction is on or off"> off </profile_reduction>
+      <use_organic_solutes description="whether organic solute are on or off"> off </use_organic_solutes>
+      <ureappm_min description="minimum allowable urea content (ppm)"> 0.0 </ureappm_min>
       <nh4ppm_min description="minimum allowable NH4 (ppm)"> 0.0 </nh4ppm_min>
       <no3ppm_min description="minimum allowable NO3 (ppm)"> 0.0 </no3ppm_min>
+      <fom_min description="minimum allowable FOM (kg/ha)"> 0.5 </fom_min>
+      <OC2OM_factor description="factor to convert organic carbon to organic matter"> 1.7 </OC2OM_factor>
+      <C_in_FOM description="Carbon weight fraction in FOM (0-1)"> 0.40 </C_in_FOM>
+      <defaultInipH description="Default initial ph, used case no pH is initialised in model"> 6.0 </defaultInipH>
+      <WarningNegativeThreshold description="threshold for raising a warning for negative concentrations"> -0.000000001 </WarningNegativeThreshold>
+      <FatalNegativeThreshold description="threshold for a fatal error for negative concentrations (ppm)"> -0.000001 </FatalNegativeThreshold>
+
+      <!-- Parameters for handling soil loss process -->
+      <enr_a_coeff description="coefficient A for erosion enrichment function">7.4</enr_a_coeff>
+      <enr_b_coeff description="coefficient B for erosion enrichment function">0.2</enr_b_coeff>
+
       <!-- Parameters for setting soil organic matter -->
-      <oc2om_factor description="factor to convert organic carbon to organic matter">1.7  </oc2om_factor>
       <mcn description="C:N ratio of microbes ()"> 8.0 </mcn>
-      <fom_type>
+      <soil_cn description="C:N ratio of soil humus"> 12.5 </soil_cn>
+
+      <!-- Parameters for setting fresh organic matter (FOM) -->
+      <root_cn description="C:N ratio of soil fresh organic matter"> 30 </root_cn>
+      <root_wt description="Amount of fresh organic matter in the soil (kgDM/ha)"> 1000 </root_wt>
+      <root_deth description="Depth for distributing fom in the soil (mm), if -ve will use soil depth"> 1000 </root_deth>
+      <root_dist_coeff description="Coeff. used for distributing fom in the soil"> 3.0 </root_dist_coeff>
+      <fom_type description="List of fom types available">
         <string>default</string>
         <string>manure</string>
         <string>mucuna</string>
@@ -87,12 +109,14 @@
         <double>0.08</double>
         <double>0.9</double>
       </fract_lign>
+
       <!-- Parameters for FOM and SurfOM mineralisation process -->
       <!-- For Surface OM -->
       <ef_res description="fraction of residue C mineralized retained in system (0-1)"> 0.4 </ef_res>
       <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)"> 0.9 </fr_res_biom>
-      <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)"> 100 </min_depth>
+      <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)"> 100.0 </min_depth>
       <!-- For fresh OM -->
+      <!-- Old parameters -->
       <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">
         <double>0.2</double>
         <double>0.1</double>
@@ -107,12 +131,41 @@
       </rd_lign>
       <ef_fom description="fraction of FOM C mineralized retained in system (0-1)"> 0.4 </ef_fom>
       <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)"> 0.9 </fr_fom_biom>
-      <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
-      <cnrf_optcn description="C:N above which decomposition rate of FOM declines"> 25 </cnrf_optcn>
+      <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM"> 0.693 </cnrf_coeff>
+      <cnrf_optcn description="C:N above which decomposition rate of FOM declines"> 25.0 </cnrf_optcn>
+      <!-- New parameters -->
+      <stf_DecompFOM_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic conditions)">
+        <double>32.0</double>
+        <double>32.0</double>
+      </stf_DecompFOM_Topt>
+      <stf_DecompFOM_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.0</double>
+        <double>0.0</double>
+      </stf_DecompFOM_FctrZero>
+      <stf_DecompFOM_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic conditions)">
+        <double>2.0</double>
+        <double>2.0</double>
+      </stf_DecompFOM_CvExp>
+      <swf_DecompFOM_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.5</double>
+        <double>2.0</double>
+        <double>3.0</double>
+      </swf_DecompFOM_swx>
+      <swf_DecompFOM_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.5</double>
+      </swf_DecompFOM_y>
+
       <!-- Parameters for SOM mineralisation/immobilisation process -->
+      <!-- dsg 200509 ****** the following constants are for (a) aerobic AND (b)anaerobic conditions ***** -->
       <rd_biom description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
         <double>0.0081</double>
-        <double>0.0040</double>
+        <double>0.004</double>
       </rd_biom>
       <ef_biom description="fraction of biomass C mineralized retained in system (0-1)"> 0.4 </ef_biom>
       <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)"> 0.6 </fr_biom_biom>
@@ -121,26 +174,11 @@
         <double>0.00007</double>
       </rd_hum>
       <ef_hum description="fraction of humic C mineralized retained in system (0-1)"> 0.4 </ef_hum>
-      <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (oC)">
+      <!-- Old parameters -->
+      <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (aerobic and anaerobic)">
         <double>32.0</double>
         <double>32.0</double>
       </opt_temp>
-      <!--
-                   ______________________________________________________________________-
-                   Specifying the water factor for Nitrogen Transformations is
-                   by referring to water content via an indexing system and linear interpolation
-                   between specified coordinates.
-                   (see example)
-
-                     1.0 |     _______
-                         |    /.      \                In this example
-                     0.5 |   / .       \               wf_index = 0.0 0.5 1.0 2.0
-                         |  /  .        \              wf_values= 0.0 1.0 1.0 0.25
-                         | /   .         .
-                     0.0 |/____._________._____
-                         LL   DUL       SAT
-                         =0   =1        =2
-    -->
       <wfmin_index description="index specifying water content for water factor for mineralization">
         <double>0.0</double>
         <double>0.5</double>
@@ -153,12 +191,90 @@
         <double>1.0</double>
         <double>0.5</double>
       </wfmin_values>
+      <!--
+                   ______________________________________________________________________-
+                   Specifying the water factor for Nitrogen Transformations is
+                   by referring to water content via an indexing system and linear interpolation
+                   between specified coordinates.
+                   (see example)
+
+                     1.0 |     ______
+                         |    /.     \                In this example
+                     0.5 |   / .      \               wf_index = 0.0 0.5 1.0 2.0
+                         |  /  .       \              wf_values= 0.0 1.0 1.0 0.25
+                         | /   .        \
+                     0.0 |/______________\_____
+                         LL   DUL       SAT
+                         =0   =1        =2
+                     -->
+      <!-- New parameters -->
+      <stf_MinerSOM_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic conditions)">
+        <double>32.0</double>
+        <double>32.0</double>
+      </stf_MinerSOM_Topt>
+      <stf_MinerSOM_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.0</double>
+        <double>0.0</double>
+      </stf_MinerSOM_FctrZero>
+      <stf_MinerSOM_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic conditions)">
+        <double>2.0</double>
+        <double>2.0</double>
+      </stf_MinerSOM_CvExp>
+      <swf_MinerSOM_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.5</double>
+        <double>2.0</double>
+        <double>3.0</double>
+      </swf_MinerSOM_swx>
+      <swf_MinerSOM_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.5</double>
+      </swf_MinerSOM_y>
+
+      <!-- Parameters for urea hydrolysis -->
+      <stf_Hydrol_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic)">
+        <double>32.0</double>
+        <double>32.0</double>
+      </stf_Hydrol_Topt>
+      <stf_Hydrol_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.20</double>
+        <double>0.20</double>
+      </stf_Hydrol_FctrZero>
+      <stf_Hydrol_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+        <double>1.0</double>
+        <double>1.0</double>
+      </stf_Hydrol_CvExp>
+      <swf_Hydrol_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.4</double>
+        <double>2.4</double>
+        <double>3.0</double>
+      </swf_Hydrol_swx>
+      <swf_Hydrol_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.2</double>
+        <double>0.2</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.7</double>
+      </swf_Hydrol_y>
+      <potHydrol_min description="minimum potential hydrolysis rate for urea (/day)"> 0.25 </potHydrol_min>
+      <potHydrol_parmA description="parameter A for potential urea hydrolysis function"> -1.12 </potHydrol_parmA>
+      <potHydrol_parmB description="parameter B for potential urea hydrolysis function"> 1.31 </potHydrol_parmB>
+      <potHydrol_parmC description="parameter C for potential urea hydrolysis function"> 0.203 </potHydrol_parmC>
+      <potHydrol_parmD description="parameter D for potential urea hydrolysis function"> -0.155 </potHydrol_parmD>
+
       <!-- Parameters for nitrification -->
-      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)"> 40 </nitrification_pot>
-      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menten kinetics)"> 90 </nh4_at_half_pot>
+      <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)"> 40.0 </nitrification_pot>
+      <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menten kinetics)"> 90.0 </nh4_at_half_pot>
+      <!-- Old parameters -->
       <wfnit_index description="index specifying water content for water factor for nitrification">
         <double>0.0</double>
-        <double>.25</double>
+        <double>0.25</double>
         <double>1.0</double>
         <double>2.0</double>
       </wfnit_index>
@@ -180,10 +296,56 @@
         <double>1.0</double>
         <double>0.0</double>
       </pHf_nit_values>
+      <!-- New parameters -->
+      <stf_Nitrif_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic)">
+        <double>32.0</double>
+        <double>32.0</double>
+      </stf_Nitrif_Topt>
+      <stf_Nitrif_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.00</double>
+        <double>0.00</double>
+      </stf_Nitrif_FctrZero>
+      <stf_Nitrif_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+        <double>2.0</double>
+        <double>2.0</double>
+      </stf_Nitrif_CvExp>
+      <swf_Nitrif_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.25</double>
+        <double>2.0</double>
+        <double>3.0</double>
+      </swf_Nitrif_swx>
+      <swf_Nitrif_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+      </swf_Nitrif_y>
+      <phf_Nitrif_phx description="parameters for pH factor, values of soil ph (0-14)">
+        <double>0.0</double>
+        <double>4.5</double>
+        <double>6.0</double>
+        <double>8.0</double>
+        <double>9.0</double>
+        <double>14.0</double>
+      </phf_Nitrif_phx>
+      <phf_Nitrif_y description="parameters for pH factor, values of pH factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+        <double>0.0</double>
+      </phf_Nitrif_y>
+
       <!-- Parameters for denitrification -->
       <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)"> 0.0006 </dnit_rate_coeff>
+      <dnit_nitrf_loss description="Fraction of nitrification lost as denitrification"> 0.0 </dnit_nitrf_loss>
+      <dnit_k1 description="K1 parameter from Thorburn et al (2010) for N2O model"> 25.1 </dnit_k1>
+      <!-- Old parameters -->
       <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P"> 1.0 </dnit_wf_power>
-      <dnit_k1 description="K1 parameter from Thorburn et al(2010) for N2O model"> 25.1 </dnit_k1>
       <dnit_wfps description="WFPS for calculating n2o fraction of denitrification">
         <double>21.33333</double>
         <double>100.0</double>
@@ -192,9 +354,45 @@
         <double>0.0</double>
         <double>1.18</double>
       </dnit_n2o_factor>
-      <dnit_nitrf_loss description="Fraction of nitrification lost as denitrification"> 0.0 </dnit_nitrf_loss>
-
-      <!-- dsg 200509 ****** the parameters for decomposition rate (rd...) are for (a) aerobic AND (b)anaerobic conditions ***** -->
+      <!-- New parameters -->
+      <actC_parmA description="parameter A to compute active carbon"> 24.5 </actC_parmA>
+      <actC_parmB description="parameter B to compute active carbon"> 0.0031 </actC_parmB>
+      <stf_dnit_Topt description="parameter for the temperature factor, optimum temperature (aerobic and anaerobic)">
+        <double>50.056</double>
+        <double>50.0056</double>
+      </stf_dnit_Topt>
+      <stf_dnit_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.10</double>
+        <double>0.10</double>
+      </stf_dnit_FctrZero>
+      <stf_dnit_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+        <double>68350.0</double>
+        <double>68350.0</double>
+      </stf_dnit_CvExp>
+      <swf_dnit_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>2.0</double>
+        <double>3.0</double>
+      </swf_dnit_swx>
+      <swf_dnit_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+      </swf_dnit_y>
+      <N2N2O_parmA description="parameter A in the equation computing the N2:N2O ratio"> 0.16 </N2N2O_parmA>
+      <N2N2O_parmB description="parameter B in the equation computing the N2:N2O ratio"> -0.80 </N2N2O_parmB>
+      <swpsf_dnit_swpx description="parameters for WFPS factor to compute N2:N2O ratio, values of water filled pore space (%)">
+        <double>0.0</double>
+        <double>28.0</double>
+        <double>88.0</double>
+        <double>100.0</double>
+      </swpsf_dnit_swpx>
+      <swpsf_dnit_y description="parameters for WFPS factor to compute N2:N2O ratio, values of WFPS factor corresponding to x (0-1)">
+        <double>0.1</double>
+        <double>0.1</double>
+        <double>1.0</double>
+        <double>1.18</double>
+      </swpsf_dnit_y>
     </SoilNitrogen>
   </Model>
 </Type>
