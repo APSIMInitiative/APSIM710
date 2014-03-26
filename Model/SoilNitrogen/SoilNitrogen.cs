@@ -34,7 +34,7 @@ public partial class SoilNitrogen
     /// Event to communicate other modules that solutes have been added to the simulation (owned by SoilNitrogen)
     /// </summary>
     [Event]
-    public event NewSoluteDelegate NewSolute;
+    public event NewSoluteDelegate new_solute;
 
     /// <summary>
     /// Event to comunicate other modules (SurfaceOM) that residues have been decomposed
@@ -442,7 +442,7 @@ public partial class SoilNitrogen
     private void AdvertiseMySolutes()
     {
 
-        if (NewSolute != null)
+        if (new_solute != null)
         {
             string[] solute_names;
             if (useOrganicSolutes)
@@ -457,7 +457,7 @@ public partial class SoilNitrogen
             NewSoluteType SoluteData = new NewSoluteType();
             SoluteData.solutes = solute_names;
 
-            NewSolute.Invoke(SoluteData);
+            new_solute.Invoke(SoluteData);
         }
     }
 

@@ -1,0 +1,2079 @@
+<folder version="36" creator="Apsim 7.6-r3382" name="simulations">
+  <memo name="Info">
+========================================================================
+
+      Generic tests for solute2 - Comparison between old and new models, 
+
+        &gt;&gt;  Using Cl, as Solute module (old Fortran code) or as Solute2 (.NET version)
+        &gt;&gt;  Comparison using SoilWat or SWIM2
+
+========================================================================
+
+
+  NOTES:
+    - Results between paddocks in the same simulation should be equal or very near (minor diffs might exist due to differences between the languages)
+    - Comparison between simulations are not valid as the soil descriptions are not for the same soil type, they were taken arbitrarily</memo>
+  <simulation name="SolutesTest-Compare(SoilWat)">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/01/2000</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
+    </metfile>
+    <memo name="Info">
+========================================================================
+      Generic tests for solute2 - Comparison between old and new models, using Cl
+========================================================================
+
+
+  » Basic simulation description:
+    + Bare soil
+    + Generic soil - Silt Loam
+    + Artificial mild temperate weather
+    + 1 kg/ha of solute in top 3 layers at start
+    + Solute applied 1 kg/ha in top layer
+
+   » Paddock1 uses Solute module (old Fortran code)
+   » Paddock2 uses Solute2 model (.NET version)
+
+
+   + This simulation uses a tracer-like solute:
+     - No interactions with soil, except leaching
+     - No transformations in the solute
+     - Solute diffusion computed by solute models
+ 
+  &gt;&gt; NOTE: 
+    - The variable diffusion_Cl will not be numeric in Paddock1, as the Solute module does not output this variable, The values will be numeric for Paddock2.
+</memo>
+    <summaryfile />
+    <area name="Paddock1">
+      <folder name="ManagerFolder">
+        <manager2 name="ApplyOldSolute">
+          <ui>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="text" description="  Name of the solute to apply:">cl</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">61</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">1</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+' This manager applies a given amount of solute to the soil (using old Solute module). It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
+
+'--&gt;  Last uptaded in: 15/Sep/2013 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
+   
+   'link to paddock models
+   &lt;Link&gt; Public MyPaddock As Paddock
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
+
+   'Internal variables
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
+
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
+      Next
+      
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'Re-set variables
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
+
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
+         Else
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               SoluteAdded = 0
+            End If
+         End If
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
+            Dim DummyResult As Boolean
+            DummyResult = MyPaddock.Set("dlt_" &amp; ApplySolute_name, delta_solute)
+            
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplyOldSolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+ </text>
+        </manager2>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <Solute name="Cl">
+        <solute_names type="text" description="Name of this solute:">Cl</solute_names>
+        <d0 type="text" description="Solute diffusivity in water (mm2/d)">108</d0>
+        <layers type="text" description="Solute in each layer (kg/ha)">1.0  1.0  10  0.0  0.0</layers>
+      </Solute>
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">200</mass>
+        <cnr type="text" description="C:N ratio of initial residue">20</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <Soil name="MediumTextureSoil">
+        <RecordNumber>0</RecordNumber>
+        <SoilType>NZ_Generic</SoilType>
+        <Site>-</Site>
+        <NearestTown>-</NearestTown>
+        <Region>Plains</Region>
+        <Country>New Zealand</Country>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <DataSource>Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
+        <Comments>Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
+        <Analysis>
+          <Thickness>
+            <double>250</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>350</double>
+          </Thickness>
+          <Rocks>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>70</double>
+            <double>70</double>
+          </Rocks>
+          <RocksMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </RocksMetadata>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+          </PH>
+          <PHMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </PHMetadata>
+          <CEC>
+            <double>13</double>
+            <double>9</double>
+            <double>9</double>
+            <double>5</double>
+            <double>5</double>
+          </CEC>
+          <CECMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </CECMetadata>
+          <ParticleSizeSand>
+            <double>14.5</double>
+            <double>18</double>
+            <double>14</double>
+            <double>37.7916</double>
+            <double>37.7916</double>
+          </ParticleSizeSand>
+          <ParticleSizeSandMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </ParticleSizeSandMetadata>
+          <ParticleSizeSilt>
+            <double>65.5</double>
+            <double>58</double>
+            <double>63</double>
+            <double>57.0964</double>
+            <double>57.0964</double>
+          </ParticleSizeSilt>
+          <ParticleSizeSiltMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </ParticleSizeSiltMetadata>
+          <ParticleSizeClay>
+            <double>20</double>
+            <double>24</double>
+            <double>23</double>
+            <double>5.112</double>
+            <double>5.112</double>
+          </ParticleSizeClay>
+          <ParticleSizeClayMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </ParticleSizeClayMetadata>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <Water>
+          <Thickness>
+            <double>250</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>350</double>
+          </Thickness>
+          <BD>
+            <double>1.3105</double>
+            <double>1.524</double>
+            <double>1.65</double>
+            <double>0.39</double>
+            <double>0.39</double>
+          </BD>
+          <AirDry>
+            <double>0.07675</double>
+            <double>0.201</double>
+            <double>0.201</double>
+            <double>0.012</double>
+            <double>0.012</double>
+          </AirDry>
+          <LL15>
+            <double>0.1535</double>
+            <double>0.201</double>
+            <double>0.201</double>
+            <double>0.012</double>
+            <double>0.012</double>
+          </LL15>
+          <DUL>
+            <double>0.3735</double>
+            <double>0.332</double>
+            <double>0.3375</double>
+            <double>0.039</double>
+            <double>0.039</double>
+          </DUL>
+          <SAT>
+            <double>0.456165</double>
+            <double>0.39432</double>
+            <double>0.358515</double>
+            <double>0.12</double>
+            <double>0.12</double>
+          </SAT>
+          <KS>
+            <double>4832.03882317437</double>
+            <double>389.229035400118</double>
+            <double>16.3618936612702</double>
+            <double>16800</double>
+            <double>16800</double>
+          </KS>
+          <BDMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </BDMetadata>
+          <AirDryMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </AirDryMetadata>
+          <LL15Metadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </LL15Metadata>
+          <DULMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </DULMetadata>
+          <SATMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </SATMetadata>
+          <SoilCrop name="Barley">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>0.301194211912202</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Canola">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Cloverseed">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.154574632644653</double>
+              <double>0.052234984561801</double>
+              <double>0.00872455909848213</double>
+              <double>0.0129200089722872</double>
+              <double>0.00222182390280068</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>0.153815722533429</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Fieldpea">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.200507909059525</double>
+              <double>0.109925186634064</double>
+              <double>0.0154432123526931</double>
+              <double>0.0261437389999628</double>
+              <double>0.00445368140935898</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.449328964117222</double>
+              <double>0.0907179532894125</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Fababean">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.24037854373455</double>
+              <double>0.330127707123756</double>
+              <double>0.0779416412115097</double>
+              <double>0.268693566322327</double>
+              <double>0.0951147079467773</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="kale">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="ItallianRyegrass">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Lucerne">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.204260140657425</double>
+              <double>0.36369434595108</double>
+              <double>0.126812055706978</double>
+              <double>0.424806475639343</double>
+              <double>0.284676045179367</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>0.301194211912202</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Maize">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.249634489417076</double>
+              <double>0.358602547645569</double>
+              <double>0.128204330801964</double>
+              <double>0.411121129989624</double>
+              <double>0.203564152121544</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Oats">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>0.153815722533429</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Potato">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.1740802526474</double>
+              <double>0.0379024263471365</double>
+              <double>0.00347039732150733</double>
+              <double>0.00256465631537139</double>
+              <double>0.000220781672396697</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.449328964117222</double>
+              <double>0.0907179532894125</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Grassseed">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.180564358830452</double>
+              <double>0.0593637429177761</double>
+              <double>0.00760113820433617</double>
+              <double>0.00814475025981665</double>
+              <double>0.000990261440165341</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Triticale">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>0.153815722533429</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="Wheat">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.220854833722115</double>
+              <double>0.226151418685913</double>
+              <double>0.0294010452926159</double>
+              <double>0.0857286900281906</double>
+              <double>0.0202584713697433</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>0.153815722533429</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="ryegrass_clover">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.180564358830452</double>
+              <double>0.0593637429177761</double>
+              <double>0.00760113820433617</double>
+              <double>0.00814475025981665</double>
+              <double>0.000990261440165341</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="ryegrass">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.180564358830452</double>
+              <double>0.0593637429177761</double>
+              <double>0.00760113820433617</double>
+              <double>0.00814475025981665</double>
+              <double>0.000990261440165341</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.825306868491682</double>
+              <double>0.120995732814878</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+          <SoilCrop name="whiteclover">
+            <Thickness>
+              <double>250</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>350</double>
+            </Thickness>
+            <LL>
+              <double>0.1535</double>
+              <double>0.201</double>
+              <double>0.201</double>
+              <double>0.012</double>
+              <double>0.012</double>
+            </LL>
+            <KL>
+              <double>0.200507909059525</double>
+              <double>0.109925186634064</double>
+              <double>0.0154432123526931</double>
+              <double>0.0261437389999628</double>
+              <double>0.00445368140935898</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.449328964117222</double>
+              <double>0.0907179532894125</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+            <LLMetadata>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+              <string>Estimated based on local knowledge</string>
+            </LLMetadata>
+          </SoilCrop>
+        </Water>
+        <SoilWater>
+          <SummerCona>4.4</SummerCona>
+          <SummerU>9</SummerU>
+          <SummerDate>1-Oct</SummerDate>
+          <WinterCona>3</WinterCona>
+          <WinterU>6</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>NaN</Slope>
+          <DischargeWidth>NaN</DischargeWidth>
+          <CatchmentArea>NaN</CatchmentArea>
+          <MaxPond>NaN</MaxPond>
+          <Thickness>
+            <double>250</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>350</double>
+          </Thickness>
+          <SWCON>
+            <double>0.496441652363301</double>
+            <double>0.365575319464424</double>
+            <double>0.0968316236981163</double>
+            <double>0.650597666182654</double>
+            <double>0.650597666182654</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>1000</RootWt>
+          <SoilCN>11</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>250</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>350</double>
+          </Thickness>
+          <OC>
+            <double>2.36763018254749</double>
+            <double>0.493356844707295</double>
+            <double>0.226612732535286</double>
+            <double>0.20241425262704</double>
+            <double>0.200179315181324</double>
+          </OC>
+          <OCMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </OCMetadata>
+          <FBiom>
+            <double>0.0288946621096406</double>
+            <double>0.0136287181315765</double>
+            <double>0.0105998230728191</double>
+            <double>0.0100991500870667</double>
+            <double>0.0100141064865851</double>
+          </FBiom>
+          <FInert>
+            <double>0.449327916354078</double>
+            <double>0.758676223572772</double>
+            <double>0.901885074330665</double>
+            <double>0.960109448055144</double>
+            <double>0.984953588826987</double>
+          </FInert>
+          <OCUnits>Total</OCUnits>
+        </SoilOrganicMatter>
+        <InitialWater name="Initial water">
+          <FractionFull>1</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
+        <Sample name="Initial nitrogen">
+          <Thickness>
+            <double>250</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>350</double>
+          </Thickness>
+          <NO3>
+            <double>98.2875</double>
+            <double>102.87</double>
+            <double>22.275</double>
+            <double>5.265</double>
+            <double>6.1425</double>
+          </NO3>
+          <NH4>
+            <double>6.5525</double>
+            <double>6.858</double>
+            <double>1.485</double>
+            <double>0.35100000000000003</double>
+            <double>0.40950000000000003</double>
+          </NH4>
+          <NO3Units>kgha</NO3Units>
+          <NH4Units>kgha</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
+        </Sample>
+        <SoilTemperature2>
+          <MaxTTimeDefault type="text" description="MaxTTimeDefault">14</MaxTTimeDefault>
+          <BoundaryLayerConductanceSource type="text" description="BoundaryLayerConductanceSource">calc</BoundaryLayerConductanceSource>
+          <BoundaryLayerConductance type="text" description="BoundaryLayerConductance">20</BoundaryLayerConductance>
+          <BoundaryLayerConductanceIterations type="text" description="BoundaryLayerConductanceIterations">1</BoundaryLayerConductanceIterations>
+          <NetRadiationSource type="text" description="NetRadiationSource">calc</NetRadiationSource>
+          <DefaultWindSpeed type="text" description="DefaultWindSpeed">3</DefaultWindSpeed>
+          <DefaultAltitude type="text" description="DefaultAltitude">18</DefaultAltitude>
+          <DefaultInstrumentHeight type="text" description="DefaultInstrumentHeight">1.2</DefaultInstrumentHeight>
+          <BareSoilHeight type="text" description="BareSoilHeight">57</BareSoilHeight>
+        </SoilTemperature2>
+      </Soil>
+      <outputfile name="Outputs">
+        <filename output="yes">SolutesTest-Compare(SoilWat) Paddock1 Outputs.out</filename>
+        <title>SolutesTest-Compare(SoilWat) Paddock1 Outputs</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy as Date</variable>
+          <variable>day as DoY</variable>
+          <variable>rain as Rain</variable>
+          <variable>drain as Drainage format 2</variable>
+          <variable>sw_dep() as SoilWaterContent format 2</variable>
+          <variable>Cl() format 3</variable>
+          <variable>Cl format 3</variable>
+          <variable>Leach_Cl format 3</variable>
+          <variable>flow_Cl format 5</variable>
+          <variable>Cl_ppm</variable>
+          <variable>Diffusion_Cl format 7</variable>
+          <variable>dlayer</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+        <Graph name="Amounts">
+          <Legend>
+            <CheckedTitles> Cl()</CheckedTitles>
+            <CheckedTitles> Cl(1)</CheckedTitles>
+            <CheckedTitles> Cl(2)</CheckedTitles>
+            <CheckedTitles> Cl(3)</CheckedTitles>
+            <CheckedTitles> Cl(4)</CheckedTitles>
+            <CheckedTitles> Cl(5)</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cl()</Y>
+            <Y>Cl(1)</Y>
+            <Y>Cl(2)</Y>
+            <Y>Cl(3)</Y>
+            <Y>Cl(4)</Y>
+            <Y>Cl(5)</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leaching">
+          <Legend>
+            <CheckedTitles> Cumulative Leach_Cl</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(1)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(2)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(3)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(4)</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(5)</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cumulative Leach_Cl</Y>
+            <Y>Cumulative flow_Cl(1)</Y>
+            <Y>Cumulative flow_Cl(2)</Y>
+            <Y>Cumulative flow_Cl(3)</Y>
+            <Y>Cumulative flow_Cl(4)</Y>
+            <Y>Cumulative flow_Cl(5)</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Depth">
+          <Legend>
+            <CheckedTitles>   1/01/2000</CheckedTitles>
+            <CheckedTitles>   10/01/2000</CheckedTitles>
+            <CheckedTitles>   20/01/2000</CheckedTitles>
+            <CheckedTitles>   31/01/2000</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <Y>Depth</Y>
+            <colour>
+            </colour>
+            <XTop>Cl</XTop>
+            <GDDepth name="Depth">
+              <AllXOnTopAxis>Yes</AllXOnTopAxis>
+              <Date>1/1/2000</Date>
+              <Date>10/1/2000</Date>
+              <Date>20/1/2000</Date>
+              <Date>31/1/2000</Date>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </GDDepth>
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+    <area name="Paddock2" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1">
+      <folder name="ManagerFolder">
+        <manager2 name="ApplySolute">
+          <ui>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="list" listvalues="Tracer,NitrificationInhibitor,UreaseInhibitor,cl,dcd" description="  Name of the solute to apply:">cl</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">61</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">1</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+' This manager applies a given amount of solute to the soil. It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
+
+'--&gt;  Last uptaded in: 10/Sep/2013 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
+   
+   'Events to raise
+   &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
+
+   'Internal variables
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
+
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
+      Next
+      
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnSoluteChange(SoluteChanges As SoluteChangedType)
+      
+      Console.WriteLine("Today:" + today.Date.ToString())
+      Console.WriteLine("Name:" + SoluteChanges.SoluteName)
+      Console.WriteLine("Layer(1):" + SoluteChanges.DeltaSolute(0).ToString())
+      
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'Re-set variables
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
+
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
+         Else
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               SoluteAdded = 0
+            End If
+         End If
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
+            Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
+            SoluteChanges.Sender = "Manager: ApplySolute"
+            SoluteChanges.SoluteName = ApplySolute_name
+            SoluteChanges.SoluteUnits = "kg/ha"
+            SoluteChanges.DeltaSolute = delta_solute
+            RaiseEvent SoluteChanged(SoluteChanges)
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplySolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+            Console.WriteLine("TimeAfterApplication " + TimeAfterApplication.ToString())
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+ </text>
+        </manager2>
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Micromet" />
+      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/SurfaceOrganicMatter" />
+      <Cl2 name="Cl">
+        <Dummy1 type="category" description="Initial solute content in the soil" />
+        <InitialContent type="text" description="  Amount of Cl for each layer (kg/ha):">1.0  1.0  10  0.0  0.0</InitialContent>
+        <Dummy2 type="category" description="Solute diffusivity" />
+        <MolecularDiffusivity type="text" description="  Diffusivity of Cl in water (mm2/day):">108</MolecularDiffusivity>
+      </Cl2>
+      <Soil name="MediumTextureSoil" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil">
+        <Analysis shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/Analysis" />
+        <Water shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/Water" />
+        <SoilWater shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/SoilWater" />
+        <SoilOrganicMatter shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/SoilOrganicMatter" />
+        <InitialWater name="Initial water" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/Initial nitrogen" />
+        <SoilTemperature2 shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/MediumTextureSoil/SoilTemperature2" />
+      </Soil>
+      <outputfile name="Outputs" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs">
+        <filename output="yes">SolutesTest-Compare(SoilWat) Paddock2 Outputs.out</filename>
+        <title>SolutesTest-Compare(SoilWat) Paddock2 Outputs</title>
+        <variables name="Variables" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Reporting Frequency" />
+        <Graph name="Amounts" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Amounts">
+          <Plot shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Amounts/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Amounts/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leaching" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Leaching">
+          <Plot shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Leaching/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Leaching/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Depth" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Depth">
+          <Plot shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Depth/Plot">
+            <GDDepth name="Depth" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Depth/Plot/Depth">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/SolutesTest-Compare(SoilWat)/Paddock1/Outputs/Depth/Plot/Depth/ApsimFileReader" />
+            </GDDepth>
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+    <Graph name="Compare(Totals)">
+      <Legend>
+        <CheckedTitles> SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Compare(L1)">
+      <Legend>
+        <CheckedTitles> Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl(1)</Y>
+        <Y>Cumulative flow_Cl(1)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Compare(L4)">
+      <Legend>
+        <CheckedTitles> Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl(4)</Y>
+        <Y>Cumulative flow_Cl(4)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </simulation>
+  <simulation name="SolutesTest-Compare(SWIM2)">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/2000</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/01/2000</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
+    </metfile>
+    <memo name="Info">
+========================================================================
+      Generic tests for solute2 - Comparison between old and new models, using Cl
+========================================================================
+
+
+  » Basic simulation description:
+    + Bare soil
+    + Generic soil - Silt Loam
+    + Artificial mild temperate weather
+    + 1 kg/ha of solute in top 3 layers at start
+    + Solute applied 1 kg/ha in top layer
+
+   » Paddock1 uses Solute module (old Fortran code)
+   » Paddock2 uses Solute2 model (.NET version)
+
+
+   + This simulation uses a tracer-like solute:
+     - No interactions with soil, except leaching
+     - No transformations in the solute
+     - Solute diffusion computed by SWIM
+ 
+   &gt;&gt; NOTE: 
+    - The variable diffusion_Cl will not be numeric in Paddock1, as the Solute module does not output this variable, The values will be all zero for Paddock2 as the diffusivity in Solute2 was set to zero
+</memo>
+    <summaryfile />
+    <area name="Paddock1">
+      <folder name="ManagerFolder">
+        <manager2 name="ApplyOldSolute">
+          <ui>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="text" description="  Name of the solute to apply:">cl</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">61</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">1</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+' This manager applies a given amount of solute to the soil (using old Solute module). It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
+
+'--&gt;  Last uptaded in: 15/Sep/2013 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
+   
+   'link to paddock models
+   &lt;Link&gt; Public MyPaddock As Paddock
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
+
+   'Internal variables
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
+
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
+      Next
+      
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'Re-set variables
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
+
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
+         Else
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               SoluteAdded = 0
+            End If
+         End If
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
+            Dim DummyResult As Boolean
+            DummyResult = MyPaddock.Set("dlt_" &amp; ApplySolute_name, delta_solute)
+            
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplyOldSolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+ </text>
+        </manager2>
+      </folder>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <Solute name="Cl">
+        <solute_names type="text" description="Name of this solute:">Cl</solute_names>
+        <d0 type="text" description="Solute diffusivity in water (mm2/d)">0.0</d0>
+        <layers type="text" description="Solute in each layer (kg/ha)">1.0  1.0  10  0.0  0.0</layers>
+      </Solute>
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">200</mass>
+        <cnr type="text" description="C:N ratio of initial residue">20</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <SWIM2ui2>
+        <dummy1 type="category" description="SWIM boundary conditions:" />
+        <top_boundary_condition type="list" listvalues="0,1,2,3" description="Choose top boundary condition (0=inf conduct; 1=const potential; 2=limtd conduct):">0</top_boundary_condition>
+        <runoff type="list" listvalues="0,1,2" description="Choose runnof/pond condition (0=all runoff; 1=all pond; 2=calc runoff):">1</runoff>
+        <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="Choose bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable;3=seepage):">0</bottom_boundary_condition>
+        <run_solutes type="text" description="Type list of solutes SWIM will move:">urea  nh4  no3  cl</run_solutes>
+        <max_water_increment type="text" description="Type base water increment value:">0.5</max_water_increment>
+        <dummy2 type="category" description="Description of soil profile" />
+        <x type="text" description="Enter the values of x for each layer:">0  10  20  30  50  70  90  110  140  160  190  210  250  270  330  370  430  470  530  570  650  710  790  860  940  1060  1140  1260  1340  1440  1500</x>
+        <soil_type type="text" description="Enter the tags for each layer:">A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  A_ZL_mC  -  -  B1_ZL_mC  B1_ZL_mC  B1_ZL_mC  -  -  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  -  -  BC_S_mC  BC_S_mC  BC_S_mC  BC_S_mC  BC_S_mC  BC_S_mC</soil_type>
+        <psi type="text" description="Enter the inital values of psi for each layer:">-100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100</psi>
+        <ini name="Ini_SWIM2">
+          <filename input="yes">%apsim%\Tests\Solute2\ini_SWIMui2(GenericSiltLoam).xml</filename>
+        </ini>
+      </SWIM2ui2>
+      <SoilNitrogen>
+        <category type="category" description="Parameters to initialise soil organic matter" />
+        <root_wt type="text" description="Type the initial FOM amount in the soil (kgDM/ha):">1000</root_wt>
+        <root_cn type="text" description="Type the initial C:N ratio of FOM:">30</root_cn>
+        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+        <mcn type="text" description="Type the C:N ratio of soil microbial biomass:">8</mcn>
+        <category type="category" description="Enter the values for each layer" />
+        <ph type="text" description="Type the inital soil pH:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</ph>
+        <oc type="text" description="Type the initial soil organic carbon content (%):">4.817  4.789  4.760  4.717  4.665  4.613  4.331  3.977  3.667  3.396  3.148  2.877  2.630  2.336  2.023  1.761  1.550  1.379  1.241  1.111  0.996  0.912  0.844  0.797  0.752  0.723  0.704  0.692  0.685  0.681  0.680</oc>
+        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080  0.080  0.080  0.080  0.079  0.078  0.075  0.069  0.061  0.050  0.040  0.029  0.021  0.013  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</fbiom>
+        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.454  0.461  0.468  0.474  0.487  0.515  0.571  0.626  0.678  0.718  0.755  0.786  0.819  0.843  0.876  0.895  0.915  0.927  0.940  0.947  0.958  0.964  0.971  0.976  0.980  0.985  0.988  0.990  0.992  0.993  0.994</finert>
+        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">1.50   2.00   2.40   2.50   2.50   2.50   2.50   2.50   2.50   2.45   2.30   2.15   2.00   1.85   1.60   1.35   1.15   0.90   0.80   0.71   0.65   0.59   0.51   0.44   0.39   0.34   0.30   0.26   0.21   0.20   0.20</no3ppm>
+        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.50   0.70   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.80   0.70   0.60   0.50   0.40   0.40   0.30   0.30   0.20   0.20   0.20   0.20   0.20   0.10   0.10   0.10   0.10   0.08   0.07   0.07   0.07</nh4ppm>
+        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00</ureappm>
+      </SoilNitrogen>
+      <SoilTemperature2>
+        <MaxTTimeDefault>14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance>20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource>calc</NetRadiationSource>
+        <DefaultWindSpeed>3</DefaultWindSpeed>
+        <DefaultAltitude>18</DefaultAltitude>
+        <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
+        <BareSoilHeight>57</BareSoilHeight>
+        <Clay>15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0   15.0</Clay>
+      </SoilTemperature2>
+      <outputfile name="Outputs">
+        <filename output="yes">SolutesTest-Compare(SWIM2) Paddock1 Outputs.out</filename>
+        <title>SolutesTest-Compare(SWIM2) Paddock1 Outputs</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy as Date</variable>
+          <variable>day as DoY</variable>
+          <variable>rain as Rain</variable>
+          <variable>drain as Drainage format 2</variable>
+          <variable>sw_dep() as SoilWaterContent format 2</variable>
+          <variable>Cl() format 3</variable>
+          <variable>Cl format 3</variable>
+          <variable>Leach_Cl format 3</variable>
+          <variable>flow_Cl format 5</variable>
+          <variable>Cl_ppm</variable>
+          <variable>Diffusion_Cl</variable>
+          <variable>dlayer</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+        <Graph name="Amounts">
+          <Legend>
+            <CheckedTitles> Cl(), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(), {Checkpoint} SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(1), {Checkpoint} SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(2), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(2), {Checkpoint} SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(3), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(3), {Checkpoint} SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(4), {Checkpoint} SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(5), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+            <CheckedTitles> Cl(5), {Checkpoint} SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cl()</Y>
+            <Y>Cl(1)</Y>
+            <Y>Cl(2)</Y>
+            <Y>Cl(3)</Y>
+            <Y>Cl(4)</Y>
+            <Y>Cl(5)</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leaching">
+          <Legend>
+            <CheckedTitles> Cumulative Leach_Cl, SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative Leach_Cl, {Checkpoint} SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(1), {Checkpoint} SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(2), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(2), {Checkpoint} SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(3), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(3), {Checkpoint} SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(4), {Checkpoint} SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(5), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+            <CheckedTitles> Cumulative flow_Cl(5), {Checkpoint} SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>Cumulative Leach_Cl</Y>
+            <Y>Cumulative flow_Cl(1)</Y>
+            <Y>Cumulative flow_Cl(2)</Y>
+            <Y>Cumulative flow_Cl(3)</Y>
+            <Y>Cumulative flow_Cl(4)</Y>
+            <Y>Cumulative flow_Cl(5)</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Depth">
+          <Legend>
+            <CheckedTitles>   1/01/2000</CheckedTitles>
+            <CheckedTitles>   10/01/2000</CheckedTitles>
+            <CheckedTitles>   20/01/2000</CheckedTitles>
+            <CheckedTitles>   31/01/2000</CheckedTitles>
+          </Legend>
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <Y>Depth</Y>
+            <colour>
+            </colour>
+            <XTop>Cl</XTop>
+            <GDDepth name="Depth">
+              <AllXOnTopAxis>Yes</AllXOnTopAxis>
+              <Date>1/1/2000</Date>
+              <Date>10/1/2000</Date>
+              <Date>20/1/2000</Date>
+              <Date>31/1/2000</Date>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </GDDepth>
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+    <area name="Paddock2" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1">
+      <folder name="ManagerFolder">
+        <manager2 name="ApplySolute">
+          <ui>
+            <Dummy0 type="category" description="Apply a given solute to the soil" />
+            <ApplySolute_name type="list" listvalues="Tracer,NitrificationInhibitor,UreaseInhibitor,cl,dcd" description="  Name of the solute to apply:">cl</ApplySolute_name>
+            <Dummy1 type="category" description="When and how often to apply" />
+            <ApplySolute_start_date type="ddmmmdate" description="  Date to start applications (dd/mm/yyyy):">16/01/2000</ApplySolute_start_date>
+            <ApplySolute_end_date type="ddmmmdate" description="  Date to end applications (dd/mm/yyyy):">31/12/2010</ApplySolute_end_date>
+            <ApplySolute_interval type="text" description="  Interval between applications (days):">61</ApplySolute_interval>
+            <ApplySolute_times type="text" description="  Number of times to apply:">1</ApplySolute_times>
+            <Dummy2 type="category" description="Amount and depth for applications" />
+            <ApplySolute_amount2add type="text" description="  Amount of solute to apply (kg/ha):">1</ApplySolute_amount2add>
+            <ApplySolute_depth2add type="text" description="  Depth for application (mm):">1</ApplySolute_depth2add>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+' This manager applies a given amount of solute to the soil. It will add from the surface till the depth specified (decreasing linearly)
+'  The manager can also repeat the application periodically within a given window
+
+'--&gt;  Last uptaded in: 10/Sep/2013 ..................
+
+
+Public Class Script 
+   
+   'Parameter variables:
+   &lt;param&gt; Private ApplySolute_name As String
+   &lt;param&gt; Private ApplySolute_start_date As String
+   &lt;param&gt; Private ApplySolute_end_date As String
+   &lt;param&gt; Private ApplySolute_interval As Integer
+   &lt;param&gt; Private ApplySolute_times As Integer
+   &lt;param&gt; Private ApplySolute_amount2add As Double
+   &lt;param&gt; Private ApplySolute_depth2add As Double
+   
+   'Events to raise
+   &lt;[Event]()&gt; Public Event SoluteChanged As SoluteChangedDelegate
+
+   'Variables read from other modules
+   &lt;Input&gt; Private today As DateTime            'Today's date
+   &lt;Input&gt; Private dlayer As Double()           'Soil layers structure
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public SoluteAdded As Double       'The amount of solute added
+
+   'Internal variables
+   Private StartDate As DateTime                'The date when applications start (in date format)
+   Private EndDate As DateTime                  'The date when applications finish (in date format)
+   Private TimeAfterApplication As Integer      'Number of days after an application
+   Private SoilDepth As Double                  'The soil depth (mm)
+   Private LayerFraction() As Double        'The fraction of solute applied in each layer
+   Private NumberOfApplications As Integer      'Number of applications
+
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+
+      'Put the dates into date format:
+      StartDate = DateTime.Parse(ApplySolute_start_date &amp; " 06:00:00 am")
+      EndDate = DateTime.Parse(ApplySolute_end_date &amp; " 06:00:00 pm")
+      NumberOfApplications = 0
+      TimeAfterApplication = 1
+      
+      'Computes the fraction of solute to be applied in each layer
+      Console.WriteLine(" Applying solute, " &amp; ApplySolute_amount2add.ToString("#0.0#") &amp; " kg/ha, in following layers")
+      ReDim LayerFraction(dlayer.length - 1)
+      Dim Depth_from_surface As Double = 0
+      Dim surf_L As Double = 2 / ApplySolute_depth2add
+      Dim upper_L As Double = surf_L
+      Dim lower_L As Double = 0
+      Dim thisLayer As Double = 0
+      For Layer As Integer = 0 To dlayer.length - 1
+         Depth_from_surface += dlayer(Layer)
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then
+            ' last layer
+            lower_L = 0
+            thisLayer = dlayer(Layer) - (Depth_from_surface - ApplySolute_depth2add)
+         Else
+            ' intermediate layer
+            lower_L = surf_L * (ApplySolute_depth2add - Depth_from_surface) / ApplySolute_depth2add
+            thisLayer = dlayer(Layer)
+         End If
+         LayerFraction(Layer) = (upper_L + lower_L) * thisLayer / 2
+         upper_L = lower_L
+         Console.WriteLine(" Fraction in layer (" &amp; Layer.ToString() &amp; "): " &amp; LayerFraction(Layer).ToString())
+         If Depth_from_surface &gt;= ApplySolute_depth2add Then Layer = dlayer.length               
+      Next
+      
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnSoluteChange(SoluteChanges As SoluteChangedType)
+      
+      Console.WriteLine("Today:" + today.Date.ToString())
+      Console.WriteLine("Name:" + SoluteChanges.SoluteName)
+      Console.WriteLine("Layer(1):" + SoluteChanges.DeltaSolute(0).ToString())
+      
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      'Re-set variables
+      SoluteAdded = 0
+      Dim delta_solute(dlayer.Length - 1) As Double
+
+      'Decide whether it is time to start applications:
+      If (today.Date &gt;= StartDate.Date) And (today.Date &lt;= EndDate.Date) And (NumberOfApplications &lt; ApplySolute_times) Then
+         If (today - StartDate).TotalDays &lt; 0.5 Then
+            ' always apply on the starting date, or beginning of simulation
+            For Layer As Integer = 0 To dlayer.length - 1
+               delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+               SoluteAdded += delta_solute(Layer)
+               If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length
+            Next
+            TimeAfterApplication = 1
+            NumberOfApplications += 1
+         Else
+            ' apply at given intervals
+            If TimeAfterApplication &gt;= ApplySolute_interval Then
+               For Layer As Integer = 0 To dlayer.length - 1
+                  delta_solute(Layer) = ApplySolute_amount2add * LayerFraction(Layer)
+                  SoluteAdded += delta_solute(Layer)
+                  If LayerFraction(Layer) &lt;= 1E-12 Then Layer = dlayer.length               
+               Next
+               TimeAfterApplication = 1
+               NumberOfApplications += 1
+            Else
+               TimeAfterApplication = TimeAfterApplication + 1
+               SoluteAdded = 0
+            End If
+         End If
+
+         'Make the application
+         If TimeAfterApplication = 1 Then
+            Dim SoluteChanges As SoluteChangedType = New SoluteChangedType()
+            SoluteChanges.Sender = "Manager: ApplySolute"
+            SoluteChanges.SoluteName = ApplySolute_name
+            SoluteChanges.SoluteUnits = "kg/ha"
+            SoluteChanges.DeltaSolute = delta_solute
+            RaiseEvent SoluteChanged(SoluteChanges)
+
+            Console.WriteLine(today.ToString("dd MMMM yyyy") + " (Day of year=" + today.DayOfYear.ToString + "), ApplySolute:")
+            Console.WriteLine("     " &amp; ApplySolute_name &amp; " being applied at " + SoluteAdded.ToString("0.00") + "kg/ha, added down to depth " + ApplySolute_depth2add.ToString("0") + "mm")
+            Console.WriteLine("TimeAfterApplication " + TimeAfterApplication.ToString())
+         End If
+      End If            
+      
+   End Sub
+
+End Class
+ </text>
+        </manager2>
+      </folder>
+      <micromet name="Micromet" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Micromet" />
+      <Cl2 name="Cl">
+        <Dummy1 type="category" description="Initial solute content in the soil" />
+        <InitialContent type="text" description="  Amount of Cl for each layer (kg/ha):">1.0  1.0  10  0.0  0.0</InitialContent>
+        <Dummy2 type="category" description="Solute diffusivity" />
+        <MolecularDiffusivity type="text" description="  Diffusivity of Cl in water (mm2/day):">0.0</MolecularDiffusivity>
+      </Cl2>
+      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/SurfaceOrganicMatter" />
+      <SWIM2ui2 shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/SWIM2ui2">
+        <ini name="Ini_SWIM2" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/SWIM2ui2/Ini_SWIM2" />
+      </SWIM2ui2>
+      <SoilNitrogen shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/SoilNitrogen" />
+      <SoilTemperature2 shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/SoilTemperature2" />
+      <outputfile name="Outputs" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs">
+        <filename output="yes">SolutesTest-Compare(SWIM2) Paddock2 Outputs.out</filename>
+        <title>SolutesTest-Compare(SWIM2) Paddock2 Outputs</title>
+        <variables name="Variables" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Reporting Frequency" />
+        <Graph name="Amounts" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Amounts">
+          <Plot shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Amounts/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Amounts/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Leaching" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Leaching">
+          <Plot shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Leaching/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Leaching/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Depth" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Depth">
+          <Plot shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Depth/Plot">
+            <GDDepth name="Depth" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Depth/Plot/Depth">
+              <GDApsimFileReader name="ApsimFileReader" shortcut="/simulations/SolutesTest-Compare(SWIM2)/Paddock1/Outputs/Depth/Plot/Depth/ApsimFileReader" />
+            </GDDepth>
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+    <Graph name="Compare(Totals)">
+      <Legend>
+        <CheckedTitles> SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl()</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Compare(L1)">
+      <Legend>
+        <CheckedTitles> Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(1), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl(1)</Y>
+        <Y>Cumulative flow_Cl(1)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Compare(L4)">
+      <Legend>
+        <CheckedTitles> Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock1 Outputs</CheckedTitles>
+        <CheckedTitles> Cumulative flow_Cl(4), SolutesTest-Compare Paddock2 Outputs</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>Cl(4)</Y>
+        <Y>Cumulative flow_Cl(4)</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+  </simulation>
+</folder>

@@ -1655,24 +1655,27 @@ public partial class SoilNitrogen
     {
         set
         {
-            for (int layer = 0; layer < dlayer.Length; layer++)
+            if (initDone)
             {
-                if (layer < value.Length)
+                for (int layer = 0; layer < dlayer.Length; layer++)
                 {
-                    InhibitionFactor_Nitrification[layer] = value[layer];
-                    if (InhibitionFactor_Nitrification[layer] < -epsilon)
+                    if (layer < value.Length)
                     {
+                        InhibitionFactor_Nitrification[layer] = value[layer];
+                        if (InhibitionFactor_Nitrification[layer] < -epsilon)
+                        {
+                            InhibitionFactor_Nitrification[layer] = 0.0;
+                            Console.WriteLine("Value for nitrification inhibition is below lower limit, value will be adjusted to 0.0");
+                        }
+                        else if (InhibitionFactor_Nitrification[layer] > 1.0)
+                        {
+                            InhibitionFactor_Nitrification[layer] = 1.0;
+                            Console.WriteLine("Value for nitrification inhibition is above upper limit, value will be adjusted to 1.0");
+                        }
+                    }
+                    else
                         InhibitionFactor_Nitrification[layer] = 0.0;
-                        Console.WriteLine("Value for nitrification inhibition is below lower limit, value will be adjusted to 0.0");
-                    }
-                    else if (InhibitionFactor_Nitrification[layer] > 1.0)
-                    {
-                        InhibitionFactor_Nitrification[layer] = 1.0;
-                        Console.WriteLine("Value for nitrification inhibition is above upper limit, value will be adjusted to 1.0");
-                    }
                 }
-                else
-                    InhibitionFactor_Nitrification[layer] = 0.0;
             }
         }
     }
