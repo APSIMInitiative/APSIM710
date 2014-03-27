@@ -1,0 +1,1082 @@
+<Type name="soil">
+  <MetaData>
+    <UItype>CSUserInterface.SoilPropertyUI</UItype>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+    <Documentation name="Water science documentation">%apsim%\Documentation\4 Module Reference\SoilWat.htm</Documentation>
+    <Documentation name="Nitrogen science documentation">%apsim%\Documentation\4 Module Reference\SoilN.htm</Documentation>
+    <Documentation name="Phosphorus documentation">%apsim%\Documentation\4 Module Reference\SoilP.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\shovel32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\shovel16.bmp</SmallIcon>
+    <dll>%apsim%/Model/SoilWater.%dllext%</dll>
+    <dll>%apsim%/Model/SoilNitrogen.%dllext%</dll>
+    <dll>%apsim%/Model/SoilP.%dllext%</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+      <drop>factor</drop>
+    </drops>
+    <ApsimToSim>
+      [foreach Soil.SoilWater]
+        <component name="[soil.Name] Water" executable="%apsim%/Model/SoilWater.%dllext%" class="SoilWater">
+          <executable name="%apsim%/Model/SoilWater.%dllext%" version="1.0" class="SoilWater" />
+          <initdata>
+            <SoilWater>
+              [Model SoilWater]
+              <diffus_const>[soil.SoilWater.DiffusConst]</diffus_const>
+              <diffus_slope>[soil.SoilWater.DiffusSlope]</diffus_slope>
+              <cn2_bare>[soil.SoilWater.CN2Bare]</cn2_bare>
+              <cn_red>[soil.SoilWater.CNRed]</cn_red>
+              <cn_cov>[soil.SoilWater.CNCov]</cn_cov>
+              <salb>[soil.SoilWater.Salb]</salb>
+              <SummerCona>[soil.SoilWater.SummerCona]</SummerCona>
+              <WinterCona>[soil.SoilWater.WinterCona]</WinterCona>
+              <SummerU>[soil.SoilWater.SummerU]</SummerU>
+              <WinterU>[soil.SoilWater.WinterU]</WinterU>
+              <SummerDate>[soil.SoilWater.SummerDate]</SummerDate>
+              <WinterDate>[soil.SoilWater.WinterDate]</WinterDate>
+              
+              <dlayer>[soil.Thickness]</dlayer>
+              <sat>[soil.Sat]</sat>
+              <dul>[soil.Dul]</dul>
+              <ll15>[soil.LL15]</ll15>
+              <air_dry>[soil.AirDry]</air_dry>
+              <swcon>[soil.SWCon]</swcon>
+              <bd>[soil.BD]</bd>
+              <sw>[soil.SW]</sw>
+              
+              [if [soil.MWCon]]<mwcon>[soil.MWCon]</mwcon>[endif]
+              [if [soil.KS]]<ks>[soil.KS]</ks>[endif]
+              [if [soil.SoilWater.Slope]]<slope>[soil.SoilWater.Slope]</slope>[endif]
+              [if [soil.SoilWater.DischargeWidth]]<discharge_width>[soil.SoilWater.DischargeWidth]</discharge_width>[endif]
+              [if [soil.SoilWater.CatchmentArea]]<catchment_area>[soil.SoilWater.CatchmentArea]</catchment_area>[endif]
+              [if [soil.SoilWater.KLAT]]<klat>[soil.SoilWater.KLAT]</klat>[endif]
+              [if [soil.SoilWater.MaxPond]]<max_pond>[soil.SoilWater.MaxPond]</max_pond>[endif]
+            </SoilWater>
+          </initdata>
+        </component>
+      [endfor]
+      [foreach Soil.Swim]
+       <component name="SWIM" executable="%apsim%/Model/SWIM3.%dllext%" class="Swim3.Swim">
+         <executable name="%apsim%/Model/SWIM3.%dllext%" version="1.0" />
+         <initdata>
+           [Model Swim3]
+           <cn2_bare>[Swim.Cn2Bare]</cn2_bare>
+           <cn_red>[Swim.CnRed]</cn_red>
+           <cn_cov>[Swim.CnCov]</cn_cov>
+           <salb>[Swim.Salb]</salb>
+           <dlayer>[soil.Thickness]</dlayer>
+           <air_dry>[soil.AirDry]</air_dry>
+           <sat>[soil.Sat]</sat>
+           <dul>[soil.Dul]</dul>
+           <ll15>[soil.LL15]</ll15>
+           <bd>[soil.BD]</bd>
+           <theta>[soil.SW]</theta>
+           <ks>[soil.KS]</ks>
+           <Kdul>[soil.Swim.Kdul]</Kdul>
+           <psidul>[soil.Swim.PsiDUL]</psidul>
+           <vapour_conductivity>[soil.Swim.VC]</vapour_conductivity>
+           <rainfall_source>apsim</rainfall_source>
+           <evap_source>calc</evap_source>
+           <dtmin>[soil.Swim.dtmin]</dtmin>
+           <dtmax>[soil.Swim.dtmax]</dtmax>
+           <max_water_increment>[soil.Swim.MaxWaterIncrement]</max_water_increment>
+           <swt>[soil.Swim.SpaceWeightingFactor]</swt>
+           <slswt>[soil.Swim.SoluteSpaceWeightingFactor]</slswt>
+           <diagnostics>[soil.Swim.diagnostics]</diagnostics>
+           [if [soil.Swim.SwimSubsurfaceDrain.DrainDepth]]
+             <DrainDepth>[soil.Swim.SwimSubsurfaceDrain.DrainDepth]</DrainDepth>
+             <DrainSpacing>[soil.Swim.SwimSubsurfaceDrain.DrainSpacing]</DrainSpacing>
+             <DrainRadius>[soil.Swim.SwimSubsurfaceDrain.DrainRadius]</DrainRadius>
+             <Klat>[soil.Swim.SwimSubsurfaceDrain.Klat]</Klat>
+             <ImpermDepth>[soil.Swim.SwimSubsurfaceDrain.ImpermDepth]</ImpermDepth>
+           [endif]
+           [if [soil.Swim.SwimWaterTable.WaterTableDepth]]
+             <WaterTableDepth>[soil.Swim.SwimWaterTable.WaterTableDepth]</WaterTableDepth>               
+           [endif]
+           <solute>
+             <a>[soil.Swim.SwimSoluteParameters.a]</a>
+             <dthc>[soil.Swim.SwimSoluteParameters.dthc]</dthc>
+             <dthp>[soil.Swim.SwimSoluteParameters.dthp]</dthp>
+             <dis> [soil.Swim.SwimSoluteParameters.dis]</dis>
+             <disp>[soil.Swim.SwimSoluteParameters.disp]</disp>
+             <WaterTableNO3>[soil.Swim.SwimSoluteParameters.WaterTableNO3]</WaterTableNO3>
+             <WaterTableNH4>[soil.Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4>
+             <WaterTableUrea>[soil.Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea>
+             <WaterTableCl>[soil.Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl>
+             <NO3Exco>[soil.NO3Exco]</NO3Exco>
+             <NO3FIP>[soil.NO3FIP]</NO3FIP>
+             <NH4Exco>[soil.NH4Exco]</NH4Exco>
+             <NH4FIP>[soil.NH4FIP]</NH4FIP>
+             <UreaExco>[soil.UreaExco]</UreaExco>
+             <UreaFIP>[soil.UreaFIP]</UreaFIP>
+             <ClExco>[soil.ClExco]</ClExco>
+             <ClFIP>[soil.ClFIP]</ClFIP>
+           </solute>
+         </initdata>
+      </component>
+      [endfor]
+      <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilNitrogen.%dllext%" class="SoilN">
+        <executable name="%apsim%/Model/SoilNitrogen.%dllext%" version="1.0" class="SoilN"/>
+        <initdata>
+          <PerformInstructions>
+            <ConstructModel>
+              <SoilNitrogen>
+                [Model SoilNitrogen]
+
+                [if [soil.SoilType]]<soiltype>[soil.SoilType]</soiltype>[else]<soiltype></soiltype>[endif]
+                <root_cn>[soil.SoilOrganicMatter.RootCN]</root_cn>
+                <root_wt>[soil.SoilOrganicMatter.RootWt]</root_wt>
+                <soil_cn>[soil.SoilOrganicMatter.SoilCN]</soil_cn>
+                <enr_a_coeff>[soil.SoilOrganicMatter.EnrACoeff]</enr_a_coeff>
+                <enr_b_coeff>[soil.SoilOrganicMatter.EnrBCoeff]</enr_b_coeff>
+                <oc>[soil.OC]</oc>
+                <ph>[soil.PH]</ph>
+                <fbiom>[soil.FBIOM]</fbiom>
+                <finert>[soil.FINERT]</finert>
+                <no3ppm>[soil.NO3]</no3ppm>
+                <nh4ppm>[soil.NH4]</nh4ppm>
+              </SoilNitrogen>
+            </ConstructModel>
+            <OverrideIf name="" condition="soiltype=sand">
+              <rd_biom description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
+                <double>0.0324</double>
+                <double>0.0150</double>
+              </rd_biom>
+              <wfmin_index description="index specifying water content for water factor for mineralization">
+                <double>0.0</double>
+                <double>0.5</double>
+                <double>1.0</double>
+                <double>2.0</double>
+              </wfmin_index>
+              <wfmin_values description="value of water factor function at given index values(mineralization)">
+                <double>0.05</double>
+                <double>1.00</double>
+                <double>1.00</double>
+                <double>0.05</double>
+              </wfmin_values>
+            </OverrideIf>
+            <OverrideIf name="" condition="soiltype=rothc">
+              <cnrf_optcn description="C:N above which decomposition rate of FOM declines"> 500.0 </cnrf_optcn>
+              <ef_res description="fraction of residue C mineralized retained in system (0-1)"> 0.24 </ef_res>
+              <ef_fom description="fraction of FOM C mineralized retained in system (0-1)"> 0.24 </ef_fom>
+              <ef_biom description="fraction of biomass C mineralized retained in system (0-1)"> 0.24 </ef_biom>
+              <ef_hum description="fraction of humic C mineralized retained in system (0-1)"> 0.407 </ef_hum>
+              <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)"> 0.46 </fr_res_biom>
+              <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)"> 0.46 </fr_fom_biom>
+              <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)"> 0.46 </fr_biom_biom>
+              <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">
+                <double>0.0274</double>
+                <double>0.0137</double>
+              </rd_carb>
+              <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">
+                <double>0.0001</double>
+                <double>0.00005</double>
+              </rd_cell>
+              <rd_lign description="maximum rate constant for decomposition of FPool3 (0-1)">
+                <double>0.00</double>
+                <double>0.00</double>
+              </rd_lign>
+              <rd_biom description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
+                <double>0.0010848</double>
+                <double>0.0005424</double>
+              </rd_biom>
+              <rd_hum description="potential daily rate of humus mineralization (aerobic and anaerobic conditions)">
+                <double>0.0000323</double>
+                <double>0.00001615</double>
+              </rd_hum>
+              <fom_type description="List of fom types available">
+                <string>default</string>
+                <string>stable</string>
+              </fom_type>
+              <fract_carb description="carbohydrate fraction of FOM (0-1)">
+                <double>0.59</double>
+                <double>0.2</double>
+              </fract_carb>
+              <fract_cell description="cellulose fraction of FOM (0-1)">
+                <double>0.41</double>
+                <double>0.8</double>
+              </fract_cell>
+              <fract_lign description="lignin fraction of FOM (0-1)">
+                <double>0.0</double>
+                <double>0.0</double>
+              </fract_lign>
+            </OverrideIf>
+            <OverrideIf name="" condition="soiltype=rothc6">
+              <cnrf_optcn description="C:N above which decomposition rate of FOM declines"> 500.0 </cnrf_optcn>
+              <ef_res description="fraction of residue C mineralized retained in system (0-1)"> 0.24 </ef_res>
+              <ef_fom description="fraction of FOM C mineralized retained in system (0-1)"> 0.24 </ef_fom>
+              <ef_biom description="fraction of biomass C mineralized retained in system (0-1)"> 0.24 </ef_biom>
+              <ef_hum description="fraction of humic C mineralized retained in system (0-1)"> 0.407 </ef_hum>
+              <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)"> 0.46 </fr_res_biom>
+              <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)"> 0.46 </fr_fom_biom>
+              <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)"> 0.46 </fr_biom_biom>
+              <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">
+                <double>0.0274</double>
+                <double>0.0137</double>
+              </rd_carb>
+              <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">
+                <double>0.0001</double>
+                <double>0.00005</double>
+              </rd_cell>
+              <rd_lign description="maximum rate constant for decomposition of FPool3 (0-1)">
+                <double>0.00</double>
+                <double>0.00</double>
+              </rd_lign>
+              <rd_biom description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
+                <double>0.0010848</double>
+                <double>0.0005424</double>
+              </rd_biom>
+              <rd_hum description="potential daily rate of humus mineralization (aerobic and anaerobic conditions)">
+                <double>0.0000323</double>
+                <double>0.00001615</double>
+              </rd_hum>
+              <fom_type description="List of fom types available">
+                <string>default</string>
+                <string>stable</string>
+              </fom_type>
+              <fract_carb description="carbohydrate fraction of FOM (0-1)">
+                <double>0.59</double>
+                <double>0.2</double>
+              </fract_carb>
+              <fract_cell description="cellulose fraction of FOM (0-1)">
+                <double>0.41</double>
+                <double>0.8</double>
+              </fract_cell>
+              <fract_lign description="lignin fraction of FOM (0-1)">
+                <double>0.0</double>
+                <double>0.0</double>
+              </fract_lign>
+            </OverrideIf>
+            <OverrideIf name="" condition="soiltype=soiln3">
+              <profile_reduction description="whether soil profile reduction is on or off"> off </profile_reduction>
+              <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">
+                <double>0.05</double>
+                <double>0.025</double>
+              </rd_cell>
+              <rd_lign description="maximum rate constant for decomposition of FPool3 (0-1)">
+                <double>0.0005</double>
+                <double>0.00025</double>
+              </rd_lign>
+              <rd_biom description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
+                <double>0.0081</double>
+                <double>0.004</double>
+              </rd_biom>
+              <fract_carb description="carbohydrate fraction of FOM (0-1)">
+                <double>0.2</double>
+                <double>0.3</double>
+                <double>0.54</double>
+                <double>0.57</double>
+                <double>0.45</double>
+                <double>0.05</double>
+              </fract_carb>
+              <fract_cell description="cellulose fraction of FOM (0-1)">
+                <double>0.7</double>
+                <double>0.3</double>
+                <double>0.37</double>
+                <double>0.37</double>
+                <double>0.47</double>
+                <double>0.05</double>
+              </fract_cell>
+            </OverrideIf>
+          </PerformInstructions>
+        </initdata>
+      </component>
+      [foreach Soil.Phosphorus]
+        <component name="Phosphorus" executable="%apsim%/Model/SoilP.%dllext%" class="SoilP">
+          <executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" class="SoilP"/>
+          <initdata>
+            [Model SoilP]
+            <root_cp>[soil.Phosphorus.RootCP]</root_cp>
+            <rate_dissol_rock_P>[soil.Phosphorus.RateDissolRock]</rate_dissol_rock_P>
+            <rate_loss_avail_P>[soil.Phosphorus.RateLossAvail]</rate_loss_avail_P>
+            <sorption_coeff>[soil.Phosphorus.SorptionCoeff]</sorption_coeff>
+            <labile_p>[soil.LabileP]</labile_p>
+            <banded_p>[soil.BandedP]</banded_p>
+            <rock_p>[soil.RockP]</rock_p>
+            <sorption>[soil.Sorption]</sorption>
+          </initdata>
+        </component>
+      [endfor]
+      [if [soil.Cl]]
+        <component name="Cl" executable="%apsim%/Model/Solute.%dllext%" class="Solute.Cl">
+          <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" class="Solute" />
+          <initdata>
+            <ub_solute>1000</ub_solute>
+            <lb_solute>0</lb_solute>
+            <solute_names>cl</solute_names>
+            <d0_cl>0</d0_cl>
+            <cl_ppm>[soil.Cl]</cl_ppm>
+          </initdata>
+        </component>
+      [endif]
+    </ApsimToSim>
+  </MetaData>
+  <Model name="SoilWater">
+
+       <!--    ****************
+         soilwat2_eeq_fac
+         ****************
+         -->
+       <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+       <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+       <!--    ******************************
+         soilwat2_pot_evapotranspiration
+         ******************************
+         -->
+       <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+       <!--  Bare soil albedo must not exceed this value.
+         ***********************
+         soilwat_evaporation
+         *********************** <dms 7-95>
+         -->
+       <A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact>
+       <!--    a coef. in exp effect on reducing
+         pot. soil evap for wt. of mixed residues.
+         0.44 = 0.00022/0.0005 DMS 1st approx. 6/95
+         -->
+       <canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef>
+       <!--    reducing pot. soil evap.
+         = 1.7 Adams, Arkin & Ritchie 1976
+         ******************
+         soilwat2_evap_init
+         ******************
+         -->
+       <sw_top_crit description="critical sw ratio in top layer">0.9</sw_top_crit>
+       <!--  below which stage 2 evaporation occurs
+         -->
+       <sumes1_max units="mm" description="upper limit of sumes1">100.0</sumes1_max>
+       <sumes2_max units="mm" description="upper limit of sumes2">25.0</sumes2_max>
+       <!--    ******************
+         soilwat2_nflow
+         ******************
+         -->
+       <solute_flow_eff description="efficiency of moving solute with flow (0-1)">1.0</solute_flow_eff>
+       <!--    ******************
+         soilwat2_nflux
+         ******************
+         -->
+       <solute_flux_eff description="efficiency of moving solute with flux (0-1)">1.0</solute_flux_eff>
+       <!--    ******************
+         soilwat2_unsaturated_flow
+         ******************
+         -->
+       <gravity_gradient description="soil water gradient due to gravitational">0.00002</gravity_gradient>
+       <!--  pressure head
+         ****************
+         soilwat2_check_profile
+         ****************
+         -->
+       <specific_bd units="g/cc" description="specific bulk density">2.65</specific_bd>
+       <hydrol_effective_depth units="mm">450</hydrol_effective_depth>
+       <mobile_solutes>no3 urea cl br org_n org_c_pool1 org_c_pool2 org_c_pool3</mobile_solutes>
+       <immobile_solutes>nh4</immobile_solutes>
+       <!--    ****************
+         soilwat2_runoff_cover
+         ****************
+         -->
+       <canopy_fact>1.0  1.0  0.0  0.0</canopy_fact>
+       <canopy_fact_height units="mm">0  600  1800 30000</canopy_fact_height>
+       <canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default>
+       <!--  added for SOILWAT2 ver 1.4 Aug-97 DMS & PdV
+         ****************
+         soilwat2_evaporation
+         ****************
+         <8-97 dms&pdv>
+         Ritchie (use with crops),
+         Ken Rickert (use with GRASP),
+         B&S
+         actual soil evaporation methods
+         -->
+       <act_evap_method>ritchie</act_evap_method>
+       <!-- act_evap_method = rickert
+         act_evap_method = bs_a
+         act_evap_method = bs_b
+         ****************
+         soilwat2_tillage
+         **************** <8-97 dms&pdv>
+         Mark Littleboy's tillage effect on runoff (used in PERFECT v2.0)
+         Littleboy, Cogle, Smith, Yule & Rao (1996)  Soil management and production
+         of alfisols in the SAT's I. Modelling the effects of soil management on runoff
+         and erosion.  Aust. J. Soil Res. 34: 91-102.
+
+         Tillage types that appear here must also be in residue2.ini under
+         [standard.residue2.tillage] !
+
+         Tillage reduces runoff potential (CN2) by g_tillage_cn_red (1st column below).
+         After tillage, CN2 increases linearly with cumulative rain since tillage until
+         g_tillage_cn_rain (column 2 below) has occured, ie roughness is smoothed out by rain.
+         Example parameter values (Littleboy et al) are given below for shallow & deep tillage.
+         Also, Nelsen et al (in press) had to reduce CN2 by 30 for ~ 30 days after tillage
+         during the wet season in wet tropical Philipines to mimic measured runoff.
+         -->
+    <SoilWatTillageType>
+      <!--  ________________________________________
+         tillage         CN2        Cumulative
+         type        reduction      rain to
+         cease reduction
+         (0-100)        (mm)
+         ________________________________________
+         -->
+      <chisel description="will have no effect - SOILWAT the same as old ver.">0.0           0.   </chisel>
+      <disc>0.0           0.</disc>
+      <planter>0.0           0.</planter>
+      <burn>0.0           0.</burn>
+    </SoilWatTillageType>
+
+  </Model>
+  <Model name="Swim3">
+    <!--    ****************
+      Convergence
+      ****************
+      -->
+    <max_iterations description="number of iterations before timestep is halved">50 </max_iterations>
+    <ersoil>0.000001</ersoil>
+    <ernode>0.000001</ernode>
+    <errex>0.01</errex>
+    <dppl>1</dppl>
+    <dpnl>1</dpnl>
+    <slcerr>0.000001</slcerr>
+    <!--    ****************
+      solute balance
+      ****************
+      Numerical Error can result in negative solute concentration
+      We allert the user according to the level of loss of solute
+      balance due to trucation of negative values.
+      -->
+    <negative_conc_fatal units="kg/ha">0.1</negative_conc_fatal>
+    <negative_conc_warn units="kg/ha">0.001</negative_conc_warn>
+    <!--    ****************
+      soilwat_eeq_fac
+      ****************
+      -->
+    <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+    <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+    <!--    ******************************
+      soilwat_pot_evapotranspiration
+      ******************************
+      -->
+    <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+    <!--  Bare soil albedo must not exceed this value.
+      -->
+    <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+    <!-- max_bitesize = .02
+      -->
+    <min_total_root_length>0.01</min_total_root_length>
+    <crop_name>wheat   sugar   default </crop_name>
+    <min_xylem_potential> -15000. -15000. -15000.</min_xylem_potential>
+    <root_radius>  0.25 0.25 0.25    </root_radius>
+    <root_conductance> 1.4e-7 1.4e-7 1.4e-7 </root_conductance>
+      <!--    ******************************
+      Residue and Crop Cover Effects
+      ******************************
+      The effect of residue and canopy cover is implemented as in the soilwat model.
+      These can be turn off for compatibility with SWIM standalone.
+      --><cover_effects>on          </cover_effects><A_to_evap_fact description="converts residue specfic area 'A' to">0.44      </A_to_evap_fact><!--    a coef. in exp effect on reducing
+      pot. soil evap for wt. of mixed residues.
+      0.44 = 0.00022/0.0005 DMS 1st approx. 6/95
+      --><canopy_eos_coef description="coef. in exp effect of canopy on">1.7       </canopy_eos_coef><!--    reducing pot. soil evap.
+      = 1.7 Adams, Arkin & Ritchie 1976
+      Set the default rainfall and evaporation daily time courses
+      these are used if the user does not specify them in the met file
+      --><canopy_fact>1.0  1.0  0.0  0.0</canopy_fact><canopy_fact_height units="mm">0  600  1800 30000</canopy_fact_height><canopy_fact_default description="canopy factor to use if height is missing">0.5</canopy_fact_default><hydrol_effective_depth units="mm">450</hydrol_effective_depth><no3slos>0.000</no3slos><nh4slos>0.000</nh4slos><ureaslos>0.000</ureaslos><clslos>0.61</clslos><no3d0>0.05</no3d0><nh4d0>0.05</nh4d0><uread0>0.05</uread0><cld0>0.05</cld0><default_rain_time>0:00</default_rain_time><default_rain_duration>1440.</default_rain_duration><default_evap_time>6:00</default_evap_time><default_evap_duration>720.</default_evap_duration><!--    ******
+      Bounds
+      ******
+      --><lb_exco>0</lb_exco><ub_exco>15000</ub_exco><lb_fip>0</lb_fip><ub_fip>100</ub_fip><lb_dis>0</lb_dis><ub_dis>20</ub_dis><lb_slupf>0</lb_slupf><ub_slupf>1</ub_slupf><lb_slos>0</lb_slos><ub_slos>10</ub_slos><lb_d0>0</lb_d0><ub_d0>1</ub_d0><lb_a>0</lb_a><ub_a>100</ub_a><lb_dthc>0</lb_dthc><ub_dthc>1</ub_dthc><lb_dthp>0</lb_dthp><ub_dthp>10</ub_dthp><lb_disp>0</lb_disp><ub_disp>5</ub_disp><lb_solute>0</lb_solute><ub_solute>1000</ub_solute></Model>
+  <Model name="SoilNitrogen">
+    <!-- additions by RCichota - temporary? -->
+    <useNewFunctions description="whether the new set of functions will be used (include processes and factors)"> no </useNewFunctions>
+
+    <!-- General setting parameters -->
+    <SoilParamSet description="the parameter set used to initialise SoilNitrogen"> standard </SoilParamSet>
+    <allowSimpleSoilTemp description="whether internal soilTemp can be used, otherwise the SoilTemp has to be present"> yes </allowSimpleSoilTemp>
+    <profile_reduction description="whether soil profile reduction is on or off"> off </profile_reduction>
+    <use_organic_solutes description="whether organic solute are on or off"> off </use_organic_solutes>
+    <ureappm_min description="minimum allowable urea content (ppm)"> 0.0 </ureappm_min>
+    <nh4ppm_min description="minimum allowable NH4 (ppm)"> 0.0 </nh4ppm_min>
+    <no3ppm_min description="minimum allowable NO3 (ppm)"> 0.0 </no3ppm_min>
+    <fom_min description="minimum allowable FOM (kg/ha)"> 0.5 </fom_min>
+    <OC2OM_factor description="factor to convert organic carbon to organic matter"> 1.7 </OC2OM_factor>
+    <C_in_FOM description="Carbon weight fraction in FOM (0-1)"> 0.40 </C_in_FOM>
+    <defaultInipH description="Default initial ph, used case no pH is initialised in model"> 6.0 </defaultInipH>
+    <WarningNegativeThreshold description="threshold for raising a warning for negative concentrations"> -0.000000001 </WarningNegativeThreshold>
+    <FatalNegativeThreshold description="threshold for a fatal error for negative concentrations (ppm)"> -0.000001 </FatalNegativeThreshold>
+
+    <!-- Parameters for handling soil loss process -->
+    <enr_a_coeff description="coefficient A for erosion enrichment function">7.4</enr_a_coeff>
+    <enr_b_coeff description="coefficient B for erosion enrichment function">0.2</enr_b_coeff>
+
+    <!-- Parameters for setting soil organic matter -->
+    <mcn description="C:N ratio of microbes ()"> 8.0 </mcn>
+    <soil_cn description="C:N ratio of soil humus"> 12.5 </soil_cn>
+
+    <!-- Parameters for setting fresh organic matter (FOM) -->
+    <root_cn description="C:N ratio of soil fresh organic matter"> 30 </root_cn>
+    <root_wt description="Amount of fresh organic matter in the soil (kgDM/ha)"> 1000 </root_wt>
+    <root_deth description="Depth for distributing fom in the soil (mm), if -ve will use soil depth"> 1000 </root_deth>
+    <root_dist_coeff description="Coeff. used for distributing fom in the soil"> 3.0 </root_dist_coeff>
+    <fom_type description="List of fom types available">
+      <string>default</string>
+      <string>manure</string>
+      <string>mucuna</string>
+      <string>lablab</string>
+      <string>shemp</string>
+      <string>stable</string>
+    </fom_type>
+    <fract_carb description="carbohydrate fraction of FOM (0-1)">
+      <double>0.2</double>
+      <double>0.3</double>
+      <double>0.54</double>
+      <double>0.57</double>
+      <double>0.45</double>
+      <double>0.0</double>
+    </fract_carb>
+    <fract_cell description="cellulose fraction of FOM (0-1)">
+      <double>0.7</double>
+      <double>0.3</double>
+      <double>0.37</double>
+      <double>0.37</double>
+      <double>0.47</double>
+      <double>0.1</double>
+    </fract_cell>
+    <fract_lign description="lignin fraction of FOM (0-1)">
+      <double>0.1</double>
+      <double>0.4</double>
+      <double>0.09</double>
+      <double>0.06</double>
+      <double>0.08</double>
+      <double>0.9</double>
+    </fract_lign>
+
+    <!-- Parameters for FOM and SurfOM mineralisation process -->
+    <!-- For Surface OM -->
+    <ef_res description="fraction of residue C mineralized retained in system (0-1)"> 0.4 </ef_res>
+    <fr_res_biom description="fraction of retained residue C transferred to biomass (0-1)"> 0.9 </fr_res_biom>
+    <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)"> 100.0 </min_depth>
+    <!-- For fresh OM -->
+    <!-- Old parameters -->
+    <rd_carb description="maximum rate constant for decomposition of FPool1 (0-1)">
+      <double>0.2</double>
+      <double>0.1</double>
+    </rd_carb>
+    <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">
+      <double>0.05</double>
+      <double>0.25</double>
+    </rd_cell>
+    <rd_lign description="maximum rate constant for decomposition of FPool3 (0-1)">
+      <double>0.0095</double>
+      <double>0.003</double>
+    </rd_lign>
+    <ef_fom description="fraction of FOM C mineralized retained in system (0-1)"> 0.4 </ef_fom>
+    <fr_fom_biom description="fraction of retained FOM C transferred to biomass (0-1)"> 0.9 </fr_fom_biom>
+    <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM"> 0.693 </cnrf_coeff>
+    <cnrf_optcn description="C:N above which decomposition rate of FOM declines"> 25.0 </cnrf_optcn>
+    <!-- New parameters -->
+    <stf_DecompFOM_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic conditions)">
+      <double>32.0</double>
+      <double>32.0</double>
+    </stf_DecompFOM_Topt>
+    <stf_DecompFOM_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+      <double>0.0</double>
+      <double>0.0</double>
+    </stf_DecompFOM_FctrZero>
+    <stf_DecompFOM_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic conditions)">
+      <double>2.0</double>
+      <double>2.0</double>
+    </stf_DecompFOM_CvExp>
+    <swf_DecompFOM_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.5</double>
+      <double>2.0</double>
+      <double>3.0</double>
+    </swf_DecompFOM_swx>
+    <swf_DecompFOM_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+      <double>0.0</double>
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.5</double>
+    </swf_DecompFOM_y>
+
+    <!-- Parameters for SOM mineralisation/immobilisation process -->
+    <!-- dsg 200509 ****** the following constants are for (a) aerobic AND (b)anaerobic conditions ***** -->
+    <rd_biom description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
+      <double>0.0081</double>
+      <double>0.004</double>
+    </rd_biom>
+    <ef_biom description="fraction of biomass C mineralized retained in system (0-1)"> 0.4 </ef_biom>
+    <fr_biom_biom description="fraction of retained biomass C returned to biomass (0-1)"> 0.6 </fr_biom_biom>
+    <rd_hum description="potential daily rate of humus mineralization (aerobic and anaerobic conditions)">
+      <double>0.00015</double>
+      <double>0.00007</double>
+    </rd_hum>
+    <ef_hum description="fraction of humic C mineralized retained in system (0-1)"> 0.4 </ef_hum>
+    <!-- Old parameters -->
+    <opt_temp description="Soil temperature above which there is no further effect on mineralisation and nitrification (aerobic and anaerobic)">
+      <double>32.0</double>
+      <double>32.0</double>
+    </opt_temp>
+    <wfmin_index description="index specifying water content for water factor for mineralization">
+      <double>0.0</double>
+      <double>0.5</double>
+      <double>1.0</double>
+      <double>2.0</double>
+    </wfmin_index>
+    <wfmin_values description="value of water factor function at given index values(mineralization)">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.5</double>
+    </wfmin_values>
+    <!--
+                   ______________________________________________________________________-
+                   Specifying the water factor for Nitrogen Transformations is
+                   by referring to water content via an indexing system and linear interpolation
+                   between specified coordinates.
+                   (see example)
+
+                     1.0 |     ______
+                         |    /.     \                In this example
+                     0.5 |   / .      \               wf_index = 0.0 0.5 1.0 2.0
+                         |  /  .       \              wf_values= 0.0 1.0 1.0 0.25
+                         | /   .        \
+                     0.0 |/______________\_____
+                         LL   DUL       SAT
+                         =0   =1        =2
+                     -->
+    <!-- New parameters -->
+    <stf_MinerSOM_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic conditions)">
+      <double>32.0</double>
+      <double>32.0</double>
+    </stf_MinerSOM_Topt>
+    <stf_MinerSOM_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+      <double>0.0</double>
+      <double>0.0</double>
+    </stf_MinerSOM_FctrZero>
+    <stf_MinerSOM_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic conditions)">
+      <double>2.0</double>
+      <double>2.0</double>
+    </stf_MinerSOM_CvExp>
+    <swf_MinerSOM_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.5</double>
+      <double>2.0</double>
+      <double>3.0</double>
+    </swf_MinerSOM_swx>
+    <swf_MinerSOM_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+      <double>0.0</double>
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.5</double>
+    </swf_MinerSOM_y>
+
+    <!-- Parameters for urea hydrolysis -->
+    <stf_Hydrol_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic)">
+      <double>32.0</double>
+      <double>32.0</double>
+    </stf_Hydrol_Topt>
+    <stf_Hydrol_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+      <double>0.20</double>
+      <double>0.20</double>
+    </stf_Hydrol_FctrZero>
+    <stf_Hydrol_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+      <double>1.0</double>
+      <double>1.0</double>
+    </stf_Hydrol_CvExp>
+    <swf_Hydrol_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.4</double>
+      <double>2.4</double>
+      <double>3.0</double>
+    </swf_Hydrol_swx>
+    <swf_Hydrol_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+      <double>0.2</double>
+      <double>0.2</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.7</double>
+    </swf_Hydrol_y>
+    <potHydrol_min description="minimum potential hydrolysis rate for urea (/day)"> 0.25 </potHydrol_min>
+    <potHydrol_parmA description="parameter A for potential urea hydrolysis function"> -1.12 </potHydrol_parmA>
+    <potHydrol_parmB description="parameter B for potential urea hydrolysis function"> 1.31 </potHydrol_parmB>
+    <potHydrol_parmC description="parameter C for potential urea hydrolysis function"> 0.203 </potHydrol_parmC>
+    <potHydrol_parmD description="parameter D for potential urea hydrolysis function"> -0.155 </potHydrol_parmD>
+
+    <!-- Parameters for nitrification -->
+    <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)"> 40.0 </nitrification_pot>
+    <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menten kinetics)"> 90.0 </nh4_at_half_pot>
+    <!-- Old parameters -->
+    <wfnit_index description="index specifying water content for water factor for nitrification">
+      <double>0.0</double>
+      <double>0.25</double>
+      <double>1.0</double>
+      <double>2.0</double>
+    </wfnit_index>
+    <wfnit_values description="value of water factor function at given index values(nitrification)">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.0</double>
+    </wfnit_values>
+    <pHf_nit_pH description="pH for specifying factor for nitrification">
+      <double>4.5</double>
+      <double>6.0</double>
+      <double>8.0</double>
+      <double>9.0</double>
+    </pHf_nit_pH>
+    <pHf_nit_values description="value of pH factor for nitrification">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.0</double>
+    </pHf_nit_values>
+    <!-- New parameters -->
+    <stf_Nitrif_Topt description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic)">
+      <double>32.0</double>
+      <double>32.0</double>
+    </stf_Nitrif_Topt>
+    <stf_Nitrif_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+      <double>0.00</double>
+      <double>0.00</double>
+    </stf_Nitrif_FctrZero>
+    <stf_Nitrif_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+      <double>2.0</double>
+      <double>2.0</double>
+    </stf_Nitrif_CvExp>
+    <swf_Nitrif_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.25</double>
+      <double>2.0</double>
+      <double>3.0</double>
+    </swf_Nitrif_swx>
+    <swf_Nitrif_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+      <double>0.0</double>
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.0</double>
+    </swf_Nitrif_y>
+    <phf_Nitrif_phx description="parameters for pH factor, values of soil ph (0-14)">
+      <double>0.0</double>
+      <double>4.5</double>
+      <double>6.0</double>
+      <double>8.0</double>
+      <double>9.0</double>
+      <double>14.0</double>
+    </phf_Nitrif_phx>
+    <phf_Nitrif_y description="parameters for pH factor, values of pH factor corresponding to x (0-1)">
+      <double>0.0</double>
+      <double>0.0</double>
+      <double>1.0</double>
+      <double>1.0</double>
+      <double>0.0</double>
+      <double>0.0</double>
+    </phf_Nitrif_y>
+
+    <!-- Parameters for denitrification -->
+    <dnit_rate_coeff description="denitrification rate coefficient (kg soil/mg C per day)"> 0.0006 </dnit_rate_coeff>
+    <dnit_nitrf_loss description="Fraction of nitrification lost as denitrification"> 0.0 </dnit_nitrf_loss>
+    <dnit_k1 description="K1 parameter from Thorburn et al (2010) for N2O model"> 25.1 </dnit_k1>
+    <!-- Old parameters -->
+    <dnit_wf_power description="power term for calculation of water factor for denitrification where wf = ((SW-DUL)/(SAT-DUL))^P"> 1.0 </dnit_wf_power>
+    <dnit_wfps description="WFPS for calculating n2o fraction of denitrification">
+      <double>21.33333</double>
+      <double>100.0</double>
+    </dnit_wfps>
+    <dnit_n2o_factor description="corresponding factor for n2o fraction of denitrification">
+      <double>0.0</double>
+      <double>1.18</double>
+    </dnit_n2o_factor>
+    <!-- New parameters -->
+    <actC_parmA description="parameter A to compute active carbon"> 24.5 </actC_parmA>
+    <actC_parmB description="parameter B to compute active carbon"> 0.0031 </actC_parmB>
+    <stf_dnit_Topt description="parameter for the temperature factor, optimum temperature (aerobic and anaerobic)">
+      <double>50.056</double>
+      <double>50.0056</double>
+    </stf_dnit_Topt>
+    <stf_dnit_FctrZero description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+      <double>0.10</double>
+      <double>0.10</double>
+    </stf_dnit_FctrZero>
+    <stf_dnit_CvExp description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+      <double>68350.0</double>
+      <double>68350.0</double>
+    </stf_dnit_CvExp>
+    <swf_dnit_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+      <double>0.0</double>
+      <double>2.0</double>
+      <double>3.0</double>
+    </swf_dnit_swx>
+    <swf_dnit_y description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+      <double>0.0</double>
+      <double>0.0</double>
+      <double>1.0</double>
+    </swf_dnit_y>
+    <N2N2O_parmA description="parameter A in the equation computing the N2:N2O ratio"> 0.16 </N2N2O_parmA>
+    <N2N2O_parmB description="parameter B in the equation computing the N2:N2O ratio"> -0.80 </N2N2O_parmB>
+    <swpsf_dnit_swpx description="parameters for WFPS factor to compute N2:N2O ratio, values of water filled pore space (%)">
+      <double>0.0</double>
+      <double>28.0</double>
+      <double>88.0</double>
+      <double>100.0</double>
+    </swpsf_dnit_swpx>
+    <swpsf_dnit_y description="parameters for WFPS factor to compute N2:N2O ratio, values of WFPS factor corresponding to x (0-1)">
+      <double>0.1</double>
+      <double>0.1</double>
+      <double>1.0</double>
+      <double>1.18</double>
+    </swpsf_dnit_y>
+  </Model>
+  <Model name="SoilP">
+    <!--  CHANGES by MEP
+      -->
+    <!-- rate_loss_avail_P =   0.7 !0.5 !0.3 ()   ! (< 1) Fraction lost per yr specified at 25 oC
+      moved to parameter as changes with soil types
+      -->
+    <rate_decr_placement description="0.5 ()   ! (, 1) Fractional loss of placement effect per yr">0.8   </rate_decr_placement>
+    <act_energy_loss_avail_P units="kJ/mole" description="Effect of soil temperature on P availability">90</act_energy_loss_avail_P>
+    <availP_ratio description="Ratio of available P : unavailable P at steady state">0.1</availP_ratio>
+    <eff_band description="3.0 ()   ! Relative effectiveness of banded_p compared with broadcast_p">2.0 </eff_band>
+    <biom_cp description="80 !40.0 ()   ! c:p ratio of biom pool">60.0 </biom_cp>
+    <hum_cp description="c:p ratio of hum pool">100.0</hum_cp>
+    <!-- ______________________________________________________________________-
+      Specifying the water factor for the loss of available Phosphorus is
+      by referring to water content via an indexing system and linear interpolation
+      between specified coordinates.
+      (see example)
+      __________
+      1 |    /    .    .
+      |  / .    .    .          In this example
+      .5 |/   .    .    .          wf_loss_index = 0.0 0.5 1.0 2.0
+      |    .    .    .          wf_loss_values= 0.5 1.0 1.0 1.0
+      |    .    .    .
+      0 ______________________-
+      LL       DUL   SAT
+      =0       =1    =2
+
+      -->
+    <wf_loss_index description="index specifying water content">0.0 0.5  1.0  2.0   </wf_loss_index>
+    <!--  for water factor for loss of
+      availability
+      -->
+    <wf_loss_values description="value of water factor function">0.6 1.0  1.0  1.0   </wf_loss_values>
+    <!--  at given index values
+      PHOSPHORUS UPTAKE
+      Potential P uptake from a layer is assumed to be related to the notional P concentration in solution
+      which is non-linearly related to effective P
+      -->
+    <!--  Note that sorption_coeff and p_supply_factor will need to be varied together
+      provision for other crops, but only maize has been tested against measured data
+      -->
+    <crop_name description="name of crop">                               maize wheat navybean cowpea pigeonpea soybean peanut mungbean weed sorghum butterflypea centro lablab millet millet1 millet2 millet3 millet4 millet5</crop_name>
+    <p_supply_factor units="??" description="used with sorpt_coeff = 0.7">0.45   0.4      0.4    0.4       0.6     0.4    0.4      0.4  0.4     0.4          0.4    0.4    0.4    0.4     0.4     0.4     0.4     0.4     0.4</p_supply_factor>
+    <!-- ! FIXME - navybean reduced because of correction to P demand in Plant - switched off in code
+      !p_supply_factor =   0.45   0.4    0.24       0.4     0.6        0.4      0.4          0.4      0.4   0.4   (??)        ! used with sorpt_coeff = 0.7
+      p_supply_factor =   0.1    0.1                                      (??)   ! used with sorpt_coeff = 1
+      p_supply_factor =   4      4.0                                         (??)   ! used with sorpt_coeff = 0.5
+      **************************************************
+      -->
+    <crit_p_rlv units="mm/mm^3" description="critical P rlv">          0.00001 0.00001 0.00001 0.00001  0.00001 0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  0.00001 0.00001 </crit_p_rlv>
+    <!-- upper and lower bounds for soil P pools
+      -->
+    <lb_labile_p_ppm>0</lb_labile_p_ppm>
+    <ub_labile_p_ppm>1000</ub_labile_p_ppm>
+    <lb_unavail_p>0</lb_unavail_p>
+    <ub_unavail_p>10000</ub_unavail_p>
+    <lb_banded_p>0</lb_banded_p>
+    <ub_banded_p>1000</ub_banded_p>
+    <lb_rock_p>0</lb_rock_p>
+    <ub_rock_p>1000</ub_rock_p>
+    <lb_fom_p>0.0</lb_fom_p>
+    <ub_fom_p>1000</ub_fom_p>
+    <lb_fom_cp>0.0</lb_fom_cp>
+    <ub_fom_cp>3000.0</ub_fom_cp>
+  </Model>
+  <Info name="SoilWat">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="air_dry" description="Air Dry water content" read="T" write="T" kind="single" array="T" units="mm/mm" />
+      <variable name="air_dry_dep" description="Air Dry water content" read="T" write="T" kind="single" array="T" units="mm" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="bd" description="Bulk density" read="T" write="F" kind="single" array="T" units="g/cm^3" />
+      <variable name="cn2_bare" description="curve number input used to calculate runoff" read="F" write="T" kind="single" array="" units="" />
+      <variable name="cn2_new" description="CN2 after modification for crop cover" read="T" write="F" kind="single" array="" units="" />
+      <variable name="cn_cov" description="cover term in curve number equation" read="F" write="T" kind="single" array="" units="" />
+      <variable name="cn_red" description="CN reduction in curve number equation (cover)" read="F" write="T" kind="single" array="" units="" />
+      <variable name="cona" description="Stage 2 evaporation coefficient" read="T" write="F" kind="single" array="" units="" />
+      <variable name="cover_surface_runoff" description="Effective cover used in runoff calculation" read="T" write="F" kind="single" array="" units="" />
+      <variable name="dlayer" description="Thickness of profile layer" read="T" write="T" kind="single" array="T" units="mm" />
+      <variable name="dlt_dlayer" description="Change to profile thickness" read="F" write="T" kind="single" array="T" units="mm" />
+      <variable name="dlt_sw" description="Change to sw" read="F" write="T" kind="single" array="T" units="mm/mm" />
+      <variable name="dlt_sw_dep" description="Change to sw" read="F" write="T" kind="single" array="T" units="mm" />
+      <variable name="drain" description="Drainage from bottom layer" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="dul" description="Drained Upper Limit" read="T" write="T" kind="single" array="T" units="mm/mm" />
+      <variable name="dul_dep" description="Drained Upper Limit" read="T" write="T" kind="single" array="T" units="mm" />
+      <variable name="eff_rain" description="daily effective rainfall" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="eo" description="Potential evapotranspiration via priestly-taylor" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="eos" description="Potential evap after modification for green cover and residue" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="es" description="Soil Evaporation" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="esw" description="Extractible soil water relative to LL15" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="flow" description="depth of water moving from layer l+1 into layer l because of unsaturated flow. positive value indicates upward movement into layer l, negative value indicates downward movement (mm) out of layer l" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="flow_water" description="Flux - Flow" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="flux" description="initially, water moving downward into layer l, then water moving downward  out of layer l" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="infiltration" description="Infiltration" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="insoil" description="initial soil water" read="F" write="T" kind="single" array="" units="" />
+      <variable name="ll15" description="15 bar Lower Limit" read="T" write="T" kind="single" array="T" units="mm/mm" />
+      <variable name="ll15_dep" description="15 bar Lower Limit" read="T" write="T" kind="single" array="T" units="mm" />
+      <variable name="max_pond" description="Height of pond" read="F" write="T" kind="single" array="" units="mm" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="outflow_lat" description="lateral flow out of the profile" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="pond" description="Surface ponding depth" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="pond_evap" description="Evaporation from pond surface" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="profile_esw_depth" description="initial depth of extractable soil water distributed from the top down" read="F" write="T" kind="single" array="" units="mm" />
+      <variable name="profile_fesw" description="initial fraction of esw of profile distributed from  top down" read="F" write="T" kind="single" array="" units="" />
+      <variable name="runoff" description="Runoff" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="salb" description="bare soil albedo" read="T" write="F" kind="single" array="" units="0-1" />
+      <variable name="sat" description="Saturated water content" read="T" write="T" kind="single" array="T" units="mm/mm" />
+      <variable name="sat_dep" description="Saturated water content" read="T" write="T" kind="single" array="T" units="mm" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="sw" description="Soil water content" read="T" write="T" kind="single" array="T" units="mm/mm" />
+      <variable name="sw_dep" description="Soil water content" read="T" write="T" kind="single" array="T" units="mm" />
+      <variable name="sws" description="soil water" read="T" write="F" kind="single" array="T" units="mm/mm" />
+      <variable name="t" description="time after 2nd-stage soil evaporation begins" read="T" write="F" kind="single" array="" units="day" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="u" description="upper limit of stage 1 evaporation" read="T" write="F" kind="single" array="" units="" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="water_table" description="water table depth" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="wet_soil_depth" description="initial depth of soil filled to drained upper limit (field capacity)" read="F" write="T" kind="single" array="" units="mm" />
+    </variables>
+    <events>
+      <event name="externalmassflow" description="" />
+      <event name="new_profile" description="" />
+      <event name="runoffevent" description="" />
+    </events>
+  </Info>
+  <Info name="SoilN">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="biom_c" description="Biomass C" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="biom_n" description="Biomass nitrogen" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="carbon_tot" description="Total carbon" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_biom_c_atm" description="Biomass C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_biom_c_hum" description="Biomass C converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_biom_n_min" description="Net biomass N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_c_loss_in_sed" description="Carbon loss in sediment" read="T" write="F" kind="single" array="" units="kg" />
+      <variable name="dlt_fom_c_atm" description="Fom C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_biom" description="Fom C converted to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_hum" description="Fom C converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_pool1" description="delta fom C pool in fraction 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_pool2" description="delta fom C pool in fraction 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_c_pool3" description="delta fom C pool in fraction 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_fom_n_min" description="Net FOM N mineralized, negative for immobilization" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_hum_c_atm" description="Humic C lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_hum_c_biom" description="Humic C converted to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_hum_n_min" description="Net humic N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_n_loss_in_sed" description="N loss in sediment" read="T" write="F" kind="single" array="" units="kg" />
+      <variable name="dlt_n_min" description="Net N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_n_min_res" description="Net Residue N mineralisation" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_n_min_tot" description="Humic N mineralized" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4_dnit" description="NH4 N denitrified" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4_net" description="Net NH4 change today" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="dlt_no3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_no3_dnit" description="NO3 N denitrified" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_no3_net" description="Net NO3 change today" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_no3ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="dlt_org_c_pool1" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_org_c_pool2" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_org_c_pool3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_org_n" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_c_atm" description="Carbon from residues lost to atmosphere" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="dlt_res_c_biom" description="Carbon from residues lost to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_c_hum" description="Carbon from residues converted to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_nh4_min" description="Net NH4 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_res_no3_min" description="Net Residue NO3 mineralisation" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_urea" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_urea_hydrol" description="Nitrogen moved by hydrolysis" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="dnit" description="Denitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="effective_nitrification" description="Effective nitrogen moved by nitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="excess_nh4" description="Excess N required above NH4 supply" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c" description="FOM C" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c_pool1" description="FOM C in pool1" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c_pool2" description="FOM C in pool2" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_c_pool3" description="FOM C in pool3" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n" description="Nitrogen in FOM" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n_pool1" description="Nitrogen in FOM pool 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n_pool2" description="Nitrogen in FOM pool 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_n_pool3" description="Nitrogen in FOM pool 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fr_carb" description="Fraction of carbohydrate" read="T" write="F" kind="single" array="" units="" />
+      <variable name="fr_cell" description="Fraction of cellulose" read="T" write="F" kind="single" array="" units="" />
+      <variable name="fr_lign" description="Fraction of lignin" read="T" write="F" kind="single" array="" units="" />
+      <variable name="hum_c" description="Humic C" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="hum_n" description="Humic nitrogen" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="n2o_atm" description="Amount of N20 produced" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="n_reduction" description="" read="F" write="T" kind="string" array="" units="" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="nh4" description="Ammonium nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4_min" description="Minimum allowable NH4" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4_transform_net" description="Net NH4 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="nh4ppm" description="Ammonium nitrogen" read="T" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="nit_tot" description="total N in soil" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="nitrification" description="Nitrogen moved by nitrification" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3" description="Nitrate nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="no3_min" description="Minimum allowable NO3" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3_transform_net" description="Net NO3 transformation" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3ppm" description="Nitrate nitrogen" read="T" write="T" kind="single" array="T" units="mg/kg" />
+      <variable name="num_fom_types" description="Number of FOM types" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="oc" description="Organic carbon" read="T" write="F" kind="single" array="T" units="%" />
+      <variable name="org_c_pool" description="Organic C" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="org_n" description="Organic N" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_org_p" description="variable needed by soilp in its calculations" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_res_c_atm" description="Carbon from all residues to atmosphere" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_res_c_biom" description="Carbon from all residues to biomass" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="soilp_dlt_res_c_hum" description="Carbon from all residues to humic" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="st" description="Surface temperature" read="T" write="F" kind="single" array="T" units="oC" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="urea" description="Urea nitrogen" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+    </variables>
+    <events>
+      <event name="actualresiduedecompositioncalculated" description="" />
+      <event name="externalmassflow" description="" />
+      <event name="new_solute" description="" />
+    </events>
+  </Info>
+  <Info name="SoilP">
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="banded_p" description="Banded P" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="biom_p" description="P in biomass pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="demand_p_{crop}" description="P demand from {crop}" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="fom_cp" description="C:P ratio in FOM pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_p" description="P in FOM pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_p_pool1" description="P in FOM pool 1" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_p_pool2" description="P in FOM pool 2" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="fom_p_pool3" description="P in FOM pool 3" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="hum_p" description="P in humic pool" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="labile_p" description="Labile P" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="rock_p" description="Rock P" read="T" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="soil_test_p" description="Labile + Banded P" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="unavail_p" description="Unavailable P" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="uptake_p_{crop}" description="P uptake from {crop}" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+    </variables>
+    <events>
+      <event name="externalmassflow" description="" />
+    </events>
+  </Info>
+</Type>
