@@ -1,0 +1,1230 @@
+<folder version="36" creator="Apsim 7.6-r3384" name="Simulations">
+  <folder name="Test1-SWIM2-Bare+TypicSoil">
+    <memo name="Info">
+++++++++++++++++++++  TEST 37 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   Description:
+      - Artificial climate, smooth mild temperate;
+      - Two generic soils, a free draining and a poorly drained;
+      - Bare soil;
+      - Initial mineral N: 30kgN/ha as NO3 + 30kgN/ha as NH4;
+      - Initial soil organic matter composed of humus and FOM;
+      - Iinitial surface residues of 1000kgDM/ha;
+      - No additions of residues or mineral N;
+
+      &gt;&gt; Using SWIM2ui as water module  &lt;&lt;
+
+   Expected output:
+      - All outputs with valid values (numeric mostly);
+      - This is the complete basic soil run under bare cover conditions;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+</memo>
+    <simulation name="SimTest1-SoilN">
+      <clock>
+        <start_date type="date" description="start_date">01/07/2000</start_date>
+        <end_date type="date" description="end_date">31/12/2000</end_date>
+      </clock>
+      <metfile name="met">
+        <filename input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
+      </metfile>
+      <PlugIns>
+        <PlugIn enabled="yes">%apsim%\UserInterface\ApsimUIPlugIn.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\SoilTypes.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\Graph.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\Ausfarm.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\DevelopersPlugIn.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SlurryTank.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\PHmodel.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\simpleBuilding.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\atmosphere.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Accum.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\AgPasture.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Bambatsi.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Barley.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Br.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Bore.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Broccoli.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\ButterflyPea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Canola.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Canopy.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Centro.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Channel.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Chickpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Cl.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Climatechange.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Clock.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Cotton2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Cowpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\CropUI.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Dam.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\DCD.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\EGrandis.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\EMelliodora.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Eo.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\EPopulnea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Erosion.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Events.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Fababean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Factorial.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Factor.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\FactorComplex.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\FrenchBean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Fertiliser.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Fieldpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Gcm_data.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Grasp.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Graz.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Growth.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Horsegram.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Ini.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\InitWater.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Input.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Irrigation.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\KWTest.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lablab.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lettuce.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Log.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lucerne.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lupin.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Maize.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\MaizeZ.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Manager.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Map.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Memo.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\MetFile.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\MicroMet.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet1.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet3.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet4.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet5.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Mucuna.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Mungbean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Navybean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Oats.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Ocean_data.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Operations.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Orobanche.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Oryza.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Oryza2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\OutputFile.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Ozcot.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Patchinput.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Peanut.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Pigeonpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Pond.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Potato.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\RotPlot.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\RugPlotUI.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Root.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Rule.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Script.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Seedling.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SiloInput.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Slurp.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Soi.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Soil.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SoilNui.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SoilTemp.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sorghum.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SorghumConstants.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SorghumGenotype.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Soybean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Stylo.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sugar.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Summaryfile.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sunflower.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SurfaceOM.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SweetCorn.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SweetSorghum.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SWIM2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SWIM2ui.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SWIM2ui2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sysbal.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SysBal2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tcllink.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tclmanager.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tclui.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\TextOutput.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tracker.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tree.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Variables.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Venlink.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\vine.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\WaterSupply.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Weed.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Wheat.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\YPCalc.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\UrinePatch.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\Soil with new nitrogen model.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\SoilNitrogen.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\Soil with new water and nitrogen models.xml</PlugIn>
+      </PlugIns>
+      <summaryfile />
+      <area name="Paddock1-LightSoil">
+        <folder name="ManagerFolder">
+          <manager2 name="Aux-Outputs">
+            <ui>
+              <A type="category" description=" This script help to organise some outputs" />
+            </ui>
+            <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+
+   [Link] Paddock myPaddock;
+   
+   [Input(IsOptional=true)] double[] n_demanded;
+   [Input(IsOptional=true)] double totaln;
+   [Input(IsOptional=true)] double totalwt;
+   [Input(IsOptional=true)] double ep;
+
+   [Input(IsOptional=true)] double[] NitrogenSupplyLayers;
+   [Input(IsOptional=true)] double TotalPlantN;
+   [Input(IsOptional=true)] double TotalPlantWt;
+   [Input(IsOptional=true)] double WaterUptake;
+      
+   [Output] string SoilName;
+   [Output] double PlantTotalN;
+   [Output] double PlantTotalC;
+   [Output] double PlantTranspiration;
+   
+   [EventHandler] public void OnInitialised()
+   {
+      
+      foreach(Component myModule in myPaddock.Children)
+      {
+         if(myModule.Name.Contains(" Nitrogen"))
+         {
+            SoilName = myModule.Name.Split(' ')[0];
+         }
+      }
+   }
+
+   [EventHandler] public void OnPost()
+   {
+      if (n_demanded != null)
+      {
+         PlantTotalN = totaln;
+         PlantTotalC = 0.4 * totalwt;
+         PlantTranspiration = ep;
+      }
+      else if (NitrogenSupplyLayers != null)
+      {
+         PlantTotalN = TotalPlantN;
+         PlantTotalC = 0.4 * TotalPlantWt;
+         PlantTranspiration = WaterUptake;
+      }
+      else
+      {
+         PlantTotalN = 0.0;
+         PlantTranspiration = 0.0;
+      }
+   }
+}
+       </text>
+          </manager2>
+        </folder>
+        <fertiliser name="Fertiliser" />
+        <surfaceom name="SurfaceOrganicMatter">
+          <PoolName type="text" description="Organic Matter pool name">Residue1</PoolName>
+          <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+          <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+          <cnr type="text" description="C:N ratio of initial residue">20</cnr>
+          <cpr type="text" description="C:P ratio of initial residue (optional)" />
+          <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+        </surfaceom>
+        <manager name="Med-LightSoil Nitrogen (dummy)">
+          <script>
+            <text>! This module does nothing. It is here so that the name of the soil can be captured by the Aux-Outputs manager</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <SWIM2ui2>
+          <dummy1 type="category" description="SWIM boundary conditions:" />
+          <top_boundary_condition type="list" listvalues="0,1,2,3" description="Choose top boundary condition (0=inf conduct; 1=const potential; 2=limtd conduct):">0</top_boundary_condition>
+          <runoff type="list" listvalues="0,1,2" description="Choose runnof/pond condition (0=all runoff; 1=all pond; 2=calc runoff):">1</runoff>
+          <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="Choose bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable;3=seepage):">0</bottom_boundary_condition>
+          <run_solutes type="text" description="Type list of solutes SWIM will move:">urea  nh4  no3</run_solutes>
+          <max_water_increment type="text" description="Type base water increment value:">10</max_water_increment>
+          <dummy2 type="category" description="Description of soil profile" />
+          <x type="text" description="Enter the values of x for each layer:">0   10   20   40   60   80   120  180   220   280   320   380   420   480   570   630   720   780   870   930   1070  1130  1270  1290  1410   1410   1500</x>
+          <soil_type type="text" description="Enter the tags for each layer:">A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  -  -  -  B1_SL_mC  B1_SL_mC  B1_SL_mC  B1_SL_mC  -  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  -  -  -  BC_SL_mC  BC_SL_mC  BC_SL_mC  BC_SL_mC  BC_SL_mC</soil_type>
+          <psi type="text" description="Enter the inital values of psi for each layer:">-100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100</psi>
+          <ini name="Ini_SWIM2">
+            <filename input="yes">%apsim%\Tests\SoilNitrogen\ini_SWIMui2(Generic).xml</filename>
+          </ini>
+        </SWIM2ui2>
+        <SoilNui>
+          <category type="category" description="Parameters to initialise soil organic matter" />
+          <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
+          <root_cn type="text" description="Type the C:N ratio of dead roots:">30</root_cn>
+          <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+          <category type="category" description="Enter the values for each layer" />
+          <ph type="text" description="Type the inital soil pH:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</ph>
+          <oc type="text" description="Type the initial soil organic carbon content (%):">3.50   3.50   3.50   3.50   3.50   3.50   3.50   1.53   1.53   1.53   1.09   1.09   1.09   1.09   1.09   0.66   0.66   0.66   0.66   0.44   0.44   0.44   0.26   0.26   0.26   0.26   0.26</oc>
+          <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.371  0.371  0.371  0.371  0.371  0.371  0.371  0.686  0.686  0.686  0.857  0.857  0.857  0.857  0.857  0.909  0.909  0.909  0.909  0.954  0.954  0.954  0.989  0.989  0.989  0.989  0.989</fbiom>
+          <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.080  0.080  0.080  0.080  0.079  0.075  0.060  0.040  0.023  0.013  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</finert>
+          <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617  0.617  0.595  0.595  0.595  0.595  0.595</no3ppm>
+          <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617  0.617  0.595  0.595  0.595  0.595  0.595</nh4ppm>
+          <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000</ureappm>
+          <category type="category" description="Other parameters" />
+          <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">40</nitrification_pot>
+          <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+          <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
+        </SoilNui>
+        <outputfile name="Results">
+          <filename output="yes">SimTest1-SoilN Paddock1-LightSoil Results.out</filename>
+          <title>SimTest1-SoilN Paddock1-LightSoil Results</title>
+          <variables name="Variables">
+            <variable>dd/mmm/yyyy as Date</variable>
+            <variable>day as DoY</variable>
+            <variable>urea() as UreaTotal format 5</variable>
+            <variable>nh4() as NH4Total format 5</variable>
+            <variable>no3() as NO3Total format 5</variable>
+            <variable>surfaceom_n as SurfaceOM_N format 5</variable>
+            <variable>fom_n() as FOM_N format 5</variable>
+            <variable>biom_n() as Biom_N format 5</variable>
+            <variable>hum_n() as Hum_N format 5</variable>
+            <variable>PlantTotalN as PlantTotalN format 5</variable>
+            <variable>fertiliser as FertiliserN format 5</variable>
+            <variable>dlt_urea_hydrol() as HydrolisedN format 5</variable>
+            <variable>nitrification() as NitrifiedN format 5</variable>
+            <variable>dnit() as DenitrifiedN format 5</variable>
+            <variable>leach_no3 as LeachedNO3 format 5</variable>
+            <variable>dlt_n_min_res() as NetMineralisedResidue format 5</variable>
+            <variable>dlt_n_min_tot() as NetMineralisedHumus format 5</variable>
+            <variable>n2o_atm() as N2Oemissions format 5</variable>
+            <variable>dlt_n_loss_in_sed as dltN_sediments format 5</variable>
+            <variable>surfaceom_c as SurfaceOM_C format 5</variable>
+            <variable>fom_c() as FOM_C format 5</variable>
+            <variable>biom_c() as Biom_C format 5</variable>
+            <variable>hum_c() as Hum_C format 5</variable>
+            <variable>oc() as OCTotal format 5</variable>
+            <variable>PlantTotalC format 5</variable>
+            <variable>dlt_res_c_atm as CO2fromResidues format 5</variable>
+            <variable>dlt_fom_c_atm() as CO2fromFOM format 5</variable>
+            <variable>dlt_biom_c_atm() as CO2fromMBiomass format 5</variable>
+            <variable>dlt_hum_c_atm() as CO2fromHumus format 5</variable>
+            <variable>dlt_c_loss_in_sed as dltC_sediments format 5</variable>
+            <variable>es as Evaporation format 5</variable>
+            <variable>PlantTranspiration as PlantTranspiration format 5</variable>
+            <variable>drain as Drain format 5</variable>
+            <variable>Runoff format 5</variable>
+            <variable>dlayer format 5</variable>
+            <variable>urea format 5</variable>
+            <variable>nh4 format 5</variable>
+            <variable>no3 format 5</variable>
+            <variable>fom_n format 5</variable>
+            <variable>biom_n format 5</variable>
+            <variable>hum_n format 5</variable>
+            <variable>fom_c format 5</variable>
+            <variable>biom_c format 5</variable>
+            <variable>hum_c format 5</variable>
+            <variable>st format 7</variable>
+            <variable>sw_dep format 5</variable>
+            <variable>SoilName</variable>
+          </variables>
+          <events name="ReportingFrequency">
+            <event>end_day</event>
+          </events>
+          <Graph name="Water">
+            <Legend>
+              <CheckedTitles> Evaporation</CheckedTitles>
+              <CheckedTitles> PlantTranspiration</CheckedTitles>
+              <CheckedTitles> Drain</CheckedTitles>
+              <CheckedTitles> Runoff</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>Evaporation</Y>
+              <Y>PlantTranspiration</Y>
+              <Y>Drain</Y>
+              <Y>Runoff</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="MineralN">
+            <Legend>
+              <CheckedTitles> UreaTotal</CheckedTitles>
+              <CheckedTitles> NH4Total</CheckedTitles>
+              <CheckedTitles> NO3Total</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>UreaTotal</Y>
+              <Y>NH4Total</Y>
+              <Y>NO3Total</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicN">
+            <Legend>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>FOM_N</Y>
+              <Y>Biom_N</Y>
+              <Y>SurfaceOM_N</Y>
+              <Y>PlantTotalN</Y>
+              <YRight>Hum_N</YRight>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OutputN">
+            <Legend>
+              <CheckedTitles> Cumulative DenitrifiedN</CheckedTitles>
+              <CheckedTitles> Cumulative N2Oemissions</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>Cumulative LeachedNO3</Y>
+              <Y>Cumulative DenitrifiedN</Y>
+              <Y>Cumulative N2Oemissions</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicC">
+            <Legend>
+              <CheckedTitles> FOM_C</CheckedTitles>
+              <CheckedTitles> Biom_C</CheckedTitles>
+              <CheckedTitles> SurfaceOM_C</CheckedTitles>
+              <CheckedTitles> PlantTotalC</CheckedTitles>
+              <CheckedTitles> Hum_C</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>FOM_C</Y>
+              <Y>Biom_C</Y>
+              <Y>SurfaceOM_C</Y>
+              <Y>PlantTotalC</Y>
+              <YRight>Hum_C</YRight>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OutputC">
+            <Legend>
+              <CheckedTitles> Cumulative CO2fromResidues</CheckedTitles>
+              <CheckedTitles> Cumulative CO2fromFOM</CheckedTitles>
+              <CheckedTitles> Cumulative CO2fromMBiomass</CheckedTitles>
+              <CheckedTitles> Cumulative CO2fromHumus</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>Cumulative CO2fromResidues</Y>
+              <Y>Cumulative CO2fromFOM</Y>
+              <Y>Cumulative CO2fromMBiomass</Y>
+              <Y>Cumulative CO2fromHumus</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Depth-Water">
+            <Legend>
+              <CheckedTitles>   1/07/2000</CheckedTitles>
+              <CheckedTitles>   1/08/2000</CheckedTitles>
+              <CheckedTitles>   1/09/2000</CheckedTitles>
+              <CheckedTitles>   1/10/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>sw_dep</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+          <Graph name="Depth-minN">
+            <Legend>
+              <CheckedTitles> urea,   1/07/2000</CheckedTitles>
+              <CheckedTitles> urea,   1/08/2000</CheckedTitles>
+              <CheckedTitles> urea,   1/09/2000</CheckedTitles>
+              <CheckedTitles> urea,   1/10/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/07/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/08/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/09/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/10/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/07/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/08/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/09/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/10/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>urea</XTop>
+              <XTop>nh4</XTop>
+              <XTop>no3</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+          <Graph name="Depth-orgN">
+            <Legend>
+              <CheckedTitles> fom_n,   1/01/2000</CheckedTitles>
+              <CheckedTitles> fom_n,   15/01/2000</CheckedTitles>
+              <CheckedTitles> fom_n,   30/01/2000</CheckedTitles>
+              <CheckedTitles> biom_n,   1/01/2000</CheckedTitles>
+              <CheckedTitles> biom_n,   15/01/2000</CheckedTitles>
+              <CheckedTitles> biom_n,   30/01/2000</CheckedTitles>
+              <CheckedTitles> hum_n,   1/01/2000</CheckedTitles>
+              <CheckedTitles> hum_n,   15/01/2000</CheckedTitles>
+              <CheckedTitles> hum_n,   30/01/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>fom_n</XTop>
+              <XTop>biom_n</XTop>
+              <XTop>hum_n</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+          <Graph name="Depth-orgC">
+            <Legend>
+              <CheckedTitles> fom_c,   1/01/2000</CheckedTitles>
+              <CheckedTitles> fom_c,   15/01/2000</CheckedTitles>
+              <CheckedTitles> fom_c,   30/01/2000</CheckedTitles>
+              <CheckedTitles> biom_c,   1/01/2000</CheckedTitles>
+              <CheckedTitles> biom_c,   15/01/2000</CheckedTitles>
+              <CheckedTitles> biom_c,   30/01/2000</CheckedTitles>
+              <CheckedTitles> hum_c,   1/01/2000</CheckedTitles>
+              <CheckedTitles> hum_c,   15/01/2000</CheckedTitles>
+              <CheckedTitles> hum_c,   30/01/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>fom_c</XTop>
+              <XTop>biom_c</XTop>
+              <XTop>hum_c</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+        </outputfile>
+      </area>
+      <Graph name="Water">
+        <Legend>
+          <CheckedTitles> Evaporation</CheckedTitles>
+          <CheckedTitles> PlantTranspiration</CheckedTitles>
+          <CheckedTitles> Drain</CheckedTitles>
+          <CheckedTitles> Runoff</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <Y>Evaporation</Y>
+          <Y>PlantTranspiration</Y>
+          <Y>Drain</Y>
+          <Y>Runoff</Y>
+          <X>Date</X>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+      <Graph name="MineralN">
+        <Legend>
+          <CheckedTitles> UreaTotal, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> UreaTotal, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+          <CheckedTitles> NH4Total, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> NH4Total, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+          <CheckedTitles> NO3Total, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> NO3Total, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+          <CheckedTitles> FertiliserN, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> FertiliserN, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <X>DoY</X>
+          <Y>UreaTotal</Y>
+          <Y>NH4Total</Y>
+          <Y>NO3Total</Y>
+          <Y>FertiliserN</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+    </simulation>
+    <simulation name="SimTest1-SoilNitrogen">
+      <clock>
+        <start_date type="date" description="start_date">01/07/2000</start_date>
+        <end_date type="date" description="end_date">31/12/2000</end_date>
+      </clock>
+      <metfile name="met">
+        <filename input="yes">%apsim%\Examples\MetFiles\MildTemperate.met</filename>
+      </metfile>
+      <PlugIns>
+        <PlugIn enabled="yes">%apsim%\UserInterface\ApsimUIPlugIn.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\SoilTypes.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\Graph.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\Ausfarm.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\UserInterface\DevelopersPlugIn.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SlurryTank.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\PHmodel.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\simpleBuilding.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\atmosphere.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Accum.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\AgPasture.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Bambatsi.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Barley.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Br.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Bore.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Broccoli.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\ButterflyPea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Canola.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Canopy.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Centro.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Channel.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Chickpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Cl.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Climatechange.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Clock.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Cotton2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Cowpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\CropUI.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Dam.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\DCD.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\EGrandis.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\EMelliodora.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Eo.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\EPopulnea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Erosion.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Events.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Fababean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Factorial.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Factor.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\FactorComplex.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\FrenchBean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Fertiliser.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Fieldpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Gcm_data.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Grasp.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Graz.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Growth.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Horsegram.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Ini.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\InitWater.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Input.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Irrigation.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\KWTest.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lablab.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lettuce.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Log.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lucerne.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Lupin.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Maize.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\MaizeZ.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Manager.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Map.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Memo.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\MetFile.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\MicroMet.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet1.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet3.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet4.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Millet5.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Mucuna.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Mungbean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Navybean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Oats.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Ocean_data.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Operations.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Orobanche.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Oryza.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Oryza2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\OutputFile.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Ozcot.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Patchinput.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Peanut.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Pigeonpea.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Pond.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Potato.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\RotPlot.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\RugPlotUI.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Root.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Rule.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Script.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Seedling.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SiloInput.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Slurp.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Soi.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Soil.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\SoilNui.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SoilTemp.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sorghum.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SorghumConstants.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SorghumGenotype.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Soybean.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Stylo.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sugar.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Summaryfile.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sunflower.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SurfaceOM.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SweetCorn.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SweetSorghum.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SWIM2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SWIM2ui.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SWIM2ui2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Sysbal.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\SysBal2.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tcllink.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tclmanager.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tclui.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\TextOutput.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tracker.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Tree.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Variables.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Venlink.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\vine.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\WaterSupply.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Weed.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\Wheat.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\YPCalc.xml</PlugIn>
+        <PlugIn enabled="yes">%apsim%\Model\UrinePatch.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\Soil with new nitrogen model.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\SoilNitrogen.xml</PlugIn>
+        <PlugIn enabled="no">%apsim%\Model\Soil with new water and nitrogen models.xml</PlugIn>
+      </PlugIns>
+      <summaryfile />
+      <area name="Paddock1-LightSoil">
+        <folder name="ManagerFolder">
+          <manager2 name="Aux-Outputs">
+            <ui>
+              <A type="category" description=" This script help to organise some outputs" />
+            </ui>
+            <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+
+   [Link] Paddock myPaddock;
+   
+   [Input(IsOptional=true)] double[] n_demanded;
+   [Input(IsOptional=true)] double totaln;
+   [Input(IsOptional=true)] double totalwt;
+   [Input(IsOptional=true)] double ep;
+
+   [Input(IsOptional=true)] double[] NitrogenSupplyLayers;
+   [Input(IsOptional=true)] double TotalPlantN;
+   [Input(IsOptional=true)] double TotalPlantWt;
+   [Input(IsOptional=true)] double WaterUptake;
+      
+   [Output] string SoilName;
+   [Output] double PlantTotalN;
+   [Output] double PlantTotalC;
+   [Output] double PlantTranspiration;
+   
+   [EventHandler] public void OnInitialised()
+   {
+      
+      foreach(Component myModule in myPaddock.Children)
+      {
+         if(myModule.Name.Contains(" Nitrogen"))
+         {
+            SoilName = myModule.Name.Split(' ')[0];
+         }
+      }
+   }
+
+   [EventHandler] public void OnPost()
+   {
+      if (n_demanded != null)
+      {
+         PlantTotalN = totaln;
+         PlantTotalC = 0.4 * totalwt;
+         PlantTranspiration = ep;
+      }
+      else if (NitrogenSupplyLayers != null)
+      {
+         PlantTotalN = TotalPlantN;
+         PlantTotalC = 0.4 * TotalPlantWt;
+         PlantTranspiration = WaterUptake;
+      }
+      else
+      {
+         PlantTotalN = 0.0;
+         PlantTranspiration = 0.0;
+      }
+   }
+}
+       </text>
+          </manager2>
+        </folder>
+        <fertiliser name="Fertiliser" />
+        <surfaceom name="SurfaceOrganicMatter">
+          <PoolName type="text" description="Organic Matter pool name">Residue1</PoolName>
+          <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+          <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+          <cnr type="text" description="C:N ratio of initial residue">20</cnr>
+          <cpr type="text" description="C:P ratio of initial residue (optional)" />
+          <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+        </surfaceom>
+        <manager name="Med-LightSoil Nitrogen (dummy)">
+          <script>
+            <text>! This module does nothing. It is here so that the name of the soil can be captured by the Aux-Outputs manager</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <SWIM2ui2>
+          <dummy1 type="category" description="SWIM boundary conditions:" />
+          <top_boundary_condition type="list" listvalues="0,1,2,3" description="Choose top boundary condition (0=inf conduct; 1=const potential; 2=limtd conduct):">0</top_boundary_condition>
+          <runoff type="list" listvalues="0,1,2" description="Choose runnof/pond condition (0=all runoff; 1=all pond; 2=calc runoff):">1</runoff>
+          <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="Choose bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable;3=seepage):">0</bottom_boundary_condition>
+          <run_solutes type="text" description="Type list of solutes SWIM will move:">urea  nh4  no3</run_solutes>
+          <max_water_increment type="text" description="Type base water increment value:">10</max_water_increment>
+          <dummy2 type="category" description="Description of soil profile" />
+          <x type="text" description="Enter the values of x for each layer:">0   10   20   40   60   80   120  180   220   280   320   380   420   480   570   630   720   780   870   930   1070  1130  1270  1290  1410   1410   1500</x>
+          <soil_type type="text" description="Enter the tags for each layer:">A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  A_SL_mC  -  -  -  B1_SL_mC  B1_SL_mC  B1_SL_mC  B1_SL_mC  -  B2_SL_mC  B2_SL_mC  B2_SL_mC  B2_SL_mC  -  -  -  BC_SL_mC  BC_SL_mC  BC_SL_mC  BC_SL_mC  BC_SL_mC</soil_type>
+          <psi type="text" description="Enter the inital values of psi for each layer:">-100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100  -100</psi>
+          <ini name="Ini_SWIM2">
+            <filename input="yes">%apsim%\Tests\SoilNitrogen\ini_SWIMui2(Generic).xml</filename>
+          </ini>
+        </SWIM2ui2>
+        <SoilNitrogen>
+          <category type="category" description="Parameters to initialise soil organic matter" />
+          <root_wt type="text" description="Type the initial FOM amount in the soil (kgDM/ha):">1000</root_wt>
+          <root_cn type="text" description="Type the initial C:N ratio of FOM:">30</root_cn>
+          <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
+          <category type="category" description="Enter the values for each layer" />
+          <ph type="text" description="Type the inital soil pH:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</ph>
+          <oc type="text" description="Type the initial soil organic carbon content (%):">3.50   3.50   3.50   3.50   3.50   3.50   3.50   1.53   1.53   1.53   1.09   1.09   1.09   1.09   1.09   0.66   0.66   0.66   0.66   0.44   0.44   0.44   0.26   0.26   0.26   0.26   0.26</oc>
+          <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.371  0.371  0.371  0.371  0.371  0.371  0.371  0.686  0.686  0.686  0.857  0.857  0.857  0.857  0.857  0.909  0.909  0.909  0.909  0.954  0.954  0.954  0.989  0.989  0.989  0.989  0.989</fbiom>
+          <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.080  0.080  0.080  0.080  0.079  0.075  0.060  0.040  0.023  0.013  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</finert>
+          <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617  0.617  0.595  0.595  0.595  0.595  0.595</no3ppm>
+          <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617  0.617  0.595  0.595  0.595  0.595  0.595</nh4ppm>
+          <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000</ureappm>
+          <category type="category" description="Other parameters" />
+          <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">40</nitrification_pot>
+          <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+          <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
+        </SoilNitrogen>
+        <outputfile name="Results">
+          <filename output="yes">SimTest1-SoilNitrogen Paddock1-LightSoil Results.out</filename>
+          <title>SimTest1-SoilNitrogen Paddock1-LightSoil Results</title>
+          <variables name="Variables">
+            <variable>dd/mmm/yyyy as Date</variable>
+            <variable>day as DoY</variable>
+            <variable>urea() as UreaTotal format 5</variable>
+            <variable>nh4() as NH4Total format 5</variable>
+            <variable>no3() as NO3Total format 5</variable>
+            <variable>surfaceom_n as SurfaceOM_N format 5</variable>
+            <variable>fom_n() as FOM_N format 5</variable>
+            <variable>biom_n() as Biom_N format 5</variable>
+            <variable>hum_n() as Hum_N format 5</variable>
+            <variable>PlantTotalN as PlantTotalN format 5</variable>
+            <variable>fertiliser as FertiliserN format 5</variable>
+            <variable>dlt_urea_hydrol() as HydrolisedN format 5</variable>
+            <variable>nitrification() as NitrifiedN format 5</variable>
+            <variable>dnit() as DenitrifiedN format 5</variable>
+            <variable>leach_no3 as LeachedNO3 format 5</variable>
+            <variable>dlt_n_min_res() as NetMineralisedResidue format 5</variable>
+            <variable>dlt_n_min_tot() as NetMineralisedHumus format 5</variable>
+            <variable>n2o_atm() as N2Oemissions format 5</variable>
+            <variable>dlt_n_loss_in_sed as dltN_sediments format 5</variable>
+            <variable>surfaceom_c as SurfaceOM_C format 5</variable>
+            <variable>fom_c() as FOM_C format 5</variable>
+            <variable>biom_c() as Biom_C format 5</variable>
+            <variable>hum_c() as Hum_C format 5</variable>
+            <variable>oc() as OCTotal format 5</variable>
+            <variable>PlantTotalC format 5</variable>
+            <variable>dlt_res_c_atm as CO2fromResidues format 5</variable>
+            <variable>dlt_fom_c_atm() as CO2fromFOM format 5</variable>
+            <variable>dlt_biom_c_atm() as CO2fromMBiomass format 5</variable>
+            <variable>dlt_hum_c_atm() as CO2fromHumus format 5</variable>
+            <variable>dlt_c_loss_in_sed as dltC_sediments format 5</variable>
+            <variable>es as Evaporation format 5</variable>
+            <variable>PlantTranspiration as PlantTranspiration format 5</variable>
+            <variable>drain as Drain format 5</variable>
+            <variable>Runoff format 5</variable>
+            <variable>dlayer format 5</variable>
+            <variable>urea format 5</variable>
+            <variable>nh4 format 5</variable>
+            <variable>no3 format 5</variable>
+            <variable>fom_n format 5</variable>
+            <variable>biom_n format 5</variable>
+            <variable>hum_n format 5</variable>
+            <variable>fom_c format 5</variable>
+            <variable>biom_c format 5</variable>
+            <variable>hum_c format 5</variable>
+            <variable>st format 7</variable>
+            <variable>sw_dep format 5</variable>
+            <variable>SoilName</variable>
+          </variables>
+          <events name="ReportingFrequency">
+            <event>end_day</event>
+          </events>
+          <Graph name="Water">
+            <Legend>
+              <CheckedTitles> Evaporation</CheckedTitles>
+              <CheckedTitles> PlantTranspiration</CheckedTitles>
+              <CheckedTitles> Drain</CheckedTitles>
+              <CheckedTitles> Runoff</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>Evaporation</Y>
+              <Y>PlantTranspiration</Y>
+              <Y>Drain</Y>
+              <Y>Runoff</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="MineralN">
+            <Legend>
+              <CheckedTitles> UreaTotal</CheckedTitles>
+              <CheckedTitles> NH4Total</CheckedTitles>
+              <CheckedTitles> NO3Total</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>UreaTotal</Y>
+              <Y>NH4Total</Y>
+              <Y>NO3Total</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicN">
+            <Legend>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>FOM_N</Y>
+              <Y>Biom_N</Y>
+              <Y>SurfaceOM_N</Y>
+              <Y>PlantTotalN</Y>
+              <YRight>Hum_N</YRight>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OutputN">
+            <Legend>
+              <CheckedTitles> Cumulative DenitrifiedN</CheckedTitles>
+              <CheckedTitles> Cumulative N2Oemissions</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>Cumulative LeachedNO3</Y>
+              <Y>Cumulative DenitrifiedN</Y>
+              <Y>Cumulative N2Oemissions</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OrganicC">
+            <Legend>
+              <CheckedTitles> FOM_C</CheckedTitles>
+              <CheckedTitles> Biom_C</CheckedTitles>
+              <CheckedTitles> SurfaceOM_C</CheckedTitles>
+              <CheckedTitles> PlantTotalC</CheckedTitles>
+              <CheckedTitles> Hum_C</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>FOM_C</Y>
+              <Y>Biom_C</Y>
+              <Y>SurfaceOM_C</Y>
+              <Y>PlantTotalC</Y>
+              <YRight>Hum_C</YRight>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="OutputC">
+            <Legend>
+              <CheckedTitles> Cumulative CO2fromResidues</CheckedTitles>
+              <CheckedTitles> Cumulative CO2fromFOM</CheckedTitles>
+              <CheckedTitles> Cumulative CO2fromMBiomass</CheckedTitles>
+              <CheckedTitles> Cumulative CO2fromHumus</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>DoY</X>
+              <Y>Cumulative CO2fromResidues</Y>
+              <Y>Cumulative CO2fromFOM</Y>
+              <Y>Cumulative CO2fromMBiomass</Y>
+              <Y>Cumulative CO2fromHumus</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="Depth-Water">
+            <Legend>
+              <CheckedTitles>   1/07/2000</CheckedTitles>
+              <CheckedTitles>   1/08/2000</CheckedTitles>
+              <CheckedTitles>   1/09/2000</CheckedTitles>
+              <CheckedTitles>   1/10/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>sw_dep</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+          <Graph name="Depth-minN">
+            <Legend>
+              <CheckedTitles> urea,   1/07/2000</CheckedTitles>
+              <CheckedTitles> urea,   1/08/2000</CheckedTitles>
+              <CheckedTitles> urea,   1/09/2000</CheckedTitles>
+              <CheckedTitles> urea,   1/10/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/07/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/08/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/09/2000</CheckedTitles>
+              <CheckedTitles> nh4,   1/10/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/07/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/08/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/09/2000</CheckedTitles>
+              <CheckedTitles> no3,   1/10/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>urea</XTop>
+              <XTop>nh4</XTop>
+              <XTop>no3</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+          <Graph name="Depth-orgN">
+            <Legend>
+              <CheckedTitles> fom_n,   1/01/2000</CheckedTitles>
+              <CheckedTitles> fom_n,   15/01/2000</CheckedTitles>
+              <CheckedTitles> fom_n,   30/01/2000</CheckedTitles>
+              <CheckedTitles> biom_n,   1/01/2000</CheckedTitles>
+              <CheckedTitles> biom_n,   15/01/2000</CheckedTitles>
+              <CheckedTitles> biom_n,   30/01/2000</CheckedTitles>
+              <CheckedTitles> hum_n,   1/01/2000</CheckedTitles>
+              <CheckedTitles> hum_n,   15/01/2000</CheckedTitles>
+              <CheckedTitles> hum_n,   30/01/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>fom_n</XTop>
+              <XTop>biom_n</XTop>
+              <XTop>hum_n</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+          <Graph name="Depth-orgC">
+            <Legend>
+              <CheckedTitles> fom_c,   1/01/2000</CheckedTitles>
+              <CheckedTitles> fom_c,   15/01/2000</CheckedTitles>
+              <CheckedTitles> fom_c,   30/01/2000</CheckedTitles>
+              <CheckedTitles> biom_c,   1/01/2000</CheckedTitles>
+              <CheckedTitles> biom_c,   15/01/2000</CheckedTitles>
+              <CheckedTitles> biom_c,   30/01/2000</CheckedTitles>
+              <CheckedTitles> hum_c,   1/01/2000</CheckedTitles>
+              <CheckedTitles> hum_c,   15/01/2000</CheckedTitles>
+              <CheckedTitles> hum_c,   30/01/2000</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <Y>Depth</Y>
+              <colour>
+              </colour>
+              <XTop>fom_c</XTop>
+              <XTop>biom_c</XTop>
+              <XTop>hum_c</XTop>
+              <GDDepth name="Depth">
+                <AllXOnTopAxis>Yes</AllXOnTopAxis>
+                <Date>1/7/2000</Date>
+                <Date>1/8/2000</Date>
+                <Date>1/9/2000</Date>
+                <Date>1/10/2000</Date>
+                <GDApsimFileReader name="ApsimFileReader" />
+              </GDDepth>
+            </Plot>
+          </Graph>
+        </outputfile>
+      </area>
+      <Graph name="Water">
+        <Legend>
+          <CheckedTitles> Evaporation</CheckedTitles>
+          <CheckedTitles> PlantTranspiration</CheckedTitles>
+          <CheckedTitles> Drain</CheckedTitles>
+          <CheckedTitles> Runoff</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <Y>Evaporation</Y>
+          <Y>PlantTranspiration</Y>
+          <Y>Drain</Y>
+          <Y>Runoff</Y>
+          <X>Date</X>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+      <Graph name="MineralN">
+        <Legend>
+          <CheckedTitles> UreaTotal, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> UreaTotal, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+          <CheckedTitles> NH4Total, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> NH4Total, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+          <CheckedTitles> NO3Total, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> NO3Total, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+          <CheckedTitles> FertiliserN, Sim01-SoilNitrogen Paddock1-LightSoil Results</CheckedTitles>
+          <CheckedTitles> FertiliserN, Sim01-SoilNitrogen Paddock2-HeavySoil Results</CheckedTitles>
+        </Legend>
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <X>DoY</X>
+          <Y>UreaTotal</Y>
+          <Y>NH4Total</Y>
+          <Y>NO3Total</Y>
+          <Y>FertiliserN</Y>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </Plot>
+      </Graph>
+    </simulation>
+  </folder>
+</folder>
