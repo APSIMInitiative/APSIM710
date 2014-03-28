@@ -225,7 +225,7 @@ namespace Actions
 
 			if (Controller.FileSaveAfterPrompt()) {
 				Cursor.Current = Cursors.WaitCursor;
-				WebRequest request = WebRequest.Create("http://www.apsim.info/Wiki/public/Upload/ApSoil/APSRU-Australia-Soils.soils");
+				WebRequest request = WebRequest.Create("http://www.apsim.info/Portals/0/APSoil/APSRU-Australia-Soils.soils");
 				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 				if (response.StatusDescription == "OK") {
 					Stream dataStream = response.GetResponseStream();
