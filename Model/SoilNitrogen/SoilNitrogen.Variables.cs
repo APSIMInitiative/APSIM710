@@ -42,25 +42,10 @@ public partial class SoilNitrogen
     #region General setting parameters
 
     /// <summary>
-    /// Indicates whether new functions for environmental factors will be used
-    /// </summary>
-    /// <remarks>
-    /// default to false
-    /// </remarks>
-    private bool usingNewFunctions = false;
-    [Param(IsOptional = true)]
-    [Description("Indicates whether organic solutes are to be simulated")]
-    public string useNewFunctions
-    {
-        get { return (usingNewFunctions) ? "yes" : "no"; }
-        set { usingNewFunctions = value.ToLower().Contains("yes"); }
-    }
-
-    /// <summary>
     /// Soil parameterisation set to use
     /// </summary>
     /// <remarks>
-    /// Used to determine which node of xml file will be used to read [Param]'s
+    /// Used to determine which node of xml file will be used to overwrite some [Param]'s
     /// </remarks>
     private string SoilNParameterSet = "standard";
     [Param(IsOptional = true)]
@@ -113,38 +98,6 @@ public partial class SoilNitrogen
         get { return (useOrganicSolutes) ? "yes" : "no"; }
         set { useOrganicSolutes = value.ToLower().StartsWith("on"); }
     }
-
-    /// <summary>
-    /// Minimum allowable Urea content (ppm)
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 10.0)]
-    [Units("ppm")]
-    [Description("Minimum allowable urea content")]
-    public double ureappm_min;
-
-    /// <summary>
-    /// Minimum allowable NH4 content (ppm)
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 10.0)]
-    [Units("ppm")]
-    [Description("Minimum allowable NH4 content")]
-    public double nh4ppm_min;
-
-    /// <summary>
-    /// Minimum allowable NO3 content (ppm)
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 10.0)]
-    [Units("ppm")]
-    [Description("Minimum allowable NO3 content")]
-    public double no3ppm_min;
-
-    /// <summary>
-    /// Minimum allowable FOM content (kg/ha)
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    [Units("kg/ha")]
-    [Description("Minimum allowable FOM content")]
-    public double fom_min;
 
     /// <summary>
     /// Factor to convert from OC to OM
@@ -509,10 +462,6 @@ public partial class SoilNitrogen
     [Param(MinVal = 5.0, MaxVal = 100.0)]
     public double cnrf_optcn;
 
-    // NOTE: temperature and moisture factors are the same as those used for Soil OM
-
-    // New parameters
-
     /// <summary>
     /// Data for calculating the temperature effect on FOM decomposition
     /// </summary>
@@ -525,7 +474,10 @@ public partial class SoilNitrogen
     [Units("oC")]
     [Description("Optimum temperature for decomposition of FOM")]
     public double[] stf_DecompFOM_Topt
-    { set { TempFactorData_DecompFOM.xValueForOptimum = value; } }
+    {
+        get { return TempFactorData_DecompFOM.xValueForOptimum; }
+        set { TempFactorData_DecompFOM.xValueForOptimum = value; }
+    }
 
     /// <summary>
     /// Temperature factor for decomposition of FOM at zero degrees
@@ -534,7 +486,10 @@ public partial class SoilNitrogen
     [Units("0-1")]
     [Description("Temperature factor for decomposition of FOM at zero degrees")]
     public double[] stf_DecompFOM_FctrZero
-    { set { TempFactorData_DecompFOM.yValueAtZero = value; } }
+    {
+        get { return TempFactorData_DecompFOM.yValueAtZero; }
+        set { TempFactorData_DecompFOM.yValueAtZero = value; }
+    }
 
     /// <summary>
     /// Curve exponent for temperature factor for decomposition of FOM
@@ -543,7 +498,10 @@ public partial class SoilNitrogen
     [Units("")]
     [Description("Curve exponent for temperature factor")]
     public double[] stf_DecompFOM_CvExp
-    { set { TempFactorData_DecompFOM.CurveExponent = value; } }
+    {
+        get { return TempFactorData_DecompFOM.CurveExponent; }
+        set { TempFactorData_DecompFOM.CurveExponent = value; }
+    }
 
     /// <summary>
     /// Parameters for calculating the soil moisture factor for FOM decomposition
@@ -617,28 +575,6 @@ public partial class SoilNitrogen
     public double ef_hum;
 
     #region Limiting factors
-    // NOTE: these are used for decomposition of FOM as welll
-
-    /// <summary>
-    /// Optimum temperature for soil OM mineralisation nitrification
-    /// </summary>
-    [Param(MinVal = 5.0, MaxVal = 100.0)]
-    public double[] opt_temp;
-
-    /// <summary>
-    /// index specifying water content for water factor for mineralization
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 2.0)]
-    public double[] wfmin_index;
-
-    /// <summary>
-    /// value of water factor(mineralization) function at given index values
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] wfmin_values;
-
-
-    // new variables
 
     /// <summary>
     /// Data to calculate the temperature effect on soil OM mineralisation
@@ -859,32 +795,6 @@ public partial class SoilNitrogen
     public double nh4_at_half_pot;
 
     #region Limiting factors
-
-    /// <summary>
-    /// index specifying water content for water factor for nitrification
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 2.0)]
-    public double[] wfnit_index;
-
-    /// <summary>
-    /// value of water factor(nitrification) function at given index values
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] wfnit_values;
-
-    /// <summary>
-    /// pH values for specifying pH factor for nitrification
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 14.0)]
-    public double[] pHf_nit_pH;
-
-    /// <summary>
-    /// value of pH factor(nitrification) function for given pH values
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] pHf_nit_values;
-
-    // New variables
 
     /// <summary>
     /// Parameters to calculate the temperature effect on nitrification
@@ -1120,26 +1030,6 @@ public partial class SoilNitrogen
     }
 
     /// <summary>
-    /// Power term to calculate water factor for denitrification
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 5.0)]
-    [Units("")]
-    [Description("Power term to calculate water factor for denitrification")]
-    public double dnit_wf_power;
-
-    /// <summary>
-    /// Values of WFPS for calculating the N2O fraction of denitrification
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 100.0)]
-    public double[] dnit_wfps;
-
-    /// <summary>
-    /// Values of WFPS factor for N2O fraction of denitrification
-    /// </summary>
-    [Param(MinVal = 0.0, MaxVal = 1.0)]
-    public double[] dnit_n2o_factor;
-
-    /// <summary>
     /// Parameters to calculate the N2:N2O ratio during denitrification
     /// </summary>
     private BrokenStickData WFPSFactorData_Denit = new BrokenStickData();
@@ -1177,51 +1067,6 @@ public partial class SoilNitrogen
     #region Parameters that do or may change during simulation
 
     #region Soil physics data
-
-    /// <summary>
-    /// The soil layer thickness at the start of the simulation
-    /// </summary>
-    private double[] reset_dlayer;
-    /// <summary>
-    /// Soil layers' thichness (mm)
-    /// </summary>
-    [Input]
-    [Units("mm")]
-    [Description("Soil layer thickness")]
-    private double[] dlayer;
-
-    /// <summary>
-    /// Soil bulk density for each layer (g/cm3)
-    /// </summary>
-    [Input]
-    [Units("g/cm^3")]
-    [Description("Soil bulk density")]
-    private double[] bd;
-    //private double[] SoilDensity;
-
-    /// <summary>
-    /// Soil water amount at saturation (mm)
-    /// </summary>
-    [Input]
-    [Units("mm")]
-    [Description("Soil water amount at saturation")]
-    private double[] sat_dep;
-
-    /// <summary>
-    /// Soil water amount at drainage upper limit (mm)
-    /// </summary>
-    [Input]
-    [Units("mm")]
-    [Description("Soil water amount at drainage upper limit")]
-    private double[] dul_dep;
-
-    /// <summary>
-    /// Soil water amount at drainage lower limit (mm)
-    /// </summary>
-    [Input]
-    [Units("mm")]
-    [Description("Soil water amount at drainage lower limit")]
-    private double[] ll15_dep;
 
     /// <summary>
     /// Today's soil water amount (mm)
@@ -1262,11 +1107,6 @@ public partial class SoilNitrogen
     #endregion ph data
 
     #region Values for soil organic matter (som)
-
-    /// <summary>
-    /// The initial OC content for each layer of the soil (%). Also used onReset
-    /// </summary>
-    private double[] reset_oc;
 
     /// <summary>
     /// Total soil organic carbon content (%)
@@ -1314,11 +1154,6 @@ public partial class SoilNitrogen
     #region Values for soil mineral N
 
     /// <summary>
-    /// Initial content of urea in each soil layer (ppm). Also used onReset
-    /// </summary>
-    private double[] reset_ureappm;
-
-    /// <summary>
     /// Soil urea nitrogen content (ppm)
     /// </summary>
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
@@ -1357,58 +1192,6 @@ public partial class SoilNitrogen
                 reset_ureappm = value;      // check is done on InitCalc
         }
     }
-
-    /// <summary>
-    /// Internal variable holding the urea amounts
-    /// </summary>
-    private double[] _urea;
-
-    /// <summary>
-    /// Soil urea nitrogen amount (kgN/ha)
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Soil urea nitrogen amount")]
-    public double[] urea
-    {
-        get
-        {
-            return _urea;
-        }
-        set
-        { // should this be disallowed?? changes should be done via NitrogenChanged, initialisation uses ureappm
-            double sumOld = MathUtility.Sum(_urea);
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-            {
-                if (layer >= _urea.Length)
-                {
-                    Console.WriteLine(" Attempt to assign urea value to a non-existent soil layer - extra values will be ignored");
-                    break;
-                }
-                else if (layer >= value.Length)
-                {
-                    // not all values were supplied, assume minimum
-                    Array.Resize(ref value, value.Length + 1);
-                    value[layer] = urea_min[layer];
-                }
-                else
-                {
-                    // a value was supplied, check whether it is valid (positive and within bounds)
-                    bool IsVariableOK = (value[layer] >= urea_min[layer] || value[layer] <= 10000);
-                    if (!IsVariableOK)
-                        value[layer] = urea_min[layer];
-                }
-                _urea[layer] = value[layer];
-            }
-
-            SendExternalMassFlowN(MathUtility.Sum(_urea) - sumOld);
-        }
-    }
-
-    /// <summary>
-    /// Initial content of NH4 in each soil layer (ppm). Also used onReset
-    /// </summary>
-    private double[] reset_nh4ppm;
 
     /// <summary>
     /// Soil ammonium nitrogen content (ppm)
@@ -1450,57 +1233,6 @@ public partial class SoilNitrogen
     }
 
     /// <summary>
-    /// Internal variable holding the nh4 amounts
-    /// </summary>
-    private double[] _nh4;
-
-    /// <summary>
-    /// Soil ammonium nitrogen amount (kgN/ha)
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Soil ammonium nitrogen amount")]
-    public double[] nh4
-    {
-        get
-        {
-            return _nh4;
-        }
-        set
-        { // should this be disallowed?? changes should be done via NitrogenChanged
-            double sumOld = MathUtility.Sum(_nh4);
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-            {
-                if (layer >= _nh4.Length)
-                {
-                    Console.WriteLine(" Attempt to assign NH4 value to a non-existent soil layer - extra values will be ignored");
-                    break;
-                }
-                else if (layer >= value.Length)
-                {
-                    // not all values were supplied, assume minimum
-                    Array.Resize(ref value, value.Length + 1);
-                    value[layer] = nh4_min[layer];
-                }
-                else
-                {
-                    // a value was supplied, check whether it is valid (positive and within bounds)
-                    bool IsVariableOK = (value[layer] >= nh4_min[layer] || value[layer] <= 10000);
-                    if (!IsVariableOK)
-                        value[layer] = nh4_min[layer];
-                }
-                _nh4[layer] = value[layer];
-            }
-            SendExternalMassFlowN(MathUtility.Sum(_nh4) - sumOld);
-        }
-    }
-
-    /// <summary>
-    /// Initial content of NO3 in each soil layer (ppm). Also used onReset
-    /// </summary>
-    private double[] reset_no3ppm;
-
-    /// <summary>
     /// Soil nitrate nitrogen content (ppm)
     /// </summary>
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
@@ -1535,53 +1267,6 @@ public partial class SoilNitrogen
             }
             else
                 reset_no3ppm = value;
-        }
-    }
-
-    /// <summary>
-    /// Internal variable holding the no3 amounts
-    /// </summary>
-    private double[] _no3 = null;
-
-    /// <summary>
-    /// Soil nitrate nitrogen amount (kgN/ha)
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Soil nitrate nitrogen amount")]
-    public double[] no3
-    {
-        get
-        {
-            return _no3;
-        }
-        set
-        { // should this be disallowed?? changes should be done via NitrogenChanged
-            double sumOld = MathUtility.Sum(_no3);
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-            {
-                if (layer >= _no3.Length)
-                {
-                    Console.WriteLine(" Attempt to assign NO3 value to a non-existent soil layer - extra values will be ignored");
-                    break;
-                }
-                else if (layer >= value.Length)
-                {
-                    // not all values were supplied, assume minimum
-                    Array.Resize(ref value, value.Length + 1);
-                    value[layer] = no3_min[layer];
-                }
-                else
-                {
-                    // a value was supplied, check whether it is valid (positive and within bounds)
-                    bool IsVariableOK = (value[layer] >= no3_min[layer] || value[layer] <= 10000);
-                    if (!IsVariableOK)
-                        value[layer] = no3_min[layer];
-                }
-                _no3[layer] = value[layer];
-            }
-            SendExternalMassFlowN(MathUtility.Sum(_no3) - sumOld);
-
         }
     }
 
@@ -1684,550 +1369,11 @@ public partial class SoilNitrogen
 
     #endregion params that may change
 
-    #region Settable variables
-    // Even though these properties are settable and not meant to be readable,
-    // they still bear the "Output" attribute. 
-    // Perhaps that bit of the infrastructure needs a re-think.
-
-    #region Mineral nitrogen
-
-    /// <summary>
-    /// Variations in urea as given by another component
-    /// </summary>
-    /// <remarks>
-    /// This property checks changes in the amount of urea at each soil layer
-    ///  - If values are not supplied for all layers, these will be assumed zero
-    ///  - If values are supplied in excess, these will ignored
-    ///  - Each value is tested whether it is within bounds, then it is added to the actual amount, this amount is then tested for its bounds
-    /// </remarks>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in urea as given by an external component")]
-    private double[] dlt_urea
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                if (layer < dlayer.Length)
-                {
-                    // update variable and check its value
-                    _urea[layer] += value[layer];
-                    if (_urea[layer] < FatalNegativeThreshold)
-                    {
-                        throw new Exception("Attempt to change Urea[" + (layer + 1).ToString() + "] to a value below the fatal threshold, " +
-                                                FatalNegativeThreshold.ToString());
-                    }
-                    if (_urea[layer] < WarningNegativeThreshold)
-                    {
-                        string myMessage = " Warning - The value of Urea[" + (layer + 1).ToString() + "] was set below the warning threshold, the value will be reset";
-                        writeMessage(myMessage);
-                    }
-                    //else
-                    //{} assume value is ok, might add a test for large values 
-
-                    _urea[layer] = Math.Max(urea_min[layer], _urea[layer]);
-                }
-
-                else
-                {
-                    string myMessage = " Attempt to change the Urea value of a non-existent layer - extra values will be ignored";
-                    writeMessage(myMessage);
-                    break;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Variations in nh4ppm as given by another component
-    /// </summary>
-    [Output]
-    [Units("mg/kg")]
-    [Description("Variations in nh4ppm as given by an external component")]
-    private double[] dlt_nh4ppm
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-                value[layer] = MathUtility.Divide(value[layer], convFactor[layer], 0.0);  // convert from ppm to kg/ha
-
-            dlt_nh4 = value;
-        }
-    }
-
-    /// <summary>
-    /// Variations in nh4 as given by another component
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in nh4 as given by an external component")]
-    private double[] dlt_nh4
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                if (layer < dlayer.Length)
-                {
-                    // update variable and check its value
-                    _nh4[layer] += value[layer];
-                    if (_nh4[layer] < FatalNegativeThreshold)
-                    {
-                        throw new Exception("Attempt to change NH4[" + (layer + 1).ToString() + "] to a value below the fatal threshold, " +
-                                                FatalNegativeThreshold.ToString());
-                    }
-                    if (_nh4[layer] < WarningNegativeThreshold)
-                    {
-                        string myMessage = " Warning - The value of NH4[" + (layer + 1).ToString() + "] was set below the warning threshold, the value will be reset";
-                        writeMessage(myMessage);
-                    }
-                    //else
-                    //{} assume value is ok, might add a test for large values 
-
-                    _nh4[layer] = Math.Max(nh4_min[layer], _nh4[layer]);
-                }
-
-                else
-                {
-                    Console.WriteLine(" Attempt to change the NH4 value of a non-existent layer - extra values will be ignored");
-                    break;
-
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Variations in no3ppm as given by another component
-    /// </summary>
-    //[Input(IsOptional = true)]
-    [Output]
-    [Units("mg/kg")]
-    [Description("Variations in no3ppm as given by an external component")]
-    private double[] dlt_no3ppm
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-                value[layer] = MathUtility.Divide(value[layer], convFactor[layer], 0.0);  // convert from ppm to kg/ha
-
-            dlt_no3 = value;
-        }
-    }
-
-    /// <summary>
-    /// Variations in no3 as given by another component
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in no3 as given by an external component")]
-    private double[] dlt_no3
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                if (layer < dlayer.Length)
-                {
-                    // update variable and check its value
-                    _no3[layer] += value[layer];
-                    if (_no3[layer] < FatalNegativeThreshold)
-                    {
-                        throw new Exception("Attempt to change NO3[" + (layer + 1).ToString() + "] to a value below the fatal threshold, " +
-                                                FatalNegativeThreshold.ToString());
-                    }
-                    else if (_no3[layer] < WarningNegativeThreshold)
-                    {
-                        string myMessage = " Warning - The value of NO3[" + (layer + 1).ToString() + "] was set below the warning threshold, the value will be reset";
-                        writeMessage(myMessage);
-                    }
-                    //else
-                    //{} assume value is ok, might add a test for large values 
-
-                    _no3[layer] = Math.Max(no3_min[layer], _no3[layer]);
-                }
-                else
-                {
-                    Console.WriteLine(" Attempt to change the NO3 value of a non-existent layer - extra values will be ignored");
-                    break;
-                }
-            }
-        }
-    }
-
-    #endregion
-
-    #region Organic N and C
-
-    /// <summary>
-    /// Variations in org_n as given by another component
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in org_n")]
-    private double[] dlt_org_n
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                bool IsVariableOK = (Math.Abs(value[layer]) <= 10000.0);
-                if (IsVariableOK)
-                {
-                    // divide the incoming amount into each FOM pool
-                    fom_n_pool1[layer] += value[layer] * fract_carb[fom_type];
-                    IsVariableOK = (fom_n_pool1[layer] >= epsilon || fom_n_pool1[layer] <= 100000);
-                    if (!IsVariableOK)
-                    {
-                        Console.WriteLine(" The value for FOM_n_pool1[" + (layer + 1) + "] (" + fom_n_pool1[layer] + ") is out of bonds, value will be adjusted");
-                        fom_n_pool1[layer] = 0.0;
-                    }
-                    fom_n_pool2[layer] += value[layer] * fract_cell[fom_type];
-                    IsVariableOK = (fom_n_pool2[layer] >= epsilon || fom_n_pool2[layer] <= 100000);
-                    if (!IsVariableOK)
-                    {
-                        Console.WriteLine(" The value for FOM_n_pool2[" + (layer + 1) + "] (" + fom_n_pool2[layer] + ") is out of bonds, value will be adjusted");
-                        fom_n_pool2[layer] = 0.0;
-                    }
-                    fom_n_pool3[layer] += value[layer] * fract_lign[fom_type];
-                    IsVariableOK = (fom_n_pool3[layer] >= epsilon || fom_n_pool3[layer] <= 100000);
-                    if (!IsVariableOK)
-                    {
-                        Console.WriteLine(" The value for FOM_n_pool3[" + (layer + 1) + "] (" + fom_n_pool3[layer] + ") is out of bonds, value will be adjusted");
-                        fom_n_pool3[layer] = 0.0;
-                    }
-                }
-                else
-                    throw new Exception(" Value for dlt_org_n[" + (layer + 1) + "] (" + value[layer] + ") is out of bounds");
-            }
-        }
-    }
-
-    /// <summary>
-    /// Variations in org_c_pool1 as given by another component
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in org_c_pool1")]
-    private double[] dlt_org_c_pool1
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                if (layer < dlayer.Length && Math.Abs(value[layer]) >= epsilon)
-                {
-                    // a value was supplied, check whether it is not absurd
-                    if (Math.Abs(value[layer]) > WarningThresholdForDltC * dlayer[layer])
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool1[" + (layer + 1).ToString() + "] is being changed by a large amount: " + value[layer].ToString();
-                        writeMessage(myMessage);
-                    }
-
-                    // update variable and check its value
-                    fom_c_pool1[layer] += value[layer];
-                    if (fom_c_pool1[layer] < FatalNegativeThreshold)
-                    {
-                        throw new Exception("Attempt to change fom_c_pool1[" + (layer + 1).ToString() + "] to a value below the fatal threshold, " +
-                                                FatalNegativeThreshold.ToString());
-                    }
-                    if (fom_c_pool1[layer] < WarningNegativeThreshold)
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool1[" + (layer + 1).ToString() + "] was set below the warning threshold, the value will be reset";
-                        writeMessage(myMessage);
-                    }
-                    if (fom_c_pool1[layer] > 10 * WarningThresholdForDltC)
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool1[" + (layer + 1).ToString() + "]: " + fom_c_pool1[layer].ToString() +
-                                            " is above a reasonable upper limit (" + (10 * WarningThresholdForDltC).ToString() + ")";
-                        writeMessage(myMessage);
-                    }
-
-                    fom_c_pool1[layer] = Math.Max(0.0, fom_c_pool1[layer]);
-                }
-                else
-                {
-                    Console.WriteLine(" Attempt to change the urea value of a non-existent layer - extra values will be ignored");
-                    break;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Variations in org_c_pool2 as given by another component
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in org_c_pool2")]
-    private double[] dlt_org_c_pool2
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                if (layer < dlayer.Length && Math.Abs(value[layer]) >= epsilon)
-                {
-                    // a value was supplied, check whether it is not absurd
-                    if (Math.Abs(value[layer]) > WarningThresholdForDltC * dlayer[layer])
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool2[" + (layer + 1).ToString() + "] is being changed by a large amount: " + value[layer].ToString();
-                        writeMessage(myMessage);
-                    }
-
-                    // update variable and check its value
-                    fom_c_pool2[layer] += value[layer];
-                    if (fom_c_pool2[layer] < FatalNegativeThreshold)
-                    {
-                        throw new Exception("Attempt to change fom_c_pool2[" + (layer + 1).ToString() + "] to a value below the fatal threshold, " +
-                                                FatalNegativeThreshold.ToString());
-                    }
-                    if (fom_c_pool2[layer] < WarningNegativeThreshold)
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool2[" + (layer + 1).ToString() + "] was set below the warning threshold, the value will be reset";
-                        writeMessage(myMessage);
-                    }
-                    if (fom_c_pool2[layer] > 10 * WarningThresholdForDltC)
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool2[" + (layer + 1).ToString() + "]: " + fom_c_pool2[layer].ToString() +
-                                            " is above a reasonable upper limit (" + (10 * WarningThresholdForDltC).ToString() + ")";
-                        writeMessage(myMessage);
-                    }
-
-                    fom_c_pool2[layer] = Math.Max(0.0, fom_c_pool2[layer]);
-                }
-                else
-                {
-                    Console.WriteLine(" Attempt to change the urea value of a non-existent layer - extra values will be ignored");
-                    break;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Variations in org_c_pool3 as given by another component
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Variations in org_c_pool3")]
-    private double[] dlt_org_c_pool3
-    {
-        set
-        {
-            for (int layer = 0; layer < value.Length; ++layer)
-            {
-                if (layer < dlayer.Length && Math.Abs(value[layer]) >= epsilon)
-                {
-                    // a value was supplied, check whether it is not absurd
-                    if (Math.Abs(value[layer]) > WarningThresholdForDltC * dlayer[layer])
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool3[" + (layer + 1).ToString() + "] is being changed by a large amount: " + value[layer].ToString();
-                        writeMessage(myMessage);
-                    }
-
-                    // update variable and check its value
-                    fom_c_pool3[layer] += value[layer];
-                    if (fom_c_pool3[layer] < FatalNegativeThreshold)
-                    {
-                        throw new Exception("Attempt to change fom_c_pool3[" + (layer + 1).ToString() + "] to a value below the fatal threshold, " +
-                                                FatalNegativeThreshold.ToString());
-                    }
-                    if (fom_c_pool3[layer] < WarningNegativeThreshold)
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool3[" + (layer + 1).ToString() + "] was set below the warning threshold, the value will be reset";
-                        writeMessage(myMessage);
-                    }
-                    if (fom_c_pool3[layer] > 10 * WarningThresholdForDltC)
-                    {
-                        string myMessage = " Warning - The value of fom_c_pool3[" + (layer + 1).ToString() + "]: " + fom_c_pool3[layer].ToString() +
-                                            " is above a reasonable upper limit (" + (10 * WarningThresholdForDltC).ToString() + ")";
-                        writeMessage(myMessage);
-                    }
-
-                    fom_c_pool3[layer] = Math.Max(0.0, fom_c_pool3[layer]);
-                }
-                else
-                {
-                    Console.WriteLine(" Attempt to change the urea value of a non-existent layer - extra values will be ignored");
-                    break;
-                }
-            }
-        }
-    }
-
-    #endregion
-
-    #endregion
-
     #endregion
 
     #region Outputs we make available to other components
 
-    #region Values that other components can get or set
-
-    /// <summary>
-    /// Amount of C in pool1 of FOM - doesn't seem to be fully implemented
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Not fully implemented")]
-    private double[] org_c_pool1
-    {
-        get
-        {
-            double[] result = new double[dlayer.Length];
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-                result[layer] = fom_c_pool1[layer];
-            return result;
-        }
-        set
-        { // should this be allowed?
-            if (value.Length == dlayer.Length)
-            {
-                for (int layer = 0; layer < value.Length; ++layer)
-                {
-                    if (value[layer] < - epsilon)
-                        throw new Exception("Value given for fom_c_pool1 is negative");
-                    else
-                        fom_c_pool1[layer] = value[layer];
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Amount of C in pool2 of FOM - doesn't seem to be fully implemented
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Not fully implemented")]
-    private double[] org_c_pool2
-    {
-        get
-        {
-            double[] result = new double[dlayer.Length];
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-                result[layer] = fom_c_pool2[layer];
-            return result;
-        }
-        set
-        {
-            if (value.Length == dlayer.Length)
-            {
-                for (int layer = 0; layer < value.Length; ++layer)
-                {
-                    if (value[layer] < -epsilon)
-                        throw new Exception("Value given for fom_c_pool2 is negative");
-                    else
-                        fom_c_pool2[layer] = value[layer];
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Amount of C in pool3 of FOM - doesn't seem to be fully implemented
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Not fully implemented")]
-    private double[] org_c_pool3
-    {
-        get
-        {
-            double[] result = new double[dlayer.Length];
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-                result[layer] = fom_c_pool3[layer];
-            return result;
-        }
-        set
-        {
-            if (value.Length == dlayer.Length)
-            {
-                for (int layer = 0; layer < value.Length; ++layer)
-                {
-                    if (value[layer] < -epsilon)
-                        throw new Exception("Value given for fom_c_pool3 is negative");
-                    else
-                        fom_c_pool3[layer] = value[layer];
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Amount of N in FOM - doesn't seem to be fully implemented
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Not fully implemented")]
-    private double[] org_n
-    {
-        get
-        {
-            double[] result = new double[dlayer.Length];
-            for (int layer = 0; layer < dlayer.Length; ++layer)
-                result[layer] = fom_n[layer];
-            return result;
-        }
-        set
-        {
-            if (value.Length == dlayer.Length)
-            {
-                for (int layer = 0; layer < value.Length; ++layer)
-                {
-                    if (value[layer] < -epsilon)
-                        throw new Exception("Value given for fom_n is negative");
-                    else
-                    {
-                        // divide amount into each FOM pool
-                        fom_n_pool1[layer] = value[layer] * fract_carb[fom_type];
-                        fom_n_pool2[layer] = value[layer] * fract_cell[fom_type];
-                        fom_n_pool3[layer] = value[layer] * fract_lign[fom_type];
-                    }
-                }
-            }
-        }
-    }
-
-    #endregion
-
-    #region Values that other components can only get
-
     #region Outputs for Nitrogen
-
-    #region General values
-
-    /// <summary>
-    /// Minimum allowable urea amount in each layer
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Minimum allowable urea")]
-    public double[] urea_min
-    { get;  set; }
-
-    /// <summary>
-    /// Minimum allowable NH4 amount in each layer
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Minimum allowable NH4")]
-    public double[] nh4_min
-    { get;  set; }
-
-    /// <summary>
-    /// Minimum allowable NO3 amount in each layer
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Minimum allowable NO3")]
-    public double[] no3_min
-    { get; set; }
-
-    #endregion
 
     #region Changes for today - deltas
 
@@ -2431,15 +1577,6 @@ public partial class SoilNitrogen
     { get { return dlt_urea_hydrolysis; } }
 
     /// <summary>
-    /// Nitrogen coverted by nitrification (from NH4 to either NO3 or N2O) - alias of nitrification
-    /// </summary>
-    [Output]
-    [Units("kg/ha")]
-    [Description("Nitrogen coverted by nitrification")]
-    private double[] dlt_rntrf
-    { get { return dlt_nitrification; } }
-
-    /// <summary>
     /// Nitrogen coverted by nitrification (NH4 into NO3)
     /// </summary>
     private double[] dlt_nitrification;
@@ -2563,6 +1700,135 @@ public partial class SoilNitrogen
 
     #endregion deltas
 
+    #region Amounts in solute forms
+
+    /// <summary>
+    /// Soil urea nitrogen amount (kgN/ha)
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("Soil urea nitrogen amount")]
+    public double[] urea
+    {
+        get
+        {
+            return _urea;
+        }
+        set
+        { // should this be disallowed?? changes should be done via NitrogenChanged, initialisation uses ureappm
+            double sumOld = MathUtility.Sum(_urea);
+            for (int layer = 0; layer < dlayer.Length; ++layer)
+            {
+                if (layer >= _urea.Length)
+                {
+                    Console.WriteLine(" Attempt to assign urea value to a non-existent soil layer - extra values will be ignored");
+                    break;
+                }
+                else if (layer >= value.Length)
+                {
+                    // not all values were supplied, assume minimum
+                    Array.Resize(ref value, value.Length + 1);
+                    value[layer] = 0.0;
+                }
+                else
+                {
+                    // a value was supplied, check whether it is valid (positive and within bounds)
+                    bool IsVariableOK = (value[layer] >= 0.0 || value[layer] <= 10000);
+                    if (!IsVariableOK)
+                        value[layer] = 0.0;
+                }
+                _urea[layer] = value[layer];
+            }
+
+            SendExternalMassFlowN(MathUtility.Sum(_urea) - sumOld);
+        }
+    }
+
+    /// <summary>
+    /// Soil ammonium nitrogen amount (kgN/ha)
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("Soil ammonium nitrogen amount")]
+    public double[] nh4
+    {
+        get
+        {
+            return _nh4;
+        }
+        set
+        { // should this be disallowed?? changes should be done via NitrogenChanged
+            double sumOld = MathUtility.Sum(_nh4);
+            for (int layer = 0; layer < dlayer.Length; ++layer)
+            {
+                if (layer >= _nh4.Length)
+                {
+                    Console.WriteLine(" Attempt to assign NH4 value to a non-existent soil layer - extra values will be ignored");
+                    break;
+                }
+                else if (layer >= value.Length)
+                {
+                    // not all values were supplied, assume minimum
+                    Array.Resize(ref value, value.Length + 1);
+                    value[layer] = 0.0;
+                }
+                else
+                {
+                    // a value was supplied, check whether it is valid (positive and within bounds)
+                    bool IsVariableOK = (value[layer] >= 0.0 || value[layer] <= 10000);
+                    if (!IsVariableOK)
+                        value[layer] = 0.0;
+                }
+                _nh4[layer] = value[layer];
+            }
+            SendExternalMassFlowN(MathUtility.Sum(_nh4) - sumOld);
+        }
+    }
+
+    /// <summary>
+    /// Soil nitrate nitrogen amount (kgN/ha)
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("Soil nitrate nitrogen amount")]
+    public double[] no3
+    {
+        get
+        {
+            return _no3;
+        }
+        set
+        { // should this be disallowed?? changes should be done via NitrogenChanged
+            double sumOld = MathUtility.Sum(_no3);
+            for (int layer = 0; layer < dlayer.Length; ++layer)
+            {
+                if (layer >= _no3.Length)
+                {
+                    Console.WriteLine(" Attempt to assign NO3 value to a non-existent soil layer - extra values will be ignored");
+                    break;
+                }
+                else if (layer >= value.Length)
+                {
+                    // not all values were supplied, assume minimum
+                    Array.Resize(ref value, value.Length + 1);
+                    value[layer] = 0.0;
+                }
+                else
+                {
+                    // a value was supplied, check whether it is valid (positive and within bounds)
+                    bool IsVariableOK = (value[layer] >= 0.0 || value[layer] <= 10000);
+                    if (!IsVariableOK)
+                        value[layer] = 0.0;
+                }
+                _no3[layer] = value[layer];
+            }
+            SendExternalMassFlowN(MathUtility.Sum(_no3) - sumOld);
+
+        }
+    }
+
+    #endregion
+
     #region Amounts in various pools
 
     /// <summary>
@@ -2577,7 +1843,8 @@ public partial class SoilNitrogen
         {
             double[] result = new double[dlayer.Length];
             for (int layer = 0; layer < dlayer.Length; layer++)
-                result[layer] = fom_n_pool1[layer] + fom_n_pool2[layer] + fom_n_pool3[layer];
+                for (int pool = 0; pool < 3; pool++)
+                    result[layer] += fom_n_pool[pool][layer];
             return result;
         }
     }
@@ -2588,7 +1855,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Nitrogen in FOM pool 1")]
-    private double[] fom_n_pool1;
+    private double[] fom_n_pool1
+    { get { return fom_n_pool[0]; } }
 
     /// <summary>
     /// Nitrogen in FOM pool 2
@@ -2596,7 +1864,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Nitrogen in FOM pool 2")]
-    private double[] fom_n_pool2;
+    private double[] fom_n_pool2
+    { get { return fom_n_pool[1]; } }
 
     /// <summary>
     /// Nitrogen in FOM pool 3
@@ -2604,7 +1873,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Nitrogen in FOM pool 3")]
-    private double[] fom_n_pool3;
+    private double[] fom_n_pool3
+    { get { return fom_n_pool[2]; } }
 
     /// <summary>
     /// Soil humic N
@@ -2976,7 +2246,8 @@ public partial class SoilNitrogen
         {
             double[] result = new double[dlayer.Length];
             for (int layer = 0; layer < dlayer.Length; layer++)
-                result[layer] = fom_c_pool1[layer] + fom_c_pool2[layer] + fom_c_pool3[layer];
+                for (int pool = 0; pool < 3; pool++)
+                    result[layer] += fom_c_pool[pool][layer];
             return result;
         }
     }
@@ -2987,7 +2258,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("FOM C in pool 1")]
-    private double[] fom_c_pool1;
+    private double[] fom_c_pool1
+    { get { return fom_c_pool[0]; } }
 
     /// <summary>
     /// Amount of C in pool 2 of FOM
@@ -2995,7 +2267,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("FOM C in pool 2")]
-    private double[] fom_c_pool2;
+    private double[] fom_c_pool2
+    { get { return fom_c_pool[1]; } }
 
     /// <summary>
     /// Amount of C in pool 3 of FOM
@@ -3003,7 +2276,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("FOM C in pool 3")]
-    private double[] fom_c_pool3;
+    private double[] fom_c_pool3
+    { get { return fom_c_pool[2]; } }
 
     /// <summary>
     /// Amount of C in humic pool
@@ -3044,9 +2318,9 @@ public partial class SoilNitrogen
             {
                 result = new double[dlayer.Length];
                 for (int layer = 0; layer < dlayer.Length; ++layer)
-                    result[layer] = fom_c_pool1[layer] +
-                                    fom_c_pool2[layer] +
-                                    fom_c_pool3[layer] +
+                    result[layer] = fom_c_pool[0][layer] +
+                                    fom_c_pool[1][layer] +
+                                    fom_c_pool[2][layer] +
                                     hum_c[layer] +
                                     biom_c[layer];
             }
@@ -3109,31 +2383,11 @@ public partial class SoilNitrogen
         get
         {
             double[] result = new double[0];
-            // if (usingSimpleSoilTemp)   // this should limit the output to only the variable calculated here. However the plant modules still look for 'st' insted of 'ave_soil_temp'
+            // if (usingSimpleSoilTemp)   // this should limit the output to only the variable calculated here. However the plant modules still look for 'st' instead of 'ave_soil_temp'
             //    result = Tsoil;
             return Tsoil;
         }
     }
-
-    /// <summary>
-    /// Temperature factor for nitrification and mineralisation
-    /// </summary>
-    [Output]
-    [Description("Temperature factor for nitrification and mineralisation")]
-    private double[] tf
-    {
-        get
-        {
-            double[] result = new double[dlayer.Length];
-            // RCichota: deactivated
-            //int index = (!is_pond_active) ? 1 : 2;
-            //for (int layer = 0; layer < dlayer.Length; layer++)
-            //    result[layer] = (soiltype == "rothc") ? RothcTF(layer, index) : TF(layer, index);
-            return result;
-        }
-    }
-
-    #endregion
 
     #endregion
 
@@ -3144,7 +2398,7 @@ public partial class SoilNitrogen
     /// <summary>
     /// Value to evaluate precision against floating point variables
     /// </summary>
-    private readonly double epsilon = Math.Pow(2, -24);
+    private readonly double epsilon = 0.000000000001;
     //private double epsilon = Math.Pow(2, -24);
 
 
@@ -3170,6 +2424,183 @@ public partial class SoilNitrogen
     private simpleSoilTemp simpleST;
 
     #endregion components
+
+    #region Soil physics data
+
+    /// <summary>
+    /// The soil layer thickness at the start of the simulation
+    /// </summary>
+    private double[] reset_dlayer;
+
+    /// <summary>
+    /// Soil layers' thichness (mm)
+    /// </summary>
+    private double[] dlayer;
+
+    /// <summary>
+    /// Soil bulk density for each layer (g/cm3)
+    /// </summary>
+    private double[] SoilDensity;
+
+    /// <summary>
+    /// Soil water amount at saturation (mm)
+    /// </summary>
+    private double[] sat_dep;
+
+    /// <summary>
+    /// Soil water amount at drainage upper limit (mm)
+    /// </summary>
+    private double[] dul_dep;
+
+    /// <summary>
+    /// Soil water amount at drainage lower limit (mm)
+    /// </summary>
+    private double[] ll15_dep;
+
+    #endregion
+
+    #region Initial C and N amounts
+
+    /// <summary>
+    /// The initial OC content for each layer of the soil (%). Also used onReset
+    /// </summary>
+    private double[] reset_oc;
+
+    /// <summary>
+    /// Initial content of urea in each soil layer (ppm). Also used onReset
+    /// </summary>
+    private double[] reset_ureappm;
+
+    /// <summary>
+    /// Initial content of NH4 in each soil layer (ppm). Also used onReset
+    /// </summary>
+    private double[] reset_nh4ppm;
+
+    /// <summary>
+    /// Initial content of NO3 in each soil layer (ppm). Also used onReset
+    /// </summary>
+    private double[] reset_no3ppm;
+
+    #endregion
+
+    #region Mineral N amounts
+
+    /// <summary>
+    /// Internal variable holding the urea amounts
+    /// </summary>
+    private double[] _urea;
+
+    /// <summary>
+    /// Internal variable holding the nh4 amounts
+    /// </summary>
+    private double[] _nh4;
+
+    /// <summary>
+    /// Internal variable holding the no3 amounts
+    /// </summary>
+    private double[] _no3 = null;
+
+    #endregion
+
+    #region Organic C and N amounts
+
+    /// <summary>
+    /// Carbon amount in FOM pools
+    /// </summary>
+    private double[][] fom_c_pool = new double[3][];
+
+    /// <summary>
+    /// Nitrogen amount in FOM pools
+    /// </summary>
+    private double[][] fom_n_pool = new double[3][];
+
+    #endregion
+
+    #region Deltas in mineral nitrogen
+
+    /// <summary>
+    /// Variations in urea as given by another component
+    /// </summary>
+    /// <remarks>
+    /// This property checks changes in the amount of urea at each soil layer
+    ///  - If values are not supplied for all layers, these will be assumed zero
+    ///  - If values are supplied in excess, these will ignored
+    ///  - Each value is tested whether it is within bounds, then it is added to the actual amount, this amount is then tested for its bounds
+    /// </remarks>
+    private double[] dlt_urea
+    {
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+            {
+                if (layer < dlayer.Length)
+                {
+                    // update variable and check its value
+                    _urea[layer] += value[layer];
+                    CheckNegativeValues(ref _urea[layer], layer, "urea", "deltaUrea");
+                }
+
+                else
+                {
+                    string myMessage = " Attempt to change the Urea value of a non-existent layer - extra values will be ignored";
+                    writeMessage(myMessage);
+                    break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Variations in nh4 as given by another component
+    /// </summary>
+    private double[] dlt_nh4
+    {
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+            {
+                if (layer < dlayer.Length)
+                {
+                    // update variable and check its value
+                    _nh4[layer] += value[layer];
+                    CheckNegativeValues(ref _nh4[layer], layer, "nh4", "deltaNH4");
+                }
+
+                else
+                {
+                    Console.WriteLine(" Attempt to change the NH4 value of a non-existent layer - extra values will be ignored");
+                    break;
+
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Variations in no3 as given by another component
+    /// </summary>
+    private double[] dlt_no3
+    {
+        set
+        {
+            for (int layer = 0; layer < value.Length; ++layer)
+            {
+                if (layer < dlayer.Length)
+                {
+                    // update variable and check its value
+                    _no3[layer] += value[layer];
+                    CheckNegativeValues(ref _no3[layer], layer, "no3", "deltaNO3");
+                }
+                else
+                {
+                    Console.WriteLine(" Attempt to change the NO3 value of a non-existent layer - extra values will be ignored");
+                    break;
+                }
+            }
+        }
+    }
+
+    #endregion
 
     #region Decision auxiliary variables
 
