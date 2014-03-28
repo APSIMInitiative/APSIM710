@@ -410,6 +410,7 @@
          REAL WRTI                 ! Initial dry weight of roots  !kg ha-1
 
          real cttmax               ! temperature factor - was hard coded (22.0)
+		 real httmax               ! temperature factor - was hard coded (36.6)
       end type oryzaParameters
 ! ===================================================================
 
@@ -2752,6 +2753,14 @@
      :          ,0.0                  ! Lower Limit for bound check
      :          ,100.0)               ! Upper Limit for bound check
 
+      call read_real_var (
+     :           section_name         ! Section header
+     :          ,'httmax'             ! Keyword
+     :          ,'()'                 ! Units
+     :          ,p%httmax             ! value
+     :          ,numvals              ! Number of values returned
+     :          ,0.0                  ! Lower Limit for bound check
+     :          ,100.0)               ! Upper Limit for bound check	 
 
       call pop_routine  (myname)
       return
@@ -3893,7 +3902,7 @@
          g%SF1    = 1.-(4.6+0.054*g%COLDTT**1.56)/100.
          g%SF1    = MIN(1.,MAX(0.,g%SF1))
          g%TFERT  = divide(g%TFERT,g%NTFERT, 0.0)
-         g%SF2    = divide(1.,(1.+EXP(0.853*(g%TFERT-36.6))),0.0)
+         g%SF2    = divide(1.,(1.+EXP(0.853*(g%TFERT-p%httmax))),0.0)
          g%SF2    = MIN(1.,MAX(0.,g%SF2))
          g%SPFERT = MIN(g%SF1,g%SF2)
          g%GNGR   = g%NSP*g%SPFERT
