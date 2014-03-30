@@ -67,9 +67,9 @@ public partial class SoilNitrogen
 
         fbiom = Soil.SoilOrganicMatter.FBiom;
         finert = Soil.SoilOrganicMatter.FInert;
-        soil_cn = Soil.SoilOrganicMatter.SoilCN;
-        root_wt = Soil.SoilOrganicMatter.RootWt;
-        root_cn = Soil.SoilOrganicMatter.RootCN;
+        HumusCNr = Soil.SoilOrganicMatter.SoilCN;
+        InitialFOMAmount = Soil.SoilOrganicMatter.RootWt;
+        InitialCNrFOM = Soil.SoilOrganicMatter.RootCN;
         enr_a_coeff = Soil.SoilOrganicMatter.EnrACoeff;
         enr_b_coeff = Soil.SoilOrganicMatter.EnrBCoeff;
         Clock.Tick += new TimeDelegate(OnTick);
@@ -153,7 +153,7 @@ public partial class SoilNitrogen
         Console.WriteLine("        - Reading/checking parameters");
 
         SoilNParameterSet = SoilNParameterSet.Trim();
-        Console.WriteLine("          - Using " + SoilNParameterSet + " soil mineralisation specification");
+        Console.WriteLine("          - Using " + SoilNParameterSet + " SoilN parameter set specification");
 
         // check whether soil temperature is present. If not, check whether the basic params for simpleSoilTemp have been supplied
         if (SimpleSoilTempAllowed)
@@ -177,8 +177,8 @@ public partial class SoilNitrogen
         {
             ph = new double[nLayers];
             for (int layer = 0; layer < nLayers; ++layer)
-                ph[layer] = defaultInipH;
-            Console.WriteLine("          - Soil pH was not supplied, the value " + defaultInipH.ToString("0.00") + " will be used for all layers");
+                ph[layer] = defaultInitialpH;
+            Console.WriteLine("          - Soil pH was not supplied, the value " + defaultInitialpH.ToString("0.00") + " will be used for all layers");
         }
 
         // Check if all fom values have been supplied
@@ -194,12 +194,12 @@ public partial class SoilNitrogen
         {
             fomPoolsCNratio = new double[3];
             for (int i = 0; i < 3; i++)
-                fomPoolsCNratio[i] = iniFOM_CNr;
+                fomPoolsCNratio[i] = InitialCNrFOM;
         }
 
         // Check if initial fom depth has been supplied, if not assume that initial fom is distributed over the whole profile
-        if (iniFOM_depth <= epsilon)
-            iniFOM_depth = SumDoubleArray(dlayer);
+        if (InitialFOMDepth <= epsilon)
+            InitialFOMDepth = SumDoubleArray(dlayer);
 
         // Calculate conversion factor from kg/ha to ppm (mg/kg)
         convFactor = new double[nLayers];
@@ -257,14 +257,14 @@ public partial class SoilNitrogen
         // compute initial FOM distribution in the soil (FOM fraction)
         FOMiniFraction = new double[nLayers];
         double totFOMfraction = 0.0;
-        int deepestLayer = getCumulativeIndex(iniFOM_depth, dlayer);
+        int deepestLayer = getCumulativeIndex(InitialFOMDepth, dlayer);
         double cumDepth = 0.0;
         double FracLayer = 0.0;
         for (int layer = 0; layer <= deepestLayer; layer++)
         {
-            FracLayer = Math.Min(1.0, MathUtility.Divide(iniFOM_depth - cumDepth, dlayer[layer], 0.0));
+            FracLayer = Math.Min(1.0, MathUtility.Divide(InitialFOMDepth - cumDepth, dlayer[layer], 0.0));
             cumDepth += dlayer[layer];
-            FOMiniFraction[layer] = FracLayer * Math.Exp(-iniFOM_coefficient * Math.Min(1.0, MathUtility.Divide(cumDepth, iniFOM_depth, 0.0)));
+            FOMiniFraction[layer] = FracLayer * Math.Exp(-FOMDistributionCoefficient * Math.Min(1.0, MathUtility.Divide(cumDepth, InitialFOMDepth, 0.0)));
         }
 
         // distribute FOM through layers
@@ -307,17 +307,17 @@ public partial class SoilNitrogen
 
             // calculate microbial biomass C and N
             double BiomassC = MathUtility.Divide((Soil_OC - InertC) * fbiom[layer], 1.0 + fbiom[layer], 0.0);
-            double BiomassN = MathUtility.Divide(BiomassC, biom_cn, 0.0);
+            double BiomassN = MathUtility.Divide(BiomassC, MBiomassCNr, 0.0);
 
             // calculate C and N values for active humus
             double HumusC = Soil_OC - BiomassC;
-            double HumusN = MathUtility.Divide(HumusC, hum_cn, 0.0);
+            double HumusN = MathUtility.Divide(HumusC, HumusCNr, 0.0);
 
             // distribute C over fom pools
             double[] fomPool = new double[3];
-            fomPool[0] = iniFOM_wt * FOMiniFraction[layer] * fract_carb[FOMtypeID_reset] * defaultFOMCarbonContent;
-            fomPool[1] = iniFOM_wt * FOMiniFraction[layer] * fract_cell[FOMtypeID_reset] * defaultFOMCarbonContent;
-            fomPool[2] = iniFOM_wt * FOMiniFraction[layer] * fract_lign[FOMtypeID_reset] * defaultFOMCarbonContent;
+            fomPool[0] = InitialFOMAmount * FOMiniFraction[layer] * fract_carb[FOMtypeID_reset] * defaultCarbonInFOM;
+            fomPool[1] = InitialFOMAmount * FOMiniFraction[layer] * fract_cell[FOMtypeID_reset] * defaultCarbonInFOM;
+            fomPool[2] = InitialFOMAmount * FOMiniFraction[layer] * fract_lign[FOMtypeID_reset] * defaultCarbonInFOM;
 
             // set the initial values across patches
             _urea[layer] = iniUrea;
@@ -429,7 +429,7 @@ public partial class SoilNitrogen
         if (new_solute != null)
         {
             string[] solute_names;
-            if (useOrganicSolutes)
+            if (OrganicSolutesAllowed)
             {
                 solute_names = new string[7] { "urea", "nh4", "no3", "org_c_pool1", "org_c_pool2", "org_c_pool3", "org_n" };
             }
@@ -719,7 +719,7 @@ public partial class SoilNitrogen
             {
                 if (inFOMdata.Layer[layer].FOM.amount >= epsilon)
                 {
-                    inFOMdata.Layer[layer].FOM.C = inFOMdata.Layer[layer].FOM.amount * (float)defaultFOMCarbonContent;
+                    inFOMdata.Layer[layer].FOM.C = inFOMdata.Layer[layer].FOM.amount * (float)defaultCarbonInFOM;
                     if (inFOMdata.Layer[layer].CNR > epsilon)
                     {   // we have C:N info - note that this has precedence over N amount
                         totalCAmount += inFOMdata.Layer[layer].FOM.C;

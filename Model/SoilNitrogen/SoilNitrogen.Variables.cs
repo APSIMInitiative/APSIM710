@@ -47,14 +47,9 @@ public partial class SoilNitrogen
     /// <remarks>
     /// Used to determine which node of xml file will be used to overwrite some [Param]'s
     /// </remarks>
-    private string SoilNParameterSet = "standard";
     [Param(IsOptional = true)]
     [Description("Soil parameterisation set to use")]
-    public string soiltype
-    {
-        get { return SoilNParameterSet; }
-        set { SoilNParameterSet = value.Trim(); }
-    }
+    public string SoilNParameterSet= "standard";
 
     /// <summary>
     /// Indicates whether simpleSoilTemp is allowed
@@ -78,7 +73,7 @@ public partial class SoilNitrogen
     private bool ProfileReductionAllowed = false;
     [Param]
     [Description("Indicates whether soil profile reduction is allowed")]
-    public string profile_reduction
+    public string allowProfileReduction
     {
         get { return (ProfileReductionAllowed) ? "yes" : "no"; }
         set { ProfileReductionAllowed = value.ToLower().StartsWith("on"); }
@@ -90,13 +85,13 @@ public partial class SoilNitrogen
     /// <remarks>
     /// It should always be false, as organic solutes are not implemented yet
     /// </remarks>
-    private bool useOrganicSolutes = false;
+    private bool OrganicSolutesAllowed = false;
     [Param(IsOptional = true)]
     [Description("Indicates whether organic solutes are to be simulated")]
-    public string use_organic_solutes
+    public string allowOrganicSolutes
     {
-        get { return (useOrganicSolutes) ? "yes" : "no"; }
-        set { useOrganicSolutes = value.ToLower().StartsWith("on"); }
+        get { return (OrganicSolutesAllowed) ? "yes" : "no"; }
+        set { OrganicSolutesAllowed = value.ToLower().StartsWith("on"); }
     }
 
     /// <summary>
@@ -105,7 +100,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 3.0)]
     [Units("")]
     [Description("Factor to convert from OC to OM")]
-    public double oc2om_factor;
+    public double defaultCarbonInSoilOM;
 
     /// <summary>
     /// Default weight fraction of C in carbohydrates
@@ -113,15 +108,10 @@ public partial class SoilNitrogen
     /// <remarks>
     /// Used to convert FOM amount into fom_c
     /// </remarks>
-    private double defaultFOMCarbonContent = 0.4;
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Weight fraction of C in FOM")]
-    public double c_in_fom
-    {
-        get { return defaultFOMCarbonContent; }
-        set { defaultFOMCarbonContent = value; }
-    }
+    public double defaultCarbonInFOM = 0.4;
 
     /// <summary>
     /// Default value for initialising soil pH
@@ -129,7 +119,7 @@ public partial class SoilNitrogen
     [Param()]
     [Units("")]
     [Description("Default value for pH at initialisation")]
-    public double defaultInipH;
+    public double defaultInitialpH;
 
     /// <summary>
     /// Threshold value to trigger a warning message when negative values are detected
@@ -149,26 +139,6 @@ public partial class SoilNitrogen
 
     #endregion general settings
 
-    #region Parameters for handling soil loss process
-
-    /// <summary>
-    /// Coefficient a of the enrichment equation
-    /// </summary>
-    [Param()]
-    [Units("")]
-    [Description("Erosion enrichment coefficient A")]
-    public double enr_a_coeff;
-
-    /// <summary>
-    /// Coefficient b of the enrichment equation
-    /// </summary>
-    [Param()]
-    [Units("")]
-    [Description("Erosion enrichment coefficient B")]
-    public double enr_b_coeff;
-
-    #endregion params for soil loss
-
     #region Parameters for setting up soil organic matter
 
     /// <summary>
@@ -177,15 +147,10 @@ public partial class SoilNitrogen
     /// <remarks>
     /// Remains fixed throughout the simulation
     /// </remarks>
-    private double hum_cn = 0.0;
     [Param(MinVal = 1.0, MaxVal = 25.0)]
     [Units("")]
     [Description("The C:N ratio of the soil OM (humus)")]
-    public double soil_cn
-    {
-        get { return hum_cn; }
-        set { hum_cn = value; }
-    }
+    public double HumusCNr = 0.0;
 
     /// <summary>
     /// The C:N ratio of microbial biomass
@@ -193,15 +158,10 @@ public partial class SoilNitrogen
     /// <remarks>
     /// Remains fixed throughout the simulation
     /// </remarks>
-    private double biom_cn = 8.0;
     [Param(IsOptional = true, MinVal = 1.0, MaxVal = 50.0)]
     [Units("")]
     [Description("The C:N ratio of microbial biomass")]
-    public double mcn
-    {
-        get { return biom_cn; }
-        set { biom_cn = value; }
-    }
+    public double MBiomassCNr = 8.0;
 
     /// <summary>
     /// Proportion of biomass-C in the initial mineralizable humic-C (0-1)
@@ -226,16 +186,10 @@ public partial class SoilNitrogen
     /// <summary>
     /// Initial amount of FOM in the soil (kgDM/ha)
     /// </summary>
-    private double iniFOM_wt = 0.0;
-
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100000.0)]
     [Units("kg/ha")]
     [Description("Initial amount of FOM in the soil")]
-    public double root_wt
-    {
-        get { return iniFOM_wt; }
-        set { iniFOM_wt = value; }
-    }
+    public double InitialFOMAmount = 0.0;
 
     /// <summary>
     /// Initial depth over which FOM is distributed within the soil profile (mm)
@@ -244,15 +198,10 @@ public partial class SoilNitrogen
     /// If not given fom will be distributed over the whole soil profile
     /// Distribution follows an exponential function
     /// </remarks>
-    private double iniFOM_depth = -99.0;
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 5000.0)]
+    [Param(IsOptional = true)]
     [Units("mm")]
     [Description("Initial depth over which FOM is distributed in the soil")]
-    public double root_depth
-    {
-        get { return iniFOM_depth; }
-        set { iniFOM_depth = value; }
-    }
+    public double InitialFOMDepth = -99.0;
 
     /// <summary>
     /// Exponent of function used to compute initial distribution of FOM in the soil
@@ -260,15 +209,10 @@ public partial class SoilNitrogen
     /// <remarks>
     /// If not given, a default value  might be considered (3.0)
     /// </remarks>
-    private double iniFOM_coefficient = 3.0;
     [Param(IsOptional = true, MinVal = 0.01, MaxVal = 10.0)]
     [Units("")]
     [Description("Exponent for the FOM distribution in soil")]
-    public double root_dist_coeff
-    {
-        get { return iniFOM_coefficient; }
-        set { iniFOM_coefficient = value; }
-    }
+    public double FOMDistributionCoefficient = 3.0;
 
     /// <summary>
     /// Initial C:N ratio of roots (actually FOM)
@@ -277,31 +221,10 @@ public partial class SoilNitrogen
     /// This may not be used if values for each pool are given, thus it is optional
     /// however, a default value is always needed as it may happen that neither is given
     /// </remarks>
-    private double iniFOM_CNr = 40.0;
     [Param(IsOptional = true, MinVal = 0.1, MaxVal = 750.0)]
     [Units("")]
     [Description("Initial C:N ratio of FOM")]
-    public double root_cn
-    {
-        get { return iniFOM_CNr; }
-        set { iniFOM_CNr = value; }
-    }
-
-    /// <summary>
-    /// Initial C:N ratio of each of the three fom composition pools (carbohydrate, cellulose, and lignin)
-    /// </summary>
-    /// <remarks>
-    /// Case not given, iniFOM_CNr is used for all pools
-    /// </remarks>
-    private double[] fomPoolsCNratio = null;
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
-    [Units("")]
-    [Description("Initial C:N ratio of each FOM pool")]
-    public double[] root_cn_pool
-    {
-        get { return fomPoolsCNratio; }
-        set { fomPoolsCNratio = value; }
-    }
+    public double InitialCNrFOM = 40.0;
 
     /// <summary>
     /// FOM type to be used on initialisation
@@ -313,7 +236,7 @@ public partial class SoilNitrogen
     private int FOMtypeID_reset = 0;
     [Param(IsOptional = true)]
     [Description("FOM type to be used on initialisation")]
-    public string iniFOM_type
+    public string InitialFOMType
     {
         get { return fom_types[FOMtypeID_reset]; }
         set
@@ -327,7 +250,7 @@ public partial class SoilNitrogen
                     break;
                 }
             }
-            if (iniFOM_type != fom_types[FOMtypeID_reset])
+            if (InitialFOMType != fom_types[FOMtypeID_reset])
             {   // no valid FOM type was given, use default
                 FOMtypeID_reset = 0;
                 // let the user know that the default type will be used
@@ -383,7 +306,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of residue C mineralised retained in the soil OM")]
-    public double ef_res;
+    public double ResiduesRespirationFactor;
 
     /// <summary>
     /// Fraction of retained residue C transferred to biomass (0-1)
@@ -394,7 +317,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of retained residue C transferred to biomass")]
-    public double fr_res_biom;
+    public double ResiduesFractionIntoBiomass;
 
     /// <summary>
     /// Depth from which mineral N can be immobilised when decomposing surface residues (mm)
@@ -402,7 +325,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
     [Description("Depth from which mineral N can be immobilised when decomposing surface residues")]
-    public double min_depth;
+    public double ImmobilisationDepth;
 
     #endregion
 
@@ -414,7 +337,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Optimum decomposition rate of FOM carbohydrate")]
-    public double[] rd_carb;
+    public double[] FOMCarbTurnOverRate;
 
     /// <summary>
     /// Optimum rate for decomposition of FOM pools [cellulose component] (0-1)
@@ -422,7 +345,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Optimum decomposition rate of FOM cellulose")]
-    public double[] rd_cell;
+    public double[] FOMCellTurnOverRate;
 
     /// <summary>
     /// Optimum rate for decomposition of FOM pools [lignin component] (0-1)
@@ -430,7 +353,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Optimum decomposition rate of FOM lignine")]
-    public double[] rd_lign;
+    public double[] FOMLignTurnOverRate;
 
     /// <summary>
     /// Fraction of the FOM C decomposed retained in the soil OM (0-1)
@@ -438,7 +361,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of the FOM C decomposed retained in the soil OM")]
-    public double ef_fom;
+    public double FOMRespirationFactor;
 
     /// <summary>
     /// Fraction of the retained FOM C transferred to biomass (0-1)
@@ -446,7 +369,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of the retained FOM C transferred to biomass")]
-    public double fr_fom_biom;
+    public double FOMFractionIntoBiomass;
 
     #region Limiting factors
 
@@ -454,13 +377,13 @@ public partial class SoilNitrogen
     /// Coeff. to determine the magnitude of C:N effects on decomposition of FOM
     /// </summary>
     [Param(MinVal = 0.0, MaxVal = 10.0)]
-    public double cnrf_coeff;
+    public double cnrf_ReductionCoeff;
 
     /// <summary>
     /// C:N above which decomposition rate of FOM declines
     /// </summary>
     [Param(MinVal = 5.0, MaxVal = 100.0)]
-    public double cnrf_optcn;
+    public double cnrf_CNthreshold;
 
     /// <summary>
     /// Data for calculating the temperature effect on FOM decomposition
@@ -540,7 +463,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Potential rate of soil biomass mineralisation")]
-    public double[] rd_biom;
+    public double[] MBiomassTurnOverRate;
 
     /// <summary>
     /// Fraction of biomass C mineralised retained in soil OM (0-1)
@@ -548,7 +471,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of biomass C mineralised retained in soil OM")]
-    public double ef_biom;
+    public double MBiomassRespirationFactor;
 
     /// <summary>
     /// Fraction of retained biomass C returned to biomass (0-1)
@@ -556,7 +479,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of retained biomass C returned to biomass")]
-    public double fr_biom_biom;
+    public double MBiomassFractionIntoBiomass;
 
     /// <summary>
     /// Potential rate of humus mineralisation (per day, 0-1)
@@ -564,7 +487,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Potential rate of humus mineralisation")]
-    public double[] rd_hum;
+    public double[] AHumusTurnOverRate;
 
     /// <summary>
     /// Fraction of humic C mineralised retained in soil OM (0-1)
@@ -572,7 +495,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Fraction of humic C mineralised retained in soil OM")]
-    public double ef_hum;
+    public double AHumusRespirationFactor;
 
     #region Limiting factors
 
@@ -907,7 +830,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("")]
     [Description("")]
-    public double dnit_rate_coeff;
+    public double DenitRateCoefficient;
 
     /// <summary>
     /// Fraction of nitrification lost as denitrification
@@ -915,7 +838,7 @@ public partial class SoilNitrogen
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("")]
     [Description("")]
-    public double dnit_nitrf_loss;
+    public double n2oLossFactor;
 
     /// <summary>
     /// Parameter k1 from Thorburn et al (2010) for N2O model
@@ -1061,6 +984,26 @@ public partial class SoilNitrogen
     #endregion factors
 
     #endregion params for denitrification
+
+    #region Parameters for handling soil loss process
+
+    /// <summary>
+    /// Coefficient a of the enrichment equation
+    /// </summary>
+    [Param()]
+    [Units("")]
+    [Description("Erosion enrichment coefficient A")]
+    public double enr_a_coeff;
+
+    /// <summary>
+    /// Coefficient b of the enrichment equation
+    /// </summary>
+    [Param()]
+    [Units("")]
+    [Description("Erosion enrichment coefficient B")]
+    public double enr_b_coeff;
+
+    #endregion params for soil loss
 
     #endregion params for initialisation
 
@@ -2657,6 +2600,11 @@ public partial class SoilNitrogen
     /// Type of FOM being used
     /// </summary>
     private int fom_type;
+
+    /// <summary>
+    /// The C:N ratio of each fom pool
+    /// </summary>
+    private double[] fomPoolsCNratio;
 
     /// <summary>
     /// Factor for converting kg/ha into ppm

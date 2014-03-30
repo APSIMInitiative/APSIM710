@@ -71,8 +71,8 @@ public partial class SoilNitrogen
             hum_c[layer] += dlt_c_res_to_hum[layer];
 
             // organic N balance
-            hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
+            hum_n[layer] = MathUtility.Divide(hum_c[layer], HumusCNr, 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], MBiomassCNr, 0.0);
 
             // update soil mineral N
             _nh4[layer] += dlt_res_nh4_min[layer];
@@ -111,8 +111,8 @@ public partial class SoilNitrogen
             hum_c[layer] += dlt_biom_c_hum[layer] - dlt_hum_c_biom[layer] - dlt_hum_c_atm[layer] +
                            dlt_c_fom_to_hum[0][layer] + dlt_c_fom_to_hum[1][layer] + dlt_c_fom_to_hum[2][layer];
 
-            biom_n[layer] = MathUtility.Divide(biom_c[layer], biom_cn, 0.0);
-            hum_n[layer] = MathUtility.Divide(hum_c[layer], hum_cn, 0.0);
+            biom_n[layer] = MathUtility.Divide(biom_c[layer], MBiomassCNr, 0.0);
+            hum_n[layer] = MathUtility.Divide(hum_c[layer], HumusCNr, 0.0);
 
             // update FOM pools
             for (int pool = 0; pool < 3; pool++)
@@ -186,8 +186,8 @@ public partial class SoilNitrogen
         int nResidues = residueName.Length;                     // number of residues being considered
         double[] no3_available = new double[nLayers];           // no3 available for mineralisation
         double[] nh4_available = new double[nLayers];           // nh4 available for mineralisation
-        int min_layer = getCumulativeIndex(min_depth, dlayer);  // soil layer down to which N is available for mineralisation
-        double[] fracLayer = FractionLayer(min_depth);          // fraction of each layer that is within mineralisation depth
+        int ImmobilisationLayer = getCumulativeIndex(ImmobilisationDepth, dlayer);  // soil layer down to which N is available for mineralisation
+        double[] fracLayer = FractionLayer(ImmobilisationDepth);          // fraction of each layer that is within mineralisation depth
         double[] dlt_c_to_biom = new double[nResidues];         // C mineralized converted to biomass
         double[] dlt_c_to_hum = new double[nResidues];          // C mineralized converted to humus
 
@@ -205,7 +205,7 @@ public partial class SoilNitrogen
         {  // there is some decomposition, verify C-N balance
 
             // 2. get the available mineral N in the soil close to surface (mineralisation depth)
-            for (int layer = 0; layer <= min_layer; layer++)
+            for (int layer = 0; layer <= ImmobilisationLayer; layer++)
             {
                 no3_available[layer] = Math.Max(0.0, _no3[layer]) * fracLayer[layer];
                 nh4_available[layer] = Math.Max(0.0, _nh4[layer]) * fracLayer[layer];
@@ -214,15 +214,15 @@ public partial class SoilNitrogen
             // 3. get the potential transfers to m. biomass and humic pools
             for (int residue = 0; residue < nResidues; residue++)
             {
-                dlt_c_to_biom[residue] = pot_c_decomp[residue] * ef_res * fr_res_biom;
-                dlt_c_to_hum[residue] = pot_c_decomp[residue] * ef_res * (1.0 - fr_res_biom);
+                dlt_c_to_biom[residue] = pot_c_decomp[residue] * (1.0 - ResiduesRespirationFactor) * ResiduesFractionIntoBiomass;
+                dlt_c_to_hum[residue] = pot_c_decomp[residue] * (1.0 - ResiduesRespirationFactor) * (1.0 - ResiduesFractionIntoBiomass);
             }
 
             // 4. test whether there is adequate N available to meet immobilization demand
 
             // 4.1. potential N demanded for conversion of FOM into soil OM
-            double n_demand = MathUtility.Divide(SumDoubleArray(dlt_c_to_biom), biom_cn, 0.0) +
-                              MathUtility.Divide(SumDoubleArray(dlt_c_to_hum), hum_cn, 0.0);
+            double n_demand = MathUtility.Divide(SumDoubleArray(dlt_c_to_biom), MBiomassCNr, 0.0) +
+                              MathUtility.Divide(SumDoubleArray(dlt_c_to_hum), HumusCNr, 0.0);
             // 4.2. total available N for this process
             double n_min_available = SumDoubleArray(nh4_available) + SumDoubleArray(no3_available);
             double n_available = n_min_available + SumDoubleArray(pot_n_decomp);
@@ -231,8 +231,7 @@ public partial class SoilNitrogen
             double ReductionFactor = 1.0;
             if (n_demand > n_available)
             {
-                ReductionFactor = MathUtility.Divide(n_min_available,
-                                                      n_demand - SumDoubleArray(pot_n_decomp), 0.0);
+                ReductionFactor = MathUtility.Divide(n_min_available, n_demand - SumDoubleArray(pot_n_decomp), 0.0);
                 ReductionFactor = Math.Max(0.0, Math.Min(1.0, ReductionFactor));
             }
 
@@ -240,10 +239,10 @@ public partial class SoilNitrogen
             double dlt_n_decomp_tot = 0.0;
             double dlt_c_atm = 0.0;
             double fractionIntoLayer = 1.0;
-            for (int layer = 0; layer <= min_layer; layer++)
+            for (int layer = 0; layer <= ImmobilisationLayer; layer++)
             {
                 // 5.1. fraction of mineralised stuff going in this layer
-                fractionIntoLayer = MathUtility.Divide(dlayer[layer] * fracLayer[layer], min_depth, 0.0);
+                fractionIntoLayer = MathUtility.Divide(dlayer[layer] * fracLayer[layer], ImmobilisationDepth, 0.0);
 
                 // 5.2. adjust C and N amounts for each residue and add to soil OM pools
                 for (int residue = 0; residue < nResidues; residue++)
@@ -254,7 +253,7 @@ public partial class SoilNitrogen
 
                     dlt_c_res_to_biom[layer] += dlt_c_to_biom[residue] * ReductionFactor * fractionIntoLayer;
                     dlt_c_res_to_hum[layer] += dlt_c_to_hum[residue] * ReductionFactor * fractionIntoLayer;
-                    dlt_c_atm = pot_c_decomp[residue] * Math.Max(0.0, 1 - ef_res);
+                    dlt_c_atm = pot_c_decomp[residue] * Math.Max(0.0, ResiduesRespirationFactor);
                     dlt_c_res_to_atm[layer] += dlt_c_atm * ReductionFactor * fractionIntoLayer;
                 }
             }
@@ -266,22 +265,22 @@ public partial class SoilNitrogen
             if (dlt_mineral_n > epsilon)
             {
                 // 7.1. we have mineralisation into NH4, distribute it over the layers
-                for (int layer = 0; layer <= min_layer; layer++)
+                for (int layer = 0; layer <= ImmobilisationLayer; layer++)
                 {
-                    fractionIntoLayer = MathUtility.Divide(dlayer[layer] * fracLayer[layer], min_depth, 0.0);
+                    fractionIntoLayer = MathUtility.Divide(dlayer[layer] * fracLayer[layer], ImmobilisationDepth, 0.0);
                     dlt_res_nh4_min[layer] = dlt_mineral_n * fractionIntoLayer;
                 }
             }
             else if (dlt_mineral_n < -epsilon)
             {
                 // 7.2. we have immobilisation, soak up any N required from NH4 then NO3
-                for (int layer = 0; layer <= min_layer; layer++)
+                for (int layer = 0; layer <= ImmobilisationLayer; layer++)
                 {
                     dlt_res_nh4_min[layer] = -Math.Min(nh4_available[layer], Math.Abs(dlt_mineral_n));
                     dlt_mineral_n -= dlt_res_nh4_min[layer];
                 }
 
-                for (int layer = 0; layer <= min_layer; layer++)
+                for (int layer = 0; layer <= ImmobilisationLayer; layer++)
                 {
                     dlt_res_no3_min[layer] = -Math.Min(no3_available[layer], Math.Abs(dlt_mineral_n));
                     dlt_mineral_n -= dlt_res_no3_min[layer];
@@ -310,7 +309,7 @@ public partial class SoilNitrogen
         int index = (!isPondActive) ? 0 : 1;
 
         // get the potential mineralisation
-        double pot_miner = (hum_c[layer] - inert_c[layer]) * rd_hum[index];
+        double pot_miner = (hum_c[layer] - inert_c[layer]) * AHumusTurnOverRate[index];
 
         if (pot_miner >= epsilon)
         {
@@ -322,14 +321,14 @@ public partial class SoilNitrogen
 
             // compute the mineralization amounts of C and N from the humic pool
             double dlt_c_min_tot = pot_miner * stf * swf;
-            double dlt_n_min_tot = MathUtility.Divide(dlt_c_min_tot, hum_cn, 0.0);
+            double dlt_n_min_tot = MathUtility.Divide(dlt_c_min_tot, HumusCNr, 0.0);
 
             // distribute the mineralised N and C
-            dlt_hum_c_biom[layer] = dlt_c_min_tot * ef_hum;
-            dlt_hum_c_atm[layer] = dlt_c_min_tot * (1.0 - ef_hum);
+            dlt_hum_c_biom[layer] = dlt_c_min_tot *(1.0 - AHumusRespirationFactor);
+            dlt_hum_c_atm[layer] = dlt_c_min_tot * AHumusRespirationFactor;
 
             // calculate net mineralization
-            dlt_hum_n_min[layer] = dlt_n_min_tot - MathUtility.Divide(dlt_hum_c_biom[layer], biom_cn, 0.0);
+            dlt_hum_n_min[layer] = dlt_n_min_tot - MathUtility.Divide(dlt_hum_c_biom[layer], MBiomassCNr, 0.0);
         }
         else
         {
@@ -350,7 +349,7 @@ public partial class SoilNitrogen
         int index = (!isPondActive) ? 0 : 1;
 
         // get the potential mineralisation
-        double pot_miner = biom_n[layer] * rd_biom[index];
+        double pot_miner = biom_n[layer] * MBiomassTurnOverRate[index];
 
         if (pot_miner >= epsilon)
         {
@@ -362,15 +361,15 @@ public partial class SoilNitrogen
 
             // compute the mineralization amounts of C and N from the m. biomass pool
             double dlt_n_min_tot = pot_miner * stf * swf;
-            double dlt_c_min_tot = dlt_n_min_tot * biom_cn;
+            double dlt_c_min_tot = dlt_n_min_tot * MBiomassCNr;
 
             // distribute the mineralised N and C
-            dlt_biom_c_hum[layer] = dlt_c_min_tot * ef_biom * (1.0 - fr_biom_biom);
-            dlt_biom_c_atm[layer] = dlt_c_min_tot * (1.0 - ef_biom);
+            dlt_biom_c_hum[layer] = dlt_c_min_tot * (1.0 - MBiomassRespirationFactor) * (1.0 - MBiomassFractionIntoBiomass);
+            dlt_biom_c_atm[layer] = dlt_c_min_tot * MBiomassRespirationFactor;
 
             // calculate net mineralization
-            dlt_biom_n_min[layer] = dlt_n_min_tot - MathUtility.Divide(dlt_biom_c_hum[layer], hum_cn, 0.0) -
-                               MathUtility.Divide((dlt_c_min_tot - dlt_biom_c_atm[layer] - dlt_biom_c_hum[layer]), biom_cn, 0.0);
+            dlt_biom_n_min[layer] = dlt_n_min_tot - MathUtility.Divide(dlt_biom_c_hum[layer], HumusCNr, 0.0) -
+                               MathUtility.Divide((dlt_c_min_tot - dlt_biom_c_atm[layer] - dlt_biom_c_hum[layer]), MBiomassCNr, 0.0);
         }
         else
         {
@@ -414,7 +413,7 @@ public partial class SoilNitrogen
             double cnr = MathUtility.Divide(fom_c[layer], fom_n[layer] + mineralN_available, 0.0);
 
             // calculate the C:N ratio factor
-            double cnrf = CNratioFactor(layer, index, cnrf_optcn, cnrf_coeff);
+            double cnrf = CNratioFactor(layer, index, cnrf_CNthreshold, cnrf_ReductionCoeff);
 
             // C:N ratio of fom
             double fom_cn = MathUtility.Divide(fom_c[layer], fom_n[layer], 0.0);
@@ -437,14 +436,14 @@ public partial class SoilNitrogen
             }
 
             // calculate potential transfers of C mineralised to biomass
-            double dlt_c_biom_tot = dlt_c_fom_gross_miner * ef_fom * fr_fom_biom;
+            double dlt_c_biom_tot = dlt_c_fom_gross_miner * (1.0 -FOMRespirationFactor) * FOMFractionIntoBiomass;
 
             // calculate potential transfers of C mineralised to humus
-            double dlt_c_hum_tot = dlt_c_fom_gross_miner * ef_fom * (1.0 - fr_fom_biom);
+            double dlt_c_hum_tot = dlt_c_fom_gross_miner * (1.0 - FOMRespirationFactor) * (1.0 - FOMFractionIntoBiomass);
 
             // test whether there is adequate N available to meet immobilisation demand
-            double n_demand = MathUtility.Divide(dlt_c_biom_tot, biom_cn, 0.0) +
-                              MathUtility.Divide(dlt_c_hum_tot, hum_cn, 0.0);
+            double n_demand = MathUtility.Divide(dlt_c_biom_tot, MBiomassCNr, 0.0) +
+                              MathUtility.Divide(dlt_c_hum_tot, HumusCNr, 0.0);
             double n_available = mineralN_available + dlt_n_fom_gross_miner;
 
             // factor to reduce mineralisation rates if insufficient N to meet immobilisation demand
@@ -456,9 +455,9 @@ public partial class SoilNitrogen
             for (int fractn = 0; fractn < 3; fractn++)
             {
                 double dlt_c_act_decomp = dlt_c_gross_decomp[fractn] * reductionFactor;
-                dlt_c_fom_to_biom[fractn][layer] = dlt_c_act_decomp * ef_fom * fr_fom_biom;
-                dlt_c_fom_to_hum[fractn][layer] = dlt_c_act_decomp * ef_fom * (1.0 - fr_fom_biom);
-                dlt_c_fom_to_atm[fractn][layer] = dlt_c_act_decomp * (1.0 - ef_fom);
+                dlt_c_fom_to_biom[fractn][layer] = dlt_c_act_decomp * (1.0 -FOMRespirationFactor) * FOMFractionIntoBiomass;
+                dlt_c_fom_to_hum[fractn][layer] = dlt_c_act_decomp * (1.0 -FOMRespirationFactor) * (1.0 - FOMFractionIntoBiomass);
+                dlt_c_fom_to_atm[fractn][layer] = dlt_c_act_decomp * FOMRespirationFactor;
                 dlt_n_fom[fractn][layer] = dlt_n_gross_decomp[fractn] * reductionFactor;
             }
             dlt_fom_n_min[layer] = (dlt_n_fom_gross_miner - n_demand) * reductionFactor;
@@ -583,7 +582,7 @@ public partial class SoilNitrogen
     /// <returns></returns>
     private double N2OProducedDuringNitrification(int layer)
     {
-        double result = dlt_nitrification[layer] * dnit_nitrf_loss;
+        double result = dlt_nitrification[layer] * n2oLossFactor;
         return result;
     }
 
@@ -624,7 +623,7 @@ public partial class SoilNitrogen
         // Note: Ceres wheat has active_c = 0.4* fom_C_pool1 + 0.0031 * 0.58 * hum_C_conc + 24.5
 
         // get the potential denitrification rate
-        double pot_denit_rate = dnit_rate_coeff * active_c;
+        double pot_denit_rate = DenitRateCoefficient * active_c;
 
         if (pot_denit_rate >= epsilon)
         {
@@ -682,9 +681,9 @@ public partial class SoilNitrogen
     {
         switch (fract)
         {
-            case 0: return rd_carb;
-            case 1: return rd_cell;
-            case 2: return rd_lign;
+            case 0: return FOMCarbTurnOverRate;
+            case 1: return FOMCellTurnOverRate;
+            case 2: return FOMLignTurnOverRate;
             default: throw new Exception("Coding error: bad fraction in FractRDFom");
         }
     }
