@@ -56,7 +56,7 @@ endif
 ifeq ($(PROJECTTYPE),dll)
 
 RESOBJ = dllres.obj
-LDFLAGS:= -Xlinker --enable-stdcall-fixup -Xlinker --no-allow-shlib-undefined -Xlinker --disable-auto-import
+LDFLAGS:= -Xlinker --enable-stdcall-fixup -Xlinker --no-allow-shlib-undefined
 all: $(APSIM)/Model/$(PROJECT).dll 
 $(APSIM)/Model/$(PROJECT).dll: $(OBJS) $(RESOBJ)
 	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) $(EXTRALIBS)
