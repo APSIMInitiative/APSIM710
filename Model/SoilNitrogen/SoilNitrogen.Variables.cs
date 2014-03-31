@@ -2646,6 +2646,11 @@ public partial class SoilNitrogen
     /// </summary>
     private double[][] dlt_n_decomp;
 
+    /// <summary>
+    /// The info with actual residue decompostion
+    /// </summary>
+    public SurfaceOrganicMatterDecompType SurfOMActualDecomposition;
+
     #endregion
 
     #endregion internal variables

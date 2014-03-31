@@ -573,7 +573,10 @@ public partial class SoilNitrogen
 
         // send actual decomposition back to surface OM
         if (!isPondActive)
+        {
+            PackActualResidueDecomposition();
             SendActualResidueDecompositionCalculated();
+        }
     }
 
     #endregion recurrent processes
@@ -623,26 +626,25 @@ public partial class SoilNitrogen
     }
 
     /// <summary>
-    /// Sends back to SurfaceOM the information about residue decomposition
+    /// Gather the information about actual residue decomposition, to be sent back to surface OM
     /// </summary>
-    private void SendActualResidueDecompositionCalculated()
+    private void PackActualResidueDecomposition()
     {
-        // Note:
-        //      - Potential decomposition was given to this module by a residue/surfaceOM module. This module evaluated
-        //          whether the conditions (C-N balance) allowed the decompostion to happen.
-        //		- Now we explicitly tell the sender module the actual decomposition rate for each of its residues.
-        //      - If there wasn't enough mineral N to decompose, the rate will be reduced to zero !!  - MUST CHECK THE VALIDITY OF THIS
+        // Notes:
+        //      Potential decomposition was given to this module by a residue/surfaceOM module.  Now we explicitly tell the
+        //      module the actual decomposition rate for each of its residues. 
+
+
+        int nLayers = dlayer.Length;
+        soilp_dlt_org_p = new double[nLayers];
 
         if (actualResidueDecompositionCalculated != null && SumDoubleArray(pot_c_decomp) >= epsilon)
         {
-            int nLayers = dlayer.Length;
-            int nResidues = residueName.Length;
-            SurfaceOrganicMatterDecompType SOMDecomp = new SurfaceOrganicMatterDecompType();
-            SOMDecomp.Pool = new SurfaceOrganicMatterDecompPoolType[nResidues];
+            int nResidues = residueName.Length;     // number of residues in the simulation
+            double soilp_cpr = MathUtility.Divide(SumDoubleArray(pot_p_decomp), SumDoubleArray(pot_c_decomp), 0.0);  // C:P ratio for potential decomposition
 
-            soilp_dlt_org_p = new double[nLayers];
-            double[] c_summed_layer = new double[nLayers];
-
+            SurfOMActualDecomposition = new SurfaceOrganicMatterDecompType();
+            Array.Resize(ref SurfOMActualDecomposition.Pool, nResidues);
 
             for (int residue = 0; residue < nResidues; residue++)
             {
@@ -654,29 +656,17 @@ public partial class SoilNitrogen
                     n_summed = 0.0;
 
                 // pack up the structure to return decompositions to SurfaceOrganicMatter
-                SOMDecomp.Pool[residue] = new SurfaceOrganicMatterDecompPoolType();
-                SOMDecomp.Pool[residue].FOM = new FOMType();
-                SOMDecomp.Pool[residue].Name = residueName[residue];
-                SOMDecomp.Pool[residue].OrganicMatterType = residueType[residue];
-                SOMDecomp.Pool[residue].FOM.amount = 0.0F;
-                SOMDecomp.Pool[residue].FOM.C = (float)c_summed;
-                SOMDecomp.Pool[residue].FOM.N = (float)n_summed;
-                SOMDecomp.Pool[residue].FOM.P = 0.0F;
-                SOMDecomp.Pool[residue].FOM.AshAlk = 0.0F;
+                SurfOMActualDecomposition.Pool[residue] = new SurfaceOrganicMatterDecompPoolType();
+                SurfOMActualDecomposition.Pool[residue].FOM = new FOMType();
+                SurfOMActualDecomposition.Pool[residue].Name = residueName[residue];
+                SurfOMActualDecomposition.Pool[residue].OrganicMatterType = residueType[residue];
+                SurfOMActualDecomposition.Pool[residue].FOM.amount = 0.0F;
+                SurfOMActualDecomposition.Pool[residue].FOM.C = (float)c_summed;
+                SurfOMActualDecomposition.Pool[residue].FOM.N = (float)n_summed;
+                SurfOMActualDecomposition.Pool[residue].FOM.P = 0.0F;
+                SurfOMActualDecomposition.Pool[residue].FOM.AshAlk = 0.0F;
                 // Note: The values for 'amount', 'P', and 'AshAlk' will not be collected by SurfaceOrganicMatter, so send zero as default.
-
-                // dsg 131004 soilp needs some stuff - very ugly process - needs to be streamlined
-                //  create some variables which soilp can "get" - layer based arrays independant of residues
-                //for (int layer = 0; layer < nLayers; layer++)
-                //{
-                //soilp_dlt_res_c_atm[layer] += _dlt_res_c_atm[layer][residue];
-                //soilp_dlt_res_c_hum[layer] += _dlt_res_c_hum[layer][residue];
-                //soilp_dlt_res_c_biom[layer] += _dlt_res_c_biom[layer][residue];
-                //c_summed_layer[layer] += dlt_res_c_decomp[layer];
-                //}
-                //RCichota: have put this as properties
             }
-
             // dsg 131004  calculate the old dlt_org_p (from the old Decomposed event sent by residue2) for getting by soilp
             double act_c_decomp = 0.0;
             double tot_pot_c_decomp = SumDoubleArray(pot_c_decomp);
@@ -684,12 +674,51 @@ public partial class SoilNitrogen
             for (int layer = 0; layer < nLayers; layer++)
             {
                 act_c_decomp = dlt_c_res_to_biom[layer] + dlt_c_res_to_hum[layer] + dlt_c_res_to_atm[layer];
-                soilp_dlt_org_p[layer] = tot_pot_p_decomp *
-                    MathUtility.Divide(act_c_decomp, tot_pot_c_decomp, 0.0);
+                soilp_dlt_org_p[layer] = tot_pot_p_decomp * MathUtility.Divide(act_c_decomp, tot_pot_c_decomp, 0.0);
             }
+        }
+    }
 
+    /// <summary>
+    /// Sends back to SurfaceOM the information about residue decomposition
+    /// </summary>
+    private void SendActualResidueDecompositionCalculated()
+    {
+        // Note:
+        //      - Potential decomposition was given to this module by a residue/surfaceOM module. This module evaluated
+        //          whether the conditions (C-N balance) allowed the decomposition to happen.
+        //		- Now we explicitly tell the sender module the actual decomposition rate for each of its residues.
+        //      - If there wasn't enough mineral N to decompose, the rate will be reduced to zero !!  - MUST CHECK THE VALIDITY OF THIS
+
+        if (actualResidueDecompositionCalculated != null && SumDoubleArray(pot_c_decomp) >= epsilon)
+        {
+            int nLayers = dlayer.Length;
+            int nResidues = residueName.Length;
+            SurfaceOrganicMatterDecompType SurfOMDecomposed = new SurfaceOrganicMatterDecompType();
+            SurfOMDecomposed.Pool = new SurfaceOrganicMatterDecompPoolType[nResidues];
+
+            double[] c_summed_layer = new double[nLayers];
+
+            for (int residue = 0; residue < nResidues; residue++)
+            {
+                double c_summed = SurfOMActualDecomposition.Pool[residue].FOM.C;
+                double n_summed = SurfOMActualDecomposition.Pool[residue].FOM.N;
+
+                // pack up the structure to return decompositions to SurfaceOrganicMatter
+                SurfOMDecomposed.Pool[residue] = new SurfaceOrganicMatterDecompPoolType();
+                SurfOMDecomposed.Pool[residue].FOM = new FOMType();
+                SurfOMDecomposed.Pool[residue].Name = SurfOMActualDecomposition.Pool[residue].Name;
+                SurfOMDecomposed.Pool[residue].OrganicMatterType = SurfOMActualDecomposition.Pool[residue].OrganicMatterType;
+                SurfOMDecomposed.Pool[residue].FOM.amount = 0.0F;
+                SurfOMDecomposed.Pool[residue].FOM.C = (float)c_summed;
+                SurfOMDecomposed.Pool[residue].FOM.N = (float)n_summed;
+                SurfOMDecomposed.Pool[residue].FOM.P = 0.0F;
+                SurfOMDecomposed.Pool[residue].FOM.AshAlk = 0.0F;
+                // Note: The values for 'amount', 'P', and 'AshAlk' will not be collected by SurfaceOrganicMatter, so send zero as default.
+
+            }
             // raise the event
-            actualResidueDecompositionCalculated.Invoke(SOMDecomp);
+            actualResidueDecompositionCalculated.Invoke(SurfOMDecomposed);
         }
     }
 
