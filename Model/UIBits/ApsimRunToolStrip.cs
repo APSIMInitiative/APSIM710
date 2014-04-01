@@ -51,11 +51,21 @@ public class ApsimRunToolStrip
         {
             ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
             ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
+            ToolStripButton ErrorsButton = (ToolStripButton)_Strip.Items["ErrorsButton"];
+            ToolStripLabel PercentLabel = (ToolStripLabel)_Strip.Items["PercentLabel"];
+            ToolStripProgressBar ProgressBar = (ToolStripProgressBar)_Strip.Items["RunProgress"];
             RunButton.Enabled = true;
             StopButton.Enabled = false;
             try
             {
+                Timer.Enabled = false;
+                PercentLabel.Text = "Stopped\r\nby user";
+                ErrorsButton.Visible = Apsim.HasErrors;
+                ProgressBar.Value = 0;
+                ProgressBar.ToolTipText = "Stopped by user after "
+                        + Apsim.Progress.ToString() + "% completed.";
                 Apsim.Stop();
+
             }
             catch (Exception err)
             {
@@ -189,7 +199,7 @@ public class ApsimRunToolStrip
                 {
                 ProgressBar.Value = 100;
                 PercentLabel.Text = "100 %";
-                OnStop();
+                Apsim.Stop();
 
                 // All finished.
                 RunButton.Enabled = true;
