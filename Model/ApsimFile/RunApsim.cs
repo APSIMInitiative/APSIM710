@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 using System.IO;
 using CSGeneral;
 using System.Diagnostics;
-
+using System.Windows.Forms;
 
 
 namespace ApsimFile
@@ -55,7 +55,8 @@ namespace ApsimFile
             if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
             {
 				ApsimJobs[0].Run ();
-                ApsimJobs[0].WaitUntilExit();
+                while (!ApsimJobs[0].HasExited) 
+                    Application.DoEvents(); // Allow the GUI's progress bar to update
 				if (! ApsimJobs[0].HasErrors && ApsimJobs.Count == 2) 
 					ApsimJobs[1].Run ();
 			}

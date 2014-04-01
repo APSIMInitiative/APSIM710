@@ -26,7 +26,7 @@ public class ApsimRunToolStrip
         // Constructor.
         // ----------------------------------------------------------
         Timer = new System.Windows.Forms.Timer();
-        Timer.Interval = 500;
+        Timer.Interval = 250;
         Timer.Tick += OnTick;
         Timer.Enabled = false;
     }
@@ -162,10 +162,10 @@ public class ApsimRunToolStrip
 				if(varNode != null)
 					doAllFactors = XmlHelper.Value(_F.FactorComponent.ContentsAsXML, "active") == "1";
 			}
-            Apsim.Start(new string[] {_F.FileName}, SimsToRun.ToArray(), doAllFactors);
+            Timer.Enabled = true;
+            Apsim.Start(new string[] { _F.FileName }, SimsToRun.ToArray(), doAllFactors);
 		}
         
-        Timer.Enabled = true;
     }
 
 
