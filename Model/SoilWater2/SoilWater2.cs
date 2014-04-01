@@ -4261,11 +4261,12 @@ public class SoilWater
 
         //*- Implementation Section ----------------------------------
 #if (APSIMX == true)
+        sender = newsolute.sender_id;
         string compName = "";
 #else
+        sender = (int)My.eventSenderId;
         string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
 #endif
-        sender = newsolute.sender_id;
         numvals = newsolute.solutes.Length;
 
         Array.Resize(ref solutes, num_solutes + numvals);

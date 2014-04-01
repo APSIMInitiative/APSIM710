@@ -9908,7 +9908,7 @@ cRC            Changes by RCichota, 30/Jan/2010
 
 
 *     ===========================================================
-      subroutine apswim_on_new_solute (variant)
+      subroutine apswim_on_new_solute (variant, fromID)
 *     ===========================================================
 
 
@@ -9932,6 +9932,7 @@ cRC            Changes by RCichota, 30/Jan/2010
 
 *+  Local Variables
       integer, intent(in) :: variant
+      integer, intent(in) :: fromID	  
       type(newSoluteType) :: newsolute
       integer numvals
       integer sender
@@ -9944,7 +9945,7 @@ cRC            Changes by RCichota, 30/Jan/2010
 
       call unpack_newsolute(variant, newsolute)
 	  
-      sender = newsolute%sender_id
+      sender = fromID
       numvals = newsolute%num_solutes
 
       do 100 counter = 1, numvals
@@ -10469,7 +10470,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       if (eventID .eq. id%tick) then
          call apswim_ONtick (variant)
       elseif (eventID .eq. id%new_solute) then
-         call apswim_on_new_solute(variant)
+         call apswim_on_new_solute(variant, fromID)
       elseif (eventID .eq. id%prenewmet) then
 !         call apswim_set_rain_variable ()
 !      elseif (eventID .eq. id%subsurfaceflow) then

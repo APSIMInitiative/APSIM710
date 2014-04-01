@@ -4722,6 +4722,13 @@ c  dsg   070302  added runon
          call soilwat2_New_Profile_Event()
 * end code for erosion
 
+      elseif (variable_name .eq. 'swcon') then
+         call collect_real_array (variable_name, max_layer, ''
+     :                               , p%swcon, numvals
+     :                               , 0.0, 1.0)
+
+         call soilwat2_check_set_array(variable_name, numvals)
+
       elseif (variable_name .eq. 'cn2_bare') then
          call collect_real_var (variable_name, '()'
      :                             , p%cn2_bare, numvals
@@ -5152,6 +5159,11 @@ c dsg 070302 added runon
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          call respond2get_real_array ('sws', 'mm/mm'
      :                               , g%sws, num_layers)
+
+      else if (variable_name .eq. 'swcon') then
+         num_layers =  count_of_real_vals (p%dlayer, max_layer)
+         call respond2get_real_array (variable_name, ''
+     :                               , p%swcon, num_layers)
 
       else if (lateral_send_my_variable(lateral, variable_name)) then
          ! we dont need to do anything here
@@ -6868,7 +6880,7 @@ c dsg 070302 added runon
       end subroutine
 
 *     ===========================================================
-      subroutine soilwat2_on_new_solute (variant)
+      subroutine soilwat2_on_new_solute (variant, fromId)
 *     ===========================================================
 
        implicit none
@@ -6889,6 +6901,7 @@ c dsg 070302 added runon
        character  section_name*(*)
        parameter (section_name = 'parameters')
       integer, intent(in) :: variant
+      integer, intent(in) :: fromId
 *+  Local Variables
       integer sender
       integer counter
@@ -6908,7 +6921,7 @@ c dsg 070302 added runon
 
       call unpack_newsolute(variant, newsolute)
 
-      sender = newsolute%sender_id
+      sender = fromId
       numvals = newsolute%num_solutes
 
       if (g%num_solutes+numvals.gt.max_solute) then
@@ -7545,7 +7558,7 @@ c
       else if (eventID .eq. id%WaterChanged) then
          call OnWaterChanged(variant)
       else if (eventID .eq. id%New_Solute) then
-         call soilwat2_on_new_solute (variant)
+         call soilwat2_on_new_solute (variant, fromID)
       endif
       return
       end subroutine respondToEvent
@@ -7743,6 +7756,9 @@ c
       dummy = add_reg(respondToGetSetReg, 'dlayer',
      .                floatarrayTypeDDML, 'mm',
      . 'Thickness of profile layer')
+      dummy = add_reg(respondToGetSetReg, 'swcon',
+     .                floatarrayTypeDDML, '',
+     . 'Soil water conductivity')
       dummy = add_reg(respondToGetReg, 'cona',
      .                     floatTypeDDML, '',
      . 'Stage 2 evaporation coefficient')
