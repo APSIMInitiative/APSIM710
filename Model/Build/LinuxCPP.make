@@ -69,7 +69,7 @@ $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(PRECOMPILEDHEADERS) $(OBJ)
 	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS) $(DEF)
 
 ifeq ($(PROJECTTYPE),libdll)
-	ln -sf $@ $(APSIM)/Model/lib$(PROJECT).so
+	/bin/ln -sf $@ $(APSIM)/Model/lib$(PROJECT).so
 endif
 
 

@@ -4,7 +4,7 @@ LDDEBUGFLAGS=-lg
 
 CC=/usr/bin/g++
 LD=/usr/bin/ld
-F95 = /usr/local/gfortran/bin/gfortran
+F95=/usr/bin/gfortran
 
 # add suffix to all user libraries
 LIBS := -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) /usr/local/gfortran/lib/libgfortran.a -ldl $(LDDEBUGFLAGS)
@@ -47,7 +47,7 @@ $(APSIM)/Model/$(PROJECT).so: $(OBJS)
 	$(CC) -shared -o $(APSIM)/Model/$(PROJECT).so $(LDFLAGS) $(OBJS) $(STATICLIBS) $(LIBS)
 
 $(APSIM)/Model/$(PROJECT).a: $(OBJS)
-	ar rv $@ $(OBJS)
+	/usr/bin/ar rv $@ $(OBJS)
 
 clean:
 	rm -f *.mod $(OBJS) $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/$(PROJECT).a
