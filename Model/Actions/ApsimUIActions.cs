@@ -310,6 +310,8 @@ namespace Actions
 
                         if (!c.doUpload)
 						   MessageBox.Show("Your job has been placed in your dropbox folder. Your outputs will appear adjacent.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						else
+						   MessageBox.Show("Your job has been submitted. Please monitor the website for progress.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
 				}
 			} catch (Exception ex) {

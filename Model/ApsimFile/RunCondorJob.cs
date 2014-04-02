@@ -83,10 +83,14 @@ namespace ApsimFile
                    ContentType = "application/x-zip",
                 }};
 				string result = Encoding.ASCII.GetString (Utility.UploadFiles ("https://apsrunet.apsim.info/upload.php", files, values, username, password));
+				if (result != "{\"status\":\"success\"}")
+				   throw new Exception("HTTP error when uploading.\n" + result);
 				ApsimCondor a = new ApsimCondor ();
 				a.Credentials = new System.Net.NetworkCredential (username, password);
-				string s = a.AddJob (new string [] {"/home/" + username + "/" + Path.GetFileName (localzip)});
-				// Now what? Should monitor "s" for completion
+				string id = a.AddJob (new string [] {"/home/" + username + "/" + Path.GetFileName (localzip)});
+				string status = a.GetField(id, "status");
+				if (status == "error") 
+				   throw new Exception("Error submitting job.\n" + a.GetField(id, "message"));
 			}
 			return;
 		}
@@ -177,10 +181,12 @@ namespace ApsimFile
 			SubWriter.Write ("requirements = ");
 			if (arch == Configuration.architecture.unix)
 				SubWriter.Write (" OpSys == \"LINUX\"");
-			if (arch == Configuration.architecture.win32)
+			else if (arch == Configuration.architecture.win32)
 				SubWriter.Write (" Regexp(\"^WIN\", OpSys)");
-			if (arch == (Configuration.architecture.win32 | Configuration.architecture.unix))
+			else if (arch == (Configuration.architecture.win32 | Configuration.architecture.unix))
 				SubWriter.Write (" ((OpSys == \"LINUX\") || Regexp(\"^WIN\", OpSys))");
+			else
+				throw new Exception("Please select at least one Operating System to run on");
 			SubWriter.WriteLine (" && ((Arch == \"INTEL\") || (Arch == \"X86_64\"))");
 			SubWriter.WriteLine ("executable = Apsim.$$(OpSys).$$(Arch).bat");
 
