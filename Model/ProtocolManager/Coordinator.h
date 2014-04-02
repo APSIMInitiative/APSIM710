@@ -39,6 +39,7 @@ class Coordinator : public protocol::Component
       float area;
       static vector<int> componentOrders;
       bool doTerminate;
+      bool hadFatalError;
       bool printReport;
       std::string parentName;
       std::stack<int> previousGetValueCompID;

@@ -123,6 +123,10 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
          }  
       retcode = 1;
       }
+   catch (const int& code)
+   {
+       retcode = code;
+   }
    catch (...)
       {
       cout << "APSIM  Fatal  Error" << endl;

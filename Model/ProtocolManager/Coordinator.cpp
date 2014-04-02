@@ -78,6 +78,7 @@ Coordinator::Coordinator(void)
    sequencerID = 0;
    afterInit2 = false;
    doTerminate = false;
+   hadFatalError = false;
    printReport = false;
    area = 1.0;
    }
@@ -224,6 +225,8 @@ void Coordinator::doInit2(void)
           componentI->second->ID != parentID)
          sendMessage(protocol::newInit2Message(componentID, componentI->second->ID));
       }
+      if (hadFatalError)
+         throw 1; 
    }
 
 // ------------------------------------------------------------------
@@ -238,6 +241,9 @@ void Coordinator::doInit2(void)
 // ------------------------------------------------------------------
 void Coordinator::doCommence(void)
    {
+   // The simulation may have terminated because of an exception raised in a .NET component.
+   // This is hard to catch on the native side, but the simulation should have been
+   // instructed to terminate.
    if (componentID == parentID)
       {
       // only as top level PM
@@ -247,6 +253,8 @@ void Coordinator::doCommence(void)
       if (sequencerID != 0) 
          sendMessage(protocol::newCommenceMessage(componentID, sequencerID));
       }
+      if (hadFatalError)
+         throw 1; 
    }
 
 
@@ -1126,24 +1134,30 @@ void Coordinator::onError(protocol::ErrorData& errorData)
    // A component has published an error - write it to stdout.
    // ------------------------------------------------------------------
    
-   string message = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-   if (errorData.isFatal)
-      message += "                 APSIM  Fatal  Error\n";
+   if (errorData.isFatal && componentID != parentID) // Relay fatal errors up to the simulation root
+       sendMessage(protocol::newErrorMessage(componentID, parentID, true, asString(errorData.errorMessage)));
    else
-      message += "                 APSIM Warning Error\n";
-   message += "                 -------------------\n";
-   
-   message += asString(errorData.errorMessage);
-   message += "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
-   
-   writeStringToStream(message, cout, "");
-   if (errorData.isFatal)
-      {
-      terminateSimulation();
-      throw std::runtime_error("fatal"); // Hopefully, this will pass through all the ComponentInterfaces in our call stack, 
-                                         // and will be caught in main(). "fatal" is the keyword..
-      }   
+   {
+       string message = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+       if (errorData.isFatal)
+           message += "                 APSIM  Fatal  Error\n";
+       else
+           message += "                 APSIM Warning Error\n";
+       message += "                 -------------------\n";
+
+       message += asString(errorData.errorMessage);
+       message += "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
+
+       writeStringToStream(message, cout, "");
+       if (errorData.isFatal)
+       {
+           hadFatalError = true; // Set this flag so we remember we had a fatal error when we terminate
+           terminateSimulation();
+           throw std::runtime_error("fatal"); // Hopefully, this will pass through all the ComponentInterfaces in our call stack, 
+           // and will be caught in main(). "fatal" is the keyword..
+       }   
    }
+}
 //============================================================================
 // unQualifiedName
 /**
