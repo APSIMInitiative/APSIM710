@@ -19,5 +19,5 @@ include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 ifeq ($(PLATFORM),Linux)
 # a few (patchInput, siloInput) are going to try and link against libInput.so
 makelink: $(APSIM)/Model/$(PROJECT).so
-	ln -sf $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/lib$(PROJECT).so
+	/bin/ln -sf $(APSIM)/Model/$(PROJECT).so $(APSIM)/Model/lib$(PROJECT).so
 endif
