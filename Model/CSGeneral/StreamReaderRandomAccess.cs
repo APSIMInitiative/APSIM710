@@ -120,6 +120,7 @@ public class StreamReaderRandomAccess
         g_bufferOffset = Convert.ToInt32(g_file.BaseStream.Position);
         g_position = 0;
         g_bufferSize = g_file.Read(g_buffer, 0, BUFFER_SIZE);
+        g_file.BaseStream.Position = g_bufferOffset + g_bufferSize; // Need this for Mono; keeps buffer positions lined up correctly.
 
         if (g_bufferSize == 0)
         {
