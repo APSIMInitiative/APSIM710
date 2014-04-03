@@ -123,6 +123,9 @@ Namespace CMPComp
                         Marshal.FreeHGlobal(msgPtr.dataPtr)
                     End If
                 End Try
+            Catch exc As SEHException
+                ' This is the most likely exception to be caught here, but normally it will
+                ' be handled elsewhere on the native side, and "External component has thrown an exception" is not a very helpful message
             Catch e As Exception
                 Dim exmsg As New StringBuilder("sendMessageToEngine() failed ")
                 exmsg.Append(e.Message)

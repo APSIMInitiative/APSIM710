@@ -147,6 +147,9 @@ namespace CMPComp
                         Marshal.FreeHGlobal(msgPtr.dataPtr);
                 }
             }
+            catch (SEHException)
+            { // This is the most likely exception to be caught here, but normally it will
+            } // be handled elsewhere on the native side, and "External component has thrown an exception" is not a very helpful message
             catch (Exception e)
             {
                 StringBuilder exmsg = new StringBuilder("sendMessageToEngine() failed ");
