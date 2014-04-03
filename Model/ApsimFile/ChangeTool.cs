@@ -926,9 +926,13 @@ namespace ApsimFile
 
             if (Node.Name.ToLower() == "memo")
             {
-                System.Windows.Forms.RichTextBox RichText = new System.Windows.Forms.RichTextBox();
+#if __MonoCS__
+				// If we arent running through an X-server, loading Windows.Forms will fail.            
+#else
+				System.Windows.Forms.RichTextBox RichText = new System.Windows.Forms.RichTextBox();
                 RichText.Rtf = CSGeneral.Utility.EncodeBase64ToString(Node.InnerXml);
                 XmlHelper.SetValue(Node, "", RichText.Text.Replace("\n", "\r\n"));
+#endif
             }
         }
 
