@@ -795,7 +795,7 @@
       <Job name="Delete old .NET proxy classes">
          <WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
          <CommandLine>%APSIM%\Model\Build\DeleteFileIfExists.bat DotNetProxies.cs</CommandLine>
-         <CommandLineUnix>rm -f DotNetProxies.cs</CommandLineUnix>
+         <CommandLineUnix>/bin/rm -f DotNetProxies.cs</CommandLineUnix>
       </Job>
       <Job name="Create new .NET proxy classes">
          <DependsOn>Delete old .NET proxy classes</DependsOn>
@@ -944,12 +944,12 @@
       <Job name="Remove all .out and .sum files from Examples folder">
          <WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
          <CommandLine>%APSIM%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
-         <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec rm {} ;</CommandLineUnix>
+         <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec /bin/rm {} ;</CommandLineUnix>
       </Job>
       <Job name="Remove all .out and .sum files from Tests folder">
          <WorkingDirectory>%APSIM%/Tests</WorkingDirectory>
          <CommandLine>%APSIM%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
-         <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec rm {} ;</CommandLineUnix>
+         <CommandLineUnix>find . ( -name "*.out" -or -name "*.sum" ) -exec /bin/rm {} ;</CommandLineUnix>
       </Job>
    </Target>
    <Target name="RunAll">
