@@ -130,6 +130,18 @@ void Soil::Read(void)
       throw std::runtime_error("The number of CL values in root does not equal the number of layers");
    DynamicCL = cl.size() == 0;
 
+   // Set XF to 1.0 if there are values for ESP, EC or CL AND ModifyKL is true. We don't
+   // want to apply sub-soil constraints twice via a modifier on KL and a non-zero XF.
+   if (ModifyKL)
+      {
+      if (esp.size() > 0 || ec.size() > 0 || cl.size() > 0)
+         {
+         for (unsigned i = 0; i < xf.size(); i++)
+            xf[i] = 1.0;
+         }
+      }
+   
+   
    if (ModifyKL)
       {
       scienceAPI.read("ClA", ClA, -100.0f, 100.0f);
