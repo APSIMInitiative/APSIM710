@@ -1017,6 +1017,18 @@ public partial class SoilNitrogen
 	[Description("Approach used for partitioning N between patches")]
 	public string NPartitionApproach;
 
+	/// <summary>
+	/// Minimum relative area (fraction of paddock) for any patch
+	/// </summary>
+	[Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
+	[Output]
+	[Units("0-1")]
+	[Description("Minimum allowable relative area for a CNpatch")]
+	public double MininumRelativeAreaCNPatch
+	{
+		get { return MinimumPatchArea; }
+		set { MinimumPatchArea = value; }
+	}
 	#endregion
 
 	#region Soil physics data
@@ -2874,6 +2886,11 @@ public partial class SoilNitrogen
 	/// Factor reducing nitrification due to the presence of a inhibitor
 	/// </summary>
 	private double[] InhibitionFactor_Nitrification = null;
+
+	/// <summary>
+	/// Minimum relative area (fraction of paddock) for any patch
+	/// </summary>
+	private double MinimumPatchArea = 1.0;
 
 	#endregion
 

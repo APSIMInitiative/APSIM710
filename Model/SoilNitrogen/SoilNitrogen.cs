@@ -1042,27 +1042,6 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
-	/// calculate how the dlt's (C and N) are partitioned amongst patches
-	/// </summary>
-	/// <param name="incomingDelta">The dlt to be partioned amongst patches</param>
-	/// <param name="SoluteName">The solute or pool that is changing</param>
-	/// <returns>The values of dlt for each existing patch</returns>
-	private double[][] partitionDelta(double[] incomingDelta, string SoluteName, string PartitionType)
-	{
-		// 1. initialise the result array
-		double[][] Result = new double[Patch.Count][];
-		for (int k = 0; k < Patch.Count; k++)
-			Result[k] = new double[dlayer.Length];
-
-		// 2. Partition the values
-		for (int k = 0; k < Patch.Count; k++)
-            for (int layer = 0; layer < (dlayer.Length); layer++)
-				Result[k][layer] = incomingDelta[layer];
-
-		return Result;
-	}
-
-	/// <summary>
 	/// Get the information about urine being added
 	/// </summary>
 	/// <param name="UrineAdded">Urine deposition data (includes urea N amount, volume, area affected, etc)</param>
@@ -1095,80 +1074,81 @@ public partial class SoilNitrogen
 		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
 		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
 		//.AreaFraction: the relative area of the patch (0-1)
-		//.PatchName: the name(s) of the patch)es) being created
+		//.PatchName: the name(s) of the patch(es) being created
 		//.Water: amount of water to add per layer (mm), not handled here
 		//.Urea: amount of urea to add per layer (kgN/ha)
-		//.Urea: amount of urea to add (per layer) - Do we need other N forms?
 		//.NH4: amount of ammonium to add per layer (kgN/ha)
 		//.NO3: amount of nitrate to add per layer (kgN/ha)
-		//.POX: amount of POx to add per layer (kgP/ha)
-		//.SO4: amount of SO4 to add per layer (kgS/ha)
-		//.Ashalk: ash amount to add per layer (mol/ha)
+		//.POX: amount of POx to add per layer (kgP/ha), not handled here
+		//.SO4: amount of SO4 to add per layer (kgS/ha), not handled here
+		//.Ashalk: ash amount to add per layer (mol/ha), not handled here
 		//.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  - if present, the entry for pools will be ignored
 		//.FOM_C_pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
 		//.FOM_C_pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
 		//.FOM_C_pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
 		//.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
 
-		List<int> PatchesToAddStuff = new List<int>();
 
-		// start with a minimalist approach, keep cloning the last patch, and half the areas
+		// check that required data is supplied
+		bool isDataOK = true;
 
-		double newArea = Patch.Last().RelativeArea * 0.5;
-		Patch.Last().RelativeArea = newArea;
-		ClonePatch(Patch.Count - 1);
-		Patch.Last().RelativeArea =newArea;
-
-	}
-
-	/// <summary>
-	/// Clone an existing patch. That is, creates a new patch (k) based on an existing one (j)
-	/// </summary>
-	/// <param name="k">id of patch to be cloned</param>
-	private void ClonePatch(int j)
-	{
-		// create new patch
-		soilCNPatch newPatch = new soilCNPatch(this);
-		Patch.Add(newPatch);
-		int k = Patch.Count - 1;
-
-		// set the size of arrays
-		Patch[k].ResizeLayeredVariables(dlayer.Length);
-
-		// copy the state variables from original patch in to the new one
-		CopyValuesFromPatch(k, j);
-	}
-
-	/// <summary>
-	/// Copy the state variables from one patch (j) to another one (k), using a multiplying factor
-	/// </summary>
-	/// <param name="k">The id of patch where values are copied to</param>
-	/// <param name="j">The id of patch where values are copied from</param>
-	/// <param name="MultiplyingFactor">A multiplying factor (optional)</param>
-	private void CopyValuesFromPatch(int k, int j, double MultiplyingFactor = 1.0)
-	{
-
-		for (int layer = 0; layer < dlayer.Length; layer++)
+		if (PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower())
 		{
-			// Mineral N
-			Patch[k].urea[layer] = Patch[j].urea[layer] * MultiplyingFactor;
-			Patch[k].nh4[layer] = Patch[j].nh4[layer] * MultiplyingFactor;
-			Patch[k].no3[layer] = Patch[j].no3[layer] * MultiplyingFactor;
-			Patch[k].TodaysInitialNH4[layer] = Patch[j].TodaysInitialNH4[layer] * MultiplyingFactor;
-			Patch[k].TodaysInitialNO3[layer] = Patch[j].TodaysInitialNO3[layer] * MultiplyingFactor;
-
-			// Organic C and N
-			for (int pool = 0; pool < 3; pool++)
+			if (PatchtoAdd.AffectedPatches_id.Length == 0 && PatchtoAdd.AffectedPatches_nm.Length == 0)
 			{
-				Patch[k].fom_c[pool][layer] = Patch[j].fom_c[pool][layer] * MultiplyingFactor;
-				Patch[k].fom_n[pool][layer] = Patch[j].fom_n[pool][layer] * MultiplyingFactor;
+				writeMessage(" Command to add patch did not supply a valid patch to be used as base for the new one. Command will be ignored.");
+				isDataOK = false;
 			}
-			Patch[k].biom_c[layer] = Patch[j].biom_c[layer] * MultiplyingFactor;
-			Patch[k].biom_n[layer] = Patch[j].biom_n[layer] * MultiplyingFactor;
-			Patch[k].hum_c[layer] = Patch[j].hum_c[layer] * MultiplyingFactor;
-			Patch[k].hum_n[layer] = Patch[j].hum_n[layer] * MultiplyingFactor;
-			Patch[k].inert_c[layer] = Patch[j].inert_c[layer] * MultiplyingFactor;
-			Patch[k].inert_n[layer] = Patch[j].inert_n[layer] * MultiplyingFactor;
+			else if (PatchtoAdd.AreaFraction <= 0.0)
+			{
+				writeMessage(" Command to add patch did not supply a valid area fraction for the new patch. Command will be ignored.");
+				isDataOK = false;
+			}
+		}
+		else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
+		{
+			if (PatchtoAdd.AffectedPatches_id.Length ==0 || PatchtoAdd.AffectedPatches_nm.Length == 0)
+			{
+				writeMessage(" Command to add patch did not supply a valid patch to be used as base for the new one. Command will be ignored.");
+				isDataOK = false;
+			}
+		}
+		else if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower())
+		{
+			if (PatchtoAdd.AreaFraction <= 0.0)
+			{
+				writeMessage(" Command to add patch did not supply a valid area fraction for the new patch. Command will be ignored.");
+				isDataOK = false;
+			}
+		}
+		//else {}  // assume '', thus no factors are actually required
+
+		if (isDataOK)
+		{
+			List<int> PatchesToAddStuff;
+
+			if ((PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower()) ||
+				(PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower()))
+			{ // New patch(es) will be added
+				AddNewCNPatch(PatchtoAdd);
+			}
+			else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
+			{  // add stuff to selected patches, no new patch will be created
+
+				// 1. get the list of patch id's to which stuff will be added
+				PatchesToAddStuff = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
+				// 2. add the stuff to patches listed
+				AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+			}
+			else
+			{  // add urine to all existing patches, no new patch will be created
+				// 1. create the list of patches receiving stuff (all)
+				PatchesToAddStuff = new List<int>();
+				for (int k = 0; k < Patch.Count; k++)
+					PatchesToAddStuff.Add(k);
+				// 2. add the stuff to patches listed
+				AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+			}
 		}
 	}
 

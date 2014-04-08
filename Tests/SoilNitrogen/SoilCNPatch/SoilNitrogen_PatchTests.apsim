@@ -170,7 +170,7 @@ no difference to the simulation (compared to having no patches)
         <manager2 name="AddPatch">
           <ui>
             <DayToAdd type="ddmmmdate" description="Day of month to add patch">5</DayToAdd>
-            <PatchArea type="text" description="Relative area of patch (0-1)">0.5</PatchArea>
+            <PatchArea type="text" description="Relative area of patch (0-1)">0.25</PatchArea>
             <UreaN type="text" description="Urea amount to add (kgN/ha)">0</UreaN>
           </ui>
           <text>
@@ -202,6 +202,10 @@ Public Class Script
          
          Dim NewPatch As AddSoilCNPatchType = New AddSoilCNPatchType
          Dim myUrea() As Double = { UreaN }
+         Dim mypatches() As Integer = { 0 }
+
+         NewPatch.DepositionType = "ToNewPatch"
+         NewPatch.AffectedPatches_id = mypatches
          NewPatch.AreaFraction = PatchArea
          NewPatch.Urea = myUrea
       
@@ -4257,7 +4261,7 @@ endif  ! of Do_Cut
         <manager2 name="AddPatch">
           <ui>
             <DayToAdd type="ddmmmdate" description="Day of month to add patch">5</DayToAdd>
-            <PatchArea type="text" description="Relative area of patch (0-1)">0.5</PatchArea>
+            <PatchArea type="text" description="Relative area of patch (0-1)">0.01</PatchArea>
             <UreaN type="text" description="Urea amount to add (kgN/ha)">0</UreaN>
           </ui>
           <text>
@@ -4289,6 +4293,10 @@ Public Class Script
          
       Dim NewPatch As AddSoilCNPatchType = New AddSoilCNPatchType
       Dim myUrea() As Double = { UreaN }
+      Dim mypatches() As Integer = { 0 }
+
+      NewPatch.DepositionType = "ToNewPatch"
+      NewPatch.AffectedPatches_id = mypatches
       NewPatch.AreaFraction = PatchArea
       NewPatch.Urea = myUrea
       
