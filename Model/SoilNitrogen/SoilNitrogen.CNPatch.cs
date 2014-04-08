@@ -561,20 +561,20 @@ public partial class SoilNitrogen
 			int nLayers = g.dlayer.Length;
 			soilp_dlt_org_p = new double[nLayers];
 
-			if (SumDoubleArray(g.pot_c_decomp) >= g.epsilon)
+			if (g.SumDoubleArray(g.pot_c_decomp) >= g.epsilon)
 			{
 				int nResidues = g.residueName.Length;	 // number of residues in the simulation
-				double soilp_cpr = MathUtility.Divide(SumDoubleArray(g.pot_p_decomp), SumDoubleArray(g.pot_c_decomp), 0.0);  // C:P ratio for potential decomposition
+				double soilp_cpr = MathUtility.Divide(g.SumDoubleArray(g.pot_p_decomp), g.SumDoubleArray(g.pot_c_decomp), 0.0);  // C:P ratio for potential decomposition
 
 				SurfOMActualDecomposition = new SurfaceOrganicMatterDecompType();
 				Array.Resize(ref SurfOMActualDecomposition.Pool, nResidues);
 
 				for (int residue = 0; residue < nResidues; residue++)
 				{
-					double c_summed = SumDoubleArray(dlt_c_decomp[residue]);
+					double c_summed = g.SumDoubleArray(dlt_c_decomp[residue]);
 					if (Math.Abs(c_summed) < g.epsilon)
 						c_summed = 0.0;
-					double n_summed = SumDoubleArray(dlt_n_decomp[residue]);
+					double n_summed = g.SumDoubleArray(dlt_n_decomp[residue]);
 					if (Math.Abs(n_summed) < g.epsilon)
 						n_summed = 0.0;
 
@@ -592,8 +592,8 @@ public partial class SoilNitrogen
 				}
 				// dsg 131004  calculate the old dlt_org_p (from the old Decomposed event sent by residue2) for getting by soilp
 				double act_c_decomp = 0.0;
-				double tot_pot_c_decomp = SumDoubleArray(g.pot_c_decomp);
-				double tot_pot_p_decomp = SumDoubleArray(g.pot_p_decomp);
+				double tot_pot_c_decomp = g.SumDoubleArray(g.pot_c_decomp);
+				double tot_pot_p_decomp = g.SumDoubleArray(g.pot_p_decomp);
 				for (int layer = 0; layer < nLayers; layer++)
 				{
 					act_c_decomp = dlt_c_res_to_biom[layer] + dlt_c_res_to_hum[layer] + dlt_c_res_to_atm[layer];
@@ -655,7 +655,7 @@ public partial class SoilNitrogen
 			int lowestLayer = g.dlayer.Length - 1;
 			int new_lowest_layer = new_dlayer.Length;
 
-			double TodaysInitialAmount = SumDoubleArray(SoilProperty);
+			double TodaysInitialAmount = g.SumDoubleArray(SoilProperty);
 			double SoilLossThickness = g.soil_loss / (g.SoilDensity[0] * 10);  //  10 = 1000/10000, converts loss to kg/m2, then to L/m2 = mm
 			double AmountGainedBottom = 0.0;
 			double AmountLostTop = 0.0;
@@ -673,13 +673,13 @@ public partial class SoilNitrogen
 			}
 
 			// initialise layer loss from below profile same as bottom layer
-			if (Math.Abs(SumDoubleArray(g.dlayer) - SumDoubleArray(new_dlayer)) < g.epsilon)
+			if (Math.Abs(g.SumDoubleArray(g.dlayer) - g.SumDoubleArray(new_dlayer)) < g.epsilon)
 			{
 				// Soil profile structure did not change, update values among layers
 				// Assuming soil was lost in the surface, move values from the bottom up (assumes the properties of the soil below our profile are the same as the bottom layer)
 				AmountGainedBottom = SoilProperty[lowestLayer] * Math.Min(1.0, SoilLossThickness / g.dlayer[lowestLayer]);
 			}
-			else if (SumDoubleArray(g.dlayer) < SumDoubleArray(new_dlayer))
+			else if (g.SumDoubleArray(g.dlayer) < g.SumDoubleArray(new_dlayer))
 			{
 				// soil profile has been increased (assume material has been added to the surface
 				AmountGainedBottom = 0.0;
@@ -733,7 +733,7 @@ public partial class SoilNitrogen
 			SoilProperty[0] = Math.Max(0.0, SoilProperty[0] + layer_loss - AmountLostTop);
 
 			// check mass balance
-			double UpdatedAmount = SumDoubleArray(SoilProperty);
+			double UpdatedAmount = g.SumDoubleArray(SoilProperty);
 			TodaysInitialAmount += AmountGainedBottom - AmountLostTop;
 			if (!MathUtility.FloatsAreEqual(UpdatedAmount, TodaysInitialAmount))
 			{
@@ -770,22 +770,6 @@ public partial class SoilNitrogen
 		#endregion
 
 		#region Auxiliary functions
-
-		/// <summary>
-		/// Calculate the sum of all values of an array of doubles
-		/// </summary>
-		/// <param name="anArray">The array of values</param>
-		/// <returns>The sum</returns>
-		private double SumDoubleArray(double[] anArray)
-		{
-			double result = 0.0;
-			if (anArray != null)
-			{
-				foreach (double Value in anArray)
-					result += Value;
-			}
-			return result;
-		}
 
 		#endregion
 	}

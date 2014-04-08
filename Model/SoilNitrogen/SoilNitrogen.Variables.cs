@@ -1006,6 +1006,19 @@ public partial class SoilNitrogen
 
 	#region Parameters that do or may change during simulation
 
+	#region Parameter for handling patches
+
+	/// <summary>
+	/// The approach used for partitioning the N between patches
+	/// </summary>
+	[Param]
+	[Output]
+	[Units("")]
+	[Description("Approach used for partitioning N between patches")]
+	public string NPartitionApproach;
+
+	#endregion
+
 	#region Soil physics data
 
 	/// <summary>
@@ -2575,6 +2588,14 @@ public partial class SoilNitrogen
 			return Tsoil;
 		}
 	}
+
+	/// <summary>
+	/// Number of internal patches
+	/// </summary>
+	[Output]
+	[Description("Number of internal patches")]
+	int numPatches
+	{ get { return Patch.Count; } }
 
 	#endregion
 

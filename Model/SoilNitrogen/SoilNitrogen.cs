@@ -567,9 +567,7 @@ public partial class SoilNitrogen
 
 		// send actual decomposition back to surface OM
 		if (!isPondActive || SumDoubleArray(pot_c_decomp) > epsilon)
-		{
 			SendActualResidueDecompositionCalculated();
-		}
 	}
 
 	/// <summary>
@@ -975,17 +973,93 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Passes the information about changes in mineral N made by other modules
 	/// </summary>
+	/// <remarks>
+	/// These values will be passed to each existing patch. Generally the values are passed as they come,
+	///  however, if the deltas come from a soil (i.e. leaching) or plant (i.e. uptake) then the values should
+	///  be handled (partioned).  This will be done based on soil N concentration
+	/// </remarks>
 	/// <param name="NitrogenChanges">The variation (delta) for each mineral N form</param>
 	[EventHandler(EventName = "NitrogenChanged")]
 	public void OnNitrogenChanged(NitrogenChangedType NitrogenChanges)
 	{
+		// get the type of module sending this change
+		string module = NitrogenChanges.SenderType.ToLower();
+
 		// check whether there are significant values, if so pass them to appropriate dlt
 		if (hasSignificantValues(NitrogenChanges.DeltaUrea, epsilon))
-			dlt_urea = NitrogenChanges.DeltaUrea;
+		{
+			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
+			{
+				// the values come from a module that requires partition
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea", NPartitionApproach.ToLower());
+				for (int k = 0; k < Patch.Count; k++)
+					Patch[k].dlt_urea = newDelta[k];
+			}
+			else
+			{
+				// the values come from a module that do not require partition or there is only one patch
+				for (int k = 0; k < Patch.Count; k++)
+					Patch[k].dlt_urea = NitrogenChanges.DeltaUrea;
+			}
+		}
+		// else{}  No values, no action needed
+
 		if (hasSignificantValues(NitrogenChanges.DeltaNH4, epsilon))
-			dlt_nh4 = NitrogenChanges.DeltaNH4;
+		{
+			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
+			{
+				// the values come from a module that requires partition
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", NPartitionApproach.ToLower());
+				for (int k = 0; k < Patch.Count; k++)
+					Patch[k].dlt_nh4 = newDelta[k];
+			}
+			else
+			{
+				// the values come from a module that do not require partition or there is only one patch
+				for (int k = 0; k < Patch.Count; k++)
+					Patch[k].dlt_nh4 = NitrogenChanges.DeltaNH4;
+			}
+		}
+		// else{}  No values, no action needed
+
 		if (hasSignificantValues(NitrogenChanges.DeltaNO3, epsilon))
-			dlt_no3 = NitrogenChanges.DeltaNO3;
+		{
+			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
+			{
+				// the values come from a module that requires partition
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", NPartitionApproach.ToLower());
+				for (int k = 0; k < Patch.Count; k++)
+					Patch[k].dlt_no3 = newDelta[k];
+			}
+			else
+			{
+				// the values come from a module that do not require partition or there is only one patch
+				for (int k = 0; k < Patch.Count; k++)
+					Patch[k].dlt_no3 = NitrogenChanges.DeltaNO3;
+			}
+		}
+		// else{}  No values, no action needed
+	}
+
+	/// <summary>
+	/// calculate how the dlt's (C and N) are partitioned amongst patches
+	/// </summary>
+	/// <param name="incomingDelta">The dlt to be partioned amongst patches</param>
+	/// <param name="SoluteName">The solute or pool that is changing</param>
+	/// <returns>The values of dlt for each existing patch</returns>
+	private double[][] partitionDelta(double[] incomingDelta, string SoluteName, string PartitionType)
+	{
+		// 1. initialise the result array
+		double[][] Result = new double[Patch.Count][];
+		for (int k = 0; k < Patch.Count; k++)
+			Result[k] = new double[dlayer.Length];
+
+		// 2. Partition the values
+		for (int k = 0; k < Patch.Count; k++)
+            for (int layer = 0; layer < (dlayer.Length); layer++)
+				Result[k][layer] = incomingDelta[layer];
+
+		return Result;
 	}
 
 	/// <summary>
@@ -997,6 +1071,105 @@ public partial class SoilNitrogen
 	{
 		// Starting with the minimalist version. To be updated by Val's group to include a urine patch algorithm
 		//urea[0] += UrineAdded.Urea;
+	}
+
+	/// <summary>
+	/// Passes and handles the information about new patch and add it to patch list
+	/// </summary>
+	/// <param name="PatchtoAdd">Patch data</param>
+	[EventHandler]
+	public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
+	{
+		// data passed with this event:
+		//.Sender: the name of the module that raised this event
+		//.DepositionType: the type of deposition:
+		//  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
+		//  - ToSpecificPatch: No patch is created, add stuff to given patches;
+		//		(recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
+		//  - ToNewPatch: create new patch based on an existing patch, add stuff to created patch;
+		//		- recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0];
+		//      - patches are only created is area is larger than a minimum (minPatchArea);
+		//      - new areas are proportional to existing patches;
+		//  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
+		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
+		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
+		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
+		//.AreaFraction: the relative area of the patch (0-1)
+		//.PatchName: the name(s) of the patch)es) being created
+		//.Water: amount of water to add per layer (mm), not handled here
+		//.Urea: amount of urea to add per layer (kgN/ha)
+		//.Urea: amount of urea to add (per layer) - Do we need other N forms?
+		//.NH4: amount of ammonium to add per layer (kgN/ha)
+		//.NO3: amount of nitrate to add per layer (kgN/ha)
+		//.POX: amount of POx to add per layer (kgP/ha)
+		//.SO4: amount of SO4 to add per layer (kgS/ha)
+		//.Ashalk: ash amount to add per layer (mol/ha)
+		//.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  - if present, the entry for pools will be ignored
+		//.FOM_C_pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
+		//.FOM_C_pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
+		//.FOM_C_pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
+		//.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
+
+		List<int> PatchesToAddStuff = new List<int>();
+
+		// start with a minimalist approach, keep cloning the last patch, and half the areas
+
+		double newArea = Patch.Last().RelativeArea * 0.5;
+		Patch.Last().RelativeArea = newArea;
+		ClonePatch(Patch.Count - 1);
+		Patch.Last().RelativeArea =newArea;
+
+	}
+
+	/// <summary>
+	/// Clone an existing patch. That is, creates a new patch (k) based on an existing one (j)
+	/// </summary>
+	/// <param name="k">id of patch to be cloned</param>
+	private void ClonePatch(int j)
+	{
+		// create new patch
+		soilCNPatch newPatch = new soilCNPatch(this);
+		Patch.Add(newPatch);
+		int k = Patch.Count - 1;
+
+		// set the size of arrays
+		Patch[k].ResizeLayeredVariables(dlayer.Length);
+
+		// copy the state variables from original patch in to the new one
+		CopyValuesFromPatch(k, j);
+	}
+
+	/// <summary>
+	/// Copy the state variables from one patch (j) to another one (k), using a multiplying factor
+	/// </summary>
+	/// <param name="k">The id of patch where values are copied to</param>
+	/// <param name="j">The id of patch where values are copied from</param>
+	/// <param name="MultiplyingFactor">A multiplying factor (optional)</param>
+	private void CopyValuesFromPatch(int k, int j, double MultiplyingFactor = 1.0)
+	{
+
+		for (int layer = 0; layer < dlayer.Length; layer++)
+		{
+			// Mineral N
+			Patch[k].urea[layer] = Patch[j].urea[layer] * MultiplyingFactor;
+			Patch[k].nh4[layer] = Patch[j].nh4[layer] * MultiplyingFactor;
+			Patch[k].no3[layer] = Patch[j].no3[layer] * MultiplyingFactor;
+			Patch[k].TodaysInitialNH4[layer] = Patch[j].TodaysInitialNH4[layer] * MultiplyingFactor;
+			Patch[k].TodaysInitialNO3[layer] = Patch[j].TodaysInitialNO3[layer] * MultiplyingFactor;
+
+			// Organic C and N
+			for (int pool = 0; pool < 3; pool++)
+			{
+				Patch[k].fom_c[pool][layer] = Patch[j].fom_c[pool][layer] * MultiplyingFactor;
+				Patch[k].fom_n[pool][layer] = Patch[j].fom_n[pool][layer] * MultiplyingFactor;
+			}
+			Patch[k].biom_c[layer] = Patch[j].biom_c[layer] * MultiplyingFactor;
+			Patch[k].biom_n[layer] = Patch[j].biom_n[layer] * MultiplyingFactor;
+			Patch[k].hum_c[layer] = Patch[j].hum_c[layer] * MultiplyingFactor;
+			Patch[k].hum_n[layer] = Patch[j].hum_n[layer] * MultiplyingFactor;
+			Patch[k].inert_c[layer] = Patch[j].inert_c[layer] * MultiplyingFactor;
+			Patch[k].inert_n[layer] = Patch[j].inert_n[layer] * MultiplyingFactor;
+		}
 	}
 
 	/// <summary>
@@ -1134,9 +1307,9 @@ public partial class SoilNitrogen
 		bool result = false;
 		if (anArray != null)
 		{
-			foreach (double Value in anArray)
+			for (int i = 0; i < anArray.Length; i++)
 			{
-				if (Math.Abs(Value) >= MinValue)
+				if (Math.Abs(anArray[i]) >= MinValue)
 				{
 					result = true;
 					break;
@@ -1156,8 +1329,8 @@ public partial class SoilNitrogen
 		double result = 0.0;
 		if (anArray != null)
 		{
-			foreach (double Value in anArray)
-				result += Value;
+			for (int i = 0; i < anArray.Length;i++)
+				result += anArray[i];
 		}
 		return result;
 	}
