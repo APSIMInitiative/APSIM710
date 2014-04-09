@@ -2601,13 +2601,89 @@ public partial class SoilNitrogen
 		}
 	}
 
+	#endregion
+
+	#region Outputs related to internal patches
+
 	/// <summary>
 	/// Number of internal patches
 	/// </summary>
 	[Output]
 	[Description("Number of internal patches")]
-	int numPatches
+	private int numPatches
 	{ get { return Patch.Count; } }
+
+	/// <summary>
+	/// Relative area of each internal patch
+	/// </summary>
+	[Output]
+	[Description("Relative area of each internal patches")]
+	private double[] PatchArea
+	{
+		get
+		{
+			double[] Result = new double[Patch.Count];
+			for (int k = 0; k < Patch.Count; k++)
+				Result[k] = Patch[k].RelativeArea;
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Name of each internal patch
+	/// </summary>
+	[Output]
+	[Description("Relative area of each internal patches")]
+	private string[] PatchName
+	{
+		get
+		{
+			string[] Result = new string[Patch.Count];
+			for (int k = 0; k < Patch.Count; k++)
+				Result[k] = Patch[k].PatchName;
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NH4 N in each internal patch
+	/// </summary>
+	[Output]
+	[Description("Amount of N as NH4 in each patch")]
+	private double[][] PatchNH4
+	{
+		get
+		{
+			double[][] Result = new double[Patch.Count][];
+			for (int k = 0; k < Patch.Count; k++)
+			{
+				Result[k] = new double[dlayer.Length];
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k][layer] = Patch[k].nh4[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NO3 N in each internal patch
+	/// </summary>
+	[Output]
+	[Description("Amount of N as NO3 in each patch")]
+	private double[][] PatchNO3
+	{
+		get
+		{
+			double[][] Result = new double[Patch.Count][];
+			for (int k = 0; k < Patch.Count; k++)
+			{
+				Result[k] = new double[dlayer.Length];
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k][layer] = Patch[k].no3[layer];
+			}
+			return Result;
+		}
+	}
 
 	#endregion
 

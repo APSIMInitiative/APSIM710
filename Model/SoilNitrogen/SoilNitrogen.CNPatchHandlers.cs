@@ -368,10 +368,74 @@ public partial class SoilNitrogen
 		for (int k = 0; k < Patch.Count; k++)
 			Result[k] = new double[dlayer.Length];
 
-		// 2. Partition the values
-		for (int k = 0; k < Patch.Count; k++)
+		try
+		{
+			// 2- gather how much solute is already in the soil
+			double[][] alreadyThere = new double[Patch.Count][];
+			for (int k = 0; k < Patch.Count; k++)
+			{
+				switch (SoluteName)
+				{
+					case "Urea":
+						alreadyThere[k] = Patch[k].urea;
+						break;
+					case "NH4":
+						alreadyThere[k] = Patch[k].nh4;
+						break;
+					case "NO3":
+						alreadyThere[k] = Patch[k].no3;
+						break;
+					default:
+						throw new Exception(" The solute " + SoluteName
+							+ " is not recognised by SoilNitrogen -  solute partition");
+				}
+			}
+
+			// 3- calculations are done for each layer 
 			for (int layer = 0; layer < (dlayer.Length); layer++)
-				Result[k][layer] = incomingDelta[layer];
+			{
+				// 3.1- compute the total solute amount, over all patches
+				double totalSolute = 0.0;
+				double[] patchSolute = new double[Patch.Count];
+				if ((PartitionType == "BasedOnLayerConcentration".ToLower()) ||
+					(PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] <= 0))
+				{
+					for (int k = 0; k < Patch.Count; k++)
+					{
+						totalSolute += alreadyThere[k][layer] * Patch[k].RelativeArea;
+						patchSolute[k] += alreadyThere[k][layer];
+					}
+				}
+				else if ((PartitionType == "BasedOnSoilConcentration".ToLower()) ||
+						 (PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] > 0))
+				{
+					for (int k = 0; k < Patch.Count; k++)
+						for (int z = layer; z >= 0; z--)
+						{
+							totalSolute += alreadyThere[k][z] * Patch[k].RelativeArea;
+							patchSolute[k] += alreadyThere[k][z];
+						}
+				}
+
+				// 3.2- calculations for each patch
+				for (int k = 0; k < Patch.Count; k++)
+				{
+					// 3.2.1- compute the weights (based on existing solute amount)
+					double weight = 1.0;
+					if (totalSolute > 0)
+						weight = patchSolute[k] / totalSolute;
+
+					// 3.2.2- partition the dlt's for each patch
+					Result[k][layer] = incomingDelta[layer] * weight;
+					if (Result[k][0] < -0.72 && Clock.Today.DayOfYear > 53)
+						weight += 0.0;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			throw new Exception(" problems with partitioning " + SoluteName + "- " + e.ToString());
+		}
 
 		return Result;
 	}

@@ -991,7 +991,7 @@ public partial class SoilNitrogen
 			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
 			{
 				// the values come from a module that requires partition
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "urea", NPartitionApproach.ToLower());
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", NPartitionApproach.ToLower());
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_urea = newDelta[k];
 			}
