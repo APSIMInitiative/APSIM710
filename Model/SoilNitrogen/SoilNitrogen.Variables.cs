@@ -2229,14 +2229,15 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("kg/ha")]
 	[Description("Carbon from residues lost to atmosphere during decomposition")]
-	private double[] dlt_res_c_atm
+	private double dlt_res_c_atm
 	{
 		get
 		{
-			double[] result = new double[dlayer.Length];
+			//double[] result = new double[dlayer.Length];
+			double result = 0.0;
 			for (int layer = 0; layer < dlayer.Length; ++layer)
 				for (int k = 0; k < Patch.Count; k++)
-					result[layer] += Patch[k].dlt_c_res_to_atm[layer] * Patch[k].RelativeArea;
+					result += Patch[k].dlt_c_res_to_atm[layer] * Patch[k].RelativeArea;
 			return result;
 		}
 	}
@@ -2670,7 +2671,7 @@ public partial class SoilNitrogen
 	/// </summary>
 	[Output]
 	[Description("Amount of N as NO3 in each patch")]
-	private double[][] PatchNO3
+	public double[][] PatchNO3
 	{
 		get
 		{

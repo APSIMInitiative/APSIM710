@@ -16,24 +16,18 @@ Title                  = Sim06-NoPatch
 Paddock:
    Component                      "Results" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
-   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
    Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
-   Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
 Paddock:
    Component                      "Results" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
-   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
    Component          "Med-HeavySoil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component       "Med-HeavySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
-   Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -114,28 +108,6 @@ Paddock:
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
-
-------- OperationsSchedule Initialisation -------------------------------------
-     Operations Schedule
-     ===================
-           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
-           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-
-------- HarvestingRule Initialisation -----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-     if ('wheat' = 'cotton') then
-        if (wheat.ozcot_status > 0) then
-          wheat harvest
-        endif
-     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
-        wheat harvest
-        wheat end_crop
-     endif
-     END of rules
-     
 
 ------- Med-LightSoil Water Initialisation ------------------------------------
      
@@ -383,28 +355,6 @@ Paddock:
 ------- accum Initialisation --------------------------------------------------
      Initialising
 
-------- OperationsSchedule Initialisation -------------------------------------
-     Operations Schedule
-     ===================
-           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
-           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-
-------- HarvestingRule Initialisation -----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-     if ('wheat' = 'cotton') then
-        if (wheat.ozcot_status > 0) then
-          wheat harvest
-        endif
-     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
-        wheat harvest
-        wheat end_crop
-     endif
-     END of rules
-     
-
 ------- Med-HeavySoil Water Initialisation ------------------------------------
      
          - Reading constants
@@ -538,168 +488,6 @@ Paddock:
 
 ------- Aux-Outputs Initialisation --------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-5 September 2000(Day of year=249), OperationsSchedule: 
-      Sending sow message to wheat
-5 September 2000(Day of year=249), wheat: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = wakaniu
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     545 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
-     
-        grains_per_gram_stem           =       35.0 (/g)
-        potential_grain_filling_rate   =     0.0020 (g/grain/day)
-        potential_grain_growth_rate    =     0.0010 (g/grain/day)
-        max_grain_size                 =     0.0470 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.200          0.120       1.000
-         150.0     0.200          0.150       1.000
-         300.0     0.100          0.160       1.000
-         300.0     0.050          0.150       1.000
-         300.0     0.000          0.140       0.000
-         300.0     0.000          0.130       0.000
-         -----------------------------------------------
-         Extractable SW:   276mm in  1500mm total depth ( 18%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            249   30.0  400.0  150.0   0.0   0.0 wakaniu
-         ------------------------------------------------
-     
-      Sending apply message to fertiliser
-5 September 2000(Day of year=249), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        50.00 of N as urea (urea_n)
-                                         added at depth  100.00 (layer   1)
-5 September 2000(Day of year=249), OperationsSchedule: 
-      Sending sow message to wheat
-5 September 2000(Day of year=249), wheat: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = wakaniu
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     545 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
-     
-        grains_per_gram_stem           =       35.0 (/g)
-        potential_grain_filling_rate   =     0.0020 (g/grain/day)
-        potential_grain_growth_rate    =     0.0010 (g/grain/day)
-        max_grain_size                 =     0.0470 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.200          0.230       1.000
-         150.0     0.150          0.250       1.000
-         300.0     0.060          0.280       1.000
-         300.0     0.020          0.290       1.000
-         300.0     0.000          0.295       0.000
-         300.0     0.000          0.300       0.000
-         -----------------------------------------------
-         Extractable SW:   249mm in  1500mm total depth ( 17%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            249   30.0  400.0  150.0   0.0   0.0 wakaniu
-         ------------------------------------------------
-     
-      Sending apply message to fertiliser
-5 September 2000(Day of year=249), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        50.00 of N as urea (urea_n)
-                                         added at depth  100.00 (layer   1)
-6 September 2000(Day of year=250), wheat: 
-      stage 2.0 germination
-6 September 2000(Day of year=250), wheat: 
-      stage 2.0 germination
-13 September 2000(Day of year=257), wheat: 
-      stage 3.0 emergence
-                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   32.99 (mm)
-13 September 2000(Day of year=257), wheat: 
-      stage 3.0 emergence
-                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   27.83 (mm)
-14 September 2000(Day of year=258), wheat: 
-      stage 4.0 end_of_juvenile
-                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
-                     stover N conc =     5.83 (%)    extractable sw =   31.61 (mm)
-14 September 2000(Day of year=258), wheat: 
-      stage 4.0 end_of_juvenile
-                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
-                     stover N conc =     5.83 (%)    extractable sw =   27.00 (mm)
-30 October 2000(Day of year=304), OperationsSchedule: 
-      Sending apply message to fertiliser
-30 October 2000(Day of year=304), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        50.00 of N as urea (urea_n)
-                                         added at depth  100.00 (layer   1)
-30 October 2000(Day of year=304), OperationsSchedule: 
-      Sending apply message to fertiliser
-30 October 2000(Day of year=304), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        50.00 of N as urea (urea_n)
-                                         added at depth  100.00 (layer   1)
 31 December 2000(Day of year=366), clock: 
      Simulation is terminating due to end criteria being met.
 

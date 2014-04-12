@@ -18,24 +18,22 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                 "CutAgPasture" = %apsim%\Model\Manager.dll
-   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
    Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
-   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
 Paddock:
    Component                      "Results" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                 "CutAgPasture" = %apsim%\Model\Manager.dll
-   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
    Component          "Med-HeavySoil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component       "Med-HeavySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
-   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
    Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -120,101 +118,24 @@ Paddock:
 ------- OperationsSchedule Initialisation -------------------------------------
      Operations Schedule
      ===================
-          15-Aug  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-          25-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-           5-Nov  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
 
-------- CutAgPasture Initialisation -------------------------------------------
+------- HarvestingRule Initialisation -----------------------------------------
      Manager rules:
      
-     SECTION:- init
-     days_after_cut = 21 - 1
-     do_cut = 'false'
-     has_cut = 'false'
-     harvested_dm =0
-     harvested_n = 0
-     removed_dm = 0.0
-     removed_n = 0.0
-     return_dm = 0.0
-     return_n = 0.0
-     growthratecalc = 0
-     n_conc_total = 0
-     
-     SECTION:- start_of_day
-     if today >= date('01/01/1900') and today <= date('31/12/2100') then
-        preharvest_dm = agpasture.stemwt + agpasture.leafwt
-        preharvest_n = agpasture.stemn + agpasture.leafn
-        harvested_dm = 0.0
-        harvested_n = 0.0
-        removed_dm = 0.0
-        removed_n = 0.0
-        return_dm = 0.0
-        return_n = 0.0
-        growthratecalc = 0.0
-        n_conc_removed = 0.0
-        days_after_cut = days_after_cut + 1
-        has_cut = 'false'
-        if 'fixed intervals' = 'fixed intervals' then
-           if days_after_cut = 21 then
-              do_cut = 'true'
-           else
-              do_cut = 'false'
-           endif
-        elseif 'fixed intervals' = 'target mass' then
-           if preharvest_dm >= 2000 then
-              do_cut = 'true'
-           else
-              do_cut = 'false'
-           endif
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
         endif
-     endif
-     if do_cut = 'true' then
-        if preharvest_dm > 1500 then
-           agpasture graze type = 'residue', amount = 1500
-           has_cut = 'true'
-           harvested_dm = agpasture.harvestwt
-           harvested_n = agpasture.harvestn
-           growthratecalc = harvested_dm/days_after_cut
-           if harvested_dm > 0 then
-              n_conc_removed = harvested_n*100/harvested_dm
-           endif
-           days_after_cut = 0
-           removed_dm =  harvested_dm* 0.98
-           removed_n = harvested_n* 0.98
-           return_dm = harvested_dm - removed_dm
-           return_n = harvested_n - removed_n
-           if 'return as residue' = 'return as residue' and 0.98 < 1 then
-              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
-           elseif 'return as residue' = 'return as dung & urine' then
-              n_on_dung = return_n * 0.0
-              n_on_urine = return_n - n_on_dung
-              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
-              if n_on_urine > 0 then
-     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
-              endif
-           endif
-        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
      endif
      END of rules
      
-     Manager creating a new local real variable : days_after_cut = 20.00000
-     Manager creating a new local string variable : do_cut = false
-     Manager creating a new local string variable : has_cut = false
-     Manager creating a new local real variable : harvested_dm = 0.00000
-     Manager creating a new local real variable : harvested_n = 0.00000
-     Manager creating a new local real variable : removed_dm = 0.00000
-     Manager creating a new local real variable : removed_n = 0.00000
-     Manager creating a new local real variable : return_dm = 0.00000
-     Manager creating a new local real variable : return_n = 0.00000
-     Manager creating a new local real variable : growthratecalc = 0.00000
-     Manager creating a new local real variable : n_conc_total = 0.00000
-
-------- Micromet Initialisation -----------------------------------------------
-     Initialising
-     
-        - Reading Constants
-     
-        - Reading Parameters
 
 ------- Med-LightSoil Water Initialisation ------------------------------------
      
@@ -401,8 +322,6 @@ Paddock:
           ---------------------------------------------------------
 
 
-------- AgPasture Initialisation ----------------------------------------------
-
 ------- Aux-Outputs Initialisation --------------------------------------------
 
 ------- Results Initialisation ------------------------------------------------
@@ -467,101 +386,24 @@ Paddock:
 ------- OperationsSchedule Initialisation -------------------------------------
      Operations Schedule
      ===================
-          15-Aug  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-          25-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
-           5-Nov  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
 
-------- CutAgPasture Initialisation -------------------------------------------
+------- HarvestingRule Initialisation -----------------------------------------
      Manager rules:
      
-     SECTION:- init
-     days_after_cut = 21 - 1
-     do_cut = 'false'
-     has_cut = 'false'
-     harvested_dm =0
-     harvested_n = 0
-     removed_dm = 0.0
-     removed_n = 0.0
-     return_dm = 0.0
-     return_n = 0.0
-     growthratecalc = 0
-     n_conc_total = 0
-     
-     SECTION:- start_of_day
-     if today >= date('01/01/1900') and today <= date('31/12/2100') then
-        preharvest_dm = agpasture.stemwt + agpasture.leafwt
-        preharvest_n = agpasture.stemn + agpasture.leafn
-        harvested_dm = 0.0
-        harvested_n = 0.0
-        removed_dm = 0.0
-        removed_n = 0.0
-        return_dm = 0.0
-        return_n = 0.0
-        growthratecalc = 0.0
-        n_conc_removed = 0.0
-        days_after_cut = days_after_cut + 1
-        has_cut = 'false'
-        if 'fixed intervals' = 'fixed intervals' then
-           if days_after_cut = 21 then
-              do_cut = 'true'
-           else
-              do_cut = 'false'
-           endif
-        elseif 'fixed intervals' = 'target mass' then
-           if preharvest_dm >= 2000 then
-              do_cut = 'true'
-           else
-              do_cut = 'false'
-           endif
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
         endif
-     endif
-     if do_cut = 'true' then
-        if preharvest_dm > 1500 then
-           agpasture graze type = 'residue', amount = 1500
-           has_cut = 'true'
-           harvested_dm = agpasture.harvestwt
-           harvested_n = agpasture.harvestn
-           growthratecalc = harvested_dm/days_after_cut
-           if harvested_dm > 0 then
-              n_conc_removed = harvested_n*100/harvested_dm
-           endif
-           days_after_cut = 0
-           removed_dm =  harvested_dm* 0.98
-           removed_n = harvested_n* 0.98
-           return_dm = harvested_dm - removed_dm
-           return_n = harvested_n - removed_n
-           if 'return as residue' = 'return as residue' and 0.98 < 1 then
-              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
-           elseif 'return as residue' = 'return as dung & urine' then
-              n_on_dung = return_n * 0.0
-              n_on_urine = return_n - n_on_dung
-              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
-              if n_on_urine > 0 then
-     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
-              endif
-           endif
-        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
      endif
      END of rules
      
-     Manager creating a new local real variable : days_after_cut = 20.00000
-     Manager creating a new local string variable : do_cut = false
-     Manager creating a new local string variable : has_cut = false
-     Manager creating a new local real variable : harvested_dm = 0.00000
-     Manager creating a new local real variable : harvested_n = 0.00000
-     Manager creating a new local real variable : removed_dm = 0.00000
-     Manager creating a new local real variable : removed_n = 0.00000
-     Manager creating a new local real variable : return_dm = 0.00000
-     Manager creating a new local real variable : return_n = 0.00000
-     Manager creating a new local real variable : growthratecalc = 0.00000
-     Manager creating a new local real variable : n_conc_total = 0.00000
-
-------- Micromet Initialisation -----------------------------------------------
-     Initialising
-     
-        - Reading Constants
-     
-        - Reading Parameters
 
 ------- Med-HeavySoil Water Initialisation ------------------------------------
      
@@ -694,1030 +536,170 @@ Paddock:
           ---------------------------------------------------------
 
 
-------- AgPasture Initialisation ----------------------------------------------
-
 ------- Aux-Outputs Initialisation --------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : preharvest_dm = 1900.00000
-     Manager creating a new local real variable : preharvest_n = 64.72500
-     Manager creating a new local real variable : n_conc_removed = 0.00000
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
-     Manager creating a new local real variable : preharvest_dm = 1900.00000
-     Manager creating a new local real variable : preharvest_n = 64.72500
-     Manager creating a new local real variable : n_conc_removed = 0.00000
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.27253 (kg/ha), cpr = 0
-22 July 2000(Day of year=204), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 13.47345 (kg/ha), n = 0.49581 (kg/ha), cpr = 0
-22 July 2000(Day of year=204), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 13.16357 (kg/ha), n = 0.48198 (kg/ha), cpr = 0
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 July 2000 (Day of year=207), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 July 2000 (Day of year=208), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 July 2000 (Day of year=208), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 July 2000 (Day of year=209), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 July 2000 (Day of year=209), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 July 2000 (Day of year=209), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 July 2000 (Day of year=210), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 July 2000 (Day of year=211), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 July 2000 (Day of year=211), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 July 2000 (Day of year=211), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 July 2000 (Day of year=211), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 July 2000 (Day of year=211), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 July 2000 (Day of year=213), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 July 2000 (Day of year=213), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 July 2000 (Day of year=213), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 August 2000 (Day of year=214), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 August 2000 (Day of year=214), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 August 2000 (Day of year=214), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 August 2000 (Day of year=215), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 August 2000 (Day of year=215), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 August 2000 (Day of year=216), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 August 2000 (Day of year=216), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 August 2000 (Day of year=216), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 August 2000 (Day of year=217), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 August 2000 (Day of year=217), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 August 2000 (Day of year=217), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-05 August 2000 (Day of year=218), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 August 2000 (Day of year=219), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 August 2000 (Day of year=219), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 August 2000 (Day of year=220), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 August 2000 (Day of year=220), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 August 2000 (Day of year=220), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 August 2000 (Day of year=221), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 August 2000 (Day of year=222), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 August 2000 (Day of year=222), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 August 2000 (Day of year=222), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 August 2000 (Day of year=223), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 August 2000 (Day of year=223), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 August 2000 (Day of year=224), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 August 2000 (Day of year=224), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 August 2000 (Day of year=224), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 August 2000 (Day of year=224), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 August 2000 (Day of year=224), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 August 2000 (Day of year=224), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 August 2000(Day of year=225), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 7.82324 (kg/ha), n = 0.27188 (kg/ha), cpr = 0
-12 August 2000(Day of year=225), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 7.50015 (kg/ha), n = 0.26087 (kg/ha), cpr = 0
-12 August 2000 (Day of year=225), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 August 2000 (Day of year=225), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 August 2000 (Day of year=225), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 August 2000 (Day of year=226), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 August 2000 (Day of year=227), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 August 2000 (Day of year=227), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 August 2000 (Day of year=227), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 August 2000(Day of year=228), OperationsSchedule: 
+5 September 2000(Day of year=249), OperationsSchedule: 
+      Sending sow message to wheat
+5 September 2000(Day of year=249), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.120       1.000
+         150.0     0.200          0.150       1.000
+         300.0     0.100          0.160       1.000
+         300.0     0.050          0.150       1.000
+         300.0     0.000          0.140       0.000
+         300.0     0.000          0.130       0.000
+         -----------------------------------------------
+         Extractable SW:   276mm in  1500mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            249   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
       Sending apply message to fertiliser
-15 August 2000(Day of year=228), Fertiliser: 
+5 September 2000(Day of year=249), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         50.00 of N as urea (urea_n)
                                          added at depth  100.00 (layer   1)
-15 August 2000(Day of year=228), OperationsSchedule: 
+5 September 2000(Day of year=249), OperationsSchedule: 
+      Sending sow message to wheat
+5 September 2000(Day of year=249), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.230       1.000
+         150.0     0.150          0.250       1.000
+         300.0     0.060          0.280       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.000          0.295       0.000
+         300.0     0.000          0.300       0.000
+         -----------------------------------------------
+         Extractable SW:   249mm in  1500mm total depth ( 17%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            249   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
       Sending apply message to fertiliser
-15 August 2000(Day of year=228), Fertiliser: 
+5 September 2000(Day of year=249), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         50.00 of N as urea (urea_n)
                                          added at depth  100.00 (layer   1)
-2 September 2000(Day of year=246), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 16.54620 (kg/ha), n = 0.61593 (kg/ha), cpr = 0
-2 September 2000(Day of year=246), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.74505 (kg/ha), n = 0.58471 (kg/ha), cpr = 0
-06 September 2000 (Day of year=250), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 September 2000 (Day of year=250), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 September 2000 (Day of year=250), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 September 2000 (Day of year=251), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 September 2000 (Day of year=251), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 September 2000 (Day of year=251), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 September 2000 (Day of year=251), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 September 2000 (Day of year=252), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 September 2000 (Day of year=252), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 September 2000 (Day of year=253), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 September 2000 (Day of year=253), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 September 2000 (Day of year=253), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 September 2000 (Day of year=253), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 September 2000 (Day of year=254), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 September 2000 (Day of year=254), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 September 2000 (Day of year=255), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 September 2000 (Day of year=255), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 September 2000 (Day of year=255), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 September 2000 (Day of year=255), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 September 2000 (Day of year=255), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 September 2000 (Day of year=256), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 September 2000 (Day of year=257), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 September 2000 (Day of year=257), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 September 2000 (Day of year=258), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 September 2000 (Day of year=258), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 September 2000 (Day of year=258), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 September 2000 (Day of year=258), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 September 2000 (Day of year=258), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 September 2000 (Day of year=258), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 September 2000 (Day of year=259), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 September 2000 (Day of year=259), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 September 2000 (Day of year=260), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 September 2000 (Day of year=260), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 September 2000 (Day of year=260), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 September 2000 (Day of year=260), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 September 2000 (Day of year=260), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 September 2000 (Day of year=261), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 September 2000 (Day of year=261), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 September 2000 (Day of year=262), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 September 2000 (Day of year=262), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 September 2000 (Day of year=262), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 September 2000 (Day of year=262), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 September 2000 (Day of year=263), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 September 2000 (Day of year=264), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 September 2000 (Day of year=264), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 September 2000 (Day of year=264), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 September 2000 (Day of year=264), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 September 2000 (Day of year=264), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 September 2000 (Day of year=265), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 September 2000 (Day of year=265), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 September 2000 (Day of year=266), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 September 2000 (Day of year=266), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 September 2000 (Day of year=266), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 September 2000 (Day of year=266), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 September 2000(Day of year=267), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 13.98828 (kg/ha), n = 0.48485 (kg/ha), cpr = 0
-23 September 2000(Day of year=267), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 13.55627 (kg/ha), n = 0.47105 (kg/ha), cpr = 0
-23 September 2000 (Day of year=267), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 September 2000 (Day of year=267), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 September 2000 (Day of year=267), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 September 2000 (Day of year=268), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 September 2000 (Day of year=268), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 September 2000 (Day of year=268), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 September 2000 (Day of year=268), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 September 2000(Day of year=269), OperationsSchedule: 
+6 September 2000(Day of year=250), wheat: 
+      stage 2.0 germination
+6 September 2000(Day of year=250), wheat: 
+      stage 2.0 germination
+13 September 2000(Day of year=257), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   32.99 (mm)
+13 September 2000(Day of year=257), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   27.83 (mm)
+14 September 2000(Day of year=258), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   31.61 (mm)
+14 September 2000(Day of year=258), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   27.00 (mm)
+30 October 2000(Day of year=304), OperationsSchedule: 
       Sending apply message to fertiliser
-25 September 2000(Day of year=269), Fertiliser: 
+30 October 2000(Day of year=304), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         50.00 of N as urea (urea_n)
                                          added at depth  100.00 (layer   1)
-25 September 2000(Day of year=269), OperationsSchedule: 
+30 October 2000(Day of year=304), OperationsSchedule: 
       Sending apply message to fertiliser
-25 September 2000(Day of year=269), Fertiliser: 
+30 October 2000(Day of year=304), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         50.00 of N as urea (urea_n)
                                          added at depth  100.00 (layer   1)
-09 October 2000 (Day of year=283), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 October 2000 (Day of year=283), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 October 2000 (Day of year=283), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 October 2000 (Day of year=284), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 October 2000 (Day of year=284), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 October 2000 (Day of year=284), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 October 2000 (Day of year=285), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 October 2000 (Day of year=285), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 October 2000 (Day of year=285), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 October 2000 (Day of year=286), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 October 2000 (Day of year=286), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 October 2000 (Day of year=286), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 October 2000 (Day of year=287), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 October 2000 (Day of year=287), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 October 2000(Day of year=288), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 26.47547 (kg/ha), n = 0.97107 (kg/ha), cpr = 0
-14 October 2000(Day of year=288), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 25.69165 (kg/ha), n = 0.94543 (kg/ha), cpr = 0
-14 October 2000 (Day of year=288), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 October 2000 (Day of year=288), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 October 2000 (Day of year=288), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 October 2000 (Day of year=288), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 October 2000 (Day of year=288), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 October 2000 (Day of year=288), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 October 2000 (Day of year=289), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 October 2000 (Day of year=289), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 October 2000 (Day of year=289), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 October 2000 (Day of year=289), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 October 2000 (Day of year=289), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 October 2000 (Day of year=290), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 October 2000 (Day of year=290), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 October 2000 (Day of year=290), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 October 2000 (Day of year=291), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 October 2000 (Day of year=291), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 October 2000 (Day of year=291), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 October 2000 (Day of year=291), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 October 2000 (Day of year=292), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 October 2000 (Day of year=292), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 October 2000 (Day of year=292), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 October 2000 (Day of year=293), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 October 2000 (Day of year=293), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 October 2000 (Day of year=293), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 October 2000 (Day of year=294), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 October 2000 (Day of year=294), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 October 2000 (Day of year=295), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 October 2000 (Day of year=295), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 October 2000 (Day of year=295), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 October 2000 (Day of year=295), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 October 2000 (Day of year=296), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 October 2000 (Day of year=296), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 October 2000 (Day of year=296), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 October 2000 (Day of year=296), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 October 2000 (Day of year=296), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 October 2000 (Day of year=297), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 October 2000 (Day of year=297), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 October 2000 (Day of year=297), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 October 2000 (Day of year=297), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 October 2000 (Day of year=298), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 October 2000 (Day of year=299), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 October 2000 (Day of year=299), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 October 2000 (Day of year=299), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 October 2000 (Day of year=299), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 October 2000 (Day of year=299), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 October 2000 (Day of year=299), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 October 2000 (Day of year=300), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 October 2000 (Day of year=300), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 October 2000 (Day of year=300), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 October 2000 (Day of year=300), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 October 2000 (Day of year=300), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 October 2000 (Day of year=300), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 October 2000 (Day of year=301), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 October 2000 (Day of year=301), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 October 2000 (Day of year=302), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 October 2000 (Day of year=302), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 October 2000 (Day of year=302), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 October 2000 (Day of year=302), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 October 2000 (Day of year=302), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 October 2000 (Day of year=303), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 October 2000 (Day of year=303), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 October 2000 (Day of year=303), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 October 2000 (Day of year=303), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 October 2000 (Day of year=303), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 October 2000 (Day of year=304), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 October 2000 (Day of year=304), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 October 2000 (Day of year=304), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 October 2000 (Day of year=304), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 October 2000 (Day of year=305), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 October 2000 (Day of year=305), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 October 2000 (Day of year=305), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 October 2000 (Day of year=305), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 November 2000 (Day of year=306), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 November 2000 (Day of year=306), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 November 2000 (Day of year=306), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 November 2000 (Day of year=307), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 November 2000 (Day of year=307), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 November 2000 (Day of year=308), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 November 2000 (Day of year=308), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-4 November 2000(Day of year=309), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 18.40821 (kg/ha), n = 0.56677 (kg/ha), cpr = 0
-4 November 2000(Day of year=309), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 17.60541 (kg/ha), n = 0.54458 (kg/ha), cpr = 0
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 November 2000 (Day of year=309), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-5 November 2000(Day of year=310), OperationsSchedule: 
-      Sending apply message to fertiliser
-5 November 2000(Day of year=310), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        50.00 of N as urea (urea_n)
-                                         added at depth  100.00 (layer   1)
-5 November 2000(Day of year=310), OperationsSchedule: 
-      Sending apply message to fertiliser
-5 November 2000(Day of year=310), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        50.00 of N as urea (urea_n)
-                                         added at depth  100.00 (layer   1)
-16 November 2000 (Day of year=321), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 November 2000 (Day of year=321), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 November 2000 (Day of year=321), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 November 2000 (Day of year=321), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 November 2000 (Day of year=321), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 November 2000 (Day of year=322), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 November 2000 (Day of year=322), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 November 2000 (Day of year=322), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 November 2000 (Day of year=323), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 November 2000 (Day of year=323), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 November 2000 (Day of year=323), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 November 2000 (Day of year=324), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 November 2000 (Day of year=324), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 November 2000 (Day of year=324), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 November 2000 (Day of year=324), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 November 2000 (Day of year=324), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 November 2000 (Day of year=325), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 November 2000 (Day of year=325), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 November 2000 (Day of year=325), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 November 2000 (Day of year=325), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 November 2000 (Day of year=325), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 November 2000 (Day of year=325), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 November 2000 (Day of year=326), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 November 2000 (Day of year=326), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 November 2000 (Day of year=326), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 November 2000 (Day of year=326), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 November 2000 (Day of year=326), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 November 2000 (Day of year=327), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 November 2000 (Day of year=328), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 November 2000 (Day of year=329), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 November 2000 (Day of year=329), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 November 2000(Day of year=330), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 31.43286 (kg/ha), n = 1.06366 (kg/ha), cpr = 0
-25 November 2000(Day of year=330), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 30.97656 (kg/ha), n = 1.04673 (kg/ha), cpr = 0
-25 November 2000 (Day of year=330), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 November 2000 (Day of year=330), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 November 2000 (Day of year=330), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 November 2000 (Day of year=331), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 November 2000 (Day of year=331), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 November 2000 (Day of year=331), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 November 2000 (Day of year=331), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 November 2000 (Day of year=331), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 November 2000 (Day of year=331), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 November 2000 (Day of year=332), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 November 2000 (Day of year=332), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 November 2000 (Day of year=332), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 November 2000 (Day of year=332), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 November 2000 (Day of year=333), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 November 2000 (Day of year=334), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 November 2000 (Day of year=334), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 November 2000 (Day of year=334), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 November 2000 (Day of year=334), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 November 2000 (Day of year=335), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 December 2000 (Day of year=336), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 December 2000 (Day of year=336), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 December 2000 (Day of year=336), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 December 2000 (Day of year=336), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-01 December 2000 (Day of year=336), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 December 2000 (Day of year=337), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 December 2000 (Day of year=337), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 December 2000 (Day of year=337), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-02 December 2000 (Day of year=337), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 December 2000 (Day of year=338), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 December 2000 (Day of year=338), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-03 December 2000 (Day of year=338), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-04 December 2000 (Day of year=339), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-05 December 2000 (Day of year=340), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-05 December 2000 (Day of year=340), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-05 December 2000 (Day of year=340), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-05 December 2000 (Day of year=340), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 December 2000 (Day of year=341), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 December 2000 (Day of year=341), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-06 December 2000 (Day of year=341), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 December 2000 (Day of year=342), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 December 2000 (Day of year=342), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 December 2000 (Day of year=342), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 December 2000 (Day of year=342), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 December 2000 (Day of year=342), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-07 December 2000 (Day of year=342), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 December 2000 (Day of year=343), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 December 2000 (Day of year=343), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 December 2000 (Day of year=343), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 December 2000 (Day of year=343), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 December 2000 (Day of year=343), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-08 December 2000 (Day of year=343), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 December 2000 (Day of year=344), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 December 2000 (Day of year=344), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 December 2000 (Day of year=344), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-09 December 2000 (Day of year=344), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 December 2000 (Day of year=345), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 December 2000 (Day of year=345), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-10 December 2000 (Day of year=345), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 December 2000 (Day of year=346), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 December 2000 (Day of year=346), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 December 2000 (Day of year=346), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 December 2000 (Day of year=346), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-11 December 2000 (Day of year=346), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 December 2000 (Day of year=347), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 December 2000 (Day of year=347), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 December 2000 (Day of year=347), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 December 2000 (Day of year=347), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 December 2000 (Day of year=347), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-12 December 2000 (Day of year=347), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 December 2000 (Day of year=348), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 December 2000 (Day of year=348), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-13 December 2000 (Day of year=348), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 December 2000 (Day of year=349), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 December 2000 (Day of year=349), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 December 2000 (Day of year=349), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-14 December 2000 (Day of year=349), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 December 2000 (Day of year=350), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 December 2000 (Day of year=350), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 December 2000 (Day of year=350), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 December 2000 (Day of year=350), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-15 December 2000 (Day of year=350), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000(Day of year=351), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 23.15430 (kg/ha), n = 0.65684 (kg/ha), cpr = 0
-16 December 2000(Day of year=351), CutAgPasture: 
-     Manager sending message :- agpasture graze  type = 'residue', amount = 1500
-Agpasture.ongraze
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 22.49402 (kg/ha), n = 0.64014 (kg/ha), cpr = 0
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-16 December 2000 (Day of year=351), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 December 2000 (Day of year=352), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 December 2000 (Day of year=352), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 December 2000 (Day of year=352), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-17 December 2000 (Day of year=352), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 December 2000 (Day of year=353), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 December 2000 (Day of year=353), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 December 2000 (Day of year=353), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-18 December 2000 (Day of year=353), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 December 2000 (Day of year=354), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 December 2000 (Day of year=354), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 December 2000 (Day of year=354), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 December 2000 (Day of year=354), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-19 December 2000 (Day of year=354), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 December 2000 (Day of year=355), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 December 2000 (Day of year=355), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 December 2000 (Day of year=355), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 December 2000 (Day of year=355), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 December 2000 (Day of year=355), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-20 December 2000 (Day of year=355), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 December 2000 (Day of year=356), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 December 2000 (Day of year=356), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 December 2000 (Day of year=356), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-21 December 2000 (Day of year=356), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 December 2000 (Day of year=357), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 December 2000 (Day of year=357), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 December 2000 (Day of year=357), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-22 December 2000 (Day of year=357), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-23 December 2000 (Day of year=358), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-24 December 2000 (Day of year=359), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-25 December 2000 (Day of year=360), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-26 December 2000 (Day of year=361), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 December 2000 (Day of year=362), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 December 2000 (Day of year=362), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 December 2000 (Day of year=362), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 December 2000 (Day of year=362), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-27 December 2000 (Day of year=362), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 December 2000 (Day of year=363), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-28 December 2000 (Day of year=363), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-29 December 2000 (Day of year=364), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 December 2000 (Day of year=365), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 December 2000 (Day of year=365), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 December 2000 (Day of year=365), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-30 December 2000 (Day of year=365), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 December 2000 (Day of year=366), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 December 2000 (Day of year=366), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[3] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 December 2000 (Day of year=366), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[1] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 December 2000 (Day of year=366), SoilNitrogen:
-	  - Patch[base].deltaNH4, attempt to change nh4[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 December 2000 (Day of year=366), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[2] to a value below the warning threshold, -1E-10. Value will be reset to zero
-31 December 2000 (Day of year=366), SoilNitrogen:
-	  - Patch[base].deltaNO3, attempt to change no3[4] to a value below the warning threshold, -1E-10. Value will be reset to zero
 31 December 2000(Day of year=366), clock: 
      Simulation is terminating due to end criteria being met.
 

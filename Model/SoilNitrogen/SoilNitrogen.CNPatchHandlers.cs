@@ -168,6 +168,21 @@ public partial class SoilNitrogen
 		CopyValuesFromPatch(k, j);
 	}
 
+	/// <summary>	
+	/// Controls the merging of a list of patches into a single one
+	/// </summary>
+	/// <param name="PatchesToMerge">List of patches to merge</param>
+	private void AmalgamatePatches(List<int> PatchesToMerge)
+	{
+		while (PatchesToMerge.Count > 1)
+		{
+			//MergePatches(PatchesToMerge[0], PatchesToMerge[1]); // merge patch_1 into patch_0
+			double mFactor = Patch[1].RelativeArea/Patch[0].RelativeArea;
+			CopyValuesFromPatch(0, 1, mFactor);					// copy values from patch_1 into patch_0
+			PatchesToMerge.RemoveAt(1);                         // delete reference to patch_1
+		}
+	}
+
 	/// <summary>
 	/// Delete patches in the list
 	/// </summary>
@@ -189,29 +204,51 @@ public partial class SoilNitrogen
 	/// <param name="MultiplyingFactor">A multiplying factor (optional)</param>
 	private void CopyValuesFromPatch(int k, int j, double MultiplyingFactor = 1.0)
 	{
-
 		for (int layer = 0; layer < dlayer.Length; layer++)
 		{
 			// Mineral N
-			Patch[k].urea[layer] = Patch[j].urea[layer] * MultiplyingFactor;
-			Patch[k].nh4[layer] = Patch[j].nh4[layer] * MultiplyingFactor;
-			Patch[k].no3[layer] = Patch[j].no3[layer] * MultiplyingFactor;
-			Patch[k].TodaysInitialNH4[layer] = Patch[j].TodaysInitialNH4[layer] * MultiplyingFactor;
-			Patch[k].TodaysInitialNO3[layer] = Patch[j].TodaysInitialNO3[layer] * MultiplyingFactor;
+			Patch[k].urea[layer] += Patch[j].urea[layer] * MultiplyingFactor;
+			Patch[k].nh4[layer] += Patch[j].nh4[layer] * MultiplyingFactor;
+			Patch[k].no3[layer] += Patch[j].no3[layer] * MultiplyingFactor;
+			Patch[k].TodaysInitialNH4[layer] += Patch[j].TodaysInitialNH4[layer] * MultiplyingFactor;
+			Patch[k].TodaysInitialNO3[layer] += Patch[j].TodaysInitialNO3[layer] * MultiplyingFactor;
 
 			// Organic C and N
 			for (int pool = 0; pool < 3; pool++)
 			{
-				Patch[k].fom_c[pool][layer] = Patch[j].fom_c[pool][layer] * MultiplyingFactor;
-				Patch[k].fom_n[pool][layer] = Patch[j].fom_n[pool][layer] * MultiplyingFactor;
+				Patch[k].fom_c[pool][layer] += Patch[j].fom_c[pool][layer] * MultiplyingFactor;
+				Patch[k].fom_n[pool][layer] += Patch[j].fom_n[pool][layer] * MultiplyingFactor;
 			}
-			Patch[k].biom_c[layer] = Patch[j].biom_c[layer] * MultiplyingFactor;
-			Patch[k].biom_n[layer] = Patch[j].biom_n[layer] * MultiplyingFactor;
-			Patch[k].hum_c[layer] = Patch[j].hum_c[layer] * MultiplyingFactor;
-			Patch[k].hum_n[layer] = Patch[j].hum_n[layer] * MultiplyingFactor;
-			Patch[k].inert_c[layer] = Patch[j].inert_c[layer] * MultiplyingFactor;
-			Patch[k].inert_n[layer] = Patch[j].inert_n[layer] * MultiplyingFactor;
+			Patch[k].biom_c[layer] += Patch[j].biom_c[layer] * MultiplyingFactor;
+			Patch[k].biom_n[layer] += Patch[j].biom_n[layer] * MultiplyingFactor;
+			Patch[k].hum_c[layer] += Patch[j].hum_c[layer] * MultiplyingFactor;
+			Patch[k].hum_n[layer] += Patch[j].hum_n[layer] * MultiplyingFactor;
+			Patch[k].inert_c[layer] += Patch[j].inert_c[layer] * MultiplyingFactor;
+			Patch[k].inert_n[layer] += Patch[j].inert_n[layer] * MultiplyingFactor;
 		}
+	}
+
+	/// <summary>
+	/// Checks whether two patches can be considered equal
+	/// </summary>
+	/// <param name="k">Patch used as reference</param>
+	/// <param name="j">Patch being compared to reference</param>
+	/// <returns>TRUE if patches are similar enough, FALSE otherwise</returns>
+	private bool PatchesAreEqual(int k, int j)
+	{
+		bool Result = false;
+		// go through a series of criteria to evaluate whether the two patches can be considered equal
+		if ((Math.Abs(Patch[k].carbon_tot[0] - Patch[j].carbon_tot[0]) < epsilon) &&
+			(Math.Abs(Patch[k].nit_tot[0] - Patch[k].nit_tot[0]) < epsilon) &&
+			(Math.Abs(Patch[k].biom_c[0] - Patch[k].biom_c[0]) < epsilon) &&
+			(Math.Abs(Patch[k].fom_n[0][0] - Patch[k].fom_n[0][0]) < epsilon) &&
+			(Math.Abs(Patch[k].fom_n[1][0] - Patch[k].fom_n[1][0]) < epsilon) &&
+			(Math.Abs(Patch[k].no3[0] - Patch[k].no3[0]) < epsilon))
+		{
+			Result = true;
+		}
+
+		return Result;
 	}
 
 	/// <summary>
@@ -402,8 +439,8 @@ public partial class SoilNitrogen
 				{
 					for (int k = 0; k < Patch.Count; k++)
 					{
-						totalSolute += alreadyThere[k][layer] * Patch[k].RelativeArea;
 						patchSolute[k] += alreadyThere[k][layer];
+						totalSolute += alreadyThere[k][layer] * Patch[k].RelativeArea;
 					}
 				}
 				else if ((PartitionType == "BasedOnSoilConcentration".ToLower()) ||
@@ -412,8 +449,8 @@ public partial class SoilNitrogen
 					for (int k = 0; k < Patch.Count; k++)
 						for (int z = layer; z >= 0; z--)
 						{
-							totalSolute += alreadyThere[k][z] * Patch[k].RelativeArea;
 							patchSolute[k] += alreadyThere[k][z];
+							totalSolute += alreadyThere[k][z] *Patch[k].RelativeArea;
 						}
 				}
 
@@ -423,12 +460,10 @@ public partial class SoilNitrogen
 					// 3.2.1- compute the weights (based on existing solute amount)
 					double weight = 1.0;
 					if (totalSolute > 0)
-						weight = patchSolute[k] / totalSolute;
+						weight = MathUtility.Divide(patchSolute[k], totalSolute, 0.0);
 
 					// 3.2.2- partition the dlt's for each patch
 					Result[k][layer] = incomingDelta[layer] * weight;
-					if (Result[k][0] < -0.72 && Clock.Today.DayOfYear > 53)
-						weight += 0.0;
 				}
 			}
 		}
