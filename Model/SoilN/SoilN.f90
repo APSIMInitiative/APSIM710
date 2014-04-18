@@ -1418,7 +1418,6 @@ subroutine soiln2_send_my_variable (variable_name)
 
       call respond2get_real_array (variable_name,'(kg/ha)', fom_n_pool3, num_layers)
 
-
    elseif (variable_name .eq. 'hum_n') then
    !                           -----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
@@ -1430,7 +1429,20 @@ subroutine soiln2_send_my_variable (variable_name)
       call respond2get_real_array (variable_name,'(kg/ha)', g%biom_n, num_layers)
 
 
-   elseif (variable_name .eq. 'fom_c') then
+      elseif (variable_name .eq. 'inert_c') then  !VOS VOS
+   !                           -----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'(kg/ha)', g%inert_c, num_layers)
+
+   elseif (variable_name .eq. 'frac_inert_c') then  !VOS VOS
+   !                           -----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      do layer = 1, num_layers
+        temp(layer) = g%inert_c(layer) / g%hum_c(layer)
+      end do
+      call respond2get_real_array (variable_name,'(kg/ha)', temp, num_layers)
+
+elseif (variable_name .eq. 'fom_c') then
    !                           -----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call fill_real_array (fom_c, 0.0, max_layer)
