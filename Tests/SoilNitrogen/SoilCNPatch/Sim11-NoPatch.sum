@@ -1,0 +1,685 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Sim11-NoPatch
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component "Med-LightSoil Nitrogen (dummy)" = %apsim%\Model\Manager.dll
+   Component                     "SWIM2ui2" = %apsim%\Model\SWIM2.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                 "SoilNitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component "Med-HeavySoil Nitrogen (dummy)" = %apsim%\Model\Manager.dll
+   Component                     "SWIM2ui2" = %apsim%\Model\SWIM2.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                 "SoilNitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/2000
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        dlayer format 5
+        urea format 5
+        nh4 format 5
+        no3 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st format 7
+        sw_dep format 5
+        SoilName
+        NumPatches
+
+     Output file = Sim11-NoPatch Paddock1-LightSoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Med-LightSoil Nitrogen (dummy) Initialisation -------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     No manager lines were found in any parameter file.
+     Component name: Paddock1-LightSoil.Med-LightSoil Nitrogen (dummy)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- SWIM2ui2 Initialisation -----------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.13  0.346  0.154  0.346  0.492
+            10.0  1.13  0.346  0.154  0.346  0.492
+            15.0  1.13  0.346  0.154  0.346  0.492
+            20.0  1.13  0.346  0.154  0.346  0.492
+            20.0  1.13  0.346  0.154  0.346  0.492
+            30.0  1.13  0.346  0.154  0.346  0.492
+            50.0  1.13  0.346  0.154  0.346  0.492
+            50.0  1.16  0.330  0.141  0.330  0.485
+            50.0  1.18  0.319  0.132  0.319  0.480
+            50.0  1.21  0.303  0.119  0.303  0.473
+            50.0  1.22  0.292  0.111  0.292  0.468
+            50.0  1.22  0.292  0.111  0.292  0.468
+            50.0  1.22  0.292  0.111  0.292  0.468
+            75.0  1.22  0.292  0.111  0.292  0.468
+            75.0  1.35  0.267  0.099  0.267  0.432
+            75.0  1.43  0.251  0.091  0.251  0.408
+            75.0  1.43  0.251  0.091  0.251  0.408
+            75.0  1.43  0.251  0.091  0.251  0.408
+            75.0  1.43  0.251  0.091  0.251  0.408
+           100.0  1.43  0.249  0.090  0.249  0.407
+           100.0  1.44  0.246  0.088  0.246  0.404
+           100.0  1.45  0.245  0.087  0.245  0.403
+            80.0  1.46  0.242  0.084  0.242  0.400
+            70.0  1.46  0.242  0.084  0.242  0.400
+            60.0  1.46  0.242  0.084  0.242  0.400
+            45.0  1.46  0.242  0.084  0.242  0.400
+            45.0  1.46  0.242  0.084  0.242  0.400
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  A_SL_mC       0.3462833     -0.100     61.663
+            10.0  A_SL_mC       0.3462833     -0.100     61.663
+            20.0  A_SL_mC       0.3462833     -0.100     61.663
+            40.0  A_SL_mC       0.3462833     -0.100     61.663
+            60.0  A_SL_mC       0.3462833     -0.100     61.663
+            80.0  A_SL_mC       0.3462833     -0.100     61.663
+           120.0  A_SL_mC       0.3462833     -0.100     61.663
+           180.0  -             0.3300124     -0.100     54.065
+           220.0  -             0.3191651     -0.100     49.527
+           280.0  -             0.3028942     -0.100     43.424
+           320.0  B1_SL_mC      0.2920470     -0.100     39.780
+           380.0  B1_SL_mC      0.2920470     -0.100     39.780
+           420.0  B1_SL_mC      0.2920470     -0.100     39.780
+           480.0  B1_SL_mC      0.2920470     -0.100     39.780
+           570.0  -             0.2671221     -0.100     34.319
+           630.0  B2_SL_mC      0.2505055     -0.100     31.102
+           720.0  B2_SL_mC      0.2505055     -0.100     31.102
+           780.0  B2_SL_mC      0.2505055     -0.100     31.102
+           870.0  B2_SL_mC      0.2505055     -0.100     31.102
+           930.0  -             0.2491644     -0.100     30.729
+          1070.0  -             0.2460352     -0.100     29.878
+          1130.0  -             0.2446941     -0.100     29.520
+          1270.0  BC_SL_mC      0.2415649     -0.100     28.702
+          1290.0  BC_SL_mC      0.2415649     -0.100     28.702
+          1410.0  BC_SL_mC      0.2415649     -0.100     28.702
+          1410.0  BC_SL_mC      0.2415649     -0.100     28.702
+          1500.0  BC_SL_mC      0.2415649     -0.100     28.702
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.15396    0.15396    0.15396    0.15396    0.15396    0.15396    0.15396
+            -1.00 |    0.23581    0.23581    0.23581    0.23581    0.23581    0.23581    0.23581
+            -0.10 |    0.34628    0.34628    0.34628    0.34628    0.34628    0.34628    0.34628
+            -0.01 |    0.48346    0.48346    0.48346    0.48346    0.48346    0.48346    0.48346
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.00484    0.00484    0.00484    0.00484    0.00484    0.00484    0.00484
+            -0.01 |    2.78674    2.78674    2.78674    2.78674    2.78674    2.78674    2.78674
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        1.000
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilNitrogen Initialisation -------------------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  3.50    0.09    0.09    0.00
+             2     6.00  3.50    0.19    0.19    0.00
+             3     6.00  3.50    0.28    0.28    0.00
+             4     6.00  3.50    0.38    0.38    0.00
+             5     6.00  3.50    0.38    0.38    0.00
+             6     6.00  3.50    0.57    0.57    0.00
+             7     6.00  3.50    0.95    0.95    0.00
+             8     6.00  1.53    0.84    0.84    0.00
+             9     6.00  1.53    0.85    0.85    0.00
+            10     6.00  1.53    0.87    0.87    0.00
+            11     6.00  1.09    0.41    0.41    0.00
+            12     6.00  1.09    0.41    0.41    0.00
+            13     6.00  1.09    0.41    0.41    0.00
+            14     6.00  1.09    0.61    0.61    0.00
+            15     6.00  1.09    0.67    0.67    0.00
+            16     6.00  0.66    0.69    0.69    0.00
+            17     6.00  0.66    0.69    0.69    0.00
+            18     6.00  0.66    0.69    0.69    0.00
+            19     6.00  0.66    0.69    0.69    0.00
+            20     6.00  0.44    0.88    0.88    0.00
+            21     6.00  0.44    0.89    0.89    0.00
+            22     6.00  0.44    0.89    0.89    0.00
+            23     6.00  0.26    0.69    0.69    0.00
+            24     6.00  0.26    0.61    0.61    0.00
+            25     6.00  0.26    0.52    0.52    0.00
+            26     6.00  0.26    0.39    0.39    0.00
+            27     6.00  0.26    0.39    0.39    0.00
+          ------------------------------------------------
+           Totals               15.93   15.93    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       1490.4   119.2   494.1    61.8    34.3     1.1
+             2       2980.9   238.5   988.1   123.5    33.6     1.1
+             3       4471.3   357.7  1482.2   185.3    32.6     1.1
+             4       5961.8   476.9  1976.2   247.0    31.3     1.0
+             5       5959.6   476.8  1978.4   247.3    30.1     1.0
+             6       8926.6   714.1  2980.4   372.6    28.4     0.9
+             7      14797.0  1183.8  5048.0   631.0    25.7     0.9
+             8       5412.4   433.0  3469.2   433.7    23.2     0.8
+             9       5434.0   434.7  3585.4   448.2    21.0     0.7
+            10       5520.9   441.7  3705.0   463.1    19.0     0.6
+            11       3616.9   289.3  3053.9   381.7    17.2     0.6
+            12       3616.9   289.3  3053.9   381.7    15.6     0.5
+            13       3616.9   289.3  3053.9   381.7    14.1     0.5
+            14       5425.3   434.0  4580.9   572.6    12.1     0.4
+            15       5970.5   477.6  5041.2   630.2    10.4     0.3
+            16       3732.3   298.6  3341.2   417.7     9.0     0.3
+            17       3732.3   298.6  3341.2   417.7     7.7     0.3
+            18       3732.3   298.6  3341.2   417.7     6.7     0.2
+            19       3732.3   298.6  3341.2   417.7     5.7     0.2
+            20       3251.6   260.1  3053.9   381.7     4.7     0.2
+            21       3273.0   261.8  3074.0   384.3     3.8     0.1
+            22       3282.2   262.6  3082.6   385.3     3.1     0.1
+            23       1534.7   122.8  1493.8   186.7     2.7     0.1
+            24       1342.8   107.4  1307.1   163.4     2.3     0.1
+            25       1151.0    92.1  1120.4   140.0     2.1     0.1
+            26        863.2    69.1   840.3   105.0     1.9     0.1
+            27        863.2    69.1   840.3   105.0     1.7     0.1
+          ---------------------------------------------------------
+           Totals  113692.4  9095.4 72668.1  9083.5   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        dlayer format 5
+        urea format 5
+        nh4 format 5
+        no3 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st format 7
+        sw_dep format 5
+        SoilName
+        NumPatches
+
+     Output file = Sim11-NoPatch Paddock2-HeavySoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Med-HeavySoil Nitrogen (dummy) Initialisation -------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     No manager lines were found in any parameter file.
+     Component name: Paddock2-HeavySoil.Med-HeavySoil Nitrogen (dummy)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- SWIM2ui2 Initialisation -----------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.04  0.425  0.190  0.425  0.526
+            10.0  1.04  0.425  0.190  0.425  0.526
+            15.0  1.04  0.425  0.190  0.425  0.526
+            20.0  1.04  0.425  0.190  0.425  0.526
+            20.0  1.04  0.425  0.190  0.425  0.526
+            30.0  1.04  0.425  0.190  0.425  0.526
+            50.0  1.04  0.425  0.190  0.425  0.526
+            50.0  1.11  0.409  0.179  0.409  0.508
+            50.0  1.15  0.399  0.172  0.399  0.496
+            50.0  1.22  0.383  0.161  0.383  0.477
+            50.0  1.26  0.372  0.153  0.372  0.465
+            50.0  1.26  0.372  0.153  0.372  0.465
+            50.0  1.26  0.372  0.153  0.372  0.465
+            75.0  1.26  0.372  0.153  0.372  0.465
+            75.0  1.32  0.358  0.144  0.358  0.447
+            75.0  1.36  0.348  0.138  0.348  0.435
+            75.0  1.36  0.348  0.138  0.348  0.435
+            75.0  1.36  0.348  0.138  0.348  0.435
+            75.0  1.36  0.348  0.138  0.348  0.435
+           100.0  1.38  0.347  0.137  0.347  0.431
+           100.0  1.41  0.342  0.134  0.342  0.420
+           100.0  1.43  0.340  0.133  0.340  0.416
+            80.0  1.46  0.336  0.131  0.336  0.406
+            70.0  1.46  0.336  0.131  0.336  0.406
+            60.0  1.46  0.336  0.131  0.336  0.406
+            45.0  1.46  0.336  0.131  0.336  0.406
+            45.0  1.46  0.336  0.131  0.336  0.406
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  A_ZL_mC       0.4251137     -0.100     56.573
+            10.0  A_ZL_mC       0.4251137     -0.100     56.573
+            20.0  A_ZL_mC       0.4251137     -0.100     56.573
+            40.0  A_ZL_mC       0.4251137     -0.100     56.573
+            60.0  A_ZL_mC       0.4251137     -0.100     56.573
+            80.0  A_ZL_mC       0.4251137     -0.100     56.573
+           120.0  A_ZL_mC       0.4251137     -0.100     56.573
+           180.0  -             0.4093176     -0.100     39.606
+           220.0  -             0.3987868     -0.100     31.226
+           280.0  -             0.3829906     -0.100     21.861
+           320.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           380.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           420.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           480.0  B1_ZL_mC      0.3724598     -0.100     17.236
+           570.0  -             0.3580769     -0.100     12.524
+           630.0  B2_ZL_mC      0.3484883     -0.100     10.123
+           720.0  B2_ZL_mC      0.3484883     -0.100     10.123
+           780.0  B2_ZL_mC      0.3484883     -0.100     10.123
+           870.0  B2_ZL_mC      0.3484883     -0.100     10.123
+           930.0  -             0.3465791     -0.100      9.594
+          1070.0  -             0.3421242     -0.100      8.465
+          1130.0  -             0.3402150     -0.100      8.023
+          1270.0  BC_ZL_mC      0.3357601     -0.100      7.079
+          1290.0  BC_ZL_mC      0.3357601     -0.100      7.079
+          1410.0  BC_ZL_mC      0.3357601     -0.100      7.079
+          1410.0  BC_ZL_mC      0.3357601     -0.100      7.079
+          1500.0  BC_ZL_mC      0.3357601     -0.100      7.079
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.19022    0.19022    0.19022    0.19022    0.19022    0.19022    0.19022
+            -1.00 |    0.29067    0.29067    0.29067    0.29067    0.29067    0.29067    0.29067
+            -0.10 |    0.42511    0.42511    0.42511    0.42511    0.42511    0.42511    0.42511
+            -0.01 |    0.52408    0.52408    0.52408    0.52408    0.52408    0.52408    0.52408
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -1.00 |    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000    0.00000
+            -0.10 |    0.01059    0.01059    0.01059    0.01059    0.01059    0.01059    0.01059
+            -0.01 |    2.11697    2.11697    2.11697    2.11697    2.11697    2.11697    2.11697
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        1.000
+     
+     
+     
+     
+          Bypass flow is INactive
+          Total ponding (no runoff)
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilNitrogen Initialisation -------------------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  3.50    0.09    0.09    0.00
+             2     6.00  3.50    0.17    0.17    0.00
+             3     6.00  3.50    0.26    0.26    0.00
+             4     6.00  3.50    0.35    0.35    0.00
+             5     6.00  3.50    0.35    0.35    0.00
+             6     6.00  3.50    0.52    0.52    0.00
+             7     6.00  3.50    0.87    0.87    0.00
+             8     6.00  1.53    0.80    0.80    0.00
+             9     6.00  1.53    0.83    0.83    0.00
+            10     6.00  1.53    0.88    0.88    0.00
+            11     6.00  1.09    0.42    0.42    0.00
+            12     6.00  1.09    0.42    0.42    0.00
+            13     6.00  1.09    0.42    0.42    0.00
+            14     6.00  1.09    0.63    0.63    0.00
+            15     6.00  1.09    0.66    0.66    0.00
+            16     6.00  0.66    0.66    0.66    0.00
+            17     6.00  0.66    0.66    0.66    0.00
+            18     6.00  0.66    0.66    0.66    0.00
+            19     6.00  0.66    0.66    0.66    0.00
+            20     6.00  0.44    0.85    0.85    0.00
+            21     6.00  0.44    0.87    0.87    0.00
+            22     6.00  0.44    0.88    0.88    0.00
+            23     6.00  0.26    0.70    0.70    0.00
+            24     6.00  0.26    0.61    0.61    0.00
+            25     6.00  0.26    0.52    0.52    0.00
+            26     6.00  0.26    0.39    0.39    0.00
+            27     6.00  0.26    0.39    0.39    0.00
+          ------------------------------------------------
+           Totals               15.51   15.51    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       1365.6   105.0   452.7    56.6    34.3     1.1
+             2       2731.2   210.1   905.3   113.2    33.6     1.1
+             3       4096.8   315.1  1358.0   169.7    32.6     1.1
+             4       5462.3   420.2  1810.7   226.3    31.3     1.0
+             5       5460.4   420.0  1812.6   226.6    30.1     1.0
+             6       8178.7   629.1  2730.8   341.3    28.4     0.9
+             7      13557.4  1042.9  4625.1   578.1    25.7     0.9
+             8       5155.6   396.6  3304.6   413.1    23.2     0.8
+             9       5302.6   407.9  3498.7   437.3    21.0     0.7
+            10       5573.1   428.7  3740.1   467.5    19.0     0.6
+            11       3729.2   286.9  3148.7   393.6    17.2     0.6
+            12       3729.2   286.9  3148.7   393.6    15.6     0.5
+            13       3729.2   286.9  3148.7   393.6    14.1     0.5
+            14       5593.7   430.3  4723.1   590.4    12.1     0.4
+            15       5862.3   450.9  4949.9   618.7    10.4     0.3
+            16       3559.9   273.8  3186.9   398.4     9.0     0.3
+            17       3559.9   273.8  3186.9   398.4     7.7     0.3
+            18       3559.9   273.8  3186.9   398.4     6.7     0.2
+            19       3559.9   273.8  3186.9   398.4     5.7     0.2
+            20       3126.7   240.5  2936.5   367.1     4.7     0.2
+            21       3206.1   246.6  3011.1   376.4     3.8     0.1
+            22       3240.1   249.2  3043.1   380.4     3.1     0.1
+            23       1542.0   118.6  1501.0   187.6     2.7     0.1
+            24       1349.3   103.8  1313.4   164.2     2.3     0.1
+            25       1156.5    89.0  1125.8   140.7     2.1     0.1
+            26        867.4    66.7   844.3   105.5     1.9     0.1
+            27        867.4    66.7   844.3   105.5     1.7     0.1
+          ---------------------------------------------------------
+           Totals  109122.4  8394.0 70724.9  8840.6   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+------- Start of simulation  --------------------------------------------------
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+
