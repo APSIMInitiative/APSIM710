@@ -12,8 +12,8 @@
 Version                = 7.6
 Title                  = Sim01-ExplicitPatches
    Component                        "clock" = %apsim%\Model\Clock.dll
-   Component                     "Results1" = %apsim%\Model\Report.dll
-   Component                     "Results2" = %apsim%\Model\Report.dll
+   Component            "LightSoil Results" = %apsim%\Model\Report.dll
+   Component            "HeavySoil Results" = %apsim%\Model\Report.dll
    Component                          "met" = %apsim%\Model\Input.dll
    Component              "Aux-SumOutputs1" = %apsim%\Model\Manager2.dll
    Component              "Aux-SumOutputs2" = %apsim%\Model\Manager2.dll
@@ -68,7 +68,7 @@ Paddock:
      Simulation end date   = 31/12/2000
      Time step =           = 1440 (mins)
 
-------- Results1 Initialisation -----------------------------------------------
+------- LightSoil Results Initialisation --------------------------------------
      Output frequency:
         end_day
      Output variables:
@@ -91,6 +91,7 @@ Paddock:
         dlt_n_min_tot_p1() as NetMineralisedHumus format 5
         n2o_atm_p1() as N2Oemissions format 5
         dlt_n_loss_in_sed_p1 as dltN_sediments format 5
+        PlantNuptake_p1 as PlantNUptake format 5
         surfaceom_c_p1 as SurfaceOM_C format 5
         fom_c_p1() as FOM_C format 5
         biom_c_p1() as Biom_C format 5
@@ -105,12 +106,14 @@ Paddock:
         es_p1 as Evaporation format 5
         sw_uptake_p1() as PlantTranspiration format 5
         drain_p1 as Drain format 5
+        runoff_p1 as Runoff format 5
         SoilName_p1 as SoilName
+        NumPatches
 
-     Output file = Sim01-ExplicitPatches Results1.out
+     Output file = Sim01-ExplicitPatches LightSoil Results.out
      Format = normal
 
-------- Results2 Initialisation -----------------------------------------------
+------- HeavySoil Results Initialisation --------------------------------------
      Output frequency:
         end_day
      Output variables:
@@ -133,6 +136,7 @@ Paddock:
         dlt_n_min_tot_p2() as NetMineralisedHumus format 5
         n2o_atm_p2() as N2Oemissions format 5
         dlt_n_loss_in_sed_p2 as dltN_sediments format 5
+        PlantNuptake_p2 as PlantNUptake format 5
         surfaceom_c_p2 as SurfaceOM_C format 5
         fom_c_p2() as FOM_C format 5
         biom_c_p2() as Biom_C format 5
@@ -147,9 +151,11 @@ Paddock:
         es_p2 as Evaporation format 5
         sw_uptake_p2() as PlantTranspiration format 5
         drain_p2 as Drain format 5
+        runoff_p2 as Runoff format 5
         SoilName_p2 as SoilName
+        NumPatches
 
-     Output file = Sim01-ExplicitPatches Results2.out
+     Output file = Sim01-ExplicitPatches HeavySoil Results.out
      Format = normal
 
 ------- met Initialisation ----------------------------------------------------
@@ -157,8 +163,16 @@ Paddock:
      INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
 
 ------- Aux-SumOutputs1 Initialisation ----------------------------------------
+     Initialising
+        Summing up paddocks:
+         .Paddock1-base-LightSoil, with area: 0.75
+         .Paddock1-patch-LightSoil, with area: 0.25
 
 ------- Aux-SumOutputs2 Initialisation ----------------------------------------
+     Initialising
+        Summing up paddocks:
+         .Paddock2-base-HeavySoil, with area: 0.75
+         .Paddock2-patch-HeavySoil, with area: 0.25
 
 ------- Results Initialisation ------------------------------------------------
      Output frequency:
@@ -183,6 +197,7 @@ Paddock:
         dlt_n_min_tot() as NetMineralisedHumus format 5
         n2o_atm() as N2Oemissions format 5
         dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
         surfaceom_c as SurfaceOM_C format 5
         fom_c() as FOM_C format 5
         biom_c() as Biom_C format 5
@@ -198,18 +213,6 @@ Paddock:
         PlantTranspiration as PlantTranspiration format 5
         drain as Drain format 5
         Runoff format 5
-        dlayer format 5
-        urea format 5
-        nh4 format 5
-        no3 format 5
-        fom_n format 5
-        biom_n format 5
-        hum_n format 5
-        fom_c format 5
-        biom_c format 5
-        hum_c format 5
-        st format 7
-        sw_dep format 5
         SoilName
         NumPatches
 
@@ -405,7 +408,7 @@ Paddock:
 
 
 ------- Aux-Outputs Initialisation --------------------------------------------
- SoilNn: 6
+     Initialising
 
 ------- Results Initialisation ------------------------------------------------
      Output frequency:
@@ -430,6 +433,7 @@ Paddock:
         dlt_n_min_tot() as NetMineralisedHumus format 5
         n2o_atm() as N2Oemissions format 5
         dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
         surfaceom_c as SurfaceOM_C format 5
         fom_c() as FOM_C format 5
         biom_c() as Biom_C format 5
@@ -445,18 +449,6 @@ Paddock:
         PlantTranspiration as PlantTranspiration format 5
         drain as Drain format 5
         Runoff format 5
-        dlayer format 5
-        urea format 5
-        nh4 format 5
-        no3 format 5
-        fom_n format 5
-        biom_n format 5
-        hum_n format 5
-        fom_c format 5
-        biom_c format 5
-        hum_c format 5
-        st format 7
-        sw_dep format 5
         SoilName
         NumPatches
 
@@ -657,7 +649,7 @@ Paddock:
 
 
 ------- Aux-Outputs Initialisation --------------------------------------------
- SoilNn: 6
+     Initialising
 
 ------- Results Initialisation ------------------------------------------------
      Output frequency:
@@ -682,6 +674,7 @@ Paddock:
         dlt_n_min_tot() as NetMineralisedHumus format 5
         n2o_atm() as N2Oemissions format 5
         dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
         surfaceom_c as SurfaceOM_C format 5
         fom_c() as FOM_C format 5
         biom_c() as Biom_C format 5
@@ -697,18 +690,6 @@ Paddock:
         PlantTranspiration as PlantTranspiration format 5
         drain as Drain format 5
         Runoff format 5
-        dlayer format 5
-        urea format 5
-        nh4 format 5
-        no3 format 5
-        fom_n format 5
-        biom_n format 5
-        hum_n format 5
-        fom_c format 5
-        biom_c format 5
-        hum_c format 5
-        st format 7
-        sw_dep format 5
         SoilName
         NumPatches
 
@@ -850,6 +831,7 @@ Paddock:
 
 
 ------- Aux-Outputs Initialisation --------------------------------------------
+     Initialising
 
 ------- Results Initialisation ------------------------------------------------
      Output frequency:
@@ -874,6 +856,7 @@ Paddock:
         dlt_n_min_tot() as NetMineralisedHumus format 5
         n2o_atm() as N2Oemissions format 5
         dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
         surfaceom_c as SurfaceOM_C format 5
         fom_c() as FOM_C format 5
         biom_c() as Biom_C format 5
@@ -889,18 +872,6 @@ Paddock:
         PlantTranspiration as PlantTranspiration format 5
         drain as Drain format 5
         Runoff format 5
-        dlayer format 5
-        urea format 5
-        nh4 format 5
-        no3 format 5
-        fom_n format 5
-        biom_n format 5
-        hum_n format 5
-        fom_c format 5
-        biom_c format 5
-        hum_c format 5
-        st format 7
-        sw_dep format 5
         SoilName
         NumPatches
 
@@ -1047,6 +1018,7 @@ Paddock:
 
 
 ------- Aux-Outputs Initialisation --------------------------------------------
+     Initialising
 ------- Start of simulation  --------------------------------------------------
 15 August 2000(Day of year=228), AddUrine: 
       Sending apply message to fertiliser

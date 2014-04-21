@@ -1172,7 +1172,7 @@ public partial class SoilNitrogen
 		}
 		else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
 		{
-			if (PatchtoAdd.AffectedPatches_id.Length ==0 || PatchtoAdd.AffectedPatches_nm.Length == 0)
+			if (PatchtoAdd.AffectedPatches_id.Length == 0 && PatchtoAdd.AffectedPatches_nm.Length == 0)
 			{
 				writeMessage(" Command to add patch did not supply a valid patch to be used as base for the new one. Command will be ignored.");
 				isDataOK = false;

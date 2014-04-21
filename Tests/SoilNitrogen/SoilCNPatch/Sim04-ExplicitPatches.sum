@@ -1,0 +1,1463 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Sim04-ExplicitPatches
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component            "LightSoil Results" = %apsim%\Model\Report.dll
+   Component            "HeavySoil Results" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component              "Aux-SumOutputs1" = %apsim%\Model\Manager2.dll
+   Component              "Aux-SumOutputs2" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
+   Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                     "AddUrine" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
+   Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
+   Component          "Med-HeavySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-HeavySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                     "AddUrine" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
+   Component          "Med-HeavySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-HeavySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/2000
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- LightSoil Results Initialisation --------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea_p1() as UreaTotal format 5
+        nh4_p1() as NH4Total format 5
+        no3_p1() as NO3Total format 5
+        surfaceom_n_p1 as SurfaceOM_N format 5
+        fom_n_p1() as FOM_N format 5
+        biom_n_p1() as Biom_N format 5
+        hum_n_p1() as Hum_N format 5
+        PlantN_p1 as PlantTotalN format 5
+        Fertiliser_p1 as FertiliserN format 5
+        dlt_urea_hydrol_p1() as HydrolisedN format 5
+        nitrification_p1() as NitrifiedN format 5
+        dnit_p1() as DenitrifiedN format 5
+        leach_no3_p1 as LeachedNO3 format 5
+        dlt_n_min_res_p1() as NetMineralisedResidue format 5
+        dlt_n_min_tot_p1() as NetMineralisedHumus format 5
+        n2o_atm_p1() as N2Oemissions format 5
+        dlt_n_loss_in_sed_p1 as dltN_sediments format 5
+        PlantNuptake_p1 as PlantNUptake format 5
+        surfaceom_c_p1 as SurfaceOM_C format 5
+        fom_c_p1() as FOM_C format 5
+        biom_c_p1() as Biom_C format 5
+        hum_c_p1() as Hum_C format 5
+        oc_p1() as OCTotal format 5
+        PlantC_p1 as PlantTotalC format 5
+        dlt_res_c_atm_p1 as CO2fromResidues format 5
+        dlt_fom_c_atm_p1() as CO2fromFOM format 5
+        dlt_biom_c_atm_p1() as CO2fromMBiomass format 5
+        dlt_hum_c_atm_p1() as CO2fromHumus format 5
+        dlt_c_loss_in_sed_p1 as dltC_sediments format 5
+        es_p1 as Evaporation format 5
+        sw_uptake_p1() as PlantTranspiration format 5
+        drain_p1 as Drain format 5
+        runoff_p1 as Runoff format 5
+        SoilName_p1 as SoilName
+        NumPatches
+
+     Output file = Sim04-ExplicitPatches LightSoil Results.out
+     Format = normal
+
+------- HeavySoil Results Initialisation --------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea_p2() as UreaTotal format 5
+        nh4_p2() as NH4Total format 5
+        no3_p2() as NO3Total format 5
+        surfaceom_n_p2 as SurfaceOM_N format 5
+        fom_n_p2() as FOM_N format 5
+        biom_n_p2() as Biom_N format 5
+        hum_n_p2() as Hum_N format 5
+        PlantN_p2 as PlantTotalN format 5
+        Fertiliser_p2 as FertiliserN format 5
+        dlt_urea_hydrol_p2() as HydrolisedN format 5
+        nitrification_p2() as NitrifiedN format 5
+        dnit_p2() as DenitrifiedN format 5
+        leach_no3_p2 as LeachedNO3 format 5
+        dlt_n_min_res_p2() as NetMineralisedResidue format 5
+        dlt_n_min_tot_p2() as NetMineralisedHumus format 5
+        n2o_atm_p2() as N2Oemissions format 5
+        dlt_n_loss_in_sed_p2 as dltN_sediments format 5
+        PlantNuptake_p2 as PlantNUptake format 5
+        surfaceom_c_p2 as SurfaceOM_C format 5
+        fom_c_p2() as FOM_C format 5
+        biom_c_p2() as Biom_C format 5
+        hum_c_p2() as Hum_C format 5
+        oc_p2() as OCTotal format 5
+        PlantC_p2 as PlantTotalC format 5
+        dlt_res_c_atm_p2 as CO2fromResidues format 5
+        dlt_fom_c_atm_p2() as CO2fromFOM format 5
+        dlt_biom_c_atm_p2() as CO2fromMBiomass format 5
+        dlt_hum_c_atm_p2() as CO2fromHumus format 5
+        dlt_c_loss_in_sed_p2 as dltC_sediments format 5
+        es_p2 as Evaporation format 5
+        sw_uptake_p2() as PlantTranspiration format 5
+        drain_p2 as Drain format 5
+        runoff_p2 as Runoff format 5
+        SoilName_p2 as SoilName
+        NumPatches
+
+     Output file = Sim04-ExplicitPatches HeavySoil Results.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- Aux-SumOutputs1 Initialisation ----------------------------------------
+     Initialising
+        Summing up paddocks:
+         .Paddock1-base-LightSoil, with area: 0.75
+         .Paddock1-patch-LightSoil, with area: 0.25
+
+------- Aux-SumOutputs2 Initialisation ----------------------------------------
+     Initialising
+        Summing up paddocks:
+         .Paddock2-base-HeavySoil, with area: 0.75
+         .Paddock2-patch-HeavySoil, with area: 0.25
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        SoilName
+        NumPatches
+
+     Output file = Sim04-ExplicitPatches Paddock1-base-LightSoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- HarvestingRule Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
+        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
+     endif
+     END of rules
+     
+
+------- Med-LightSoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8000.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.075  0.120  0.340  0.520  0.340  1.100  0.762  0.500*******
+          150.-  300.  0.150  0.150  0.350  0.500  0.350  1.050  0.190  0.450*******
+          300.-  600.  0.160  0.160  0.345  0.490  0.345  1.100  0.048  0.400*******
+          600.-  900.  0.150  0.150  0.330  0.480  0.330  1.150  0.000  0.400*******
+          900.- 1200.  0.140  0.140  0.315  0.460  0.315  1.220  0.000  0.400*******
+         1200.- 1500.  0.130  0.130  0.300  0.450  0.300  1.300  0.000  0.400*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      18.00      33.00      33.00      27.00
+          150.-  300.      22.50      30.00      30.00      22.50
+          300.-  600.      48.00      55.50      55.50      43.50
+          600.-  900.      45.00      54.00      54.00      45.00
+          900.- 1200.      42.00      52.50      52.50      43.50
+         1200.- 1500.      39.00      51.00      51.00      45.00
+          ---------------------------------------------------------
+               Totals     214.50     276.00     276.00     226.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-LightSoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56578.3  4526.3  1171.7   146.5   156.2     5.2
+             2      23365.7  1869.3   259.3    32.4   115.7     3.9
+             3      16442.7  1315.4    57.3     7.2    63.5     2.1
+             4       8616.5   689.3     8.5     1.1    34.9     1.2
+             5       3658.2   292.7     1.8     0.2    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112561.1  9004.9  1498.9   187.4   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+     Initialising
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        SoilName
+        NumPatches
+
+     Output file = Sim04-ExplicitPatches Paddock1-patch-LightSoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- AddUrine Initialisation -----------------------------------------------
+     Operations Schedule
+     ===================
+          15-Aug  Prepare      Fertiliser apply amount=100 (kg/ha), depth=1 (mm), type=urea_n
+
+------- HarvestingRule Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
+        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
+     endif
+     END of rules
+     
+
+------- Med-LightSoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8000.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.075  0.120  0.340  0.520  0.340  1.100  0.762  0.500*******
+          150.-  300.  0.150  0.150  0.350  0.500  0.350  1.050  0.190  0.450*******
+          300.-  600.  0.160  0.160  0.345  0.490  0.345  1.100  0.048  0.400*******
+          600.-  900.  0.150  0.150  0.330  0.480  0.330  1.150  0.000  0.400*******
+          900.- 1200.  0.140  0.140  0.315  0.460  0.315  1.220  0.000  0.400*******
+         1200.- 1500.  0.130  0.130  0.300  0.450  0.300  1.300  0.000  0.400*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      18.00      33.00      33.00      27.00
+          150.-  300.      22.50      30.00      30.00      22.50
+          300.-  600.      48.00      55.50      55.50      43.50
+          600.-  900.      45.00      54.00      54.00      45.00
+          900.- 1200.      42.00      52.50      52.50      43.50
+         1200.- 1500.      39.00      51.00      51.00      45.00
+          ---------------------------------------------------------
+               Totals     214.50     276.00     276.00     226.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-LightSoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56578.3  4526.3  1171.7   146.5   156.2     5.2
+             2      23365.7  1869.3   259.3    32.4   115.7     3.9
+             3      16442.7  1315.4    57.3     7.2    63.5     2.1
+             4       8616.5   689.3     8.5     1.1    34.9     1.2
+             5       3658.2   292.7     1.8     0.2    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112561.1  9004.9  1498.9   187.4   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+     Initialising
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        SoilName
+        NumPatches
+
+     Output file = Sim04-ExplicitPatches Paddock2-base-HeavySoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- HarvestingRule Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
+        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
+     endif
+     END of rules
+     
+
+------- Med-HeavySoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.180  0.230  0.410  0.520  0.410  1.100  0.762  0.300 75.000
+          150.-  300.  0.250  0.250  0.440  0.510  0.440  1.050  0.190  0.250 75.000
+          300.-  600.  0.280  0.280  0.460  0.503  0.460  1.100  0.048  0.200 50.000
+          600.-  900.  0.290  0.290  0.460  0.495  0.460  1.150  0.000  0.190 25.000
+          900.- 1200.  0.295  0.295  0.450  0.483  0.450  1.220  0.000  0.180 25.000
+         1200.- 1500.  0.300  0.300  0.440  0.470  0.440  1.300  0.000  0.200 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50      27.00      27.00      16.50
+          150.-  300.      37.50      28.50      28.50      10.50
+          300.-  600.      84.00      54.00      54.00      12.90
+          600.-  900.      87.00      51.00      51.00      10.50
+          900.- 1200.      88.50      46.50      46.50       9.90
+         1200.- 1500.      90.00      42.00      42.00       9.00
+          ---------------------------------------------------------
+               Totals     421.50     249.00     249.00      69.30
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-HeavySoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56773.6  4541.9   976.4   122.1   156.2     5.2
+             2      23423.3  1873.9   201.7    25.2   115.7     3.9
+             3      16459.8  1316.8    40.2     5.0    63.5     2.1
+             4       8619.9   689.6     5.1     0.6    34.9     1.2
+             5       3658.9   292.7     1.1     0.1    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112835.3  9026.8  1224.7   153.1   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+     Initialising
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        SoilName
+        NumPatches
+
+     Output file = Sim04-ExplicitPatches Paddock2-patch-HeavySoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+           5-Sep  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Oct  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- AddUrine Initialisation -----------------------------------------------
+     Operations Schedule
+     ===================
+          15-Aug  Prepare      Fertiliser apply amount=100 (kg/ha), depth=1 (mm), type=urea_n
+
+------- HarvestingRule Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
+        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
+     endif
+     END of rules
+     
+
+------- Med-HeavySoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.180  0.230  0.410  0.520  0.410  1.100  0.762  0.300 75.000
+          150.-  300.  0.250  0.250  0.440  0.510  0.440  1.050  0.190  0.250 75.000
+          300.-  600.  0.280  0.280  0.460  0.503  0.460  1.100  0.048  0.200 50.000
+          600.-  900.  0.290  0.290  0.460  0.495  0.460  1.150  0.000  0.190 25.000
+          900.- 1200.  0.295  0.295  0.450  0.483  0.450  1.220  0.000  0.180 25.000
+         1200.- 1500.  0.300  0.300  0.440  0.470  0.440  1.300  0.000  0.200 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50      27.00      27.00      16.50
+          150.-  300.      37.50      28.50      28.50      10.50
+          300.-  600.      84.00      54.00      54.00      12.90
+          600.-  900.      87.00      51.00      51.00      10.50
+          900.- 1200.      88.50      46.50      46.50       9.90
+         1200.- 1500.      90.00      42.00      42.00       9.00
+          ---------------------------------------------------------
+               Totals     421.50     249.00     249.00      69.30
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-HeavySoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56773.6  4541.9   976.4   122.1   156.2     5.2
+             2      23423.3  1873.9   201.7    25.2   115.7     3.9
+             3      16459.8  1316.8    40.2     5.0    63.5     2.1
+             4       8619.9   689.6     5.1     0.6    34.9     1.2
+             5       3658.9   292.7     1.1     0.1    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112835.3  9026.8  1224.7   153.1   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+     Initialising
+------- Start of simulation  --------------------------------------------------
+15 August 2000(Day of year=228), AddUrine: 
+      Sending apply message to fertiliser
+15 August 2000(Day of year=228), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+15 August 2000(Day of year=228), AddUrine: 
+      Sending apply message to fertiliser
+15 August 2000(Day of year=228), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+5 September 2000(Day of year=249), OperationsSchedule: 
+      Sending sow message to wheat
+5 September 2000(Day of year=249), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.120       1.000
+         150.0     0.200          0.150       1.000
+         300.0     0.100          0.160       1.000
+         300.0     0.050          0.150       1.000
+         300.0     0.000          0.140       0.000
+         300.0     0.000          0.130       0.000
+         -----------------------------------------------
+         Extractable SW:   276mm in  1500mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            249   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+5 September 2000(Day of year=249), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+5 September 2000(Day of year=249), OperationsSchedule: 
+      Sending sow message to wheat
+5 September 2000(Day of year=249), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.120       1.000
+         150.0     0.200          0.150       1.000
+         300.0     0.100          0.160       1.000
+         300.0     0.050          0.150       1.000
+         300.0     0.000          0.140       0.000
+         300.0     0.000          0.130       0.000
+         -----------------------------------------------
+         Extractable SW:   276mm in  1500mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            249   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+5 September 2000(Day of year=249), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+5 September 2000(Day of year=249), OperationsSchedule: 
+      Sending sow message to wheat
+5 September 2000(Day of year=249), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.230       1.000
+         150.0     0.150          0.250       1.000
+         300.0     0.060          0.280       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.000          0.295       0.000
+         300.0     0.000          0.300       0.000
+         -----------------------------------------------
+         Extractable SW:   249mm in  1500mm total depth ( 17%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            249   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+5 September 2000(Day of year=249), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+5 September 2000(Day of year=249), OperationsSchedule: 
+      Sending sow message to wheat
+5 September 2000(Day of year=249), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.230       1.000
+         150.0     0.150          0.250       1.000
+         300.0     0.060          0.280       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.000          0.295       0.000
+         300.0     0.000          0.300       0.000
+         -----------------------------------------------
+         Extractable SW:   249mm in  1500mm total depth ( 17%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            249   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+5 September 2000(Day of year=249), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+6 September 2000(Day of year=250), wheat: 
+      stage 2.0 germination
+6 September 2000(Day of year=250), wheat: 
+      stage 2.0 germination
+6 September 2000(Day of year=250), wheat: 
+      stage 2.0 germination
+6 September 2000(Day of year=250), wheat: 
+      stage 2.0 germination
+13 September 2000(Day of year=257), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   32.99 (mm)
+13 September 2000(Day of year=257), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   32.99 (mm)
+13 September 2000(Day of year=257), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   27.83 (mm)
+13 September 2000(Day of year=257), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   27.83 (mm)
+14 September 2000(Day of year=258), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   31.61 (mm)
+14 September 2000(Day of year=258), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   31.61 (mm)
+14 September 2000(Day of year=258), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   27.00 (mm)
+14 September 2000(Day of year=258), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.54 (g/m^2)   lai          =   0.091 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   27.00 (mm)
+30 October 2000(Day of year=304), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 October 2000(Day of year=304), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+30 October 2000(Day of year=304), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 October 2000(Day of year=304), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+30 October 2000(Day of year=304), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 October 2000(Day of year=304), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+30 October 2000(Day of year=304), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 October 2000(Day of year=304), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+
