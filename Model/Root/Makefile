@@ -1,6 +1,7 @@
 include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Root
+VBPROJ = 1
 
 PROJECTTYPE = dll
 

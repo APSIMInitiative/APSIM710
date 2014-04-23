@@ -9,6 +9,7 @@ ifdef windir
    RM=del /f
    MV=move /y
    CP=xcopy /i /y
+   SHELL=cmd.exe
 else
    PLATFORM=Linux
    DLL=so

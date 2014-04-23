@@ -13,10 +13,19 @@ pushd %APSIM%\Model
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
 
-
 rem ----- Compile the job scheduler.
 echo Compiling the JobScheduler
-"%VS100COMNTOOLS%\..\IDE\devenv.exe" "%APSIM%\Model\JobScheduler\JobScheduler.sln" /build debug
+IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.exe" (
+ "%VS100COMNTOOLS%\..\IDE\devenv.exe" "%APSIM%\Model\JobScheduler\JobScheduler.sln" /build debug
+) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\vcsexpress.exe" (
+ SET VS_EXPRESS=1
+ "%VS100COMNTOOLS%\..\IDE\vcsexpress.exe" "%APSIM%\Model\JobScheduler\JobScheduler.sln" /build debug
+) ELSE (
+  echo "Cannot locate the Visual Studio compilers!"
+  popd
+  exit /B
+)
+
 echo.
 
 rem ----- Run the job scheduler.
