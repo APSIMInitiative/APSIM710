@@ -373,7 +373,7 @@ namespace ModelFramework
         /// The method will return true if found or false otherwise. The value of the variable will be 
         /// returned through the out parameter.
         /// </summary>
-        public bool Get(string NamePath, out object Data)
+        public bool GetObject(string NamePath, out object Data)
         {
             //// Look in cache first.
             if (VariableCache.ContainsKey(NamePath))

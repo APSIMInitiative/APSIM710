@@ -312,7 +312,7 @@ public class ReportDb
         for (int i = 0; i < Variables.Variable.Length; i++)
         {
             object Value;
-            Paddock.Get(Variables.Variable[i], out Value);
+            Paddock.GetObject(Variables.Variable[i], out Value);
             if (Value == null)
                 Value = "";
             ConvertVariableToValues(Variables.Variable[i], Value.ToString(), Values);

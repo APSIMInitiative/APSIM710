@@ -52,7 +52,7 @@ public class LinearInterpolationFunction : Function
             string PropertyName = XProperty;
 
             object v = null;
-            My.Get(XProperty, out v);
+            My.GetObject(XProperty, out v);
             if (v == null)
                 throw new Exception("Cannot find value for " + Name + " XProperty: " + XProperty);
             if (v is Array)

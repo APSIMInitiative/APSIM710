@@ -54,7 +54,7 @@ using ModelFramework;
                 if ((My != null) && !NamePath.Contains("["))
                 {
                     object v;
-                    My.Get(NamePath, out v);
+                    My.GetObject(NamePath, out v);
                     return v;
                 }
             }
@@ -85,7 +85,7 @@ using ModelFramework;
                 {
                     MatchingChild = (RelativeTo as Component).LinkByName(Bits[i]);  // Try for a model name first. e.g. Root
                     if (MatchingChild == null)
-                        (RelativeTo as Component).Get(Bits[i], out MatchingChild);  // may be a variable. e.g. Organs
+                        (RelativeTo as Component).GetObject(Bits[i], out MatchingChild);  // may be a variable. e.g. Organs
                 }
                 else
                     MatchingChild = Utility.GetValueOfFieldOrProperty(Bits[i], RelativeTo);
@@ -111,7 +111,7 @@ using ModelFramework;
                     if (ArraySpecifier != "" && !ok && My != null)
                     {
                         object ArraySpec;
-                        ok = My.Get(ArraySpecifier, out ArraySpec);  // Assume it is a simulation variable.
+                        ok = My.GetObject(ArraySpecifier, out ArraySpec);  // Assume it is a simulation variable.
                         if (ok && (ArraySpec is Int32 || ArraySpec is Double))
                             ArrayIndex = Convert.ToInt32(ArraySpec);
                         else
