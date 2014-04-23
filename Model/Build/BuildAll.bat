@@ -18,7 +18,6 @@ echo Compiling the JobScheduler
 IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.exe" (
  "%VS100COMNTOOLS%\..\IDE\devenv.exe" "%APSIM%\Model\JobScheduler\JobScheduler.sln" /build debug
 ) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\vcsexpress.exe" (
- SET VS_EXPRESS=1
  "%VS100COMNTOOLS%\..\IDE\vcsexpress.exe" "%APSIM%\Model\JobScheduler\JobScheduler.sln" /build debug
 ) ELSE (
   echo "Cannot locate the Visual Studio compilers!"
