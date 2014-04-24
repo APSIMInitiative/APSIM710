@@ -983,6 +983,36 @@
          <field name="Lignin"          unit="kg/ha"  type="FOM"      array="T"  descr="amounts of C and N to add per layer for the lignin pool"/>
       </field>
    </type>
+   <type name="AddSoilCNPatch2">
+      <field name="Sender"             unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
+      <field name="DepositionType"     unit="-"      kind="string"   array="F"  descr="ToAllPaddock,ToSpecificPatch,ToNewPatch,NewOverlappingPatches"/>
+      <field name="AffectedPatches_nm" unit="-"      kind="string"   array="T"  descr="the name of patches affected by new patch"/>
+      <field name="AffectedPatches_id" unit="-"      kind="integer4" array="T"  descr="the id of patches affected by new patch"/>
+      <field name="AreaNewPatch"       unit="0-1"    kind="double"   array="F"  descr="relative area (fraction) of new patches"/>
+      <field name="PatchName"          unit="-"      kind="string"   array="F"  descr="base name of new patches"/>
+      <field name="Water"              unit="mm"     kind="double"   array="T"  descr="amount of water to add per layer"/>
+      <field name="Urea"               unit="kg/ha"  kind="double"   array="T"  descr="amount of urea-N to add per layer"/>
+      <field name="NH4"                unit="kg/ha"  kind="double"   array="T"  descr="amount of ammonium-N to add per layer"/>
+      <field name="NO3"                unit="kg/ha"  kind="double"   array="T"  descr="amount of nitrate-N to add per layer"/>
+      <field name="POX"                unit="kg/ha"  kind="double"   array="T"  descr="amount of POx-P to add per layer"/>
+      <field name="SO4"                unit="kg/ha"  kind="double"   array="T"  descr="amount of SO4-S to add per layer"/>
+      <field name="AshAlk"             unit="mol/ha" kind="double"   array="T"  descr="ash amount to add per layer"/>
+      <field name="FOM"                                              array="F"  descr="fresh organic matter to add">
+         <field name="type"            unit="-"      kind="string"   array="F"  descr="type of fresh organic matter to add"/>
+         <field name="Carbohydrate"                                  array="F"  descr="carbohydrate pool of FOM">
+            <field name="C"            unit="kg/ha"  kind="double"   array="T"  descr="amounts of C to add per layer for the carbohydrate pool"/>
+            <field name="N"            unit="kg/ha"  kind="double"   array="T"  descr="amounts of N to add per layer for the carbohydrate pool"/>
+         </field>
+         <field name="Cellulose"                                     array="F"  descr="cellulose pool of FOM">
+            <field name="C"            unit="kg/ha"  kind="double"   array="T"  descr="amounts of C to add per layer for the cellulose pool"/>
+            <field name="N"            unit="kg/ha"  kind="double"   array="T"  descr="amounts of N to add per layer for the cellulose pool"/>
+         </field>
+         <field name="Lignin"                                        array="F"  descr="lignin pool of FOM">
+            <field name="C"            unit="kg/ha"  kind="double"   array="T"  descr="amounts of C to add per layer for the lignin pool"/>
+            <field name="N"            unit="kg/ha"  kind="double"   array="T"  descr="amounts of N to add per layer for the lignin pool"/>
+         </field>
+      </field>
+   </type>
 
 
    <!-- used to send tell SoilNitrogen to merge CNPatches -->
