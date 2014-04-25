@@ -1007,19 +1007,24 @@
 
    <!-- used to report variables from SoilNitrogen's SoilCNPatch -->
    <type name="CNPatchVariable">
-      <field name="Patch"                                             array="T"  descr="represents a collection of SoilCNPatches">
-         <field name="Value"           unit="kg/ha"   kind="double"   array="F"  descr="represents the value of a scalar variable in a SoilCNPatch"/>
-         <field name="ValueLayer"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
-         <field name="ValuePool"                                      array="T"  descr="represents the value of a pool variable in a SoilCNPatch">
-            <field name="ValueLayer"   unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+      <field name="Patch"                                          array="T"  descr="represents a collection of SoilCNPatches">
+         <field name="Value"        unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+      </field>
+   </type>
+
+   <type name="CNPatchPoolVariable">
+      <field name="Patch"                                          array="T"  descr="represents a collection of SoilCNPatches">
+         <field name="Pool"                                        array="T"  descr="represents a collection of pools in a SoilCNPatch">
+            <field name="Value"     unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a pool variable in a SoilCNPatch"/>
          </field>
       </field>
    </type>
-   <type name="CNPatchVariable_simple">
+
+   <type name="CNPatchVariable_array">
       <field name="Value"           unit="kg/ha"   kind="double"   array="F"  descr="represents the value of a scalar variable in aSoilCNPatch"/>
-      <field name="ValueLayer"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
-      <field name="ValuePool"                                      array="T"  descr="represents the value of a pool variable in a SoilCNPatch">
-         <field name="ValueLayer"   unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+      <field name="LayerValue"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+      <field name="Pool"                                           array="T"  descr="represents a collection of pools in a SoilCNPatch">
+         <field name="LayerValue"   unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a pool variable in a SoilCNPatch"/>
       </field>
    </type>
 
