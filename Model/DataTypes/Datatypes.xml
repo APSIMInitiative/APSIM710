@@ -974,7 +974,7 @@
       <field name="FOM_N"              unit="kgN/ha" kind="double"   array="T"  descr="amount of nitrogen to add as FOM per layer"/>
    </type>
 
-   <type name="AddSoilCNPatch_new">
+   <type name="AddSoilCNPatchwithFOM">
       <field name="Sender"             unit="-"       kind="string"    array="F"  descr="name of module raising the event"/>
       <field name="DepositionType"     unit="-"       kind="string"    array="F"  descr="ToAllPaddock,ToSpecificPatch,ToNewPatch,NewOverlappingPatches"/>
       <field name="AffectedPatches_nm" unit="-"       kind="string"    array="T"  descr="the name of patches affected by new patch"/>
@@ -987,11 +987,14 @@
       <field name="NO3"                unit="kg/ha"   kind="double"    array="T"  descr="amount of nitrate-N to add per layer"/>
       <field name="POX"                unit="kg/ha"   kind="double"    array="T"  descr="amount of POx-P to add per layer"/>
       <field name="SO4"                unit="kg/ha"   kind="double"    array="T"  descr="amount of SO4-S to add per layer"/>
-      <field name="AshAlk"             unit="mol/ha"  kind="double"    array="T"  descr="ash amount to add per layer"/>
-      <field name="FOM"                  type="SoilOrganicMaterial"    array="T"  descr="fresh organic matter to add, per fom pool"/>
+      <field name="AshAlk"             unit="kg/ha"   kind="double"    array="T"  descr="ash amount to add per layer"/>
+      <field name="FOM"                                                array="F"  descr="fresh organic matter to add">
+         <field name="Name"            unit="-"       kind="string"    array="F"  descr="name of fresh organic matter"/>
+         <field name="Type"            unit="-"       kind="string"    array="F"  descr="type of fresh organic matter"/>
+         <field name="Pool"               type="SoilOrganicMaterial"   array="T"  descr="fresh organic matter pools to add"/>
+      </field>
    </type>
 
-	
 
    <!-- used to send tell SoilNitrogen to merge CNPatches -->
    <type name="MergeSoilCNPatch">
@@ -1004,14 +1007,19 @@
 
    <!-- used to report variables from SoilNitrogen's SoilCNPatch -->
    <type name="CNPatchVariable">
-      <field name="Value"           unit="kg/ha"   kind="double"   array="F"  descr="represents the value of a scalar variable in SoilCNPatch"/>
-      <field name="ValueLayer"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in SoilCNPatch"/>
+      <field name="Patch"                                             array="T"  descr="represents a collection of SoilCNPatches">
+         <field name="Value"           unit="kg/ha"   kind="double"   array="F"  descr="represents the value of a scalar variable in a SoilCNPatch"/>
+         <field name="ValueLayer"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+         <field name="ValuePool"                                      array="T"  descr="represents the value of a pool variable in a SoilCNPatch">
+            <field name="ValueLayer"   unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+         </field>
+      </field>
    </type>
-   <type name="CNPatchVariable_new">
-      <field name="Value"           unit="kg/ha"   kind="double"   array="F"  descr="represents the value of a scalar variable in SoilCNPatch"/>
-      <field name="ValueLayer"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in SoilCNPatch"/>
-      <field name="ValuePool"                                      array="T"  descr="represents the value of a pool variable in SoilCNPatch">
-         <field name="ValueLayer"   unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in SoilCNPatch"/>
+   <type name="CNPatchVariable_simple">
+      <field name="Value"           unit="kg/ha"   kind="double"   array="F"  descr="represents the value of a scalar variable in aSoilCNPatch"/>
+      <field name="ValueLayer"      unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
+      <field name="ValuePool"                                      array="T"  descr="represents the value of a pool variable in a SoilCNPatch">
+         <field name="ValueLayer"   unit="kg/ha"   kind="double"   array="T"  descr="represents the value for each layer of a variable in a SoilCNPatch"/>
       </field>
    </type>
 
