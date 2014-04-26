@@ -1122,7 +1122,7 @@ public partial class SoilNitrogen
 	/// </summary>
 	/// <param name="PatchtoAdd">Patch data</param>
 	[EventHandler]
-	public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
+	public void OnAddSoilCNPatch_old(AddSoilCNPatchType PatchtoAdd)
 	{
 		// data passed with this event:
 		//.Sender: the name of the module that raised this event
@@ -1136,9 +1136,9 @@ public partial class SoilNitrogen
 		//      - new areas are proportional to existing patches;
 		//  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
 		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
-		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
-		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
-		//.AreaFraction: the relative area of the patch (0-1)
+		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches affected by new patch
+		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches affected by new patch
+		//.AreaFraction: the relative area (fraction) of new patches (0-1)
 		//.PatchName: the name(s) of the patch(es) being created
 		//.Water: amount of water to add per layer (mm), not handled here
 		//.Urea: amount of urea to add per layer (kgN/ha)
@@ -1154,6 +1154,178 @@ public partial class SoilNitrogen
 		//.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
 
 
+		//// check that required data is supplied
+		//bool isDataOK = true;
+
+		//if (PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower())
+		//{
+		//    if (PatchtoAdd.AffectedPatches_id.Length == 0 && PatchtoAdd.AffectedPatches_nm.Length == 0)
+		//    {
+		//        writeMessage(" Command to add patch did not supply a valid patch to be used as base for the new one. Command will be ignored.");
+		//        isDataOK = false;
+		//    }
+		//    else if (PatchtoAdd.AreaFraction <= 0.0)
+		//    {
+		//        writeMessage(" Command to add patch did not supply a valid area fraction for the new patch. Command will be ignored.");
+		//        isDataOK = false;
+		//    }
+		//}
+		//else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
+		//{
+		//    if (PatchtoAdd.AffectedPatches_id.Length == 0 && PatchtoAdd.AffectedPatches_nm.Length == 0)
+		//    {
+		//        writeMessage(" Command to add patch did not supply a valid patch to be used as base for the new one. Command will be ignored.");
+		//        isDataOK = false;
+		//    }
+		//}
+		//else if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower())
+		//{
+		//    if (PatchtoAdd.AreaFraction <= 0.0)
+		//    {
+		//        writeMessage(" Command to add patch did not supply a valid area fraction for the new patch. Command will be ignored.");
+		//        isDataOK = false;
+		//    }
+		//}
+		//else if ((PatchtoAdd.DepositionType.ToLower() == "ToAllPaddock".ToLower()) || (PatchtoAdd.DepositionType == ""))
+		//{
+		//    // assume stuff is added homogeneously and with no patch creation, thus no factors are actually required
+		//}
+		//else
+		//{
+		//    writeMessage(" Command to add patch did not supply a valid DepositionType. Command will be ignored.");
+		//    isDataOK = false;
+		//}
+
+		//if (isDataOK)
+		//{
+		//    List<int> PatchesToAddStuff;
+
+		//    if ((PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower()) ||
+		//        (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower()))
+		//    { // New patch(es) will be added
+		//        AddNewCNPatch(PatchtoAdd);
+		//    }
+		//    else if (PatchtoAdd.DepositionType.ToLower() == "ToSpecificPatch".ToLower())
+		//    {  // add stuff to selected patches, no new patch will be created
+
+		//        // 1. get the list of patch id's to which stuff will be added
+		//        PatchesToAddStuff = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
+		//        // 2. add the stuff to patches listed
+		//        AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+		//    }
+		//    else
+		//    {  // add stuff to all existing patches, no new patch will be created
+		//        // 1. create the list of patches receiving stuff (all)
+		//        PatchesToAddStuff = new List<int>();
+		//        for (int k = 0; k < Patch.Count; k++)
+		//            PatchesToAddStuff.Add(k);
+		//        // 2. add the stuff to patches listed
+		//        AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
+		//    }
+		//}
+	}
+
+		/// <summary>
+	/// Passes and handles the information about new patch and add it to patch list
+	/// </summary>
+	/// <param name="PatchtoAdd">Patch data</param>
+	[EventHandler]
+	public void OnAddSoilCNPatch(AddSoilCNPatchType PatchtoAdd)
+	{
+		// data passed with this event:
+		//.Sender: the name of the module that raised this event
+		//.DepositionType: the type of deposition:
+		//  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
+		//  - ToSpecificPatch: No patch is created, add stuff to given patches;
+		//		(recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
+		//  - ToNewPatch: create new patch based on an existing patch, add stuff to created patch;
+		//		- recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0];
+		//      - patches are only created is area is larger than a minimum (minPatchArea);
+		//      - new areas are proportional to existing patches;
+		//  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
+		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
+		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches affected by new patch
+		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches affected by new patch
+		//.AreaFraction: the relative area (fraction) of new patches (0-1)
+		//.PatchName: the name(s) of the patch(es) being created
+		//.Water: amount of water to add per layer (mm), not handled here
+		//.Urea: amount of urea to add per layer (kgN/ha)
+		//.NH4: amount of ammonium to add per layer (kgN/ha)
+		//.NO3: amount of nitrate to add per layer (kgN/ha)
+		//.POX: amount of POx to add per layer (kgP/ha), not handled here
+		//.SO4: amount of SO4 to add per layer (kgS/ha), not handled here
+		//.Ashalk: ash amount to add per layer (mol/ha), not handled here
+		//.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  - if present, the entry for pools will be ignored
+		//.FOM_C_pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
+		//.FOM_C_pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
+		//.FOM_C_pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
+		//.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
+
+		// - here we'll just convert to AddSoilCNPatchwithFOM and raise that event  - This will be deleted in the near future
+
+
+		AddSoilCNPatchwithFOMType PatchData = new AddSoilCNPatchwithFOMType();
+		PatchData.DepositionType = PatchtoAdd.DepositionType;
+		PatchData.AreaNewPatch = PatchtoAdd.AreaFraction;
+		PatchData.AffectedPatches_id = PatchtoAdd.AffectedPatches_id;
+		PatchData.AffectedPatches_nm = PatchtoAdd.AffectedPatches_nm;
+		PatchData.Urea = PatchtoAdd.Urea;
+		PatchData.NH4 = PatchtoAdd.NH4;
+		PatchData.NO3 = PatchtoAdd.NO3;
+		// need to also initialise FOM, even if it is empty
+		PatchData.FOM = new AddSoilCNPatchwithFOMFOMType();
+		PatchData.FOM.Type = "none";
+		PatchData.FOM.Pool = new SoilOrganicMaterialType[3];
+		for (int pool = 0; pool <3;pool++)
+			PatchData.FOM.Pool[pool] = new SoilOrganicMaterialType();
+
+		OnAddSoilCNPatchwithFOM(PatchData);
+
+	}
+
+	/// <summary>
+	/// Passes and handles the information about new patch and add it to patch list
+	/// </summary>
+	/// <param name="PatchtoAdd">Patch data</param>
+	[EventHandler]
+	public void OnAddSoilCNPatchwithFOM(AddSoilCNPatchwithFOMType PatchtoAdd)
+	{
+		// data passed with this event:
+		//.Sender: the name of the module that raised this event
+		//.DepositionType: the type of deposition:
+		//  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
+		//  - ToSpecificPatch: No patch is created, add stuff to given patches;
+		//		(recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
+		//  - ToNewPatch: create new patch based on an existing patch, add stuff to created patch;
+		//		- recipient or base patch is given using index or name; if not supplied, new patch will be based on base/Patch[0];
+		//      - patches are only created is area is larger than a minimum (minPatchArea);
+		//      - new areas are proportional to existing patches;
+		//  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
+		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
+		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches affected by new patch
+		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches affected by new patch
+		//.AreaNewPatch: the relative area (fraction) of new patches (0-1)
+		//.PatchName: the name(s) of the patch(es) being created
+		//.Water: amount of water to add per layer (mm), not handled here
+		//.Urea: amount of urea to add per layer (kgN/ha)
+		//.NH4: amount of ammonium to add per layer (kgN/ha)
+		//.NO3: amount of nitrate to add per layer (kgN/ha)
+		//.POX: amount of POx to add per layer (kgP/ha), not handled here
+		//.SO4: amount of SO4 to add per layer (kgS/ha), not handled here
+		//.AshAlk: ash amount to add per layer (mol/ha), not handled here
+		//.FOM: fresh organic matter to add, per fom pool
+		//   .name: name of given pool being altered
+		//   .type: type of the given pool being altered (not used here)
+		//   .Pool[]: info about FOM pools being added
+		//      .type: type of the given pool being altered (not used here)
+		//      .type: type of the given pool being altered (not used here)
+		//      .C: amount of carbon in given pool to add per layer (kgC/ha)
+		//      .N: amount of nitrogen in given pool to add per layer (kgN/ha)
+		//      .P: amount of phosphorus (kgC/ha), not handled here
+		//      .S: amount of sulphur (kgC/ha), not handled here
+		//      .AshAlk: amount of alkaline ash (kg/ha), not handled here
+
+
 		// check that required data is supplied
 		bool isDataOK = true;
 
@@ -1164,7 +1336,7 @@ public partial class SoilNitrogen
 				writeMessage(" Command to add patch did not supply a valid patch to be used as base for the new one. Command will be ignored.");
 				isDataOK = false;
 			}
-			else if (PatchtoAdd.AreaFraction <= 0.0)
+			else if (PatchtoAdd.AreaNewPatch <= 0.0)
 			{
 				writeMessage(" Command to add patch did not supply a valid area fraction for the new patch. Command will be ignored.");
 				isDataOK = false;
@@ -1180,13 +1352,21 @@ public partial class SoilNitrogen
 		}
 		else if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower())
 		{
-			if (PatchtoAdd.AreaFraction <= 0.0)
+			if (PatchtoAdd.AreaNewPatch <= 0.0)
 			{
 				writeMessage(" Command to add patch did not supply a valid area fraction for the new patch. Command will be ignored.");
 				isDataOK = false;
 			}
 		}
-		//else {}  // assume '', thus no factors are actually required
+		else if ((PatchtoAdd.DepositionType.ToLower() == "ToAllPaddock".ToLower()) || (PatchtoAdd.DepositionType == ""))
+		{
+			// assume stuff is added homogeneously and with no patch creation, thus no factors are actually required
+		}
+		else
+		{
+			writeMessage(" Command to add patch did not supply a valid DepositionType. Command will be ignored.");
+			isDataOK = false;
+		}
 
 		if (isDataOK)
 		{
@@ -1206,7 +1386,7 @@ public partial class SoilNitrogen
 				AddStuffToPatches(PatchesToAddStuff, PatchtoAdd);
 			}
 			else
-			{  // add urine to all existing patches, no new patch will be created
+			{  // add stuff to all existing patches, no new patch will be created
 				// 1. create the list of patches receiving stuff (all)
 				PatchesToAddStuff = new List<int>();
 				for (int k = 0; k < Patch.Count; k++)

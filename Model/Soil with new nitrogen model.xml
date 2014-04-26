@@ -451,8 +451,36 @@
     <WarningNegativeThreshold description="Threshold for raising a warning due to small negative values"> -0.0000000001 </WarningNegativeThreshold>
     <FatalNegativeThreshold description="Threshold for a fatal error due to negative values (loss of mass balance)"> -0.0000001 </FatalNegativeThreshold>
 
-    <NPartitionApproach description="The approach to use when partitioning dltN amongst patches"> BasedOnLayerConcentration </NPartitionApproach>
+    <!--  -  Parameters for setting/handling SoilCN patches  ................................................................................... -->
     <MininumRelativeAreaCNPatch description="Minimum allowable relative area for a CNpatch (0-1)"> 0.000001 </MininumRelativeAreaCNPatch>
+    <NPartitionApproach description="Approach to use when partitioning dltN amongst patches"> BasedOnLayerConcentration </NPartitionApproach>
+    <AutoAmalgamatePatches description="whether auto amalgamation of CN patches is allowed (yes/no)"> no </AutoAmalgamatePatches>
+    <!-- Merging patches - Relative differences between two patches below which they can be considered equal  -->
+    <relativeDiff_TotalOrgC description="Relative difference in total organic carbon (0-1)"> 0.02 </relativeDiff_TotalOrgC>
+    <relativeDiff_TotalOrgN description="Relative difference in total organic nitrogen (0-1)"> 0.02 </relativeDiff_TotalOrgN>
+    <relativeDiff_TotalBiomC description="Relative difference in total organic nitrogen (0-1)"> 0.02 </relativeDiff_TotalBiomC>
+    <relativeDiff_TotalUrea description="Relative difference in total urea N amount (0-1)"> 0.02 </relativeDiff_TotalUrea>
+    <relativeDiff_TotalNH4 description="Relative difference in total NH4 N amount (0-1)"> 0.02 </relativeDiff_TotalNH4>
+    <relativeDiff_TotalNO3 description="Relative difference in total NO3 N amount (0-1)"> 0.02 </relativeDiff_TotalNO3>
+    <relativeDiff_LayerBiomC description="Relative difference in urea N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerBiomC>
+    <relativeDiff_LayerUrea description="Relative difference in urea N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerUrea>
+    <relativeDiff_LayerNH4 description="Relative difference in NH4 N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerNH4>
+    <relativeDiff_LayerNO3 description="Relative difference in NO3 N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerNO3>
+
+    <absoluteDiff_TotalOrgC description="Absolute difference in total organic carbon (kg/ha)"> 500.0 </absoluteDiff_TotalOrgC>
+    <absoluteDiff_TotalOrgN description="Absolute difference in total organic nitrogen (kg/ha)"> 50.0 </absoluteDiff_TotalOrgN>
+    <absoluteDiff_TotalBiomC description="Absolute difference in total organic nitrogen (kg/ha)"> 50.0 </absoluteDiff_TotalBiomC>
+    <absoluteDiff_TotalUrea description="Absolute difference in total urea N amount (kg/ha)"> 2.0 </absoluteDiff_TotalUrea>
+    <absoluteDiff_TotalNH4 description="Absolute difference in total NH4 N amount (kg/ha)"> 5.0 </absoluteDiff_TotalNH4>
+    <absoluteDiff_TotalNO3 description="Absolute difference in total NO3 N amount (kg/ha)"> 5.0 </absoluteDiff_TotalNO3>
+    <absoluteDiff_LayerBiomC description="Absolute difference in urea N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerBiomC>
+    <absoluteDiff_LayerUrea description="Absolute difference in urea N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerUrea>
+    <absoluteDiff_LayerNH4 description="Absolute difference in NH4 N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerNH4>
+    <absoluteDiff_LayerNO3 description="Absolute difference in NO3 N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerNO3>
+
+    <DepthToTestByLayer description="Depth to consider for tests by layer, if -ve soil depth is used (mm)"> -99 </DepthToTestByLayer>
+    <DiffAdjustFactor description="factor to adjust the tests between patches other than base (0-1)"> 0.5 </DiffAdjustFactor>
+    <!-- Note: DiffAdjustFactor will correct all the thresholds given above, as a multiplier (1.0 equals no change) -->
 
     <!--  -  Parameters for setting soil organic matter  ....................................................................................... -->
     <MBiomassCNr description="C:N ratio of microbes ()"> 8.0 </MBiomassCNr>
@@ -664,7 +692,7 @@
       <double>0.7</double>
     </swf_Hydrol_y>
 
-    <!-- Parameters for nitrification -->
+    <!--  -  Parameters for nitrification  ..................................................................................................... -->
     <nitrification_pot units="ppm" description="Soil Nitrification potential (ug NH4/g soil)"> 40.0 </nitrification_pot>
     <nh4_at_half_pot units="ppm" description="NH4 concentration at half potential nitrification (Michaelis-Menten kinetics)"> 90.0 </nh4_at_half_pot>
     <n2oLossFactor description="Fraction of nitrification lost as denitrification"> 0.0 </n2oLossFactor>

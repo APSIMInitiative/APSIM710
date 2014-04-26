@@ -17,7 +17,7 @@ public partial class SoilNitrogen
 	/// Handles the addition of new CNPatches
 	/// </summary>
 	/// <param name="PatchtoAdd">Patch data</param>
-	private void AddNewCNPatch(AddSoilCNPatchType PatchtoAdd)
+	private void AddNewCNPatch(AddSoilCNPatchwithFOMType PatchtoAdd)
 	{
 		// Data passed from OnAddSoilCNPatch event:
 		//.Sender: the name of the module that raised this event
@@ -31,25 +31,33 @@ public partial class SoilNitrogen
 		//      - new areas are proportional to existing patches;
 		//  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
 		//		(new patches are created only if their area is larger than a minimum (minPatchArea))
-		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches to which urine will be added
-		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches to which urine will be added
-		//.AreaFraction: the relative area of the patch (0-1)
+		//.AffectedPatches_id (AffectedPatchesByIndex): the index of the existing patches affected by new patch
+		//.AffectedPatches_nm (AffectedPatchesByName): the name of the existing patches affected by new patch
+		//.AreaNewPatch: the relative area (fraction) of new patches (0-1)
 		//.PatchName: the name(s) of the patch(es) being created
+		//.Water: amount of water to add per layer (mm), not handled here
 		//.Urea: amount of urea to add per layer (kgN/ha)
 		//.NH4: amount of ammonium to add per layer (kgN/ha)
 		//.NO3: amount of nitrate to add per layer (kgN/ha)
-		//.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  - if present, the entry for pools will be ignored
-		//.FOM_C_pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
-		//.FOM_C_pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
-		//.FOM_C_pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
-		//.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
+		//.POX: amount of POx to add per layer (kgP/ha), not handled here
+		//.SO4: amount of SO4 to add per layer (kgS/ha), not handled here
+		//.AshAlk: ash amount to add per layer (mol/ha), not handled here
+		//.FOM: fresh organic matter to add, per fom pool
+		//   .name: name of given pool being altered
+		//   .type: type of the given pool being altered (not used here)
+		//   .Pool[]: info about FOM pools being added
+		//      .type: type of the given pool being altered (not used here)
+		//      .type: type of the given pool being altered (not used here)
+		//      .C: amount of carbon in given pool to add per layer (kgC/ha)
+		//      .N: amount of nitrogen in given pool to add per layer (kgN/ha)
+		//      .P: amount of phosphorus (kgC/ha), not handled here
+		//      .S: amount of sulphur (kgC/ha), not handled here
+		//      .AshAlk: amount of alkaline ash (kg/ha), not handled here
 
 
 		List<int> idPatchesJustAdded = new List<int>();	// list of IDs of patches created (exclude patches that would be too small)
 		List<int> idPatchesToDelete = new List<int>();	//list of IDs of existing patches that became too small and need to be deleted
 		List<int> idPatchesAffected;					//list of IDs of patches affected by new addition
-
-
 
 		// 1. get the list of id's of patches which are affected by this addition, and the area affected
 		double AreaAffected = 0;
@@ -72,18 +80,18 @@ public partial class SoilNitrogen
 		}
 
 		// check that total area of affected patches is larger than new patch area
-		if (AreaAffected < PatchtoAdd.AreaFraction)
+		if (AreaAffected < PatchtoAdd.AreaNewPatch)
 		{
 			// Existing area is smaller than new patch area, cannot continue
 			writeMessage(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
-							   + ") is smaller than area of new patch(" + PatchtoAdd.AreaFraction.ToString("#0.00#") + "). Command will be ignored");
+							   + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command will be ignored");
 		}
 		else
 		{  // check the area for each patch
 			for (int i = 0; i < idPatchesAffected.Count; i++)
 			{
 				double OldPatch_OldArea = Patch[idPatchesAffected[i]].RelativeArea;
-				double NewPatch_NewArea = PatchtoAdd.AreaFraction * (OldPatch_OldArea / AreaAffected);
+				double NewPatch_NewArea = PatchtoAdd.AreaNewPatch * (OldPatch_OldArea / AreaAffected);
 				double OldPatch_NewArea = OldPatch_OldArea - NewPatch_NewArea;
 				if (NewPatch_NewArea < MinimumPatchArea)
 				{  // area to create is too small, patch will not be created
@@ -106,9 +114,9 @@ public partial class SoilNitrogen
 					// create new patch based on old one - the original one will be deleted later
 					ClonePatch(idPatchesAffected[i]);
 					int k = Patch.Count - 1;
-					if (PatchtoAdd.AreaFraction > 0)
+					if (PatchtoAdd.AreaNewPatch > 0)
 					{  // a name was supplied
-						Patch[k].PatchName = PatchtoAdd.AreaFraction + "_" + i.ToString();
+						Patch[k].PatchName = PatchtoAdd.AreaNewPatch + "_" + i.ToString();
 					}
 					else
 					{  // use default naming
@@ -125,7 +133,7 @@ public partial class SoilNitrogen
 					Patch[k].RelativeArea = NewPatch_NewArea;
 					if (PatchtoAdd.PatchName.Length > 0)
 					{  // a name was supplied
-						Patch[k].PatchName = PatchtoAdd.AreaFraction + "_" + i.ToString();
+						Patch[k].PatchName = PatchtoAdd.AreaNewPatch + "_" + i.ToString();
 					}
 					else
 					{  // use default naming
@@ -236,6 +244,10 @@ public partial class SoilNitrogen
 	/// <returns>TRUE if patches are similar enough, FALSE otherwise</returns>
 	private bool PatchesAreEqual(int k, int j)
 	{
+		double deltaValue = 0.0;
+		double TotalValueBase = 0.0;
+		int TestedCount = 0;
+		int AgreedCount = 0;
 		bool Result = false;
 		// go through a series of criteria to evaluate whether the two patches can be considered equal
 		if ((Math.Abs(Patch[k].carbon_tot[0] - Patch[j].carbon_tot[0]) < epsilon) &&
@@ -248,7 +260,81 @@ public partial class SoilNitrogen
 			Result = true;
 		}
 
+		// test Total C
+		deltaValue = Math.Abs(SumDoubleArray(Patch[k].carbon_tot) - SumDoubleArray(Patch[j].carbon_tot));
+		TotalValueBase = Math.Abs(SumDoubleArray(Patch[k].carbon_tot));
+		TestedCount += 1;
+		AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+		// test Total N
+		deltaValue = Math.Abs(SumDoubleArray(Patch[k].nit_tot) - SumDoubleArray(Patch[j].nit_tot));
+		TotalValueBase = Math.Abs(SumDoubleArray(Patch[k].nit_tot));
+		TestedCount += 1;
+		AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+		// test M. Biomass C
+		deltaValue = Math.Abs(SumDoubleArray(Patch[k].biom_c) - SumDoubleArray(Patch[j].biom_c));
+		TotalValueBase = Math.Abs(SumDoubleArray(Patch[k].biom_c));
+		TestedCount += 1;
+		AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+		// test Total Urea
+		deltaValue = Math.Abs(SumDoubleArray(Patch[k].urea) - SumDoubleArray(Patch[j].urea));
+		TotalValueBase = Math.Abs(SumDoubleArray(Patch[k].urea));
+		TestedCount += 1;
+		AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+		// test Total NH4
+		deltaValue = Math.Abs(SumDoubleArray(Patch[k].nh4) - SumDoubleArray(Patch[j].nh4));
+		TotalValueBase = Math.Abs(SumDoubleArray(Patch[k].nh4));
+		TestedCount += 1;
+		AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+		// test Total NO3
+		deltaValue = Math.Abs(SumDoubleArray(Patch[k].no3) - SumDoubleArray(Patch[j].no3));
+		TotalValueBase = Math.Abs(SumDoubleArray(Patch[k].no3));
+		TestedCount += 1;
+		AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+		// tests by layer
+		for (int layer = 0; layer < dlayer.Length; layer++)
+		{
+			// test M. biomass
+			deltaValue = Math.Abs(Patch[k].biom_c[layer] - Patch[j].biom_c[layer]);
+			TotalValueBase = Patch[k].biom_c[layer];
+			TestedCount += 1;
+			AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+			// test urea
+			deltaValue = Math.Abs(Patch[k].urea[layer] - Patch[j].urea[layer]);
+			TotalValueBase = Patch[k].urea[layer];
+			TestedCount += 1;
+			AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+			// test NH4
+			deltaValue = Math.Abs(Patch[k].nh4[layer] - Patch[j].nh4[layer]);
+			TotalValueBase = Patch[k].nh4[layer];
+			TestedCount += 1;
+			AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+
+			// test NO3
+			deltaValue = Math.Abs(Patch[k].no3[layer] - Patch[j].no3[layer]);
+			TotalValueBase = Patch[k].no3[layer];
+			TestedCount += 1;
+			AgreedCount += TestDelta(deltaValue, TotalValueBase, 1.0);
+		}
 		return Result;
+	}
+
+	private int TestDelta(double deltaValue, double TotalValueBase, double DiffFactor)
+	{
+		int result = 0;
+		if ((deltaValue / TotalValueBase <= epsilon) || (deltaValue <= DiffFactor + epsilon))
+		{
+			// the values of delta is small enough
+			result = 1;
+		}
+		return result;
 	}
 
 	/// <summary>
@@ -256,18 +342,17 @@ public partial class SoilNitrogen
 	/// </summary>
 	/// <param name="PatchesToAdd">The list of patches to which the stuff will be added</param>
 	/// <param name="StuffToAdd">The values of the variables to add (supplied as deltas)</param>
-	private void AddStuffToPatches(List<int> PatchesToAdd, AddSoilCNPatchType StuffToAdd)
+	private void AddStuffToPatches(List<int> PatchesToAdd, AddSoilCNPatchwithFOMType StuffToAdd)
 	{
-		// Data passed from OnAddSoilCNPatch event - these are all considered deltas:
+		// Relevant data passed from OnAddSoilCNPatch event - these are all considered deltas:
 		//.Urea: amount of urea to add per layer (kgN/ha)
-		//.Urea: amount of urea to add (per layer) - Do we need other N forms?
 		//.NH4: amount of ammonium to add per layer (kgN/ha)
 		//.NO3: amount of nitrate to add per layer (kgN/ha)
-		//.FOM_C: amount of carbon in fom (all pools) to add per layer (kgC/ha)  -  If present, the pools will be ignored
-		//.FOM_C_Pool1: amount of carbon in fom_pool1 to add per layer (kgC/ha)
-		//.FOM_C_Pool2: amount of carbon in fom_pool2 to add per layer (kgC/ha)
-		//.FOM_C_Pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
-		//.FOM_N: amount of nitrogen in fom to add per layer (kgN/ha)
+		//.FOM: fresh organic matter to add, per fom pool
+		//   .type: type of the given pool being altered (not used here yet)
+		//   .Pool[]: info about FOM pools being added
+		//      .C: amount of carbon in given pool to add per layer (kgC/ha)
+		//      .N: amount of nitrogen in given pool to add per layer (kgN/ha)
 
 		for (int i = PatchesToAdd.Count - 1; i >= 0; i--)
 		{
@@ -277,26 +362,31 @@ public partial class SoilNitrogen
 				Patch[PatchesToAdd[i]].dlt_nh4 = StuffToAdd.NH4;
 			if ((StuffToAdd.NO3 != null) && SumDoubleArray(StuffToAdd.NO3) > epsilon)
 				Patch[PatchesToAdd[i]].dlt_no3 = StuffToAdd.NO3;
-			//if ((StuffToAdd.FOM_C != null) && SumDoubleArray(StuffToAdd.FOM_C) > epsilon)
-			//{
-			//    Patch[PatchesToAdd[i]].dlt_fom_c[0] = StuffToAdd.FOM_C;
-			//    Patch[PatchesToAdd[i]].dlt_fom_c[1] = StuffToAdd.FOM_C;
-			//    Patch[PatchesToAdd[i]].dlt_fom_c[2] = StuffToAdd.FOM_C;
-			//}
-			//else
-			//{
-			//    if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C_pool1.Sum() > epsilon))
-			//        Patch[PatchesToAdd[i]].dlt_fom_c[0] = StuffToAdd.FOM_C_pool1;
-			//    if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C_pool2.Sum() > epsilon))
-			//        Patch[PatchesToAdd[i]].dlt_fom_c[1] = StuffToAdd.FOM_C_pool2;
-			//    if ((StuffToAdd.FOM_C != null) && (StuffToAdd.FOM_C_pool3.Sum() > epsilon))
-			//        Patch[PatchesToAdd[i]].dlt_fom_c[2] = StuffToAdd.FOM_C_pool3;
-			//}
-
-			//if ((StuffToAdd.FOM_N != null) && (StuffToAdd.FOM_N.Sum() > epsilon))
-				//Patch[PatchesToAdd[i]].dlt_fom_n = StuffToAdd.FOM_N;
+			if ((StuffToAdd.FOM != null) && (StuffToAdd.FOM.Pool != null))
+			{
+				bool SomethingAdded = false;
+				double[][] CValues = new double[3][];
+				double[][] NValues = new double[3][];
+				for (int pool = 0; pool < StuffToAdd.FOM.Pool.Length; pool++)
+				{
+					if ((StuffToAdd.FOM.Pool[pool].C != null) && (SumDoubleArray(StuffToAdd.FOM.Pool[pool].C) > epsilon))
+					{
+						CValues[pool] = StuffToAdd.FOM.Pool[pool].C;
+						SomethingAdded = true;
+					}
+					if ((StuffToAdd.FOM.Pool[pool].N != null) && (SumDoubleArray(StuffToAdd.FOM.Pool[pool].N) > epsilon))
+					{
+						NValues[pool] = StuffToAdd.FOM.Pool[pool].N;
+						SomethingAdded = true;
+					}
+				}
+				if (SomethingAdded)
+				{
+					Patch[PatchesToAdd[i]].dlt_fom_c = CValues;
+					Patch[PatchesToAdd[i]].dlt_fom_n = NValues;
+				}
+			}
 		}
-
 	}
 
 	/// <summary>
