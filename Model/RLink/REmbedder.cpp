@@ -104,7 +104,8 @@ extern "C" bool DLLEXPORT EmbeddedR_Start(void *handle, const char *R_Home, cons
 
    try {
      ptrR->parseEval("library(\"methods\")");
-     (*ptrR)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
+     (*ptrR)["apsim"] = Rf_eval( Rf_lang2( GET_MODULE_SYM, _rcpp_module_boot_apsim() ), R_GlobalEnv ); // Workaround
+     //(*ptrR)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
    } catch (std::exception& ex) {
         std::cerr << "R Exception: " << ex.what() << std::endl; std::cerr.flush();
         std::string msg = ptrR->parseEval("geterrmessage()");
