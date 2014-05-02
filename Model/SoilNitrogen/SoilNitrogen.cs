@@ -214,7 +214,7 @@ public partial class SoilNitrogen
 			convFactor[layer] = MathUtility.Divide(100.0, SoilDensity[layer] * dlayer[layer], 0.0);
 
 		// Check parameters for patches
-		NPartitionApproach = NPartitionApproach.Trim();
+		PatchNPartitionApproach = PatchNPartitionApproach.Trim();
 	}
 
 	/// <summary>
@@ -1056,7 +1056,7 @@ public partial class SoilNitrogen
 			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
 			{
 				// the values come from a module that requires partition
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", NPartitionApproach.ToLower());
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", PatchNPartitionApproach.ToLower());
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_urea = newDelta[k];
 			}
@@ -1074,7 +1074,7 @@ public partial class SoilNitrogen
 			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
 			{
 				// the values come from a module that requires partition
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", NPartitionApproach.ToLower());
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", PatchNPartitionApproach.ToLower());
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_nh4 = newDelta[k];
 			}
@@ -1092,7 +1092,7 @@ public partial class SoilNitrogen
 			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
 			{
 				// the values come from a module that requires partition
-				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", NPartitionApproach.ToLower());
+				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", PatchNPartitionApproach.ToLower());
 				for (int k = 0; k < Patch.Count; k++)
 					Patch[k].dlt_no3 = newDelta[k];
 			}

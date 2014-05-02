@@ -1015,7 +1015,20 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("")]
 	[Description("Approach used for partitioning N between patches")]
-	public string NPartitionApproach;
+	public string NPartitionApproach
+	{
+		get { return PatchNPartitionApproach; }
+		set { PatchNPartitionApproach = value; }
+	}
+
+	/// <summary>
+	/// Layer thickness to consider when N partiton is BasedOnSoilConcentration (mm)
+	/// </summary>
+	[Param(IsOptional = true)]
+	[Output]
+	[Units("mm")]
+	[Description("Layer thickness to use when N partiton is BasedOnSoilConcentration")]
+	public double LayerNPartition = -99;
 
 	/// <summary>
 	/// Minimum relative area (fraction of paddock) for any patch
@@ -1029,6 +1042,7 @@ public partial class SoilNitrogen
 		get { return MinimumPatchArea; }
 		set { MinimumPatchArea = value; }
 	}
+
 	#endregion
 
 	#region Soil physics data
@@ -2600,7 +2614,7 @@ public partial class SoilNitrogen
 
 	#endregion
 
-	#region Outputs related to internal patches
+	#region Outputs related to internal patches    * * * * * * * * * * * * * * 
 
 	#region General variables
 
@@ -3124,6 +3138,10 @@ public partial class SoilNitrogen
 				for (int layer = 0; layer < nLayers; layer++)
 					Result.Patch[k].Value[layer] = Patch[k].urea[layer];
 			}
+
+			if (Patch.Count > 1)
+				nLayers += 0;
+
 			return Result;
 		}
 	}
@@ -3794,7 +3812,7 @@ public partial class SoilNitrogen
 
 	#endregion
 
-	#endregion
+	#endregion outputs from patches      * * * * * * * * * * * * * * * * * * 
 
 	#endregion  outputs
 
@@ -4076,6 +4094,11 @@ public partial class SoilNitrogen
 	/// Minimum relative area (fraction of paddock) for any patch
 	/// </summary>
 	private double MinimumPatchArea = 1.0;
+
+	/// <summary>
+	/// The approach used for partitioning the N between patches
+	/// </summary>
+	private string PatchNPartitionApproach;
 
 	#endregion
 

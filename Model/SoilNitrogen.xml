@@ -61,8 +61,13 @@
 
       <!--  -  Parameters for setting/handling SoilCN patches  ................................................................................... -->
       <MininumRelativeAreaCNPatch description="Minimum allowable relative area for a CNpatch (0-1)"> 0.000001 </MininumRelativeAreaCNPatch>
-      <NPartitionApproach description="Approach to use when partitioning dltN amongst patches"> BasedOnLayerConcentration </NPartitionApproach>
-      <AutoAmalgamatePatches description="whether auto amalgamation of CN patches is allowed (yes/no)"> no </AutoAmalgamatePatches>
+      <NPartitionApproach description="Approach to use when partitioning dltN amongst patches"> BasedOnConcentrationAndDelta </NPartitionApproach>
+      <!-- Options for partitioning: BasedOnLayerConcentration, BasedOnSoilConcentration, BasedOnConcentrationAndDelta  -->
+      <LayerNPartition description="Layer thickness to consider if N partition between patches is BasedOnSoilConcentration (mm)"> -99 </LayerNPartition>
+      <!-- If a negative number is given then the whole soil, from a given layer to the surface, will be used -->
+      
+      <!-- Options for partitioning: BasedOnLayerConcentration, BasedOnSoilConcentration, BasedOnConcentrationAndDelta  -->
+      <AutoAmalgamatePatches description="Whether auto amalgamation of CN patches is allowed (yes/no)"> no </AutoAmalgamatePatches>
       <!-- Merging patches - Relative differences between two patches below which they can be considered equal  -->
       <relativeDiff_TotalOrgC description="Relative difference in total organic carbon (0-1)"> 0.02 </relativeDiff_TotalOrgC>
       <relativeDiff_TotalOrgN description="Relative difference in total organic nitrogen (0-1)"> 0.02 </relativeDiff_TotalOrgN>
@@ -74,7 +79,6 @@
       <relativeDiff_LayerUrea description="Relative difference in urea N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerUrea>
       <relativeDiff_LayerNH4 description="Relative difference in NH4 N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerNH4>
       <relativeDiff_LayerNO3 description="Relative difference in NO3 N amount at any layer (0-1)"> 0.02 </relativeDiff_LayerNO3>
-
       <absoluteDiff_TotalOrgC description="Absolute difference in total organic carbon (kg/ha)"> 500.0 </absoluteDiff_TotalOrgC>
       <absoluteDiff_TotalOrgN description="Absolute difference in total organic nitrogen (kg/ha)"> 50.0 </absoluteDiff_TotalOrgN>
       <absoluteDiff_TotalBiomC description="Absolute difference in total organic nitrogen (kg/ha)"> 50.0 </absoluteDiff_TotalBiomC>
@@ -85,13 +89,12 @@
       <absoluteDiff_LayerUrea description="Absolute difference in urea N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerUrea>
       <absoluteDiff_LayerNH4 description="Absolute difference in NH4 N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerNH4>
       <absoluteDiff_LayerNO3 description="Absolute difference in NO3 N amount at any layer (kg/ha)"> 1.0 </absoluteDiff_LayerNO3>
-
-      <DepthToTestByLayer description="Depth to consider for tests by layer, if -ve soil depth is used (mm)"> -99 </DepthToTestByLayer>
-      <DiffAdjustFactor description="factor to adjust the tests between patches other than base (0-1)"> 0.5 </DiffAdjustFactor>
+      <DepthToTestByLayer description="Depth to consider when testing diffs by layer, if -ve soil depth is used (mm)"> -99 </DepthToTestByLayer>
+      <DiffAdjustFactor description="Factor to adjust the tests between patches other than base (0-1)"> 0.5 </DiffAdjustFactor>
       <!-- Note: DiffAdjustFactor will correct all the thresholds given above, as a multiplier (1.0 equals no change) -->
       
       <!--  -  Parameters for setting soil organic matter  ....................................................................................... -->
-      <MBiomassCNr description="C:N ratio of microbes ()"> 8.0 </MBiomassCNr>
+      <MBiomassCNr description="C:N ratio of microbes"> 8.0 </MBiomassCNr>
       <HumusCNr description="C:N ratio of soil humus"> 12.5 </HumusCNr>
       <MBiomassTurnOverRate description="potential daily rate of soil biomass mineralization (aerobic and anaerobic conditions)">
         <double>0.0081</double>
@@ -141,7 +144,7 @@
       <InitialFOMType description="The FOM type to be used for initialisation">generic</InitialFOMType>
       <InitialFOMAmount description="Total amount of FOM in the soil (kg/ha)">2000</InitialFOMAmount>
       <InitialFOMDepth description="Depth down to which initial FOM will be ditributed (mm)"> -99 </InitialFOMDepth>
-      <!-- If a negative number is given than the soil depth will be used -->
+      <!-- If a negative number is given then the soil depth will be used -->
       <FOMDistributionCoefficient description="Exponent of function used to compute initial distribution of FOM in the soil">3.0</FOMDistributionCoefficient>
       <InitialCNrFOM description="Depth down to which initial FOM will be ditributed (mm)"> 40.0 </InitialCNrFOM>
       <FOMCarbTurnOverRate description="maximum rate constant for decomposition of FPool1 (0-1)">

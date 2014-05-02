@@ -1,0 +1,618 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Sim02-ExplicitPatches
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component "Paddock1-All-LightSoil Results" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component               "Aux-SumOutputs" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                     "AddUrine" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2000
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- Paddock1-All-LightSoil Results Initialisation -------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea_p1() as UreaTotal format 5
+        nh4_p1() as NH4Total format 5
+        no3_p1() as NO3Total format 5
+        surfaceom_n_p1 as SurfaceOM_N format 5
+        fom_n_p1() as FOM_N format 5
+        biom_n_p1() as Biom_N format 5
+        hum_n_p1() as Hum_N format 5
+        PlantN_p1 as PlantTotalN format 5
+        Fertiliser_p1 as FertiliserN format 5
+        dlt_urea_hydrol_p1() as HydrolisedN format 5
+        nitrification_p1() as NitrifiedN format 5
+        dnit_p1() as DenitrifiedN format 5
+        leach_no3_p1 as LeachedNO3 format 5
+        dlt_n_min_res_p1() as NetMineralisedResidue format 5
+        dlt_n_min_tot_p1() as NetMineralisedHumus format 5
+        n2o_atm_p1() as N2Oemissions format 5
+        dlt_n_loss_in_sed_p1 as dltN_sediments format 5
+        PlantNuptake_p1 as PlantNUptake format 5
+        surfaceom_c_p1 as SurfaceOM_C format 5
+        fom_c_p1() as FOM_C format 5
+        biom_c_p1() as Biom_C format 5
+        hum_c_p1() as Hum_C format 5
+        PlantC_p1 as PlantTotalC format 5
+        dlt_res_c_atm_p1 as CO2fromResidues format 5
+        dlt_fom_c_atm_p1() as CO2fromFOM format 5
+        dlt_biom_c_atm_p1() as CO2fromMBiomass format 5
+        dlt_hum_c_atm_p1() as CO2fromHumus format 5
+        dlt_c_loss_in_sed_p1 as dltC_sediments format 5
+        es_p1 as Evaporation format 5
+        sw_uptake_p1() as PlantTranspiration format 5
+        drain_p1 as Drain format 5
+        runoff_p1 as Runoff format 5
+        SoilName_p1 as SoilName
+        ResultName_p1 as ResultName
+        NumPatches
+
+     Output file = Sim02-ExplicitPatches Paddock1-All-LightSoil Results.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('1-jan, 31-dec') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * 200 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 350
+      endif
+     
+     SECTION:- init
+     co2 = 350
+     tav = tav + (0 + 0) / 2
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 350.00000
+
+------- Aux-SumOutputs Initialisation -----------------------------------------
+     Initialising
+        Summing up paddocks:
+         .Paddock1-base-LightSoil, with area: 0.75
+         .Paddock1-patch-LightSoil, with area: 0.25
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        SoilName
+        ResultName
+        PatchCount as NumPatches
+
+     Output file = Sim02-ExplicitPatches Paddock1-base-LightSoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Med-LightSoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8000.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-base-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.075  0.120  0.340  0.520  0.340  1.100  0.762  0.500*******
+          150.-  300.  0.150  0.150  0.350  0.500  0.350  1.050  0.190  0.450*******
+          300.-  600.  0.160  0.160  0.345  0.490  0.345  1.100  0.048  0.400*******
+          600.-  900.  0.150  0.150  0.330  0.480  0.330  1.150  0.000  0.400*******
+          900.- 1200.  0.140  0.140  0.315  0.460  0.315  1.220  0.000  0.400*******
+         1200.- 1500.  0.130  0.130  0.300  0.450  0.300  1.300  0.000  0.400*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      18.00      33.00      33.00      27.00
+          150.-  300.      22.50      30.00      30.00      22.50
+          300.-  600.      48.00      55.50      55.50      43.50
+          600.-  900.      45.00      54.00      54.00      45.00
+          900.- 1200.      42.00      52.50      52.50      43.50
+         1200.- 1500.      39.00      51.00      51.00      45.00
+          ---------------------------------------------------------
+               Totals     214.50     276.00     276.00     226.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-LightSoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56578.3  4526.3  1171.7   146.5   156.2     5.2
+             2      23365.7  1869.3   259.3    32.4   115.7     3.9
+             3      16442.7  1315.4    57.3     7.2    63.5     2.1
+             4       8616.5   689.3     8.5     1.1    34.9     1.2
+             5       3658.2   292.7     1.8     0.2    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112561.1  9004.9  1498.9   187.4   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+     Organising/standardising some N outputs
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        PlantNUptake format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        SoilName
+        ResultName
+        PatchCount as NumPatches
+
+     Output file = Sim02-ExplicitPatches Paddock1-patch-LightSoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- AddUrine Initialisation -----------------------------------------------
+     Operations Schedule
+     ===================
+          10-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=1 (mm), type=urea_n
+          15-Mar  Prepare      'Med-LightSoil nitrogen' incorpfom type = default, amount=5000 00 00 00 00 00, cnr=20 20 20 20 20 20
+
+------- Med-LightSoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8000.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-patch-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.075  0.120  0.340  0.520  0.340  1.100  0.762  0.500*******
+          150.-  300.  0.150  0.150  0.350  0.500  0.350  1.050  0.190  0.450*******
+          300.-  600.  0.160  0.160  0.345  0.490  0.345  1.100  0.048  0.400*******
+          600.-  900.  0.150  0.150  0.330  0.480  0.330  1.150  0.000  0.400*******
+          900.- 1200.  0.140  0.140  0.315  0.460  0.315  1.220  0.000  0.400*******
+         1200.- 1500.  0.130  0.130  0.300  0.450  0.300  1.300  0.000  0.400*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      18.00      33.00      33.00      27.00
+          150.-  300.      22.50      30.00      30.00      22.50
+          300.-  600.      48.00      55.50      55.50      43.50
+          600.-  900.      45.00      54.00      54.00      45.00
+          900.- 1200.      42.00      52.50      52.50      43.50
+         1200.- 1500.      39.00      51.00      51.00      45.00
+          ---------------------------------------------------------
+               Totals     214.50     276.00     276.00     226.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-LightSoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56578.3  4526.3  1171.7   146.5   156.2     5.2
+             2      23365.7  1869.3   259.3    32.4   115.7     3.9
+             3      16442.7  1315.4    57.3     7.2    63.5     2.1
+             4       8616.5   689.3     8.5     1.1    34.9     1.2
+             5       3658.2   292.7     1.8     0.2    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112561.1  9004.9  1498.9   187.4   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+     Organising/standardising some N outputs
+------- Start of simulation  --------------------------------------------------
+10 January 2000(Day of year=10), AddUrine: 
+      Sending apply message to fertiliser
+10 January 2000(Day of year=10), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+15 March 2000(Day of year=75), AddUrine: 
+      Sending incorpfom message to med-lightsoil nitrogen
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+
