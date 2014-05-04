@@ -1,0 +1,1045 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Sim03-WithPatches
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
+   Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+   Component              "AddSoilCNPatch1" = %apsim%\Model\Manager2.dll
+   Component              "AddSoilCNPatch2" = %apsim%\Model\Manager2.dll
+   Component            "MergeSoilCNPatch1" = %apsim%\Model\Manager2.dll
+   Component            "MergeSoilCNPatch2" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component           "OperationsSchedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "HarvestingRule" = %apsim%\Model\Manager.dll
+   Component          "Med-HeavySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-HeavySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+   Component              "AddSoilCNPatch1" = %apsim%\Model\Manager2.dll
+   Component              "AddSoilCNPatch2" = %apsim%\Model\Manager2.dll
+   Component            "MergeSoilCNPatch1" = %apsim%\Model\Manager2.dll
+   Component            "MergeSoilCNPatch2" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2000
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        dlayer format 5
+        urea format 5
+        nh4 format 5
+        no3 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st format 7
+        sw_dep format 5
+        SoilName
+        PatchCount as NumPatches
+
+     Output file = Sim03-WithPatches Paddock1-LightSoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+           5-Jan  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Feb  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Mar  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- HarvestingRule Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
+        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
+     endif
+     END of rules
+     
+
+------- Med-LightSoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8000.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.075  0.120  0.340  0.520  0.340  1.100  0.762  0.500*******
+          150.-  300.  0.150  0.150  0.350  0.500  0.350  1.050  0.190  0.450*******
+          300.-  600.  0.160  0.160  0.345  0.490  0.345  1.100  0.048  0.400*******
+          600.-  900.  0.150  0.150  0.330  0.480  0.330  1.150  0.000  0.400*******
+          900.- 1200.  0.140  0.140  0.315  0.460  0.315  1.220  0.000  0.400*******
+         1200.- 1500.  0.130  0.130  0.300  0.450  0.300  1.300  0.000  0.400*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      18.00      33.00      33.00      27.00
+          150.-  300.      22.50      30.00      30.00      22.50
+          300.-  600.      48.00      55.50      55.50      43.50
+          600.-  900.      45.00      54.00      54.00      45.00
+          900.- 1200.      42.00      52.50      52.50      43.50
+         1200.- 1500.      39.00      51.00      51.00      45.00
+          ---------------------------------------------------------
+               Totals     214.50     276.00     276.00     226.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-LightSoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56578.3  4526.3  1171.7   146.5   156.2     5.2
+             2      23365.7  1869.3   259.3    32.4   115.7     3.9
+             3      16442.7  1315.4    57.3     7.2    63.5     2.1
+             4       8616.5   689.3     8.5     1.1    34.9     1.2
+             5       3658.2   292.7     1.8     0.2    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112561.1  9004.9  1498.9   187.4   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+------- AddSoilCNPatch1 Initialisation ----------------------------------------
+
+     Addition of CNPatches initialised
+
+------- AddSoilCNPatch2 Initialisation ----------------------------------------
+
+     Addition of CNPatches initialised
+
+------- MergeSoilCNPatch1 Initialisation --------------------------------------
+
+     Merging of CNPatches initialised
+
+------- MergeSoilCNPatch2 Initialisation --------------------------------------
+
+     Merging of CNPatches initialised
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        dlayer format 5
+        urea format 5
+        nh4 format 5
+        no3 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st format 7
+        sw_dep format 5
+        SoilName
+        PatchCount as NumPatches
+
+     Output file = Sim03-WithPatches Paddock2-HeavySoil Results.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- OperationsSchedule Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+           5-Jan  Prepare      wheat sow cultivar = Wakaniu, plants = 400, sowing_depth = 30 (mm), row_spacing = 150, crop_class = plant
+           5-Feb  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          30-Mar  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- HarvestingRule Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if ('wheat' = 'cotton') then
+        if (wheat.ozcot_status > 0) then
+          wheat harvest
+        endif
+     elseif (wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead') then
+        wheat harvest
+        wheat end_crop
+     endif
+     END of rules
+     
+
+------- Med-HeavySoil Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.180  0.230  0.410  0.520  0.410  1.100  0.762  0.300 75.000
+          150.-  300.  0.250  0.250  0.440  0.510  0.440  1.050  0.190  0.250 75.000
+          300.-  600.  0.280  0.280  0.460  0.503  0.460  1.100  0.048  0.200 50.000
+          600.-  900.  0.290  0.290  0.460  0.495  0.460  1.150  0.000  0.190 25.000
+          900.- 1200.  0.295  0.295  0.450  0.483  0.450  1.220  0.000  0.180 25.000
+         1200.- 1500.  0.300  0.300  0.440  0.470  0.440  1.300  0.000  0.200 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50      27.00      27.00      16.50
+          150.-  300.      37.50      28.50      28.50      10.50
+          300.-  600.      84.00      54.00      54.00      12.90
+          600.-  900.      87.00      51.00      51.00      10.50
+          900.- 1200.      88.50      46.50      46.50       9.90
+         1200.- 1500.      90.00      42.00      42.00       9.00
+          ---------------------------------------------------------
+               Totals     421.50     249.00     249.00      69.30
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-HeavySoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56773.6  4541.9   976.4   122.1   156.2     5.2
+             2      23423.3  1873.9   201.7    25.2   115.7     3.9
+             3      16459.8  1316.8    40.2     5.0    63.5     2.1
+             4       8619.9   689.6     5.1     0.6    34.9     1.2
+             5       3658.9   292.7     1.1     0.1    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112835.3  9026.8  1224.7   153.1   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+------- AddSoilCNPatch1 Initialisation ----------------------------------------
+
+     Addition of CNPatches initialised
+
+------- AddSoilCNPatch2 Initialisation ----------------------------------------
+
+     Addition of CNPatches initialised
+
+------- MergeSoilCNPatch1 Initialisation --------------------------------------
+
+     Merging of CNPatches initialised
+
+------- MergeSoilCNPatch2 Initialisation --------------------------------------
+
+     Merging of CNPatches initialised
+------- Start of simulation  --------------------------------------------------
+5 January 2000(Day of year=5), OperationsSchedule: 
+      Sending sow message to wheat
+5 January 2000(Day of year=5), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.120       1.000
+         150.0     0.200          0.150       1.000
+         300.0     0.100          0.160       1.000
+         300.0     0.050          0.150       1.000
+         300.0     0.000          0.140       0.000
+         300.0     0.000          0.130       0.000
+         -----------------------------------------------
+         Extractable SW:   276mm in  1500mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+              5   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+5 January 2000(Day of year=5), OperationsSchedule: 
+      Sending sow message to wheat
+5 January 2000(Day of year=5), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = wakaniu
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.200          0.230       1.000
+         150.0     0.150          0.250       1.000
+         300.0     0.060          0.280       1.000
+         300.0     0.020          0.290       1.000
+         300.0     0.000          0.295       0.000
+         300.0     0.000          0.300       0.000
+         -----------------------------------------------
+         Extractable SW:   249mm in  1500mm total depth ( 17%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+              5   30.0  400.0  150.0   0.0   0.0 wakaniu
+         ------------------------------------------------
+     
+6 January 2000(Day of year=6), wheat: 
+      stage 2.0 germination
+6 January 2000(Day of year=6), wheat: 
+      stage 2.0 germination
+10 January 2000 (Day of year=10), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 1.00, new area = 0.95
+10 January 2000 (Day of year=10), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 1.00, new area = 0.95
+10 January 2000(Day of year=10), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   30.50 (mm)
+10 January 2000(Day of year=10), wheat: 
+      stage 3.0 emergence
+                     biomass =           1.84 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   27.00 (mm)
+11 January 2000(Day of year=11), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.80 (g/m^2)   lai          =   0.095 (m^2/m^2)
+                     stover N conc =     5.82 (%)    extractable sw =   31.20 (mm)
+11 January 2000(Day of year=11), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           2.80 (g/m^2)   lai          =   0.095 (m^2/m^2)
+                     stover N conc =     5.82 (%)    extractable sw =   27.00 (mm)
+15 January 2000 (Day of year=15), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.95, new area = 0.90
+15 January 2000 (Day of year=15), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.95, new area = 0.90
+20 January 2000 (Day of year=20), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.90, new area = 0.85
+20 January 2000 (Day of year=20), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.90, new area = 0.85
+25 January 2000 (Day of year=25), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.85, new area = 0.80
+25 January 2000 (Day of year=25), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.85, new area = 0.80
+30 January 2000 (Day of year=30), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.80, new area = 0.75
+30 January 2000 (Day of year=30), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.80, new area = 0.75
+04 February 2000 (Day of year=35), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.75, new area = 0.70
+04 February 2000 (Day of year=35), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.75, new area = 0.70
+5 February 2000(Day of year=36), OperationsSchedule: 
+      Sending apply message to fertiliser
+5 February 2000(Day of year=36), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+5 February 2000(Day of year=36), OperationsSchedule: 
+      Sending apply message to fertiliser
+5 February 2000(Day of year=36), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+09 February 2000 (Day of year=40), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.70, new area = 0.65
+09 February 2000 (Day of year=40), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.70, new area = 0.65
+14 February 2000 (Day of year=45), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.65, new area = 0.60
+14 February 2000 (Day of year=45), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.65, new area = 0.60
+19 February 2000 (Day of year=50), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.60, new area = 0.55
+19 February 2000 (Day of year=50), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.60, new area = 0.55
+24 February 2000 (Day of year=55), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.55, new area = 0.50
+24 February 2000 (Day of year=55), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.55, new area = 0.50
+30 March 2000(Day of year=90), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 March 2000(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+30 March 2000(Day of year=90), OperationsSchedule: 
+      Sending apply message to fertiliser
+30 March 2000(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 April 2000 (Day of year=106), SoilNitrogen:
+	 merging patch(10) into patch(0). New patch area = 0.55
+15 April 2000 (Day of year=106), SoilNitrogen:
+	 merging patch(10) into patch(0). New patch area = 0.55
+21 April 2000 (Day of year=112), SoilNitrogen:
+	 merging patch(9) into patch(0). New patch area = 0.60
+21 April 2000 (Day of year=112), SoilNitrogen:
+	 merging patch(9) into patch(0). New patch area = 0.60
+27 April 2000 (Day of year=118), SoilNitrogen:
+	 merging patch(8) into patch(0). New patch area = 0.65
+27 April 2000 (Day of year=118), SoilNitrogen:
+	 merging patch(8) into patch(0). New patch area = 0.65
+03 May 2000 (Day of year=124), SoilNitrogen:
+	 merging patch(7) into patch(0). New patch area = 0.70
+03 May 2000 (Day of year=124), SoilNitrogen:
+	 merging patch(7) into patch(0). New patch area = 0.70
+09 May 2000 (Day of year=130), SoilNitrogen:
+	 merging patch(6) into patch(0). New patch area = 0.75
+09 May 2000 (Day of year=130), SoilNitrogen:
+	 merging patch(6) into patch(0). New patch area = 0.75
+15 May 2000 (Day of year=136), SoilNitrogen:
+	 merging patch(5) into patch(0). New patch area = 0.80
+15 May 2000 (Day of year=136), SoilNitrogen:
+	 merging patch(5) into patch(0). New patch area = 0.80
+21 May 2000 (Day of year=142), SoilNitrogen:
+	 merging patch(4) into patch(0). New patch area = 0.85
+21 May 2000 (Day of year=142), SoilNitrogen:
+	 merging patch(4) into patch(0). New patch area = 0.85
+27 May 2000 (Day of year=148), SoilNitrogen:
+	 merging patch(3) into patch(0). New patch area = 0.90
+27 May 2000 (Day of year=148), SoilNitrogen:
+	 merging patch(3) into patch(0). New patch area = 0.90
+02 June 2000 (Day of year=154), SoilNitrogen:
+	 merging patch(2) into patch(0). New patch area = 0.95
+02 June 2000 (Day of year=154), SoilNitrogen:
+	 merging patch(2) into patch(0). New patch area = 0.95
+08 June 2000 (Day of year=160), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 1.00
+08 June 2000 (Day of year=160), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 1.00
+10 August 2000 (Day of year=223), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 1.00, new area = 0.95
+10 August 2000 (Day of year=223), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 1.00, new area = 0.95
+15 August 2000 (Day of year=228), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.95, new area = 0.90
+15 August 2000 (Day of year=228), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.95, new area = 0.90
+20 August 2000 (Day of year=233), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.90, new area = 0.85
+20 August 2000 (Day of year=233), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.90, new area = 0.85
+25 August 2000 (Day of year=238), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.85, new area = 0.80
+25 August 2000 (Day of year=238), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.85, new area = 0.80
+30 August 2000 (Day of year=243), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.80, new area = 0.75
+30 August 2000 (Day of year=243), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.80, new area = 0.75
+04 September 2000 (Day of year=248), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.75, new area = 0.70
+04 September 2000 (Day of year=248), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.75, new area = 0.70
+09 September 2000 (Day of year=253), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.70, new area = 0.65
+09 September 2000 (Day of year=253), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.70, new area = 0.65
+14 September 2000 (Day of year=258), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.65, new area = 0.60
+14 September 2000 (Day of year=258), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.65, new area = 0.60
+17 September 2000(Day of year=261), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         819.18 (g/m^2)   lai          =   8.149 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =  183.86 (mm)
+17 September 2000(Day of year=261), wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         757.17 (g/m^2)   lai          =   7.644 (m^2/m^2)
+                     stover N conc =     1.80 (%)    extractable sw =  190.78 (mm)
+19 September 2000 (Day of year=263), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.60, new area = 0.55
+19 September 2000 (Day of year=263), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.60, new area = 0.55
+24 September 2000 (Day of year=268), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.55, new area = 0.50
+24 September 2000 (Day of year=268), SoilNitrogen:
+	 create new patch, with area = 0.05, based on existing patch(0) - Old area = 0.55, new area = 0.50
+29 October 2000(Day of year=303), wheat: 
+      stage 6.0 flowering
+                     biomass =        1470.55 (g/m^2)   lai          =   5.745 (m^2/m^2)
+                     stover N conc =     0.96 (%)    extractable sw =  182.70 (mm)
+29 October 2000(Day of year=303), wheat: 
+      stage 6.0 flowering
+                     biomass =        1398.23 (g/m^2)   lai          =   5.191 (m^2/m^2)
+                     stover N conc =     0.93 (%)    extractable sw =  186.68 (mm)
+6 November 2000(Day of year=311), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1641.25 (g/m^2)   lai          =   5.381 (m^2/m^2)
+                     stover N conc =     0.60 (%)    extractable sw =  182.49 (mm)
+6 November 2000(Day of year=311), wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1565.41 (g/m^2)   lai          =   4.845 (m^2/m^2)
+                     stover N conc =     0.56 (%)    extractable sw =  185.84 (mm)
+8 December 2000(Day of year=343), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1735.15 (g/m^2)   lai          =   4.482 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  182.09 (mm)
+8 December 2000(Day of year=343), wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1644.89 (g/m^2)   lai          =   4.069 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  184.75 (mm)
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 0.55
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(2) into patch(0). New patch area = 0.60
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(3) into patch(0). New patch area = 0.65
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(4) into patch(0). New patch area = 0.70
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(5) into patch(0). New patch area = 0.75
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(6) into patch(0). New patch area = 0.80
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(7) into patch(0). New patch area = 0.85
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(8) into patch(0). New patch area = 0.90
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(9) into patch(0). New patch area = 0.95
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(10) into patch(0). New patch area = 1.00
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 0.55
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(2) into patch(0). New patch area = 0.60
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(3) into patch(0). New patch area = 0.65
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(4) into patch(0). New patch area = 0.70
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(5) into patch(0). New patch area = 0.75
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(6) into patch(0). New patch area = 0.80
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(7) into patch(0). New patch area = 0.85
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(8) into patch(0). New patch area = 0.90
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(9) into patch(0). New patch area = 0.95
+10 December 2000 (Day of year=345), SoilNitrogen:
+	 merging patch(10) into patch(0). New patch area = 1.00
+10 December 2000(Day of year=345), wheat: 
+      stage 9.0 maturity
+                     biomass =        1735.31 (g/m^2)   lai          =   4.387 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  182.07 (mm)
+10 December 2000(Day of year=345), wheat: 
+      stage 9.0 maturity
+                     biomass =        1645.07 (g/m^2)   lai          =   3.988 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  184.67 (mm)
+11 December 2000(Day of year=346), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1735.31 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.29 (%)    extractable sw =  179.56 (mm)
+11 December 2000(Day of year=346), wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1645.07 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.28 (%)    extractable sw =  182.13 (mm)
+11 December 2000(Day of year=346), HarvestingRule: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  303                           stover (kg/ha)         =    11713.3
+      maturity day           =  345                           grain yield (kg/ha)    =     5639.8
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     6445.4
+      grain wt (g)           =    0.020                       grains/m^2             =    28859.7
+      grains/plant           =   72.1                         maximum lai            =      8.179
+      total above ground biomass (kg/ha)    =    17353.1
+      live above ground biomass (kg/ha)     =    17353.1
+      green above ground biomass (kg/ha)    =    12905.7
+      senesced above ground biomass (kg/ha) =     4447.4
+      number of leaves       =     42.2
+      DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.33
+      Stover C:N ratio       =   108.84                       Root C:N ratio         =      40.64
+      grain N percent        =     1.69                       total N content (kg/ha)=     138.18
+      grain N uptake (kg/ha) =    95.13                       senesced N content (kg/ha)=   22.24
+      green N content (kg/ha)=    20.81
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.738        0.738
+         floral_initiation    to flowering               0.000        0.000        0.227        0.227
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.865        0.865
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =               11713.3                     0.0
+                          N  (kg/ha) =                  43.05                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5639.8                     0.0
+                          N  (kg/ha) =                  95.13                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =  179.56 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  3244.0
+                          N  (kg/ha) =                   0.00                   31.93
+     
+11 December 2000(Day of year=346), HarvestingRule: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  303                           stover (kg/ha)         =    11365.2
+      maturity day           =  345                           grain yield (kg/ha)    =     5085.5
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5812.0
+      grain wt (g)           =    0.018                       grains/m^2             =    27615.6
+      grains/plant           =   69.0                         maximum lai            =      7.910
+      total above ground biomass (kg/ha)    =    16450.7
+      live above ground biomass (kg/ha)     =    16450.7
+      green above ground biomass (kg/ha)    =    12334.5
+      senesced above ground biomass (kg/ha) =     4116.2
+      number of leaves       =     42.2
+      DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.31
+      Stover C:N ratio       =   110.51                       Root C:N ratio         =      41.92
+      grain N percent        =     1.68                       total N content (kg/ha)=     126.42
+      grain N uptake (kg/ha) =    85.28                       senesced N content (kg/ha)=   20.58
+      green N content (kg/ha)=    20.56
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.754        0.754
+         floral_initiation    to flowering               0.000        0.000        0.231        0.231
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.883        0.883
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =               11365.2                     0.0
+                          N  (kg/ha) =                  41.14                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5085.5                     0.0
+                          N  (kg/ha) =                  85.28                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.080 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =  182.13 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  3047.0
+                          N  (kg/ha) =                   0.00                   29.08
+     
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+

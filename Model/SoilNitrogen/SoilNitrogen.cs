@@ -215,6 +215,11 @@ public partial class SoilNitrogen
 
 		// Check parameters for patches
 		PatchNPartitionApproach = PatchNPartitionApproach.Trim();
+		if (DepthToTestByLayer <= epsilon)
+			LayerDepthToTestDiffs = dlayer.Length - 1;
+		else
+			LayerDepthToTestDiffs = getCumulativeIndex(DepthToTestByLayer, dlayer);
+		
 	}
 
 	/// <summary>
@@ -579,61 +584,17 @@ public partial class SoilNitrogen
 	[EventHandler(EventName = "post")]
 	public void OnPost()
 	{
-		// Purpose: Check patch status and clean up, if possible
-
-		if (Patch.Count > 100000) // must set this to one later
+		// Check whether patch amalgamation is allowed
+		if ((Patch.Count > 1) && (PatchAmalgamationAllowed))
 		{
-			// we have more than one patch, check whether they are similar enough to be merged
-			int nPatches = Patch.Count;
-
-			// get the list of existing patches, these will be compare to one another and added to the merge list if judged similar enough
-			List<string> ExistingPatches = new List<string>();			// list of patches used a reference, initially all will be used
-			List<List<int>> MergingPatches = new List<List<int>>();		// list of patches to be merged with each patch
-			for (int k = 0; k < nPatches; k++)
+			if ((PatchAmalgamationApproach.ToLower() == "CompareAll".ToLower()) ||
+				(PatchAmalgamationApproach.ToLower() == "CompareBase".ToLower()) ||
+				(PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower()))
 			{
-				ExistingPatches.Add(Patch[k].PatchName);
-				MergingPatches.Add(new List<int>());
-			}
-
-			// go through all patches and check whether they are similar enough
-			for (int k = 0; k < nPatches - 1; k++)	 //  this will go to all but the last patch, as it has no other patch to be compared with
-			{
-				if (ExistingPatches.Contains(Patch[k].PatchName))
-				{
-					// this patch hasn't been selected yet, use it as reference. Compare to all other subsequent patches
-					for (int j = k + 1; j < nPatches; j++)
-						if (PatchesAreEqual(k, j))
-						{ // Patch j is similar enough to patch k;
-							MergingPatches[k].Add(j);		// add patch j to the list being merged into patch k
-							ExistingPatches.RemoveAt(j);	// remove name of patch j from the reference list
-						}
-				}
-				// else {} go to next patch
-			}
-
-			int nPatchesDeleted = Patch.Count - ExistingPatches.Count;
-			writeMessage("  Merging patches that were deemed equal:");
-
-			// do the actual merging (copy values from and deleted merging patches)
-			if (nPatchesDeleted > 0)
-			{  // there are patches that will be merged
-				List<int> PatchesToDelete = new List<int>();
-				for (int k = 0; k < Patch.Count - 1; k++)
-				{
-					if (MergingPatches[k].Count > 0)
-						for (int j = 0; j < MergingPatches[k].Count; j++)
-						{
-							double mFactor = Patch[j].RelativeArea / Patch[k].RelativeArea;
-							CopyValuesFromPatch(k, j, mFactor);
-							PatchesToDelete.Add(j);
-							Console.WriteLine("    - merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
-						}
-				}
-				DeletePatches(PatchesToDelete);
+				CheckPatchAutoAmalgamation();
 			}
 		}
 	}
-	
 
 	/// <summary>
 	/// Performs the soil C and N balance processes, at APSIM timestep.
@@ -1397,6 +1358,30 @@ public partial class SoilNitrogen
 		}
 	}
 
+	/// <summary>
+	/// Passes the list of patches that will be merged into one, as defined by user
+	/// </summary>
+	/// <param name="MergeCNPatch">The list of CNPatches to merge</param>
+	[EventHandler]
+	public void OnMergeSoilCNPatch(MergeSoilCNPatchType MergeCNPatch)
+	{
+		List<int> PatchesToMerge = new List<int>();
+		if (MergeCNPatch.MergeAll)
+		{
+			// all patches will be merged
+			for (int k = 0; k < Patch.Count; k++)
+				PatchesToMerge.Add(k);
+		}
+		else if ((MergeCNPatch.AffectedPatches_id.Length > 1) | (MergeCNPatch.AffectedPatches_nm.Length > 1))
+		{
+			// get the list of patch id's to which stuff will be added
+			PatchesToMerge = CheckPatchIDs(MergeCNPatch.AffectedPatches_id, MergeCNPatch.AffectedPatches_nm);
+		}
+
+		// send the list to merger - all values are copied to first patch in the list, remaining will be deleted
+		if (PatchesToMerge.Count > 0)
+			AmalgamatePatches(PatchesToMerge);
+	}
 	/// <summary>
 	/// Comunicate other components that C amount in the soil has changed
 	/// </summary>

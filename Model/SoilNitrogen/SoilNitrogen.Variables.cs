@@ -1043,6 +1043,215 @@ public partial class SoilNitrogen
 		set { MinimumPatchArea = value; }
 	}
 
+	#region Parameter for amalgamating patches
+
+	/// <summary>
+	/// whether auto amalgamation of CN patches is allowed (yes/no)
+	/// </summary>
+	[Param]
+	[Output]
+	[Units("yes/no")]
+	[Description("whether auto amalgamation of CN patches is allowed")]
+	public string allowPatchAmalgamation
+	{
+		get { return (PatchAmalgamationAllowed) ? "yes" : "no"; }
+		set { PatchAmalgamationAllowed = value.ToLower().StartsWith("yes"); }
+	}
+
+	/// <summary>
+	/// Approach to use when comparing patches for AutoAmalagamation
+	/// </summary>
+	/// <remarks>
+	/// Options:
+	///  - CompareAll: All patches are compared before they are merged
+	///  - CompareBase: All patches are compare to base first, then merged, then compared again
+	///  - CompareMerge: Patches are compare and merged at once if deemed equal, then compare to next
+	/// </remarks>
+	[Param]
+	[Output]
+	public string AutoAmalgamationApproach
+	{
+		get { return PatchAmalgamationApproach; }
+		set { PatchAmalgamationApproach = value.Trim(); }
+	}
+
+	/// <summary>
+	/// Relative difference in total organic carbon (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in total organic carbon")]
+	public double relativeDiff_TotalOrgC;
+
+	/// <summary>
+	/// Relative difference in total organic nitrogen (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in total organic nitrogen")]
+	public double relativeDiff_TotalOrgN;
+
+	/// <summary>
+	/// Relative difference in total organic nitrogen (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in total organic nitrogen")]
+	public double relativeDiff_TotalBiomC;
+
+	/// <summary>
+	/// Relative difference in total urea N amount (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in total urea N amount")]
+	public double relativeDiff_TotalUrea;
+
+	/// <summary>
+	/// Relative difference in total NH4 N amount (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in total NH4 N amount")]
+	public double relativeDiff_TotalNH4;
+
+	/// <summary>
+	/// Relative difference in total NO3 N amount (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in total NO3 N amount")]
+	public double relativeDiff_TotalNO3;
+
+	/// <summary>
+	/// Relative difference in urea N amount at any layer (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in urea N amount at any layer")]
+	public double relativeDiff_LayerBiomC;
+
+	/// <summary>
+	/// Relative difference in urea N amount at any layer (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in urea N amount at any layer")]
+	public double relativeDiff_LayerUrea;
+
+	/// <summary>
+	/// Relative difference in NH4 N amount at any layer (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in NH4 N amount at any layer")]
+	public double relativeDiff_LayerNH4;
+
+	/// <summary>
+	/// Relative difference in NO3 N amount at any layer (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("Relative difference in NO3 N amount at any layer")]
+	public double relativeDiff_LayerNO3;
+
+	/// <summary>
+	/// Absolute difference in total organic carbon (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in total organic carbon")]
+	public double absoluteDiff_TotalOrgC;
+
+	/// <summary>
+	/// Absolute difference in total organic nitrogen (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in total organic nitrogen")]
+	public double absoluteDiff_TotalOrgN;
+
+	/// <summary>
+	/// Absolute difference in total organic nitrogen (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in total organic nitrogen")]
+	public double absoluteDiff_TotalBiomC;
+
+	/// <summary>
+	/// Absolute difference in total urea N amount (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in total urea N amount")]
+	public double absoluteDiff_TotalUrea;
+	/// <summary>
+	/// Absolute difference in total NH4 N amount (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in total NH4 N amount")]
+	public double absoluteDiff_TotalNH4;
+
+	/// <summary>
+	/// Absolute difference in total NO3 N amount (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in total NO3 N amount")]
+	public double absoluteDiff_TotalNO3;
+
+	/// <summary>
+	/// Absolute difference in urea N amount at any layer (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in urea N amount at any layer")]
+	public double absoluteDiff_LayerBiomC;
+
+	/// <summary>
+	/// Absolute difference in urea N amount at any layer (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in urea N amount at any layer")]
+	public double absoluteDiff_LayerUrea;
+
+	/// <summary>
+	/// Absolute difference in NH4 N amount at any layer (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in NH4 N amount at any layer")]
+	public double absoluteDiff_LayerNH4;
+
+	/// <summary>
+	/// Absolute difference in NO3 N amount at any layer (kg/ha)
+	/// </summary>
+	[Param]
+	[Units("kg/ha")]
+	[Description("Absolute difference in NO3 N amount at any layer")]
+	public double absoluteDiff_LayerNO3;
+
+	/// <summary>
+	/// Depth to consider when testing diffs by layer, if -ve soil depth is used (mm)
+	/// </summary>
+	[Param]
+	[Units("mm")]
+	[Description("Depth to consider when testing diffs by layer, if -ve soil depth is used")]
+	public double DepthToTestByLayer;
+
+	/// <summary>
+	/// Factor to adjust the tests between patches other than base (0-1)
+	/// </summary>
+	[Param]
+	[Units("0-1")]
+	[Description("factor to adjust the tests between patches other than base")]
+	public double DiffAdjustFactor;
+
+	#endregion amalgamating patches
+
 	#endregion
 
 	#region Soil physics data
@@ -4090,6 +4299,10 @@ public partial class SoilNitrogen
 	/// </summary>
 	private double[] InhibitionFactor_Nitrification = null;
 
+	#endregion
+
+	#region CNpatch related variables
+
 	/// <summary>
 	/// Minimum relative area (fraction of paddock) for any patch
 	/// </summary>
@@ -4099,6 +4312,21 @@ public partial class SoilNitrogen
 	/// The approach used for partitioning the N between patches
 	/// </summary>
 	private string PatchNPartitionApproach;
+
+	/// <summary>
+	/// Whether auto amalgamation of patches is allowed
+	/// </summary>
+	private bool PatchAmalgamationAllowed = false;
+
+	/// <summary>
+	/// Approach used in auto amalgamation of patches
+	/// </summary>
+	private string PatchAmalgamationApproach = "CompareAll";
+
+	/// <summary>
+	/// Layer down to which test for diffs are made (upon auto amalgamation)
+	/// </summary>
+	private int LayerDepthToTestDiffs;
 
 	#endregion
 
