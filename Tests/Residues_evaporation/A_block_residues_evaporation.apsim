@@ -1,4 +1,4 @@
-<folder version="32" name="simulations">
+<folder version="36" creator="Apsim 7.6-r3432" name="simulations">
   <folder name="SoilWat">
     <simulation name="Standing_stubble_treatment_a_SoilWat">
       <metfile name="met">
@@ -131,195 +131,274 @@ Residue_water = Residue_water - Evaporated_interception</text>
               <event>end_of_day</event>
             </script>
           </manager>
+          <manager name="Diagnostic variables">
+            <ui>
+              <CropType type="crop" description="Select crop type to report variables for">potato2</CropType>
+            </ui>
+            <script>
+              <text>SimDay = 1
+
+AccumPlantN = 0
+AccumMineralisation = 0
+AccumDenit = 0
+AccumFert = 0
+AccumLeach = 0
+AccumDetach = 0
+DeltaSoilOMN = 0
+DeltaSurfaceOMN = 0
+DeltaSoilMineralN = 0
+
+AccumEO = 0
+AccumEP = 0
+AccumES = 0
+AccumDrainage = 0
+AccumRunoff = 0
+AccumOutflowLat = 0
+AccumIrrigation = 0
+AccumRainfall = 0
+SoilWaterDeficit = 0
+
+AccumTtemerg = 0
+
+
+</text>
+              <event>init</event>
+            </script>
+            <script>
+              <text>if simday = 1 then
+InitialSoilOMN = biom_n() + fom_n() + hum_n()
+InitialSurfaceOMN = surfaceom_n
+InitialMineralN = no3() + nh4() + urea()
+endif
+
+!!!!!! Nitrogen balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumPlantN =  AccumPlantN - [CropType].RootNuptake
+AccumMineralisation = dlt_n_min()!! + dlt_n_min_res()
+AccumDenit = dnit() 
+AccumFert = fertiliser
+AccumLeach = leach_urea + leach_no3 + leach_nh4 
+AccumDetach = 0 !plant2 doesn't detach yet
+DeltaSoilOMN = (biom_n() + fom_n() + hum_n()) - InitialSoilOMN
+DeltaSurfaceOMN = surfaceom_n - InitialSurfaceOMN
+MineralN = no3() + nh4() + urea()
+DeltaSoilMineralN = (no3() + nh4() + urea()) - InitialMineralN
+
+!!!!!! Water balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumEO =  eo
+AccumEP = AccumEP - [CropType].LeafTranspiration
+AccumES = es
+AccumDrainage = drain
+AccumRunoff =  runoff
+AccumOutflowLat =  outflow_lat()
+AccumIrrigation =  Irrigation
+AccumRainfall =  rain
+SoilWaterDeficit =  sw_dep() - dul_dep()
+
+!!!!!! Thermal time calculation !!!!!!
+!!!!!! ^^^^^^^^^^^^^^^^^^^^^^^^ !!!!!!
+If [CropType].StageCodeValue &gt;= 3 Then
+AccumTtemerg = AccumTtemerg + [CropType].PhenologyThermalTimeValue
+Endif
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>if SimDay = 1 then
+SimDay = 2
+Else SimDay = 2
+endif
+
+</text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
         </folder>
         <outputfile>
           <filename output="yes">Standing_stubble_treatment_a_SoilWat.out</filename>
           <title>Standing_stubble_treatment_a_SoilWat</title>
           <variables name="Variables">
             <variable>dd/mm/yyyy as Date</variable>
-            <variable>surfaceom_cover</variable>
-            <variable>surfaceom_wt</variable>
+            <variable>surfaceom_cover format 3</variable>
+            <variable>surfaceom_wt format 3</variable>
             <variable>sw_dep</variable>
             <variable>rain</variable>
-            <variable>flow</variable>
             <variable>dlayer</variable>
             <variable>es</variable>
             <variable>irrigation</variable>
             <variable>sw</variable>
             <variable>runoff</variable>
             <variable>infiltration</variable>
-            <variable>flux(1)</variable>
+            <variable>drain</variable>
             <variable>ll15</variable>
             <variable>dul</variable>
             <variable>ll15_dep</variable>
             <variable>dul_dep</variable>
-            <variable>drainage</variable>
-            <variable>SW_dep_0_20cm</variable>
-            <variable>SW_dep_20_40cm</variable>
-            <variable>SW_dep_40_60cm</variable>
             <variable>SW_dep_0_60cm</variable>
+            <variable>fom_n()  format 3</variable>
+            <variable>hum_n() format 3</variable>
+            <variable>biom_n() format 3</variable>
+            <variable>dlt_n_min_res() format 3</variable>
+            <variable>dlt_n_min_tot()  format 3</variable>
+            <variable>AccumPlantN</variable>
+            <variable>AccumMineralisation</variable>
+            <variable>AccumDenit</variable>
+            <variable>AccumFert</variable>
+            <variable>AccumLeach</variable>
+            <variable>AccumDetach</variable>
+            <variable>DeltaSoilOMN</variable>
+            <variable>DeltaSurfaceOMN</variable>
+            <variable>DeltaSoilMineralN</variable>
+            <variable>AccumEO</variable>
+            <variable>AccumEP</variable>
+            <variable>AccumES</variable>
+            <variable>AccumDrainage</variable>
+            <variable>AccumRunoff</variable>
+            <variable>AccumRainfall</variable>
+            <variable>AccumIrrigation</variable>
+            <variable>AccumOutflowLat</variable>
+            <variable>SoilWaterDeficit</variable>
+            <variable>dnit  format 3</variable>
+            <variable>MineralN</variable>
+            <variable>no3  format 3</variable>
+            <variable>nh4  format 3</variable>
+            <variable>urea  format 3</variable>
           </variables>
           <events name="Reporting Frequency">
             <event>daily</event>
           </events>
         </outputfile>
-        <soil name="A_block_templeton">
+        <Soil name="A_block_templeton">
           <Comment type="multiedit" description="Comments">Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comment>
-          <Langitude description="Longitude (WGS84)" />
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
           <SoilType description="Soil description">NZ_Sedementary</SoilType>
-          <LocalName />
-          <Site />
-          <NearestTown description="Nearest town" />
           <Region>Generic soil types</Region>
           <State>Canterbury</State>
-          <Country />
-          <NaturalVegetation description="Natural vegetation" />
-          <ApsoilNumber description="Apsoil number" />
           <Latitude description="Latitude (WGS84)">999999</Latitude>
           <Longitude>999999</Longitude>
-          <LocationAccuracy description="Location accuracy" />
           <DataSource type="multiedit" description="Data source">Profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
-          <Comments />
           <Water>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <KS units="mm/day">999</KS>
-              <BD units="g/cc">1.3</BD>
-              <AirDry units="mm/mm">0.06</AirDry>
-              <LL15 units="mm/mm">0.08</LL15>
-              <DUL units="mm/mm">0.27</DUL>
-              <SAT units="mm/mm">0.31</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>300</KS>
-              <BD>1.3</BD>
-              <AirDry>0.124</AirDry>
-              <LL15>0.124</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.358</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>100</KS>
-              <BD>1.3</BD>
-              <AirDry>0.106</AirDry>
-              <LL15>0.106</LL15>
-              <DUL>0.27</DUL>
-              <SAT>0.4</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.52</BD>
-              <AirDry>0.07</AirDry>
-              <LL15>0.07</LL15>
-              <DUL>0.2</DUL>
-              <SAT>0.314</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.52</BD>
-              <AirDry>0.07</AirDry>
-              <LL15>0.07</LL15>
-              <DUL>0.2</DUL>
-              <SAT>0.314</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.52</BD>
-              <AirDry>0.165</AirDry>
-              <LL15>0.165</LL15>
-              <DUL>0.3</DUL>
-              <SAT>0.358</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.157</AirDry>
-              <LL15>0.157</LL15>
-              <DUL>0.29</DUL>
-              <SAT>0.35</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>90</KS>
-              <BD>1.6</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <KS>
+              <double>999</double>
+              <double>300</double>
+              <double>100</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+              <double>90</double>
+            </KS>
+            <BD>
+              <double>1.3</double>
+              <double>1.3</double>
+              <double>1.3</double>
+              <double>1.52</double>
+              <double>1.52</double>
+              <double>1.52</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.6</double>
+            </BD>
+            <AirDry>
+              <double>0.06</double>
+              <double>0.124</double>
+              <double>0.106</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.165</double>
+              <double>0.157</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+            </AirDry>
+            <LL15>
+              <double>0.08</double>
+              <double>0.124</double>
+              <double>0.106</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.165</double>
+              <double>0.157</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+            </LL15>
+            <DUL>
+              <double>0.27</double>
+              <double>0.25</double>
+              <double>0.27</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.3</double>
+              <double>0.29</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+            </DUL>
+            <SAT>
+              <double>0.31</double>
+              <double>0.358</double>
+              <double>0.4</double>
+              <double>0.314</double>
+              <double>0.314</double>
+              <double>0.358</double>
+              <double>0.35</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+            </SAT>
           </Water>
-          <SoilWat>
+          <SoilWater>
             <SummerCona>4.4</SummerCona>
             <SummerU>9</SummerU>
             <SummerDate>1-oct</SummerDate>
@@ -332,706 +411,244 @@ Residue_water = Residue_water - Evaporated_interception</text>
             <CN2Bare>73</CN2Bare>
             <CNRed>20</CNRed>
             <CNCov>0.8</CNCov>
-            <Slope>
-            </Slope>
-            <DischargeWidth>
-            </DischargeWidth>
-            <CatchmentArea>
-            </CatchmentArea>
-            <MaxPond>
-            </MaxPond>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <SWCON units="0-1">0.3</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.6</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.6</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.6</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <SWCON>0.95</SWCON>
-              <MWCON units="0-1" />
-              <KLAT units="mm/d" />
-            </Layer>
-          </SoilWat>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <SWCON>
+              <double>0.3</double>
+              <double>0.6</double>
+              <double>0.6</double>
+              <double>0.6</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+              <double>0.95</double>
+            </SWCON>
+          </SoilWater>
           <SoilOrganicMatter>
             <RootCN>40</RootCN>
-            <RootWT>1000</RootWT>
+            <RootWt>1000</RootWt>
             <SoilCN>11</SoilCN>
             <EnrACoeff>7.4</EnrACoeff>
             <EnrBCoeff>0.2</EnrBCoeff>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <OC units="Total %">2.63</OC>
-              <FBiom units="0-1">0.03</FBiom>
-              <FInert units="0-1">0.4</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>1.25</OC>
-              <FBiom>0.02</FBiom>
-              <FInert>0.7</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.32</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>0.8</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.21</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>0.9</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <OC>
+              <double>2.63</double>
+              <double>1.25</double>
+              <double>0.32</double>
+              <double>0.21</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+            </OC>
+            <FBiom>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+            </FBiom>
+            <FInert>
+              <double>0.4</double>
+              <double>0.7</double>
+              <double>0.8</double>
+              <double>0.9</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </FInert>
           </SoilOrganicMatter>
           <Analysis>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH units="1:5 water">6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <PH>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+            </PH>
           </Analysis>
           <Sample name="Initial nitrogen">
             <Date type="date" description="Sample date:" />
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <NO3 units="ppm">44.4444547252519</NO3>
-              <NH4 units="ppm">0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>29.6296364835012</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>22.2222273626259</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>11.111113681313</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>11.111113681313</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <NO3>
+              <double>44.4444547252519</double>
+              <double>29.6296364835012</double>
+              <double>22.2222273626259</double>
+              <double>11.111113681313</double>
+              <double>11.111113681313</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+            </NO3>
+            <NH4>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+            </NH4>
           </Sample>
           <Sample name="Initial water">
             <Date type="date" description="Sample date:" />
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW units="mm/mm">0.253</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.175</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.15</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.1</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.13</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.29</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <SW>
+              <double>0.253</double>
+              <double>0.175</double>
+              <double>0.15</double>
+              <double>0.1</double>
+              <double>0.13</double>
+              <double>0.25</double>
+              <double>0.29</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+            </SW>
           </Sample>
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC">
         <Graph name="0-20cm">
@@ -1239,6 +856,89 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <operations shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/operations" />
           <irrigation name="Irrigation" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Irrigation" />
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
+          <manager name="Diagnostic variables">
+            <ui>
+              <CropType type="crop" description="Select crop type to report variables for">potato2</CropType>
+            </ui>
+            <script>
+              <text>SimDay = 1
+
+AccumPlantN = 0
+AccumMineralisation = 0
+AccumDenit = 0
+AccumFert = 0
+AccumLeach = 0
+AccumDetach = 0
+DeltaSoilOMN = 0
+DeltaSurfaceOMN = 0
+DeltaSoilMineralN = 0
+
+AccumEO = 0
+AccumEP = 0
+AccumES = 0
+AccumDrainage = 0
+AccumRunoff = 0
+AccumOutflowLat = 0
+AccumIrrigation = 0
+AccumRainfall = 0
+SoilWaterDeficit = 0
+
+AccumTtemerg = 0
+
+
+</text>
+              <event>init</event>
+            </script>
+            <script>
+              <text>if simday = 1 then
+InitialSoilOMN = biom_n() + fom_n() + hum_n()
+InitialSurfaceOMN = surfaceom_n
+InitialMineralN = no3() + nh4() + urea()
+endif
+
+!!!!!! Nitrogen balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumPlantN =  AccumPlantN - [CropType].RootNuptake
+AccumMineralisation = dlt_n_min()!! + dlt_n_min_res()
+AccumDenit = dnit() 
+AccumFert = fertiliser
+AccumLeach = leach_urea + leach_no3 + leach_nh4 
+AccumDetach = 0 !plant2 doesn't detach yet
+DeltaSoilOMN = (biom_n() + fom_n() + hum_n()) - InitialSoilOMN
+DeltaSurfaceOMN = surfaceom_n - InitialSurfaceOMN
+MineralN = no3() + nh4() + urea()
+DeltaSoilMineralN = (no3() + nh4() + urea()) - InitialMineralN
+
+!!!!!! Water balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumEO =  eo
+AccumEP = AccumEP - [CropType].LeafTranspiration
+AccumES = es
+AccumDrainage = drain
+AccumRunoff =  runoff
+AccumOutflowLat =  outflow_lat()
+AccumIrrigation =  Irrigation
+AccumRainfall =  rain
+SoilWaterDeficit =  sw_dep() - dul_dep()
+
+!!!!!! Thermal time calculation !!!!!!
+!!!!!! ^^^^^^^^^^^^^^^^^^^^^^^^ !!!!!!
+If [CropType].StageCodeValue &gt;= 3 Then
+AccumTtemerg = AccumTtemerg + [CropType].PhenologyThermalTimeValue
+Endif
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>if SimDay = 1 then
+SimDay = 2
+Else SimDay = 2
+endif
+
+</text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
           <filename output="yes">Mown_stubble_treatment_b_SoilWat.out</filename>
@@ -1246,30 +946,14 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
-        <soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description" />
-          <LocalName />
-          <Site />
-          <NearestTown />
-          <Region />
-          <State />
-          <Country />
-          <NaturalVegetation />
-          <ApsoilNumber />
-          <Latitude />
-          <Longitude />
-          <LocationAccuracy />
-          <DataSource />
-          <Comments />
+        <Soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
           <Water shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Water" />
-          <SoilWat shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWat" />
+          <SoilWater shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWater" />
           <SoilOrganicMatter shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilOrganicMatter" />
           <Analysis shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Analysis" />
           <Sample name="Initial nitrogen" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Initial nitrogen" />
           <Sample name="Initial water" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Initial water" />
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC">
         <Graph name="0-20cm">
@@ -1437,6 +1121,89 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <operations shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/operations" />
           <irrigation name="Irrigation" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Irrigation" />
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
+          <manager name="Diagnostic variables">
+            <ui>
+              <CropType type="crop" description="Select crop type to report variables for">potato2</CropType>
+            </ui>
+            <script>
+              <text>SimDay = 1
+
+AccumPlantN = 0
+AccumMineralisation = 0
+AccumDenit = 0
+AccumFert = 0
+AccumLeach = 0
+AccumDetach = 0
+DeltaSoilOMN = 0
+DeltaSurfaceOMN = 0
+DeltaSoilMineralN = 0
+
+AccumEO = 0
+AccumEP = 0
+AccumES = 0
+AccumDrainage = 0
+AccumRunoff = 0
+AccumOutflowLat = 0
+AccumIrrigation = 0
+AccumRainfall = 0
+SoilWaterDeficit = 0
+
+AccumTtemerg = 0
+
+
+</text>
+              <event>init</event>
+            </script>
+            <script>
+              <text>if simday = 1 then
+InitialSoilOMN = biom_n() + fom_n() + hum_n()
+InitialSurfaceOMN = surfaceom_n
+InitialMineralN = no3() + nh4() + urea()
+endif
+
+!!!!!! Nitrogen balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumPlantN =  AccumPlantN - [CropType].RootNuptake
+AccumMineralisation = dlt_n_min()!! + dlt_n_min_res()
+AccumDenit = dnit() 
+AccumFert = fertiliser
+AccumLeach = leach_urea + leach_no3 + leach_nh4 
+AccumDetach = 0 !plant2 doesn't detach yet
+DeltaSoilOMN = (biom_n() + fom_n() + hum_n()) - InitialSoilOMN
+DeltaSurfaceOMN = surfaceom_n - InitialSurfaceOMN
+MineralN = no3() + nh4() + urea()
+DeltaSoilMineralN = (no3() + nh4() + urea()) - InitialMineralN
+
+!!!!!! Water balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumEO =  eo
+AccumEP = AccumEP - [CropType].LeafTranspiration
+AccumES = es
+AccumDrainage = drain
+AccumRunoff =  runoff
+AccumOutflowLat =  outflow_lat()
+AccumIrrigation =  Irrigation
+AccumRainfall =  rain
+SoilWaterDeficit =  sw_dep() - dul_dep()
+
+!!!!!! Thermal time calculation !!!!!!
+!!!!!! ^^^^^^^^^^^^^^^^^^^^^^^^ !!!!!!
+If [CropType].StageCodeValue &gt;= 3 Then
+AccumTtemerg = AccumTtemerg + [CropType].PhenologyThermalTimeValue
+Endif
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>if SimDay = 1 then
+SimDay = 2
+Else SimDay = 2
+endif
+
+</text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
           <filename output="yes">Mown_stubble_removed_treatment_c_SoilWat.out</filename>
@@ -1444,30 +1211,14 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
-        <soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description" />
-          <LocalName />
-          <Site />
-          <NearestTown />
-          <Region />
-          <State />
-          <Country />
-          <NaturalVegetation />
-          <ApsoilNumber />
-          <Latitude />
-          <Longitude />
-          <LocationAccuracy />
-          <DataSource />
-          <Comments />
+        <Soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
           <Water shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Water" />
-          <SoilWat shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWat" />
+          <SoilWater shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWater" />
           <SoilOrganicMatter shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilOrganicMatter" />
           <Analysis shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Analysis" />
           <Sample name="Initial nitrogen" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Initial nitrogen" />
           <Sample name="Initial water" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Initial water" />
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC">
         <Graph name="0-20cm">
@@ -1635,6 +1386,89 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <operations shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/operations" />
           <irrigation name="Irrigation" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Irrigation" />
           <manager name="Residue interception" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/Manager folder/Residue percipitation interception" />
+          <manager name="Diagnostic variables">
+            <ui>
+              <CropType type="crop" description="Select crop type to report variables for">potato2</CropType>
+            </ui>
+            <script>
+              <text>SimDay = 1
+
+AccumPlantN = 0
+AccumMineralisation = 0
+AccumDenit = 0
+AccumFert = 0
+AccumLeach = 0
+AccumDetach = 0
+DeltaSoilOMN = 0
+DeltaSurfaceOMN = 0
+DeltaSoilMineralN = 0
+
+AccumEO = 0
+AccumEP = 0
+AccumES = 0
+AccumDrainage = 0
+AccumRunoff = 0
+AccumOutflowLat = 0
+AccumIrrigation = 0
+AccumRainfall = 0
+SoilWaterDeficit = 0
+
+AccumTtemerg = 0
+
+
+</text>
+              <event>init</event>
+            </script>
+            <script>
+              <text>if simday = 1 then
+InitialSoilOMN = biom_n() + fom_n() + hum_n()
+InitialSurfaceOMN = surfaceom_n
+InitialMineralN = no3() + nh4() + urea()
+endif
+
+!!!!!! Nitrogen balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumPlantN =  AccumPlantN - [CropType].RootNuptake
+AccumMineralisation = dlt_n_min()!! + dlt_n_min_res()
+AccumDenit = dnit() 
+AccumFert = fertiliser
+AccumLeach = leach_urea + leach_no3 + leach_nh4 
+AccumDetach = 0 !plant2 doesn't detach yet
+DeltaSoilOMN = (biom_n() + fom_n() + hum_n()) - InitialSoilOMN
+DeltaSurfaceOMN = surfaceom_n - InitialSurfaceOMN
+MineralN = no3() + nh4() + urea()
+DeltaSoilMineralN = (no3() + nh4() + urea()) - InitialMineralN
+
+!!!!!! Water balance components !!!!!!
+!!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
+AccumEO =  eo
+AccumEP = AccumEP - [CropType].LeafTranspiration
+AccumES = es
+AccumDrainage = drain
+AccumRunoff =  runoff
+AccumOutflowLat =  outflow_lat()
+AccumIrrigation =  Irrigation
+AccumRainfall =  rain
+SoilWaterDeficit =  sw_dep() - dul_dep()
+
+!!!!!! Thermal time calculation !!!!!!
+!!!!!! ^^^^^^^^^^^^^^^^^^^^^^^^ !!!!!!
+If [CropType].StageCodeValue &gt;= 3 Then
+AccumTtemerg = AccumTtemerg + [CropType].PhenologyThermalTimeValue
+Endif
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>if SimDay = 1 then
+SimDay = 2
+Else SimDay = 2
+endif
+
+</text>
+              <event>end_of_day</event>
+            </script>
+          </manager>
         </folder>
         <outputfile shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile">
           <filename output="yes">Mown_stubble_removed_cultivated_treatment_d_SoilWat.out</filename>
@@ -1642,30 +1476,14 @@ Residue_water = Residue_water - Evaporated_interception</text>
           <variables name="Variables" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
-        <soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description" />
-          <LocalName />
-          <Site />
-          <NearestTown />
-          <Region />
-          <State />
-          <Country />
-          <NaturalVegetation />
-          <ApsoilNumber />
-          <Latitude />
-          <Longitude />
-          <LocationAccuracy />
-          <DataSource />
-          <Comments />
+        <Soil name="A_block_templeton" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton">
           <Water shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Water" />
-          <SoilWat shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWat" />
+          <SoilWater shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilWater" />
           <SoilOrganicMatter shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/SoilOrganicMatter" />
           <Analysis shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Analysis" />
           <Sample name="Initial nitrogen" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Initial nitrogen" />
           <Sample name="Initial water" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/paddock/A_block_templeton/Initial water" />
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC">
         <Graph name="0-20cm">
@@ -1815,6 +1633,12 @@ Residue_water = Residue_water - Evaporated_interception</text>
       </Graph>
     </simulation>
     <Graph name="0-20cm">
+      <Legend>
+        <CheckedTitles> Standing_stubble_treatment_a</CheckedTitles>
+        <CheckedTitles> Mown_stubble_treatment_b</CheckedTitles>
+        <CheckedTitles> Mown_stubble_removed_treatment_c</CheckedTitles>
+        <CheckedTitles> Mown_stubble_removed_cultivated_treatment_d</CheckedTitles>
+      </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
         <PointType>None</PointType>
@@ -1837,6 +1661,12 @@ Residue_water = Residue_water - Evaporated_interception</text>
       </Plot>
     </Graph>
     <Graph name="20-40cm">
+      <Legend>
+        <CheckedTitles> Standing_stubble_treatment_a</CheckedTitles>
+        <CheckedTitles> Mown_stubble_treatment_b</CheckedTitles>
+        <CheckedTitles> Mown_stubble_removed_treatment_c</CheckedTitles>
+        <CheckedTitles> Mown_stubble_removed_cultivated_treatment_d</CheckedTitles>
+      </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
         <PointType>None</PointType>
@@ -2444,831 +2274,420 @@ drainage = flow_water(8)</text>
           <irrigation name="Irrigation" shortcut="/simulations/SWIM2/Standing_stubble_treatment_a_SWIM2/paddock/Manager folder/Irrigation" />
           <manager name="Residue interception" shortcut="/simulations/SWIM2/Standing_stubble_treatment_a_SWIM2/paddock/Manager folder/Residue interception" />
         </folder>
-        <soil name="SWIM Soil">
-          <Langitude description="Longitude (WGS84)" />
-          <Comment type="multiedit" description="Comments" />
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description">
-          </SoilType>
-          <LocalName>
-          </LocalName>
-          <Site>
-          </Site>
-          <NearestTown description="Nearest town">
-          </NearestTown>
-          <Region>
-          </Region>
-          <State />
-          <Country />
-          <NaturalVegetation description="Natural vegetation">
-          </NaturalVegetation>
-          <ApsoilNumber description="Apsoil number" />
-          <Latitude description="Latitude (WGS84)" />
-          <Longitude />
-          <LocationAccuracy description="Location accuracy" />
-          <DataSource type="multiedit" description="Data source" />
-          <Comments />
-          <Thickness>
-            <Values type="text" description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 100 100 200 200 300 300 300 100 </Values>
-          </Thickness>
+        <Soil name="SWIM Soil">
+          <LayerStructure>
+            <Thickness>
+              <double>10</double>
+              <double>20</double>
+              <double>30</double>
+              <double>40</double>
+              <double>100</double>
+              <double>100</double>
+              <double>100</double>
+              <double>200</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>100</double>
+            </Thickness>
+          </LayerStructure>
           <Swim>
             <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
-            <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">75</Cn2Bare>
-            <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
-            <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
-            <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
-            <psidul type="text" description="Matric Potential at DUL (cm)">-100</psidul>
-            <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">on</VC>
-            <dtmin type="text" description="Minimum Timestep (min)">0.0</dtmin>
-            <dtmax type="text" description="Maximum Timestep (min)">1440.</dtmax>
+            <CN2Bare type="text" description="Bare Soil Runoff Curve Number">75</CN2Bare>
+            <CNRed type="text" description="Max. Reduction in Curve Number due to cover">20</CNRed>
+            <CNCov type="text" description="Cover for max Curve Number reduction">0.8</CNCov>
+            <KDul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</KDul>
+            <PSIDul type="text" description="Matric Potential at DUL (cm)">-100</PSIDul>
+            <VC type="list" listvalues="on,off" description="Vapour Conductivity Calculations (on/off)">true</VC>
+            <DTmin type="text" description="Minimum Timestep (min)">0.0</DTmin>
+            <DTmax type="text" description="Maximum Timestep (min)">1440.</DTmax>
             <MaxWaterIncrement type="text" description="Maximum Water Increment (mm)">10</MaxWaterIncrement>
             <SpaceWeightingFactor type="text" description="Space Weighting Factor">0</SpaceWeightingFactor>
             <SoluteSpaceWeightingFactor type="text" description="Solute Space Weighting Factor">0.0</SoluteSpaceWeightingFactor>
-            <diagnostics type="yesno" description="Diagnostic Information?">no</diagnostics>
+            <Diagnostics type="yesno" description="Diagnostic Information?">false</Diagnostics>
             <SwimSoluteParameters>
-              <dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</dis>
-              <disp type="text" description="Dispersivity Power - disp">1</disp>
-              <a type="text" description="Tortuosity Constant - a">1.0</a>
-              <dthc type="text" description="Tortuoisty Offset - dthc">0.0</dthc>
-              <dthp type="text" description="Tortuoisty Power - dthp">1.0</dthp>
+              <Dis type="text" description="Dispersivity - dis ((cm^2/h)/(cm/h)^p) ">15</Dis>
+              <Disp type="text" description="Dispersivity Power - disp">1</Disp>
+              <A type="text" description="Tortuosity Constant - a">1.0</A>
+              <DTHC type="text" description="Tortuoisty Offset - dthc">0.0</DTHC>
+              <DTHP type="text" description="Tortuoisty Power - dthp">1.0</DTHP>
               <WaterTableCl type="text" description="Water Table Cl Concentration (ppm)">0.0</WaterTableCl>
               <WaterTableNO3 type="text" description="Water Table NO3 Concentration (ppm)">0.0</WaterTableNO3>
               <WaterTableNH4 type="text" description="Water Table NH4 Concentration (ppm)">0.0</WaterTableNH4>
               <WaterTableUrea type="text" description="Water Table Urea Concentration (ppm)">0.0</WaterTableUrea>
-              <Layer>
-                <Thickness units="mm">1000</Thickness>
-                <NO3Exco units="">0</NO3Exco>
-                <NO3FIP units="">1.0</NO3FIP>
-                <NH4Exco units="">100.0</NH4Exco>
-                <NH4FIP units="">1.0</NH4FIP>
-                <UreaExco units="">0.0</UreaExco>
-                <UreaFIP units="">1.0</UreaFIP>
-                <ClExco units="">0.0</ClExco>
-                <ClFIP units="">1.0</ClFIP>
-              </Layer>
-              <Layer>
-                <Thickness units="mm">1000</Thickness>
-                <NO3Exco units="">0</NO3Exco>
-                <NO3FIP units="">1.0</NO3FIP>
-                <NH4Exco units="">100.0</NH4Exco>
-                <NH4FIP units="">1.0</NH4FIP>
-                <UreaExco units="">0.0</UreaExco>
-                <UreaFIP units="">1.0</UreaFIP>
-                <ClExco units="">0.0</ClExco>
-                <ClFIP units="">1.0</ClFIP>
-              </Layer>
-              <Layer>
-                <Thickness units="mm">1000</Thickness>
-                <NO3Exco units="">0.0</NO3Exco>
-                <NO3FIP units="">1.0</NO3FIP>
-                <NH4Exco units="">100.0</NH4Exco>
-                <NH4FIP units="">1.0</NH4FIP>
-                <UreaExco units="">0.0</UreaExco>
-                <UreaFIP units="">1.0</UreaFIP>
-                <ClExco units="">0.0</ClExco>
-                <ClFIP units="">1.0</ClFIP>
-              </Layer>
+              <Thickness>
+                <double>1000</double>
+                <double>1000</double>
+                <double>1000</double>
+              </Thickness>
+              <ThicknessUnits>mm</ThicknessUnits>
+              <NO3Exco>
+                <double>0</double>
+                <double>0</double>
+                <double>0.0</double>
+              </NO3Exco>
+              <NO3FIP>
+                <double>1.0</double>
+                <double>1.0</double>
+                <double>1.0</double>
+              </NO3FIP>
+              <NH4Exco>
+                <double>100.0</double>
+                <double>100.0</double>
+                <double>100.0</double>
+              </NH4Exco>
+              <NH4FIP>
+                <double>1.0</double>
+                <double>1.0</double>
+                <double>1.0</double>
+              </NH4FIP>
+              <UreaExco>
+                <double>0.0</double>
+                <double>0.0</double>
+                <double>0.0</double>
+              </UreaExco>
+              <UreaFIP>
+                <double>1.0</double>
+                <double>1.0</double>
+                <double>1.0</double>
+              </UreaFIP>
+              <ClExco>
+                <double>0.0</double>
+                <double>0.0</double>
+                <double>0.0</double>
+              </ClExco>
+              <ClFIP>
+                <double>1.0</double>
+                <double>1.0</double>
+                <double>1.0</double>
+              </ClFIP>
             </SwimSoluteParameters>
           </Swim>
           <Sample name="Initial nitrogen">
             <Date type="date" description="Sample date:" />
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <NO3 units="ppm">44.4444547252519</NO3>
-              <NH4 units="ppm">0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>29.6296364835012</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>22.2222273626259</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>11.111113681313</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>11.111113681313</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3>0.100000023131817</NO3>
-              <NH4>0.1</NH4>
-              <SW units="mm/mm" />
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <NO3>
+              <double>44.4444547252519</double>
+              <double>29.6296364835012</double>
+              <double>22.2222273626259</double>
+              <double>11.111113681313</double>
+              <double>11.111113681313</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+              <double>0.100000023131817</double>
+            </NO3>
+            <NH4>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+            </NH4>
           </Sample>
           <Sample name="Initial water">
             <Date type="date" description="Sample date:" />
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW units="mm/mm">0.253</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.175</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.15</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.1</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.13</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.29</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <NO3 units="ppm" />
-              <NH4 units="ppm" />
-              <SW>0.25</SW>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <SW>
+              <double>0.253</double>
+              <double>0.175</double>
+              <double>0.15</double>
+              <double>0.1</double>
+              <double>0.13</double>
+              <double>0.25</double>
+              <double>0.29</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+            </SW>
           </Sample>
           <SoilOrganicMatter>
             <RootCN>40</RootCN>
-            <RootWT>1000</RootWT>
+            <RootWt>1000</RootWt>
             <SoilCN>11</SoilCN>
             <EnrACoeff>7.4</EnrACoeff>
             <EnrBCoeff>0.2</EnrBCoeff>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <OC units="Total %">2.63</OC>
-              <FBiom units="0-1">0.03</FBiom>
-              <FInert units="0-1">0.4</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>1.25</OC>
-              <FBiom>0.02</FBiom>
-              <FInert>0.7</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.32</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>0.8</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.21</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>0.9</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <OC>0.2</OC>
-              <FBiom>0.01</FBiom>
-              <FInert>1</FInert>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <OC>
+              <double>2.63</double>
+              <double>1.25</double>
+              <double>0.32</double>
+              <double>0.21</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.2</double>
+            </OC>
+            <FBiom>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+              <double>0.01</double>
+            </FBiom>
+            <FInert>
+              <double>0.4</double>
+              <double>0.7</double>
+              <double>0.8</double>
+              <double>0.9</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </FInert>
           </SoilOrganicMatter>
           <Water>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <KS units="mm/day">4832</KS>
-              <BD units="g/cc">1.3</BD>
-              <AirDry units="mm/mm">0.06</AirDry>
-              <LL15 units="mm/mm">0.08</LL15>
-              <DUL units="mm/mm">0.27</DUL>
-              <SAT units="mm/mm">0.31</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>389</KS>
-              <BD>1.52</BD>
-              <AirDry>0.124</AirDry>
-              <LL15>0.124</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.358</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>16.3</KS>
-              <BD>1.65</BD>
-              <AirDry>0.106</AirDry>
-              <LL15>0.106</LL15>
-              <DUL>0.27</DUL>
-              <SAT>0.4</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>16.3</KS>
-              <BD>1.61</BD>
-              <AirDry>0.07</AirDry>
-              <LL15>0.07</LL15>
-              <DUL>0.2</DUL>
-              <SAT>0.314</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.61</BD>
-              <AirDry>0.07</AirDry>
-              <LL15>0.07</LL15>
-              <DUL>0.2</DUL>
-              <SAT>0.314</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.61</BD>
-              <AirDry>0.165</AirDry>
-              <LL15>0.165</LL15>
-              <DUL>0.3</DUL>
-              <SAT>0.358</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.157</AirDry>
-              <LL15>0.157</LL15>
-              <DUL>0.29</DUL>
-              <SAT>0.35</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.65</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <KS>97.5</KS>
-              <BD>1.6</BD>
-              <AirDry>0.125</AirDry>
-              <LL15>0.125</LL15>
-              <DUL>0.25</DUL>
-              <SAT>0.318</SAT>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <KS>
+              <double>4832</double>
+              <double>389</double>
+              <double>16.3</double>
+              <double>16.3</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+              <double>97.5</double>
+            </KS>
+            <BD>
+              <double>1.3</double>
+              <double>1.52</double>
+              <double>1.65</double>
+              <double>1.61</double>
+              <double>1.61</double>
+              <double>1.61</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.65</double>
+              <double>1.6</double>
+            </BD>
+            <AirDry>
+              <double>0.06</double>
+              <double>0.124</double>
+              <double>0.106</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.165</double>
+              <double>0.157</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+            </AirDry>
+            <LL15>
+              <double>0.08</double>
+              <double>0.124</double>
+              <double>0.106</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.165</double>
+              <double>0.157</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+              <double>0.125</double>
+            </LL15>
+            <DUL>
+              <double>0.27</double>
+              <double>0.25</double>
+              <double>0.27</double>
+              <double>0.2</double>
+              <double>0.2</double>
+              <double>0.3</double>
+              <double>0.29</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+              <double>0.25</double>
+            </DUL>
+            <SAT>
+              <double>0.31</double>
+              <double>0.358</double>
+              <double>0.4</double>
+              <double>0.314</double>
+              <double>0.314</double>
+              <double>0.358</double>
+              <double>0.35</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+              <double>0.318</double>
+            </SAT>
           </Water>
           <Analysis>
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH units="1:5 water">6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <Rocks units="%" />
-              <Texture />
-              <MunsellColour />
-              <EC units="1:5 dS/m" />
-              <PH>6</PH>
-              <CL units="mg/kg" />
-              <Boron units="Hot water mg/kg" />
-              <CEC units="cmol+/kg" />
-              <Ca units="cmol+/kg" />
-              <Mg units="cmol+/kg" />
-              <Na units="cmol+/kg" />
-              <K units="cmol+/kg" />
-              <ESP units="%" />
-              <Mn units="mg/kg" />
-              <Al units="cmol+/kg" />
-              <ParticleSizeSand units="%" />
-              <ParticleSizeSilt units="%" />
-              <ParticleSizeClay units="%" />
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+            </Thickness>
+            <PH>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+              <double>6</double>
+            </PH>
           </Analysis>
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/SWC">
         <Graph name="0-20cm" shortcut="/simulations/SoilWat/Standing_stubble_treatment_a_SoilWat/SWC/0-20cm">
@@ -3358,25 +2777,11 @@ drainage = flow_water(8)</text>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
-        <soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description" />
-          <LocalName />
-          <Site />
-          <NearestTown />
-          <Region />
-          <State />
-          <Country />
-          <NaturalVegetation />
-          <ApsoilNumber />
-          <Latitude />
-          <Longitude />
-          <LocationAccuracy />
-          <DataSource />
-          <Comments />
-          <Thickness shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Thickness" />
+        <Soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
+          <LayerStructure shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/LayerStructure" />
           <Swim shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim">
+            <VC>false</VC>
+            <Diagnostics>false</Diagnostics>
             <SwimSoluteParameters shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim/SwimSoluteParameters" />
           </Swim>
           <Sample name="Initial nitrogen" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Initial nitrogen" />
@@ -3384,7 +2789,7 @@ drainage = flow_water(8)</text>
           <SoilOrganicMatter shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/SoilOrganicMatter" />
           <Water shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Water" />
           <Analysis shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Analysis" />
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/SWC">
         <Graph name="0-20cm" shortcut="/simulations/SoilWat/Mown_stubble_treatment_b_SoilWat/SWC/0-20cm">
@@ -3474,25 +2879,11 @@ drainage = flow_water(8)</text>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
-        <soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description" />
-          <LocalName />
-          <Site />
-          <NearestTown />
-          <Region />
-          <State />
-          <Country />
-          <NaturalVegetation />
-          <ApsoilNumber />
-          <Latitude />
-          <Longitude />
-          <LocationAccuracy />
-          <DataSource />
-          <Comments />
-          <Thickness shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Thickness" />
+        <Soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
+          <LayerStructure shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/LayerStructure" />
           <Swim shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim">
+            <VC>false</VC>
+            <Diagnostics>false</Diagnostics>
             <SwimSoluteParameters shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim/SwimSoluteParameters" />
           </Swim>
           <Sample name="Initial nitrogen" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Initial nitrogen" />
@@ -3500,7 +2891,7 @@ drainage = flow_water(8)</text>
           <SoilOrganicMatter shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/SoilOrganicMatter" />
           <Water shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Water" />
           <Analysis shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Analysis" />
-        </soil>
+        </Soil>
       </area>
       <GraphReport name="SWC" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/SWC">
         <Graph name="0-20cm" shortcut="/simulations/SoilWat/Mown_stubble_removed_treatment_c_SoilWat/SWC/0-20cm">
@@ -3584,25 +2975,11 @@ drainage = flow_water(8)</text>
           <variables name="Variables" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/SoilWat/Mown_stubble_removed_cultivated_treatment_d_SoilWat/paddock/outputfile/Reporting Frequency" />
         </outputfile>
-        <soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
-          <ASC_Order description="Australian Soil Classification Order" />
-          <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
-          <SoilType description="Soil description" />
-          <LocalName />
-          <Site />
-          <NearestTown />
-          <Region />
-          <State />
-          <Country />
-          <NaturalVegetation />
-          <ApsoilNumber />
-          <Latitude />
-          <Longitude />
-          <LocationAccuracy />
-          <DataSource />
-          <Comments />
-          <Thickness shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Thickness" />
+        <Soil name="SWIM Soil" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil">
+          <LayerStructure shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/LayerStructure" />
           <Swim shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim">
+            <VC>false</VC>
+            <Diagnostics>false</Diagnostics>
             <SwimSoluteParameters shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Swim/SwimSoluteParameters" />
           </Swim>
           <Sample name="Initial nitrogen" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Initial nitrogen" />
@@ -3610,7 +2987,7 @@ drainage = flow_water(8)</text>
           <SoilOrganicMatter shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/SoilOrganicMatter" />
           <Water shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Water" />
           <Analysis shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/SWIM Soil/Analysis" />
-        </soil>
+        </Soil>
         <folder name="Manager folder" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/Manager folder">
           <manager name="Empty manager" shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/Manager folder/Empty manager" />
           <operations shortcut="/simulations/SWIM3/Standing_stubble_treatment_a_SWIM3/paddock/Manager folder/operations" />
@@ -3733,6 +3110,20 @@ drainage = flow_water(8)</text>
   </folder>
   <Graph name="0-20cm">
     <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0cAEAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxQuTGVnZW5kLlN5bWJvbC5XaWR0aBEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchUuR3JhcGhpY3MzRC5QZW4uV2lkdGgXLkdyYXBoaWNzM0QuQnJ1c2guQ29sb3IZLkdyYXBoaWNzM0QuQnJ1c2guVmlzaWJsZR8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoFy5TZXJpZXMuMC5MaW5lUGVuLlN0eWxlDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IXLlNlcmllcy4xLlBvaW50ZXIuU3R5bGUdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uV2lkdGgXLlNlcmllcy4xLkxpbmVQZW4uU3R5bGUPLlNlcmllcy4xLlRpdGxlHi5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy4xLk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuMS5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCFNlcmllcy4yFS5TZXJpZXMuMi5CcnVzaC5Db2xvchcuU2VyaWVzLjIuUG9pbnRlci5TdHlsZR0uU2VyaWVzLjIuUG9pbnRlci5CcnVzaC5Db2xvchcuU2VyaWVzLjIuTGluZVBlbi5Db2xvchcuU2VyaWVzLjIuTGluZVBlbi5XaWR0aBcuU2VyaWVzLjIuTGluZVBlbi5TdHlsZQ8uU2VyaWVzLjIuVGl0bGUeLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjIuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4yLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjMVLlNlcmllcy4zLkJydXNoLkNvbG9yFy5TZXJpZXMuMy5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMy5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMy5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMy5MaW5lUGVuLldpZHRoFy5TZXJpZXMuMy5MaW5lUGVuLlN0eWxlDy5TZXJpZXMuMy5UaXRsZR4uU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMy5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjMuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuNBUuU2VyaWVzLjQuQnJ1c2guQ29sb3IZLlNlcmllcy40LlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjQuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjQuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy40LlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy40LkxpbmVQZW4uQ29sb3IZLlNlcmllcy40LkxpbmVQZW4uVmlzaWJsZRcuU2VyaWVzLjQuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjQuVGl0bGUeLlNlcmllcy40Lk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjQuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy40Lk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjUVLlNlcmllcy41LkJydXNoLkNvbG9yGS5TZXJpZXMuNS5Qb2ludGVyLlZpc2libGUXLlNlcmllcy41LlBvaW50ZXIuU3R5bGUbLlNlcmllcy41LlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuNS5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuNS5MaW5lUGVuLkNvbG9yGS5TZXJpZXMuNS5MaW5lUGVuLlZpc2libGUXLlNlcmllcy41LkxpbmVQZW4uV2lkdGgPLlNlcmllcy41LlRpdGxlHi5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy41Lk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy41Lk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy41Lk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy41Lk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuNS5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCFNlcmllcy42FS5TZXJpZXMuNi5CcnVzaC5Db2xvchkuU2VyaWVzLjYuUG9pbnRlci5WaXNpYmxlFy5TZXJpZXMuNi5Qb2ludGVyLlN0eWxlGy5TZXJpZXMuNi5Qb2ludGVyLlBlbi5Db2xvch0uU2VyaWVzLjYuUG9pbnRlci5CcnVzaC5Db2xvchcuU2VyaWVzLjYuTGluZVBlbi5Db2xvchkuU2VyaWVzLjYuTGluZVBlbi5WaXNpYmxlFy5TZXJpZXMuNi5MaW5lUGVuLldpZHRoDy5TZXJpZXMuNi5UaXRsZR4uU2VyaWVzLjYuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy42Lk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuNi5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy42Lk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy42Lk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuNi5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuNi5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuNi5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjYuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuNxUuU2VyaWVzLjcuQnJ1c2guQ29sb3IZLlNlcmllcy43LlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjcuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjcuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy43LlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy43LkxpbmVQZW4uQ29sb3IZLlNlcmllcy43LkxpbmVQZW4uVmlzaWJsZRcuU2VyaWVzLjcuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjcuVGl0bGUeLlNlcmllcy43Lk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuNy5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjcuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuNy5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuNy5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjcuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjcuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjcuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy43Lk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjgVLlNlcmllcy44LkJydXNoLkNvbG9yFy5TZXJpZXMuOC5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuOC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuOC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuOC5MaW5lUGVuLldpZHRoDy5TZXJpZXMuOC5UaXRsZR4uU2VyaWVzLjguTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy44Lk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuOC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy44Lk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy44Lk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuOC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuOC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuOC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjguTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuORUuU2VyaWVzLjkuQnJ1c2guQ29sb3IXLlNlcmllcy45LlBvaW50ZXIuU3R5bGUdLlNlcmllcy45LlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy45LkxpbmVQZW4uQ29sb3IXLlNlcmllcy45LkxpbmVQZW4uV2lkdGgPLlNlcmllcy45LlRpdGxlHi5TZXJpZXMuOS5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjkuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy45Lk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjkuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjkuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy45Lk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy45Lk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy45Lk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuOS5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCVNlcmllcy4xMBYuU2VyaWVzLjEwLkJydXNoLkNvbG9yGC5TZXJpZXMuMTAuUG9pbnRlci5TdHlsZR4uU2VyaWVzLjEwLlBvaW50ZXIuQnJ1c2guQ29sb3IYLlNlcmllcy4xMC5MaW5lUGVuLkNvbG9yGC5TZXJpZXMuMTAuTGluZVBlbi5XaWR0aBAuU2VyaWVzLjEwLlRpdGxlHy5TZXJpZXMuMTAuTWFya3MuQ2FsbG91dC5MZW5ndGgiLlNlcmllcy4xMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCYuU2VyaWVzLjEwLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSEuU2VyaWVzLjEwLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UfLlNlcmllcy4xMC5NYXJrcy5DYWxsb3V0LkRyYXczRB4uU2VyaWVzLjEwLk1hcmtzLkNhbGxvdXQuU3R5bGUkLlNlcmllcy4xMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHy5TZXJpZXMuMTAuTWFya3MuSXRlbXMuQ2FwYWNpdHkkLlNlcmllcy4xMC5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCVNlcmllcy4xMRYuU2VyaWVzLjExLkJydXNoLkNvbG9yGC5TZXJpZXMuMTEuUG9pbnRlci5TdHlsZR4uU2VyaWVzLjExLlBvaW50ZXIuQnJ1c2guQ29sb3IYLlNlcmllcy4xMS5MaW5lUGVuLkNvbG9yGC5TZXJpZXMuMTEuTGluZVBlbi5XaWR0aBAuU2VyaWVzLjExLlRpdGxlHy5TZXJpZXMuMTEuTWFya3MuQ2FsbG91dC5MZW5ndGgiLlNlcmllcy4xMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCYuU2VyaWVzLjExLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSEuU2VyaWVzLjExLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UfLlNlcmllcy4xMS5NYXJrcy5DYWxsb3V0LkRyYXczRB4uU2VyaWVzLjExLk1hcmtzLkNhbGxvdXQuU3R5bGUkLlNlcmllcy4xMS5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHy5TZXJpZXMuMTEuTWFya3MuSXRlbXMuQ2FwYWNpdHkkLlNlcmllcy4xMS5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlFC5XYWxscy5MZWZ0LkF1dG9IaWRlGi5XYWxscy5MZWZ0LlNoYWRvdy5WaXNpYmxlFS5XYWxscy5SaWdodC5BdXRvSGlkZRsuV2FsbHMuUmlnaHQuU2hhZG93LlZpc2libGUULldhbGxzLkJhY2suQXV0b0hpZGUaLldhbGxzLkJhY2suU2hhZG93LlZpc2libGUWLldhbGxzLkJvdHRvbS5BdXRvSGlkZRwuV2FsbHMuQm90dG9tLlNoYWRvdy5WaXNpYmxlDi5XYWxscy5WaXNpYmxlHC5BeGVzLkxlZnQuTGFiZWxzLlNlcGFyYXRpb24dLkF4ZXMuTGVmdC5MYWJlbHMuVmFsdWVGb3JtYXQbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5OYW1lGy5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2l6ZSUuQXhlcy5MZWZ0LkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkxlZnQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFC5BeGVzLkxlZnQuQXV0b21hdGljGC5BeGVzLkxlZnQuQXhpc1Blbi5XaWR0aBkuQXhlcy5MZWZ0LkF4aXNQZW4uRW5kQ2FwFS5BeGVzLkxlZnQuR3JpZC5TdHlsZRkuQXhlcy5MZWZ0LkdyaWQuWlBvc2l0aW9uFy5BeGVzLkxlZnQuR3JpZC5WaXNpYmxlGC5BeGVzLkxlZnQuTWF4aW11bU9mZnNldB0uQXhlcy5MZWZ0Lk1pbm9yVGlja3MuVmlzaWJsZRYuQXhlcy5MZWZ0LlRpY2tzLkNvbG9yFi5BeGVzLkxlZnQuVGl0bGUuTGluZXMaLkF4ZXMuTGVmdC5UaXRsZS5Gb250Lk5hbWUaLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNpemUoLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNoYWRvdy5CcnVzaC5Db2xvciQuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuTGVmdC5UaXRsZS5Gb250LkJydXNoLkNvbG9yHy5BeGVzLkxlZnQuVGl0bGUuU2hhZG93LlZpc2libGUbLkF4ZXMuVG9wLkxhYmVscy5TZXBhcmF0aW9uHC5BeGVzLlRvcC5MYWJlbHMuVmFsdWVGb3JtYXQaLkF4ZXMuVG9wLkxhYmVscy5Gb250Lk5hbWUaLkF4ZXMuVG9wLkxhYmVscy5Gb250LlNpemUkLkF4ZXMuVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlHy5BeGVzLlRvcC5MYWJlbHMuU2hhZG93LlZpc2libGUTLkF4ZXMuVG9wLkF1dG9tYXRpYxcuQXhlcy5Ub3AuQXhpc1Blbi5XaWR0aBguQXhlcy5Ub3AuQXhpc1Blbi5FbmRDYXAULkF4ZXMuVG9wLkdyaWQuU3R5bGUYLkF4ZXMuVG9wLkdyaWQuWlBvc2l0aW9uFi5BeGVzLlRvcC5HcmlkLlZpc2libGUcLkF4ZXMuVG9wLk1pbm9yVGlja3MuVmlzaWJsZRUuQXhlcy5Ub3AuVGlja3MuQ29sb3IZLkF4ZXMuVG9wLlRpdGxlLkZvbnQuTmFtZRkuQXhlcy5Ub3AuVGl0bGUuRm9udC5TaXplIy5BeGVzLlRvcC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLlRvcC5UaXRsZS5Gb250LkJydXNoLkNvbG9yHi5BeGVzLlRvcC5UaXRsZS5TaGFkb3cuVmlzaWJsZREuQXhlcy5Ub3AuVmlzaWJsZR0uQXhlcy5SaWdodC5MYWJlbHMuU2VwYXJhdGlvbh4uQXhlcy5SaWdodC5MYWJlbHMuVmFsdWVGb3JtYXQcLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuTmFtZRwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5TaXplJi5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIS5BeGVzLlJpZ2h0LkxhYmVscy5TaGFkb3cuVmlzaWJsZRUuQXhlcy5SaWdodC5BdXRvbWF0aWMZLkF4ZXMuUmlnaHQuQXhpc1Blbi5XaWR0aBouQXhlcy5SaWdodC5BeGlzUGVuLkVuZENhcBYuQXhlcy5SaWdodC5HcmlkLlN0eWxlGi5BeGVzLlJpZ2h0LkdyaWQuWlBvc2l0aW9uGC5BeGVzLlJpZ2h0LkdyaWQuVmlzaWJsZR4uQXhlcy5SaWdodC5NaW5vclRpY2tzLlZpc2libGUXLkF4ZXMuUmlnaHQuVGlja3MuQ29sb3IbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5OYW1lGy5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2l6ZSUuQXhlcy5SaWdodC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIi5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IgLkF4ZXMuUmlnaHQuVGl0bGUuU2hhZG93LlZpc2libGUTLkF4ZXMuUmlnaHQuVmlzaWJsZR4uQXhlcy5Cb3R0b20uTGFiZWxzLlNlcGFyYXRpb24iLkF4ZXMuQm90dG9tLkxhYmVscy5EYXRlVGltZUZvcm1hdB8uQXhlcy5Cb3R0b20uTGFiZWxzLlZhbHVlRm9ybWF0HS5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5OYW1lHS5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5TaXplJy5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSIuQXhlcy5Cb3R0b20uTGFiZWxzLlNoYWRvdy5WaXNpYmxlHS5BeGVzLkJvdHRvbS5BdXRvbWF0aWNNYXhpbXVtHS5BeGVzLkJvdHRvbS5BdXRvbWF0aWNNaW5pbXVtGi5BeGVzLkJvdHRvbS5BeGlzUGVuLldpZHRoGy5BeGVzLkJvdHRvbS5BeGlzUGVuLkVuZENhcBcuQXhlcy5Cb3R0b20uR3JpZC5TdHlsZRsuQXhlcy5Cb3R0b20uR3JpZC5aUG9zaXRpb24ZLkF4ZXMuQm90dG9tLkdyaWQuVmlzaWJsZRouQXhlcy5Cb3R0b20uTWF4aW11bU9mZnNldBQuQXhlcy5Cb3R0b20uTWF4aW11bRQuQXhlcy5Cb3R0b20uTWluaW11bRouQXhlcy5Cb3R0b20uTWluaW11bU9mZnNldB8uQXhlcy5Cb3R0b20uTWlub3JUaWNrcy5WaXNpYmxlGC5BeGVzLkJvdHRvbS5UaWNrcy5Db2xvchguQXhlcy5Cb3R0b20uVGl0bGUuTGluZXMcLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuTmFtZRwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5TaXplJi5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LkJydXNoLkNvbG9yIS5BeGVzLkJvdHRvbS5UaXRsZS5TaGFkb3cuVmlzaWJsZSkuQXhlcy5EZXB0aFRvcC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSQuQXhlcy5EZXB0aFRvcC5MYWJlbHMuU2hhZG93LlZpc2libGUYLkF4ZXMuRGVwdGhUb3AuQXV0b21hdGljGS5BeGVzLkRlcHRoVG9wLkdyaWQuU3R5bGUdLkF4ZXMuRGVwdGhUb3AuR3JpZC5aUG9zaXRpb24oLkF4ZXMuRGVwdGhUb3AuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSMuQXhlcy5EZXB0aFRvcC5UaXRsZS5TaGFkb3cuVmlzaWJsZSYuQXhlcy5EZXB0aC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5EZXB0aC5MYWJlbHMuU2hhZG93LlZpc2libGUVLkF4ZXMuRGVwdGguQXV0b21hdGljFi5BeGVzLkRlcHRoLkdyaWQuU3R5bGUaLkF4ZXMuRGVwdGguR3JpZC5aUG9zaXRpb24lLkF4ZXMuRGVwdGguVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSAuQXhlcy5EZXB0aC5UaXRsZS5TaGFkb3cuVmlzaWJsZQAAAAAEAAQABAAABAAAAAAAAAAGAQAAAAAAAAAAAAAAAAAEAAQAAAAABAQABAAAAAABBAQEBAAEAQAEAAAABAQAAAEEBAQEAAQBAAQAAAAEBAAAAQQEBAQABAEABAAAAAQEAAABBAQEBAAEAQAEAAAABAQAAAEEAAQEBAQAAAEABAAAAAQEAAABBAAEBAQEAAABAAQAAAAEBAAAAQQABAQEBAAAAQAEAAAABAQAAAEEAAQEBAQAAAEABAAAAAQEAAABBAQEBAABAAQAAAAEBAAAAQQEBAQAAQAEAAAABAQAAAEEBAQEAAEABAAAAAQEAAABBAQEBAABAAQAAAAEBAAAAAAAAAAAAAAAAAEBAAAAAAAEBAAAAAAEBgEABAAEAAABAQAAAAAABAQAAAAEAQAABAAAAAEBAAAAAAAEBAAAAAQBAAAEAAAAAQEBAAAAAAAABAQAAAAAAAAABAYBAAAEAAAAAAQAAAAAAAAEAAAACAgBCCFTeXN0ZW0uV2luZG93cy5Gb3Jtcy5Nb3VzZUJ1dHRvbnMDAAAACCNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwIAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEIIFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAgAAAAEBAQEBAQEIAQEBAQEBAQEGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEICCZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQQAAAAlU3lzdGVtLkRyYXdpbmcuVGV4dC5UZXh0UmVuZGVyaW5nSGludAQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAgUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAACCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEBAQEBAQEBAQEICAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQgIAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAAQEICAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBCAgBAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBAQEiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEBAQEiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQECAAAAOQMAAG8CAAABBAAAAAX7////IVN5c3RlbS5XaW5kb3dzLkZvcm1zLk1vdXNlQnV0dG9ucwEAAAAHdmFsdWVfXwAIAwAAAAAAQAABAAAABfr///8jU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMBAAAAB3ZhbHVlX18ACAIAAAAAAAAAAAX5////FFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAARuYW1lBXZhbHVlCmtub3duQ29sb3IFc3RhdGUBAAAACQcHBAAAAAr/////AAAAAAAAAgABBQAAAAX4////IFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAQAAAAd2YWx1ZV9fAAgCAAAAAwAAAAEAAAAAAAEJCQAAAAYKAAAABlRhaG9tYQwAAAAAAAAAAAAAAAAAAAAAkHVAAAAAAACQdUADAAAAAAH1////+f///woAAAAAAAAAAH8AAQACAAAAAfT////5////CgAAAAAAAAAAfwABAAAAqgEAANgAAAAF8////yZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQEAAAAHdmFsdWVfXwAIBAAAAAEAAAAF8v///yVTeXN0ZW0uRHJhd2luZy5UZXh0LlRleHRSZW5kZXJpbmdIaW50AQAAAAd2YWx1ZV9fAAgEAAAAAAAAAAAB8f////n///8KAAAAAAAAAAB/AAEAAQAAAAAAAAAAAAAAAAYQAAAAG1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuTGluZQHv////+f///woAAAAAAAAAACUAAQAF7v///yRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMBAAAAB3ZhbHVlX18ACAIAAAAJAAAAAe3////5////CgAAAAAAAAAAJQABAAHs////+f///wqZAAD/AAAAAAAAAgACAAAABev///8iU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQEAAAAHdmFsdWVfXwAIBAAAAAIAAAAGFgAAADdTb2lsV2F0LCBzd19kZXAoMSksU3RhbmRpbmdfc3R1YmJsZV90cmVhdG1lbnRfYV9Tb2lsV2F0CgAAAAXp////JlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAAAAAAAAgAAAAAAAAAAAHo////7v///wAAAAAB5/////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAHl////+f///woAAAAAAAAAAI0AAQAB5P///+7///8JAAAAAeP////5////CgAAAAAAAAAAjQABAAHi////+f///woAAJn/AAAAAAAAAgACAAAAAeH////r////AgAAAAYgAAAAM1NvaWxXYXQsIHN3X2RlcCgxKSxNb3duX3N0dWJibGVfdHJlYXRtZW50X2JfU29pbFdhdAoAAAAB3////+n///8AAAAACAAAAAAAAAAAAd7////u////AAAAAAHd////+f///woAAAAAAAAAACMAAQAAAAAAAAkQAAAAAdv////5////CgAAAAAAAAAATwABAAHa////7v///wkAAAAB2f////n///8KAAAAAAAAAABPAAEAAdj////5////CgBNAP8AAAAAAAACAAIAAAAB1////+v///8CAAAABioAAAA7U29pbFdhdCwgc3dfZGVwKDEpLE1vd25fc3R1YmJsZV9yZW1vdmVkX3RyZWF0bWVudF9jX1NvaWxXYXQKAAAAAdX////p////AAAAAAgAAAAAAAAAAAHU////7v///wAAAAAB0/////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAHR////+f///woAAAAAAAAAAH8AAQAB0P///+7///8JAAAAAc/////5////CgAAAAAAAAAAfwABAAHO////+f///woAY5n/AAAAAAAAAgACAAAAAc3////r////AgAAAAY0AAAARlNvaWxXYXQsIHN3X2RlcCgxKSxNb3duX3N0dWJibGVfcmVtb3ZlZF9jdWx0aXZhdGVkX3RyZWF0bWVudF9kX1NvaWxXYXQKAAAAAcv////p////AAAAAAgAAAAAAAAAAAHK////7v///wAAAAAByf////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAHH////+f///woAAAAAAAAAACUAAQABAcb////u////AQAAAAHF////+f///woAAAAAAAAAAKQAAQABxP////n///8KAAAAAAAAAAAlAAEAAcP////5////CpkAAP8AAAAAAAACAAACAAAABj4AAAAwT2JzZXJ2ZWQsIHN3X2RlcCgxKSxTdGFuZGluZ19zdHViYmxlX3RyZWF0bWVudF9hCgAAAAHB////6f///wAAAAAIAAAAAAAAAAABwP///+7///8AAAAAAb/////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABvf////n///8KAAAAAAAAAACNAAEAAQG8////7v///wEAAAABu/////n///8KAAAAAAAAAACkAAEAAbr////5////CgAAAAAAAAAAjQABAAG5////+f///woAAJn/AAAAAAAAAgAAAgAAAAZIAAAALE9ic2VydmVkLCBzd19kZXAoMSksTW93bl9zdHViYmxlX3RyZWF0bWVudF9iCgAAAAG3////6f///wAAAAAIAAAAAAAAAAABtv///+7///8AAAAAAbX////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABs/////n///8KAAAAAAAAAABPAAEAAQGy////7v///wEAAAABsf////n///8KAAAAAAAAAACkAAEAAbD////5////CgAAAAAAAAAATwABAAGv////+f///woATQD/AAAAAAAAAgAAAgAAAAZSAAAANE9ic2VydmVkLCBzd19kZXAoMSksTW93bl9zdHViYmxlX3JlbW92ZWRfdHJlYXRtZW50X2MKAAAAAa3////p////AAAAAAgAAAAAAAAAAAGs////7v///wAAAAABq/////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAGp////+f///woAAAAAAAAAAH8AAQABAaj////u////AQAAAAGn////+f///woAAAAAAAAAAKQAAQABpv////n///8KAAAAAAAAAAB/AAEAAaX////5////CgBjmf8AAAAAAAACAAACAAAABlwAAAA/T2JzZXJ2ZWQsIHN3X2RlcCgxKSxNb3duX3N0dWJibGVfcmVtb3ZlZF9jdWx0aXZhdGVkX3RyZWF0bWVudF9kCgAAAAGj////6f///wAAAAAIAAAAAAAAAAABov///+7///8AAAAAAaH////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABn/////n///8KAAAAAAAAAAAlAAEAAZ7////u////CQAAAAGd////+f///woAAAAAAAAAACUAAQABnP////n///8KmQAA/wAAAAAAAAIAAgAAAAZlAAAANVNXSU0sIFNXX2RlcF8wXzIwY20sU3RhbmRpbmdfc3R1YmJsZV90cmVhdG1lbnRfYV9Td2ltCgAAAAGa////6f///wAAAAAIAAAAAAAAAAABmf///+7///8AAAAAAZj////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABlv////n///8KAAAAAAAAAACNAAEAAZX////u////CQAAAAGU////+f///woAAAAAAAAAAI0AAQABk/////n///8KAACZ/wAAAAAAAAIAAgAAAAZuAAAAMVNXSU0sIFNXX2RlcF8wXzIwY20sTW93bl9zdHViYmxlX3RyZWF0bWVudF9iX1N3aW0KAAAAAZH////p////AAAAAAgAAAAAAAAAAAGQ////7v///wAAAAABj/////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAGN////+f///woAAAAAAAAAAE8AAQABjP///+7///8JAAAAAYv////5////CgAAAAAAAAAATwABAAGK////+f///woATQD/AAAAAAAAAgACAAAABncAAAA5U1dJTSwgU1dfZGVwXzBfMjBjbSxNb3duX3N0dWJibGVfcmVtb3ZlZF90cmVhdG1lbnRfY19Td2ltCgAAAAGI////6f///wAAAAAIAAAAAAAAAAABh////+7///8AAAAAAYb////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABhP////n///8KAAAAAAAAAAB/AAEAAYP////u////CQAAAAGC////+f///woAAAAAAAAAAH8AAQABgf////n///8KAGOZ/wAAAAAAAAIAAgAAAAaAAAAARFNXSU0sIFNXX2RlcF8wXzIwY20sTW93bl9zdHViYmxlX3JlbW92ZWRfY3VsdGl2YXRlZF90cmVhdG1lbnRfZF9Td2ltCgAAAAF/////6f///wAAAAAIAAAAAAAAAAABfv///+7///8AAAAAAX3////5////CgAAAAAAAAAAIwABAAAAAAAAAAAAAAAAAAAAUAAAAAaEAAAACCMjIzAuIyMjCQoAAAAJAAAAAAABAQAAAAV6////IFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAF5////6////wEAAAAAAAAAAAAAAAAKAAAAAAF4////+f///woAAAD/AAAAAAAAAgAJiQAAAAkKAAAACwAAAAF1////+f///wrAAAD/AAAAAAAAAgAAAXT////5////Cv8AAP8AAAAAAAACAABQAAAACYQAAAAJCgAAAAkAAAAAAAEBAAAAAXH///96////AgAAAAFw////6////wEAAAAAAAAAAAAAAAAAAW/////5////CgAAAP8AAAAAAAACAAkKAAAACwAAAAABbv////n///8K/wAA/wAAAAAAAAIAAABQAAAACYQAAAAJCgAAAAkAAAAAAAEBAAAAAWv///96////AgAAAAFq////6////wEAAAAAAAAAAAAAAAAAAWn////5////CgAAAP8AAAAAAAACAAkKAAAACwAAAAABaP////n///8K/wAA/wAAAAAAAAIAAABQAAAABpkAAAAJZC9NTS95eXl5CYQAAAAJCgAAAAkAAAAAAAAAAQAAAAFk////ev///wIAAAABY////+v///8BAAAAAAAAAAAAAAAACgAAAAAAAADAvONAAAAAAECi40AKAAAAAAFi////+f///woAAAD/AAAAAAAAAgAJnwAAAAkKAAAACwAAAAABX/////n///8K/wAA/wAAAAAAAAIAAAAAAQFe////6////wEAAAAAAAAAAAAAAAAAAAABAV3////r////AQAAAAAAAAAAAAAAAAARCQAAAAEAAAAGpAAAAAARiQAAAAEAAAAJpAAAABGfAAAAAQAAAAmkAAAACw==</Format>
+    <Legend>
+      <CheckedTitles>SWIM2, SW_dep_0_20cm,Standing_stubble_treatment_a_SWIM2</CheckedTitles>
+      <CheckedTitles>SWIM2, SW_dep_0_20cm,Mown_stubble_treatment_b_SWIM2</CheckedTitles>
+      <CheckedTitles>SWIM2, SW_dep_0_20cm,Mown_stubble_removed_treatment_c_SWIM2</CheckedTitles>
+      <CheckedTitles>SWIM2, SW_dep_0_20cm,Mown_stubble_removed_cultivated_treatment_d_SWIM2</CheckedTitles>
+      <CheckedTitles>SWIM3, SW_dep_0_20cm,Standing_stubble_treatment_a_SWIM3</CheckedTitles>
+      <CheckedTitles>SWIM3, SW_dep_0_20cm,Mown_stubble_treatment_b_SWIM3</CheckedTitles>
+      <CheckedTitles>SWIM3, SW_dep_0_20cm,Mown_stubble_removed_treatment_c_SWIM3</CheckedTitles>
+      <CheckedTitles>SWIM3, SW_dep_0_20cm,Mown_stubble_removed_cultivated_treatment_d_SWIM3</CheckedTitles>
+      <CheckedTitles>Observed, sw_dep(1),Standing_stubble_treatment_a</CheckedTitles>
+      <CheckedTitles>Observed, sw_dep(1),Mown_stubble_treatment_b</CheckedTitles>
+      <CheckedTitles>Observed, sw_dep(1),Mown_stubble_removed_treatment_c</CheckedTitles>
+      <CheckedTitles>Observed, sw_dep(1),Mown_stubble_removed_cultivated_treatment_d</CheckedTitles>
+    </Legend>
     <Plot name="SoilWat">
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>

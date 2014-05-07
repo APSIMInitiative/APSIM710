@@ -22,7 +22,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
-   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                 "MicroClimate" = %apsim%\Model\MicroClimate.dll
    Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component           "Templeton Nitrogen" = %apsim%\Model\SoilN.dll
@@ -65,7 +65,7 @@ Paddock:
         DeltaSoilOMN
         DeltaSurfaceOMN
         DeltaSoilMineralN
-        RootNSupplyUptake
+        RootNSupplyUptake format 3
         eo
         es
         sw_dep()
@@ -83,35 +83,40 @@ Paddock:
         AccumIrrigation
         AccumOutflowLat
         SoilWaterDeficit
-        AboveGroundWt
-        BelowGroundWt
-        TotalWt
-        LeafDeadWt
-        LeafLiveWt
-        StemDeadWt
-        StemLiveWt
-        TuberDeadWt
-        TuberLiveWt
-        RootDeadWt
-        RootLiveWt
-        AboveGroundN
-        BelowGroundN
-        TotalN
-        TotalLiveN
-        TotalDeadN
-        LeafDeadN
-        LeafLiveN
-        StemDeadN
-        StemLiveN
-        TuberDeadN
-        TuberLiveN
-        RootLiveN
-        RootDeadN
-        LeafLiveNConc
-        LeafDeadNConc
-        StemLiveNConc
-        TuberLiveNConc
-        RootLiveNConc
+        AboveGroundWt  format 3
+        BelowGroundWt  format 3
+        TotalWt  format 3
+        TotalDeadWt  format 3
+        TotalLiveWt  format 3
+        LeafDeadWt  format 3
+        LeafLiveWt  format 3
+        StemDeadWt  format 3
+        StemLiveWt  format 3
+        TuberDeadWt  format 3
+        TuberLiveWt  format 3
+        RootDeadWt  format 3
+        RootLiveWt  format 3
+        AboveGroundN  format 3
+        BelowGroundN  format 3
+        TotalN  format 3
+        TotalLiveN  format 3
+        TotalDeadN  format 3
+        LeafDeadN  format 3
+        LeafLiveN  format 3
+        StemDeadN  format 3
+        StemLiveN  format 3
+        TuberDeadN  format 3
+        TuberLiveN  format 3
+        RootLiveN  format 3
+        RootDeadN  format 3
+        LeafLiveNConc  format 3
+        LeafDeadNConc format 3
+        StemLiveNConc format 3
+        StemDeadNConc format 3
+        TuberLiveNConc format 3
+        TuberDeadNConc format 3
+        RootLiveNConc format 3
+        RootDeadNConc format 3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -144,12 +149,22 @@ Paddock:
         StemMaximumNConcValue
         TuberMaximumNConcValue
         RootMaximumNConcValue
-        TotalLiveWt
-        StemLiveStructuralWt
+        StemLiveStructuralWt format 3
         StemLiveNonStructuralWt
         LeafSpecificArea
-        TotalDeadWt
         LeafExpandedCohortNo
+        sw_dep
+        no3  format 3
+        SoilNitrogenContent
+        ArbitratorNDemand
+        net_radn
+        peta
+        petr
+        fom_n()  format 3
+        hum_n() format 3
+        biom_n() format 3
+        dlt_n_min_res() format 3
+        dlt_n_min_tot()  format 3
 
      Output file = Cultivar_Burbank Outputs.out
      Format = normal
@@ -239,6 +254,7 @@ Paddock:
      deltasoilomn = 0
      deltasurfaceomn = 0
      deltasoilmineraln = 0
+     soilnitrogencontent = 0;
      accumeo = 0
      accumep = 0
      accumes = 0
@@ -257,7 +273,7 @@ Paddock:
      initialmineraln = no3() + nh4() + urea()
      endif
      accumplantn =  accumplantn - potato2.rootnuptake
-     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accummineralisation = accummineralisation + dlt_n_min()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
      accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
@@ -265,15 +281,16 @@ Paddock:
      deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
-     accumeo = accumeo - eo
+     soilnitrogencontent = (no3() + nh4() + urea())
      accumep = accumep - potato2.leaftranspiration
-     accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
      accumoutflowlat = accumoutflowlat - outflow_lat()
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
+     accumeo = accumeo - eo
+     accumes = accumes - es
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
@@ -295,6 +312,7 @@ Paddock:
      Manager creating a new local real variable : deltasoilomn = 0.00000
      Manager creating a new local real variable : deltasurfaceomn = 0.00000
      Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : soilnitrogencontent = 0.00000
      Manager creating a new local real variable : accumeo = 0.00000
      Manager creating a new local real variable : accumep = 0.00000
      Manager creating a new local real variable : accumes = 0.00000
@@ -306,7 +324,7 @@ Paddock:
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
-------- Micromet Initialisation -----------------------------------------------
+------- MicroClimate Initialisation -------------------------------------------
      Initialising
      
         - Reading Constants
