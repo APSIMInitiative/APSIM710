@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using ModelFramework;
 using System.Xml;
 using System.Xml.Schema;
-using CSGeneral;            //for MathUtility
+using CSGeneral;
 
 /// <summary>
 /// A multi-species pasture model
@@ -295,16 +295,6 @@ public class AgPasture
 	[Input]
 	private int year;
 
-	private int p_UseRootProportion = 0;
-
-	[Output]
-	[Description("Root ditribution method")]
-	public int UseRootProportion
-	{
-		get { return p_UseRootProportion; }
-		set { p_UseRootProportion = value; }
-	}
-
 
 	//** Aggregated pasture parameters of all species (wiht a prefix 'p_')
 	//p_d... variables are daily changes (delta)
@@ -378,36 +368,54 @@ public class AgPasture
 
 	//following was for testing
 	[Output]
-	[Units("")]
-	public float[] spIL1  //for testing only
+	[Description("Irridance on the top of canopy")]
+	[Units("W")]
+	public double[] SpeciesIrradianceTopCanopy  //for testing only
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].IL1;
-			return ftArray;
+				result[s] = SP[s].IL1;
+			return result;
 		}
 	}
 	[Output]
-	[Units("")]
-	public float[] spPgross
+	[Description("Potential C assimilation, corrected for extreme temperatures")]
+	[Units("kg/ha")]
+	public double[] SpeciesPotCarbonAssimilation
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].Pgross;
-			return ftArray;
+				result[s] = SP[s].Pgross;
+			return result;
+		}
+	}
+	[Description("Loss of C via respiration")]
+	[Units("kg/ha")]
+	private double[] SpeciesCarbonLossRespiration
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nsp; s++)
+				result[s] = (float)SP[s].Resp_m;
+			return result;
 		}
 	}
 	[Output]
-	[Units("")]
-	private float[] spResp_m
+	[Description("Amount of C remobilised within plant")]
+	[Units("kg/ha")]
+	private double[] SpeciesCarbonRemobilised
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].Resp_m;
-			return ftArray;
+				result[s] = SP[s].Cremob;
+			return result;
 		}
 	}
 
@@ -424,7 +432,7 @@ public class AgPasture
 		if (rlvp.Length == Nspecies)
 		{
 			//Console.Out.WriteLine("Using two parameter root distribution model (root depth + distribution parameter)");
-			p_UseRootProportion = 2;
+			p_RootDistributionMethod = 2;
 			rootDist = new double[rlvp.Length];
 			rlvp.CopyTo(rootDist, 0); //Store distribution parameter values
 			// Calculate actual rlvp values
@@ -437,7 +445,7 @@ public class AgPasture
 		else if (rlvp.Length == dlayer.Length)
 		{
 			//Console.Out.WriteLine("Using real rlvp data values - original method");
-			p_UseRootProportion = 1; //using corrected depth calculation method
+			p_RootDistributionMethod = 1; //using corrected depth calculation method
 		}
 		else
 		{
@@ -986,8 +994,8 @@ public class AgPasture
 		p_height = HeightfromDM;
 		canopy.height = (int)p_height;             // height effect, mm
 		canopy.depth = (int)p_height;              // canopy depth
-		canopy.cover = Cover_green;
-		canopy.cover_tot = Cover_tot;
+		canopy.cover = (float)Cover_green;
+		canopy.cover_tot = (float)Cover_tot;
 
 		New_Canopy.Invoke(canopy);
 	}
@@ -1026,7 +1034,7 @@ public class AgPasture
 
 		//Also, have tested the consequences of passing p_Ncfactor in (different concept for gfwater),
 		//coulnd't see any differnece for results
-		EventData.frgr = Math.Min(FVPD, (float)gft);
+		EventData.frgr = (float)Math.Min(FVPD, gft);
 		// RCichota, Jan/2014: removed AgPasture's Frgr from here, it is considered at the same level as nitrogen etc...
 		NewPotentialGrowth.Invoke(EventData);
 	}
@@ -1430,12 +1438,20 @@ public class AgPasture
 
 		//remove DM & N species by species
 		p_harvestDigest = 0;
+		HarvestingFraction = new double[SP.Length];
+		HarvestingFractionTest = new double[SP.Length];
+		double TotalHarvestable = 0.0;
+		for (int s = 0; s < Nsp; s++)
+			TotalHarvestable += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin;
 		for (int s = 0; s < Nsp; s++)
 		{
 			double amt = 0;
 			if (herbage_mass != 0)
 			{
-				amt = remove_amt * (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
+				HarvestingFraction[s] = (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
+				HarvestingFractionTest[s] = ((SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin) / TotalHarvestable;
+				amt = remove_amt * HarvestingFraction[s];
+				//amt = remove_amt * (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
 			}
 			p_harvestN += SP[s].Remove(amt);
 
@@ -1443,9 +1459,7 @@ public class AgPasture
 			if (remove_amt > 0)
 				p_harvestDigest += SP[s].digestDefoliated * amt / remove_amt;
 		}
-
 	}
-
 	//----------------------------------------------------------
 	[EventHandler]
 	public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
@@ -1763,7 +1777,7 @@ public class AgPasture
 	[Output]
 	[Description("Generic type of crop")]         //  useful for SWIM
 	[Units("")]
-	public String Crop_type         //  useful for SWIM
+	public string Crop_type
 	{
 		get { return thisCropName; }
 	}
@@ -1771,7 +1785,7 @@ public class AgPasture
 	[Output]
 	[Description("Plant status (dead, alive, etc)")]
 	[Units("")]
-	public String plant_status
+	public string plant_status
 	{
 		get
 		{
@@ -1818,10 +1832,32 @@ public class AgPasture
 		}
 	}
 
+	private int p_RootDistributionMethod = 0;
+	[Output]
+	[Description("Root ditribution method")]
+	public int RootDistributionMethod
+	{
+		get { return p_RootDistributionMethod; }
+		set { p_RootDistributionMethod = value; }
+	}
+
+
+	private double[] HarvestingFraction;
+	[Output]
+	private double[] HarvestingFractionTest;
+	[Output]
+	[Description("Fraction to harvest for each species")]
+	[Units("0-1")]
+	public double[] FractionHarvest
+	{
+		get { return HarvestingFraction; }
+	}
+
+
 	[Output]
 	[Description("Total amount of C in plants")]
 	[Units("kg/ha")]
-	public double TotalC            // total C in plant, kg/ha
+	public double TotalPlantC
 	{
 		get { return 0.4 * (p_totalDM + p_rootMass); }
 	}
@@ -1840,11 +1876,11 @@ public class AgPasture
 	public double AboveGroundWt
 	{
 		get
-		{  // return p_totalDM; }
-			double dm = 0.0;
+		{
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				dm += SP[s].dmshoot;
-			return dm;
+				result += SP[s].dmshoot;
+			return result;
 		}
 	}
 	[Output]
@@ -1983,11 +2019,10 @@ public class AgPasture
 			return dmstol;
 		}
 	}
-	//for consistantly passing varibles in Onremove_crop_biomass()with other plant modules
+	//for consistency, passing variables in Onremove_crop_biomass() similar with other plant modules
 	[Output]
 	[Units("kg/ha")]
-	public double Biomass
-	{ get { return AboveGroundWt; } }
+	public double biomass { get { return AboveGroundWt; } }
 	[Output]
 	[Units("g/m^2")]
 	public double leafgreenwt { get { return LeafLiveWt / 10; } }
@@ -2011,17 +2046,17 @@ public class AgPasture
 	[Output]
 	[Description("Potential plant growth, correct for temperature and water")]
 	[Units("kg/ha")]
-	public float PlantGrowthNoNLimit
+	public double PlantGrowthNoNLimit
 	{
-		get { return (float)p_dGrowthW; }
+		get { return p_dGrowthW; }
 	}
 	[Output]
 	[Description("Actual plant growth")]
 	[Units("kg/ha")]
-	public float GrossGrowthWt
+	public double GrossGrowthWt
 	{
 		//dm_daily_growth, including roots & before littering
-		get { return (float)p_dGrowth; }
+		get { return p_dGrowth; }
 	}
 
 	[Output]
@@ -2035,17 +2070,17 @@ public class AgPasture
 	[Output]
 	[Description("Dry matter amount of litter deposited onto soil surface")]
 	[Units("kg/ha")]
-	public float LitterDepositionWt
+	public double LitterDepositionWt
 	{
-		get { return (float)p_dLitter; }
+		get { return p_dLitter; }
 	}
 
 	[Output]
 	[Description("Dry matter amount of senescent roots added to soil FOM")]
 	[Units("kg/ha")]
-	public float RootSenescenceWt
+	public double RootSenescenceWt
 	{
-		get { return (float)p_dRootSen; }
+		get { return p_dRootSen; }
 	}
 
 	[Output]
@@ -2065,37 +2100,37 @@ public class AgPasture
 	//**LAI & Cover
 	[Output]
 	[Description("Leaf area index of green leaves")]
-	[Units("")]
-	public float LAI_green
+	[Units("m^2/m^2")]
+	public double LAI_green
 	{
-		get { return (float)p_greenLAI; }
+		get { return p_greenLAI; }
 	}
 
 	[Output]
 	[Description("Leaf area index of dead leaves")]
-	[Units("")]
-	public float LAI_dead
+	[Units("m^2/m^2")]
+	public double LAI_dead
 	{
-		get { return (float)p_deadLAI; }
+		get { return p_deadLAI; }
 	}
 
 	[Output]
 	[Description("Total leaf area index")]
-	[Units("")]
-	public float LAI_total
+	[Units("m^2/m^2")]
+	public double LAI_total
 	{
-		get { return (float)p_totalLAI; }
+		get { return p_totalLAI; }
 	}
 
 	[Output]
 	[Description("Fraction of soil covered by green leaves")]
 	[Units("%")]
-	public float Cover_green
+	public double Cover_green
 	{
 		get
 		{
 			if (p_greenLAI == 0) return 0;
-			return (float)(1.0 - Math.Exp(-p_lightExtCoeff * p_greenLAI));
+			return (1.0 - Math.Exp(-p_lightExtCoeff * p_greenLAI));
 		}
 
 	}
@@ -2103,24 +2138,24 @@ public class AgPasture
 	[Output]
 	[Description("Fraction of soil covered by dead leaves")]
 	[Units("%")]
-	public float Cover_dead
+	public double Cover_dead
 	{
 		get
 		{
 			if (p_deadLAI == 0) return 0;
-			return (float)(1.0 - Math.Exp(-p_lightExtCoeff * p_deadLAI));
+			return (1.0 - Math.Exp(-p_lightExtCoeff * p_deadLAI));
 		}
 	}
 
 	[Output]
 	[Description("Fraction of soil covered by plants")]
 	[Units("%")]
-	public float Cover_tot
+	public double Cover_tot
 	{
 		get
 		{
 			if (p_totalLAI == 0) return 0;
-			return (float)(1.0 - (Math.Exp(-p_lightExtCoeff * p_totalLAI)));
+			return (1.0 - (Math.Exp(-p_lightExtCoeff * p_totalLAI)));
 		}
 	}
 
@@ -2140,10 +2175,10 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				N += SP[s].Nshoot;       //remoblised N is reported in stem
-			return N;
+				result += SP[s].Nshoot;       //remoblised N is reported in stem
+			return result;
 		}
 	}
 	[Output]
@@ -2153,10 +2188,10 @@ public class AgPasture
 	{
 		get
 		{
-			double pct = 0;
-			if (AboveGroundWt != 0)                      //dm_shoot != 0)
-				pct = 100 * AboveGroundN / AboveGroundWt;    // n_shoot/dm_shoot;
-			return pct;
+			double result = 0;
+			if (AboveGroundWt != 0)
+				result = 100 * AboveGroundN / AboveGroundWt;
+			return result;
 		}
 	}
 
@@ -2167,10 +2202,10 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				N += SP[s].Nroot;
-			return N;
+				result += SP[s].Nroot;
+			return result;
 		}
 	}
 
@@ -2290,13 +2325,13 @@ public class AgPasture
 	{
 		get
 		{
-			double n = 0.0;
+			double result = 0.0;
 			if (HarvestWt > 0.0)
 			{
 				for (int s = 0; s < Nsp; s++)
-					n += SP[s].Ndefoliated;
+					result += SP[s].Ndefoliated;
 			}
-			return n;
+			return result;
 		}
 	}
 	[Output]
@@ -2336,17 +2371,17 @@ public class AgPasture
 	[Output]
 	[Description("Amount of N deposited as litter onto soil surface")]
 	[Units("kg/ha")]
-	public float LitterDepositionN
+	public double LitterDepositionN
 	{
-		get { return (float)p_dNLitter; }
+		get { return p_dNLitter; }
 	}
 
 	[Output]
 	[Description("Amount of N added to soil FOM by senescent roots")]
 	[Units("kg/ha")]
-	public float RootSenescenceN
+	public double RootSenescenceN
 	{
-		get { return (float)p_dNRootSen; }
+		get { return p_dNRootSen; }
 	}
 
 	[Output]
@@ -2412,16 +2447,16 @@ public class AgPasture
 	[Output]
 	[Description("Dry matter allocated to roots")]
 	[Units("kg/ha")]
-	public double ToRootDM
+	public double DMToRoots
 	{
 		get
 		{
-			double drDM = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
 			{
-				drDM += (1 - SP[s].fShoot) * SP[s].dGrowth;
+				result += (1 - SP[s].fShoot) * SP[s].dGrowth;
 			}
-			return drDM;
+			return result;
 		}
 	}
 	[Output]
@@ -2442,17 +2477,14 @@ public class AgPasture
 	[Output]
 	[Description("Fraction of growth allocated to roots")]
 	[Units("0-1")]
-	public double ToRoot
+	public double FractionToRoot
 	{
 		get
 		{
-			double f = 0.0;
-			for (int s = 0; s < Nsp; s++)
-			{
-				f += SP[s].fShoot * SP[s].dGrowth;
-			}
-			if (p_dGrowth <= 0) return 0;       //p_dGrowth = dm_daily_growth
-			else return (1 - f / p_dGrowth);    //dm_daily_growth);
+			double result = 0.0;
+			if (p_dGrowth <= 0)
+				result = DMToRoots / p_dGrowth;
+			return result;
 		}
 	}
 
@@ -2543,7 +2575,7 @@ public class AgPasture
 	[Output]
 	[Description("Generic plant growth limiting factor, used for other factors")]
 	[Units("0-1")]
-	public float GLFrgr                 //gf_rgr
+	public double GLFrgr
 	{
 		get
 		{
@@ -2557,7 +2589,7 @@ public class AgPasture
 				}
 				p_Frgr += SP[s].Frgr * prop;
 			}
-			return (float)p_Frgr;
+			return p_Frgr;
 		}
 	}
 
@@ -2573,106 +2605,106 @@ public class AgPasture
 	[Output]
 	[Description("Dry matter of plant pools at stage 1 (young)")]
 	[Units("kg/ha")]
-	public double dm1          // just for testing, kg/ha
+	public double PlantStage1Wt          // just for testing, kg/ha
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				dm += SP[s].dmleaf1 + SP[s].dmstem1 + SP[s].dmstol1;
-			return dm;
+				result += SP[s].dmleaf1 + SP[s].dmstem1 + SP[s].dmstol1;
+			return result;
 		}
 	}
 
 	[Output]
 	[Description("Dry matter of plant pools at stage 2 (developing)")]
 	[Units("kg/ha")]
-	public double dm2          // just for testing, kg/ha
+	public double PlantStage2Wt          // just for testing, kg/ha
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				dm += SP[s].dmleaf2 + SP[s].dmstem2 + SP[s].dmstol2;
-			return dm;
+				result += SP[s].dmleaf2 + SP[s].dmstem2 + SP[s].dmstol2;
+			return result;
 		}
 	}
 	[Output]
 	[Description("Dry matter of plant pools at stage 3 (mature)")]
 	[Units("kg/ha")]
-	public double dm3          // just for testing, kg/ha
+	public double PlantStage3Wt          // just for testing, kg/ha
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				dm += SP[s].dmleaf3 + SP[s].dmstem3 + SP[s].dmstol3;
-			return dm;
+				result += SP[s].dmleaf3 + SP[s].dmstem3 + SP[s].dmstol3;
+			return result;
 		}
 	}
 	[Output]
 	[Description("N content of plant pools at stage 1 (young)")]
 	[Units("kg/ha")]
-	public double N1          // just for testing, kg/ha
+	public double PlantStage1N          // just for testing, kg/ha
 	{
 		get
 		{
-			double n = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				n += SP[s].Nleaf1 + SP[s].Nstem1 + SP[s].Nstol1;
-			return n;
+				result += SP[s].Nleaf1 + SP[s].Nstem1 + SP[s].Nstol1;
+			return result;
 		}
 	}
 	[Output]
 	[Description("N content of plant pools at stage 2 (developing)")]
 	[Units("kg/ha")]
-	public double N2          // just for testing, kg/ha
+	public double PlantStage2N          // just for testing, kg/ha
 	{
 		get
 		{
-			double n = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				n += SP[s].Nleaf2 + SP[s].Nstem2 + SP[s].Nstol2;
-			return n;
+				result += SP[s].Nleaf2 + SP[s].Nstem2 + SP[s].Nstol2;
+			return result;
 		}
 	}
 	[Output]
 	[Description("N content of plant pools at stage 3 (mature)")]
 	[Units("kg/ha")]
-	public double N3          // just for testing, kg/ha
+	public double PlantStage3N          // just for testing, kg/ha
 	{
 		get
 		{
-			double n = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				n += SP[s].Nleaf3 + SP[s].Nstem3 + SP[s].Nstol3;
-			return n;
+				result += SP[s].Nleaf3 + SP[s].Nstem3 + SP[s].Nstol3;
+			return result;
 		}
 	}
 	[Output]
 	[Description("Plant N remobilisation")]
 	[Units("kg/ha")]
-	public double PlantRemobilisedN     //n_remob          // just for testing, kg/ha
+	public double PlantRemobilisedN              // just for testing, kg/ha
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				N += SP[s].Nremob;
-			return N;
+				result += SP[s].Nremob;
+			return result;
 		}
 	}
 	[Output]
 	[Description("Plant C remobilisation")]
 	[Units("kg/ha")]
-	public double C_remob          // just for testing, kg/ha
+	public double PlantRemobilisedC          // just for testing, kg/ha
 	{
 		get
 		{
-			double C = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nsp; s++)
-				C += SP[s].Cremob;
-			return C;
+				result += SP[s].Cremob;
+			return result;
 		}
 	}
 
@@ -2689,30 +2721,31 @@ public class AgPasture
 	[Output]
 	[Description("Vapour pressure deficit")]
 	[Units("kPa")]
-	public Single VPD_out
+	public double VPD_out              // VPD effect on Growth Interpolation Set
 	{
-		get { return (float)VPD(); }
+		get { return VPD(); }
 	}
 
 	[Output]
 	[Description("Effect of vapour pressure on growth (used by micromet)")]
 	[Units("0-1")]
-	public Single FVPD              // VPD effect on Growth Interpolation Set
+	public double FVPD              // VPD effect on Growth Interpolation Set
 	{                               // mostly = 1 for crop/grass/forage
-		get { return (float)FVPDFunction.Value(VPD()); }
+		get { return FVPDFunction.Value(VPD()); }
 	}
 
 	//Following are species values (arrays)
 	[Output]
 	[Description("Leaf area index of green leaves, for each species")]
 	[Units("m^2/m^2")]
-	public float[] SpeciesGreenLAI
+	public double[] SpeciesGreenLAI
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].greenLAI;
-			return ftArray;
+				result[s] = SP[s].greenLAI;
+			return result;
 		}
 	}
 	[Output]
@@ -2745,13 +2778,14 @@ public class AgPasture
 	[Output]
 	[Description("Dry matter weight of live plants above ground, for each species")]
 	[Units("kg/ha")]
-	public float[] SpeciesLiveWt
+	public double[] SpeciesLiveWt
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].dmgreen;
-			return ftArray;
+				result[s] = SP[s].dmgreen;
+			return result;
 		}
 	}
 	[Output]
@@ -2810,70 +2844,75 @@ public class AgPasture
 	[Output]
 	[Description("Total dry matter weight of plants for each plant species")]
 	[Units("kg/ha")]
-	public float[] SpeciesTotalWt
+	public double[] SpeciesTotalWt
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].dmtotal;
-			return ftArray;
+				result[s] = SP[s].dmtotal;
+			return result;
 		}
 	}
 
 	[Output]
 	[Description("Proportion in the dry matter harvested of each species")]
 	[Units("%")]
-	public float[] SpeciesHarvestPct  //proportion in harvested biomass, not on teh land
+	public double[] SpeciesHarvestPct
 	{
 		get
 		{
-			float totalHarvestable = 0;  //for excluding stolon
+			double[] result = new double[SP.Length];
+			double totalHarvestable = 0;    //excluding stolon
 			for (int s = 0; s < Nsp; s++)
-				totalHarvestable += (float)(SP[s].dmstem + SP[s].dmleaf);
+				totalHarvestable += SP[s].dmstem + SP[s].dmleaf;
 			for (int s = 0; s < Nsp; s++)
 			{
-				if (totalHarvestable == 0.0) ftArray[s] = 0.0F;
-				else ftArray[s] = (float)(SP[s].dmstem + SP[s].dmleaf) * 100 / totalHarvestable;
+				if (totalHarvestable > 0.0)
+					result[s] = (SP[s].dmstem + SP[s].dmleaf) * 100 / totalHarvestable;
 			}
-			return ftArray;
+			return result;
 		}
 	}
 	[Output]
 	[Description("Amount of plant dry matter removed by harvest, for each species")]
 	[Units("kgDM/ha")]
-	public float[] SpeciesHarvestWt
+	public double[] SpeciesHarvestWt
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].dmdefoliated;
-			return ftArray;
+				result[s] = SP[s].dmdefoliated;
+			return result;
 		}
 	}
 
 	[Output]
 	[Description("Amount of plant nitrogen removed by harvest, for each species")]
 	[Units("kgN/ha")]
-	public float[] SpeciesHarvestN
+	public double[] SpeciesHarvestN
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].Ndefoliated;
-			return ftArray;
+				result[s] = SP[s].Ndefoliated;
+			return result;
 		}
 	}
 
 	[Output]
 	[Description("Growth limiting factor due to nitrogen, for each species")]
 	[Units("0-1")]
-	public float[] spGFN
+	public double[] SpeciesGFN
 	{
 		get
 		{
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				ftArray[s] = (float)SP[s].gfn;
-			return ftArray;
+				result[s] = SP[s].gfn;
+			return result;
 		}
 	}
 	[Output]
@@ -2954,7 +2993,7 @@ public class AgPasture
 
 	private double RootProportion(int layer, double root_depth)
 	{
-		switch (p_UseRootProportion)
+		switch (p_RootDistributionMethod)
 		{
 			case 1:
 				{ // "Linear" code taken directly from Plant2
