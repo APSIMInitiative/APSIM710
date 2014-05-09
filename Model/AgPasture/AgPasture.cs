@@ -31,11 +31,11 @@ public class AgPasture
 	private int Nsp;                     //can't read in integer directly
 	float[] ftArray;                     //used for returning species values
 	[Param]
-	private String thisCropName = "";
+	private string thisCropName = "";
 	[Param]
-	private String[] micrometType = null;
+	private string[] micrometType = null;
 	[Param]
-	private String[] speciesName = null;   //actually species name
+	private string[] speciesName = null;   //actually species name
 
 	[Param]
 	private double[] isAnnual = null;    //int: Species type (1=annual,0=perennial)
@@ -259,9 +259,9 @@ public class AgPasture
 	private double[] soilSatFactor;  //soil moisture saturation effects on growth
 	//for SWIM options
 	[Param]
-	public String WaterUptakeSource = "calc";
+	public string WaterUptakeSource = "calc";
 	[Param]
-	public String NUptakeSource = "calc";
+	public string NUptakeSource = "calc";
 
 	[Param(IsOptional = true)]
 	private string alt_N_uptake = "no";
@@ -1377,7 +1377,7 @@ public class AgPasture
 	}
 
 	//----------------------------------------------------------------------
-	public void Harvest(String type, double amount)  //Being called not by Event
+	public void Harvest(string type, double amount)  //Being called not by Event
 	{
 		GrazeType GZ = new GrazeType();
 		GZ.amount = (float)amount;
@@ -1755,7 +1755,7 @@ public class AgPasture
 		else
 		{
 			// N uptake calculated by other modules (e.g., SWIM)
-			String msg = "\nInforamtion: AgPasture calculates N uptake. No other approach is available now.";
+			string msg = "\nInforamtion: AgPasture calculates N uptake. No other approach is available now.";
 			msg += "\n             Please specify N uptake source as default \"calc\".";
 			Console.WriteLine(msg);
 
@@ -1816,11 +1816,11 @@ public class AgPasture
 	[Output]
 	[Description("Plant development stage name")]
 	[Units("")]
-	public String StageName
+	public string StageName
 	{
 		get
 		{
-			String name = "out";
+			string name = "out";
 			if (p_Live)
 			{
 				if (SP[0].phenoStage == 0)
@@ -1835,10 +1835,30 @@ public class AgPasture
 	private int p_RootDistributionMethod = 0;
 	[Output]
 	[Description("Root ditribution method")]
-	public int RootDistributionMethod
+	public string RootDistributionMethod
 	{
-		get { return p_RootDistributionMethod; }
-		set { p_RootDistributionMethod = value; }
+		get
+		{
+			switch (p_RootDistributionMethod)
+			{
+				case 1:
+					return "UserDefined";
+				case 2:
+					return "ExpoLinear";
+				default:
+					// case = 0
+					return "Homogenous";
+			}
+		}
+		set
+		{
+			if (value.ToLower() == "userdefined")
+				p_RootDistributionMethod = 1;
+			else if (value.ToLower() == "expolinear")
+				p_RootDistributionMethod = 2;
+			else      // default = homogeneous
+				p_RootDistributionMethod = 0;
+		}
 	}
 
 
@@ -2496,7 +2516,7 @@ public class AgPasture
 	{
 		get
 		{
-			double[] rlv = new Double[rlvp.Length];
+			double[] rlv = new double[rlvp.Length];
 			double sum_rlvp = 0;            // note: rlvp is the root length proportion over the soil profile
 			double p_srl = 75000;           // specific root length (mm root/g root)
 			//Compute the root length, total over the whole profile
@@ -2643,6 +2663,20 @@ public class AgPasture
 		}
 	}
 	[Output]
+	[Description("Dry matter of plant pools at stage 4 (senescent)")]
+	[Units("kg/ha")]
+	public double PlantStage4Wt          // just for testing, kg/ha
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nsp; s++)
+				result += SP[s].dmleaf4 + SP[s].dmstem4;
+			return result;
+		}
+	}
+
+	[Output]
 	[Description("N content of plant pools at stage 1 (young)")]
 	[Units("kg/ha")]
 	public double PlantStage1N          // just for testing, kg/ha
@@ -2681,6 +2715,20 @@ public class AgPasture
 			return result;
 		}
 	}
+	[Output]
+	[Description("N content of plant pools at stage 4 (senescent)")]
+	[Units("kg/ha")]
+	public double PlantStage4N          // just for testing, kg/ha
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nsp; s++)
+				result += SP[s].Nleaf4 + SP[s].Nstem4;
+			return result;
+		}
+	}
+
 	[Output]
 	[Description("Plant N remobilisation")]
 	[Units("kg/ha")]
@@ -2842,6 +2890,32 @@ public class AgPasture
 		}
 	}
 	[Output]
+	[Description("Dry matter weight of standing live plants parts for each species")]
+	[Units("kg/ha")]
+	public double SpeciesStandingGreenWt
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nsp; s++)
+				result += SP[s].dmleaf_green + SP[s].dmstem_green;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of standing dead plants parts for each species")]
+	[Units("kg/ha")]
+	public double SpeciesStandingDeadWt
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nsp; s++)
+				result += SP[s].dmleaf4 + SP[s].dmstem4;
+			return result;
+		}
+	}
+	[Output]
 	[Description("Total dry matter weight of plants for each plant species")]
 	[Units("kg/ha")]
 	public double[] SpeciesTotalWt
@@ -2851,6 +2925,19 @@ public class AgPasture
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
 				result[s] = SP[s].dmtotal;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N amount for each plant species")]
+	[Units("kg/ha")]
+	public double[] SpeciesTotalN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nsp; s++)
+				result[s] = SP[s].Nshoot + SP[s].Nroot;
 			return result;
 		}
 	}
@@ -3205,22 +3292,22 @@ public class AgPasture
 	/// <param name="amtDM"></param>
 	/// <param name="amtN"></param>
 	/// <param name="frac"></param>
-	private void DoSurfaceOMReturn(Double amtDM, Double amtN, Double frac)
+	private void DoSurfaceOMReturn(double amtDM, double amtN, double frac)
 	{
-		Single dDM = (Single)amtDM;
+		float dDM = (float)amtDM;
 
 		BiomassRemovedType BR = new BiomassRemovedType();
-		String[] type = new String[1];
-		Single[] dltdm = new Single[1];
-		Single[] dltn = new Single[1];
-		Single[] dltp = new Single[1];
-		Single[] fraction = new Single[1];
+		string[] type = new string[1];
+		float[] dltdm = new float[1];
+		float[] dltn = new float[1];
+		float[] dltp = new float[1];
+		float[] fraction = new float[1];
 
 		type[0] = "grass";
 		dltdm[0] = dDM;                 // kg/ha
-		dltn[0] = (Single)amtN;         // dDM * (Single)dead_nconc;
+		dltn[0] = (float)amtN;         // dDM * (float)dead_nconc;
 		dltp[0] = dltn[0] * 0.3F;       //just a stub here, no P budgeting process in this module
-		fraction[0] = (Single)frac;
+		fraction[0] = (float)frac;
 
 		BR.crop_type = "grass";
 		BR.dm_type = type;
@@ -3425,15 +3512,15 @@ public class Species
 	public static double PIntRadn;                          //total Radn intecepted by pasture
 	public static double PCoverGreen;
 	public static double PLightExtCoeff;                    //k of mixed pasture
-	public static String thisCropName;
+	public static string thisCropName;
 	public static double Pdmshoot;
 
 
 	public double intRadnFrac;     //fraction of Radn intercepted by this species = intRadn/Radn
 	public double intRadn;         //Intercepted Radn by this species
 
-	public String speciesName;
-	public String micrometType;
+	public string speciesName;
+	public string micrometType;
 
 	public bool isAnnual;        //Species type (1=annual,0=perennial)
 	public bool isLegume;        //Legume (0=no,1=yes)
