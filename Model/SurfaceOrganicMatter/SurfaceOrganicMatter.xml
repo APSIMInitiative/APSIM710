@@ -6,7 +6,7 @@
     <Documentation name="Science documentation">../apsim/surfaceom/docs/surfaceom_science.htm</Documentation>
     <LargeIcon>%apsim%/UserInterface/Images/SOM32.png</LargeIcon>
     <SmallIcon>%apsim%/UserInterface/Images/SOM16.png</SmallIcon>
-    <dll>%apsim%/Model/SurfaceOrganicMatter.%dllext%</dll>
+    <dll>%apsim%/Model/SurfaceOrganicMatter.dll</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
@@ -69,13 +69,13 @@
       <!--  is supplied to residue2
         -->
       <default_standing_fraction description="fraction of the residues 'standing' ie isolated from the soil">0.0              </default_standing_fraction>
-      <standing_extinct_coeff description="assume all standing stuff is flat (!!??)">1.0                 </standing_extinct_coeff>
+      <standing_extinct_coeff description="assume all standing stuff is flat (!!??)">0.5                 </standing_extinct_coeff>
 
       <!--  ______________________________________________________________-
         Residue type information
         ______________________________________________________________-
         -->
-      <residue_types>
+      <ResiduesType>
         <base_type>
           <fom_type>inert</fom_type>
           <fraction_C description="fraction of Carbon in FOM (0-1)">0.4     </fraction_C>
@@ -430,8 +430,8 @@
           <fom_type>wheat</fom_type>
           <specific_area description="specific area of residue (ha/kg">0.0005  </specific_area>
         </wheat>
-      </residue_types>
-      <tillage>
+      </ResiduesType>
+      <SOMTillageType>
 
         <chisel>0.5           100.</chisel>
         <disc>0.5           200.</disc>
@@ -475,7 +475,7 @@
 
         <carry_cereal_forage>   0.95          0  </carry_cereal_forage>
 
-      </tillage>
+      </SOMTillageType>
     </SurfaceOM>
   </Model>
 </Type>
