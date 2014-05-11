@@ -1077,6 +1077,19 @@ public class AgPasture
 
 		DoNewCanopyEvent();
 		DoNewPotentialGrowthEvent();
+
+		//**Remember last status, and update root depth frontier (root depth mainly for annuals)
+		for (int s = 0; s < Nsp; s++)
+		{
+			pSP[s] = SP[s];       //Species state yesterday is rememberd
+			SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
+			SP[s].DailyRefresh();
+
+			double spRootDepth = SP[s].rootGrowth();    //update root depth
+			if (p_rootFrontier < spRootDepth)
+				p_rootFrontier = spRootDepth;
+		}
+
 	}
 
 	//---------------------------------------------------------------------
@@ -1145,17 +1158,17 @@ public class AgPasture
 		if (!p_Live)
 			return;
 
-		//**Remember last status, and update root depth frontier (root depth mainly for annuals)
-		for (int s = 0; s < Nsp; s++)
-		{
-			pSP[s] = SP[s];       //Species state yesterday is rememberd
-			SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
-			SP[s].DailyRefresh();
+		////**Remember last status, and update root depth frontier (root depth mainly for annuals)
+		//for (int s = 0; s < Nsp; s++)
+		//{
+		//    pSP[s] = SP[s];       //Species state yesterday is rememberd
+		//    SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
+		//    SP[s].DailyRefresh();
 
-			double spRootDepth = SP[s].rootGrowth();    //update root depth
-			if (p_rootFrontier < spRootDepth)
-				p_rootFrontier = spRootDepth;
-		}
+		//    double spRootDepth = SP[s].rootGrowth();    //update root depth
+		//    if (p_rootFrontier < spRootDepth)
+		//        p_rootFrontier = spRootDepth;
+		//}
 
 		//Console.WriteLine("Warning message");
 		//throw new Exception("throw ...");
@@ -2890,28 +2903,28 @@ public class AgPasture
 		}
 	}
 	[Output]
-	[Description("Dry matter weight of standing live plants parts for each species")]
+	[Description("Dry matter weight of live standing plants parts for each species")]
 	[Units("kg/ha")]
-	public double SpeciesStandingGreenWt
+	public double[] SpeciesStandingGreenWt
 	{
 		get
 		{
-			double result = 0.0;
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				result += SP[s].dmleaf_green + SP[s].dmstem_green;
+				result[s] = SP[s].dmleaf_green + SP[s].dmstem_green;
 			return result;
 		}
 	}
 	[Output]
-	[Description("Dry matter weight of standing dead plants parts for each species")]
+	[Description("Dry matter weight of dead standing plants parts for each species")]
 	[Units("kg/ha")]
-	public double SpeciesStandingDeadWt
+	public double[] SpeciesStandingDeadWt
 	{
 		get
 		{
-			double result = 0.0;
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nsp; s++)
-				result += SP[s].dmleaf4 + SP[s].dmstem4;
+				result[s] = SP[s].dmleaf4 + SP[s].dmstem4;
 			return result;
 		}
 	}
