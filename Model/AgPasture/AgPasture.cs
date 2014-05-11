@@ -27,9 +27,7 @@ public class AgPasture
 
 	//[Param] parameters that get initial values from the .xml
 	[Param]
-	private double Nspecies = 0;         //Number of species in pasture
-	private int Nsp;                     //can't read in integer directly
-	float[] ftArray;                     //used for returning species values
+	private int Nspecies = 0;         //Number of species in pasture
 	[Param]
 	private string thisCropName = "";
 	[Param]
@@ -162,7 +160,7 @@ public class AgPasture
 	private double[] digestDead;         //Digestibility of dead plant material (0-1)
 
 	[Param]
-	private double[] dmtotal;            //initail shoot mass
+	private double[] dmshoot;            //initial shoot mass (RCichota May 2014, change from dmtotal to dmshoot)
 	//following varibles will be calculated, not [Param] any more
 	private double[] dmleaf1;            //leaf 1 (kg/ha)
 	private double[] dmleaf2;            //leaf 2 (kg/ha)
@@ -375,7 +373,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].IL1;
 			return result;
 		}
@@ -388,11 +386,12 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].Pgross;
 			return result;
 		}
 	}
+	[Output]
 	[Description("Loss of C via respiration")]
 	[Units("kg/ha")]
 	private double[] SpeciesCarbonLossRespiration
@@ -400,7 +399,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = (float)SP[s].Resp_m;
 			return result;
 		}
@@ -413,7 +412,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].Cremob;
 			return result;
 		}
@@ -454,12 +453,9 @@ public class AgPasture
 
 
 		//Create and initialise each species
-		Nsp = (int)Nspecies;
-		ftArray = new float[Nsp];
-
-		SP = new Species[(int)Nsp];         //species of the pasture
-		pSP = new Species[(int)Nsp];        //For storing species status at previous day
-		for (int s = 0; s < Nsp; s++)
+		SP = new Species[(int)Nspecies];         //species of the pasture
+		pSP = new Species[(int)Nspecies];        //For storing species status at previous day
+		for (int s = 0; s < Nspecies; s++)
 		{
 			SP[s] = new Species();
 			pSP[s] = new Species();
@@ -472,7 +468,7 @@ public class AgPasture
 		double sum_fShoot = 0.0;
 		double sum_lightExtCoeff = 0.0;
 
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			//accumulate LAI of all species
 			p_greenLAI += SP[s].greenLAI;
@@ -601,37 +597,38 @@ public class AgPasture
 		SP[s].leafPref = 1;
 		if (SP[s].isLegume) SP[s].leafPref = 1.5;        //Init DM (is partitioned to different pools)
 
-		SP[s].dmtotal = dmtotal[s];
-		if (dmtotal[s] == 0.0) SP[s].phenoStage = 0;
+		SP[s].dmtotal = dmshoot[s];
+		SP[s].dmshoot = dmshoot[s];
+		if (dmshoot[s] == 0.0) SP[s].phenoStage = 0;
 		else SP[s].phenoStage = 1;
 
 		if (!SP[s].isLegume)
 		{
-			SP[s].dmleaf1 = 0.15 * dmtotal[s];
-			SP[s].dmleaf2 = 0.25 * dmtotal[s];
-			SP[s].dmleaf3 = 0.25 * dmtotal[s];
-			SP[s].dmleaf4 = 0.05 * dmtotal[s];
-			SP[s].dmstem1 = 0.05 * dmtotal[s];
-			SP[s].dmstem2 = 0.10 * dmtotal[s];
-			SP[s].dmstem3 = 0.10 * dmtotal[s];
-			SP[s].dmstem4 = 0.05 * dmtotal[s];
+			SP[s].dmleaf1 = 0.15 * dmshoot[s];
+			SP[s].dmleaf2 = 0.25 * dmshoot[s];
+			SP[s].dmleaf3 = 0.25 * dmshoot[s];
+			SP[s].dmleaf4 = 0.05 * dmshoot[s];
+			SP[s].dmstem1 = 0.05 * dmshoot[s];
+			SP[s].dmstem2 = 0.10 * dmshoot[s];
+			SP[s].dmstem3 = 0.10 * dmshoot[s];
+			SP[s].dmstem4 = 0.05 * dmshoot[s];
 			SP[s].dmstol1 = SP[s].dmstol2 = SP[s].dmstol3 = 0;
 		}
 		else //legume
 		{
-			SP[s].dmleaf1 = 0.20 * dmtotal[s];
-			SP[s].dmleaf2 = 0.25 * dmtotal[s];
-			SP[s].dmleaf3 = 0.25 * dmtotal[s];
+			SP[s].dmleaf1 = 0.20 * dmshoot[s];
+			SP[s].dmleaf2 = 0.25 * dmshoot[s];
+			SP[s].dmleaf3 = 0.25 * dmshoot[s];
 			SP[s].dmleaf4 = 0.00;
-			SP[s].dmstem1 = 0.02 * dmtotal[s];  //added small % of stem for legume
-			SP[s].dmstem2 = 0.04 * dmtotal[s];
-			SP[s].dmstem3 = 0.04 * dmtotal[s];
+			SP[s].dmstem1 = 0.02 * dmshoot[s];  //added small % of stem for legume
+			SP[s].dmstem2 = 0.04 * dmshoot[s];
+			SP[s].dmstem3 = 0.04 * dmshoot[s];
 			SP[s].dmstem4 = 0.00;
-			SP[s].dmstol1 = 0.06 * dmtotal[s];
-			SP[s].dmstol2 = 0.12 * dmtotal[s];
-			SP[s].dmstol3 = 0.12 * dmtotal[s];
+			SP[s].dmstol1 = 0.06 * dmshoot[s];
+			SP[s].dmstol2 = 0.12 * dmshoot[s];
+			SP[s].dmstol3 = 0.12 * dmshoot[s];
 		}
-		SP[s].dmroot = dmtotal[s] / SP[s].maxSRratio;
+		SP[s].dmroot = dmshoot[s] / SP[s].maxSRratio;
 		SP[s].dmlitter = dmlitter[s];
 		SP[s].dmgreenmin = dmgreenmin[s];
 
@@ -741,13 +738,13 @@ public class AgPasture
 
 		//partition the MetData to species
 		double sumRadnIntercept = 0.0;   //Intercepted Fraction of the solar Radn available to a species
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			sumRadnIntercept += SP[s].coverGreen;
 		}
 		//update available Radn for each species at current day
 		//IntRadn - the total intecepted radn by whole canopy of mixed species
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			if (sumRadnIntercept == 0)
 			{
@@ -765,7 +762,7 @@ public class AgPasture
 		double dFrac = 1.0;
 		if (co2 == 475)
 		{
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 			{
 				SP[s].MaxFix = 0.5;// dFrac;
 				SP[s].MinFix = 0.2;// dFrac;
@@ -788,14 +785,14 @@ public class AgPasture
 		if (p_waterDemand == 0)
 		{
 			p_gfwater = 1.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				SP[s].gfwater = p_gfwater;
 			return;                                 //case (1) return
 		}
 		if (p_waterDemand > 0 && p_waterUptake == 0)
 		{
 			p_gfwater = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				SP[s].gfwater = p_gfwater;
 			return;                                 //case (2) return
 		}
@@ -830,7 +827,7 @@ public class AgPasture
 
 				double accum_gfwater = 0;
 				p_greenLAI = 0;     //update p_greenLAI before using it.
-				for (int s = 0; s < Nsp; s++)
+				for (int s = 0; s < Nspecies; s++)
 				{
 					SP[s].gfwater = 1 - SP[s].soilSatFactor * (SW - FC) / (Sat - FC);
 					accum_gfwater += SP[s].gfwater * SP[s].greenLAI;   //weighted by greenLAI
@@ -847,7 +844,7 @@ public class AgPasture
 		}
 
 		//Original block Set specieS.gfwater = p_gfwater, to distinguish them later
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			SP[s].gfwater = p_gfwater;
 		}
@@ -928,7 +925,7 @@ public class AgPasture
 		p_dRootSen = 0;
 		p_dNRootSen = 0;
 
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			SP[s].PartitionTurnover();
 
@@ -939,7 +936,9 @@ public class AgPasture
 			p_deadDM += SP[s].dmdead;
 			p_rootMass += SP[s].dmroot;
 
-			p_dHerbage += (SP[s].dmtotal - SP[s].pS.dmtotal);
+			// RCichota may2014: change dmtotal by dmshoot (more clear)
+			p_dHerbage += (SP[s].dmshoot - SP[s].pS.dmshoot);
+			//p_dHerbage += (SP[s].dmtotal - SP[s].pS.dmtotal);
 			//p_dHerbage += SP[s].dGrowth - SP[s].dLitter;
 
 			p_dLitter += SP[s].dLitter;
@@ -1012,9 +1011,9 @@ public class AgPasture
 
 
 		double Tday = 0.75 * MetData.maxt + 0.25 * MetData.mint; //Tday
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
-			double prop = 1.0 / Nsp;
+			double prop = 1.0 / Nspecies;
 			if (p_greenDM != 0.0)
 			{
 				prop = SP[s].dmgreen / AboveGroundLiveWt;   // dm_green;
@@ -1059,7 +1058,7 @@ public class AgPasture
 
 		alt_N_uptake = alt_N_uptake.ToLower();
 		if (alt_N_uptake == "yes")
-			if (Nsp > 1)
+			if (Nspecies > 1)
 				throw new Exception("When working with multiple species, 'ValsMode' must ALWAYS be 'none'");
 	}
 
@@ -1078,8 +1077,9 @@ public class AgPasture
 		DoNewCanopyEvent();
 		DoNewPotentialGrowthEvent();
 
+		// RCichota May2014, moved here from onProcess
 		//**Remember last status, and update root depth frontier (root depth mainly for annuals)
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			pSP[s] = SP[s];       //Species state yesterday is rememberd
 			SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
@@ -1169,6 +1169,7 @@ public class AgPasture
 		//    if (p_rootFrontier < spRootDepth)
 		//        p_rootFrontier = spRootDepth;
 		//}
+		// RCichota May2014: The code commented out above was moved to onPrepare 
 
 		//Console.WriteLine("Warning message");
 		//throw new Exception("throw ...");
@@ -1178,14 +1179,14 @@ public class AgPasture
 
 		//** advance phenology
 		int anyEmerged = 0;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			anyEmerged += SP[s].Phenology();
 		}
 
 		//**Potential growth
 		p_dGrowthPot = 0;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			//p_dGrowthPot += SP[s].DailyGrowthPot();   // alternative way for calclating potential growth
 			p_dGrowthPot += SP[s].DailyEMGrowthPot();   //pot here incorporated [N] effects
@@ -1208,7 +1209,7 @@ public class AgPasture
 
 		//**add drought effects (before considering other nutrient limitation)
 		p_dGrowthW = 0;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			p_dGrowthW += SP[s].DailyGrowthW();
 		}
@@ -1216,7 +1217,7 @@ public class AgPasture
 
 		//**actual daily growth
 		p_dGrowth = 0;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			p_dGrowth += SP[s].DailyGrowthAct();
 		}
@@ -1285,7 +1286,7 @@ public class AgPasture
 		double dm_leaf_dead = LeafDeadWt;
 		double dm_stem_dead = StemDeadWt;
 
-		for (int s = 0; s < Nsp; s++)     // for accumulating the total DM & N removal of species from verious pools
+		for (int s = 0; s < Nspecies; s++)     // for accumulating the total DM & N removal of species from verious pools
 		{
 			SP[s].dmdefoliated = 0.0;
 			SP[s].Ndefoliated = 0.0;
@@ -1297,7 +1298,7 @@ public class AgPasture
 			{
 				if (rm.dm[i].pool == "green" && rm.dm[i].part[j] == "leaf")
 				{
-					for (int s = 0; s < Nsp; s++)           //for each species
+					for (int s = 0; s < Nspecies; s++)           //for each species
 					{
 						if (dm_leaf_green != 0)             //resposibility of other modules to check the amount
 						{
@@ -1319,7 +1320,7 @@ public class AgPasture
 				}
 				else if (rm.dm[i].pool == "green" && rm.dm[i].part[j] == "stem")
 				{
-					for (int s = 0; s < Nsp; s++)
+					for (int s = 0; s < Nspecies; s++)
 					{
 						if (dm_stem_green != 0)  //resposibility of other modules to check the amount
 						{
@@ -1341,7 +1342,7 @@ public class AgPasture
 				}
 				else if (rm.dm[i].pool == "dead" && rm.dm[i].part[j] == "leaf")
 				{
-					for (int s = 0; s < Nsp; s++)
+					for (int s = 0; s < Nspecies; s++)
 					{
 						if (dm_leaf_dead != 0)  //resposibility of other modules to check the amount
 						{
@@ -1356,7 +1357,7 @@ public class AgPasture
 				}
 				else if (rm.dm[i].pool == "dead" && rm.dm[i].part[j] == "stem")
 				{
-					for (int s = 0; s < Nsp; s++)
+					for (int s = 0; s < Nspecies; s++)
 					{
 						if (dm_stem_dead != 0)  //resposibility of other modules to check the amount
 						{
@@ -1374,7 +1375,7 @@ public class AgPasture
 
 		p_harvestDM = 0;
 		p_harvestN = 0;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			p_harvestDM += SP[s].dmdefoliated;
 			p_harvestN += SP[s].Ndefoliated;
@@ -1454,9 +1455,9 @@ public class AgPasture
 		HarvestingFraction = new double[SP.Length];
 		HarvestingFractionTest = new double[SP.Length];
 		double TotalHarvestable = 0.0;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 			TotalHarvestable += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin;
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			double amt = 0;
 			if (herbage_mass != 0)
@@ -1510,7 +1511,7 @@ public class AgPasture
 
 		p_Live = true;
 		ResetZero();
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 			SP[s].SetInGermination();
 
 	}
@@ -1558,7 +1559,7 @@ public class AgPasture
 		p_soilNdemand = p_soilNuptake = 0;
 
 		//species (ignore fraction)
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 			SP[s].ResetZero();
 
 	}
@@ -1649,7 +1650,7 @@ public class AgPasture
 		double p_Ndemand = 0;
 		double p_NdemandOpt = 0;
 
-		for (int s = 0; s < Nsp; s++)
+		for (int s = 0; s < Nspecies; s++)
 		{
 			p_Nfix += SP[s].CalcNdemand();      //Also, default SP[s].Nfix is set assuming soil N supply is sufficient
 			p_NdemandOpt += SP[s].NdemandOpt;   //demand to optimum [N]
@@ -1661,7 +1662,7 @@ public class AgPasture
 		if (p_Ndemand > 0.0 && (p_Ndemand > p_soilNavailable + p_Nfix))
 			Nstress = p_soilNavailable / (p_Ndemand - p_Nfix);
 
-		for (int s = 0; s < Nsp; s++)          //Pasture N demand
+		for (int s = 0; s < Nspecies; s++)          //Pasture N demand
 		{
 			if (!SP[s].isLegume)
 			{
@@ -1707,7 +1708,7 @@ public class AgPasture
 		//3) soil N uptake & N limiation factor
 		p_soilNuptake = 0;
 		p_gfn = 0;
-		for (int s = 0; s < Nsp; s++)          //Pasture N demand and uptake
+		for (int s = 0; s < Nspecies; s++)          //Pasture N demand and uptake
 		{
 			if (Nstress < 0.99)
 			{
@@ -1911,7 +1912,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].dmshoot;
 			return result;
 		}
@@ -1931,7 +1932,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].dmleaf + SP[s].dmstem;
 			return result;
 		}
@@ -1945,7 +1946,7 @@ public class AgPasture
 		get
 		{
 			double dm = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dm += SP[s].dmgreen;
 			return dm;
 		}
@@ -1966,7 +1967,7 @@ public class AgPasture
 		get
 		{
 			double dmleaf = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dmleaf += SP[s].dmleaf;
 			return dmleaf;
 		}
@@ -1979,7 +1980,7 @@ public class AgPasture
 		get
 		{
 			double dm = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dm += SP[s].dmleaf_green;
 			return dm;
 		}
@@ -1992,7 +1993,7 @@ public class AgPasture
 		get
 		{
 			double dm = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dm += SP[s].dmleaf4;
 			return dm;
 		}
@@ -2006,7 +2007,7 @@ public class AgPasture
 		get
 		{
 			double dm = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dm += SP[s].dmstem4;
 			return dm;
 		}
@@ -2019,7 +2020,7 @@ public class AgPasture
 		get
 		{
 			double dm = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dm += SP[s].dmstem_green;
 			return dm;
 		}
@@ -2033,7 +2034,7 @@ public class AgPasture
 		get
 		{
 			double dmstem = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dmstem += SP[s].dmstem;
 			return dmstem;
 		}
@@ -2047,7 +2048,7 @@ public class AgPasture
 		get
 		{
 			double dmstol = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dmstol += SP[s].dmstol;
 			return dmstol;
 		}
@@ -2124,7 +2125,7 @@ public class AgPasture
 		get
 		{
 			double dm = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				dm += SP[s].dmdefoliated;
 			return dm;
 		}
@@ -2209,7 +2210,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nshoot;       //remoblised N is reported in stem
 			return result;
 		}
@@ -2236,7 +2237,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nroot;
 			return result;
 		}
@@ -2250,7 +2251,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nleaf + SP[s].Nstem;
 			return result;
 		}
@@ -2264,7 +2265,7 @@ public class AgPasture
 		{
 			double Namount = 0.0;
 			double DMamount = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 			{
 				Namount += SP[s].Nleaf + SP[s].Nstem;
 				DMamount += SP[s].dmleaf + SP[s].dmstem;
@@ -2282,7 +2283,7 @@ public class AgPasture
 		get
 		{
 			double N = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				N += SP[s].Ngreen;
 			return N;
 		}
@@ -2295,7 +2296,7 @@ public class AgPasture
 		get
 		{
 			double N = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				N += SP[s].Ndead;
 			return N;
 		}
@@ -2309,7 +2310,7 @@ public class AgPasture
 		get
 		{
 			double N = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				N += SP[s].Nleaf;
 			return N;
 		}
@@ -2323,7 +2324,7 @@ public class AgPasture
 		get
 		{
 			double N = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				N += SP[s].Nstem;
 			return N;
 		}
@@ -2337,7 +2338,7 @@ public class AgPasture
 		get
 		{
 			double N = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				N += SP[s].Nstolon;
 			return N;
 		}
@@ -2361,7 +2362,7 @@ public class AgPasture
 			double result = 0.0;
 			if (HarvestWt > 0.0)
 			{
-				for (int s = 0; s < Nsp; s++)
+				for (int s = 0; s < Nspecies; s++)
 					result += SP[s].Ndefoliated;
 			}
 			return result;
@@ -2378,7 +2379,7 @@ public class AgPasture
 				return 0;
 
 			double digest = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				digest += SP[s].digestHerbage * (SP[s].dmstem + SP[s].dmleaf) / (StemWt + LeafWt);  //(dm_stem + dm_leaf);
 			return digest;
 		}
@@ -2472,7 +2473,7 @@ public class AgPasture
 		get
 		{
 			double f = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				f += SP[s].Ncfactor * SP[s].dmshoot;
 			return (f / AboveGroundWt);
 		}
@@ -2485,7 +2486,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 			{
 				result += (1 - SP[s].fShoot) * SP[s].dGrowth;
 			}
@@ -2500,7 +2501,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 			{
 				result += SP[s].fShoot * SP[s].dGrowth;
 			}
@@ -2613,9 +2614,9 @@ public class AgPasture
 		get
 		{
 			double p_Frgr = 0; //weighted value
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 			{
-				double prop = 1.0 / Nsp;
+				double prop = 1.0 / Nspecies;
 				if (p_greenDM != 0.0)
 				{
 					prop = SP[s].dmgreen / AboveGroundLiveWt;
@@ -2643,7 +2644,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].dmleaf1 + SP[s].dmstem1 + SP[s].dmstol1;
 			return result;
 		}
@@ -2657,7 +2658,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].dmleaf2 + SP[s].dmstem2 + SP[s].dmstol2;
 			return result;
 		}
@@ -2670,7 +2671,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].dmleaf3 + SP[s].dmstem3 + SP[s].dmstol3;
 			return result;
 		}
@@ -2683,7 +2684,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].dmleaf4 + SP[s].dmstem4;
 			return result;
 		}
@@ -2697,7 +2698,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nleaf1 + SP[s].Nstem1 + SP[s].Nstol1;
 			return result;
 		}
@@ -2710,7 +2711,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nleaf2 + SP[s].Nstem2 + SP[s].Nstol2;
 			return result;
 		}
@@ -2723,7 +2724,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nleaf3 + SP[s].Nstem3 + SP[s].Nstol3;
 			return result;
 		}
@@ -2736,7 +2737,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nleaf4 + SP[s].Nstem4;
 			return result;
 		}
@@ -2750,7 +2751,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Nremob;
 			return result;
 		}
@@ -2763,7 +2764,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].Cremob;
 			return result;
 		}
@@ -2804,7 +2805,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].greenLAI;
 			return result;
 		}
@@ -2817,7 +2818,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].deadLAI;
 			return result;
 		}
@@ -2830,7 +2831,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].totalLAI;
 			return result;
 		}
@@ -2844,7 +2845,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmgreen;
 			return result;
 		}
@@ -2857,7 +2858,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmdead;
 			return result;
 		}
@@ -2871,7 +2872,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmshoot;
 			return result;
 		}
@@ -2884,7 +2885,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmroot;
 			return result;
 		}
@@ -2897,7 +2898,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmleaf + SP[s].dmstem;
 			return result;
 		}
@@ -2910,7 +2911,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmleaf_green + SP[s].dmstem_green;
 			return result;
 		}
@@ -2923,7 +2924,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmleaf4 + SP[s].dmstem4;
 			return result;
 		}
@@ -2936,8 +2937,8 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
-				result[s] = SP[s].dmtotal;
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmshoot + SP[s].dmroot;
 			return result;
 		}
 	}
@@ -2949,7 +2950,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].Nshoot + SP[s].Nroot;
 			return result;
 		}
@@ -2964,9 +2965,9 @@ public class AgPasture
 		{
 			double[] result = new double[SP.Length];
 			double totalHarvestable = 0;    //excluding stolon
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				totalHarvestable += SP[s].dmstem + SP[s].dmleaf;
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 			{
 				if (totalHarvestable > 0.0)
 					result[s] = (SP[s].dmstem + SP[s].dmleaf) * 100 / totalHarvestable;
@@ -2982,7 +2983,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].dmdefoliated;
 			return result;
 		}
@@ -2996,7 +2997,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].Ndefoliated;
 			return result;
 		}
@@ -3010,7 +3011,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].gfn;
 			return result;
 		}
@@ -3023,7 +3024,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].gftemp;
 			return result;
 		}
@@ -3036,7 +3037,7 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nsp; s++)
+			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].gfwater;
 			return result;
 		}
