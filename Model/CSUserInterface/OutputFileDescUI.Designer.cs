@@ -40,6 +40,7 @@ namespace CSUserInterface
             this.Splitter1 = new System.Windows.Forms.Splitter();
             this.Splitter2 = new System.Windows.Forms.Splitter();
             this.FilterPanel = new System.Windows.Forms.Panel();
+            this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.DictionaryLabel = new System.Windows.Forms.Label();
             this.VariableListView = new System.Windows.Forms.ListView();
             this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -161,6 +162,7 @@ namespace CSUserInterface
             // 
             // FilterPanel
             // 
+            this.FilterPanel.Controls.Add(this.textBoxSearch);
             this.FilterPanel.Controls.Add(this.DictionaryLabel);
             this.FilterPanel.Controls.Add(this.VariableListView);
             this.FilterPanel.Controls.Add(this.Label1);
@@ -170,6 +172,21 @@ namespace CSUserInterface
             this.FilterPanel.Name = "FilterPanel";
             this.FilterPanel.Size = new System.Drawing.Size(397, 419);
             this.FilterPanel.TabIndex = 18;
+            // 
+            // textBoxSearch
+            // 
+            this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxSearch.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.textBoxSearch.Location = new System.Drawing.Point(263, 33);
+            this.textBoxSearch.Name = "textBoxSearch";
+            this.textBoxSearch.Size = new System.Drawing.Size(122, 20);
+            this.textBoxSearch.TabIndex = 23;
+            this.textBoxSearch.Text = "Search";
+            this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
+            this.textBoxSearch.Enter += new System.EventHandler(this.textBoxSearch_Enter);
+            this.textBoxSearch.Leave += new System.EventHandler(this.textBoxSearch_Leave);
             // 
             // DictionaryLabel
             // 
@@ -380,5 +397,6 @@ namespace CSUserInterface
 		private System.Windows.Forms.ColumnHeader ColumnHeader3;
 		private System.Windows.Forms.Label Label1;
 		private System.Windows.Forms.ComboBox ComponentFilter;
+        private System.Windows.Forms.TextBox textBoxSearch;
     }
 }

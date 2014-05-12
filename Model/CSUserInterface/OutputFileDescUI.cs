@@ -26,14 +26,17 @@ namespace CSUserInterface
 
 		private StringCollection ComponentTypes = new StringCollection();
 
-		public OutputFileDescUI() : base()
+        const string searchText = "Search";
+
+        public OutputFileDescUI()
+            : base()
 		{
 
 			//This call is required by the Windows Form Designer.
 			InitializeComponent();
 
 			//Add any initialization after the InitializeComponent() call
-		}
+        }
 
 		public override void OnRefresh()
 		{
@@ -73,7 +76,8 @@ namespace CSUserInterface
 			GetSiblingComponents(Paddock, ref ComponentNames, ref ComponentTypes);
 
 			PopulateComponentFilter();
-			PopulateVariableListView();
+            ClearSearch();
+            PopulateVariableListView();
 
 			if (XmlHelper.Type(Data).ToLower() != "variables") {
 				VariableListView.Columns[1].Width = 0;
@@ -101,6 +105,7 @@ namespace CSUserInterface
 			if (XmlHelper.Type(Data).ToLower() == "tracker") {
 				ComponentFilter.Text = "tracker";
 				ComponentFilter.Visible = false;
+                textBoxSearch.Visible = false;
 			} else {
 				if (ComponentFilter.Items.Count > 0) {
 					ComponentFilter.SelectedIndex = 0;
@@ -199,7 +204,18 @@ namespace CSUserInterface
 			}
 			ListViewGroup NewGroup = new ListViewGroup(GroupName);
 
+            StringCollection hidden = new StringCollection();
+            hidden.AddRange(new string[] { "active", "author", "name", "state", "type", "version" });
 			foreach (Types.MetaDataInfo Variable in ModelInfo) {
+                if (hidden.Contains(Variable.Name.ToLower()))
+                    continue;
+                if (textBoxSearch.Text != "" && textBoxSearch.Text != searchText)
+                {
+                    string search = textBoxSearch.Text.ToLower();
+                    if (!Variable.Name.ToLower().Contains(search) &&
+                        !Variable.Description.ToLower().Contains(search))
+                        continue;
+                }
 				VariableListView.Groups.Add(NewGroup);
 				ListViewItem ListItem = new ListViewItem(Variable.Name);
 				ListItem.Group = NewGroup;
@@ -333,7 +349,8 @@ namespace CSUserInterface
 
 		private void ComponentFilter_TextChanged(System.Object sender, System.EventArgs e)
 		{
-			PopulateVariableListView();
+            ClearSearch();
+            PopulateVariableListView();
 		}
 
 		// --------------------------------------------------
@@ -344,7 +361,7 @@ namespace CSUserInterface
 		{
 			ComponentNames.Clear();
 			ComponentTypes.Clear();
-			if ((Paddock != null)) {
+			if (Paddock != null) {
 				if ((Paddock.Parent != null) && (Paddock.Parent.Parent != null)) {
 					GetSiblingComponents(Paddock.Parent, ref ComponentNames, ref ComponentTypes);
 				}
@@ -354,8 +371,8 @@ namespace CSUserInterface
 						ComponentTypes.Add(Sibling.Type);
 					}
 				}
-			}
-		}
+            }
+        }
 
 		private void OnHelpClick(System.Object sender, System.EventArgs e)
 		{
@@ -376,6 +393,37 @@ namespace CSUserInterface
 			MessageBox.Show(HelpText, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
+        private void textBoxSearch_TextChanged(object sender, EventArgs e)
+        {
+            PopulateVariableListView();
+        }
 
+        private void textBoxSearch_Enter(object sender, EventArgs e)
+        {
+            if (textBoxSearch.Text == searchText)
+            {
+                textBoxSearch.Text = "";
+                textBoxSearch.ForeColor = System.Drawing.SystemColors.WindowText;
+                textBoxSearch.BackColor = System.Drawing.SystemColors.Window;
+                textBoxSearch.Font = new Font(textBoxSearch.Font, textBoxSearch.Font.Style &  ~FontStyle.Italic);
+            }
+        }
+
+        private void textBoxSearch_Leave(object sender, EventArgs e)
+        {
+            if (textBoxSearch.Text == "")
+            {
+                textBoxSearch.Text = searchText;
+                textBoxSearch.ForeColor = System.Drawing.SystemColors.GrayText;
+                textBoxSearch.BackColor = System.Drawing.SystemColors.Window;
+                textBoxSearch.Font = new Font(textBoxSearch.Font, textBoxSearch.Font.Style | FontStyle.Italic);
+            }
+        }
+
+        private void ClearSearch()
+        {
+            textBoxSearch.Text = "";
+            textBoxSearch_Leave(this, new EventArgs());
+        }
 	}
 }
