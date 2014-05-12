@@ -170,13 +170,12 @@ Paddock:
         StructurePrimaryBudTotalNodeNo
         MaxT
         MinT
-        maxt_soil_surface
-        mint_soil_surface
+        maxt_soil(1)
+        mint_soil(1)
         LeafThermalTimeValue
         StructureMainStemFinalNodeNumberValue
         LeafSpecificArea
-        HuskLiveWt
-        RachisLiveWt
+        SpikeLiveWt
         GrainNumber
         WaterSupplyDemandRatio
         GrainAccumThermalTimeValue
@@ -186,6 +185,8 @@ Paddock:
         StructureTotalStemPopn
         StructureMainStemPrimordiaNo
         StructureMainStemNodeNo
+        EarLiveWt
+        ZadokStageValue
 
      Output file = LeestonSow2012-02-20Population50 Outputs.out
      Format = normal
@@ -357,7 +358,8 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
         ---------------------------------------------------------------------
-            0.-  200.  0.050  0.100  0.250  0.419  0.250  1.311  0.856  0.900*******
+            0.-   20.  0.050  0.100  0.250  0.419  0.250  1.311  0.171  0.900*******
+           20.-  200.  0.050  0.100  0.250  0.419  0.250  1.311  0.684  0.900*******
           200.-  400.  0.100  0.100  0.330  0.405  0.330  1.524  0.135  0.500389.229
           400.-  600.  0.149  0.149  0.270  0.342  0.270  1.650  0.009  0.600 16.362
           600.-  800.  0.140  0.140  0.220  0.322  0.220  1.601  0.000  0.400 97.995
@@ -375,7 +377,8 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  200.      20.00      30.00      30.00      33.80
+            0.-   20.       2.00       3.00       3.00       3.38
+           20.-  200.      18.00      27.00      27.00      30.42
           200.-  400.      20.00      46.00      46.00      15.00
           400.-  600.      29.80      24.20      24.20      14.40
           600.-  800.      28.00      16.00      16.00      20.40
@@ -461,14 +464,15 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.00  2.49  530.20    3.00    0.00
-             2     6.00  0.92   15.00    2.00    0.00
-             3     6.00  0.32   15.00    1.00    0.00
-             4     6.00  0.28   10.00    1.00    0.00
-             5     6.00  0.21    5.00    1.00    0.00
-             6     6.00  0.20    5.00    1.00    0.00
+             1     6.00  2.63   53.02    0.30    0.00
+             2     6.00  2.47  477.18    2.70    0.00
+             3     6.00  0.92   15.00    2.00    0.00
+             4     6.00  0.32   15.00    1.00    0.00
+             5     6.00  0.28   10.00    1.00    0.00
+             6     6.00  0.21    5.00    1.00    0.00
              7     6.00  0.20    5.00    1.00    0.00
              8     6.00  0.20    5.00    1.00    0.00
+             9     6.00  0.20    5.00    1.00    0.00
           ------------------------------------------------
            Totals              590.21   11.00    0.00
           ------------------------------------------------
@@ -483,21 +487,22 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      64115.2  5828.7  1093.9   136.7   131.6     3.3
-             2      27950.1  2540.9   122.0    15.3    90.5     2.3
-             3      10409.5   946.3    18.5     2.3    62.2     1.6
-             4       8890.2   808.2    11.3     1.4    42.7     1.1
-             5       6656.5   605.1     3.6     0.5    29.4     0.7
-             6       6402.9   582.1     1.1     0.1    20.2     0.5
-             7       6402.9   582.1     1.1     0.1    13.9     0.3
+             1       6759.0   614.5   123.8    15.5   126.3     3.2
+             2      57361.1  5214.6   973.1   121.6    90.1     2.3
+             3      27950.1  2540.9   122.0    15.3    61.9     1.5
+             4      10409.5   946.3    18.5     2.3    42.6     1.1
+             5       8890.2   808.2    11.3     1.4    29.2     0.7
+             6       6656.5   605.1     3.6     0.5    20.1     0.5
+             7       6402.9   582.1     1.1     0.1    13.8     0.3
              8       6402.9   582.1     1.1     0.1     9.5     0.2
+             9       6402.9   582.1     1.1     0.1     6.5     0.2
           ---------------------------------------------------------
-           Totals  137230.3 12475.5  1252.7   156.6   400.0    10.0
+           Totals  137235.1 12475.9  1255.7   157.0   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : initialsoilomn = 12642.06250
+     Manager creating a new local real variable : initialsoilomn = 12642.88086
      Manager creating a new local real variable : initialsurfaceomn = 5.00000
-     Manager creating a new local real variable : initialmineraln = 601.20282
+     Manager creating a new local real variable : initialmineraln = 601.20276
 1 February 2013(Day of year=32): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -1986,7 +1991,7 @@ Paddock:
      
 31 March 2013 - TerminalSpikelet
                             LAI = 0.90 (m^2/m^2)
-           Above Ground Biomass = 41.52 (g/m^2)
+           Above Ground Biomass = 41.54 (g/m^2)
 1 April 2013(Day of year=91): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3014,7 +3019,7 @@ Paddock:
      
 11 May 2013 - FlagLeaf
                             LAI = 2.93 (m^2/m^2)
-           Above Ground Biomass = 256.13 (g/m^2)
+           Above Ground Biomass = 256.19 (g/m^2)
 12 May 2013(Day of year=132): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3242,7 +3247,7 @@ Paddock:
      
 20 May 2013 - Flowering
                             LAI = 2.86 (m^2/m^2)
-           Above Ground Biomass = 294.42 (g/m^2)
+           Above Ground Biomass = 294.48 (g/m^2)
 21 May 2013(Day of year=141): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -3295,7 +3300,7 @@ Paddock:
      
 22 May 2013 - StartGrainFill
                             LAI = 2.85 (m^2/m^2)
-           Above Ground Biomass = 303.37 (g/m^2)
+           Above Ground Biomass = 303.43 (g/m^2)
 23 May 2013(Day of year=143): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5498,7 +5503,7 @@ Paddock:
      
 18 August 2013 - EndGrainFill
                             LAI = 1.58 (m^2/m^2)
-           Above Ground Biomass = 528.92 (g/m^2)
+           Above Ground Biomass = 528.98 (g/m^2)
 19 August 2013(Day of year=231): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -6076,7 +6081,7 @@ Paddock:
      
 10 September 2013 - Maturity
                             LAI = 0.73 (m^2/m^2)
-           Above Ground Biomass = 528.42 (g/m^2)
+           Above Ground Biomass = 528.47 (g/m^2)
 11 September 2013(Day of year=254): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -7479,7 +7484,7 @@ Paddock:
      
 5 November 2013 - HarvestRipe
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 527.73 (g/m^2)
+           Above Ground Biomass = 527.79 (g/m^2)
 6 November 2013(Day of year=310): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
