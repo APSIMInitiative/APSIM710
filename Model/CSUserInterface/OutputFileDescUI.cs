@@ -142,26 +142,30 @@ namespace CSUserInterface
 			// ----------------------------------------------
 
 			if ((ComponentFilter.SelectedIndex >= 0) && (ComponentFilter.SelectedIndex < ComponentNames.Count)) {
-				System.Windows.Forms.Cursor.Current = Cursors.WaitCursor;
 				VariableListView.BeginUpdate();
-				VariableListView.Groups.Clear();
-				VariableListView.Items.Clear();
+                try
+                {
+                    VariableListView.Groups.Clear();
+                    VariableListView.Items.Clear();
 
-				string ComponentType = ComponentTypes[ComponentFilter.SelectedIndex];
-				string ComponentName = ComponentNames[ComponentFilter.SelectedIndex];
-				string PropertyGroup = XmlHelper.Type(Data);
-				// e.g. variables or events
-				if (PropertyGroup.ToLower() == "tracker") {
-					PropertyGroup = "variables";
-				}
-				if (ComponentType == "tracker")
-                    AddTrackerExamples();
-                else
-                    AddVariablesToListView(ComponentName, ComponentType, PropertyGroup);
-
-				VariableListView.EndUpdate();
+                    string ComponentType = ComponentTypes[ComponentFilter.SelectedIndex];
+                    string ComponentName = ComponentNames[ComponentFilter.SelectedIndex];
+                    string PropertyGroup = XmlHelper.Type(Data);
+                    // e.g. variables or events
+                    if (PropertyGroup.ToLower() == "tracker")
+                    {
+                        PropertyGroup = "variables";
+                    }
+                    if (ComponentType == "tracker")
+                        AddTrackerExamples();
+                    else
+                        AddVariablesToListView(ComponentName, ComponentType, PropertyGroup);
+                }
+                finally
+                {
+                    VariableListView.EndUpdate();
+                }
 				VariableListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-				System.Windows.Forms.Cursor.Current = Cursors.Default;
 			}
 		}
 
@@ -204,6 +208,9 @@ namespace CSUserInterface
 			}
 			ListViewGroup NewGroup = new ListViewGroup(GroupName);
 
+            var items = new ListViewItem[ModelInfo.Count];
+            int i = 0;
+
             StringCollection hidden = new StringCollection();
             hidden.AddRange(new string[] { "active", "author", "name", "state", "type", "version" });
 			foreach (Types.MetaDataInfo Variable in ModelInfo) {
@@ -226,8 +233,13 @@ namespace CSUserInterface
 				}
 				ListItem.SubItems.Add(Variable.Units);
 				ListItem.SubItems.Add(Variable.Description);
-				VariableListView.Items.Add(ListItem);
+                items[i++] = ListItem;
 			}
+            if (i > 0)
+            {
+                Array.Resize(ref items, i);
+                VariableListView.Items.AddRange(items); // Using AddRange is MUCH faster than doing a series of separate Add operations.
+            }
 		}
 		public override void OnSave()
 		{
@@ -393,19 +405,24 @@ namespace CSUserInterface
 			MessageBox.Show(HelpText, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
+        private bool searchTextSelfChange = false;
+
         private void textBoxSearch_TextChanged(object sender, EventArgs e)
         {
-            PopulateVariableListView();
+            if (!searchTextSelfChange)
+              PopulateVariableListView();
         }
 
         private void textBoxSearch_Enter(object sender, EventArgs e)
         {
             if (textBoxSearch.Text == searchText)
             {
+                searchTextSelfChange = true;
                 textBoxSearch.Text = "";
                 textBoxSearch.ForeColor = System.Drawing.SystemColors.WindowText;
                 textBoxSearch.BackColor = System.Drawing.SystemColors.Window;
                 textBoxSearch.Font = new Font(textBoxSearch.Font, textBoxSearch.Font.Style &  ~FontStyle.Italic);
+                searchTextSelfChange = false;
             }
         }
 
@@ -413,16 +430,20 @@ namespace CSUserInterface
         {
             if (textBoxSearch.Text == "")
             {
+                searchTextSelfChange = true;
                 textBoxSearch.Text = searchText;
                 textBoxSearch.ForeColor = System.Drawing.SystemColors.GrayText;
-                textBoxSearch.BackColor = System.Drawing.SystemColors.Window;
+                textBoxSearch.BackColor = System.Drawing.SystemColors.Info;
                 textBoxSearch.Font = new Font(textBoxSearch.Font, textBoxSearch.Font.Style | FontStyle.Italic);
+                searchTextSelfChange = false;
             }
         }
 
         private void ClearSearch()
         {
+            searchTextSelfChange = true;
             textBoxSearch.Text = "";
+            searchTextSelfChange = false;
             textBoxSearch_Leave(this, new EventArgs());
         }
 	}
