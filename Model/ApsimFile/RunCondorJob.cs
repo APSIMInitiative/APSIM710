@@ -229,7 +229,7 @@ namespace ApsimFile
 
 			List<string> inputfiles = new List<string>();
 			if (File.Exists (SelfExtractingExecutableLocation)) 
-				inputfiles.Add (SelfExtractingExecutableLocation);
+				inputfiles.Add (Path.GetFileName(SelfExtractingExecutableLocation));
 
 			// Number of simulations in the current job
 			int numSims = 0;
@@ -272,7 +272,7 @@ namespace ApsimFile
 					numSims = 0;
 					inputfiles.Clear ();
 					if (File.Exists (SelfExtractingExecutableLocation)) 
-						inputfiles.Add (SelfExtractingExecutableLocation);
+						inputfiles.Add (Path.GetFileName(SelfExtractingExecutableLocation));
 					jobCounter++;
 				}
 			}
