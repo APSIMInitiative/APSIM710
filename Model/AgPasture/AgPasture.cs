@@ -159,6 +159,9 @@ public class AgPasture
 	[Param]
 	private double[] digestDead;         //Digestibility of dead plant material (0-1)
 
+	[Param(IsOptional = true)]
+	private double[] dmtotal = null;	//This would be deleted (it has been replaced by dmshoot - but keep as optional for back-compatibility)
+
 	[Param]
 	private double[] dmshoot;            //initial shoot mass (RCichota May 2014, change from dmtotal to dmshoot)
 	//following varibles will be calculated, not [Param] any more
@@ -598,6 +601,11 @@ public class AgPasture
 
 		SP[s].leafPref = 1;
 		if (SP[s].isLegume) SP[s].leafPref = 1.5;        //Init DM (is partitioned to different pools)
+
+		if (dmtotal[s] >= 0.0)
+		{ // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for back-compatibility)
+			dmshoot[s] = dmtotal[s];
+		}
 
 		SP[s].dmtotal = dmshoot[s];
 		SP[s].dmshoot = dmshoot[s];
