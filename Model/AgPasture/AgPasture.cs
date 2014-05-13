@@ -434,6 +434,7 @@ public class AgPasture
 			p_RootDistributionMethod = 2;
 			rootDist = new double[rlvp.Length];
 			rlvp.CopyTo(rootDist, 0); //Store distribution parameter values
+			p_ExpoLinearDepthParam = rlvp[0];
 			// Calculate actual rlvp values
 			rlvp = new double[dlayer.Length];
 			for (int layer = 0; layer < dlayer.Length; layer++)
@@ -451,10 +452,11 @@ public class AgPasture
 			throw new Exception("AgPasture: Incorrect number of values passed to RLVP exception");
 		}
 
+		rlvpTest = RootProfileDistribution();
 
 		//Create and initialise each species
-		SP = new Species[(int)Nspecies];         //species of the pasture
-		pSP = new Species[(int)Nspecies];        //For storing species status at previous day
+		SP = new Species[Nspecies];         //species of the pasture
+		pSP = new Species[Nspecies];        //For storing species status at previous day
 		for (int s = 0; s < Nspecies; s++)
 		{
 			SP[s] = new Species();
@@ -1847,8 +1849,10 @@ public class AgPasture
 	}
 
 	private int p_RootDistributionMethod = 0;
+	[Param]
 	[Output]
 	[Description("Root ditribution method")]
+	[Units("")]
 	public string RootDistributionMethod
 	{
 		get
@@ -1875,6 +1879,40 @@ public class AgPasture
 		}
 	}
 
+	private double p_ExpoLinearDepthParam;
+	[Param]
+	[Output]
+	[Description("Fraction of root depth where its proportion starts to decrease")]
+	[Units("0-1")]
+	public double ExpoLinearDepthParam
+	{
+		get { return p_ExpoLinearDepthParam; }
+		set
+		{
+			p_ExpoLinearDepthParam = value;
+			if (p_ExpoLinearDepthParam == 1.0)
+				p_RootDistributionMethod = 0;	// effectivelly it defines a homogeneous distribution
+		}
+	}
+
+	private double p_ExpoLinearCurveParam;
+	[Param]
+	[Output]
+	[Description("Exponent to determine mass distribution in the soil profile")]
+	[Units("")]
+	public double ExpoLinearCurveParam
+	{
+		get { return p_ExpoLinearCurveParam; }
+		set
+		{
+			p_ExpoLinearCurveParam = value;
+			if (p_ExpoLinearCurveParam == 0.0)
+				p_RootDistributionMethod = 0;	// It is impossible to solve, but its limit is a homogeneous distribution
+		}
+	}
+
+	[Output]
+	public double[] rlvpTest;
 
 	private double[] HarvestingFraction;
 	[Output]
@@ -3092,11 +3130,99 @@ public class AgPasture
 		return actualUptake;
 	}
 
+	/// <summary>
+	/// Compute the distribution of roots in the soil profile (sum is equal to one)
+	/// </summary>
+	/// <returns>The proportion of root mass in each soil layer</returns>
+	private double[] RootProfileDistribution()
+	{
+		int nLayers = dlayer.Length;
+		double[] result = new double[nLayers];
+		double sumProportion = 0;
+
+		switch (p_RootDistributionMethod)
+		{
+			case 0:
+				{
+					// homogenous distribution over soil profile
+					double DepthTop = 0;
+					for (int layer = 0; layer < nLayers; layer++)
+					{
+						if (DepthTop >= p_rootFrontier)
+							result[layer] = 0.0;
+						else if (DepthTop + dlayer[layer] <= p_rootFrontier)
+							result[layer] = 1.0;
+						else
+							result[layer] = (p_rootFrontier - DepthTop) / dlayer[layer];
+						sumProportion += result[layer];
+						DepthTop += dlayer[layer];
+					}
+					break;
+				}
+			case 1:
+				{
+					// distribution given by the user
+					Array.Resize(ref rlvp, nLayers);	// This will remove values for excess layers or add zeroes if layers are missing
+					for (int layer = 0; layer < nLayers; layer++)
+					{
+						result[layer] = rlvp[layer];
+						sumProportion += result[layer];
+					}
+					break;
+				}
+			case 2:
+				{
+					// distribution calculated using ExpoLinear method
+					//  Considers homogeneous distribution from surface down to a fraction of root depth (p_ExpoLinearDepthParam)
+					//   below this depth, the proportion of root decrease following a power function (exponent = p_ExpoLinearCurveParam)
+					//   if exponent is one than the proportion decreases linearly.
+					double DepthTop = 0;
+					double DepthFirstStage = p_rootFrontier * p_ExpoLinearDepthParam;
+					double DepthSecondStage = p_rootFrontier - DepthFirstStage;
+					for (int layer = 0; layer < nLayers; layer++)
+					{
+						if (DepthTop >= p_rootFrontier)
+							result[layer] = 0.0;
+						else if (DepthTop + dlayer[layer] <= DepthFirstStage)
+							result[layer] = 1.0;
+						else
+						{
+							if (DepthTop < DepthFirstStage)
+								result[layer] = (DepthFirstStage - DepthTop) / dlayer[layer];
+							if ((p_ExpoLinearDepthParam < 1.0) && (p_ExpoLinearCurveParam > 0.0))
+							{
+								double thisDepth = Math.Max(0.0, DepthTop - DepthFirstStage);
+								double Ftop = (thisDepth - DepthSecondStage) * Math.Pow(1 - thisDepth / DepthSecondStage, p_ExpoLinearCurveParam) / (p_ExpoLinearCurveParam + 1);
+								thisDepth = Math.Min(DepthTop + dlayer[layer] - DepthFirstStage, DepthSecondStage);
+								double Fbottom = (thisDepth - DepthSecondStage) * Math.Pow(1 - thisDepth / DepthSecondStage, p_ExpoLinearCurveParam) / (p_ExpoLinearCurveParam + 1);
+								result[layer] += Math.Max(0.0, Fbottom - Ftop) / dlayer[layer];
+							}
+							else if (DepthTop + dlayer[layer] <= p_rootFrontier)
+							    result[layer] += Math.Min(DepthTop + dlayer[layer], p_rootFrontier) - Math.Max(DepthTop, DepthFirstStage) / dlayer[layer];
+						}
+						sumProportion += result[layer];
+						DepthTop += dlayer[layer];
+					}
+					break;
+				}
+			default:
+				{
+					throw new Exception("No valid method for computing root distribution was selected");
+				}
+		}
+		if (sumProportion > 0)
+			for (int layer = 0; layer < nLayers; layer++)
+				result[layer] = result[layer] / sumProportion;
+		else
+			throw new Exception("Could not calculate root distribution");
+		return result;
+	}
+
 	private double RootProportion(int layer, double root_depth)
 	{
 		switch (p_RootDistributionMethod)
 		{
-			case 1:
+			case 0: case 1:
 				{ // "Linear" code taken directly from Plant2
 					double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
 					double depth_to_layer_top = 0;      // depth to top of layer (mm)
@@ -3120,7 +3246,8 @@ public class AgPasture
 					}
 					double depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
 
-					double dX0 = rootDist[0] * root_depth; //TODO allow this to be set via Root Distribution Parameter
+					//double dX0 = rootDist[0] * root_depth; //TODO allow this to be set via Root Distribution Parameter
+					double dX0 = p_ExpoLinearDepthParam * root_depth;
 					double dX1 = root_depth;
 
 					if (Debug_Level > 1)
@@ -3173,6 +3300,8 @@ public class AgPasture
 			default: return 1; //this is equivilant to the original implementation (depreciated)
 		}
 	}
+
+
 
 	//================================================
 	/// <summary>
