@@ -456,23 +456,28 @@ public class AgPasture
 			rlvp.CopyTo(rootDist, 0); //Store distribution parameter values
 			p_ExpoLinearDepthParam = rlvp[0];
 			// Calculate actual rlvp values
-			rlvp = new double[dlayer.Length];
-			for (int layer = 0; layer < dlayer.Length; layer++)
-			{
-				rlvp[layer] = RootProportion(layer, p_rootFrontier);
-			}
+
+
+			//rlvp = new double[dlayer.Length];
+			//for (int layer = 0; layer < dlayer.Length; layer++)
+			//{
+			//    rlvp[layer] = RootProportion(layer, p_rootFrontier);
+			//}
 		}
-		else if (rlvp.Length == dlayer.Length)
-		{
-			//Console.Out.WriteLine("Using real rlvp data values - original method");
-			p_RootDistributionMethod = 1; //using corrected depth calculation method
-		}
-		else
-		{
-			throw new Exception("AgPasture: Incorrect number of values passed to RLVP exception");
-		}
+		//else if (rlvp.Length == dlayer.Length)
+		//{
+		//    //Console.Out.WriteLine("Using real rlvp data values - original method");
+		//    p_RootDistributionMethod = 1; //using corrected depth calculation method
+		//}
+		//else
+		//{
+		//    throw new Exception("AgPasture: Incorrect number of values passed to RLVP exception");
+		//}
 
 		rlvpTest = RootProfileDistribution();
+
+		// ensure rlvp is the proportion of roots per layer (add up to 1.0)
+		rlvp = RootProfileDistribution();
 
 		//Create and initialise each species
 		SP = new Species[Nspecies];         //species of the pasture
@@ -3308,85 +3313,88 @@ public class AgPasture
 
 	private double RootProportion(int layer, double root_depth)
 	{
-		switch (p_RootDistributionMethod)
-		{
-			case 0: case 1:
-				{ // "Linear" code taken directly from Plant2
-					double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
-					double depth_to_layer_top = 0;      // depth to top of layer (mm)
-					double depth_to_root = 0;           // depth to root in layer (mm)
-					double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
-					// Implementation Section ----------------------------------
-					for (int i = 0; i <= layer; i++)
-						depth_to_layer_bottom += dlayer[i];
-					depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
-					depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
-					depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
+		return rlvp[layer] / rlvp[0];
 
-					return depth_of_root_in_layer / dlayer[layer];
-				}
-			case 2:
-				{ // "broken stick"
-					double depth_to_layer_bottom = 0;
-					for (int i = 0; i <= layer; i++)
-					{
-						depth_to_layer_bottom += dlayer[i];
-					}
-					double depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
+		// moved the calculation to RootProfileDistribution (done only once per simulation as root proportion doesn't change)
+		//switch (p_RootDistributionMethod)
+		//{
+		//    case 0: case 1:
+		//        { // "Linear" code taken directly from Plant2
+		//            double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
+		//            double depth_to_layer_top = 0;      // depth to top of layer (mm)
+		//            double depth_to_root = 0;           // depth to root in layer (mm)
+		//            double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
+		//            // Implementation Section ----------------------------------
+		//            for (int i = 0; i <= layer; i++)
+		//                depth_to_layer_bottom += dlayer[i];
+		//            depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
+		//            depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
+		//            depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
 
-					//double dX0 = rootDist[0] * root_depth; //TODO allow this to be set via Root Distribution Parameter
-					double dX0 = p_ExpoLinearDepthParam * root_depth;
-					double dX1 = root_depth;
+		//            return depth_of_root_in_layer / dlayer[layer];
+		//        }
+		//    case 2:
+		//        { // "broken stick"
+		//            double depth_to_layer_bottom = 0;
+		//            for (int i = 0; i <= layer; i++)
+		//            {
+		//                depth_to_layer_bottom += dlayer[i];
+		//            }
+		//            double depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
 
-					if (Debug_Level > 1)
-					{
-						Console.Out.WriteLine();
-						Console.Out.WriteLine("Root Depth 0 = " + dX0);
-						Console.Out.WriteLine("Root Depth 1 = " + dX1);
-						Console.Out.WriteLine("Layer = " + (layer + 1));
-						Console.Out.WriteLine("   depth_to_layer_top = " + depth_to_layer_top);
-						Console.Out.WriteLine("   depth_to_layer_bottom = " + depth_to_layer_bottom);
-					}
-					if (depth_to_layer_bottom <= dX0)
-					{
-						if (Debug_Level > 1)
-							Console.Out.WriteLine("   1.0 =        fully in the Square Zone");
-						return 1.0; // fully in the "Square Zone"
-					}
-					if (depth_to_layer_top >= dX1)
-					{
-						if (Debug_Level > 1)
-							Console.Out.WriteLine("   0.0 =        fully below the root zone");
-						return 0.0; // fully below the root zone
-					}
+		//            //double dX0 = rootDist[0] * root_depth; //TODO allow this to be set via Root Distribution Parameter
+		//            double dX0 = p_ExpoLinearDepthParam * root_depth;
+		//            double dX1 = root_depth;
 
-					//Includes special cases of includes poviot point and/or layer partially below the root zone
-					double rootUpper = (dX0 > depth_to_layer_top) ? dX0 - depth_to_layer_top : 0;
-					double rootLower = 0;
-					if (dX0 < dX1)
-					{
-						double A = dX1 - dX0; // depth of "triangle"
-						double B = 1;
-						double a0 = A - (Math.Max(depth_to_layer_top, dX0) - dX0);
-						double b0 = B * (a0 / A);
-						double a1 = A - (Math.Min(depth_to_layer_bottom, dX1) - dX0);
-						double b1 = B * (a1 / A);
-						double prop = (b0 + b1) / 2;
-						double depth = Math.Min(depth_to_layer_bottom, dX1) - Math.Max(depth_to_layer_top, dX0);
-						rootLower = prop * depth;
-					}
-					double result = (rootUpper + rootLower) / (depth_to_layer_bottom - depth_to_layer_top);
-					if (Debug_Level > 1)
-					{
-						Console.Out.WriteLine("   " + rootUpper + "        rootUpper");
-						Console.Out.WriteLine("   " + rootLower + "        rootLower");
-						Console.Out.WriteLine("   " + result + "        result");
-					}
-					return result;
-				}
+		//            if (Debug_Level > 1)
+		//            {
+		//                Console.Out.WriteLine();
+		//                Console.Out.WriteLine("Root Depth 0 = " + dX0);
+		//                Console.Out.WriteLine("Root Depth 1 = " + dX1);
+		//                Console.Out.WriteLine("Layer = " + (layer + 1));
+		//                Console.Out.WriteLine("   depth_to_layer_top = " + depth_to_layer_top);
+		//                Console.Out.WriteLine("   depth_to_layer_bottom = " + depth_to_layer_bottom);
+		//            }
+		//            if (depth_to_layer_bottom <= dX0)
+		//            {
+		//                if (Debug_Level > 1)
+		//                    Console.Out.WriteLine("   1.0 =        fully in the Square Zone");
+		//                return 1.0; // fully in the "Square Zone"
+		//            }
+		//            if (depth_to_layer_top >= dX1)
+		//            {
+		//                if (Debug_Level > 1)
+		//                    Console.Out.WriteLine("   0.0 =        fully below the root zone");
+		//                return 0.0; // fully below the root zone
+		//            }
 
-			default: return 1; //this is equivilant to the original implementation (depreciated)
-		}
+		//            //Includes special cases of includes poviot point and/or layer partially below the root zone
+		//            double rootUpper = (dX0 > depth_to_layer_top) ? dX0 - depth_to_layer_top : 0;
+		//            double rootLower = 0;
+		//            if (dX0 < dX1)
+		//            {
+		//                double A = dX1 - dX0; // depth of "triangle"
+		//                double B = 1;
+		//                double a0 = A - (Math.Max(depth_to_layer_top, dX0) - dX0);
+		//                double b0 = B * (a0 / A);
+		//                double a1 = A - (Math.Min(depth_to_layer_bottom, dX1) - dX0);
+		//                double b1 = B * (a1 / A);
+		//                double prop = (b0 + b1) / 2;
+		//                double depth = Math.Min(depth_to_layer_bottom, dX1) - Math.Max(depth_to_layer_top, dX0);
+		//                rootLower = prop * depth;
+		//            }
+		//            double result = (rootUpper + rootLower) / (depth_to_layer_bottom - depth_to_layer_top);
+		//            if (Debug_Level > 1)
+		//            {
+		//                Console.Out.WriteLine("   " + rootUpper + "        rootUpper");
+		//                Console.Out.WriteLine("   " + rootLower + "        rootLower");
+		//                Console.Out.WriteLine("   " + result + "        result");
+		//            }
+		//            return result;
+		//        }
+
+		//    default: return 1; //this is equivilant to the original implementation (depreciated)
+		//}
 	}
 
 
