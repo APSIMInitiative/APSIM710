@@ -249,6 +249,8 @@ public class AgPasture
 	private double[] dmlitter;            //Litter pool (kg/ha)
 	[Param]
 	private double[] dmgreenmin;            //minimum green DM (kg/ha)
+	[Param]
+	private double[] dmdeadmin;            //minimum dead DM (kg/ha)
 
 	[Param]
 	private double[] NcleafOpt;   //=NcOptimum, all these will be input
@@ -335,10 +337,17 @@ public class AgPasture
 	[Param(IsOptional = true)]
 	private double NUtilFac = 1;//0.95;
 
-	#endregion
+	[Param]
+	[Description("Method used to partition biomass removal between species")]
+	public string BiomassRemovalMethod;
 
-	#region Input values
-
+	[Param]
+	[Description("Weight factor defining the preference level for green DM")]
+	private double[] PreferenceForGreenDM;
+	[Param]
+	[Description("Weight factor defining the preference level for dead DM")]
+	private double[] PreferenceForDeadDM; 
+	
 	[Input]
 	public DateTime Today;
 
@@ -663,6 +672,7 @@ public class AgPasture
 		SP[s].dmroot = dmshoot[s] / SP[s].maxSRratio;
 		SP[s].dmlitter = dmlitter[s];
 		SP[s].dmgreenmin = dmgreenmin[s];
+		SP[s].dmdeadmin = dmdeadmin[s];
 
 		SP[s].Frgr = (float)Frgr[s];
 
@@ -1439,6 +1449,74 @@ public class AgPasture
 		if ((!p_Live) || p_totalDM == 0)
 			return;
 
+		if (BiomassRemovalMethod.ToLower() == "agp_original")
+		{
+			Graze_old(GZ);
+		}
+		else
+		{
+			// get the amount that can potentially be removed
+			double AmountRemovable = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				AmountRemovable += (SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin) + (SP[s].dmdead - SP[s].dmdeadmin);
+			AmountRemovable = Math.Max(0.0, AmountRemovable);
+
+			// get the amount required to remove
+			double AmountRequired = 0.0;
+			if (GZ.type == "residue")
+			{
+				// Remove all DM above given residual amount
+				AmountRequired = Math.Max(0.0, StandingPlantWt - GZ.amount);
+			}
+			else if (GZ.type == "removal")
+			{
+				// Attempt to remove a given amount
+				AmountRequired = Math.Max(0.0, GZ.amount);
+			}
+			else
+			{
+				Console.WriteLine("  AgPasture - Method to set amount to remove not recognized, command will be ignored");
+			}
+			// get the actual amount to remove
+			double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
+
+			p_harvestDM = AmountToRemove;
+			p_harvestN = 0.0;
+			p_harvestDigest = 0.0;
+
+			// get the amounts to remove by species:
+			FractionToHarvest = new double[Nspecies];
+			double FractionNotRemoved = Math.Max(0.0, (AmountToRemove - AmountRemovable) / AmountRemovable);
+			double[] TempWeights = new double[Nspecies];
+			double[] TempAmounts = new double[Nspecies];
+			double TempTotal = 0.0;
+			if (AmountRequired > 0.0)
+			{
+				// get the weights for each species, consider preference and available DM
+				double TotalPreference = PreferenceForGreenDM.Sum() + PreferenceForDeadDM.Sum();
+				for (int s = 0; s < Nspecies; s++)
+				{
+					TempWeights[s] = PreferenceForGreenDM[s] + PreferenceForDeadDM[s];
+					TempWeights[s] += (TotalPreference - TempWeights[s]) * (1 - FractionNotRemoved);
+					TempAmounts[s] = (SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin) + (SP[s].dmdead - SP[s].dmdeadmin);
+					TempTotal += TempAmounts[s] * TempWeights[s];
+				}
+
+				// get the actual amounts to remove for each species
+				for (int s = 0; s < Nspecies; s++)
+				{
+					FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
+					p_harvestN += SP[s].Remove(AmountToRemove * FractionToHarvest[s]);
+
+					// get digestibility of harvested material
+					p_harvestDigest += SP[s].digestDefoliated * SP[s].dmdefoliated / AmountToRemove;
+				}
+			}
+		}
+	}
+
+	private void Graze_old(GrazeType GZ)
+	{
 		double herbage_mass = StemWt + LeafWt;  // dm_stem + dm_leaf;
 		double min_residue = 200;               // kg/ha assumed
 		double residue_amt = min_residue;
@@ -1485,7 +1563,7 @@ public class AgPasture
 
 		//remove DM & N species by species
 		p_harvestDigest = 0;
-		HarvestingFraction = new double[SP.Length];
+		FractionToHarvest = new double[SP.Length];
 		HarvestingFractionTest = new double[SP.Length];
 		double TotalHarvestable = 0.0;
 		for (int s = 0; s < Nspecies; s++)
@@ -1495,9 +1573,9 @@ public class AgPasture
 			double amt = 0;
 			if (herbage_mass != 0)
 			{
-				HarvestingFraction[s] = (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
+				FractionToHarvest[s] = (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
 				HarvestingFractionTest[s] = ((SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin) / TotalHarvestable;
-				amt = remove_amt * HarvestingFraction[s];
+				amt = remove_amt * FractionToHarvest[s];
 				//amt = remove_amt * (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
 			}
 			p_harvestN += SP[s].Remove(amt);
@@ -2129,7 +2207,7 @@ public class AgPasture
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + SP[s].dmdead;
+				result += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + (SP[s].dmdead - SP[s].dmdeadmin);
 			return result;
 		}
 	}
@@ -2992,7 +3070,7 @@ public class AgPasture
 		}
 	}
 
-	private double[] HarvestingFraction;
+	private double[] FractionToHarvest;
 	[Output]
 	private double[] HarvestingFractionTest;
 	[Output]
@@ -3000,7 +3078,7 @@ public class AgPasture
 	[Units("0-1")]
 	public double[] SpeciesHarvestFraction
 	{
-		get { return HarvestingFraction; }
+		get { return FractionToHarvest; }
 	}
 
 	[Output]
@@ -3012,7 +3090,7 @@ public class AgPasture
 		{
 			double[] result = new double[Nspecies];
 			for (int s = 0; s < Nspecies; s++)
-				result[s] = (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + SP[s].dmdead;
+				result[s] = (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + (SP[s].dmdead- SP[s].dmdeadmin);
 			return result;
 		}
 	}
@@ -3842,6 +3920,7 @@ public class Species
 	public double dmroot;    //root (kg/ha)
 	public double dmlitter;    //Litter pool (kg/ha)
 	public double dmgreenmin; // minimum grenn dm
+	public double dmdeadmin; // minimum dead dm
 	public float Frgr;
 
 	//CO2
