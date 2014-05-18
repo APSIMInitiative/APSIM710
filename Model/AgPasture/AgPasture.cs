@@ -1001,6 +1001,10 @@ public class AgPasture
 		//Root FOM return
 		DoIncorpFomEvent(p_dRootSen, p_dNRootSen);
 
+		// RCichota May2014: zero out the stored pS.dmdefoliated (it has been used today)
+		for (int s = 0; s < Nspecies; s++)
+			SP[s].pS.dmdefoliated = 0.0;
+
 	}
 
 
@@ -1116,21 +1120,13 @@ public class AgPasture
 		//  p_harvestN = 0.0;       // they are used to DM & N returns
 		//  p_harvestDigest = 0.0;
 
-		DoNewCanopyEvent();
-		DoNewPotentialGrowthEvent();
-
-		// RCichota May2014, moved here from onProcess
-		//**Remember last status, and update root depth frontier (root depth mainly for annuals)
+		// RCichota May2014, moved here from onProcess (really owe to be onNewMet but have issues at initialisation)
+		//**Zero out some variables
 		for (int s = 0; s < Nspecies; s++)
-		{
-			pSP[s] = SP[s];       //Species state yesterday is rememberd
-			SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
 			SP[s].DailyRefresh();
 
-			double spRootDepth = SP[s].rootGrowth();    //update root depth
-			if (p_rootFrontier < spRootDepth)
-				p_rootFrontier = spRootDepth;
-		}
+		DoNewCanopyEvent();
+		DoNewPotentialGrowthEvent();
 
 	}
 
@@ -1200,18 +1196,19 @@ public class AgPasture
 		if (!p_Live)
 			return;
 
-		////**Remember last status, and update root depth frontier (root depth mainly for annuals)
-		//for (int s = 0; s < Nsp; s++)
-		//{
-		//    pSP[s] = SP[s];       //Species state yesterday is rememberd
-		//    SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
-		//    SP[s].DailyRefresh();
+		//**Remember last status, and update root depth frontier (root depth mainly for annuals)
+		for (int s = 0; s < Nspecies; s++)
+		{
+			pSP[s] = SP[s];       //Species state yesterday is rememberd
+			SP[s].SetPrevPools(); //pool values yesterday is also retained in current state
+			//SP[s].DailyRefresh();
 
-		//    double spRootDepth = SP[s].rootGrowth();    //update root depth
-		//    if (p_rootFrontier < spRootDepth)
-		//        p_rootFrontier = spRootDepth;
-		//}
-		// RCichota May2014: The code commented out above was moved to onPrepare 
+			double spRootDepth = SP[s].rootGrowth();    //update root depth
+			if (p_rootFrontier < spRootDepth)
+				p_rootFrontier = spRootDepth;
+
+			//RCichota May2014: The code commented out above was moved to onPrepare 
+		}
 
 		//Console.WriteLine("Warning message");
 		//throw new Exception("throw ...");
@@ -1422,6 +1419,9 @@ public class AgPasture
 			p_harvestDM += SP[s].dmdefoliated;
 			p_harvestN += SP[s].Ndefoliated;
 			SP[s].updateAggregated();
+
+			// RCichota May 2014: store the defoliated amount (to use for senescence)
+			SP[s].pS.dmdefoliated = SP[s].dmdefoliated;
 		}
 
 		//In this routine of no selection among species, the removed tissue from different species
@@ -2164,7 +2164,7 @@ public class AgPasture
 		get { return p_dGrowthW; }
 	}
 	[Output]
-	[Description("Actual plant growth")]
+	[Description("Actual plant growth (before littering)")]
 	[Units("kgDM/ha")]
 	public double PlantGrowthWt
 	{
@@ -4046,6 +4046,7 @@ public class Species
 	public double dGrowthW;      //daily growth with water-deficit incorporated
 	public double dGrowth;       //daily growth
 	public double dGrowthRoot;   //daily root growth
+	public double dGrowthHerbage; //daily growth shoot
 
 	public double dLitter;       //daily litter production
 	public double dNLitter;      //N in dLitter
@@ -4084,10 +4085,10 @@ public class Species
 	//Species -----------------------
 	public void DailyRefresh()
 	{
-		dmdefoliated = 0;
-		Ndefoliated = 0;
-		digestHerbage = 0;
-		digestDefoliated = 0;
+		dmdefoliated = 0.0;
+		Ndefoliated = 0.0;
+		digestHerbage = 0.0;
+		digestDefoliated = 0.0;
 	}
 
 	//Species -----------------------------
@@ -4099,6 +4100,7 @@ public class Species
 			return 0;
 
 		dmdefoliated = amt;
+		pS.dmdefoliated = dmdefoliated;
 
 		// Mar2011: If removing the specified 'amt' would result in a 'dmgreen' less than specified 'dmgreenmin',
 		// then less green tissue (pool1-3 of leaf+stem) and more standing dead (pool4), will be removed
@@ -4326,6 +4328,7 @@ public class Species
 		// check balance and set outputs
 		double NremobRemove = PreRemovalNRemob - Nremob;
 		dmdefoliated = PreRemovalDM - dmshoot;
+		pS.dmdefoliated = dmdefoliated;
 		Ndefoliated = PreRemovalN - Nshoot;
 		if (Math.Abs(dmdefoliated - AmountToRemove) > 0.00001)
 			throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
@@ -5022,7 +5025,6 @@ public class Species
 	}
 
 
-
 	//Species -------------------------------------------------------------
 	public double PartitionTurnover()
 	{
@@ -5047,24 +5049,32 @@ public class Species
 
 			//checking
 			double ToAll = toLeaf + toStem + toStol + toRoot;
-			if (Math.Abs(ToAll - 1.0) > 0.01)
-			{ /*Console.WriteLine("checking partitioning fractions");*/ }
+			if (Math.Abs(ToAll - 1.0) > 0.0001)
+				throw new Exception("  AgPasture - Mass balance lost on partition of new growth");
+		 /* {Console.WriteLine("checking partitioning fractions") };*/ 
 
 			//Assign the partitioned growth to the 1st tissue pools
 			double newLeaf1 = toLeaf * dGrowth;
 			double newStem1 = toStem * dGrowth;
 			double newStol1 = toStol * dGrowth;
+			dGrowthHerbage = newLeaf1 + newStem1 + newStol1;
 			double newRoot = toRoot * dGrowth;
 
-			double totalnewG = newLeaf1 + newStem1 + newStol1 + newRoot;
+			// RCichota May 2014: commented out below and added simpler addition (this seeme unnecessary and complicated the calculation of herbage growth)
+			/* double totalnewG = newLeaf1 + newStem1 + newStol1 + newRoot;
 			//  accumtotalnewG  +=totalnewG;
-			//DM
+			//DM 
 			dmleaf1 = pS.dmleaf1 + newLeaf1;
 			dmstem1 = pS.dmstem1 + newStem1;
 			dmstol1 = pS.dmstol1 + newStol1;
-			dmroot = pS.dmroot + newRoot;
+			dmroot = pS.dmroot + newRoot; */
 
-			//partitiing N based on not only the DM, but also [N] in plant parts
+			dmleaf1 += newLeaf1;
+			dmstem1 += newStem1;
+			dmstol1 += newStol1;
+			dmroot += newRoot;
+
+			//partitioing N based on not only the DM, but also [N] in plant parts
 			double sum = toLeaf * NcleafMax + toStem * NcstemMax + toStol * NcstolMax + toRoot * NcrootMax;
 			double toLeafN = toLeaf * NcleafMax / sum;
 			double toStemN = toStem * NcstemMax / sum;
@@ -5165,15 +5175,18 @@ public class Species
 			dmleaf2 = dmleaf2 - gama * pS.dmleaf2 + 2 * gama * pS.dmleaf1;
 			dmleaf3 = dmleaf3 - gama * pS.dmleaf3 + gama * pS.dmleaf2;
 			dmleaf4 = dmleaf4 - gamad * pS.dmleaf4 + gama * pS.dmleaf3;
+			dGrowthHerbage -= gamad * pS.dmleaf4;
 
 			dmstem1 = dmstem1 - 2 * gama * pS.dmstem1;
 			dmstem2 = dmstem2 - gama * pS.dmstem2 + 2 * gama * pS.dmstem1;
 			dmstem3 = dmstem3 - gama * pS.dmstem3 + gama * pS.dmstem2;
 			dmstem4 = dmstem4 - gamad * pS.dmstem4 + gama * pS.dmstem3;
+			dGrowthHerbage -= gamad * pS.dmstem4;
 
 			dmstol1 = dmstol1 - 2 * gamas * pS.dmstol1;
 			dmstol2 = dmstol2 - gamas * pS.dmstol2 + 2 * gamas * pS.dmstol1;
 			dmstol3 = dmstol3 - gamas * pS.dmstol3 + gamas * pS.dmstol2;
+			dGrowthHerbage -= gamas * pS.dmstol3;
 
 			dRootSen = gamar * pS.dmroot;
 			dmroot = dmroot - dRootSen;// -Resp_root;
@@ -5647,10 +5660,10 @@ public class Species
 		pS.dmgreen = dmgreen;
 		pS.dmdead = dmdead;
 		pS.dmtotal = dmtotal;
-		pS.dmdefoliated = dmdefoliated;
 
-		pS.Nremob = Nremob;
-
+		// RCichota May 2014: moved pS.dmdefoliated to be stored at the time of a removal (it is zeroed at the end of process)
+		//pS.dmdefoliated = dmdefoliated;   // not really used
+		//pS.Nremob = Nremob;
 
 		return true;
 	}
