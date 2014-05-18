@@ -1506,7 +1506,7 @@ public class AgPasture
 				for (int s = 0; s < Nspecies; s++)
 				{
 					FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
-					p_harvestN += SP[s].Remove(AmountToRemove * FractionToHarvest[s]);
+					p_harvestN += SP[s].Remove(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
 
 					// get digestibility of harvested material
 					p_harvestDigest += SP[s].digestDefoliated * SP[s].dmdefoliated / AmountToRemove;
@@ -1578,7 +1578,7 @@ public class AgPasture
 				amt = remove_amt * FractionToHarvest[s];
 				//amt = remove_amt * (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
 			}
-			p_harvestN += SP[s].Remove(amt);
+			p_harvestN += SP[s].Remove_old(amt);
 
 			//calc digestibility
 			if (remove_amt > 0)
@@ -4091,7 +4091,7 @@ public class Species
 	}
 
 	//Species -----------------------------
-	public double Remove(double amt)
+	public double Remove_old(double amt)
 	{
 		//double pRest = 1 - (amt/dmtotal);
 		double pRest = 1 - (amt / (dmstem + dmleaf));
@@ -4260,6 +4260,77 @@ public class Species
 		Ndefoliated = removeN;
 
 		return removeN;
+	}
+
+	public double Remove(double AmountToRemove, double PrefGreen, double PrefDead)
+	{
+
+		// check existing amount and what is harvestable
+		double PreRemovalDM = dmshoot;
+		double PreRemovalN = Nshoot;
+		double AmountRemovable = (dmleaf_green+dmstem_green-dmgreenmin)+(dmleaf4+dmstem4-dmdeadmin); 
+
+		// get the weights for each pool, consider preference and available DM
+			double FractionNotRemoved = Math.Max(0.0, (AmountToRemove - AmountRemovable) / AmountRemovable);
+
+				double TempWeightGreen = PrefGreen + (PrefDead) * (1 - FractionNotRemoved);
+				double TempWeightDead = PrefDead + (PrefGreen) * (1 - FractionNotRemoved);
+				double TempAmountGreen = dmleaf_green + dmstem_green - dmgreenmin;
+				double TempAmountDead = dmleaf4 + dmstem4 - dmdeadmin;
+
+		// get partiton between dead and live materials
+			double TempTotal = TempAmountGreen*TempWeightGreen + TempAmountDead*TempWeightDead;
+				double FractionToHarvestGreen =0.0;
+				double FractionToHarvestDead =0.0;
+				if (TempTotal>0)
+				{
+			FractionToHarvestGreen = TempAmountGreen*TempWeightGreen/TempTotal;
+					FractionToHarvestDead = TempAmountGreen*TempWeightGreen/TempTotal;
+				}
+
+		// Fraction of DM remaining in the field
+		double FractionRemainingGreen = Math.Max(0.0, Math.Min(1.0, 1 - FractionToHarvestGreen));
+		double FractionRemainingDead = Math.Max(0.0, Math.Min(1.0, 1 - FractionToHarvestGreen));
+
+// get digestibility of DM being harvested
+		digestDefoliated = calcDigestability();
+
+		// update the various pools
+		dmleaf1 = FractionRemainingGreen * dmleaf1;
+		dmleaf2 = FractionRemainingGreen * dmleaf2;
+		dmleaf3 = FractionRemainingGreen * dmleaf3;
+		dmleaf4 = FractionRemainingDead * dmleaf4;
+		dmstem1 = FractionRemainingGreen * dmstem1;
+		dmstem2 = FractionRemainingGreen * dmstem2;
+		dmstem3 = FractionRemainingGreen * dmstem3;
+		dmstem4 = FractionRemainingDead * dmstem4;
+		//No stolon remove
+
+		// N remove
+		Nleaf1 = FractionRemainingGreen * Nleaf1;
+		Nleaf2 = FractionRemainingGreen * Nleaf2;
+		Nleaf3 = FractionRemainingGreen * Nleaf3;
+		Nleaf4 = FractionRemainingDead * Nleaf4;
+		Nstem1 = FractionRemainingGreen * Nstem1;
+		Nstem2 = FractionRemainingGreen * Nstem2;
+		Nstem3 = FractionRemainingGreen * Nstem3;
+		Nstem4 = FractionRemainingDead * Nstem4;
+
+		//Nremob is also removed proportionally (not sensitive?)
+		double PreRemovalNRemob = Nremob;
+		Nremob = FractionRemainingGreen * Nremob;
+
+		// upgrade variables
+		updateAggregated();
+
+		// check balance and set outputs
+		double NremobRemove = PreRemovalNRemob - Nremob;
+		dmdefoliated = PreRemovalDM - dmshoot;
+		Ndefoliated = PreRemovalN - Nshoot;
+		if (Math.Abs(dmdefoliated - AmountToRemove) > 0.00001)
+			throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
+
+			return Ndefoliated;
 	}
 
 	//Species ------------------------------------------------------------
