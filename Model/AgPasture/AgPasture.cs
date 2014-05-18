@@ -1486,7 +1486,7 @@ public class AgPasture
 
 			// get the amounts to remove by species:
 			FractionToHarvest = new double[Nspecies];
-			double FractionNotRemoved = Math.Max(0.0, (AmountToRemove - AmountRemovable) / AmountRemovable);
+			double FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
 			double[] TempWeights = new double[Nspecies];
 			double[] TempAmounts = new double[Nspecies];
 			double TempTotal = 0.0;
@@ -4270,31 +4270,36 @@ public class Species
 		// check existing amount and what is harvestable
 		double PreRemovalDM = dmshoot;
 		double PreRemovalN = Nshoot;
-		double AmountRemovable = (dmleaf_green+dmstem_green-dmgreenmin)+(dmleaf4+dmstem4-dmdeadmin); 
+		double AmountRemovable = (dmleaf_green + dmstem_green - dmgreenmin) + (dmleaf4 + dmstem4 - dmdeadmin);
 
 		// get the weights for each pool, consider preference and available DM
-			double FractionNotRemoved = Math.Max(0.0, (AmountToRemove - AmountRemovable) / AmountRemovable);
+		double FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
 
-				double TempWeightGreen = PrefGreen + (PrefDead) * (1 - FractionNotRemoved);
-				double TempWeightDead = PrefDead + (PrefGreen) * (1 - FractionNotRemoved);
-				double TempAmountGreen = dmleaf_green + dmstem_green - dmgreenmin;
-				double TempAmountDead = dmleaf4 + dmstem4 - dmdeadmin;
+		double TempPrefGreen = PrefGreen + (PrefDead * (1 - FractionNotRemoved));
+		double TempPrefDead = PrefDead + (PrefGreen * (1 - FractionNotRemoved));
+		double TempRemovableGreen = Math.Max(0.0,dmleaf_green + dmstem_green - dmgreenmin);
+		double TempRemovableDead = Math.Max(0.0,dmleaf4 + dmstem4 - dmdeadmin);
 
 		// get partiton between dead and live materials
-			double TempTotal = TempAmountGreen*TempWeightGreen + TempAmountDead*TempWeightDead;
-				double FractionToHarvestGreen =0.0;
-				double FractionToHarvestDead =0.0;
-				if (TempTotal>0)
-				{
-			FractionToHarvestGreen = TempAmountGreen*TempWeightGreen/TempTotal;
-					FractionToHarvestDead = TempAmountGreen*TempWeightGreen/TempTotal;
-				}
+		double TempTotal = TempRemovableGreen * TempPrefGreen + TempRemovableDead * TempPrefDead;
+		double FractionToHarvestGreen = 0.0;
+		double FractionToHarvestDead = 0.0;
+		if (TempTotal > 0)
+		{
+			FractionToHarvestGreen = TempRemovableGreen * TempPrefGreen / TempTotal;
+			FractionToHarvestDead = TempRemovableDead * TempPrefDead / TempTotal;
+		}
 
+		// get amounts removed
+		double RemovingGreenDM = AmountToRemove * FractionToHarvestGreen;
+		double RemovingDeadDM = AmountToRemove * FractionToHarvestDead;
 		// Fraction of DM remaining in the field
-		double FractionRemainingGreen = Math.Max(0.0, Math.Min(1.0, 1 - FractionToHarvestGreen));
-		double FractionRemainingDead = Math.Max(0.0, Math.Min(1.0, 1 - FractionToHarvestGreen));
+		double FractionRemainingGreen = 1 - RemovingGreenDM / (dmleaf_green + dmstem_green);
+		double FractionRemainingDead = 1 - RemovingDeadDM / (dmleaf4 + dmstem4);
+		FractionRemainingGreen = Math.Max(0.0, Math.Min(1.0, FractionRemainingGreen));
+		FractionRemainingDead = Math.Max(0.0, Math.Min(1.0, FractionRemainingDead));
 
-// get digestibility of DM being harvested
+		// get digestibility of DM being harvested
 		digestDefoliated = calcDigestability();
 
 		// update the various pools
@@ -4333,7 +4338,7 @@ public class Species
 		if (Math.Abs(dmdefoliated - AmountToRemove) > 0.00001)
 			throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
 
-			return Ndefoliated;
+		return Ndefoliated;
 	}
 
 	//Species ------------------------------------------------------------
