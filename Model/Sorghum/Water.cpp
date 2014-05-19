@@ -45,7 +45,9 @@ void Water::doRegistrations(void)
    scienceAPI.expose("swdef_expan",       "",   "Water stress factor for leaf expansion growth",   false, expansionStress);
    scienceAPI.expose("esw_profile",       "",   "Plant extractable water over the whole profile",  false, eswTot);
    scienceAPI.expose("ep",                "",   "Water uptake from the whole profile",             false, ep);
-   scienceAPI.expose("ll",                "",   "Crop lower limit",                                false, ll);
+   scienceAPI.expose("ll",                "",   "Crop lower limit",                                true,  ll);
+   scienceAPI.expose("xf",                "",   "Exploration factor",                              true,  xf);
+   scienceAPI.expose("kl",                "",   "kl factor",                                       true,  kl);
 
    scienceAPI.exposeFunction("esw_layer", "mm", "Plant extractable soil water in each layer",
                     FloatArrayFunction(&Water::getEswLayers));
