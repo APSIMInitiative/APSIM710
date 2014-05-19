@@ -83,6 +83,7 @@ namespace ApsimFile
                 NewSoil.Latitude = GetDoubleValue(Table, StartRow, "Latitude");
                 NewSoil.Longitude = GetDoubleValue(Table, StartRow, "Longitude");
                 NewSoil.LocationAccuracy = GetStringValue(Table, StartRow, "LocationAccuracy");
+                NewSoil.YearOfSampling = GetIntegerValue(Table, StartRow, "YearOfSampling");
                 NewSoil.DataSource = GetStringValue(Table, StartRow, "DataSource");
                 NewSoil.Comments = GetStringValue(Table, StartRow, "Comments");
                 NewSoil.NaturalVegetation = GetStringValue(Table, StartRow, "NaturalVegetation");
@@ -276,6 +277,7 @@ namespace ApsimFile
             SetDoubleValue(Table, "Latitude", Soil.Latitude, StartRow, NumValues);
             SetDoubleValue(Table, "Longitude", Soil.Longitude, StartRow, NumValues);
             SetStringValue(Table, "LocationAccuracy", Soil.LocationAccuracy, StartRow, NumValues);
+            SetIntegerValue(Table, "YearOfSampling", Soil.YearOfSampling, StartRow, NumValues);
             SetStringValue(Table, "DataSource", Soil.DataSource, StartRow, NumValues);
             SetStringValue(Table, "Comments", Soil.Comments, StartRow, NumValues);
             SetStringValue(Table, "NaturalVegetation", Soil.NaturalVegetation, StartRow, NumValues);
@@ -640,6 +642,17 @@ namespace ApsimFile
         /// Set a column to the specified Value a specificed numebr of times.
         /// </summary>
         private static void SetDoubleValue(DataTable Table, string ColumnName, double Value, int StartRow, int NumValues)
+        {
+            double[] Values = new double[NumValues];
+            for (int i = 0; i < NumValues; i++)
+                Values[i] = Value;
+            SetDoubleValues(Table, ColumnName, Values, StartRow);
+        }
+
+        /// <summary>
+        /// Set a column to the specified Value a specificed numebr of times.
+        /// </summary>
+        private static void SetIntegerValue(DataTable Table, string ColumnName, int Value, int StartRow, int NumValues)
         {
             double[] Values = new double[NumValues];
             for (int i = 0; i < NumValues; i++)

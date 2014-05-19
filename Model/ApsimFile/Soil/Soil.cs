@@ -53,6 +53,8 @@ namespace ApsimFile
         public double Longitude { get; set; }
         [Description("Location accuracy")]
         public string LocationAccuracy { get; set; }
+        [Description("Year of sampling")]
+        public int YearOfSampling { get; set; }
 
         [UILargeText]
         [Description("Data source")]
