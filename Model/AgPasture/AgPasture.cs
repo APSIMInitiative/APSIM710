@@ -123,10 +123,6 @@ public class AgPasture
 				p_RootDistributionMethod = 0;	// It is impossible to solve, but its limit is a homogeneous distribution
 		}
 	}
-
-	[Output]
-	public double[] rlvpTest;
-	
 	
 	[Param]
 	private double[] allocationSeasonF;        //growth allocation (shoot/root) season factor,
@@ -483,8 +479,6 @@ public class AgPasture
 		//    throw new Exception("AgPasture: Incorrect number of values passed to RLVP exception");
 		//}
 
-		rlvpTest = RootProfileDistribution();
-
 		// ensure rlvp is the proportion of roots per layer (add up to 1.0)
 		rlvp = RootProfileDistribution();
 
@@ -497,6 +491,8 @@ public class AgPasture
 			pSP[s] = new Species();
 			InitSpeciesValues(s);
 		}
+
+		FractionToHarvest = new double[Nspecies];
 
 		//Initialising the aggregated pasture parameters from initial valuses of each species
 		p_rootFrontier = 0.0;
@@ -1125,6 +1121,10 @@ public class AgPasture
 		for (int s = 0; s < Nspecies; s++)
 			SP[s].DailyRefresh();
 
+		// clear FractionHarvest by assigning new
+		FractionToHarvest = new double[Nspecies];
+
+
 		DoNewCanopyEvent();
 		DoNewPotentialGrowthEvent();
 
@@ -1205,7 +1205,7 @@ public class AgPasture
 
 			double spRootDepth = SP[s].rootGrowth();    //update root depth
 			if (p_rootFrontier < spRootDepth)
-				p_rootFrontier = spRootDepth;
+				p_rootFrontier = spRootDepth;			// the deepest root_depth is used
 
 			//RCichota May2014: The code commented out above was moved to onPrepare 
 		}
@@ -1451,7 +1451,7 @@ public class AgPasture
 
 		if (BiomassRemovalMethod.ToLower() == "agp_original")
 		{
-			Graze_old(GZ);
+			AgP_Original_Graze(GZ);
 		}
 		else
 		{
@@ -1485,7 +1485,6 @@ public class AgPasture
 			p_harvestDigest = 0.0;
 
 			// get the amounts to remove by species:
-			FractionToHarvest = new double[Nspecies];
 			double FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
 			double[] TempWeights = new double[Nspecies];
 			double[] TempAmounts = new double[Nspecies];
@@ -1506,7 +1505,7 @@ public class AgPasture
 				for (int s = 0; s < Nspecies; s++)
 				{
 					FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
-					p_harvestN += SP[s].Remove(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
+					p_harvestN += SP[s].Remove_withPreferences(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
 
 					// get digestibility of harvested material
 					p_harvestDigest += SP[s].digestDefoliated * SP[s].dmdefoliated / AmountToRemove;
@@ -1515,7 +1514,7 @@ public class AgPasture
 		}
 	}
 
-	private void Graze_old(GrazeType GZ)
+	private void AgP_Original_Graze(GrazeType GZ)
 	{
 		double herbage_mass = StemWt + LeafWt;  // dm_stem + dm_leaf;
 		double min_residue = 200;               // kg/ha assumed
@@ -1563,8 +1562,6 @@ public class AgPasture
 
 		//remove DM & N species by species
 		p_harvestDigest = 0;
-		FractionToHarvest = new double[SP.Length];
-		HarvestingFractionTest = new double[SP.Length];
 		double TotalHarvestable = 0.0;
 		for (int s = 0; s < Nspecies; s++)
 			TotalHarvestable += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin;
@@ -1574,11 +1571,11 @@ public class AgPasture
 			if (herbage_mass != 0)
 			{
 				FractionToHarvest[s] = (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
-				HarvestingFractionTest[s] = ((SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin) / TotalHarvestable;
 				amt = remove_amt * FractionToHarvest[s];
 				//amt = remove_amt * (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
 			}
-			p_harvestN += SP[s].Remove_old(amt);
+
+			p_harvestN += SP[s].AgP_Original_Remove(amt);
 
 			//calc digestibility
 			if (remove_amt > 0)
@@ -3072,8 +3069,6 @@ public class AgPasture
 
 	private double[] FractionToHarvest;
 	[Output]
-	private double[] HarvestingFractionTest;
-	[Output]
 	[Description("Fraction to harvest for each species")]
 	[Units("0-1")]
 	public double[] SpeciesHarvestFraction
@@ -4092,7 +4087,7 @@ public class Species
 	}
 
 	//Species -----------------------------
-	public double Remove_old(double amt)
+	public double AgP_Original_Remove(double amt)
 	{
 		//double pRest = 1 - (amt/dmtotal);
 		double pRest = 1 - (amt / (dmstem + dmleaf));
@@ -4119,115 +4114,6 @@ public class Species
 		//double deadFrac = standingDead /(dmleaf+dmstem);
 		//digestDefoliated = (1-deadFrac) * digestLive + deadFrac * digestDead;
 		digestDefoliated = calcDigestability(); //because the defoliateion of different parts is in proportion to biomass
-
-		//Amount is removed from stem or leaf
-		/* 3) This part explicitly remove leaf/stem with consideration of preference
-		* double pRemove = 0;
-		if (amt !=0 || dmleaf + dmstem > 0)
-		pRemove = amt / (dmleaf + dmstem);
-		else
-		{
-		updateAggregated();
-		Ndefoliated = 0;
-		dmdefoliated = 0;// amt;
-		return 0;
-		}
-
-		leafPref = 1.0;
-		if (isLegume)
-		leafPref = 1.5;
-		//DM remove
-		double rm_dmleaf1 = Math.Min(dmleaf1, pRemove * leafPref * dmleaf1);
-		double rm_dmleaf2 = Math.Min(dmleaf2, pRemove * leafPref * dmleaf2);
-		double rm_dmleaf3 = Math.Min(dmleaf3, pRemove * leafPref * dmleaf3);
-		double rm_dmleaf4 = Math.Min(dmleaf4, pRemove * leafPref * dmleaf4);
-		double rm_dmleaf  = rm_dmleaf1 + rm_dmleaf2 + rm_dmleaf3 + rm_dmleaf4;
-
-		double rm_dmstem  = Math.Max(0, amt - rm_dmleaf);
-		double rm_dmstem1 = Math.Min(dmstem1, rm_dmstem * dmstem1/dmstem);
-		double rm_dmstem2 = Math.Min(dmstem2, rm_dmstem * dmstem2/dmstem);
-		double rm_dmstem3 = Math.Min(dmstem3, rm_dmstem * dmstem3/dmstem);
-		double rm_dmstem4 = Math.Min(dmstem4, rm_dmstem * dmstem4/dmstem);
-		dmleaf1 -= rm_dmleaf1;
-		dmleaf2 -= rm_dmleaf2;
-		dmleaf3 -= rm_dmleaf3;
-		dmleaf4 -= rm_dmleaf4;
-		dmstem1 -= rm_dmstem1;
-		dmstem2 -= rm_dmstem2;
-		dmstem3 -= rm_dmstem3;
-		dmstem4 -= rm_dmstem4;
-
-		//remove N
-		double preNshoot = Nshoot;
-		Nleaf1 -= rm_dmleaf1 * Ncleaf1;
-		Nleaf2 -= rm_dmleaf2 * Ncleaf2;
-		Nleaf3 -= rm_dmleaf3 * Ncleaf3;
-		Nleaf4 -= rm_dmleaf4 * Ncleaf4;
-		Nstem1 -= rm_dmstem1 * Ncstem1;
-		Nstem2 -= rm_dmstem2 * Ncstem2;
-		Nstem3 -= rm_dmstem3 * Ncstem3;
-		Nstem4 -= rm_dmstem4 * Ncstem4;
-		*/
-
-		/*
-		//2) Remove more standing dead and scenescent dm
-		//   will result in a slight higher yield and less litter, but
-		//   affact little on the difference of litter formation between different rotational periods
-		double pRemove = 1 - pRest;
-		double dm1 = dmleaf1 + dmstem1;
-		double dm2 = dmleaf2 + dmstem2;
-		double dm3 = dmleaf3 + dmstem3;
-		double dm4 = dmleaf4 + dmstem4;
-
-		double dm1Remove = dm1 * pRemove;  //in proportion
-		double dm2Remove = dm2 * pRemove;
-		double dm3Remove = dm3 * pRemove;
-		double dm4Remove = dm4 * pRemove;
-
-		double dm4MoreR = 0.5 * (dm4 - dm4Remove);
-		double dm3MoreR = 0.25 * (dm3 - dm3Remove);
-		double dm2MoreR = 0;
-		double dm1MoreR = 0;
-		if (dm3MoreR + dm4MoreR  < dm1 - dm1Remove + dm2 - dm2Remove )
-		{
-		dm2MoreR = - (dm3MoreR+ dm4MoreR) * (dm2/(dm1+dm2));
-		dm1MoreR = - (dm3MoreR+ dm4MoreR) * (dm1/(dm1+dm2));
-
-		dm1Remove += dm1MoreR;  //in proportion
-		dm2Remove += dm2MoreR;
-		dm3Remove += dm3MoreR;
-		dm4Remove += dm4MoreR;
-		}
-
-		double pRest1 = 0;
-		double pRest2 = 0;
-		double pRest3 = 0;
-		double pRest4 = 0;
-		if (dm1 > 0) pRest1 = (dm1 - dm1Remove) / dm1;
-		if (dm2 > 0) pRest2 = (dm2 - dm2Remove) / dm2;
-		if (dm3 > 0) pRest3 = (dm3 - dm3Remove) / dm3;
-		if (dm4 > 0) pRest4 = (dm4 - dm4Remove) / dm4;
-
-		dmleaf1 = pRest1 * dmleaf1;
-		dmleaf2 = pRest2 * dmleaf2;
-		dmleaf3 = pRest3 * dmleaf3;
-		dmleaf4 = pRest4 * dmleaf4;
-		dmstem1 = pRest1 * dmstem1;
-		dmstem2 = pRest2 * dmstem2;
-		dmstem3 = pRest3 * dmstem3;
-		dmstem4 = pRest4 * dmstem4;
-
-		double preNshoot = Nshoot; //before remove
-		//N remove
-		Nleaf1 = pRest1 * Nleaf1;
-		Nleaf2 = pRest2 * Nleaf2;
-		Nleaf3 = pRest3 * Nleaf3;
-		Nleaf4 = pRest4 * Nleaf4;
-		Nstem1 = pRest1 * Nstem1;
-		Nstem2 = pRest2 * Nstem2;
-		Nstem3 = pRest3 * Nstem3;
-		Nstem4 = pRest4 * Nstem4;
-		*/
 
 		// 1)Removing without preference   Mar2011: using different pRest for maintain a 'dmgreenmin'
 		dmleaf1 = pRest_green * dmleaf1;
@@ -4264,7 +4150,7 @@ public class Species
 		return removeN;
 	}
 
-	public double Remove(double AmountToRemove, double PrefGreen, double PrefDead)
+	public double Remove_withPreferences(double AmountToRemove, double PrefGreen, double PrefDead)
 	{
 
 		// check existing amount and what is harvestable
@@ -4327,7 +4213,7 @@ public class Species
 		double PreRemovalNRemob = Nremob;
 		Nremob = FractionRemainingGreen * Nremob;
 
-		// upgrade variables
+		// update variables
 		updateAggregated();
 
 		// check balance and set outputs
