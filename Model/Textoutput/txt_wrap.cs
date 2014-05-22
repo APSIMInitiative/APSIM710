@@ -181,6 +181,7 @@ namespace outputComp
         {
             String sText;
             uint Idx;
+            TTypedValue varItem;
 
             if (!(FReporter is TStaticReporter) && (isWaterCastSim))
             {
@@ -214,10 +215,11 @@ namespace outputComp
                     {
                         for (Idx = 1; Idx <= aValue.count(); Idx++)
                         {
-                            FReporter.addVariable(aValue.item(Idx).member("varname").asString(),
-                                                   aValue.item(Idx).member("alias").asString(),
-                                                   aValue.item(Idx).member("decplaces").asInteger(),
-                                                   FReporter.parseAggreg(aValue.item(Idx).member("aggreg").asString()));
+                        varItem = aValue.item(Idx);
+                        FReporter.addVariable(varItem.member("varname").asString(),
+                                              varItem.member("alias").asString(),
+                                              varItem.member("decplaces").asInteger(),
+                                              FReporter.parseAggreg(varItem.member("aggreg").asString()));
                         }
                     } break;
                 case prpSUMMARYFILE:

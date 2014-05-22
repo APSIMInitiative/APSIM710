@@ -15,8 +15,10 @@ namespace outputComp
     // ============================================================================
     public class TTextReporter : TGenericReporter
     {
+        private const int MAXCOLWIDTH = 15;
         private StreamWriter FOutFile;  //Results file 
         private int FInitColumns;       //Initial number of output columns      
+        private int FLastColumnCount;   //Number of columns in the last write
         private List<int> FWidths;      //width of each column for apsim format
         private StringBuilder FHeaderfmt; //format string for apsim format
 
@@ -27,6 +29,7 @@ namespace outputComp
         {
             this.FWidths = new List<int>();
             this.FHeaderfmt = new StringBuilder();
+            FLastColumnCount = 0;
         }
         protected String MissingText 
         {
@@ -66,15 +69,14 @@ namespace outputComp
         private void WriteHeaders()
         {
             int Idx;
-            int maxwidth;
-            String[] colArray = new String[FColumns.Count + 1];
-            String[] unitsArray = new String[FColumns.Count + 1];
 
             if (ApsimFMT)
             {
-                maxwidth = 15;
-                FWidths.Add(maxwidth);
-                FHeaderfmt.Append("{0,15}");
+                RecalcApsimHdrFmt();
+
+                String[] colArray = new String[FColumns.Count + 1];
+                String[] unitsArray = new String[FColumns.Count + 1];
+
                 colArray[0] = "Date";
                 if (DateFMT.Length > 0)
                 {
@@ -84,15 +86,13 @@ namespace outputComp
                 {
                     unitsArray[0] = "(dd/mm/yyyy)";
                 }
+
                 for (Idx = 0; Idx <= FColumns.Count - 1; Idx++)
                 {
-                    maxwidth = Math.Max(FColumns[Idx].Name.Length + 1, FColumns[Idx].Units.Length + 1);
-                    maxwidth = Math.Max(15, maxwidth);
-                    FWidths.Add(maxwidth);
-                    FHeaderfmt.Append("{" + Convert.ToString(Idx + 1) + "," + maxwidth.ToString() + "}");
                     colArray[Idx + 1] = FColumns[Idx].Name;
                     unitsArray[Idx + 1] = "(" + FColumns[Idx].Units + ")";
                 }
+
                 FOutFile.WriteLine(FHeaderfmt.ToString(), colArray);
                 FOutFile.Write(FHeaderfmt.ToString(), unitsArray);
             }
@@ -112,6 +112,29 @@ namespace outputComp
             }
             FOutFile.WriteLine();
         }
+
+        /// <summary>
+        /// Recalculate the APSIM header format for the number of colummns in the file
+        /// </summary>
+        private void RecalcApsimHdrFmt()
+        {
+            int Idx;
+            int maxwidth;
+
+            FWidths.Clear();
+            FHeaderfmt.Clear();
+            FWidths.Add(MAXCOLWIDTH);
+            maxwidth = MAXCOLWIDTH;
+            FHeaderfmt.Append("{0," + maxwidth.ToString() + "}");
+            for (Idx = 0; Idx <= FColumns.Count - 1; Idx++)
+            {
+                maxwidth = Math.Max(FColumns[Idx].Name.Length + 1, FColumns[Idx].Units.Length + 1);
+                maxwidth = Math.Max(MAXCOLWIDTH, maxwidth);
+                FWidths.Add(maxwidth);
+                FHeaderfmt.Append("{" + Convert.ToString(Idx + 1) + "," + maxwidth.ToString() + "}");
+            }
+        }
+        
         ////============================================================================
         /// <summary>
         /// Open the output file
@@ -150,8 +173,7 @@ namespace outputComp
                 FOutFile.Close();
                 if (FColumns.Count != FInitColumns)
                 {
-                    if (!ApsimFMT)              //temporary - until sortcolumns supports apsim format ! {TODO}
-                        SortColumns();
+                    SortColumns();
                 }
             }
         }
@@ -172,6 +194,7 @@ namespace outputComp
             {
                 WriteHeaders();
                 FInitColumns = FColumns.Count;
+                FLastColumnCount = FInitColumns;    //avoid recalc apsim format string
                 FFirstTime = false;
             }
             //Write the line of output values       
@@ -272,7 +295,14 @@ namespace outputComp
                 FColumns[Idx].Clear();      // Clear the current column values       
             }
             if (ApsimFMT)
+            {
+                if (FLastColumnCount != FColumns.Count)
+                {
+                    RecalcApsimHdrFmt(); //update the header format based on the FColumns
+                    FLastColumnCount = FColumns.Count;
+                }
                 FOutFile.Write(FHeaderfmt.ToString(), colArray);
+            }
             FOutFile.WriteLine();
         }
         ////============================================================================
@@ -300,6 +330,7 @@ namespace outputComp
             }
             return result;
         }
+
         ////============================================================================
         /// <summary>
         /// Rewrite the results file, ordering the columns in the expected manner. This  
@@ -315,11 +346,6 @@ namespace outputComp
             String sTempName;
             StreamReader OrigFile;
             StreamWriter FinalFile;
-            List<String> ColTexts;
-            String sLine;
-            String sDateStr;
-
-            int i;
 
             if (FWriting)
             {
@@ -327,78 +353,197 @@ namespace outputComp
             }
             else
             {
-                for (i = 0; i <= FOutputs.Count - 1; i++)
+                
+                for (int i = 0; i <= FOutputs.Count - 1; i++)
                 {
                     AddSortedIndexes(FOutputs[i].valTree, ref iSortOrder, ref iColI);
                 }
-                
-                OrigFile = new StreamReader(FileName);          //Open the original (unsorted) file and 
-                                                                //read over the title & header lines  
-                if (Title.Length > 0)
-                {                                               // Assumes that Title has not changed... }
-                    OrigFile.ReadLine();
-                }
-                OrigFile.ReadLine();
-                OrigFile.ReadLine();
 
+                OrigFile = new StreamReader(FileName);          //Open the original (unsorted) file and 
                 sTempName = Path.GetDirectoryName(FileName) + "_" + Path.GetFileName(FileName); //Open the final (sorted) file and      
                 FinalFile = new StreamWriter(sTempName);                                        //write the title and headers         
 
-                if (Title.Length > 0)
+                if (!ApsimFMT)              //temporary - until sortcolumns supports apsim format ! {TODO}
                 {
-                    FinalFile.WriteLine(Title);
+                    RewriteAusFarmFile(iSortOrder, OrigFile, FinalFile);
                 }
+                else
+                {
+                    RewriteAPSIMFile(iSortOrder, OrigFile, FinalFile);
+                }
+                OrigFile.Close();                                               // Close the files                       
+                FinalFile.Close();
+                File.Delete(FileName);                                          //Replace the unsorted file with the    
+                File.Move(sTempName, FileName);                                 //sorted one                          
+            }
+        }
 
-                FinalFile.Write("Date");    //Column names                          
+        ////============================================================================
+        /// <summary>
+        /// Read the source file and apply column sorting. Write to the destination file.
+        /// </summary>
+        /// <param name="iSortOrder">The order of the array items</param>
+        /// <param name="OrigFile">Source file</param>
+        /// <param name="FinalFile">Destination file</param>
+        ////============================================================================
+        private void RewriteAPSIMFile(List<int> iSortOrder, StreamReader OrigFile, StreamWriter FinalFile)
+        {
+            int i;
+            String sLine;
+
+            //read over the title & header lines  
+            if (Title.Length > 0)
+            {                                               // Assumes that Title has not changed... }
+                OrigFile.ReadLine();    //apsim ver
+                OrigFile.ReadLine();    //title
+            }
+            OrigFile.ReadLine();        //heading
+            OrigFile.ReadLine();        //units
+
+            if (Title.Length > 0)
+            {
+                FinalFile.WriteLine(Title);
+            }
+
+            //write the column headings
+            String[] colArray = new String[FColumns.Count + 1];
+            String[] unitsArray = new String[FColumns.Count + 1];
+
+            colArray[0] = "Date";
+            if (DateFMT.Length > 0)
+            {
+                unitsArray[0] = "(" + DateFMT + ")";
+            }
+            else
+            {
+                unitsArray[0] = "(dd/mm/yyyy)";
+            }
+
+            //write the units
+            for (i = 0; i <= FColumns.Count - 1; i++)
+            {
+                colArray[i + 1] = FColumns[iSortOrder[i]].Name;
+                unitsArray[i + 1] = "(" + FColumns[iSortOrder[i]].Units + ")";
+            }
+
+            //update the header format based on the FColumns using the iSortOrder[]
+            //see RecalcApsimHdrFmt()
+            int Idx;
+            int maxwidth;
+
+            FWidths.Clear();
+            FHeaderfmt.Clear();
+            FWidths.Add(MAXCOLWIDTH);
+            maxwidth = MAXCOLWIDTH;
+            FHeaderfmt.Append("{0," + maxwidth.ToString() + "}");
+            for (Idx = 0; Idx <= FColumns.Count - 1; Idx++)
+            {
+                maxwidth = Math.Max(FColumns[iSortOrder[Idx]].Name.Length + 1, FColumns[iSortOrder[Idx]].Units.Length + 1);
+                maxwidth = Math.Max(MAXCOLWIDTH, maxwidth);
+                FWidths.Add(maxwidth);
+                FHeaderfmt.Append("{" + Convert.ToString(Idx + 1) + "," + maxwidth.ToString() + "}");
+            }
+
+            FinalFile.WriteLine(FHeaderfmt.ToString(), colArray);
+            FinalFile.Write(FHeaderfmt.ToString(), unitsArray);
+
+            FinalFile.WriteLine();
+
+            while (!OrigFile.EndOfStream)
+            {                                                               // Work through the results file...      
+                sLine = OrigFile.ReadLine();                                // ... read in each line of results...   
+
+                string[] cols = sLine.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                colArray[0] = cols[0];
                 for (i = 0; i <= FColumns.Count - 1; i++)
                 {
-                    FinalFile.Write("\t" + FColumns[iSortOrder[i]].Name);
+                    if (cols.Length > iSortOrder[i] + 1)
+                        colArray[i + 1] = cols[iSortOrder[i] + 1];
+                    else
+                        colArray[i + 1] = MissingText;
                 }
+                FinalFile.WriteLine(FHeaderfmt.ToString(), colArray);
+            }
+        }
 
-                FinalFile.WriteLine();
+        ////============================================================================
+        /// <summary>
+        /// Read the source file and apply column sorting. Write to the destination file.
+        /// </summary>
+        /// <param name="iSortOrder">The order of the array items</param>
+        /// <param name="OrigFile">Source file</param>
+        /// <param name="FinalFile">Destination file</param>
+        ////============================================================================
+        private void RewriteAusFarmFile(List<int> iSortOrder, StreamReader OrigFile, StreamWriter FinalFile)
+        {
+            int i;
+            List<String> ColTexts;
+            String sLine;
+            String sDateStr;
 
-                for (i = 0; i <= FColumns.Count-1; i++) {                       // Column units                          
-                  FinalFile.Write("\t" + FColumns[ iSortOrder[i] ].Units);
-                }
 
-                FinalFile.WriteLine();
+            //read over the title & header lines  
+            if (Title.Length > 0)
+            {                                               // Assumes that Title has not changed... }
+                OrigFile.ReadLine();
+            }
+            OrigFile.ReadLine();
+            OrigFile.ReadLine();
 
-                ColTexts = new List<String>();                                  // Set up a list with the correct number 
-                for (i = 0; i <= FColumns.Count - 1; i++)                       // of strings                           
+            if (Title.Length > 0)
+            {
+                FinalFile.WriteLine(Title);
+            }
+
+            RecalcApsimHdrFmt(); //update the header format based on the FColumns
+           // FOutFile.Write(FHeaderfmt.ToString(), colArray);
+
+            FinalFile.Write("Date");    //Column names                          
+            for (i = 0; i <= FColumns.Count - 1; i++)
+            {
+                FinalFile.Write("\t" + FColumns[iSortOrder[i]].Name);
+            }
+
+            FinalFile.WriteLine();
+
+            for (i = 0; i <= FColumns.Count - 1; i++)
+            {                       // Column units                          
+                FinalFile.Write("\t" + FColumns[iSortOrder[i]].Units);
+            }
+
+            FinalFile.WriteLine();
+
+            ColTexts = new List<String>();                                  // Set up a list with the correct number 
+            for (i = 0; i <= FColumns.Count - 1; i++)                       // of strings                           
+            {
+                ColTexts.Add(MissingText);
+            }
+
+            while (!OrigFile.EndOfStream)
+            {                                                               // Work through the results file...      
+                for (i = 0; i <= FColumns.Count - 1; i++)
                 {
-                    ColTexts.Add(MissingText);
+                    ColTexts[i] = MissingText;
                 }
 
-                while (!OrigFile.EndOfStream)
-                {                                                               // Work through the results file...      
-                    for (i = 0; i <= FColumns.Count - 1; i++)
+                sLine = OrigFile.ReadLine();                                // ... read in each line of results...   
+                sDateStr = GetColumn(ref sLine);
+                for (i = 0; i <= FColumns.Count - 1; i++)
+                {
+                    if (sLine.Length > 0)
                     {
-                        ColTexts[i] = MissingText;
+                        ColTexts[i] = GetColumn(ref sLine);
                     }
-
-                    sLine = OrigFile.ReadLine();                                // ... read in each line of results...   
-                    sDateStr = GetColumn(ref sLine);
-                    for (i = 0; i <= FColumns.Count - 1; i++)
-                    {
-                        if (sLine.Length > 0)
-                        {
-                            ColTexts[i] = GetColumn(ref sLine);
-                        }
-                    }
-
-                    FinalFile.Write(sDateStr);                                  // ... and write it back in sorted order }
-                    for (i = 0; i <= FColumns.Count - 1; i++)
-                    {
-                        FinalFile.Write("\t" + ColTexts[iSortOrder[i]]);
-                    }
-
-                    FinalFile.WriteLine();
                 }
 
-                OrigFile.Close();                                               // Close the files                       }
-                FinalFile.Close();
-                File.Delete(FileName);                                          //Replace the unsorted file with the    }
-                File.Move(sTempName, FileName);                                 //sorted one                          }
+                FinalFile.Write(sDateStr);                                  // ... and write it back in sorted order }
+                for (i = 0; i <= FColumns.Count - 1; i++)
+                {
+                    FinalFile.Write("\t" + ColTexts[iSortOrder[i]]);
+                }
+
+                FinalFile.WriteLine();
             }
         }
         ////============================================================================
@@ -413,7 +558,7 @@ namespace outputComp
         {
             if (valTree.colNumber >= 0)
             {
-                sortOrder[colI] = valTree.colNumber;
+                sortOrder.Add(valTree.colNumber);
                 colI++;
             }
             for (int i = 0; i <= valTree.subTrees.Count - 1; i++)
