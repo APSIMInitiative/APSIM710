@@ -43,9 +43,10 @@ class grazComponent
       float dead_leaf_eaten;
       float dead_stem_eaten;
       float dlt_lwg;
-      float dead_leaf_tramp;
-      float dead_stem_tramp;
-
+      float green_leaf_trampled;
+      float green_stem_trampled;
+      float dead_leaf_trampled;
+      float dead_stem_trampled;
 
       bool allow_supplements; // Whether lwg is restricted by what is eaten
       float intake_util_intercept; // Parameter for feed quality
@@ -64,6 +65,8 @@ class grazComponent
       float metabol_expon;      // ???
       float prop_can_eat;       // ???
       int   acc_eaten_reset;    // Day that pool is reset
+
+      AvailableToAnimalType avail; // The feed available to us today
 
       // Internal routines
       float graz_stock_equiv (void);

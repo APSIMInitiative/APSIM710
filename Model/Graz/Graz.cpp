@@ -113,6 +113,7 @@ void grazComponent::onPrepare(void)
    // Gather other variables
    scienceAPI.get("day", "", 0, jday, 1, 366);
    scienceAPI.get("month", "", 0, month, 1, 12);
+   avail.element.clear();
 
    if (stocking_rate <= 0.0)
       {
@@ -127,7 +128,6 @@ void grazComponent::onPrepare(void)
       else
          prefix = pasture_source + ".";
 
-      AvailableToAnimalType avail;
       scienceAPI.get(prefix + "AvailableToAnimal", false, avail);
 
       green_leaf = green_stem = dead_leaf = dead_stem = -1.0;
@@ -159,10 +159,12 @@ void grazComponent::onPrepare(void)
    green_stem_eaten = 0.0;
    dead_leaf_eaten = 0.0;
    dead_stem_eaten = 0.0;
+   green_leaf_trampled = 0.0;
+   green_stem_trampled = 0.0;
+   dead_leaf_trampled = 0.0;
+   dead_stem_trampled = 0.0;
    tsdm_eaten = 0.0;
    dlt_lwg = 0.0;
-   dead_leaf_tramp = 0.0;
-   dead_stem_tramp = 0.0;
    }
 
 void grazComponent::onProcess(void)
@@ -194,9 +196,6 @@ void grazComponent::eat(void)
    float anim_intake;          // intake of biomass (kg/beast)
    float green_eaten, dead_eaten; // pool eaten     (kg/ha)
    float curve_factor;         // competition curve
-   float trampled;             // trampled dead leaf + stem
-   float trampled_stem;        // trampled dead stem
-   float trampled_leaf;        // trampled dead leaf
    float stock_equiv;          // stock equivalent
 
    green_pool = green_leaf + green_stem;
@@ -278,17 +277,18 @@ void grazComponent::eat(void)
    dead_stem_eaten = max(min(dead_stem, dead_stem_eaten), 0.0);
 
    // Trampling
-   trampled = tsdm_eaten * ( divide(1.0, prop_can_eat, 0.0) - 1.0);
+   float trampledFraction = max(0.0, divide(1.0, prop_can_eat, 0.0) - 1.0);
 
-   // Apportion to leaf and stem
-   trampled_leaf = max(trampled * graz_comp_curve(dead_prop_leaf, curve_factor), 0.0);
-   trampled_stem = max(trampled - trampled_leaf, 0.0);
-
-   // Limit the trampling so that we don't trample more than is
-   //  actually there.
-   dead_leaf_tramp = max(min(dead_leaf - dead_leaf_eaten, trampled_leaf), (float)0.0);
-   dead_stem_tramp = max(min(dead_stem - dead_stem_eaten, trampled_stem), (float)0.0);
-   }
+   // Apportion equally to green/dead leaf and stem
+   // Limit the trampling so that we don't trample more than is actually there.
+   if (tsdm_eaten > 0 && trampledFraction > 0) 
+   	{
+        green_leaf_trampled = max(0.0, min(green_leaf - green_leaf_eaten, trampledFraction * green_leaf_eaten));
+        dead_leaf_trampled = max(0.0, min(dead_leaf - dead_leaf_eaten, trampledFraction * dead_leaf_eaten));
+        green_stem_trampled = max(0.0, min(green_stem - green_stem_eaten, trampledFraction * green_stem_eaten));
+        dead_stem_trampled = max(0.0, min(dead_stem - dead_stem_eaten, trampledFraction * dead_stem_eaten));
+        }
+    }
 
 // Calculate stock equivalent
 float grazComponent::graz_stock_equiv (void)
@@ -352,8 +352,11 @@ void grazComponent::update (void)
 
    alw += dlt_lwg;
 
+
    if (dead_leaf_eaten + green_leaf_eaten +
-       dead_stem_eaten + green_stem_eaten > 0.0 )
+       dead_stem_eaten + green_stem_eaten + 
+       dead_leaf_trampled + dead_stem_trampled + 
+       green_leaf_trampled + green_stem_trampled> 0.0 )
       {
       RemovedByAnimalType dmEaten;
       RemovedByAnimalelementType pool;
@@ -361,52 +364,83 @@ void grazComponent::update (void)
       pool.CohortID = pasture_source;
       pool.Organ = "leaf";
       pool.AgeID = "green";
-      pool.WeightRemoved = green_leaf_eaten;
+      pool.WeightRemoved = green_leaf_eaten + green_leaf_trampled;
       pool.Top = 0;
       pool.Bottom = 0;
       pool.Chem = "";
       dmEaten.element.push_back(pool);
       pool.AgeID = "senesced";
-      pool.WeightRemoved = dead_leaf_eaten;
+      pool.WeightRemoved = dead_leaf_eaten + dead_leaf_trampled;
       dmEaten.element.push_back(pool);
       pool.Organ = "stem";
       pool.AgeID = "green";
-      pool.WeightRemoved = green_stem_eaten;
+      pool.WeightRemoved = green_stem_eaten + green_stem_trampled;
       dmEaten.element.push_back(pool);
       pool.AgeID = "senesced";
-      pool.WeightRemoved = dead_stem_eaten;
+      pool.WeightRemoved = dead_stem_eaten + dead_stem_trampled;
       dmEaten.element.push_back(pool);
       string s;
       if (pasture_source == "")
          s = "RemovedByAnimal";
       else
          s = pasture_source + ".RemovedByAnimal";
-//cout << " eating green leaf = " << green_leaf_eaten << endl;
-//cout << " eating green stem = " << green_stem_eaten << endl;
-//cout << " eating dead leaf = " << dead_leaf_eaten << endl;
-//cout << " eating dead stem = " << dead_stem_eaten << endl;
+
       scienceAPI.set(s, dmEaten);
       }
 
-   if (dead_leaf_tramp + dead_stem_tramp > 0.0 )
+   if (dead_leaf_trampled + dead_stem_trampled + green_leaf_trampled + green_stem_trampled > 0.0 )
       {
-      RemoveCropBiomassType dmTrampled;
+      int gl= -1, gs= -1, dl= -1, ds = -1;
+      for (unsigned cohort = 0; cohort < avail.element.size(); cohort++) 
+      { 
+        if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
+            Str_i_Eq(avail.element[cohort].AgeID , "green")) 
+           gl = cohort;
+        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
+                 Str_i_Eq(avail.element[cohort].AgeID , "green"))
+           gs = cohort;
+        else if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
+                 Str_i_Eq(avail.element[cohort].AgeID , "senesced"))
+           dl = cohort;
+        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
+                 Str_i_Eq(avail.element[cohort].AgeID , "senesced")) 
+           ds = cohort;
+        }
 
-      RemoveCropBiomassdmType deadTrampled;
-      deadTrampled.pool = "senesced";
-      deadTrampled.part.push_back("leaf");
-      deadTrampled.dlt.push_back(dead_leaf_tramp * kg2gm / ha2sm);   // send in g/sm
-      deadTrampled.part.push_back("stem");
-      deadTrampled.dlt.push_back(dead_stem_tramp * kg2gm / ha2sm);
-      dmTrampled.dm.push_back(deadTrampled);
+      BiomassRemovedType chopped;
+      chopped.crop_type = avail.element[gl].CohortID;
+      if (gl >= 0 && green_leaf_trampled > 0) {
+         chopped.dm_type.push_back(avail.element[gl].CohortID);
+         chopped.dlt_crop_dm.push_back(green_leaf_trampled);
+         chopped.dlt_dm_n.push_back(avail.element[gl].N * divide(green_leaf_trampled, avail.element[gl].Weight, 0.0));
+         chopped.dlt_dm_p.push_back(avail.element[gl].P * divide(green_leaf_trampled, avail.element[gl].Weight, 0.0));
+         chopped.fraction_to_residue.push_back(1.0);
+      }
+      if (gs >= 0 && green_stem_trampled > 0) {
+         chopped.dm_type.push_back(avail.element[gs].CohortID);
+         chopped.dlt_crop_dm.push_back(green_stem_trampled);
+         chopped.dlt_dm_n.push_back(avail.element[gs].N * divide(green_stem_trampled, avail.element[gs].Weight, 0.0));
+         chopped.dlt_dm_p.push_back(avail.element[gs].P * divide(green_stem_trampled, avail.element[gs].Weight, 0.0));
+         chopped.fraction_to_residue.push_back(1.0);
+      }
 
-      string s;
-      if (pasture_source == "")
-         s = "detach_crop_biomass_rate";
-      else
-         s = pasture_source + ".detach_crop_biomass_rate";
+      if (dl >= 0 && dead_leaf_trampled > 0) {
+         chopped.dm_type.push_back(avail.element[dl].CohortID);
+         chopped.dlt_crop_dm.push_back(dead_leaf_trampled);
+         chopped.dlt_dm_n.push_back(avail.element[dl].N * divide(dead_leaf_trampled, avail.element[dl].Weight, 0.0));
+         chopped.dlt_dm_p.push_back(avail.element[dl].P * divide(dead_leaf_trampled, avail.element[dl].Weight, 0.0));
+         chopped.fraction_to_residue.push_back(1.0);
+      }
 
-      scienceAPI.publish(s, dmTrampled);
+      if (ds >= 0 && dead_stem_trampled > 0) {
+         chopped.dm_type.push_back(avail.element[ds].CohortID);
+         chopped.dlt_crop_dm.push_back(dead_stem_trampled);
+         chopped.dlt_dm_n.push_back(avail.element[ds].N * divide(dead_stem_trampled, avail.element[ds].Weight, 0.0));
+         chopped.dlt_dm_p.push_back(avail.element[ds].P * divide(dead_stem_trampled, avail.element[ds].Weight, 0.0));
+         chopped.fraction_to_residue.push_back(1.0);
+      }
+         
+      scienceAPI.publish("BiomassRemoved", chopped);
       }
    }
 
