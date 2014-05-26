@@ -97,6 +97,9 @@ void Plant::onInit1(void)
 
     emergenceEventObserver = new eventObserver(scienceAPI, "emergence", this);
     plant.addThing(emergenceEventObserver);
+    
+    endJuvenileEventObserver = new eventObserver(scienceAPI, "end_of_juvenile", this);
+    plant.addThing(endJuvenileEventObserver);
 
     FIEventObserver = new eventObserver(scienceAPI, "floral_initiation", this);
     plant.addThing(FIEventObserver);
@@ -104,6 +107,12 @@ void Plant::onInit1(void)
     floweringEventObserver = new eventObserver(scienceAPI, "flowering", this);
     plant.addThing(floweringEventObserver);
 
+    startGrainFillingEventObserver = new eventObserver(scienceAPI, "start_grain_fill", this);
+    plant.addThing(startGrainFillingEventObserver);
+
+    endGrainFillingEventObserver = new eventObserver(scienceAPI, "end_grain_fill", this);
+    plant.addThing(endGrainFillingEventObserver);
+    
     maturityEventObserver = new eventObserver(scienceAPI, "maturity", this);
     plant.addThing(maturityEventObserver);
 

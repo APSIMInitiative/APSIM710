@@ -70,8 +70,11 @@ private:
 
    eventObserver *sowingEventObserver;     // Bookkeeper for Sowing events
    eventObserver *emergenceEventObserver;  // Bookkeeper for Emergence events
+   eventObserver *endJuvenileEventObserver;// Bookkeeper for End juvenile events
    eventObserver *FIEventObserver;         // Bookkeeper for Floral Initiation events
    eventObserver *floweringEventObserver;  // Bookkeeper for flowering events
+   eventObserver *startGrainFillingEventObserver;  // Bookkeeper for start of grainfilling events
+   eventObserver *endGrainFillingEventObserver;  // Bookkeeper for end grainfilling events
    eventObserver *maturityEventObserver;   // Bookkeeper for maturity events
 
    StressDeficit swDef;
