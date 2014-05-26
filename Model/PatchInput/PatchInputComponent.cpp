@@ -278,20 +278,16 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
                {
                string foreignName = var->getName();
 
-               if (foreignName.find("patch_") == string::npos)
+               if (foreignName.find("patch_") != string::npos)
                   {
-                  string msg = "Invalid patch variable name: " + foreignName
-                             + ".  Variable must start with 'patch_'";
-                  error(msg, true);
-                  break;
-                  }
-               foreignName.erase(0, strlen("patch_"));
+                   foreignName.erase(0, strlen("patch_"));
 
-               unsigned variableID = addRegistration(::set,
-                                                     fromID,
-                                                     foreignName,
-                                                     DTsingleString);
-               setVariable(variableID, var->asFloat());
+                   unsigned variableID = addRegistration(::set,
+                                                         fromID,
+                                                         foreignName,
+                                                         DTsingleString);
+                   setVariable(variableID, var->asFloat());
+                  }
                }
             }
          if (patchDataByDayNumber.size() > 0)
@@ -338,7 +334,7 @@ void PatchInputComponent::setPatchData()
       i = patchDataByDate.find(todaysDate.julian_day());
       found = (i != patchDataByDate.end());
       }
-
+        
    if (!found)
       {
       string msg = "No patching of data occurred on date: ";
