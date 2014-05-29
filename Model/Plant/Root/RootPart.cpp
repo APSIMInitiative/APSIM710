@@ -138,7 +138,13 @@ void RootPart::read()
    //SimplePart::readConstants(NULL, "");
    //SimplePart::readSpeciesParameters(NULL, vector<string>());
    //SimplePart::readCultivarParameters(NULL, "");
-
+   
+   string st;
+   scienceAPI.readOptional("MaxRootDepth", st);
+   if (st != "" && Is_numerical(st.c_str()))
+      MaxRootDepth = atof(st.c_str());
+   else
+      MaxRootDepth = 0;
    scienceAPI.readOptional("crop_type", crop_type);
 
    // Read species-specific parameters
@@ -204,6 +210,13 @@ void RootPart::write()
 // Write all parameters as a summary to stdout.
    {
    (*soil[0]).write();
+   
+   if (MaxRootDepth > 0)
+      {
+      ostringstream msg;
+      msg << "    **** A maximum rooting depth has been specified: " << MaxRootDepth << "mm" << endl;
+   	  scienceAPI.write(msg.str());
+   	  }
    }
 
 void RootPart::onTransplanting(void)
@@ -362,6 +375,13 @@ void RootPart::plant_root_depth (void)
       ; /* nothing */
    root_layer_max = deepest_layer + 1;
    root_depth_max = sum_real_array ((*soil[0]).dlayer, deepest_layer+1);
+   
+   // Optionally apply maximum root depth.
+   if (MaxRootDepth > 0)
+      {
+      root_depth_max = min(root_depth_max, MaxRootDepth);
+      }
+   
    dltRootDepth = u_bound ( dltRootDepth, root_depth_max - root_depth);
 
    if (dltRootDepth < 0.0) throw std::runtime_error("negative root growth??") ;

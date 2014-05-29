@@ -95,6 +95,7 @@ class RootPart : public RootBase
       float rootDieBackFraction;                      // fraction of roots dying at harvest or kill_stem
       float root_depth_max;
       int root_layer_max;
+      float MaxRootDepth;
       
       string crop_type;
 
