@@ -264,15 +264,21 @@ namespace Actions
 
             Application.DoEvents();
 
+            List<string> graphOrder = new List<string>();
 			// go export all graphs that we can find.
-			ExportAllRecursively(Selection, ExportDirectory, ExportExtension);
+			ExportAllRecursively(Selection, ExportDirectory, ExportExtension, graphOrder);
 
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            foreach (string s in graphOrder)
+                sb.AppendLine(s);
+
+            File.WriteAllText(Path.Combine(ExportDirectory, "Export List.txt"), sb.ToString());
 		}
 
-		private static void ExportAllRecursively(Component Component, string ExportDirectory, string ExportExtension)
+		private static void ExportAllRecursively(Component Component, string ExportDirectory, string ExportExtension, List<string> graphOrder)
 		{
 			if ((Component.Type == "Graph") || (Component.Type == "Graph2") || (Component.Type == "RegressionGraph") || (Component.Type == "GraphReport") || (Component.Type == "memo")) {
-				ExportComponent(Component.FullPath, ExportDirectory, ExportExtension);
+				ExportComponent(Component.FullPath, ExportDirectory, ExportExtension, graphOrder);
 
 			} else if ((Component.Type == "area") || (Component.Type == "simulation") || (Component.Type == "folder") || (Component.Type == "outputfile")) {
 				// Need to recurse.
@@ -280,41 +286,54 @@ namespace Actions
 					ExportDirectory = Path.Combine(ExportDirectory, Component.Name);
 				}
 				foreach (ApsimFile.Component Child in Component.ChildNodes) {
-					ExportAllRecursively(Child, ExportDirectory, ExportExtension);
+					ExportAllRecursively(Child, ExportDirectory, ExportExtension, graphOrder);
 				}
 			}
 
 		}
 
-		private static void ExportComponent(string SelectedPath, string ExportDirectory, string ExportExtension)
-		{
-			Directory.CreateDirectory(ExportDirectory);
+        private static void ExportComponent(string SelectedPath, string ExportDirectory, string ExportExtension, List<string> graphOrder)
+        {
+            Directory.CreateDirectory(ExportDirectory);
+            if (!File.Exists(Path.Combine(ExportDirectory, "Export List.txt")))
+                File.CreateText(Path.Combine(ExportDirectory, "Export List.txt"));
 
-			Contr.SelectedPath = SelectedPath;
+            Contr.SelectedPath = SelectedPath;
             Application.DoEvents();
-			Rectangle r = new Rectangle(0, 0, 800, 800);
-			Bitmap img = new Bitmap(r.Width, r.Height);
+            Rectangle r = new Rectangle(0, 0, 800, 800);
+            Bitmap img = new Bitmap(r.Width, r.Height);
 
-			Graphics g = Graphics.FromImage(img);
-			g.FillRectangle(Brushes.White, r);
+            Graphics g = Graphics.FromImage(img);
+            g.FillRectangle(Brushes.White, r);
 
-			Contr.Explorer.CurrentView.PrintPage(r, g);
+            Contr.Explorer.CurrentView.PrintPage(r, g);
 
-			g.Dispose();
-			string NewFileName = Path.Combine(ExportDirectory, Contr.ApsimData.Find(SelectedPath).Name + ExportExtension);
-			if ((Path.GetExtension(NewFileName) == ".bmp")) {
-				img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Bmp);
-			} else if ((Path.GetExtension(NewFileName) == ".gif")) {
-				img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Gif);
-			} else if ((Path.GetExtension(NewFileName) == ".jpg")) {
-				img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-			} else if ((Path.GetExtension(NewFileName) == ".png")) {
-				img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Png);
-			} else {
+            g.Dispose();
+            string NewFileName = Path.Combine(ExportDirectory, Contr.ApsimData.Find(SelectedPath).Name + ExportExtension);
+            if ((Path.GetExtension(NewFileName) == ".bmp"))
+            {
+                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Bmp);
+            }
+            else if ((Path.GetExtension(NewFileName) == ".gif"))
+            {
+                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Gif);
+            }
+            else if ((Path.GetExtension(NewFileName) == ".jpg"))
+            {
+                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+            else if ((Path.GetExtension(NewFileName) == ".png"))
+            {
+                img.Save(NewFileName, System.Drawing.Imaging.ImageFormat.Png);
+            }
+            else
+            {
                 img.Dispose();
                 throw new Exception("Invalid format for exporting: " + NewFileName);
-			}
-		}
+            }
+
+            graphOrder.Add(NewFileName);
+        }
 
 		#endregion
 

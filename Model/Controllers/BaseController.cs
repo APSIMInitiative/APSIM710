@@ -37,6 +37,7 @@ namespace Controllers
         private string MySelectedFactorialPath = "";
 
         public ApsimFile.ApsimFile ApsimData;
+        public bool isExporting = false; //used to supress blocking dialogs during graph export.
         public delegate void NotifyEventHandler();
         public delegate void SelectionChangedHandler(StringCollection OldSelections, StringCollection NewSelections);
         public delegate void FactorialSelectionChangedHandler(string OldSelection, string NewSelection);
@@ -213,7 +214,7 @@ namespace Controllers
             // user to save the current data if something has changed.
             // --------------------------------------------------------
             Explorer.SaveCurrentView();
-            if (ApsimData.IsDirty)
+            if (ApsimData.IsDirty && !isExporting)
             {
                 DialogResult DoSave = MessageBox.Show("The current file has changed. Do you want to save it before proceeding?", "Save?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 switch (DoSave)

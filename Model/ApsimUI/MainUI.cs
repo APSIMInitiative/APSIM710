@@ -202,7 +202,8 @@ namespace APSIMUI
                             {
                                 ExportDirectory = Args[2];
                                 ExportExtension = Args[3];
-                                break; // TODO: might not be correct. Was : Exit For
+                                SimulationController.isExporting = true;
+                                break; 
                             }
                             else
                             {
