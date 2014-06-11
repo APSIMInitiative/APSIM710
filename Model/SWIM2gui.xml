@@ -1,0 +1,225 @@
+<Type name="SWIM2gui">
+	<MetaData>
+		<UItype>CSUserInterface.GenericUI</UItype>
+		<ShowInMainTree>Yes</ShowInMainTree>
+		<Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+		<Documentation>%apsim%\Documentation\4 Module Reference\SWIM2.htm</Documentation>
+		<Documentation name="Technical specification">%apsim%\Documentation\4 Module Reference\SWIMv21UserManual.pdf</Documentation>
+		<LargeIcon>%apsim%\UserInterface\Images\Soil32.png</LargeIcon>
+		<SmallIcon>%apsim%\UserInterface\Images\Soil16.png</SmallIcon>
+		<dll>%apsim%/Model/SWIM2.%dllext%</dll>
+		<drops>
+			<drop>toolbox</drop>
+			<drop>area</drop>
+			<drop>simulation</drop>
+			<drop>folder</drop>
+		</drops>
+		<ApsimToSim>
+			<component name="[SWIM2gui.name]" executable="[dll]" class="SWIM2">
+				<executable name="[dll]" version="1.0"/>
+				<initdata>
+					[Model]
+				</initdata>
+			</component>
+		</ApsimToSim>
+	</MetaData>
+	<Model>
+		<!-- SWIM2 - General Model Parameters -->
+		<max_iterations description="number of iterations before timestep is halved">50</max_iterations>
+
+		<!-- ***  Thresholds for loss of solute balance   ****************************************************************  -->
+		<negative_conc_fatal description="fatal threshold for loss in solute balance" units="kg/ha">0.1</negative_conc_fatal>
+		<negative_conc_warn description="warning threshold for loss in solute balance" units="kg/ha">0.001</negative_conc_warn>
+		<!--     Numerical errors can result in negative solute concentration, which is truncated to zero. SWIM will respond
+		  to this according to the level loss in mass balance. Very small errors (below warning threshold) are ignored, above
+		  this SWIM will alert the user about the truncation, large errors (above fatal threshold) will make SWIM crash.    -->
+
+		<!-- ****  Parameters for soil equilibrium evaporation rate (eeq)   *********************************************** -->
+		<min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+		<max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+
+		<!-- ***  Parameters for soil potential evapotranspiration   ****************************************************** -->
+		<max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+		<residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+		<!--     Bare soil albedo must not exceed the value of max_albedo.       -->
+		<trf_fasw>0 1</trf_fasw>
+		<trf_value>1  1</trf_value>
+		<min_total_root_length description="minimum value for root length density (cm/cm3)">0.01</min_total_root_length>
+
+		<!-- ***  Residue and crop cover effects on evaporation    ******************************************************** -->
+		<cover_effects description="whether cover effects are to be considered">on</cover_effects>
+		<A_to_evap_fact description="coefficient 'Ar' of function for residue effects on eos">0.44</A_to_evap_fact>
+		<!--      Exponential function correcting potential soil evaporation (eos) due to presence of residues.
+		  First approximation [by DM. Silburn unpublished data, June 95] reproducing Adams et al (1975):
+		    Ar = 0.00022 / 0.0005 = 0.44                 -->
+		<canopy_eos_coef description="coefficient 'Ac' of function for effect of canopy on eos">1.7</canopy_eos_coef>
+		<!--     Exponential function correcting potential soil evaporation (eos) due to shading by plant canopy.
+		  With 'Ac' set to 1.7, eos is reduced between 0.0 (no cover) and 82% (100% cover), Adams, Arkin & Ritchie (1976)   -->
+
+		  <!-- ***  Parameters for solute extra solute supply   *********************************************************** -->
+		<max_bitesize>0.1</max_bitesize>
+		<extra_supply_fraction>0.5</extra_supply_fraction>
+
+		<!-- ***  Residue and crop cover effects on runoff   ************************************************************** -->
+		<cover_effects description="whether cover effects are to be considered">on</cover_effects>
+		<!--     The effect of residue and canopy cover is implemented as in the soilwat model. These can be turn off for
+		  compatibility with SWIM standalone.   -->
+
+		<!-- ***  Default parameters for rainfall and evaporation (used if not specified in the met file)   *************** -->
+		<default_rain_time description="default time that rainfall starts">0:00</default_rain_time>
+		<default_rain_duration description="default duration of rainfall (min)">1440.0</default_rain_duration>
+		<default_evap_time description="default time that evaporation starts">6:00</default_evap_time>
+		<default_evap_duration description="default duration for evaporation (min)">720.</default_evap_duration>
+
+		<!-- ***  Bounds for several parameters   ************************************************************************* -->
+		<lb_exco>0</lb_exco>
+		<ub_exco>15000</ub_exco>
+		<lb_fip>0</lb_fip>
+		<ub_fip>100</ub_fip>
+		<lb_dis>0</lb_dis>
+		<ub_dis>20</ub_dis>
+		<lb_slupf>0</lb_slupf>
+		<ub_slupf>1</ub_slupf>
+		<lb_slos>0</lb_slos>
+		<ub_slos>10</ub_slos>
+		<lb_d0>0</lb_d0>
+		<ub_d0>1</ub_d0>
+		<lb_a>0</lb_a>
+		<ub_a>100</ub_a>
+		<lb_dthc>0</lb_dthc>
+		<ub_dthc>1</ub_dthc>
+		<lb_dthp>0</lb_dthp>
+		<ub_dthp>10</ub_dthp>
+		<lb_disp>0</lb_disp>
+		<ub_disp>5</ub_disp>
+		<lb_solute>0</lb_solute>
+		<ub_solute>1000</ub_solute>
+
+		<!-- SWIM2 - Soil-Plant-Solute Parameters -->
+		<init>
+			<slmin description="minimum value of water potential to be considered (log10(cm))">-3.0</slmin>
+			<slmax description="maximum value of water potential to be considered (log10(cm))">7.0</slmax>
+			<bypass_flow description="whether bypass flow is to be considered (on/off)"> [SWIM2gui.bypass_flow] </bypass_flow>
+			<runoff> [SWIM2gui.runoff] </runoff>
+			<!--  Runoff options:
+			      - 0: no ponding, all excess water runs off;
+			      - 1: no runoff, all excess water remains ponding;
+			      - 2: simple power-law function to estimate runoff (parameters should be specified);
+			      - 3: idem option 2, but also includes subsurface downslope flow (not fully implemented);  -->
+			<top_boundary_condition> [SWIM2gui.top_boundary_condition] </top_boundary_condition>
+			<!--  Top boundary condition options:
+			      - 0: infinite surface conductance (infiltration is only limited by hydraulic conductivity);
+			      - 1: constant matric potential (same as in the initial profile set up);
+			      - 2: limited surface conductance (parameters should be especified)  -->
+			<bottom_boundary_condition> [SWIM2gui.bottom_boundary_condition] </bottom_boundary_condition>
+			<!--  Bottom boundary condition options:
+			      - 0: matric potential gradient (dpsi/dx) varies with time (variation should be specified);
+			      - 1: matric potential varies with time (variation should be specified);
+			      - 2: zero flux (impermeable layer);
+			      - 3: seepage (to simulate lysimeters);   -->
+			<vapour_conductivity description="whether vapour conductivity is to be considered (on/off)">on</vapour_conductivity>
+			<run_solutes description="list of names of solutes to transport"> [SWIM2gui.run_solutes] </run_solutes>
+			<extra_solute_supply description="whether extra solute supply is to be considered (on/off)">on</extra_solute_supply>
+			<solute_exclusion description="whether solute exclusion is to be considered (on/off)">on</solute_exclusion>
+			<subsurface_drain description="whether subsurface drain is to be considered (on/off)"> [SWIM2gui.subsurface_drain] </subsurface_drain>
+
+			<!--  Soil profile description  -->
+			<x description="depth of nodes used in SWIM calculations (mm)"> [SWIM2gui.x] </x>
+			<soil_type description="flag for the soil type (horizon) of each node"> [SWIM2gui.soil_type] </soil_type>
+			<psi description="initial soil hydraulic potential (cm)"> [SWIM2gui.psi] </psi>
+			<!--    Note that the actual soil parameters are given, by horizon, on a separate file    -->
+		</init>
+		<calc>
+			<dtmin>0.0</dtmin>
+			<dtmax>30.0</dtmax>
+			<ersoil>0.0001</ersoil>
+			<ernode>0.0001</ernode>
+			<slcerr>0.0001</slcerr>
+			<errex>0.01</errex>
+			<dppl>2</dppl>
+			<dpnl>1</dpnl>
+			<swt>0</swt>
+			<slswt>0.0</slswt>
+			<max_water_increment> [SWIM2gui.max_water_increment] </max_water_increment>
+			<!--  Where:
+			    - dtmin: the mininum dt (time step) for calculations (min);
+			    - dtmax: the maximum allowed dt for calculations (min);
+			    - ersoil: the maximum allowed water balance error for the whole soil (cm/h) - recommended values 10E-3 to 10E-6. Larger values
+			        may be used for unstable simulations;
+			    - ernode: the maximum allowed water balance error for each soil node (cm/h)- recommended values 10E-4 to 10E-6. Larger values
+			        may be used for unstable simulations;
+			    - slcerr: the maximum error admitted for Cw (solute conc in solution) in any node when solving the Thomas algorithm for solute transport.
+			    - errex: relative fraction of water uptake from which the rate becomes constant () - recommended value around 10E-2, and not much smaller;
+			    - dppl and dpnl: upper and lower limits for the transformed variable 'p'. Ross (1990) recommends 2 and 1;
+			    - swt: spatial weighting factor for calculations of Richards eq. (should vary between 0.5 (central differences) and 1 (fully upstream). 
+			        Using zero allows SWIM to decide, central diffs are preferred);
+			    - slswt: spatial weighting factor for calculations of solute's ADE (should vary similarly to swt);
+			    - max_water_increment: parameter used to calculate the value of dt for each step (mm) [also called dw]. dt = dw/max(qw);
+			-->
+		</calc>
+		<solute>
+			<solute_name>      no3      nh4      urea    cl       br       dcd      orgn    </solute_name>
+			<slupf>            1.0      1.0      0.0     0.0      0.0      0.0      0.0     </slupf>
+			<slos>             0.0      0.0      0.0     0.0      0.0      0.0      0.0     </slos>
+			<d0>               0.06840  0.07056  0.0684  0.01000  0.01000  0.07700  0.07200 </d0>
+			<a>                0.0      0.0      0.0     0.0      0.0      0.0      0.0     </a>
+			<dthc>             0.0      0.0      0.0     0.0      0.0      0.0      0.0     </dthc>
+			<dthp>             1.0      1.0      1.0     1.0      1.0      1.0      1.0     </dthp>
+			<disp>             1.0      1.0      1.0     1.0      1.0      1.0      1.0     </disp>
+			<ground_water_conc>0.0      0.0      0.0     0.0      0.0      0.0      0.0     </ground_water_conc>
+			<!--  Where:
+			    - slupf: factor for solute uptake (1 = free uptake, 0 = no uptake);
+			    - slos: factor for osmotic effect at soil-root interface (0 = no effect);
+			    - d0: molecular diffusion coefficient in free water (cm2/h);
+			    - a, dthc, and dthp: empirical constants to calculate tortuosity;
+			    - disp: empirical constant to calculate hydrodynamic dispersion;
+			    - ground_water_conc: solute concentration in the ground water (ppm);
+			-->
+		</solute>
+		<climate>
+			<rainfall_source>apsim</rainfall_source>
+			<evap_source>calc</evap_source>
+			<salb description="soil albedo"> [SWIM2gui.salb] </salb>
+		</climate>
+		<runoff>
+			<!-- Assuming no reductions in surface water storage due to rainfall -->
+			<maximum_surface_storage> [SWIM2gui.surface_storage] </maximum_surface_storage>
+			<minimum_surface_storage> [SWIM2gui.surface_storage] </minimum_surface_storage>
+			<initial_surface_storage> [SWIM2gui.surface_storage] </initial_surface_storage>
+			<precipitation_constant>50</precipitation_constant>
+			<runoff_rate_factor> [SWIM2gui.runoff_rate_factor] </runoff_rate_factor>
+			<runoff_rate_power>2</runoff_rate_power>
+		</runoff>
+		<bottom_boundary>
+			<constant_gradient> [SWIM2gui.bottom_constant_gradient] </constant_gradient>
+			<constant_potential> [SWIM2gui.bottom_constant_potential] </constant_potential>
+		</bottom_boundary>
+		<top_boundary>
+			<!-- will assume no effects of rainfall on (decreasing) surface conductance -->
+			<maximum_conductance> [SWIM2gui.surface_conductance] </maximum_conductance>
+			<minimum_conductance> [SWIM2gui.surface_conductance] </minimum_conductance>
+			<initial_conductance> [SWIM2gui.surface_conductance] </initial_conductance>
+			<precipitation_constant>25</precipitation_constant>
+		</top_boundary>
+		<bypass_flow>
+			<depth> [SWIM2gui.bypass_depth] </depth>
+			<conductance> [SWIM2gui.bypass_conductance] </conductance>
+			<storage> [SWIM2gui.bypass_storage] </storage>
+		</bypass_flow>
+		<crop>
+			<crop_name>           AgPasture  grass   ryegrass  clover  paspalum  wheat   lucerne     </crop_name>
+			<min_xylem_potential> -15000     -15000  -15000    -15000  -15000    -15000  -15000  (cm)</min_xylem_potential>
+			<root_radius>         0.25       0.25    0.25      0.25    0.25      0.25    0.25    (mm)</root_radius>
+			<root_conductance>    1.4E-7     1.4E-7  1.4E-7    1.4E-7  1.4E-7    1.4E-7  1.4E-7      </root_conductance>
+		</crop>
+		<drain>
+			<drain_depth description="depth of subsurface drainage"> [SWIM2gui.drain_depth] (mm)</drain_depth>
+			<drain_spacing description="spacing between drains"> [SWIM2gui.drain_spacing] (mm)</drain_spacing>
+			<drain_radius description="radius of drains"> [SWIM2gui.drain_radius] (mm)</drain_radius>
+			<klat description="hydraulic conductivity for lateral flow"> [SWIM2gui.drain_klat] (mm/d)</klat>
+			<imperm_depth description="depth to the impermeable layer"> [SWIM2gui.drain_impdepth] </imperm_depth>
+		</drain>
+
+		<!--  Description for each soil horizon is given in a separate file (read in using ini component) -->
+	</Model>
+</Type>
