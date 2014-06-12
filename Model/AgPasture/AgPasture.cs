@@ -630,7 +630,7 @@ public class AgPasture
 		if (SP[s].isLegume) SP[s].leafPref = 1.5;        //Init DM (is partitioned to different pools)
 
 		if (dmtotal[s] >= 0.0)
-		{ // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for back-compatibility)
+		{ // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for back-compatibility-RCichota, May2014)
 			dmshoot[s] = dmtotal[s];
 		}
 
@@ -811,6 +811,34 @@ public class AgPasture
 		return true;
 	}
 
+	//---------------------------------------------------------------------------
+	/// <summary>
+	/// Write initialisation info to summary file
+	/// </summary>
+	private void writeSummary()
+	{
+		Console.WriteLine();
+		Console.Write(@"
+AgPature Properties
+------------------------------------------------------------------
+Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
+(kg/ha)    (kg/ha)   (kg/ha)  ()   (kg/ha)  (kg/ha)
+------------------------------------------------------------------
+");
+		for (int specie = 0; specie < SP.Length; ++specie)
+		{
+			Console.WriteLine("          {0,-10}   {1,6:F1}  {2,6:F1}  {3,6:F1}  {4,6:F2}  {5,6:F1}  {6,6:F1}",
+			SP[specie].speciesName, SP[specie].dmtotal, SP[specie].dmshoot, SP[specie].dmroot, SP[specie].totalLAI, (SP[specie].dmshoot + SP[specie].dmroot) * 0.4, SP[specie].Nshoot + SP[specie].Nroot);
+		}
+		Console.WriteLine("          ------------------------------------------------------------------");
+		Console.WriteLine("           Totals      {0,6:F1}  {1,6:F1}  {2,6:F1}  {3,6:F2}  {4,6:F1}  {5,6:F1}",
+		TotalPlantWt, AboveGroundWt, BelowGroundWt, LAI_total, TotalPlantC, TotalPlantN);
+		Console.WriteLine("          ------------------------------------------------------------------");
+
+		Console.WriteLine();
+		Console.WriteLine("          N uptake controlled by AgPasture");
+		Console.WriteLine("          Water uptake controlled by " + ((WaterUptakeSource == "calc") ? "AgPasture" : "an external module"));
+	}
 
 	//--------------------------------------------------------------------------
 	/// <summary>
@@ -1525,7 +1553,6 @@ public class AgPasture
 		if (GZ.type == "residue")
 		{
 			residue_amt = GZ.amount;
-			DMHarvestableTest = herbage_mass - residue_amt;
 			if (herbage_mass > residue_amt)
 			{
 				remove_amt = herbage_mass - residue_amt;
@@ -1539,7 +1566,6 @@ public class AgPasture
 		else if (GZ.type == "removal")
 		{
 			remove_amt = GZ.amount;
-			DMHarvestableTest = herbage_mass - residue_amt;
 			if (herbage_mass > min_residue)
 			{
 				if (herbage_mass > (remove_amt + min_residue))
@@ -1762,7 +1788,7 @@ public class AgPasture
 		{
 			p_Nfix += SP[s].CalcNdemand();      //Also, default SP[s].Nfix is set assuming soil N supply is sufficient
 			p_NdemandOpt += SP[s].NdemandOpt;   //demand to optimum [N]
-			p_Ndemand += SP[s].Ndemand;         //for luxury uptake
+			p_Ndemand += SP[s].NdemandLux;         //for luxury uptake
 		}
 
 		//2)Update Nfix of legume species under N stress
@@ -1774,15 +1800,15 @@ public class AgPasture
 		{
 			if (!SP[s].isLegume)
 			{
-				if (SP[s].Ndemand <= SP[s].Nremob)
+				if (SP[s].NdemandLux <= SP[s].Nremob)
 				{
 					SP[s].soilNdemand = 0;
-					SP[s].remob2NewGrowth = SP[s].Ndemand;
-					SP[s].Nremob -= SP[s].Ndemand;
+					SP[s].remob2NewGrowth = SP[s].NdemandLux;
+					SP[s].Nremob -= SP[s].NdemandLux;
 				}
 				else
 				{
-					SP[s].soilNdemand = SP[s].Ndemand - SP[s].Nremob;
+					SP[s].soilNdemand = SP[s].NdemandLux - SP[s].Nremob;
 					SP[s].remob2NewGrowth = SP[s].Nremob;
 					SP[s].Nremob = 0;
 				}
@@ -1791,22 +1817,22 @@ public class AgPasture
 			{
 				if (Nstress < 0.99)  //more fixation under Nstress
 				{
-					double newNfix = (SP[s].MaxFix - (SP[s].MaxFix - SP[s].MinFix) * Nstress) * SP[s].Ndemand;
+					double newNfix = (SP[s].MaxFix - (SP[s].MaxFix - SP[s].MinFix) * Nstress) * SP[s].NdemandLux;
 					double moreNfix = Math.Max(0.0, (newNfix - SP[s].Nfix));
 					SP[s].Nfix = newNfix;
 					p_Nfix += moreNfix;
 				}
 
-				if (SP[s].Ndemand <= SP[s].Nremob + SP[s].Nfix)
+				if (SP[s].NdemandLux <= SP[s].Nremob + SP[s].Nfix)
 				{
-					SP[s].remob2NewGrowth = SP[s].Ndemand - SP[s].Nfix;
+					SP[s].remob2NewGrowth = SP[s].NdemandLux - SP[s].Nfix;
 					SP[s].Nremob -= SP[s].remob2NewGrowth;
 					SP[s].soilNdemand = 0;
 				}
 				else
 				{
 					SP[s].remob2NewGrowth = SP[s].Nremob;
-					SP[s].soilNdemand = SP[s].Ndemand - SP[s].Nfix - SP[s].Nremob;
+					SP[s].soilNdemand = SP[s].NdemandLux - SP[s].Nfix - SP[s].Nremob;
 					SP[s].Nremob = 0;
 				}
 			}
@@ -1830,7 +1856,7 @@ public class AgPasture
 				else
 				{
 					SP[s].soilNuptake = p_soilNavailable * SP[s].soilNdemand / p_soilNdemand;
-					if (SP[s].Ndemand == 0)
+					if (SP[s].NdemandLux == 0)
 					{
 						SP[s].gfn = 1.0;
 						SP[s].newGrowthN = 0;
@@ -2016,10 +2042,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dm += SP[s].dmgreen;
-			return dm;
+				result += SP[s].dmgreen;
+			return result;
 		}
 	}
 
@@ -2037,10 +2063,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dmleaf = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dmleaf += SP[s].dmleaf;
-			return dmleaf;
+				result += SP[s].dmleaf;
+			return result;
 		}
 	}
 	[Output]
@@ -2050,10 +2076,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dm += SP[s].dmleaf_green;
-			return dm;
+				result += SP[s].dmleaf_green;
+			return result;
 		}
 	}
 	[Output]
@@ -2063,10 +2089,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dm += SP[s].dmleaf4;
-			return dm;
+				result += SP[s].dmleaf4;
+			return result;
 		}
 	}
 
@@ -2077,10 +2103,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dm += SP[s].dmstem4;
-			return dm;
+				result += SP[s].dmstem4;
+			return result;
 		}
 	}
 	[Output]
@@ -2090,10 +2116,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dm = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dm += SP[s].dmstem_green;
-			return dm;
+				result += SP[s].dmstem_green;
+			return result;
 		}
 	}
 
@@ -2104,10 +2130,10 @@ public class AgPasture
 	{
 		get
 		{
-			double dmstem = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dmstem += SP[s].dmstem;
-			return dmstem;
+				result += SP[s].dmstem;
+			return result;
 		}
 	}
 
@@ -2118,12 +2144,26 @@ public class AgPasture
 	{
 		get
 		{
-			double dmstol = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				dmstol += SP[s].dmstol;
-			return dmstol;
+				result += SP[s].dmstol;
+			return result;
 		}
 	}
+	[Output]
+	[Description("Total dry matter weight of plant's roots")]
+	[Units("kgDM/ha")]
+	public double RootWt
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].dmroot;
+			return result;
+		}
+	}
+
 	//for consistency, passing variables in Onremove_crop_biomass() similar with other plant modules
 	[Output]
 	[Description("Total dry matter weight of plants above ground")]
@@ -2193,8 +2233,6 @@ public class AgPasture
 		get { return p_dRootSen; }
 	}
 
-	[Output]
-	private double DMHarvestableTest = 0.0;
 	[Output]
 	[Description("Total dry matter amount available for removal (leaf+stem)")]
 	[Units("kgDM/ha")]
@@ -2375,10 +2413,10 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				N += SP[s].Ngreen;
-			return N;
+				result += SP[s].Ngreen;
+			return result;
 		}
 	}
 	[Output]
@@ -2388,10 +2426,10 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				N += SP[s].Ndead;
-			return N;
+				result += SP[s].Ndead;
+			return result;
 		}
 	}
 
@@ -2402,10 +2440,10 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				N += SP[s].Nleaf;
-			return N;
+				result += SP[s].Nleaf;
+			return result;
 		}
 	}
 
@@ -2416,10 +2454,10 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				N += SP[s].Nstem;
-			return N;
+				result += SP[s].Nstem;
+			return result;
 		}
 	}
 
@@ -2430,10 +2468,92 @@ public class AgPasture
 	{
 		get
 		{
-			double N = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				N += SP[s].Nstolon;
-			return N;
+				result += SP[s].Nstolon;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Total amount of N in roots")]
+	[Units("kgN/ha")]
+	public double RootN
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].Nroot;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Average N concentration in leaves")]
+	[Units("kgN/kgDM")]
+	public double LeafNconc
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].Ncleaf1 * SP[s].dmleaf1
+			  		    + SP[s].Ncleaf2 * SP[s].dmleaf2
+						+ SP[s].Ncleaf3 * SP[s].dmleaf3
+						+ SP[s].Ncleaf4 * SP[s].dmleaf4;
+			result = result / LeafWt;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Average N concentration in stems")]
+	[Units("kgN/kgDM")]
+	public double StemNconc
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].Ncstem1 * SP[s].dmstem1
+					    + SP[s].Ncstem2 * SP[s].dmstem2
+					    + SP[s].Ncstem3 * SP[s].dmstem3
+					    + SP[s].Ncstem4 * SP[s].dmstem4;
+			result = result / StemWt;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Average N concentration in stolons")]
+	[Units("kgN/kgDM")]
+	public double StolonNconc
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].Ncstol1 * SP[s].dmstol1
+					    + SP[s].Ncstol2 * SP[s].dmstol2
+					    + SP[s].Ncstol3 * SP[s].dmstol3;
+			result = result / StolonWt;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Average N concentration in roots")]
+	[Units("kgN/kgDM")]
+	public double RootNconc
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].Ncroot * SP[s].dmroot;
+			result = result / RootWt;
+			return result;
 		}
 	}
 
@@ -2845,7 +2965,7 @@ public class AgPasture
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].Nremob;
+				result += SP[s].remob2NewGrowth;
 			return result;
 		}
 	}
@@ -3049,6 +3169,489 @@ public class AgPasture
 		}
 	}
 
+
+	[Output]
+	[Description("Dry matter weight of leaves at stage 1 (young) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage1Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmleaf1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of leaves at stage 2 (developing) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage2Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmleaf2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of leaves at stage 3 (mature) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage3Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmleaf3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weightt of leaves at stage 4 (dead) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage4Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmleaf4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stems at stage 1 (young) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage1Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstem1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stems at stage 2 (developing) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage2Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstem2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stems at stage 3 (mature) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage3Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstem3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stems at stage 4 (dead) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage4Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstem4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stolons at stage 1 (young) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonStage1Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstol1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stolons at stage 2 (developing) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonStage2Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstol2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stolons at stage 3 (mature) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonStage3Wt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstol3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of roots for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesRootsWt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmroot;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("N content of leaves at stage 1 (young) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage1N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nleaf1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of leaves at stage 2 (developing) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage2N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nleaf2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of leaves at stage 3 (mature) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage3N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nleaf3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of leaves at stage 4 (dead) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafStage4N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nleaf4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stems at stage 1 (young) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage1N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstem1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stems at stage 2 (developing) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage2N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstem2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stems at stage 3 (mature) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage3N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstem3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stems at stage 4 (dead) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemStage4N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstem4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stolons at stage 1 (young) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonStage1N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstol1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stolons at stage 2 (developing) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonStage2N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstol2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of stolons at stage 3 (mature) for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonStage3N
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstol3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N content of roots for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesRootsN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nroot;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in leaves at stage 1 (young) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesLeafStage1Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncleaf1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in leaves at stage 2 (developing) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesLeafStage2Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncleaf2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in leaves at stage 3 (mature) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesLeafStage3Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncleaf3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in leaves at stage 4 (dead) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesLeafStage4Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncleaf4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stems at stage 1 (young) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStemStage1Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstem1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stems at stage 2 (developing) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStemStage2Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstem2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stems at stage 3 (mature) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStemStage3Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstem3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stems at stage 4 (dead) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStemStage4Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstem4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stolons at stage 1 (young) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStolonStage1Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstol1;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stolons at stage 2 (developing) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStolonStage2Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstol2;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in stolons at stage 3 (mature) for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStolonStage3Nconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncstol3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N concentration in roots for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesRootsNconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Ncroot;
+			return result;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	[Output]
 	[Description("Proportion in the dry matter harvested of each species")]
 	[Units("%")]
@@ -3187,7 +3790,7 @@ public class AgPasture
 	[Output]
 	[Description("Loss of C via respiration")]
 	[Units("kgC/ha")]
-	private double[] SpeciesCarbonLossRespiration
+	public double[] SpeciesCarbonLossRespiration
 	{
 		get
 		{
@@ -3201,7 +3804,7 @@ public class AgPasture
 	[Output]
 	[Description("Gross primary productivity")]
 	[Units("kgDM/ha")]
-	private double GPP
+	public double GPP
 	{
 		get
 		{
@@ -3214,7 +3817,7 @@ public class AgPasture
 	[Output]
 	[Description("Net primary productivity")]
 	[Units("kgDM/ha")]
-	private double NPP
+	public double NPP
 	{
 		get
 		{
@@ -3228,7 +3831,7 @@ public class AgPasture
 	[Output]
 	[Description("Net above-ground primary productivity")]
 	[Units("kgDM/ha")]
-	private double NAPP
+	public double NAPP
 	{
 		get
 		{
@@ -4019,7 +4622,7 @@ public class Species
 	public double NrootRemob = 0;
 	public double remob2NewGrowth = 0;
 	public double newGrowthN = 0;    //N plant-soil
-	public double Ndemand;      //N demand for new growth
+	public double NdemandLux;      //N demand for new growth
 	public double NdemandOpt;
 	public double NdemandMax;   //luxury N demand for new growth
 	public double Nfix;         //N fixed by legumes
@@ -4068,7 +4671,7 @@ public class Species
 		Nremob = 0.0;
 		Cremob = 0;
 		Nfix = 0.0;
-		Ndemand = 0.0;
+		NdemandLux = 0.0;
 		soilNdemand = 0.0;
 		soilNuptake = 0.0;
 		dmdefoliated = 0.0;
@@ -4800,13 +5403,13 @@ public class Species
 		//this will reduce the N stress under N limitation for the same soilN
 
 		//N demand for new growth assuming luxury uptake to max [N]
-		Ndemand = (toRoot * NcrootMax + toStol * NcstolMax
+		NdemandLux = (toRoot * NcrootMax + toStol * NcstolMax
 		+ toLeaf * NcleafMax + toStem * NcstemMax);
 		//Ndemand *= NCO2Effects();       //luxary uptake not reduce
 
 		//even with sufficient soil N available
 		if (isLegume)
-			Nfix = MinFix * Ndemand;
+			Nfix = MinFix * NdemandLux;
 
 		return Nfix;
 	}
@@ -4905,10 +5508,10 @@ public class Species
 	public double NFixCost()
 	{
 		double costF = 1.0;    //  redcuiton fraction of net prodcution as cost of N-fixining
-		if (!isLegume || Nfix == 0 || Ndemand == 0)      //  happens when plant has no growth
+		if (!isLegume || Nfix == 0 || NdemandLux == 0)      //  happens when plant has no growth
 		{ return costF; }
 
-		double actFix = Nfix / Ndemand;
+		double actFix = Nfix / NdemandLux;
 		costF = 1 - 0.24 * (actFix - MinFix) / (MaxFix - MinFix);
 		if (costF < 0.76)
 			costF = 0.76;
