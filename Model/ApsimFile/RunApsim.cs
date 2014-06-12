@@ -92,8 +92,10 @@ namespace ApsimFile
             {
                 if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
                     return ApsimJobs[0].PercentComplete;
-                else
+                else if (Scheduler != null)
                     return Scheduler.PercentComplete;
+                else
+                    return 0;
             }
         }
 
