@@ -115,6 +115,65 @@ namespace CMPServices
             String[] arguments = Environment.GetCommandLineArgs();
             return arguments[0];
         }
+        //==============================================================================
+        /// <summary>
+        /// Get the user's documents directory without the trailing path delimiter.
+        /// </summary>
+        /// <returns>For Linux it will return a path equivalent to ~\Documents</returns>
+        //==============================================================================
+        static public String getPersonalFilesDir()
+        {
+            String result = "";
+
+            if (Path.VolumeSeparatorChar == '/')
+            {
+                result = getEnvVariable("HOME") + "Documents";
+            }
+            else
+            {
+                result = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+            return result;
+        }
+        //==============================================================================
+        /// <summary>
+        /// Get the user's application data files directory on the host disk without the trailing
+        /// backslash.
+        /// On Linux it returns ~ because the app data is usually in ~/.appname.
+        /// </summary>
+        /// <returns>The Application Data directory.</returns>
+        //==============================================================================
+        static public String getPersonalDataDir()
+        {
+            String result = "";
+            if (Path.VolumeSeparatorChar == '/')
+            {
+                result = "~";
+            }
+            else
+            {
+                result = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            }
+            return result;
+        }
+        //==============================================================================
+        /// <summary>
+        /// Get the common application data files directory on the host disk without the trailing
+        /// backslash.
+        /// </summary>
+        /// <returns></returns>
+        //==============================================================================
+        static public String getCommonDataDir()
+        {
+            if (Path.VolumeSeparatorChar == '/')
+            {
+                return "";
+            }
+            else
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            }
+        }
         //=======================================================================
         /// <summary>
         /// Gets the directory of this assembly without the trailing backslash.

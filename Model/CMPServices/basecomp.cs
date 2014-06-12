@@ -990,7 +990,7 @@ namespace CMPServices
                     throw (new ApplicationException(errorMsg));
                 }
 
-                if ((int)propertyID == propertyNameToID("state")) //if trying to set the State of this component
+                if ((int)propertyID == PROP_STATE) //if trying to set the State of this component
                 {
                     writeStateProperty(msgID, replyTo, sDDML, valPtr, valSize);//then sends it's own success msg
                 }
@@ -1200,7 +1200,7 @@ namespace CMPServices
             TIDSpec driverItem;
 
             //append all the 'state' drivers
-            TPropertyInfo aValue = (TPropertyInfo)propertyList[propertyNameToID("state")];     //Find a TTypedValue to work with
+            TPropertyInfo aValue = (TPropertyInfo)propertyList[PROP_STATE];     //Find a TTypedValue to work with
 
             char active = FActive ? 'T' : 'F';
             string systemState = getStateText();

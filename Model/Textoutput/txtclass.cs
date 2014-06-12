@@ -140,7 +140,7 @@ namespace outputComp
         /// Open the output file
         /// </summary>
         ////============================================================================
-        public override void BeginWriting()
+        public override void beginWriting()
         {
             if (!FWriting)
             {
@@ -152,7 +152,7 @@ namespace outputComp
                     {
                         FOutFile.WriteLine(Title);
                     }
-                    base.BeginWriting();
+                    base.beginWriting();
                 }
                 catch (Exception excep)
                 {
@@ -165,11 +165,11 @@ namespace outputComp
         /// Close the output file
         /// </summary>
         //============================================================================
-        public override void EndWriting()
+        public override void endWriting()
         {
             if (FWriting)
             {
-                base.EndWriting();
+                base.endWriting();
                 FOutFile.Close();
                 if (FColumns.Count != FInitColumns)
                 {

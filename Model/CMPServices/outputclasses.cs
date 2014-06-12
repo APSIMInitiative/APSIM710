@@ -713,7 +713,7 @@ namespace outputComp
         /// When overridden, this inherited routine should be called. 
         /// </summary>
         //==============================================================================
-        public virtual void BeginWriting()
+        public virtual void beginWriting()
         {
             FCurrOutputTime.Set(0, 0, 0);
             FWriting = true;
@@ -725,7 +725,7 @@ namespace outputComp
         /// When overridden, this inherited routine should be called *first up*.
         /// </summary>
         //==============================================================================
-        public virtual void EndWriting()
+        public virtual void endWriting()
         {
             if (FWriting)
             {

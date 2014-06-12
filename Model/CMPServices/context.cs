@@ -15,6 +15,8 @@ namespace CMPServices
     //==============================================================================
     public class TApsimContext
     {
+        public const String MODELMACRO = "<!--[model]-->";       //replaceable with the constants/params for the component
+        public String CR = "\r\n";
         private List<String> FInitList;
         private String FContextFile = "";
         private String FContextText = "";
@@ -41,7 +43,7 @@ namespace CMPServices
         public String ContextText
         {
             get { return FContextText; }
-            set { FContextText = value;}
+            set { FContextText = value; }
         }
         /// <summary>
         /// 
@@ -49,6 +51,8 @@ namespace CMPServices
         public TApsimContext()
         {
             FInitList = new List<String>();
+            if (Path.VolumeSeparatorChar == '/')
+                CR = "\n";
         }
         //==============================================================================
         /// <summary>
@@ -99,15 +103,18 @@ namespace CMPServices
                 anode = xmlParse.nextElementSibling(anode, "dll");
             }
         }
+
         //==============================================================================
         /// <summary>
         /// Get the context string from the specified context file. This could be a .ctx
         /// file or an apsim .xml file.
         /// </summary>
         /// <param name="strContext"></param>
+        /// <param name="modelConsts"></param>
         /// <param name="dllPath"></param>
+        /// <param name="expandModel"></param>
         //==============================================================================
-        public void getContextFromFile(out String strContext, String dllPath)
+        public void getContextFromFile(out String strContext, out String modelConsts, String dllPath, Boolean expandModel)
         {
             StreamReader fileStream;
             String context;
@@ -127,7 +134,7 @@ namespace CMPServices
             List<String> dllList;
             String nodeName;
 
-
+            model = "";
             strContext = "";
 
             fileStream = new StreamReader(FContextFile);
@@ -158,12 +165,11 @@ namespace CMPServices
                 if (metaDataNode != null)
                 {
                     modelNode = null;
-                    model = "";
                     getDllList(xmlParse, metaDataNode, dllList);
                     anode = xmlParse.firstElementChild(metaDataNode, "ApsimToSim");
                     if (anode != null)
                     {
-                        if (dllList.Count < 1) 
+                        if (dllList.Count < 1)
                             throw new Exception("No dll's found in the context file.");
                         compNode = FindCompNode(xmlParse, anode, dllList[0], dllPath);   //find the matching component section for dllPath
                         if (compNode != null)
@@ -195,8 +201,15 @@ namespace CMPServices
                                     {
                                         if (xml.Contains("[Model"))                                  //if this is a [Model] macro
                                         {
-                                            modelNode = getModelNode(xmlParse, xml);     //search for the matching <model> section
-                                            model = xmlParse.InnerXml(modelNode);
+                                            if (expandModel)
+                                            {
+                                                modelNode = getModelNode(xmlParse, xml);     //search for the matching <model> section
+                                                model = xmlParse.InnerXml(modelNode);
+                                            }
+                                            else
+                                            {
+                                                model = "    " + MODELMACRO + CR;
+                                            }
                                         }
                                         if (xmlParse.getNodeType(anode) == XmlNodeType.Element)     //get all the init names
                                             FInitList.Add(nodeName);
@@ -217,14 +230,18 @@ namespace CMPServices
                     //now build the correct xml for the context file
                     buf.Append("<component name=\"" + compName.Trim() + "\" executable=\"" + compDll + "\"" + " class=\"" + compClass + "\">");
                     buf.Append("  <initdata>\r\n");
-                    buf.Append(model);
+                    if (compClass.ToLower().StartsWith("plant."))
+                        buf.Append("    <uptake_source>apsim</uptake_source>" + CR);
                     for (i = 0; i < FInitList.Count - 1; i++)
                         buf.Append("    <" + FInitList[i] + "></" + FInitList[i] + ">\r\n");
+                    buf.Append(CR + "    <!-- ==== Standard constants below this point ==== -->" + CR);
+                    buf.Append(model);
                     buf.Append("  </initdata>");
                     buf.Append("</component>");
                     strContext = buf.ToString();
                 }
             }
+            modelConsts = model;
         }
 
         //==============================================================================
@@ -238,11 +255,11 @@ namespace CMPServices
         {
             String result = text;
             int iStart = result.IndexOf('[');
-            while (iStart >= 0) 
+            while (iStart >= 0)
             {
                 int iLevel = 1;
                 int nChars = 1;
-                while (iLevel > 0) 
+                while (iLevel > 0)
                 {
                     if ((iStart + nChars) > result.Length)
                         throw new Exception("Unable to find closing macro bracket");
@@ -405,8 +422,60 @@ namespace CMPServices
 
             return compDll;
         }
+        //==============================================================================
+        /// <summary>
+        /// Edits the <initdata> and replaces the consts/param values with [model] macro
+        /// </summary>
+        /// <param name="initText">The initdata section XML</param>
+        /// <returns>The initdata section with only the inits and comments</returns>
+        //==============================================================================
+        public String RemoveConsts(String initText)
+        {
+            String result = initText;
+            int i;
+            XmlNode anode;
+            TXMLParser parser;
+            Boolean found;
+            XmlNode nextNode;
 
+            if (!initText.Contains(MODELMACRO)) //if the [model] macro is not in the inittext then
+            {
+                if (InitNames.Count > 0)
+                {
+                    parser = new TXMLParser(initText);
 
+                    anode = parser.firstChild(parser.rootNode());  // for each (init) node in the xml
+                    while (anode != null)   //get the nodename
+                    {
+                        if (parser.getNodeType(anode) == XmlNodeType.Element)
+                        {
+                            i = 0;
+                            found = false;
+                            while (!found && (i <= InitNames.Count - 1))
+                            {
+                                if (anode.Name == InitNames[i])
+                                {
+                                    found = true; //terminate loop
+                                }
+                                i++;
+                            }
+                            if (!found)  //if the node name is not found in the init list then
+                            {
+                                nextNode = parser.nextSibling(anode);
+                                parser.rootNode().RemoveChild(anode); //delete the node
+                                anode = nextNode;
+                            }
+                            else
+                                anode = parser.nextSibling(anode); // for each node in the xml
+                        }
+                        else
+                            anode = parser.nextSibling(anode); // for each node in the xml
+                    }
+                    result = "<initdata>" + CR + parser.rootNode().InnerXml + CR + "    " + MODELMACRO + CR + "  </initdata>";
+                }
+            }
+            return result;
+        }
     }
 }
 

@@ -3094,7 +3094,7 @@ namespace CMPServices
             //this is a system
             if (success)
             {
-                msgDirector.addMsgTrunk(replyTo, reqMsgID, Msgs.MSG_QUERYSET, propertyNameToID("state"), 0); //source of the querySetValue
+                msgDirector.addMsgTrunk(replyTo, reqMsgID, Msgs.MSG_QUERYSET, PROP_STATE, 0); //source of the querySetValue
                 //initialise all the child components
                 uint childID;
                 uint i;
