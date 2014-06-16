@@ -1,6 +1,5 @@
 
 <Type name="AgPasture">
-  <!-- *************************** originally AgpastureType.xml************************* -->
 	<MetaData>
 		<UItype>CSUserInterface.GenericUI</UItype>
 		<IsCrop>Yes</IsCrop>
@@ -32,112 +31,125 @@
 			</component>
 		</ApsimToSim>
 	</MetaData>
-  <!-- **************************** in init file (Agpasture.xml)************* -->
 	<Model>
 		<AgPasture>
-			<Nspecies>3</Nspecies>
-			<thisCropName>ryegrass_clover_paspalum</thisCropName>
-			<speciesName>ryegrass whiteclover paspalum</speciesName>
-			<micrometType>grass grass grass</micrometType>
-			<isAnnual>0 0 0</isAnnual>
-			<isLegume>0 1 0</isLegume>
-			<photoPath>3 3 4</photoPath>
-			<dayEmerg>0 1 1</dayEmerg>
-			<monEmerg>0 3 3</monEmerg>
-			<dayAnth>0 1 1</dayAnth>
-			<monAnth>0 11 1</monAnth>
-			<daysToMature>0 0 0</daysToMature>
-			<cropFactor>0.3 0.3 0.3</cropFactor>
-			<maxResidCover>0 0 0</maxResidCover>
-			<dRootDepth>50 50 50</dRootDepth>
-			<maxRootDepth>900 300 900</maxRootDepth>
-			<rootDepth>900 300 900</rootDepth>
-			<rootFnType>0 0 0</rootFnType>
-			<growthTmin>2 4 10</growthTmin>
-			<growthTmax>32 32 40</growthTmax>
-			<growthTopt>20 20 20</growthTopt>
-			<growthTq>2 2 1.2</growthTq>
-			<massFluxTmin>2 2 5</massFluxTmin>
-			<massFluxTopt>20 20 20</massFluxTopt>
-			<massFluxW0>2 2 2</massFluxW0>
-			<massFluxWopt>0.5 0.5 0.5</massFluxWopt>   
-	<!--OldValues heatOnsetT>28 28 35</heatOnsetT><heatFullT>35 35 40</heatFullT-->
-			<heatOnsetT>60 60 60</heatOnsetT>
-			<heatFullT>70 70 70</heatFullT>
-			<heatSumT>50 50 50</heatSumT>
-	<!--OldValues coldOnsetT>0 0 8</coldOnsetT><coldFullT>-3 -3 3</coldFullT-->
-			<coldOnsetT>-20 -20 -20</coldOnsetT>
-			<coldFullT>-30 -30 -30</coldFullT>
-			<coldSumT>20 20 50</coldSumT>
-			<Pm>1 1 1.2</Pm>
-			<maintRespiration>3 3 3</maintRespiration>
-			<growthEfficiency>0.75 0.75 0.75</growthEfficiency>
-			<satRadn>200 200 200</satRadn>
-			<SLA>20 20 20</SLA>
-			<lightExtCoeff>0.5 0.8 0.6</lightExtCoeff>
-			<rue>1.65 1.65 1.65</rue>
-			<maxAssimiRate>330 330 330</maxAssimiRate>
-			<rateLive2Dead>0.05 0.05 0.05</rateLive2Dead>
-			<rateDead2Litter>0.11 0.11 0.11</rateDead2Litter>
-			<rateRootSen>0.02 0.02 0.02</rateRootSen>
-			<stockParameter>0.05 0.05 0.05</stockParameter>
-			<maxRootFraction>0.25 0.25 0.25</maxRootFraction>
-			<allocationSeasonF>0.8 0.8 0.8</allocationSeasonF>
-			<leafRate>3 3 3.5</leafRate>
-			<fLeaf>0.7 0.7 0.7</fLeaf>
-			<fStolon>0.0 0.2 0.0</fStolon>
-			<digestLive>0.6 0.6 0.6</digestLive>
-			<digestDead>0.2 0.2 0.2</digestDead>
-      <dmtotal>-10 -10 -10</dmtotal>
-			<dmshoot>1500 350 100</dmshoot>
-			<dmroot>450 120 30</dmroot>
-			<dmlitter>200 50 10</dmlitter>
-      <dmgreenmin>500 50 20</dmgreenmin>
-      <dmdeadmin description="minimum allowable amount for dead DM">0  0  0</dmdeadmin>
-      <BiomassRemovalMethod description="Method used to partition biomass removal between species">AgP_original</BiomassRemovalMethod>
-      <!-- Options for biomass removal: AgP_original, SetGenericPreferences, SetSpecificPreferences (not implemented yet)-->
-      <PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1.0 1.0 1.0</PreferenceForGreenDM>
-      <PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1.0 1.0 1.0</PreferenceForDeadDM>
-      <CO2ambient>380</CO2ambient>
-			<CO2PmaxScale>700 700 150</CO2PmaxScale>
-			<CO2NScale>600 600 600</CO2NScale>
-			<CO2NMin>0.7 0.7 0.7</CO2NMin>
-			<CO2NCurvature>2 2 2</CO2NCurvature>
-			<NcleafOpt>4 4.5 3</NcleafOpt>
-			<NcleafMax>5 5.5 3.5</NcleafMax>
-			<NcleafMin>1.2 1.2 0.8</NcleafMin>
-			<NcstemFr>0.5 0.5 0.5</NcstemFr>
-			<NcstolFr>0.5 0.5 0</NcstolFr>
-			<NcrootFr>0.5 0.5 0.5</NcrootFr>
-			<NMinFix>0 0.2 0</NMinFix>
-			<NMaxFix>0 0.6 0</NMaxFix>
-			<NdilutCoeff>0.5 1.0 0.5</NdilutCoeff>
-			<Frgr>1 1 1</Frgr>
+			<Nspecies description="Number of species to simulate">3</Nspecies>
+			<thisCropName description="Name of th sward mix">ryegrass_clover_paspalum</thisCropName>
+			<speciesName description="Actual name of each species">ryegrass whiteclover paspalum</speciesName>
+			<micrometType description="Plant type for micromet">grass grass grass</micrometType>
+			<isAnnual description="Species type (1=annual, 0=perennial)">0  0  0</isAnnual>
+			<isLegume description="Whether the species is legume (1=yes, 0=no)">0  1  0</isLegume>
+			<photoPath description="Photosynthesis pathway (C3 or C4)">3 3 4</photoPath>
+			
+			<dayEmerg description="Earliest day of emergence (for annuals only)">0 1 1</dayEmerg>
+			<monEmerg description="Earliest month of emergence (for annuals only)">0 3 3</monEmerg>
+			<dayAnth description="Earliest day of anthesis (for annuals only)">0 1 1</dayAnth>
+			<monAnth description="Earliest month of anthesis (for annuals only)">0 11 1</monAnth>
+			<daysToMature description="Days from anthesis to maturity (for annuals only)">0 0 0</daysToMature>
+
+			<dRootDepth description="Daily root growth (mm)">50 50 50</dRootDepth>
+			<maxRootDepth description="Maximum root depth (mm)">900 300 900</maxRootDepth>
+			<rootDepth description="Initial root depth (mm)">900 300 900</rootDepth>
+			<rootFnType description="Root function type, 0=default_1=Ritchie_2=power_law_3=proportional_depth">0 0 0</rootFnType>
 			<RootDistributionMethod description="Method used to compute root ditribution over soil profile">UserDefined</RootDistributionMethod>
 			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear-->
 			<ExpoLinearDepthParam description="Parameter for ExpoLinear method, fraction of root depth where its proportion starts to decrease (0-1)">0.3</ExpoLinearDepthParam>
 			<ExpoLinearCurveParam description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">1.0</ExpoLinearCurveParam>
-			<rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00</rlvp>
+
+			<growthTmin description="Minimum temperature for growth">2 4 10</growthTmin>
+			<growthTmax description="Maximum temperature for growth">32 32 40</growthTmax>
+			<growthTopt description="Optimum temperature for growth">20 20 20</growthTopt>
+			<growthTq description="Coefficient q on temperature function for plant growth">2 2 1.2</growthTq>
+			<massFluxTmin description="Mass flux minimum temperature">2 2 5</massFluxTmin>
+			<massFluxTopt description="Mass flux optimum temperature">20 20 20</massFluxTopt>
+			<massFluxW0 description="Mass flux scale factor at GLFwater=0.0">2 2 2</massFluxW0>
+			<massFluxWopt description="Mass flux optimum GLFwater=0.5">0.5 0.5 0.5</massFluxWopt>
+			<heatOnsetT description="onset temperature for heat effects">60 60 60</heatOnsetT>
+			<heatFullT description="full temperature for heat effects">70 70 70</heatFullT>
+			<heatSumT description="temperature sum for recovery - sum of (25-mean)">50 50 50</heatSumT>
+			<coldOnsetT description="onset tempeature for cold effects">-20 -20 -20</coldOnsetT>
+			<coldFullT description="full tempeature for cold effects">-30 -30 -30</coldFullT>
+			<coldSumT description="temperature sum for recovery - sum of means">20 20 50</coldSumT>
+			<Pm description="Reference leaf C assimilation during photosynthesis (gCO2/m^2/s)">1.0 1.0 1.2</Pm>
+			<maintRespiration description="Maintenance respiration">3 3 3</maintRespiration>
+			<growthEfficiency description="Pgrowth/Pgross">0.75 0.75 0.75</growthEfficiency>
+			<satRadn description="Saturated canopy radiation Pnet">200 200 200</satRadn>
+			<lightExtCoeff description="Light extinction coefficient">0.5 0.8 0.6</lightExtCoeff>
+			<rue description="Radiation use efficiency">1.65 1.65 1.65</rue>
+			<maxAssimiRate description="max assimilation rate, at ref. Temp.=20C and daylength=12hrs">330 330 330</maxAssimiRate>
+
+			<SpecificLeafArea description="Leaf area per dry matter weight (m^2/kgDM)">20 20 20</SpecificLeafArea>
+			<SpecificRootLength description="Root length per dry matter weight (m/gDM)">75 75 75</SpecificRootLength>
+			<maxRootFraction description="">0.25 0.25 0.25</maxRootFraction>
+			<allocationSeasonF description="">0.8 0.8 0.8</allocationSeasonF>
+			<leafRate description="Reference leaf appearance rate, without stress">3 3 3.5</leafRate>
+			<fLeaf description="Fraction of new shoot growth allocated to leaves">0.7 0.7 0.7</fLeaf>
+			<fStolon description="Fraction of new shoot growth allocated to stolons">0.0 0.2 0.0</fStolon>
+			<rateLive2Dead description="Senescence rate for shoot (live to dead material)">0.05 0.05 0.05</rateLive2Dead>
+			<rateDead2Litter description="Littering rate (dead to litter)">0.11 0.11 0.11</rateDead2Litter>
+			<rateRootSen description="Senescence rate for roots (live to soil FOM)">0.02 0.02 0.02</rateRootSen>
+			<stockParameter description="Parameter for stock influence on senescence">0.05 0.05 0.05</stockParameter>
+
+			<digestLive description="Digestibility of live plant material (0-1)">0.6 0.6 0.6</digestLive>
+			<digestDead description="Digestibility of dead plant material (0-1)">0.2 0.2 0.2</digestDead>
+			
+      <dmtotal>-10 -10 -10</dmtotal>
+			<!-- The dmtotal would be deleted (it has been replaced by dmshoot), but ws kept as optional parameter for back-compatibility-->
+			<dmshoot description="Initial shoot dry matter weight (kgDM/ha)">1500 350 100</dmshoot>
+			<dmroot description="Initial root dry matter weight (kgDM/ha)">450 120 30</dmroot>
+			<dmlitter description="Initial litter amount - not implemented (kgDM/ha)">200 50 10</dmlitter>
+      <dmgreenmin description="Minimum allowable amount for live DM">500 50 20</dmgreenmin>
+      <dmdeadmin description="Minimum allowable amount for dead DM">0  0  0</dmdeadmin>
+
+			<NconcOptimum_leaves description="Optimum N concentration of leaves (no stress)">4.0  4.5  3.0</NconcOptimum_leaves>
+			<NconcMaximum_leaves description="Maximum N concentration of leaves (luxury uptake)">5.0  5.5  3.5</NconcMaximum_leaves>
+			<NconcMinimum_leaves description="Minimum N concentration of leaves (dead leaves)">1.2  1.2  0.8</NconcMinimum_leaves>
+			<RelativeNconc_Stems description="N concentration for stems, relative to leaves">0.5  0.5  0.5</RelativeNconc_Stems>
+			<RelativeNconc_Stolons description="N concentration for stolons, relative to leaves">0.5  0.5  0.5</RelativeNconc_Stolons>
+			<RelativeNconc_Roots description="N concentration for roots, relative to leaves">0.5  0.5  0.5</RelativeNconc_Roots>
+			<RelativeNconc_stage1 description="N concentration for plants at stage 1 (young), relative to optimum">1.0  1.0  1.0</RelativeNconc_stage1>
+			<RelativeNconc_stage2 description="N concentration for plants at stage 2 (developing), relative to optimum">1.0  1.0  1.0</RelativeNconc_stage2>
+			<RelativeNconc_stage3 description="N concentration for plants at stage 3 (mature), relative to optimum">1.0  1.0  1.0</RelativeNconc_stage3>
+			<NMinFix description="Minimum fraction of N demand fixed by legumes">0.0  0.2  0.0</NMinFix>
+			<NMaxFix description="Maximum fraction of N demand fixed by legumes">0.0  0.6  0.0</NMaxFix>
+			<NdilutCoeff description="Coefficient for modifying the effect of N stress on plant growth">0.5  1.0  0.5</NdilutCoeff>
+			<Frgr description="Generic growth limiting factor">1.0  1.0  1.0</Frgr>
+
+			<CO2ambient description="Base CO2 content in atmosphere">380</CO2ambient>
+			<CO2PmaxScale description="">700 700 150</CO2PmaxScale>
+			<CO2NScale description="">600 600 600</CO2NScale>
+			<CO2NMin description="">0.7 0.7 0.7</CO2NMin>
+			<CO2NCurvature description="">2 2 2</CO2NCurvature>
+
+			<rlvp description="Root Length Density proportion (relative)">0.05 0.05 0.03 0.02 0.01 0.00 0.00</rlvp>
 			<ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23</ll>
 			<kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06</kl>
 			<xf>1.00 1.00 1.00 1.00 1.00 1.00 0.80</xf>
-			<waterStressFactor>1 1 1</waterStressFactor>
-			<soilSatFactor>0.1 0.1 0.1</soilSatFactor>
-			<WaterUptakeSource>calc</WaterUptakeSource>
-			<NUptakeSource>calc</NUptakeSource>
-			<LinearInterpolation name="HeightMassFN">
+			<waterStressFactor description="Soil moisture saturation effects on growth">1 1 1</waterStressFactor>
+			<soilSatFactor description="Soil moisture saturation effects on growth">0.1 0.1 0.1</soilSatFactor>
+			<WaterUptakeSource description="Whether water uptake is calculated by agpasture or apsim">calc</WaterUptakeSource>
+			<NUptakeSource description="Whether N uptake is calculated by agpasture or apsim">calc</NUptakeSource>
+			<alt_N_uptake description="Whether N uptake is calculated by agpasture or apsim">no</alt_N_uptake>
+
+			<allowFastNRemob description="Whether fast remobilisation is allowed (from luxury N)">no</allowFastNRemob>
+			
+			<LinearInterpolation name="HeightMassFN" description="">
 				<XY>0,0</XY>
 				<XY>1000,25</XY>
 				<XY>2000,75</XY>
 				<XY>3000,150</XY>
 				<XY>4000,250</XY>
 			</LinearInterpolation>
-			<LinearInterpolation name="FVPDFunction">
+			<LinearInterpolation name="FVPDFunction" description="">
 				<XY> 0,1.0</XY>
 				<XY>10,1.0</XY>
 				<XY>50,1.0</XY>
 			</LinearInterpolation>
-			<alt_N_uptake>no</alt_N_uptake>
+
+			<BiomassRemovalMethod description="Method used to partition biomass removal between species">AgP_original</BiomassRemovalMethod>
+			<!-- Options for biomass removal: AgP_original, SetGenericPreferences, SetSpecificPreferences (not implemented yet)-->
+			<PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1.0 1.0 1.0</PreferenceForGreenDM>
+			<PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1.0 1.0 1.0</PreferenceForDeadDM>
 		</AgPasture>
 	</Model>
 </Type>
