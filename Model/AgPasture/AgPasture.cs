@@ -480,7 +480,8 @@ public class AgPasture
 		//}
 
 		// ensure rlvp is the proportion of roots per layer (add up to 1.0)
-		rlvp = RootProfileDistribution();
+		//rlvp = RootProfileDistribution();
+		RootFraction = RootProfileDistribution();
 
 		//Create and initialise each species
 		SP = new Species[Nspecies];         //species of the pasture
@@ -2065,7 +2066,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].dmleaf;
+				result += SP[s].dmleaf1 + SP[s].dmleaf2 + SP[s].dmleaf3 + SP[s].dmleaf4;
 			return result;
 		}
 	}
@@ -2078,7 +2079,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].dmleaf_green;
+				result += SP[s].dmleaf1 + SP[s].dmleaf2 + SP[s].dmleaf3;
 			return result;
 		}
 	}
@@ -2097,18 +2098,19 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Total dry matter weight of plant's stems dead")]
+	[Description("Total dry matter weight of plant's stems")]
 	[Units("kgDM/ha")]
-	public double StemDeadWt
+	public double StemWt
 	{
 		get
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].dmstem4;
+				result += SP[s].dmstem1 + SP[s].dmstem2 + SP[s].dmstem3 + SP[s].dmstem4;
 			return result;
 		}
 	}
+
 	[Output]
 	[Description("Total dry matter weight of plant's stems alive")]
 	[Units("kgDM/ha")]
@@ -2118,21 +2120,20 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].dmstem_green;
+				result += SP[s].dmstem1 + SP[s].dmstem2 + SP[s].dmstem3;
 			return result;
 		}
 	}
-
 	[Output]
-	[Description("Total dry matter weight of plant's stems")]
+	[Description("Total dry matter weight of plant's stems dead")]
 	[Units("kgDM/ha")]
-	public double StemWt
+	public double StemDeadWt
 	{
 		get
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].dmstem;
+				result += SP[s].dmstem4;
 			return result;
 		}
 	}
@@ -2146,7 +2147,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].dmstol;
+				result += SP[s].dmstol1 + SP[s].dmstol2 + SP[s].dmstol3;
 			return result;
 		}
 	}
@@ -2234,6 +2235,20 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
+	[Description("Plant C remobilisation")]
+	[Units("kgC/ha")]
+	public double PlantRemobilisedC
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].Cremob;
+			return result;
+		}
+	}
+
+	[Output]
 	[Description("Total dry matter amount available for removal (leaf+stem)")]
 	[Units("kgDM/ha")]
 	public double HarvestableWt
@@ -2246,7 +2261,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
-
 
 	[Output]
 	[Description("Amount of plant dry matter removed by harvest")]
@@ -2346,19 +2360,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
-	[Output]
-	[Description("Proportion of N above ground in relation to below ground")]
-	[Units("%")]
-	public double AboveGroundNPct
-	{
-		get
-		{
-			double result = 0;
-			if (AboveGroundWt != 0)
-				result = 100 * AboveGroundN / AboveGroundWt;
-			return result;
-		}
-	}
 
 	[Output]
 	[Description("Total amount of N in plants below ground")]
@@ -2375,6 +2376,20 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
+	[Description("Proportion of N above ground in relation to below ground")]
+	[Units("%")]
+	public double AboveGroundNPct
+	{
+		get
+		{
+			double result = 0;
+			if (AboveGroundWt != 0)
+				result = 100 * AboveGroundN / AboveGroundWt;
+			return result;
+		}
+	}
+	
+	[Output]
 	[Description("Total amount of N in standing plants")]
 	[Units("kgN/ha")]
 	public double StandingPlantN
@@ -2388,8 +2403,8 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration of standing plants")]
-	[Units("kgN/ha")]
+	[Description("Average N concentration of standing plants")]
+	[Units("kgN/kgDM")]
 	public double StandingPlantNConc
 	{
 		get
@@ -2401,7 +2416,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 				Namount += SP[s].Nleaf + SP[s].Nstem;
 				DMamount += SP[s].dmleaf + SP[s].dmstem;
 			}
-			double result = 100 * Namount / DMamount;
+			double result = Namount / DMamount;
 			return result;
 		}
 	}
@@ -2434,7 +2449,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Total amount of N in leaves")]
+	[Description("Total amount of N in the plant's leaves")]
 	[Units("kgN/ha")]
 	public double LeafN
 	{
@@ -2448,7 +2463,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Total amount of N in stems")]
+	[Description("Total amount of N in the plant's stems")]
 	[Units("kgN/ha")]
 	public double StemN
 	{
@@ -2462,7 +2477,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Total amount of N in stolons")]
+	[Description("Total amount of N in the plant's stolons")]
 	[Units("kgN/ha")]
 	public double StolonN
 	{
@@ -2476,7 +2491,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Total amount of N in roots")]
+	[Description("Total amount of N in the plant's roots")]
 	[Units("kgN/ha")]
 	public double RootN
 	{
@@ -2490,9 +2505,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Average N concentration in leaves")]
+	[Description("Average N concentration of leaves")]
 	[Units("kgN/kgDM")]
-	public double LeafNconc
+	public double LeafNConc
 	{
 		get
 		{
@@ -2510,7 +2525,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Average N concentration in stems")]
 	[Units("kgN/kgDM")]
-	public double StemNconc
+	public double StemNConc
 	{
 		get
 		{
@@ -2528,7 +2543,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Average N concentration in stolons")]
 	[Units("kgN/kgDM")]
-	public double StolonNconc
+	public double StolonNConc
 	{
 		get
 		{
@@ -2545,7 +2560,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Average N concentration in roots")]
 	[Units("kgN/kgDM")]
-	public double RootNconc
+	public double RootNConc
 	{
 		get
 		{
@@ -2555,14 +2570,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			result = result / RootWt;
 			return result;
 		}
-	}
-
-	[Output]
-	[Description("Amount of atmospheric N fixed")]
-	[Units("kgN/ha")]
-	public double PlantFixedN
-	{
-		get { return p_Nfix; }
 	}
 
 	[Output]
@@ -2615,6 +2622,28 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return me;
 		}
 	}
+
+	[Output]
+	[Description("Amount of atmospheric N fixed")]
+	[Units("kgN/ha")]
+	public double PlantFixedN
+	{
+		get { return p_Nfix; }
+	}
+	[Output]
+	[Description("Plant N remobilisation")]
+	[Units("kgN/ha")]
+	public double PlantRemobilisedN
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].remob2NewGrowth;
+			return result;
+		}
+	}
+
 	[Output]
 	[Description("Amount of N deposited as litter onto soil surface")]
 	[Units("kgN/ha")]
@@ -2743,23 +2772,25 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	{
 		get
 		{
-			double[] rlv = new double[rlvp.Length];
-			double sum_rlvp = 0;            // note: rlvp is the root length proportion over the soil profile
+			double[] rlv = new double[dlayer.Length];
 			double p_srl = 75000;           // specific root length (mm root/g root)
 			//Compute the root length, total over the whole profile
 			double Total_Rlength = p_rootMass * p_srl * 0.0000001;  //(mm root/mm2 soil)
-			for (int layer = 0; layer < rlvp.Length; layer++)
-			{
-				//Sum the rlvp values up to the deepest layer with roots
-				sum_rlvp += rlvp[layer];
-			}
 			for (int layer = 0; layer < rlv.Length; layer++)
 			{
-				//Recalculate the rlv values
-				rlv[layer] = rlvp[layer] * Total_Rlength / (sum_rlvp * dlayer[layer]);
+				rlv[layer] = RootFraction[layer] * Total_Rlength /dlayer[layer];    // mm root/mm3 soil
 			}
 			return rlv;
 		}
+	}
+
+	private double[] RootFraction;
+	[Output]
+	[Description("Fraction of root dry matter for each soil layer")]
+	[Units("0-1")]
+	public double[] RootWtFraction
+	{
+		get { return RootFraction; }
 	}
 
 	[Output]
@@ -2956,33 +2987,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 
-	[Output]
-	[Description("Plant N remobilisation")]
-	[Units("kgN/ha")]
-	public double PlantRemobilisedN
-	{
-		get
-		{
-			double result = 0.0;
-			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].remob2NewGrowth;
-			return result;
-		}
-	}
-	[Output]
-	[Description("Plant C remobilisation")]
-	[Units("kgC/ha")]
-	public double PlantRemobilisedC
-	{
-		get
-		{
-			double result = 0.0;
-			for (int s = 0; s < Nspecies; s++)
-				result += SP[s].Cremob;
-			return result;
-		}
-	}
-
 	private float HeightfromDM        // height calculation from DM, not output
 	{
 		get
@@ -3051,32 +3055,18 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Dry matter weight of live plants above ground, for each species")]
+	[Description("Total dry matter weight of plants for each plant species")]
 	[Units("kgDM/ha")]
-	public double[] SpeciesLiveWt
+	public double[] SpeciesTotalWt
 	{
 		get
 		{
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].dmgreen;
+				result[s] = SP[s].dmshoot + SP[s].dmroot;
 			return result;
 		}
 	}
-	[Output]
-	[Description("Dry matter weight of dead plants above ground, for each species")]
-	[Units("kgDM/ha")]
-	public double[] SpeciesDeadWt
-	{
-		get
-		{
-			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].dmdead;
-			return result;
-		}
-	}
-
 	[Output]
 	[Description("Dry matter weight of plants above ground, for each species")]
 	[Units("kgDM/ha")]
@@ -3104,7 +3094,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("Dry matter weight of standing plants, for each species")]
+	[Description("Dry matter weight of standing herbage, for each species")]
 	[Units("kgDM/ha")]
 	public double[] SpeciesStandingWt
 	{
@@ -3119,7 +3109,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Dry matter weight of live standing plants parts for each species")]
 	[Units("kgDM/ha")]
-	public double[] SpeciesStandingGreenWt
+	public double[] SpeciesStandingLiveWt
 	{
 		get
 		{
@@ -3142,21 +3132,62 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
+
 	[Output]
-	[Description("Total dry matter weight of plants for each plant species")]
-	[Units("kgDM/ha")]
-	public double[] SpeciesTotalWt
+	[Description("Dry matter weight of leaves for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafWt
 	{
 		get
 		{
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].dmshoot + SP[s].dmroot;
+				result[s] = SP[s].dmleaf1 + SP[s].dmleaf2 + SP[s].dmleaf3 + SP[s].dmleaf4;
 			return result;
 		}
 	}
 	[Output]
-	[Description("N amount for each plant species")]
+	[Description("Dry matter weight of stems for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemWt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstem1 + SP[s].dmstem2 + SP[s].dmstem3 + SP[s].dmstem4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of stolons for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonWt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmstol1 + SP[s].dmstol2 + SP[s].dmstol3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Dry matter weight of roots for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesRootWt
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dmroot;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Total N amount for each plant species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesTotalN
 	{
@@ -3165,6 +3196,145 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
 				result[s] = SP[s].Nshoot + SP[s].Nroot;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N amount of standing herbage, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStandingN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nleaf + SP[s].Nstem;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("N amount in the plant's leaves, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLeafN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nleaf1 + SP[s].Nleaf2 + SP[s].Nleaf3 + SP[s].Nleaf4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N amount in the plant's stems, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStemN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstem1 + SP[s].Nstem2 + SP[s].Nstem3 + SP[s].Nstem4;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N amount in the plant's stolons, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesStolonN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nstol1 + SP[s].Nstol2 + SP[s].Nstol3;
+			return result;
+		}
+	}
+	[Output]
+	[Description("N amount in the plant's roots, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesRootsN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].Nroot;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Average N concentration in leaves, for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesLeafNConc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].Ncleaf1 * SP[s].dmleaf1
+						+ SP[s].Ncleaf2 * SP[s].dmleaf2
+						+ SP[s].Ncleaf3 * SP[s].dmleaf3
+						+ SP[s].Ncleaf4 * SP[s].dmleaf4;
+				result[s] = result[s] / SP[s].dmleaf;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Average N concentration in stems, for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStemNConc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].Ncstem1 * SP[s].dmstem1
+						+ SP[s].Ncstem2 * SP[s].dmstem2
+						+ SP[s].Ncstem3 * SP[s].dmstem3
+						+ SP[s].Ncstem4 * SP[s].dmstem4;
+				result[s] = result[s] / SP[s].dmstem;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Average N concentration in stolons, for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesStolonNConc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].Ncstol1 * SP[s].dmstol1
+						  + SP[s].Ncstol2 * SP[s].dmstol2
+						  + SP[s].Ncstol3 * SP[s].dmstol3;
+				result[s] = result[s] / SP[s].dmstol;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Average N concentration in roots, for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesRootNConc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].Ncroot * SP[s].dmroot;
+				result[s] = result[s] / SP[s].dmroot;
+			}
 			return result;
 		}
 	}
@@ -3210,7 +3380,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("Dry matter weightt of leaves at stage 4 (dead) for each species")]
+	[Description("Dry matter weight of leaves at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesLeafStage4Wt
 	{
@@ -3262,7 +3432,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stems at stage 4 (dead) for each species")]
+	[Description("Dry matter weight of stems at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStemStage4Wt
 	{
@@ -3313,22 +3483,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
-	[Output]
-	[Description("Dry matter weight of roots for each species")]
-	[Units("kgN/ha")]
-	public double[] SpeciesRootsWt
-	{
-		get
-		{
-			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].dmroot;
-			return result;
-		}
-	}
 
 	[Output]
-	[Description("N content of leaves at stage 1 (young) for each species")]
+	[Description("N amount in leaves at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesLeafStage1N
 	{
@@ -3341,7 +3498,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of leaves at stage 2 (developing) for each species")]
+	[Description("N amount in leaves at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesLeafStage2N
 	{
@@ -3354,7 +3511,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of leaves at stage 3 (mature) for each species")]
+	[Description("N amount in leaves at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesLeafStage3N
 	{
@@ -3367,7 +3524,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of leaves at stage 4 (dead) for each species")]
+	[Description("N amount in leaves at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesLeafStage4N
 	{
@@ -3380,7 +3537,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stems at stage 1 (young) for each species")]
+	[Description("N amount in stems at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStemStage1N
 	{
@@ -3393,7 +3550,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stems at stage 2 (developing) for each species")]
+	[Description("N amount in stems at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStemStage2N
 	{
@@ -3406,7 +3563,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stems at stage 3 (mature) for each species")]
+	[Description("N amount in stems at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStemStage3N
 	{
@@ -3419,7 +3576,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stems at stage 4 (dead) for each species")]
+	[Description("N amount in stems at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStemStage4N
 	{
@@ -3432,7 +3589,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stolons at stage 1 (young) for each species")]
+	[Description("N amount in stolons at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStolonStage1N
 	{
@@ -3445,7 +3602,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stolons at stage 2 (developing) for each species")]
+	[Description("N amount in stolons at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStolonStage2N
 	{
@@ -3458,7 +3615,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N content of stolons at stage 3 (mature) for each species")]
+	[Description("N amount in stolons at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesStolonStage3N
 	{
@@ -3470,23 +3627,11 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
+
 	[Output]
-	[Description("N content of roots for each species")]
-	[Units("kgN/ha")]
-	public double[] SpeciesRootsN
-	{
-		get
-		{
-			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].Nroot;
-			return result;
-		}
-	}
-	[Output]
-	[Description("N concentration in leaves at stage 1 (young) for each species")]
+	[Description("N concentration of leaves at stage 1 (young) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesLeafStage1Nconc
+	public double[] SpeciesLeafStage1NConc
 	{
 		get
 		{
@@ -3497,9 +3642,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in leaves at stage 2 (developing) for each species")]
+	[Description("N concentration of leaves at stage 2 (developing) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesLeafStage2Nconc
+	public double[] SpeciesLeafStage2NConc
 	{
 		get
 		{
@@ -3510,9 +3655,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in leaves at stage 3 (mature) for each species")]
+	[Description("N concentration of leaves at stage 3 (mature) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesLeafStage3Nconc
+	public double[] SpeciesLeafStage3NConc
 	{
 		get
 		{
@@ -3523,9 +3668,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in leaves at stage 4 (dead) for each species")]
+	[Description("N concentration of leaves at stage 4 (dead) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesLeafStage4Nconc
+	public double[] SpeciesLeafStage4NConc
 	{
 		get
 		{
@@ -3536,9 +3681,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stems at stage 1 (young) for each species")]
+	[Description("N concentration of stems at stage 1 (young) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStemStage1Nconc
+	public double[] SpeciesStemStage1NConc
 	{
 		get
 		{
@@ -3549,9 +3694,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stems at stage 2 (developing) for each species")]
+	[Description("N concentration of stems at stage 2 (developing) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStemStage2Nconc
+	public double[] SpeciesStemStage2NConc
 	{
 		get
 		{
@@ -3562,9 +3707,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stems at stage 3 (mature) for each species")]
+	[Description("N concentration of stems at stage 3 (mature) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStemStage3Nconc
+	public double[] SpeciesStemStage3NConc
 	{
 		get
 		{
@@ -3575,9 +3720,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stems at stage 4 (dead) for each species")]
+	[Description("N concentration of stems at stage 4 (dead) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStemStage4Nconc
+	public double[] SpeciesStemStage4NConc
 	{
 		get
 		{
@@ -3588,9 +3733,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stolons at stage 1 (young) for each species")]
+	[Description("N concentration of stolons at stage 1 (young) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStolonStage1Nconc
+	public double[] SpeciesStolonStage1NConc
 	{
 		get
 		{
@@ -3601,9 +3746,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stolons at stage 2 (developing) for each species")]
+	[Description("N concentration of stolons at stage 2 (developing) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStolonStage2Nconc
+	public double[] SpeciesStolonStage2NConc
 	{
 		get
 		{
@@ -3614,9 +3759,9 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 	[Output]
-	[Description("N concentration in stolons at stage 3 (mature) for each species")]
+	[Description("N concentration of stolons at stage 3 (mature) for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesStolonStage3Nconc
+	public double[] SpeciesStolonStage3NConc
 	{
 		get
 		{
@@ -3626,31 +3771,74 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
+
+
 	[Output]
-	[Description("N concentration in roots for each species")]
-	[Units("kgN/kgDM")]
-	public double[] SpeciesRootsNconc
+	[Description("Actual growth for each species")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesGrowthWt
+	{
+		get
+		{
+			double[] result = new double[Nspecies];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dGrowth;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Litter amount deposited onto soil surface, for each species")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesLitterWt
+	{
+		get
+		{
+			double[] result = new double[Nspecies];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dLitter;
+			return result;
+		}
+	}
+	[Output]
+	[Description("Amount of senesced roots added to soil FOM, for each species")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesRootSenescedWt
+	{
+		get
+		{
+			double[] result = new double[Nspecies];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = SP[s].dRootSen;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Amount of dry matter harvestable for each species (leaf+stem)")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesHarvestableWt
+	{
+		get
+		{
+			double[] result = new double[Nspecies];
+			for (int s = 0; s < Nspecies; s++)
+				result[s] = (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + (SP[s].dmdead- SP[s].dmdeadmin);
+			return result;
+		}
+	}
+	[Output]
+	[Description("Amount of plant dry matter removed by harvest, for each species")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesHarvestWt
 	{
 		get
 		{
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].Ncroot;
+				result[s] = SP[s].dmdefoliated;
 			return result;
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 
 	[Output]
 	[Description("Proportion in the dry matter harvested of each species")]
@@ -3679,30 +3867,80 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		get { return FractionToHarvest; }
 	}
 
+
 	[Output]
-	[Description("Amount of dry matter harvestable for each species (leaf+stem)")]
-	[Units("kgDM/ha")]
-	public double[] SpeciesHarvestableWt
-	{
-		get
-		{
-			double[] result = new double[Nspecies];
-			for (int s = 0; s < Nspecies; s++)
-				result[s] = (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + (SP[s].dmdead- SP[s].dmdeadmin);
-			return result;
-		}
-	}
-	
-	[Output]
-	[Description("Amount of plant dry matter removed by harvest, for each species")]
-	[Units("kgDM/ha")]
-	public double[] SpeciesHarvestWt
+	[Description("Amount of N remobilised from senesced material, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesRemobilisedN
 	{
 		get
 		{
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].dmdefoliated;
+			{
+				result[s] = SP[s].remob2NewGrowth;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Amount of atmospheric N fixed, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesFixedN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].Nfix;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Amount of N uptake, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesUptakeN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].soilNuptake;
+			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Amount of N deposited as litter onto soil surface, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLitterN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].dNLitter;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Amount of N from senesced roots added to soil FOM, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesSenescedN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].dNrootSen;
+			}
 			return result;
 		}
 	}
@@ -3843,13 +4081,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		}
 	}
 
-	[Output]
-	[Units("0-1")]
-	public double outcoverRF
-	{
-		get { return coverRF(); }
-	}
-
 	#endregion
 	//=================================================================
 
@@ -3874,7 +4105,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		for (int layer = 0; layer < dlayer.Length; layer++)
 		{
 			SWSupply[layer] = (float)(Math.Max(0.0,
-			kl[layer] * (sw_dep[layer] - ll[layer] * (dlayer[layer]))) * RootProportion(layer, p_rootFrontier));
+			kl[layer] * (sw_dep[layer] - ll[layer] * (dlayer[layer]))) * LayerFractionForRoots(layer, p_rootFrontier));
 
 			if (layer < p_bottomRootLayer)
 				p_waterSupply += SWSupply[layer];
@@ -3913,7 +4144,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		{
 			case 0:
 				{
-					// homogenous distribution over soil profile
+					// homogenous distribution over soil profile (same root density throughout the profile)
 					double DepthTop = 0;
 					for (int layer = 0; layer < nLayers; layer++)
 					{
@@ -3923,7 +4154,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 							result[layer] = 1.0;
 						else
 							result[layer] = (p_rootFrontier - DepthTop) / dlayer[layer];
-						sumProportion += result[layer];
+						sumProportion += result[layer] * dlayer[layer];
 						DepthTop += dlayer[layer];
 					}
 					break;
@@ -3987,9 +4218,25 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		return result;
 	}
 
-	private double RootProportion(int layer, double root_depth)
+	/// <summary>
+	/// Compute how much of the layer is actually explored by roots
+	/// </summary>
+	/// <param name="layer"></param>
+	/// <param name="root_depth"></param>
+	/// <returns>Fraction of layer explored by roots</returns>
+	private double LayerFractionForRoots(int layer, double root_depth)
 	{
-		return rlvp[layer] / rlvp[0];
+
+		double depth_to_layer_top = 0;      // depth to top of layer (mm)
+		double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
+		double fraction_in_layer = 0;
+		for (int i = 0; i <= layer; i++)
+			depth_to_layer_bottom += dlayer[i];
+		depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
+		fraction_in_layer = (root_depth - depth_to_layer_top) / (depth_to_layer_bottom - depth_to_layer_top);
+
+		//return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
+		return RootFraction[layer] / RootFraction[0];
 
 		// moved the calculation to RootProfileDistribution (done only once per simulation as root proportion doesn't change)
 		//switch (p_RootDistributionMethod)
@@ -4246,36 +4493,34 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	{
 		FOMLayerLayerType[] fomLL = new FOMLayerLayerType[dlayer.Length];
 
+
+		// ****  RCichota, Jun, 2014 change how rlvp is used in here **********************************************
 		//considering root_zone only or minimum root
-		int minLayer = rlvp.Length;
-		if (minLayer > dlayer.Length)
-			minLayer = dlayer.Length;
-
-		//Console.WriteLine("rlvp layers should match the number of soil layers.");
-		//throw new Exception("..");
-
+		//int minLayer = rlvp.Length;
+		//if (minLayer > dlayer.Length)
+		//    minLayer = dlayer.Length;
 		//the amount could be according to the root length density
 		double sum_rlvp = 0.0;     //weighted sum of root length density, as defined by following formula
-		for (int i = 0; i < minLayer; i++)
+		for (int i = 0; i < dlayer.Length; i++)
 		{
 			if (i >= p_bottomRootLayer)
 				break;
 
-			sum_rlvp += rlvp[i] * dlayer[i];
+			sum_rlvp += RootFraction[i] * dlayer[i];
 		}
 
 		double dAmtLayer = 0.0; //amount of root litter in a layer
 		double dNLayer = 0.0;
 		for (int i = 0; i < dlayer.Length; i++)
 		{
-			if (sum_rlvp == 0.0 || (i >= minLayer)) //no root distribution if (i > minLayer)
+			if (sum_rlvp == 0.0) //no root distribution if (i > minLayer)
 			{
 				dAmtLayer = dNLayer = 0.0;
 			}
 			else
 			{
-				dAmtLayer = rootSen * rlvp[i] * dlayer[i] / sum_rlvp;
-				dNLayer = NinRootSen * rlvp[i] * dlayer[i] / sum_rlvp;
+				dAmtLayer = rootSen * RootFraction[i] * dlayer[i] / sum_rlvp;
+				dNLayer = NinRootSen * RootFraction[i] * dlayer[i] / sum_rlvp;
 			}
 			float amt = (float)dAmtLayer;
 
@@ -5397,14 +5642,12 @@ public class Species
 		double toStem = dGrowthW * fShoot * (1.0 - fStolon) * (1.0 - fLeaf);
 
 		//N demand for new growth (kg/ha)
-		NdemandOpt = (toRoot * Ncroot + toStol * Ncstol1
-		+ toLeaf * Ncleaf1 + toStem * Ncstem1);
+		NdemandOpt = (toRoot * Ncroot + toStol * Ncstol1 + toLeaf * Ncleaf1 + toStem * Ncstem1);
 		NdemandOpt *= NCO2Effects();    //reduce the demand under elevated [co2],
 		//this will reduce the N stress under N limitation for the same soilN
 
 		//N demand for new growth assuming luxury uptake to max [N]
-		NdemandLux = (toRoot * NcrootMax + toStol * NcstolMax
-		+ toLeaf * NcleafMax + toStem * NcstemMax);
+		NdemandLux = (toRoot * NcrootMax + toStol * NcstolMax + toLeaf * NcleafMax + toStem * NcstemMax);
 		//Ndemand *= NCO2Effects();       //luxary uptake not reduce
 
 		//even with sufficient soil N available
@@ -5554,7 +5797,7 @@ public class Species
 			dGrowthHerbage = newLeaf1 + newStem1 + newStol1;
 			double newRoot = toRoot * dGrowth;
 
-			// RCichota May 2014: commented out below and added simpler addition (this seeme unnecessary and complicated the calculation of herbage growth)
+			// RCichota May 2014: commented out below and added simpler addition (this seems unnecessary and complicated the calculation of herbage growth)
 			/* double totalnewG = newLeaf1 + newStem1 + newStol1 + newRoot;
 			//  accumtotalnewG  +=totalnewG;
 			//DM 
