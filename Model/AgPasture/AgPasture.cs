@@ -307,11 +307,11 @@ public class AgPasture
 	[Units("")]
 	private double[] leafRate;
 	[Param]
-	[Description("Fixed growth partition to leaf (0-1)")]
+	[Description("Fraction of new growth partition to leaf (0-1)")]
 	[Units("")]
 	private double[] fLeaf;
 	[Param]
-	[Description("Fixed growth partition to stolon (0-1)")]
+	[Description("Fraction of new growth partition to stolon (0-1)")]
 	[Units("")]
 	private double[] fStolon;
 
@@ -405,10 +405,6 @@ public class AgPasture
 	[Units("0-1")]
 	private double[] RelativeNconc_Roots;
 	[Param]
-	[Description("N concentration for plants at stage 1 (young), relative to optimum")]
-	[Units("0-1")]
-	private double[] RelativeNconc_stage1;
-	[Param]
 	[Description("N concentration for plants at stage 2 (developing), relative to optimum")]
 	[Units("0-1")]
 	private double[] RelativeNconc_stage2;
@@ -450,6 +446,19 @@ public class AgPasture
 	[Description("Generic growth limiting factor")]
 	[Units("0-1")]
 	private double[] Frgr;
+
+	[Param]
+	[Description("Coefficient for using luxury N from tissue 2 to Nremob")]
+	[Units("0-1")]
+	private double[] Kappa2_Remob;
+	[Param]
+	[Description("Coefficient for using luxury N from tissue 3 to Nremob")]
+	[Units("0-1")]
+	private double[] Kappa3_Remob;
+	[Param]
+	[Description("Coefficient for partitioning non-used Nremob into tissue 4")]
+	[Units("0-1")]
+	private double[] Kappa4_Remob;
 
 	[Param]
 	[Input(IsOptional = true)]
@@ -879,6 +888,10 @@ public class AgPasture
 		SP[s].NcstemFr = RelativeNconc_Stems[s];      //stem Nc as % of leaf Nc
 		SP[s].NcstolFr = RelativeNconc_Stolons[s];      //stol Nc as % of leaf Nc
 		SP[s].NcrootFr = RelativeNconc_Roots[s];      //root Nc as % of leaf Nc
+
+		SP[s].NcRel2 = RelativeNconc_stage2[s];
+		SP[s].NcRel3 = RelativeNconc_stage3[s];
+
 		//0.01 is for conversion of % to fraction [i.e., 4% ->0.04]
 		SP[s].NcleafOpt = 0.01 * NconcOptimum_leaves[s];                  //leaf critical N %)
 		SP[s].NcstemOpt = SP[s].NcleafOpt * SP[s].NcstemFr;     //stem
@@ -897,24 +910,28 @@ public class AgPasture
 
 		//init as optimum
 		SP[s].Ncleaf1 = SP[s].NcleafOpt;
-		SP[s].Ncleaf2 = SP[s].NcleafOpt; //optimum now is the optimum of green leaf [N]
-		SP[s].Ncleaf3 = SP[s].NcleafOpt;
+		SP[s].Ncleaf2 = SP[s].NcleafOpt * SP[s].NcRel2;
+		SP[s].Ncleaf3 = SP[s].NcleafOpt * SP[s].NcRel3;
 		SP[s].Ncleaf4 = SP[s].NcleafMin; //this could become much small depending on [N] in green tisssue
 
 		SP[s].Ncstem1 = SP[s].NcstemOpt; //stem [N] is 50% of the leaf [N]
-		SP[s].Ncstem2 = SP[s].NcstemOpt;
-		SP[s].Ncstem3 = SP[s].NcstemOpt;
+		SP[s].Ncstem2 = SP[s].NcstemOpt * SP[s].NcRel2;
+		SP[s].Ncstem3 = SP[s].NcstemOpt * SP[s].NcRel3;
 		SP[s].Ncstem4 = SP[s].NcstemMin;
 
 		SP[s].Ncstol1 = SP[s].NcstolOpt;
-		SP[s].Ncstol2 = SP[s].NcstolOpt;
-		SP[s].Ncstol3 = SP[s].NcstolOpt;
+		SP[s].Ncstol2 = SP[s].NcstolOpt * SP[s].NcRel2;
+		SP[s].Ncstol3 = SP[s].NcstolOpt * SP[s].NcRel3;
 
 		SP[s].Ncroot = SP[s].NcrootOpt;
 		SP[s].Nclitter = SP[s].NcleafMin;  //init as same [N]
 
 		SP[s].MaxFix = NMaxFix[s];   //N-fix fraction when no soil N available, read in later
 		SP[s].MinFix = NMinFix[s];   //N-fix fraction when soil N sufficient
+
+		SP[s].Kappa2 = Kappa2_Remob[s];
+		SP[s].Kappa3 = Kappa3_Remob[s];
+		SP[s].Kappa4 = Kappa4_Remob[s];
 
 		//Init total N in each pool
 		SP[s].Nleaf1 = SP[s].dmleaf1 * SP[s].Ncleaf1; //convert % to fraction [i.e., 4% ->0.02]
@@ -4976,6 +4993,9 @@ public class Species
 	public double NcstolFr;   //stolon Nc as % of leaf Nc
 	public double NcrootFr;   //root Nc as % of leaf Nc
 
+	public double NcRel2;     //N concentration in tissue 2 relative to tissue 1
+	public double NcRel3;     //N concentration in tissue 3 relative to tissue 1
+
 	//current
 	public double Ncleaf1;    //leaf 1  (critical N %)
 	public double Ncleaf2;    //leaf 2
@@ -5052,7 +5072,7 @@ public class Species
 	public double Nstolon;    //stolon
 
 	public double NremobMax;  //maximum N remob of the day
-	public double Nremob = 0;       //N remobiliesd N during senesing
+	public double Nremob = 0;       //N remobiliesd N during senescing
 	public double Cremob = 0;
 	public double Nleaf3Remob = 0;
 	public double Nstem3Remob = 0;
@@ -5060,10 +5080,17 @@ public class Species
 	public double NrootRemob = 0;
 	public double remob2NewGrowth = 0;
 	public double newGrowthN = 0;    //N plant-soil
-	public double NdemandLux;      //N demand for new growth
+	public double NdemandLux;      //N demand for new growth, with luxury uptake
 	public double NdemandOpt;
-	public double NdemandMax;   //luxury N demand for new growth
 	public double Nfix;         //N fixed by legumes
+
+	public double Kappa2 = 0.0;
+	public double Kappa3 = 0.0;
+	public double Kappa4 = 0.0;
+	public double NLuxury2;		       // luxury N (above Nopt) potentially remobilisable
+	public double NLuxury3;		       // luxury N (above Nopt)potentially remobilisable
+	public double NFastRemob2 = 0.0;   // amount of luxury N remobilised from tissue 2
+	public double NFastRemob3 = 0.0;   // amount of luxury N remobilised from tissue 3
 
 	public double soilNAvail;   //N available to this species
 	public double soilNdemand;  //N demand from soil (=Ndemand-Nremob-Nfixed)
@@ -5834,13 +5861,13 @@ public class Species
 		double toLeaf = dGrowthW * fShoot * (1.0 - fStolon) * fLeaf;
 		double toStem = dGrowthW * fShoot * (1.0 - fStolon) * (1.0 - fLeaf);
 
-		//N demand for new growth (kg/ha)
-		NdemandOpt = (toRoot * Ncroot + toStol * Ncstol1 + toLeaf * Ncleaf1 + toStem * Ncstem1);
+		//N demand for new growth, optimum N (kg/ha)
+		NdemandOpt = toRoot * Ncroot + toStol * Ncstol1 + toLeaf * Ncleaf1 + toStem * Ncstem1;
 		NdemandOpt *= NCO2Effects();    //reduce the demand under elevated [co2],
 		//this will reduce the N stress under N limitation for the same soilN
 
-		//N demand for new growth assuming luxury uptake to max [N]
-		NdemandLux = (toRoot * NcrootMax + toStol * NcstolMax + toLeaf * NcleafMax + toStem * NcstemMax);
+		//N demand for new growth assuming luxury uptake (maximum [N])
+		NdemandLux = toRoot * NcrootMax + toStol * NcstolMax + toLeaf * NcleafMax + toStem * NcstemMax;
 		//Ndemand *= NCO2Effects();       //luxary uptake not reduce
 
 		//even with sufficient soil N available
@@ -5969,7 +5996,7 @@ public class Species
 		{
 			//Not re-calculate fShoot for avoiding N-inbalance
 
-			//New growth is allocated to the 1st pools
+			//New growth is allocated to the first tissue pools
 			//fLeaf & fStolon: fixed partition to leaf & stolon.
 			//Fractions [eq.4.13]
 			double toRoot = 1.0 - fShoot;
@@ -5984,39 +6011,53 @@ public class Species
 		 /* {Console.WriteLine("checking partitioning fractions") };*/ 
 
 			//Assign the partitioned growth to the 1st tissue pools
-			double newLeaf1 = toLeaf * dGrowth;
-			double newStem1 = toStem * dGrowth;
-			double newStol1 = toStol * dGrowth;
-			dGrowthHerbage = newLeaf1 + newStem1 + newStol1;
-			double newRoot = toRoot * dGrowth;
-
-			// RCichota May 2014: commented out below and added simpler addition (this seems unnecessary and complicated the calculation of herbage growth)
-			/* double totalnewG = newLeaf1 + newStem1 + newStol1 + newRoot;
-			//  accumtotalnewG  +=totalnewG;
-			//DM 
-			dmleaf1 = pS.dmleaf1 + newLeaf1;
-			dmstem1 = pS.dmstem1 + newStem1;
-			dmstol1 = pS.dmstol1 + newStol1;
-			dmroot = pS.dmroot + newRoot; */
-
-			dmleaf1 += newLeaf1;
-			dmstem1 += newStem1;
-			dmstol1 += newStol1;
-			dmroot += newRoot;
+			dmleaf1 += toLeaf * dGrowth;
+			dmstem1 += toStem * dGrowth;
+			dmstol1 += toStol * dGrowth;
+			dmroot += toRoot * dGrowth;
+			dGrowthHerbage = (toLeaf + toStem + toStol) * dGrowth;
 
 			//partitioing N based on not only the DM, but also [N] in plant parts
-			double sum = toLeaf * NcleafMax + toStem * NcstemMax + toStol * NcstolMax + toRoot * NcrootMax;
-			double toLeafN = toLeaf * NcleafMax / sum;
-			double toStemN = toStem * NcstemMax / sum;
-			double toStolN = toStol * NcstolMax / sum;
-			double toRootN = toRoot * NcrootMax / sum;
+			double Nsum = toLeaf * NcleafMax + toStem * NcstemMax + toStol * NcstolMax + toRoot * NcrootMax;
+			double toLeafN = toLeaf * NcleafMax / Nsum;
+			double toStemN = toStem * NcstemMax / Nsum;
+			double toStolN = toStol * NcstolMax / Nsum;
+			double toRootN = toRoot * NcrootMax / Nsum;
 
 			Nleaf1 += toLeafN * newGrowthN;
 			Nstem1 += toStemN * newGrowthN;
 			Nstol1 += toStolN * newGrowthN;
 			Nroot += toRootN * newGrowthN;
 
-			// accumtotalnewN += newGrowthN;
+			double leftoverNremob = Nremob * Kappa4;  // fraction of Nremob not used, added to dead tissue
+			if (leftoverNremob > 0)
+			{
+				double DMsum = dmleaf4 + dmstem;
+				Nleaf4 += leftoverNremob * dmleaf4 / DMsum;
+				Nstem4 += leftoverNremob * dmstem4 / DMsum;
+			}
+
+			// check whether luxury N was remobilised during N balance
+			if (NFastRemob2 + NFastRemob3 > 0.0)
+			{
+				// partition any used N into plant parts (by N content)
+				if (NFastRemob2 > 0.0)
+				{
+					Nsum = Nleaf2 + Nstem2 + Nstol2;
+					Nleaf2 -= NFastRemob2 * Nleaf2 / Nsum;
+					Nstem2 -= NFastRemob2 * Nstem2 / Nsum;
+					Nstol2 -= NFastRemob2 * Nstol2 / Nsum;
+				}
+				if (NFastRemob3 > 0.0)
+				{
+					Nsum = Nleaf3 + Nstem3 + Nstol3;
+					Nleaf3 -= NFastRemob3 * Nleaf3 / Nsum;
+					Nstem3 -= NFastRemob3 * Nstem3 / Nsum;
+					Nstol3 -= NFastRemob3 * Nstol3 / Nsum;
+				}
+				NFastRemob2 = 0.0;
+				NFastRemob3 = 0.0;
+			}
 
 		}  //end of "partition" block
 
@@ -6174,12 +6215,22 @@ public class Species
 
 			dLitter = gamad * (pS.dmleaf4 + pS.dmstem4) + gamas * pS.dmstol3;
 
-			double leftoverNremob = Nremob;
+			double leftoverNremob = Nremob * (1 - Kappa4);  // fraction of Nremob not used, added to litter
 			dNLitter = Nleaf4toL + Nstem4toL + Nstol3toL + leftoverNremob;    //Nremob of previous day after newgrowth, go to litter
-
 			//The leftover 'Nremob' of previous day (if>0) indicates more N should go to litter in previous day, so do it now
 			//this is especially importatn in automn
-			Nremob = Nleaf3Remob + Nstem3Remob + Nstol3Remob + NrootRemob;  //today's N remob
+
+			// remobilised and remobilisable N (these will be used tomorrow)
+			Nremob = Nleaf3Remob + Nstem3Remob + Nstol3Remob + NrootRemob;
+			NLuxury2 = Math.Max(0.0, Nleaf2 - dmleaf2 * NcleafOpt * NcRel2)
+					 + Math.Max(0.0, Nstem2 - dmstem2 * NcstemOpt * NcRel2)
+					 + Math.Max(0.0, Nstol2 - dmstol2 * NcstolOpt * NcRel2);
+			NLuxury3 = Math.Max(0.0, Nleaf3 - dmleaf3 * NcleafOpt * NcRel3)
+					 + Math.Max(0.0, Nstem3 - dmstem3 * NcstemOpt * NcRel3)
+					 + Math.Max(0.0, Nstol3 - dmstol3 * NcstolOpt * NcRel3);
+			// only a fraction of luxury N is available for remobilisation:
+			NLuxury2 *= Kappa2;
+			NLuxury3 *= Kappa3;
 
 			//Sugar remobilisation and C balance:
 			Cremob = 0;// not explicitely considered
