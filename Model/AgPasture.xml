@@ -51,10 +51,10 @@
 			<maxRootDepth description="Maximum root depth (mm)">900 300 900</maxRootDepth>
 			<rootDepth description="Initial root depth (mm)">900 300 900</rootDepth>
 			<rootFnType description="Root function type, 0=default_1=Ritchie_2=power_law_3=proportional_depth">0 0 0</rootFnType>
-			<RootDistributionMethod description="Method used to compute root ditribution over soil profile">UserDefined</RootDistributionMethod>
+			<RootDistributionMethod description="Method used to compute root ditribution over soil profile">ExpoLinear</RootDistributionMethod>
 			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear-->
-			<ExpoLinearDepthParam description="Parameter for ExpoLinear method, fraction of root depth where its proportion starts to decrease (0-1)">0.3</ExpoLinearDepthParam>
-			<ExpoLinearCurveParam description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">1.0</ExpoLinearCurveParam>
+			<ExpoLinearDepthParam description="Parameter for ExpoLinear method, fraction of root depth where its proportion starts to decrease (0-1)">0.12</ExpoLinearDepthParam>
+			<ExpoLinearCurveParam description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">3.2</ExpoLinearCurveParam>
 
 			<growthTmin description="Minimum temperature for growth">2 4 10</growthTmin>
 			<growthTmax description="Maximum temperature for growth">32 32 40</growthTmax>
@@ -114,8 +114,8 @@
 			<NdilutCoeff description="Coefficient for modifying the effect of N stress on plant growth">0.5  1.0  0.5</NdilutCoeff>
 			<Frgr description="Generic growth limiting factor">1.0  1.0  1.0</Frgr>
 
-			<Kappa2_Remob description="Coefficient for using luxury N from tissue 2 to Nremob">0.0  0.0  0.0</Kappa2_Remob>
-			<Kappa3_Remob description="Coefficient for using luxury N from tissue 3 to Nremob">0.0  0.0  0.0</Kappa3_Remob>
+			<Kappa2_Remob description="Coefficient for remobilisation of luxury N from tissue 2">0.0  0.0  0.0</Kappa2_Remob>
+			<Kappa3_Remob description="Coefficient for remobilisation of luxury N from tissue 3">0.0  0.0  0.0</Kappa3_Remob>
 			<Kappa4_Remob description="Coefficient for partitioning non-used Nremob into tissue 4">0.0  0.0  0.0</Kappa4_Remob>
 
 			<CO2ambient description="Base CO2 content in atmosphere">380</CO2ambient>
@@ -132,9 +132,7 @@
 			<soilSatFactor description="Soil moisture saturation effects on growth">0.1 0.1 0.1</soilSatFactor>
 			<WaterUptakeSource description="Whether water uptake is calculated by agpasture or apsim">calc</WaterUptakeSource>
 			<NUptakeSource description="Whether N uptake is calculated by agpasture or apsim">calc</NUptakeSource>
-			<alt_N_uptake description="Whether N uptake is calculated by agpasture or apsim">no</alt_N_uptake>
-
-			<allowFastNRemob description="Whether fast remobilisation is allowed (from luxury N)">no</allowFastNRemob>
+			<alt_N_uptake description="Whether N uptake is calculated using alternative method">no</alt_N_uptake>
 			
 			<LinearInterpolation name="HeightMassFN" description="">
 				<XY>0,0</XY>

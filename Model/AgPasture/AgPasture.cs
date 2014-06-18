@@ -648,30 +648,14 @@ public class AgPasture
 		// initilisation, but it will do in the interim.
 		if (rlvp.Length == Nspecies)
 		{
-			//Console.Out.WriteLine("Using two parameter root distribution model (root depth + distribution parameter)");
 			p_RootDistributionMethod = 2;
 			p_ExpoLinearDepthParam = rlvp[0];
-			// Calculate actual rlvp values
+			// This has been maintained for backwards compatibility, use should be avoided
 
-
-			//rlvp = new double[dlayer.Length];
-			//for (int layer = 0; layer < dlayer.Length; layer++)
-			//{
-			//    rlvp[layer] = RootProportion(layer, p_rootFrontier);
-			//}
 		}
-		//else if (rlvp.Length == dlayer.Length)
-		//{
-		//    //Console.Out.WriteLine("Using real rlvp data values - original method");
-		//    p_RootDistributionMethod = 1; //using corrected depth calculation method
-		//}
-		//else
-		//{
-		//    throw new Exception("AgPasture: Incorrect number of values passed to RLVP exception");
-		//}
 
-		// ensure rlvp is the proportion of roots per layer (add up to 1.0)
-		//rlvp = RootProfileDistribution();
+		// rlvp is used as input only, in the calculations it has been usper-seeded by RootFraction (the proportion of roots mass in each layer)
+		// The RootFraction should add up to 1.0 over the soil profile
 		RootFraction = RootProfileDistribution();
 
 		//Create and initialise each species
@@ -4729,7 +4713,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			case 1:
 				{
 					// distribution given by the user
-					Array.Resize(ref rlvp, nLayers);	// This will remove values for excess layers or add zeroes if layers are missing
+					Array.Resize(ref rlvp, nLayers);	// This will remove values in excess (non-existing layers) or add zeroes if layers are missing
 					for (int layer = 0; layer < nLayers; layer++)
 					{
 						result[layer] = rlvp[layer];
@@ -4793,7 +4777,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	/// <returns>Fraction of layer explored by roots</returns>
 	private double LayerFractionForRoots(int layer, double root_depth)
 	{
-
 		double depth_to_layer_top = 0;      // depth to top of layer (mm)
 		double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
 		double fraction_in_layer = 0;
@@ -4802,89 +4785,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
 		fraction_in_layer = (root_depth - depth_to_layer_top) / (depth_to_layer_bottom - depth_to_layer_top);
 
-		//return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
-		return RootFraction[layer] / RootFraction[0];
-
-		// moved the calculation to RootProfileDistribution (done only once per simulation as root proportion doesn't change)
-		//switch (p_RootDistributionMethod)
-		//{
-		//    case 0: case 1:
-		//        { // "Linear" code taken directly from Plant2
-		//            double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
-		//            double depth_to_layer_top = 0;      // depth to top of layer (mm)
-		//            double depth_to_root = 0;           // depth to root in layer (mm)
-		//            double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
-		//            // Implementation Section ----------------------------------
-		//            for (int i = 0; i <= layer; i++)
-		//                depth_to_layer_bottom += dlayer[i];
-		//            depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
-		//            depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
-		//            depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
-
-		//            return depth_of_root_in_layer / dlayer[layer];
-		//        }
-		//    case 2:
-		//        { // "broken stick"
-		//            double depth_to_layer_bottom = 0;
-		//            for (int i = 0; i <= layer; i++)
-		//            {
-		//                depth_to_layer_bottom += dlayer[i];
-		//            }
-		//            double depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
-
-		//            //double dX0 = rootDist[0] * root_depth; //TODO allow this to be set via Root Distribution Parameter
-		//            double dX0 = p_ExpoLinearDepthParam * root_depth;
-		//            double dX1 = root_depth;
-
-		//            if (Debug_Level > 1)
-		//            {
-		//                Console.Out.WriteLine();
-		//                Console.Out.WriteLine("Root Depth 0 = " + dX0);
-		//                Console.Out.WriteLine("Root Depth 1 = " + dX1);
-		//                Console.Out.WriteLine("Layer = " + (layer + 1));
-		//                Console.Out.WriteLine("   depth_to_layer_top = " + depth_to_layer_top);
-		//                Console.Out.WriteLine("   depth_to_layer_bottom = " + depth_to_layer_bottom);
-		//            }
-		//            if (depth_to_layer_bottom <= dX0)
-		//            {
-		//                if (Debug_Level > 1)
-		//                    Console.Out.WriteLine("   1.0 =        fully in the Square Zone");
-		//                return 1.0; // fully in the "Square Zone"
-		//            }
-		//            if (depth_to_layer_top >= dX1)
-		//            {
-		//                if (Debug_Level > 1)
-		//                    Console.Out.WriteLine("   0.0 =        fully below the root zone");
-		//                return 0.0; // fully below the root zone
-		//            }
-
-		//            //Includes special cases of includes poviot point and/or layer partially below the root zone
-		//            double rootUpper = (dX0 > depth_to_layer_top) ? dX0 - depth_to_layer_top : 0;
-		//            double rootLower = 0;
-		//            if (dX0 < dX1)
-		//            {
-		//                double A = dX1 - dX0; // depth of "triangle"
-		//                double B = 1;
-		//                double a0 = A - (Math.Max(depth_to_layer_top, dX0) - dX0);
-		//                double b0 = B * (a0 / A);
-		//                double a1 = A - (Math.Min(depth_to_layer_bottom, dX1) - dX0);
-		//                double b1 = B * (a1 / A);
-		//                double prop = (b0 + b1) / 2;
-		//                double depth = Math.Min(depth_to_layer_bottom, dX1) - Math.Max(depth_to_layer_top, dX0);
-		//                rootLower = prop * depth;
-		//            }
-		//            double result = (rootUpper + rootLower) / (depth_to_layer_bottom - depth_to_layer_top);
-		//            if (Debug_Level > 1)
-		//            {
-		//                Console.Out.WriteLine("   " + rootUpper + "        rootUpper");
-		//                Console.Out.WriteLine("   " + rootLower + "        rootLower");
-		//                Console.Out.WriteLine("   " + result + "        result");
-		//            }
-		//            return result;
-		//        }
-
-		//    default: return 1; //this is equivilant to the original implementation (depreciated)
-		//}
+		return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
 	}
 
 
@@ -5061,39 +4962,21 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		FOMLayerLayerType[] fomLL = new FOMLayerLayerType[dlayer.Length];
 
 
-		// ****  RCichota, Jun, 2014 change how rlvp is used in here **********************************************
-		//considering root_zone only or minimum root
-		//int minLayer = rlvp.Length;
-		//if (minLayer > dlayer.Length)
-		//    minLayer = dlayer.Length;
-		//the amount could be according to the root length density
-		double sum_rlvp = 0.0;     //weighted sum of root length density, as defined by following formula
-		for (int i = 0; i < dlayer.Length; i++)
-		{
-			if (i >= p_bottomRootLayer)
-				break;
-
-			sum_rlvp += RootFraction[i] * dlayer[i];
-		}
+		// ****  RCichota, Jun, 2014 change how RootFraction (rlvp) is used in here ****************************************
+		// root senesced are returned to soil (as FOM) considering return is proportional to root mass
 
 		double dAmtLayer = 0.0; //amount of root litter in a layer
 		double dNLayer = 0.0;
 		for (int i = 0; i < dlayer.Length; i++)
 		{
-			if (sum_rlvp == 0.0) //no root distribution if (i > minLayer)
-			{
-				dAmtLayer = dNLayer = 0.0;
-			}
-			else
-			{
-				dAmtLayer = rootSen * RootFraction[i] * dlayer[i] / sum_rlvp;
-				dNLayer = NinRootSen * RootFraction[i] * dlayer[i] / sum_rlvp;
-			}
+			dAmtLayer = rootSen * RootFraction[i];
+			dNLayer = NinRootSen * RootFraction[i];
+			
 			float amt = (float)dAmtLayer;
 
 			FOMType fom = new FOMType();
 			fom.amount = amt;
-			fom.N = (float)dNLayer;// 0.03F * amt;    // N in dead root
+			fom.N = (float)dNLayer; // 0.03F * amt;    // N in dead root
 			fom.C = 0.40F * amt;    //40% of OM is C. Actually, 'C' is not used, as shown in DataTypes.xml
 			fom.P = 0;              //to consider later
 			fom.AshAlk = 0;         //to consider later
