@@ -2032,7 +2032,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		p_gfn = 0.0;
 		for (int s = 0; s < Nspecies; s++)
 		{
-			if (p_soilNdemand == 0.0)
+			if (SP[s].soilNdemand == 0.0)
 			{
 				SP[s].soilNuptake = 0.0;
 				SP[s].NFastRemob3 = 0.0;
@@ -2057,10 +2057,10 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 					SP[s].newGrowthN += SP[s].soilNuptake;
 
 					// check whether demand for optimum growth is satisfied
-					if (SP[s].NdemandOpt < SP[s].newGrowthN)
+					if (SP[s].NdemandOpt > SP[s].newGrowthN)
 					{
 						// plant still needs more N for optimum growth (luxury uptake is ignored), check whether luxury N in plants can be used
-						double Nmissing = SP[s].newGrowthN - SP[s].NdemandOpt;
+						double Nmissing = SP[s].NdemandOpt - SP[s].newGrowthN;
 						if (Nmissing <= SP[s].NLuxury2 + SP[s].NLuxury3)
 						{
 							// There is luxury N that can be used for optimum growth, first from tissue 3
@@ -2985,6 +2985,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	{
 		get { return p_Nfix; }
 	}
+	
 	[Output]
 	[Description("Amount of N remobilised from senescing tissue")]
 	[Units("kgN/ha")]
@@ -3014,6 +3015,19 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
+	[Description("Amount of luxury N potentially remobilisable")]
+	[Units("kgN/ha")]
+	public double PlantRemobilisableLuxuryN
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].NLuxury2 + SP[s].NLuxury3;
+			return result;
+		}
+	}
+	[Output]
 	[Description("Amount of N deposited as litter onto soil surface")]
 	[Units("kgN/ha")]
 	public double LitterDepositionN
@@ -3027,6 +3041,22 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	public double RootSenescenceN
 	{
 		get { return p_dNRootSen; }
+	}
+
+	[Output]
+	[Description("Plant nitrogen requirement with luxury uptake")]
+	[Units("kgN/ha")]
+	public double NitrogenRequiredLuxury
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result += SP[s].NdemandLux;
+			}
+			return result;
+		}
 	}
 
 	[Output]
@@ -3046,17 +3076,37 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Plant nitrogen requirement with luxury uptake")]
+	[Description("Nitrogen amount in new growth")]
 	[Units("kgN/ha")]
-	public double NitrogenRequiredLuxury
+	public double PlantGrowthN
 	{
 		get
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
 			{
-				result += SP[s].NdemandLux;
+				result += SP[s].newGrowthN;
 			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Nitrogen concentration in new growth")]
+	[Units("kgN/kgDM")]
+	public double PlantGrowthNconc
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result += SP[s].newGrowthN;
+			}
+			if (PlantGrowthWt > 0)
+				result = result / PlantGrowthWt;
+			else
+				result = 0.0;
 			return result;
 		}
 	}
@@ -4300,6 +4350,22 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
+
+	[Output]
+	[Description("Amount of luxury N potentially remobilisable, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesRemobilisableLuxuryN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].NLuxury2 + SP[s].NLuxury3;
+			}
+			return result;
+		}
+	}
 	
 	[Output]
 	[Description("Amount of atmospheric N fixed, for each species")]
@@ -4320,14 +4386,14 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Amount of N required with luxury uptake, for each species")]
 	[Units("kgN/ha")]
-	public double SpeciesRequiredNLuxury
+	public double[] SpeciesRequiredNLuxury
 	{
 		get
 		{
-			double result = 0.0;
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
 			{
-				result = SP[s].NdemandLux;
+				result[s] = SP[s].NdemandLux;
 			}
 			return result;
 		}
@@ -4336,14 +4402,14 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Amount of N required for optimum growth, for each species")]
 	[Units("kgN/ha")]
-	public double SpeciesRequiredNOptimum
+	public double[] SpeciesRequiredNOptimum
 	{
 		get
 		{
-			double result = 0.0;
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
 			{
-				result = SP[s].NdemandOpt;
+				result[s] = SP[s].NdemandOpt;
 			}
 			return result;
 		}
@@ -4352,19 +4418,53 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	[Output]
 	[Description("Amount of N demaned from soil, for each species")]
 	[Units("kgN/ha")]
-	public double SpeciesDemandN
+	public double[] SpeciesDemandN
 	{
 		get
 		{
-			double result = 0.0;
+			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
 			{
-				result = SP[s].soilNdemand;
+				result[s] = SP[s].soilNdemand;
 			}
 			return result;
 		}
 	}
 
+	[Output]
+	[Description("Amount of N in new growth, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesGrowthN
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] += SP[s].newGrowthN;
+			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Nitrogen concentration in new growth, for each species")]
+	[Units("kgN/kgDM")]
+	public double[] SpeciesGrowthNconc
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				if (SP[s].dGrowth > 0)
+					result[s] += SP[s].newGrowthN / SP[s].dGrowth;
+				else
+					result[s] = 0.0;
+			}
+			return result;
+		}
+	}
 	[Output]
 	[Description("Amount of N uptake, for each species")]
 	[Units("kgN/ha")]
@@ -5468,8 +5568,8 @@ public class Species
 		double NremobRemove = preNremob - Nremob;
 
 		// update luxury N pools proportionally (RCichota, Jun2014) 
-		NFastRemob2 *= pRest;
-		NFastRemob3 *= pRest;
+		NLuxury2 *= pRest;
+		NLuxury3 *= pRest;
 
 		updateAggregated();
 
@@ -5543,8 +5643,8 @@ public class Species
 		Nremob = FractionRemainingGreen * Nremob;
 
 		// update Luxury N pools
-		NFastRemob2 *= FractionRemainingGreen;
-		NFastRemob3 *= FractionRemainingGreen;
+		NLuxury2 *= FractionRemainingGreen;
+		NLuxury3 *= FractionRemainingGreen;
 
 		// update variables
 		updateAggregated();
@@ -6123,8 +6223,8 @@ public class Species
 
 		double toRoot = dGrowthW * (1.0 - fShoot);
 		double toStol = dGrowthW * fShoot * fStolon;
-		double toLeaf = dGrowthW * fShoot * (1.0 - fStolon) * fLeaf;
-		double toStem = dGrowthW * fShoot * (1.0 - fStolon) * (1.0 - fLeaf);
+		double toLeaf = dGrowthW * fShoot * fLeaf;
+		double toStem = dGrowthW * fShoot * (1.0 - fStolon - fLeaf);
 
 		//N demand for new growth, optimum N (kg/ha)
 		NdemandOpt = toRoot * Ncroot + toStol * Ncstol1 + toLeaf * Ncleaf1 + toStem * Ncstem1;
@@ -6268,8 +6368,8 @@ public class Species
 			//Fractions [eq.4.13]
 			double toRoot = 1.0 - fShoot;
 			double toStol = fShoot * fStolon;
-			double toLeaf = fShoot * (1.0 - fStolon) * fLeaf;
-			double toStem = fShoot * (1.0 - fStolon) * (1.0 - fLeaf);
+			double toLeaf = fShoot * fLeaf;
+			double toStem = fShoot * (1.0 - fStolon - fLeaf);
 
 			//checking
 			double ToAll = toLeaf + toStem + toStol + toRoot;
@@ -6322,8 +6422,6 @@ public class Species
 					Nstem3 -= NFastRemob3 * Nstem3 / Nsum;
 					Nstol3 -= NFastRemob3 * Nstol3 / Nsum;
 				}
-				NFastRemob2 = 0.0;
-				NFastRemob3 = 0.0;
 			}
 
 		}  //end of "partition" block
