@@ -537,16 +537,6 @@ public class AgPasture
 	[Description("Weight factor defining the preference level for dead DM")]
 	private double[] PreferenceForDeadDM;
 
-	private bool FastNRemobAllowed = false;
-	[Param]
-	[Description("")]
-	[Units("")]
-	private string allowFastNRemob
-	{
-		get { return FastNRemobAllowed ? "yes" : "no"; }
-		set { FastNRemobAllowed = (allowFastNRemob.ToLower() == "yes"); }
-	}
-
 	[Input]
 	public DateTime Today;
 
@@ -1985,7 +1975,163 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		return p_soilNavailable;
 	}
 	//-------------------------------------------------------
+	// RCichota, Jun 2014: cleaned up and add consideration for remobilisation of luxury N
 	private double NBudgetAndUptake()
+	{
+		//1) Get the total N demand (species by species)
+		p_Nfix = 0.0;
+		double p_Ndemand = 0.0;
+		double p_NdemandOpt = 0.0;
+		for (int s = 0; s < Nspecies; s++)
+		{
+			p_Nfix += SP[s].CalcNdemand();       //minimum N fixation
+			p_NdemandOpt += SP[s].NdemandOpt;    //demand for optimum [N]
+			p_Ndemand += SP[s].NdemandLux;       //demand for luxury [N]
+		}
+
+		//2) Update Nfix of legume species under N stress
+		double Nstress = 1.0;
+		if (p_Ndemand > 0.0 && (p_Ndemand > p_soilNavailable + p_Nfix))
+			Nstress = p_soilNavailable / (p_Ndemand - p_Nfix);
+
+		for (int s = 0; s < Nspecies; s++)
+		{
+			if ((SP[s].isLegume) && (Nstress < 0.99))  //more fixation under Nstress
+			{
+				double newNfix = (SP[s].MaxFix - (SP[s].MaxFix - SP[s].MinFix) * Nstress) * SP[s].NdemandLux;
+				double moreNfix = Math.Max(0.0, (newNfix - SP[s].Nfix));
+				SP[s].Nfix = newNfix;
+				p_Nfix += moreNfix;
+			}
+		}
+
+		//3) Get N remobilised and calculate N demand from soil
+		p_soilNdemand = 0.0;
+		for (int s = 0; s < Nspecies; s++)
+		{
+			if (SP[s].NdemandLux <= SP[s].Nremob + SP[s].Nfix)
+			{
+				// Nremob and Nfix are able to supply all N - note: Nfix = 0 for non-legumes
+				SP[s].remob2NewGrowth = Math.Max(0.0, SP[s].NdemandLux - SP[s].Nfix);
+				SP[s].Nremob -= SP[s].remob2NewGrowth;
+				SP[s].soilNdemand = 0.0;
+			}
+			else
+			{
+				// not enough N within the plant, uptake is needed
+				SP[s].remob2NewGrowth = SP[s].Nremob;
+				SP[s].Nremob = 0.0;
+				SP[s].soilNdemand = SP[s].NdemandLux - (SP[s].Nfix + SP[s].remob2NewGrowth);
+			}
+			SP[s].newGrowthN = SP[s].remob2NewGrowth + SP[s].Nfix;
+			p_soilNdemand += SP[s].soilNdemand;
+		}
+
+		//4) Compute soil N uptake, newGrowthN and N limitation factor
+		p_soilNuptake = 0.0;
+		p_gfn = 0.0;
+		for (int s = 0; s < Nspecies; s++)
+		{
+			if (p_soilNdemand == 0.0)
+			{
+				SP[s].soilNuptake = 0.0;
+				SP[s].NFastRemob3 = 0.0;
+				SP[s].NFastRemob2 = 0.0;
+				SP[s].gfn = 1.0;
+			}
+			else
+			{
+				if (p_soilNavailable >= p_soilNdemand)
+				{
+					// soil can supply all remaining N needed
+					SP[s].soilNuptake = SP[s].soilNdemand;
+					SP[s].NFastRemob3 = 0.0;
+					SP[s].NFastRemob2 = 0.0;
+					SP[s].newGrowthN += SP[s].soilNuptake;
+					SP[s].gfn = 1.0;
+				}
+				else
+				{
+					// soil cannot supply all N needed. Get the available N and partition between species
+					SP[s].soilNuptake = p_soilNavailable * SP[s].soilNdemand / p_soilNdemand;
+					SP[s].newGrowthN += SP[s].soilNuptake;
+
+					// check whether demand for optimum growth is satisfied
+					if (SP[s].NdemandOpt < SP[s].newGrowthN)
+					{
+						// plant still needs more N for optimum growth (luxury uptake is ignored), check whether luxury N in plants can be used
+						double Nmissing = SP[s].newGrowthN - SP[s].NdemandOpt;
+						if (Nmissing <= SP[s].NLuxury2 + SP[s].NLuxury3)
+						{
+							// There is luxury N that can be used for optimum growth, first from tissue 3
+							if (Nmissing <= SP[s].NLuxury3)
+							{
+								SP[s].NFastRemob3 = Nmissing;
+								SP[s].NFastRemob2 = 0.0;
+								Nmissing = 0.0;
+							}
+							else
+							{
+								SP[s].NFastRemob3 = SP[s].NLuxury3;
+								Nmissing -= SP[s].NLuxury3;
+
+								// remaining from tissue 2
+								SP[s].NFastRemob2 = Nmissing;
+								Nmissing = 0.0;
+							}
+						}
+						else
+						{
+							// N luxury is not enough for optimum growth, use up all there is
+							if (SP[s].NLuxury2 + SP[s].NLuxury3 > 0)
+							{
+								SP[s].NFastRemob3 = SP[s].NLuxury3;
+								SP[s].NFastRemob2 = SP[s].NLuxury2;
+								Nmissing -= (SP[s].NLuxury3 + SP[s].NLuxury2);
+							}
+						}
+						SP[s].newGrowthN += SP[s].NFastRemob3 + SP[s].NFastRemob2;
+					}
+					else
+					{
+						// N supply is enough for optimum growth, although luxury uptake is not fully accomplished
+						SP[s].NFastRemob3 = 0.0;
+						SP[s].NFastRemob2 = 0.0;
+					}
+					SP[s].gfn = Math.Min(1.0, Math.Max(0.0, SP[s].newGrowthN / SP[s].NdemandOpt));
+				}
+			}
+			p_soilNuptake += SP[s].soilNuptake;
+
+			//weighted average of species gfn
+			if (p_dGrowthW == 0)
+			{ 
+				p_gfn = 1;
+			}
+			else
+			{
+				p_gfn += SP[s].gfn * SP[s].dGrowthW / p_dGrowthW;
+			}
+		}
+
+		//5) Actual uptake, remove N from soil
+		double soilNremoved = 0;
+		if (NUptakeSource == "calc")
+		{
+			soilNremoved = SNUptakeProcess();               //N remove from soil
+		}
+		else
+		{
+			// N uptake calculated by other modules (e.g., SWIM)
+			string msg = "Only one option for N uptake is implemented in AgPasture. Please specify N uptake source as default \"calc\".";
+			throw new Exception(msg);
+		}
+
+		return soilNremoved;
+
+	}
+
+	private double NBudgetAndUptake_original()
 	{
 		//1)Calculate soil N demand (species by species)
 		p_Nfix = 0;
@@ -2840,7 +2986,7 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		get { return p_Nfix; }
 	}
 	[Output]
-	[Description("Plant N remobilisation")]
+	[Description("Amount of N remobilised from senescing tissue")]
 	[Units("kgN/ha")]
 	public double PlantRemobilisedN
 	{
@@ -2849,6 +2995,20 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
 				result += SP[s].remob2NewGrowth;
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Amount of luxury N remobilised")]
+	[Units("kgN/ha")]
+	public double PlantLuxuryNRemobilised
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+				result += SP[s].NFastRemob2 + SP[s].NFastRemob3;
 			return result;
 		}
 	}
@@ -2870,7 +3030,39 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
-	[Description("Plant nitrogen demand")]
+	[Description("Plant nitrogen requirement for optimum growth")]
+	[Units("kgN/ha")]
+	public double NitrogenRequiredOptimum
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result += SP[s].NdemandOpt;
+			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Plant nitrogen requirement with luxury uptake")]
+	[Units("kgN/ha")]
+	public double NitrogenRequiredLuxury
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result += SP[s].NdemandLux;
+			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Plant nitrogen demand from soil")]
 	[Units("kgN/ha")]
 	public double NitrogenDemand
 	{
@@ -2923,10 +3115,10 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	{
 		get
 		{
-			double f = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				f += SP[s].Ncfactor * SP[s].dmshoot;
-			return (f / AboveGroundWt);
+				result += SP[s].Ncfactor * SP[s].dmshoot;
+			return (result / AboveGroundWt);
 		}
 	}
 	[Output]
@@ -4077,7 +4269,6 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 		get { return FractionToHarvest; }
 	}
 
-
 	[Output]
 	[Description("Amount of N remobilised from senesced material, for each species")]
 	[Units("kgN/ha")]
@@ -4093,6 +4284,23 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
+
+	[Output]
+	[Description("Amount of luxury N remobilised, for each species")]
+	[Units("kgN/ha")]
+	public double[] SpeciesLuxuryNRemobilised
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].NFastRemob2 + SP[s].NFastRemob3;
+			}
+			return result;
+		}
+	}
+	
 	[Output]
 	[Description("Amount of atmospheric N fixed, for each species")]
 	[Units("kgN/ha")]
@@ -4108,6 +4316,55 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 			return result;
 		}
 	}
+
+	[Output]
+	[Description("Amount of N required with luxury uptake, for each species")]
+	[Units("kgN/ha")]
+	public double SpeciesRequiredNLuxury
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result = SP[s].NdemandLux;
+			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Amount of N required for optimum growth, for each species")]
+	[Units("kgN/ha")]
+	public double SpeciesRequiredNOptimum
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result = SP[s].NdemandOpt;
+			}
+			return result;
+		}
+	}
+
+	[Output]
+	[Description("Amount of N demaned from soil, for each species")]
+	[Units("kgN/ha")]
+	public double SpeciesDemandN
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result = SP[s].soilNdemand;
+			}
+			return result;
+		}
+	}
+
 	[Output]
 	[Description("Amount of N uptake, for each species")]
 	[Units("kgN/ha")]
@@ -5210,6 +5467,10 @@ public class Species
 		Nremob = pRest * Nremob;
 		double NremobRemove = preNremob - Nremob;
 
+		// update luxury N pools proportionally (RCichota, Jun2014) 
+		NFastRemob2 *= pRest;
+		NFastRemob3 *= pRest;
+
 		updateAggregated();
 
 		double removeN = preNshoot - Nshoot;
@@ -5280,6 +5541,10 @@ public class Species
 		//Nremob is also removed proportionally (not sensitive?)
 		double PreRemovalNRemob = Nremob;
 		Nremob = FractionRemainingGreen * Nremob;
+
+		// update Luxury N pools
+		NFastRemob2 *= FractionRemainingGreen;
+		NFastRemob3 *= FractionRemainingGreen;
 
 		// update variables
 		updateAggregated();
@@ -5873,6 +6138,8 @@ public class Species
 		//even with sufficient soil N available
 		if (isLegume)
 			Nfix = MinFix * NdemandLux;
+		else
+			Nfix = 0.0;
 
 		return Nfix;
 	}
