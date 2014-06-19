@@ -6109,8 +6109,10 @@ public class Species
 		double toLeaf = dGrowthW * fShoot * fLeaf;
 		double toStem = dGrowthW * fShoot * (1.0 - fStolon - fLeaf);
 
-		//N demand for new growth, optimum N (kg/ha)
-		NdemandOpt = toRoot * Ncroot + toStol * Ncstol1 + toLeaf * Ncleaf1 + toStem * Ncstem1;
+		//N demand for new growth, optimum N (kg/ha)   -  RCichota, Jun/2014: changed actual N concentration for optimum
+		NdemandOpt = toRoot * NcrootOpt + toStol * NcstolOpt + toLeaf * NcleafOpt + toStem * NcstemOpt;
+		//NdemandOpt = toRoot * Ncroot + toStol * Ncstol1 + toLeaf * Ncleaf1 + toStem * Ncstem1;
+		
 		NdemandOpt *= NCO2Effects();    //reduce the demand under elevated [co2],
 		//this will reduce the N stress under N limitation for the same soilN
 
