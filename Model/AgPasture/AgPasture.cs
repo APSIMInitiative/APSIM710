@@ -366,10 +366,6 @@ public class AgPasture
 	[Description("Root dry weight")]
 	[Units("kgDM/ha")]
 	private double[] dmroot;
-	[Param]
-	[Description("Litter amount")]
-	[Units("kgDM/ha")]
-	private double[] dmlitter;
 
 	[Param]
 	[Description("Minimum green DM")]
@@ -379,6 +375,16 @@ public class AgPasture
 	[Description("Minimum dead DM")]
 	[Units("kgDM/ha")]
 	private double[] dmdeadmin;
+
+	[Param]
+	[Description("Fractions of initial dmshoot for each biomass pool, for non-legumes")]
+	[Units("0-1")]
+	private double[] initialDMFractions_grass;
+
+	[Param]
+	[Description("Fractions of initial dmshoot for each biomass pool, for legume species")]
+	[Units("0-1")]
+	private double[] initialDMFractions_legume;
 
 	[Param]
 	[Description("Optimum N concentration of leaves (no stress)")]
@@ -426,7 +432,6 @@ public class AgPasture
 	private double[] Ncstol2;    //stolon 2
 	private double[] Ncstol3;    //stolon 3
 	private double[] Ncroot;    //root
-	private double[] Nclitter;    //Litter pool
 
 	[Param]
 	[Description("Minimum fraction of N demand fixed by legumes")]
@@ -658,6 +663,10 @@ public class AgPasture
 		// The RootFraction should add up to 1.0 over the soil profile
 		RootFraction = RootProfileDistribution();
 
+		// check that initialisation fractions have been supplied accordingly
+		Array.Resize(ref initialDMFractions_grass, 11);
+		Array.Resize(ref initialDMFractions_legume, 11);
+
 		//Create and initialise each species
 		SP = new Species[Nspecies];         //species of the pasture
 		pSP = new Species[Nspecies];        //For storing species status at previous day
@@ -817,32 +826,35 @@ public class AgPasture
 
 		if (!SP[s].isLegume)
 		{
-			SP[s].dmleaf1 = 0.15 * dmshoot[s];
-			SP[s].dmleaf2 = 0.25 * dmshoot[s];
-			SP[s].dmleaf3 = 0.25 * dmshoot[s];
-			SP[s].dmleaf4 = 0.05 * dmshoot[s];
-			SP[s].dmstem1 = 0.05 * dmshoot[s];
-			SP[s].dmstem2 = 0.10 * dmshoot[s];
-			SP[s].dmstem3 = 0.10 * dmshoot[s];
-			SP[s].dmstem4 = 0.05 * dmshoot[s];
+			SP[s].dmleaf1 = dmshoot[s] * initialDMFractions_grass[0];
+			SP[s].dmleaf2 = dmshoot[s] * initialDMFractions_grass[1];
+			SP[s].dmleaf3 = dmshoot[s] * initialDMFractions_grass[2];
+			SP[s].dmleaf4 = dmshoot[s] * initialDMFractions_grass[3];
+			SP[s].dmstem1 = dmshoot[s] * initialDMFractions_grass[4];
+			SP[s].dmstem2 = dmshoot[s] * initialDMFractions_grass[5];
+			SP[s].dmstem3 = dmshoot[s] * initialDMFractions_grass[6];
+			SP[s].dmstem4 = dmshoot[s] * initialDMFractions_grass[7];
 			SP[s].dmstol1 = SP[s].dmstol2 = SP[s].dmstol3 = 0;
 		}
 		else //legume
 		{
-			SP[s].dmleaf1 = 0.20 * dmshoot[s];
-			SP[s].dmleaf2 = 0.25 * dmshoot[s];
-			SP[s].dmleaf3 = 0.25 * dmshoot[s];
-			SP[s].dmleaf4 = 0.00;
-			SP[s].dmstem1 = 0.02 * dmshoot[s];  //added small % of stem for legume
-			SP[s].dmstem2 = 0.04 * dmshoot[s];
-			SP[s].dmstem3 = 0.04 * dmshoot[s];
-			SP[s].dmstem4 = 0.00;
-			SP[s].dmstol1 = 0.06 * dmshoot[s];
-			SP[s].dmstol2 = 0.12 * dmshoot[s];
-			SP[s].dmstol3 = 0.12 * dmshoot[s];
+			SP[s].dmleaf1 = dmshoot[s] * initialDMFractions_legume[0];
+			SP[s].dmleaf2 = dmshoot[s] * initialDMFractions_legume[1];
+			SP[s].dmleaf3 = dmshoot[s] * initialDMFractions_legume[2];
+			SP[s].dmleaf4 = dmshoot[s] * initialDMFractions_legume[3];
+			SP[s].dmstem1 = dmshoot[s] * initialDMFractions_legume[4];
+			SP[s].dmstem2 = dmshoot[s] * initialDMFractions_legume[5];
+			SP[s].dmstem3 = dmshoot[s] * initialDMFractions_legume[6];
+			SP[s].dmstem4 = dmshoot[s] * initialDMFractions_legume[7];
+			SP[s].dmstol1 = dmshoot[s] * initialDMFractions_legume[8];
+			SP[s].dmstol2 = dmshoot[s] * initialDMFractions_legume[9];
+			SP[s].dmstol3 = dmshoot[s] * initialDMFractions_legume[10];
 		}
-		SP[s].dmroot = dmshoot[s] / SP[s].maxSRratio;
-		SP[s].dmlitter = dmlitter[s];
+
+		if (dmroot[s] >= 0)
+			SP[s].dmroot = dmroot[s];
+		else
+			SP[s].dmroot = dmshoot[s] / SP[s].maxSRratio; 
 		SP[s].dmgreenmin = dmgreenmin[s];
 		SP[s].dmdeadmin = dmdeadmin[s];
 
@@ -898,7 +910,6 @@ public class AgPasture
 		SP[s].Ncstol3 = SP[s].NcstolOpt * SP[s].NcRel3;
 
 		SP[s].Ncroot = SP[s].NcrootOpt;
-		SP[s].Nclitter = SP[s].NcleafMin;  //init as same [N]
 
 		SP[s].MaxFix = NMaxFix[s];   //N-fix fraction when no soil N available, read in later
 		SP[s].MinFix = NMinFix[s];   //N-fix fraction when soil N sufficient
@@ -920,7 +931,6 @@ public class AgPasture
 		SP[s].Nstol2 = SP[s].dmstol2 * SP[s].Ncstol2;
 		SP[s].Nstol3 = SP[s].dmstol3 * SP[s].Ncstol3;
 		SP[s].Nroot = SP[s].dmroot * SP[s].Ncroot;
-		SP[s].Nlitter = SP[s].dmlitter * SP[s].Nclitter;
 
 		//calculated, DM and LAI,  species-specific
 		SP[s].updateAggregated();   // agregated properties, such as p_totalLAI
@@ -1003,25 +1013,26 @@ public class AgPasture
 	{
 		Console.WriteLine();
 		Console.Write(@"
-AgPature Properties
-------------------------------------------------------------------
-Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
-(kg/ha)    (kg/ha)   (kg/ha)  ()   (kg/ha)  (kg/ha)
-------------------------------------------------------------------
+                AgPature Properties
+          -----------------------------------------------------------------------------
+           Species         TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                           (kg/ha)  (kg/ha)  (kg/ha)  ()   (kg/ha)  (kg/ha)  (mm)
+          -----------------------------------------------------------------------------
 ");
 		for (int specie = 0; specie < SP.Length; ++specie)
 		{
-			Console.WriteLine("          {0,-10}   {1,6:F1}  {2,6:F1}  {3,6:F1}  {4,6:F2}  {5,6:F1}  {6,6:F1}",
+			Console.WriteLine("           {0,-12}   {1,6:F1}  {2,6:F1}  {3,6:F1}  {4,6:F2}  {5,6:F1}  {6,6:F1}",
 			SP[specie].speciesName, SP[specie].dmtotal, SP[specie].dmshoot, SP[specie].dmroot, SP[specie].totalLAI, (SP[specie].dmshoot + SP[specie].dmroot) * 0.4, SP[specie].Nshoot + SP[specie].Nroot);
 		}
-		Console.WriteLine("          ------------------------------------------------------------------");
-		Console.WriteLine("           Totals      {0,6:F1}  {1,6:F1}  {2,6:F1}  {3,6:F2}  {4,6:F1}  {5,6:F1}",
+		Console.WriteLine("          -----------------------------------------------------------------------------");
+		Console.WriteLine("           Totals         {0,6:F1}  {1,6:F1}  {2,6:F1}  {3,6:F2}  {4,6:F1}  {5,6:F1}",
 		TotalPlantWt, AboveGroundWt, BelowGroundWt, LAI_total, TotalPlantC, TotalPlantN);
-		Console.WriteLine("          ------------------------------------------------------------------");
+		Console.WriteLine("          -----------------------------------------------------------------------------");
 
 		Console.WriteLine();
 		Console.WriteLine("          N uptake controlled by AgPasture");
 		Console.WriteLine("          Water uptake controlled by " + ((WaterUptakeSource == "calc") ? "AgPasture" : "an external module"));
+		Console.WriteLine();
 	}
 
 	//--------------------------------------------------------------------------
@@ -4304,6 +4315,67 @@ Species       TotalWt    ShootWt   RootWt   LAI  TotalC   TotalN
 	}
 
 	[Output]
+	[Description("Rate of turnover for live DM, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesLiveDMTurnoverRate
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].gama;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Rate of turnover for dead DM, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesDeadDMTurnoverRate
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].gamad;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Rate of DM turnover for stolons, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesStolonDMTurnoverRate
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].gamas;
+			}
+			return result;
+		}
+	}
+	[Output]
+	[Description("Rate of DM turnover for roots, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesRootDMTurnoverRate
+	{
+		get
+		{
+			double[] result = new double[SP.Length];
+			for (int s = 0; s < Nspecies; s++)
+			{
+				result[s] = SP[s].gamar;
+			}
+			return result;
+		}
+	}
+
+	[Output]
 	[Description("Amount of N remobilised from senesced material, for each species")]
 	[Units("kgN/ha")]
 	public double[] SpeciesRemobilisedN
@@ -5211,7 +5283,6 @@ public class Species
 	public double dmstol2;    //stolon 2 (kg/ha)
 	public double dmstol3;    //stolon 3 (kg/ha)
 	public double dmroot;    //root (kg/ha)
-	public double dmlitter;    //Litter pool (kg/ha)
 	public double dmgreenmin; // minimum grenn dm
 	public double dmdeadmin; // minimum dead dm
 	public float Frgr;
@@ -5249,7 +5320,6 @@ public class Species
 	public double Ncstol2;    //stolon 2
 	public double Ncstol3;    //stolon 3
 	public double Ncroot;        //root
-	public double Nclitter;    //Litter pool
 
 	//Max, Min & Opt = critical N
 	public double NcleafOpt;    //leaf   (critical N %)
@@ -5280,7 +5350,6 @@ public class Species
 	public double Nstol2 = 0;    //stolon 2 (kg/ha)
 	public double Nstol3 = 0;    //stolon 3 (kg/ha)
 	public double Nroot = 0;    //root (kg/ha)
-	public double Nlitter = 0;    //Litter pool (kg/ha)
 
 	//calculated
 	//DM
@@ -5359,6 +5428,12 @@ public class Species
 	public double fShoot;         //actual fraction of dGrowth to shoot
 	public int dayCounter;
 	public double sumGFW;
+
+	// transfer coefficients 
+	public double gama = 0.0;	// from tissue 1 to 2, then 3 then 4
+	public double gamas = 0.0;	// for stolons
+	public double gamad = 0.0;	// from dead to litter
+	public double gamar = 0.0;	// for roots (to dead/FOM)
 
 	public double leafPref = 1;    //leaf preference
 	// public double accumtotalnewG = 0;
@@ -5722,7 +5797,6 @@ public class Species
 			dmstol3 = 0;
 			dmroot = 25;
 		}
-		dmlitter = 0;
 
 		//Init total N in each pool
 		Nleaf1 = dmleaf1 * Ncleaf1;
@@ -5737,7 +5811,6 @@ public class Species
 		Nstol2 = dmstol2 * Ncstol2;
 		Nstol3 = dmstol3 * Ncstol3;
 		Nroot = dmroot * Ncroot;
-		Nlitter = dmlitter * Nclitter;
 
 		//calculated, DM and LAI,  species-specific
 		updateAggregated();   // agregated properties, such as p_totalLAI
@@ -6316,13 +6389,13 @@ public class Species
 		double gftt = GFTempTissue();
 		double gfwt = GFWaterTissue();
 
-		double gama = gftt * gfwt * rateLive2Dead;
-		double gamas = gama;                                    //for stolon of legumes
+		gama = gftt * gfwt * rateLive2Dead;
+		gamas = gama;                                    //for stolon of legumes
 		//double gamad = gftt * gfwt * rateDead2Litter;
 		double SR = 0;  //stocking rate affacting transfer of dead to little (default as 0 for now)
-		double gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParameter * SR;
+		gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParameter * SR;
 
-		double gamar = gftt * (2 - gfwater) * rateRootSen;  //gfwt * rateRootSen;
+		gamar = gftt * (2 - gfwater) * rateRootSen;  //gfwt * rateRootSen;
 
 
 		if (gama == 0.0) //if gama ==0 due to gftt or gfwt, then skip "turnover" part
@@ -6840,14 +6913,13 @@ public class Species
 		dmstem1 = dmstem2 = dmstem3 = dmstem4 = 0;    //sheath and stem
 		dmstol1 = dmstol2 = dmstol3 = 0;
 		dmroot = 0;
-		dmlitter = 0;
-
+		
 		dmdefoliated = 0;
 
 		//Reset N pools
 		Nleaf1 = Nleaf2 = Nleaf3 = Nleaf4 = 0;
 		Nstem1 = Nstem2 = Nstem3 = Nstem4 = 0;
-		Nstol1 = Nstol2 = Nstol3 = Nroot = Nlitter = 0;
+		Nstol1 = Nstol2 = Nstol3 = Nroot = 0;
 
 		phenoStage = 0;
 
@@ -6879,7 +6951,6 @@ public class Species
 		pS.dmstol1 = dmstol1;
 		pS.dmstol2 = dmstol2;
 		pS.dmstol3 = dmstol3;
-		pS.dmlitter = dmlitter;
 		pS.dmroot = dmroot;
 		pS.dmleaf_green = dmleaf_green;
 		pS.dmstem_green = dmstem_green;
@@ -6917,7 +6988,6 @@ public class DMPools
 	public double dmstol1;
 	public double dmstol2;
 	public double dmstol3;
-	public double dmlitter;
 	public double dmroot;
 
 	public double dmleaf;
