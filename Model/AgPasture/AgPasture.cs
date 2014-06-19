@@ -302,16 +302,15 @@ public class AgPasture
 	[Description("Factor for seasonality in growth allocation (shoot/root)")]
 	[Units("")]
 	private double[] allocationSeasonF;
-	[Param]
-	[Description("Reference leaf appearance rate, without stress")]
-	[Units("")]
+
+	// this has been removed from params as it is not actually used
 	private double[] leafRate;
 	[Param]
-	[Description("Fraction of new growth partition to leaf (0-1)")]
+	[Description("Fraction of new growth allocated to leaf (0-1)")]
 	[Units("")]
 	private double[] fLeaf;
 	[Param]
-	[Description("Fraction of new growth partition to stolon (0-1)")]
+	[Description("Fraction of new growth allocated to stolon (0-1)")]
 	[Units("")]
 	private double[] fStolon;
 
@@ -805,7 +804,8 @@ public class AgPasture
 		SP[s].rateRootSen = rateRootSen[s];
 		SP[s].stockParameter = stockParameter[s];
 		SP[s].maxSRratio = (1 - maxRootFraction[s]) / maxRootFraction[s]; // The input is actually the max % allocated to roots
-		SP[s].leafRate = leafRate[s];
+		SP[s].leafRate = 0.0;
+		//SP[s].leafRate = leafRate[s];  set to zero as it is not actually used
 		SP[s].fLeaf = fLeaf[s];
 		SP[s].fStolon = fStolon[s];
 		SP[s].digestLive = digestLive[s];
@@ -1013,26 +1013,47 @@ public class AgPasture
 	{
 		Console.WriteLine();
 		Console.Write(@"
-                AgPature Properties
-          -----------------------------------------------------------------------------
-           Species         TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
-                           (kg/ha)  (kg/ha)  (kg/ha)  ()   (kg/ha)  (kg/ha)  (mm)
-          -----------------------------------------------------------------------------
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
 ");
 		for (int specie = 0; specie < SP.Length; ++specie)
 		{
-			Console.WriteLine("           {0,-12}   {1,6:F1}  {2,6:F1}  {3,6:F1}  {4,6:F2}  {5,6:F1}  {6,6:F1}",
-			SP[specie].speciesName, SP[specie].dmtotal, SP[specie].dmshoot, SP[specie].dmroot, SP[specie].totalLAI, (SP[specie].dmshoot + SP[specie].dmroot) * 0.4, SP[specie].Nshoot + SP[specie].Nroot);
+			Console.WriteLine("          {0,-12}    {1,6:F1}   {2,6:F1}  {3,6:F1}  {4,4:F2}  {5,6:F1}    {6,5:F1}      {7,6:F1}",
+			SP[specie].speciesName, 
+			SP[specie].dmshoot + SP[specie].dmroot, 
+			SP[specie].dmshoot, 
+			SP[specie].dmroot, 
+			SP[specie].totalLAI, 
+			(SP[specie].dmshoot + SP[specie].dmroot) * 0.4, 
+			SP[specie].Nshoot + SP[specie].Nroot,
+			SP[specie].rootDepth);
 		}
-		Console.WriteLine("          -----------------------------------------------------------------------------");
-		Console.WriteLine("           Totals         {0,6:F1}  {1,6:F1}  {2,6:F1}  {3,6:F2}  {4,6:F1}  {5,6:F1}",
-		TotalPlantWt, AboveGroundWt, BelowGroundWt, LAI_total, TotalPlantC, TotalPlantN);
-		Console.WriteLine("          -----------------------------------------------------------------------------");
+		Console.WriteLine("         -----------------------------------------------------------------------------");
+		Console.WriteLine("          Totals          {0,6:F1}   {1,6:F1}  {2,6:F1}  {3,4:F2}  {4,6:F1}    {5,5:F1}      {6,6:F1}",
+		TotalPlantWt, AboveGroundWt, BelowGroundWt, LAI_total, TotalPlantC, TotalPlantN,p_rootFrontier);
+		Console.WriteLine("         -----------------------------------------------------------------------------");
 
 		Console.WriteLine();
-		Console.WriteLine("          N uptake controlled by AgPasture");
-		Console.WriteLine("          Water uptake controlled by " + ((WaterUptakeSource == "calc") ? "AgPasture" : "an external module"));
+		Console.WriteLine("          - N uptake controlled by AgPasture");
+		Console.WriteLine("          - Water uptake controlled by " + ((WaterUptakeSource == "calc") ? "AgPasture" : "an external module"));
 		Console.WriteLine();
+
+		Console.Write(@"
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+");
+		double LayerTop = 0;
+		for (int layer = 0; layer < dlayer.Length; layer++)
+		{
+			Console.WriteLine("          {0,3}  {1,10}     {2,6:F3}", layer, LayerTop.ToString() + "-" + (LayerTop + dlayer[layer]).ToString(), RootFraction[layer]);
+			LayerTop += dlayer[layer];
+		}
+		Console.WriteLine("         -----------------------------");
 	}
 
 	//--------------------------------------------------------------------------
@@ -1325,6 +1346,10 @@ public class AgPasture
 		if (alt_N_uptake == "yes")
 			if (Nspecies > 1)
 				throw new Exception("When working with multiple species, 'ValsMode' must ALWAYS be 'none'");
+
+		// write some basic initialisation info
+		writeSummary();
+
 	}
 
 
