@@ -5456,7 +5456,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
         <category description="Regular harvest or grazing" type="category" />
         <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter pasture type">agpasture</AgPasture>
         <date1 type="date" description="Enter the first harvest or grazing date">1/7/1995</date1>
-        <amount_type type="list" listvalues="residue,removal" description="Select the amount type">residue</amount_type>
+        <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Select the amount type">SetResidueAmount</amount_type>
         <amount type="text" description="Enter herbage amount (kg/ha)">1250</amount>
         <interval type="text" description="Enter the intervals between harvest or grazing (days)">14</interval>
       </ui>
@@ -5487,7 +5487,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
         <category description="Harvest" type="category" />
         <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter crop name">agpasture</AgPasture>
         <amount type="text" description="Enter harvest amount (kg/ha):">1000</amount>
-        <type type="list" listvalues="residue,removal" description="Enter harvest amount  type">residue</type>
+        <type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Enter harvest amount  type">SetResidueAmount</type>
         <date1 type="date" description="Enter harvest date 1">14/10/1966</date1>
         <date2 type="date" description="Enter harvest date 2:">28/10/1966</date2>
       </ui>
@@ -5511,7 +5511,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
         <category description="Regular harvest or grazing" type="category" />
         <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter pasture type">agpasture</AgPasture>
         <date1 type="date" description="Enter the first harvest or grazing date">1/7/1900</date1>
-        <amount_type type="list" listvalues="residue,removal" description="Select the amount type">residue</amount_type>
+        <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Select the amount type">SetResidueAmount</amount_type>
         <amount type="text" description="Enter herbage amount (kg/ha)">1000</amount>
         <interval type="text" description="Enter the intervals between harvest or grazing (days)">21</interval>
         <category description="Material returns" type="category" />
@@ -5565,7 +5565,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
         <category description="Harvest or grazeing" type="category" />
         <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Select pasture name">agpasture</AgPasture>
         <amount type="text" description="Enter harvest amount (kg/ha):">1000</amount>
-        <amount_type type="list" listvalues="residue,removal" description="Enter harvest amount  type">residue</amount_type>
+        <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Enter harvest amount  type">SetResidueAmount</amount_type>
         <category description="Material returns" type="category" />
         <dm_frac type="text" description="Fraction of nitrogen returned as excreta">0.85</dm_frac>
         <urine_n_frac type="text" description="Fraction of returned nitrogen in urine">0.6</urine_n_frac>
@@ -5638,7 +5638,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
                         continuegrazing= 1
                  endif      
                  
-                 '[AgPasture]' graze type = 'removal', amount = daily_amt (kg/ha)                
+                 '[AgPasture]' graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)                
                  digest = DefoliatedDigestibility                 
                  dm_som = HarvestWt * (1-digest)                        
                  n_removed  = HarvestN *(1.0-[dm_frac])
@@ -5705,7 +5705,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
                         continuegrazing= 1
                  endif      
                  
-                '[AgPasture]' graze type = 'removal', amount = daily_amt (kg/ha)  
+                '[AgPasture]' graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)  
                  
                  digest = DefoliatedDigestibility
                  dm_som = HarvestWt * ([1-digest)
@@ -5775,7 +5775,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
                         continuegrazing= 1
                  endif      
                  
-                '[AgPasture]'  graze type = 'removal', amount = daily_amt (kg/ha)                                   
+                '[AgPasture]'  graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)                                   
                  dm_som = HarvestWt * ([1-digest)             
                  
                  n_removed   = [AgPasture].HarvestN *(1-[dm_frac])

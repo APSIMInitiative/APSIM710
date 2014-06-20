@@ -532,7 +532,7 @@ public class AgPasture
 	private string alt_N_uptake = "no";
 
 	[Param]
-	[Description("Method used to partition biomass removal between species")]
+	[Description("Method used to partition biomass removal between plant parts")]
 	public string BiomassRemovalMethod;
 	[Param]
 	[Description("Weight factor defining the preference level for green DM")]
@@ -1697,137 +1697,71 @@ public class AgPasture
 		if ((!p_Live) || p_totalDM == 0)
 			return;
 
-		if (BiomassRemovalMethod.ToLower() == "agp_original")
+		// get the amount that can potentially be removed
+		double AmountRemovable = 0.0;
+		for (int s = 0; s < Nspecies; s++)
+			AmountRemovable += Math.Max(0.0, SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin) + Math.Max(0.0, SP[s].dmdead - SP[s].dmdeadmin);
+		AmountRemovable = Math.Max(0.0, AmountRemovable);
+
+		// get the amount required to remove
+		double AmountRequired = 0.0;
+		if (GZ.type.ToLower() == "SetResidueAmount".ToLower())
 		{
-			AgP_Original_Graze(GZ);
+			// Remove all DM above given residual amount
+			AmountRequired = Math.Max(0.0, StandingPlantWt - GZ.amount);
+		}
+		else if (GZ.type.ToLower() == "SetRemoveAmount".ToLower())
+		{
+			// Attempt to remove a given amount
+			AmountRequired = Math.Max(0.0, GZ.amount);
 		}
 		else
 		{
-			// get the amount that can potentially be removed
-			double AmountRemovable = 0.0;
+			Console.WriteLine("  AgPasture - Method to set amount to remove not recognized, command will be ignored");
+		}
+		// get the actual amount to remove
+		double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
+
+		p_harvestDM = AmountToRemove;
+		p_harvestN = 0.0;
+		p_harvestDigest = 0.0;
+
+		// get the amounts to remove by species:
+		double FractionNotRemoved = 0.0;
+		if (AmountRemovable > 0.0)
+			FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
+		double[] TempWeights = new double[Nspecies];
+		double[] TempAmounts = new double[Nspecies];
+		double TempTotal = 0.0;
+		if (AmountRequired > 0.0)
+		{
+			// get the weights for each species, consider preference and available DM
+			double TotalPreference =0.0;
 			for (int s = 0; s < Nspecies; s++)
-				AmountRemovable += (SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin) + (SP[s].dmdead - SP[s].dmdeadmin);
-			AmountRemovable = Math.Max(0.0, AmountRemovable);
-
-			// get the amount required to remove
-			double AmountRequired = 0.0;
-			if (GZ.type == "residue")
+				TotalPreference += PreferenceForGreenDM[s] + PreferenceForDeadDM[s];
+			for (int s = 0; s < Nspecies; s++)
 			{
-				// Remove all DM above given residual amount
-				AmountRequired = Math.Max(0.0, StandingPlantWt - GZ.amount);
+				TempWeights[s] = PreferenceForGreenDM[s] + PreferenceForDeadDM[s];
+				TempWeights[s] += (TotalPreference - TempWeights[s]) * (1 - FractionNotRemoved);
+				TempAmounts[s] = Math.Max(0.0, SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin) + Math.Max(0.0, SP[s].dmdead - SP[s].dmdeadmin);
+				TempTotal += TempAmounts[s] * TempWeights[s];
 			}
-			else if (GZ.type == "removal")
-			{
-				// Attempt to remove a given amount
-				AmountRequired = Math.Max(0.0, GZ.amount);
-			}
-			else
-			{
-				Console.WriteLine("  AgPasture - Method to set amount to remove not recognized, command will be ignored");
-			}
-			// get the actual amount to remove
-			double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
 
-			p_harvestDM = AmountToRemove;
-			p_harvestN = 0.0;
-			p_harvestDigest = 0.0;
-
-			// get the amounts to remove by species:
-			double FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
-			double[] TempWeights = new double[Nspecies];
-			double[] TempAmounts = new double[Nspecies];
-			double TempTotal = 0.0;
-			if (AmountRequired > 0.0)
+			// get the actual amounts to remove for each species
+			for (int s = 0; s < Nspecies; s++)
 			{
-				// get the weights for each species, consider preference and available DM
-				double TotalPreference = PreferenceForGreenDM.Sum() + PreferenceForDeadDM.Sum();
-				for (int s = 0; s < Nspecies; s++)
-				{
-					TempWeights[s] = PreferenceForGreenDM[s] + PreferenceForDeadDM[s];
-					TempWeights[s] += (TotalPreference - TempWeights[s]) * (1 - FractionNotRemoved);
-					TempAmounts[s] = (SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin) + (SP[s].dmdead - SP[s].dmdeadmin);
-					TempTotal += TempAmounts[s] * TempWeights[s];
-				}
-
-				// get the actual amounts to remove for each species
-				for (int s = 0; s < Nspecies; s++)
-				{
+				if (TempTotal > 0.0)
 					FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
-					p_harvestN += SP[s].Remove_withPreferences(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
-
-					// get digestibility of harvested material
-					p_harvestDigest += SP[s].digestDefoliated * SP[s].dmdefoliated / AmountToRemove;
-				}
-			}
-		}
-	}
-
-	private void AgP_Original_Graze(GrazeType GZ)
-	{
-		double herbage_mass = StemWt + LeafWt;  // dm_stem + dm_leaf;
-		double min_residue = 200;               // kg/ha assumed
-		double residue_amt = min_residue;
-		double remove_amt = 0;
-
-		//case 1: remove untill the residue reaches the specified amount
-		if (GZ.type == "residue")
-		{
-			residue_amt = GZ.amount;
-			if (herbage_mass > residue_amt)
-			{
-				remove_amt = herbage_mass - residue_amt;
-			}
-			else
-			{
-				remove_amt = 0;
-			}
-		}
-		//case 2: remove the specified amount
-		else if (GZ.type == "removal")
-		{
-			remove_amt = GZ.amount;
-			if (herbage_mass > min_residue)
-			{
-				if (herbage_mass > (remove_amt + min_residue))
-				{
-					residue_amt = herbage_mass - remove_amt;
-				}
 				else
-				{
-					residue_amt = min_residue;
-					remove_amt = herbage_mass - min_residue;
-				}
+					FractionToHarvest[s] = 0.0;
+				p_harvestN += SP[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
+
+				// get digestibility of harvested material
+				p_harvestDigest += SP[s].digestDefoliated * SP[s].dmdefoliated / AmountToRemove;
 			}
-			else
-			{
-				remove_amt = 0;
-			}
-		}
-
-		p_harvestDM = remove_amt;
-
-		//remove DM & N species by species
-		p_harvestDigest = 0;
-		double TotalHarvestable = 0.0;
-		for (int s = 0; s < Nspecies; s++)
-			TotalHarvestable += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin;
-		for (int s = 0; s < Nspecies; s++)
-		{
-			double amt = 0;
-			if (herbage_mass != 0)
-			{
-				FractionToHarvest[s] = (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
-				amt = remove_amt * FractionToHarvest[s];
-				//amt = remove_amt * (SP[s].dmstem + SP[s].dmleaf) / herbage_mass;
-			}
-
-			p_harvestN += SP[s].AgP_Original_Remove(amt);
-
-			//calc digestibility
-			if (remove_amt > 0)
-				p_harvestDigest += SP[s].digestDefoliated * amt / remove_amt;
 		}
 	}
+
 	//----------------------------------------------------------
 	[EventHandler]
 	public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
@@ -2632,7 +2566,8 @@ public class AgPasture
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result += (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + (SP[s].dmdead - SP[s].dmdeadmin);
+				result += Math.Max(0.0, SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin)
+					    + Math.Max(0.0, SP[s].dmdead - SP[s].dmdeadmin);
 			return result;
 		}
 	}
@@ -4294,7 +4229,8 @@ public class AgPasture
 		{
 			double[] result = new double[Nspecies];
 			for (int s = 0; s < Nspecies; s++)
-				result[s] = (SP[s].dmleaf_green + SP[s].dmstem_green) - SP[s].dmgreenmin + (SP[s].dmdead- SP[s].dmdeadmin);
+				result[s] = Math.Max(0.0, SP[s].dmleaf_green + SP[s].dmstem_green - SP[s].dmgreenmin)
+						  + Math.Max(0.0, SP[s].dmdead - SP[s].dmdeadmin);
 			return result;
 		}
 	}
@@ -5495,83 +5431,18 @@ public class Species
 	}
 
 	//Species -----------------------------
-	public double AgP_Original_Remove(double amt)
-	{
-		//double pRest = 1 - (amt/dmtotal);
-		double pRest = 1 - (amt / (dmstem + dmleaf));
-		if (pRest < 0)
-			return 0;
-
-		dmdefoliated = amt;
-		pS.dmdefoliated = dmdefoliated;
-
-		// Mar2011: If removing the specified 'amt' would result in a 'dmgreen' less than specified 'dmgreenmin',
-		// then less green tissue (pool1-3 of leaf+stem) and more standing dead (pool4), will be removed
-		// This is especially necessaery for semi-arid grassland
-		double pRest_green = pRest;
-		double pRest_dead = pRest;
-		if (pRest * (dmleaf_green + dmstem_green) + dmstol_green < dmgreenmin)
-		{
-			pRest_green = (dmgreenmin - dmstol_green) / (dmleaf_green + dmstem_green);
-			double amt_dead_remove = amt - (1 - pRest_green) * (dmleaf_green + dmstem_green);
-			pRest_dead = (dmstem4 + dmleaf4 - amt_dead_remove) / (dmstem4 + dmleaf4);
-			if (pRest_dead < 0.0) pRest_dead = 0.0;   //this is impossible
-		}
-
-		//double standingDead =dmleaf4 + dmstem4;
-		//double deadFrac = standingDead /(dmleaf+dmstem);
-		//digestDefoliated = (1-deadFrac) * digestLive + deadFrac * digestDead;
-		digestDefoliated = calcDigestability(); //because the defoliateion of different parts is in proportion to biomass
-
-		// 1)Removing without preference   Mar2011: using different pRest for maintain a 'dmgreenmin'
-		dmleaf1 = pRest_green * dmleaf1;
-		dmleaf2 = pRest_green * dmleaf2;
-		dmleaf3 = pRest_green * dmleaf3;
-		dmleaf4 = pRest_dead * dmleaf4;
-		dmstem1 = pRest_green * dmstem1;
-		dmstem2 = pRest_green * dmstem2;
-		dmstem3 = pRest_green * dmstem3;
-		dmstem4 = pRest_dead * dmstem4;
-		//No stolon remove
-
-		double preNshoot = Nshoot; //before remove
-		//N remove
-		Nleaf1 = pRest_green * Nleaf1;
-		Nleaf2 = pRest_green * Nleaf2;
-		Nleaf3 = pRest_green * Nleaf3;
-		Nleaf4 = pRest_dead * Nleaf4;
-		Nstem1 = pRest_green * Nstem1;
-		Nstem2 = pRest_green * Nstem2;
-		Nstem3 = pRest_green * Nstem3;
-		Nstem4 = pRest_dead * Nstem4;
-
-		//Nremob also been emoved proportionally (not sensiive?)
-		double preNremob = Nremob;
-		Nremob = pRest * Nremob;
-		double NremobRemove = preNremob - Nremob;
-
-		// update luxury N pools proportionally (RCichota, Jun2014) 
-		NLuxury2 *= pRest;
-		NLuxury3 *= pRest;
-
-		updateAggregated();
-
-		double removeN = preNshoot - Nshoot;
-		Ndefoliated = removeN;
-
-		return removeN;
-	}
-
-	public double Remove_withPreferences(double AmountToRemove, double PrefGreen, double PrefDead)
+	public double RemoveDM(double AmountToRemove, double PrefGreen, double PrefDead)
 	{
 
 		// check existing amount and what is harvestable
 		double PreRemovalDM = dmshoot;
 		double PreRemovalN = Nshoot;
-		double AmountRemovable = (dmleaf_green + dmstem_green - dmgreenmin) + (dmleaf4 + dmstem4 - dmdeadmin);
+		double AmountRemovable = Math.Max(0.0, dmleaf_green + dmstem_green - dmgreenmin) + Math.Max(0.0, dmleaf4 + dmstem4 - dmdeadmin);
 
 		// get the weights for each pool, consider preference and available DM
-		double FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
+		double FractionNotRemoved = 0.0;
+		if (AmountRemovable>0)
+			FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
 
 		double TempPrefGreen = PrefGreen + (PrefDead * (1 - FractionNotRemoved));
 		double TempPrefDead = PrefDead + (PrefGreen * (1 - FractionNotRemoved));
@@ -5582,7 +5453,7 @@ public class Species
 		double TempTotal = TempRemovableGreen * TempPrefGreen + TempRemovableDead * TempPrefDead;
 		double FractionToHarvestGreen = 0.0;
 		double FractionToHarvestDead = 0.0;
-		if (TempTotal > 0)
+		if (TempTotal > 0.0)
 		{
 			FractionToHarvestGreen = TempRemovableGreen * TempPrefGreen / TempTotal;
 			FractionToHarvestDead = TempRemovableDead * TempPrefDead / TempTotal;
@@ -5592,8 +5463,12 @@ public class Species
 		double RemovingGreenDM = AmountToRemove * FractionToHarvestGreen;
 		double RemovingDeadDM = AmountToRemove * FractionToHarvestDead;
 		// Fraction of DM remaining in the field
-		double FractionRemainingGreen = 1 - RemovingGreenDM / (dmleaf_green + dmstem_green);
-		double FractionRemainingDead = 1 - RemovingDeadDM / (dmleaf4 + dmstem4);
+		double FractionRemainingGreen = 1.0;
+		if (dmleaf_green + dmstem_green > 0.0)
+			FractionRemainingGreen -= RemovingGreenDM / (dmleaf_green + dmstem_green);
+		double FractionRemainingDead = 1.0;
+		if (dmleaf4 + dmstem4 > 0.0)
+			FractionRemainingDead -= RemovingDeadDM / (dmleaf4 + dmstem4);
 		FractionRemainingGreen = Math.Max(0.0, Math.Min(1.0, FractionRemainingGreen));
 		FractionRemainingDead = Math.Max(0.0, Math.Min(1.0, FractionRemainingDead));
 
