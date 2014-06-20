@@ -116,11 +116,18 @@ public class OilPalm
     public SowPlant2Type SowingData;
 
     double[] PotNUptake;
-    double[] NUptake;
+    [Output]
+    double[] NUptake = {0,0};
+    [Output]
     double StemGrowth = 0.0;
+    [Output]
     double FrondGrowth = 0.0;
+    [Output]
     double RootGrowth = 0.0;
-    
+    [Output]
+    double BunchGrowth = 0.0;
+
+
     //FrondType[] Frond;
     public List<FrondType> Fronds = new List<FrondType>();
     public List<BunchType> Bunches = new List<BunchType>();
@@ -199,7 +206,7 @@ public class OilPalm
     [Output]
     double[] UnderstoryPotNUptake;
     [Output]
-    double[] UnderstoryNUptake;
+    double[] UnderstoryNUptake = {0,0};
     [Output]
     public double UnderstoryRootDepth = 0;
     [Output]
@@ -513,21 +520,28 @@ public class OilPalm
         if (Age > 10 && Fr < 1)
         { }
 
+        BunchGrowth = 0; // zero the daily value before incrementally building it up again with today's growth of individual bunches
         for (int i = 0; i < 6; i++)
-            Bunches[i].Mass += BunchDMD[i] * Fr / Population / BunchOilConversionFactor.Value;
+        {
+            double IndividualBunchGrowth = BunchDMD[i] * Fr / Population / BunchOilConversionFactor.Value;
+            Bunches[i].Mass += IndividualBunchGrowth;
+            BunchGrowth += IndividualBunchGrowth * Population;
+        }
         if (DltDM > 0)
            ReproductiveGrowthFraction = TotBunchDMD * Fr / DltDM;
         else
            ReproductiveGrowthFraction = 0;
 
+        FrondGrowth = 0; // zero the daily value before incrementally building it up again with today's growth of individual fronds
         for (int i = 0; i < Fronds.Count; i++)
         {
-            FrondGrowth = FrondDMD[i] * Fr / Population;
-            Fronds[i].Mass += FrondGrowth;
+            double IndividualFrondGrowth = FrondDMD[i] * Fr / Population;
+            Fronds[i].Mass += IndividualFrondGrowth;
+            FrondGrowth += IndividualFrondGrowth*Population;
             if (Fr >= SpecificLeafArea.Value / SpecificLeafAreaMax.Value)
                 Fronds[i].Area += (SizeFunction(Fronds[i].Age + DeltaT) - SizeFunction(Fronds[i].Age))*Fn;
             else
-                Fronds[i].Area += FrondGrowth * SpecificLeafAreaMax.Value;
+                Fronds[i].Area += IndividualFrondGrowth * SpecificLeafAreaMax.Value;
             
         }
 
@@ -1018,6 +1032,7 @@ public class OilPalm
         }
 
         double TotUnderstoryPotNUptake = MathUtility.Sum(UnderstoryPotNUptake);
+
         double Fr = Math.Min(1.0, (UnderstoryNdemand - UnderstoryNFixation) / TotUnderstoryPotNUptake);
 
         for (int j = 0; j < ll15_dep.Length; j++)
