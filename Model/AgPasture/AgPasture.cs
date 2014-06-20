@@ -6513,8 +6513,8 @@ public class Species
 			//Previous: N (assuming that Ncdead = Ncleaf4, Ncstem4 or Nclitter):  Nc --[N]
 			double Nleaf1to2 = Ncleaf1 * 2 * gama * pS.dmleaf1;
 			double Nleaf2to3 = Ncleaf2 * gama * pS.dmleaf2;
-			double Nleaf3to4 = Ncleaf4 * gama * pS.dmleaf3;         //Ncleaf = NcleafMin: [N] in naturally scenescend tissue
-			double Nleaf3Remob = (Ncleaf3 - Ncleaf4) * gama * pS.dmleaf3;
+			double Nleaf3to4 = NcleafMin * gama * pS.dmleaf3;         //Ncleaf4 = NcleafMin: [N] in naturally scenescend tissue
+			double Nleaf3Remob = (Ncleaf3 - NcleafMin) * gama * pS.dmleaf3;
 			double Nleaf4toL = Ncleaf4 * gamad * pS.dmleaf4;        //to litter
 			Nleaf1 = Nleaf1 - Nleaf1to2;
 			Nleaf2 = Nleaf2 + Nleaf1to2 - Nleaf2to3;
@@ -6528,8 +6528,8 @@ public class Species
 
 			double Nstem1to2 = Ncstem1 * 2 * gama * pS.dmstem1;
 			double Nstem2to3 = Ncstem2 * gama * pS.dmstem2;
-			double Nstem3to4 = Ncstem4 * gama * pS.dmstem3;
-			double Nstem3Remob = (Ncstem3 - Ncstem4) * gama * pS.dmstem3;
+			double Nstem3to4 = NcstemMin * gama * pS.dmstem3;
+			double Nstem3Remob = (Ncstem3 - NcstemMin) * gama * pS.dmstem3;
 			double Nstem4toL = Ncstem4 * gamad * pS.dmstem4;   //to litter
 
 			Nstem1 = Nstem1 - Nstem1to2;
