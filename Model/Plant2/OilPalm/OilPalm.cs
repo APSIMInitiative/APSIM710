@@ -108,6 +108,8 @@ public class OilPalm
     [Output]
     double HarvestFFB = 0.0;
     [Output]
+    double HarvestNRemoved = 0.0;
+    [Output]
     double HarvestBunchSize = 0.0;
 
     [Output]
@@ -198,7 +200,7 @@ public class OilPalm
 
     [Output]
     public double UnderstoryCoverGreen = 0;
-    private double UnderstoryKL = 0.04;
+    private double UnderstoryKLmax = 0.12;
     [Output]
     double[] UnderstoryPotSWUptake;
     [Output]
@@ -208,7 +210,7 @@ public class OilPalm
     [Output]
     double[] UnderstoryNUptake = {0,0};
     [Output]
-    public double UnderstoryRootDepth = 0;
+    public double UnderstoryRootDepth = 500;
     [Output]
     public double UnderstoryPEP = 0;
     [Output]
@@ -578,6 +580,7 @@ public class OilPalm
             HarvestBunches = Bunches[0].FemaleFraction;
             HarvestYield = Bunches[0].Mass * Population / (1.0 - RipeBunchWaterContent.Value) ;
             HarvestFFB = HarvestYield / 100;
+            HarvestNRemoved = Bunches[0].N * Population * 10;
             HarvestBunchSize = Bunches[0].Mass / (1.0 - RipeBunchWaterContent.Value) / Bunches[0].FemaleFraction;
             if (Harvesting != null)
                 Harvesting.Invoke();
@@ -586,6 +589,7 @@ public class OilPalm
             HarvestYield = 0.0;
             HarvestFFB = 0.0;
             HarvestBunchSize = 0.0;
+            HarvestNRemoved = 0.0;
 
 
             CumulativeBunchNumber += Bunches[0].FemaleFraction;
@@ -985,7 +989,7 @@ public class OilPalm
     private void DoUnderstoryGrowth()
     {
         double RUE = 1.3;
-        UnderstoryDltDM = RUE * Radn * UnderstoryCoverGreen * (1 - cover_green) * FW;
+        UnderstoryDltDM = RUE * Radn * UnderstoryCoverGreen * (1 - cover_green) * UnderstoryFW;
     }
 
     private void DoUnderstoryWaterBalance()
@@ -997,14 +1001,14 @@ public class OilPalm
         MyPaddock.Get("Soil Water.sw_dep", out sw_dep);  //need to get latest copy of swdep because OP will have taken water up.
 
         for (int j = 0; j < ll15_dep.Length; j++)
-            UnderstoryPotSWUptake[j] = Math.Max(0.0, RootProportion(j, UnderstoryRootDepth) * UnderstoryKL * (sw_dep[j] - ll15_dep[j]));
+            UnderstoryPotSWUptake[j] = Math.Max(0.0, RootProportion(j, UnderstoryRootDepth) * UnderstoryKLmax*UnderstoryCoverGreen * (sw_dep[j] - ll15_dep[j]));
 
         double TotUnderstoryPotSWUptake = MathUtility.Sum(UnderstoryPotSWUptake);
 
         UnderstoryEP = 0.0;
         for (int j = 0; j < ll15_dep.Length; j++)
         {
-            UnderstorySWUptake[j] = UnderstoryPotSWUptake[j] * Math.Min(1.0, PEP / TotUnderstoryPotSWUptake);
+            UnderstorySWUptake[j] = UnderstoryPotSWUptake[j] * Math.Min(1.0, UnderstoryPEP / TotUnderstoryPotSWUptake);
             UnderstoryEP += UnderstorySWUptake[j];
             sw_dep[j] = sw_dep[j] - UnderstorySWUptake[j];
 

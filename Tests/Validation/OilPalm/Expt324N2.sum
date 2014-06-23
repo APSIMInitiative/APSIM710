@@ -84,6 +84,15 @@ Paddock:
         carbon_tot()
         nit_tot()
         surfaceom_wt_oilpalmstem
+        MonthlyDenit
+        MonthlyN2O
+        No3()
+        MonthlyLeach
+        MonthlyFixation
+        SurfaceNO3
+        RootZoneNO3
+        MonthlyN2
+        SoilC_tpha 
 
      Output file = Expt324N2 MonthlyOutput.out
      Format = normal
@@ -162,12 +171,25 @@ Paddock:
      monthlypalmyield = 0
      monthlypalmbunches = 0
      monthlypalmbunchsize = 0
+     monthlydenit = 0
+     monthlyn2o = 0
+     monthlyn2 = 0
+     monthlyfixation = 0
+     surfaceno3 = 0
+     rootzoneno3 = 0
+     monthlyleach = 0
+     soilc_tpha = 0
      
      SECTION:- start_of_day
      if start_month = 1 then
         monthlypalmyield = 0
         monthlypalmbunches = 0
         monthlypalmbunchsize = 0
+        monthlydenit = 0
+        monthlyn2o = 0
+        monthlyn2 = 0
+        monthlyfixation = 0
+        monthlyleach = 0
      endif
      
      SECTION:- end_of_day
@@ -183,6 +205,14 @@ Paddock:
      cumbunches = oilpalm.cumulativebunchnumber - bunchoffset
      cumyield = oilpalm.cumulativeyield - yieldoffset
      endif
+     monthlydenit = monthlydenit + dnit()
+     monthlyn2o = monthlyn2o + n2o_atm()
+     monthlyn2 = monthlydenit - monthly_n2o
+     surfaceno3 = no3(1) + no3(2) + no3(3)
+     rootzoneno3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8) + no3(9)
+     monthlyfixation = monthlyfixation +oilpalm.understorynfixation
+     monthlyleach = monthlyleach + flow_no3(9)
+     soilc_tpha = carbon_tot() / 1000.
      
      SECTION:- harvesting
      monthlypalmyield = monthlypalmyield + harvestbunchsize * harvestbunches / 1000.
@@ -203,6 +233,14 @@ Paddock:
      Manager creating a new local real variable : monthlypalmyield = 0.00000
      Manager creating a new local real variable : monthlypalmbunches = 0.00000
      Manager creating a new local real variable : monthlypalmbunchsize = 0.00000
+     Manager creating a new local real variable : monthlydenit = 0.00000
+     Manager creating a new local real variable : monthlyn2o = 0.00000
+     Manager creating a new local real variable : monthlyn2 = 0.00000
+     Manager creating a new local real variable : monthlyfixation = 0.00000
+     Manager creating a new local real variable : surfaceno3 = 0.00000
+     Manager creating a new local real variable : rootzoneno3 = 0.00000
+     Manager creating a new local real variable : monthlyleach = 0.00000
+     Manager creating a new local real variable : soilc_tpha = 0.00000
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -402,6 +440,16 @@ fertiliser:
                                          added at depth   10.00 (layer   1)
      Manager creating a new local real variable : ppsm = 0.01350
      Manager sending message :- oilpalm sow  population = 0.01350, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "monthly_n2o".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Calculations
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : monthly_n2o = 0.00000
 1 April 1996(Day of year=92), operations: 
       Sending apply message to fertiliser
 1 April 1996(Day of year=92), fertiliser: 

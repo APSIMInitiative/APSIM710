@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.5-r3182" name="simulations">
+<folder version="36" creator="Apsim 7.6-r3482" name="simulations">
   <folder name="Expt324">
     <simulation name="Expt324N0">
       <metfile name="met">
@@ -151,7 +151,14 @@ YieldOffset = 0
 MonthlyPalmYield = 0
 MonthlyPalmBunches = 0
 MonthlyPalmBunchSize = 0
-</text>
+MonthlyDenit = 0
+MonthlyN2O = 0
+MonthlyN2 = 0
+MonthlyFixation = 0
+SurfaceNO3 = 0
+RootZoneNO3 = 0
+MonthlyLeach = 0
+SoilC_tpha = 0</text>
               <event>init</event>
             </script>
             <script>
@@ -160,6 +167,11 @@ if start_month = 1 then
    MonthlyPalmYield = 0
    MonthlyPalmBunches = 0
    MonthlyPalmBunchSize = 0
+   MonthlyDenit = 0
+   MonthlyN2O = 0
+   MonthlyN2 = 0
+   MonthlyFixation = 0
+   MonthlyLeach = 0
 endif
 </text>
               <event>start_of_day</event>
@@ -177,7 +189,18 @@ if today &lt; date('01/12/2000') then
 endif
 CumBunches = OilPalm.CumulativeBunchNumber - BunchOffset
 CumYield = OilPalm.CumulativeYield - YieldOffset
-endif</text>
+endif
+
+MonthlyDenit = MonthlyDenit + dnit()
+MonthlyN2O = MonthlyN2O + n2o_atm()
+MonthlyN2 = MonthlyDenit - Monthly_N2O
+SurfaceNO3 = no3(1) + no3(2) + no3(3)
+RootZoneNO3 = no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6) + no3(7) + no3(8) + no3(9)
+MonthlyFixation = MonthlyFixation +OilPalm.UnderstoryNFixation
+MonthlyLeach = MonthlyLeach + flow_no3(9)
+SoilC_tpha = carbon_tot() / 1000.
+
+</text>
               <event>end_of_day</event>
             </script>
             <script>
@@ -535,6 +558,15 @@ endif
             <variable>carbon_tot()</variable>
             <variable>nit_tot()</variable>
             <variable>surfaceom_wt_oilpalmstem</variable>
+            <variable>MonthlyDenit</variable>
+            <variable>MonthlyN2O</variable>
+            <variable>No3()</variable>
+            <variable>MonthlyLeach</variable>
+            <variable>MonthlyFixation</variable>
+            <variable>SurfaceNO3</variable>
+            <variable>RootZoneNO3</variable>
+            <variable>MonthlyN2</variable>
+            <variable>SoilC_tpha </variable>
           </variables>
           <events name="Reporting Frequency">
             <event>end_month</event>
@@ -1016,10 +1048,14 @@ endif
     </Graph>
     <Graph name="LAI">
       <Legend>
-        <CheckedTitles>Predicted, LAI,Expt324N0</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,Expt324N1</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,Expt324N2</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,Expt324N3</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt324N3 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt324N3 MonthlyOutput</CheckedTitles>
         <CheckedTitles>Observed, LeafLAI,Expt324N0</CheckedTitles>
         <CheckedTitles>Observed, LeafLAI,Expt324N1</CheckedTitles>
         <CheckedTitles>Observed, LeafLAI,Expt324N2</CheckedTitles>
@@ -1050,14 +1086,10 @@ endif
     </Graph>
     <Graph name="FrondAppearance">
       <Legend>
-        <CheckedTitles>Predicted, CumFronds,Expt324N0</CheckedTitles>
-        <CheckedTitles>Predicted, CumFronds,Expt324N1</CheckedTitles>
-        <CheckedTitles>Predicted, CumFronds,Expt324N2</CheckedTitles>
-        <CheckedTitles>Predicted, CumFronds,Expt324N3</CheckedTitles>
-        <CheckedTitles>Observed, CumFrontCount,Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, CumFrontCount,Expt324N1</CheckedTitles>
-        <CheckedTitles>Observed, CumFrontCount,Expt324N2</CheckedTitles>
-        <CheckedTitles>Observed, CumFrontCount,Expt324N3</CheckedTitles>
+        <CheckedTitles> Expt324N0</CheckedTitles>
+        <CheckedTitles> Expt324N1</CheckedTitles>
+        <CheckedTitles> Expt324N2</CheckedTitles>
+        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1110,14 +1142,10 @@ endif
     </Graph>
     <Graph name="LeafWt">
       <Legend>
-        <CheckedTitles>Predicted, FrondMass,Expt324N0</CheckedTitles>
-        <CheckedTitles>Predicted, FrondMass,Expt324N1</CheckedTitles>
-        <CheckedTitles>Predicted, FrondMass,Expt324N2</CheckedTitles>
-        <CheckedTitles>Predicted, FrondMass,Expt324N3</CheckedTitles>
-        <CheckedTitles>Observed, LeafWt,Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, LeafWt,Expt324N1</CheckedTitles>
-        <CheckedTitles>Observed, LeafWt,Expt324N2</CheckedTitles>
-        <CheckedTitles>Observed, LeafWt,Expt324N3</CheckedTitles>
+        <CheckedTitles> Expt324N0</CheckedTitles>
+        <CheckedTitles> Expt324N1</CheckedTitles>
+        <CheckedTitles> Expt324N2</CheckedTitles>
+        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1162,10 +1190,10 @@ endif
     </Graph>
     <Graph name="BunchAppearance">
       <Legend>
-        <CheckedTitles>Predicted, CumBunches,Expt324N0</CheckedTitles>
-        <CheckedTitles>Predicted, CumBunches,Expt324N3</CheckedTitles>
-        <CheckedTitles>Observed, CumBunchNo,Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, CumBunchNo,Expt324N3</CheckedTitles>
+        <CheckedTitles> Expt324N0</CheckedTitles>
+        <CheckedTitles> Expt324N1</CheckedTitles>
+        <CheckedTitles> Expt324N2</CheckedTitles>
+        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1191,14 +1219,10 @@ endif
     </Graph>
     <Graph name="CumulativeYield">
       <Legend>
-        <CheckedTitles>Predicted, CumYield,Expt324N0</CheckedTitles>
-        <CheckedTitles>Predicted, CumYield,Expt324N1</CheckedTitles>
-        <CheckedTitles>Predicted, CumYield,Expt324N2</CheckedTitles>
-        <CheckedTitles>Predicted, CumYield,Expt324N3</CheckedTitles>
-        <CheckedTitles>Observed, CumYieldPHa,Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, CumYieldPHa,Expt324N1</CheckedTitles>
-        <CheckedTitles>Observed, CumYieldPHa,Expt324N2</CheckedTitles>
-        <CheckedTitles>Observed, CumYieldPHa,Expt324N3</CheckedTitles>
+        <CheckedTitles> Expt324N0</CheckedTitles>
+        <CheckedTitles> Expt324N1</CheckedTitles>
+        <CheckedTitles> Expt324N2</CheckedTitles>
+        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1224,7 +1248,6 @@ endif
     </Graph>
     <Graph name="Photosynthesis">
       <Legend>
-        <CheckedTitles> DltDM, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1353,8 +1376,6 @@ endif
     </Graph>
     <Graph name="NConc">
       <Legend>
-        <CheckedTitles> BunchNConc, Expt324N0</CheckedTitles>
-        <CheckedTitles> BunchNConc, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1371,10 +1392,6 @@ endif
     </Graph>
     <Graph name="PlantN">
       <Legend>
-        <CheckedTitles> StemN, Expt324N0</CheckedTitles>
-        <CheckedTitles> StemN, Expt324N3</CheckedTitles>
-        <CheckedTitles> FrondN, Expt324N0</CheckedTitles>
-        <CheckedTitles> FrondN, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1407,8 +1424,6 @@ endif
     </Graph>
     <Graph name="SurfaceOM">
       <Legend>
-        <CheckedTitles> surfaceom_wt, Expt324N3</CheckedTitles>
-        <CheckedTitles> Surfaceom_wt_oilpalm, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1471,13 +1486,6 @@ endif
     </Graph>
     <Graph name="Canopy Cover">
       <Legend>
-        <CheckedTitles> OilPalmUnderstory.cover_green, Expt324N0</CheckedTitles>
-        <CheckedTitles> OilPalmUnderstory.cover_green, Expt324N1</CheckedTitles>
-        <CheckedTitles> OilPalmUnderstory.cover_green, Expt324N2</CheckedTitles>
-        <CheckedTitles> OilPalmUnderstory.cover_green, Expt324N3</CheckedTitles>
-        <CheckedTitles> OilPalm.cover_green, Expt324N1</CheckedTitles>
-        <CheckedTitles> OilPalm.cover_green, Expt324N2</CheckedTitles>
-        <CheckedTitles> OilPalm.cover_green, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1514,9 +1522,6 @@ endif
     </Graph>
     <Graph name="N Losses">
       <Legend>
-        <CheckedTitles> Cumulative dnit(), Expt324N0</CheckedTitles>
-        <CheckedTitles> Cumulative dnit(), {Checkpoint} Expt324N0</CheckedTitles>
-        <CheckedTitles> Cumulative dnit(), Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1531,10 +1536,6 @@ endif
     </Graph>
     <Graph name="NFixation">
       <Legend>
-        <CheckedTitles> Expt324N0</CheckedTitles>
-        <CheckedTitles> Expt324N1</CheckedTitles>
-        <CheckedTitles> Expt324N2</CheckedTitles>
-        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1548,14 +1549,10 @@ endif
     </Graph>
     <Graph name="Mineralisation">
       <Legend>
-        <CheckedTitles> no3(), Expt324N0</CheckedTitles>
-        <CheckedTitles> no3(), Expt324N1</CheckedTitles>
-        <CheckedTitles> no3(), Expt324N2</CheckedTitles>
-        <CheckedTitles> no3(), Expt324N3</CheckedTitles>
-        <CheckedTitles> nh4(), Expt324N0</CheckedTitles>
-        <CheckedTitles> nh4(), Expt324N1</CheckedTitles>
-        <CheckedTitles> nh4(), Expt324N2</CheckedTitles>
-        <CheckedTitles> nh4(), Expt324N3</CheckedTitles>
+        <CheckedTitles> Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N3 MonthlyOutput</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1571,9 +1568,8 @@ endif
     <Graph name="BunchSize">
       <Legend>
         <CheckedTitles>Predicted, MonthlyPalmBunchSize,Expt324N0 MonthlyOutput</CheckedTitles>
-        <CheckedTitles>Predicted, MonthlyPalmBunchSize,Expt324N3 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, MonthlyPalmBunchSize,{Checkpoint} Expt324N0 MonthlyOutput</CheckedTitles>
         <CheckedTitles>Observed, BunchSize,Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, BunchSize,Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1598,8 +1594,6 @@ endif
     </Graph>
     <Graph name="FFF">
       <Legend>
-        <CheckedTitles> Expt324N0</CheckedTitles>
-        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1613,10 +1607,6 @@ endif
     </Graph>
     <Graph name="DevelopmentalRate">
       <Legend>
-        <CheckedTitles> Expt324N0</CheckedTitles>
-        <CheckedTitles> Expt324N1</CheckedTitles>
-        <CheckedTitles> Expt324N2</CheckedTitles>
-        <CheckedTitles> Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -1652,19 +1642,12 @@ endif
     <Graph name="AnnualNPP">
       <Legend>
         <CheckedTitles>Predicted1, AnnualRain,Expt324N0 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted1, AnnualRain,{Checkpoint} Expt324N1 AnnualOutput</CheckedTitles>
         <CheckedTitles>Predicted1, AnnualRain,Expt324N2 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted1, AnnualRain,{Checkpoint} Expt324N2 AnnualOutput</CheckedTitles>
         <CheckedTitles>Predicted1, AnnualRain,Expt324N3 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted1, AnnualRain,{Checkpoint} Expt324N3 AnnualOutput</CheckedTitles>
         <CheckedTitles>Predicted, AnnualNPP,Expt324N0 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted, AnnualNPP,{Checkpoint} Expt324N0 AnnualOutput</CheckedTitles>
         <CheckedTitles>Predicted, AnnualNPP,Expt324N1 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted, AnnualNPP,{Checkpoint} Expt324N1 AnnualOutput</CheckedTitles>
         <CheckedTitles>Predicted, AnnualNPP,Expt324N2 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted, AnnualNPP,{Checkpoint} Expt324N2 AnnualOutput</CheckedTitles>
         <CheckedTitles>Predicted, AnnualNPP,Expt324N3 AnnualOutput</CheckedTitles>
-        <CheckedTitles>Predicted, AnnualNPP,{Checkpoint} Expt324N3 AnnualOutput</CheckedTitles>
       </Legend>
       <Plot name="Predicted1">
         <SeriesType>Bar</SeriesType>
@@ -1683,6 +1666,99 @@ endif
         <X>Date</X>
         <Y>AnnualNPP</Y>
         <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="MonthlyNO3">
+      <Legend>
+        <CheckedTitles> Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N3 MonthlyOutput</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>No3()</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N0 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N1 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N2 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3 MonthlyOutput.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="MonthlyN2O">
+      <Legend>
+        <CheckedTitles> MonthlyN2O, Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyN2O, Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyN2O, Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyN2O, Expt324N3 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyDenit, Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyDenit, Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyDenit, Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> MonthlyDenit, Expt324N3 MonthlyOutput</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>MonthlyN2O</Y>
+        <Y>MonthlyDenit</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N0 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N1 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N2 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3 MonthlyOutput.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="MonthlyNLeach">
+      <Legend>
+        <CheckedTitles> Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N3 MonthlyOutput</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>MonthlyLeach</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N0 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N1 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N2 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3 MonthlyOutput.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="MonthlyNFixation">
+      <Legend>
+        <CheckedTitles> Expt324N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt324N3 MonthlyOutput</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>MonthlyFixation</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N0 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N1 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N2 MonthlyOutput.out</FileName>
+          <FileName>%apsim%\Tests\Validation\OilPalm\Expt324N3 MonthlyOutput.out</FileName>
+        </GDApsimFileReader>
       </Plot>
     </Graph>
   </folder>
@@ -2638,10 +2714,14 @@ endif</text>
     </simulation>
     <Graph name="StemWt">
       <Legend>
-        <CheckedTitles>Predicted, StemMass,Expt504N0</CheckedTitles>
-        <CheckedTitles>Predicted, StemMass,Expt504N1</CheckedTitles>
-        <CheckedTitles>Predicted, StemMass,Expt504N2</CheckedTitles>
-        <CheckedTitles>Predicted, StemMass,Expt504N3</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt504N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,{Checkpoint} Expt504N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt504N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,{Checkpoint} Expt504N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt504N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,{Checkpoint} Expt504N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,Expt504N3 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, StemMass,{Checkpoint} Expt504N3 MonthlyOutput</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt504N0</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt504N1</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt504N2</CheckedTitles>
@@ -2672,10 +2752,14 @@ endif</text>
     </Graph>
     <Graph name="LAI">
       <Legend>
-        <CheckedTitles>Predicted, LAI,Expt504N0</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,Expt504N1</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,Expt504N2</CheckedTitles>
-        <CheckedTitles>Predicted, LAI,Expt504N3</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt504N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt504N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt504N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt504N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt504N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt504N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,Expt504N3 MonthlyOutput</CheckedTitles>
+        <CheckedTitles>Predicted, LAI,{Checkpoint} Expt504N3 MonthlyOutput</CheckedTitles>
         <CheckedTitles>Observed, LeafLAI,Expt504N0</CheckedTitles>
         <CheckedTitles>Observed, LeafLAI,Expt504N1</CheckedTitles>
         <CheckedTitles>Observed, LeafLAI,Expt504N2</CheckedTitles>
@@ -2706,7 +2790,14 @@ endif</text>
     </Graph>
     <Graph name="FrondAppearance">
       <Legend>
-        <CheckedTitles>Predicted, CumFronds,Expt504N2</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,Expt504N0 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,{Checkpoint} Expt504N0 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,Expt504N1 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,{Checkpoint} Expt504N1 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,Expt504N2 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,{Checkpoint} Expt504N2 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,Expt504N3 AnnualOutput</CheckedTitles>
+        <CheckedTitles>Predicted, CumulativeFrondNumber,{Checkpoint} Expt504N3 AnnualOutput</CheckedTitles>
         <CheckedTitles>Observed, CumFrontCount,Expt504N0</CheckedTitles>
         <CheckedTitles>Observed, CumFrontCount,Expt504N1</CheckedTitles>
         <CheckedTitles>Observed, CumFrontCount,Expt504N2</CheckedTitles>
@@ -3161,6 +3252,12 @@ endif</text>
     </Graph>
     <Graph name="AnnualYield">
       <Legend>
+        <CheckedTitles> Expt504N0 AnnualOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt504N0 AnnualOutput</CheckedTitles>
+        <CheckedTitles> Expt504N1 AnnualOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt504N1 AnnualOutput</CheckedTitles>
+        <CheckedTitles> Expt504N2 AnnualOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt504N2 AnnualOutput</CheckedTitles>
         <CheckedTitles> Expt504N3 AnnualOutput</CheckedTitles>
         <CheckedTitles> {Checkpoint} Expt504N3 AnnualOutput</CheckedTitles>
       </Legend>
@@ -3176,6 +3273,12 @@ endif</text>
     </Graph>
     <Graph name="AnnualBunches">
       <Legend>
+        <CheckedTitles> Expt504N0 AnnualOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt504N0 AnnualOutput</CheckedTitles>
+        <CheckedTitles> Expt504N1 AnnualOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt504N1 AnnualOutput</CheckedTitles>
+        <CheckedTitles> Expt504N2 AnnualOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt504N2 AnnualOutput</CheckedTitles>
         <CheckedTitles> Expt504N3 AnnualOutput</CheckedTitles>
         <CheckedTitles> {Checkpoint} Expt504N3 AnnualOutput</CheckedTitles>
       </Legend>
@@ -4182,12 +4285,9 @@ endif</text>
     </Graph>
     <Graph name="BunchAppearance">
       <Legend>
-        <CheckedTitles>Predicted, CumBunches,Expt212N0</CheckedTitles>
-        <CheckedTitles>Predicted, CumBunches,Expt212N1</CheckedTitles>
-        <CheckedTitles>Predicted, CumBunches,Expt212N2</CheckedTitles>
-        <CheckedTitles>Observed, CumBunchNo,Expt212N0</CheckedTitles>
-        <CheckedTitles>Observed, CumBunchNo,Expt212N1</CheckedTitles>
-        <CheckedTitles>Observed, CumBunchNo,Expt212N2</CheckedTitles>
+        <CheckedTitles> Expt212N0</CheckedTitles>
+        <CheckedTitles> Expt212N1</CheckedTitles>
+        <CheckedTitles> Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4241,7 +4341,6 @@ endif</text>
     </Graph>
     <Graph name="Photosynthesis">
       <Legend>
-        <CheckedTitles> Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4283,7 +4382,6 @@ endif</text>
     </Graph>
     <Graph name="CarbonStress">
       <Legend>
-        <CheckedTitles> Expt212N2</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -4601,9 +4699,12 @@ endif</text>
     </Graph>
     <Graph name="CNRatio">
       <Legend>
-        <CheckedTitles> Expt212N0</CheckedTitles>
-        <CheckedTitles> Expt212N1</CheckedTitles>
-        <CheckedTitles> Expt212N2</CheckedTitles>
+        <CheckedTitles> Expt212N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt212N0 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt212N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt212N1 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> Expt212N2 MonthlyOutput</CheckedTitles>
+        <CheckedTitles> {Checkpoint} Expt212N2 MonthlyOutput</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -5723,8 +5824,6 @@ endif</text>
   </folder>
   <Graph name="DevelopmentalRate">
     <Legend>
-      <CheckedTitles> Expt212N2</CheckedTitles>
-      <CheckedTitles> Expt324N3</CheckedTitles>
     </Legend>
     <Plot name="Predicted">
       <SeriesType>Solid line</SeriesType>
@@ -5741,7 +5840,6 @@ endif</text>
   </Graph>
   <Graph name="Diffuse Light Fraction">
     <Legend>
-      <CheckedTitles> Expt324N3</CheckedTitles>
     </Legend>
     <Plot name="Predicted">
       <SeriesType>Solid line</SeriesType>
@@ -5759,9 +5857,6 @@ endif</text>
   </Graph>
   <Graph name="Cumulative Photosynthesis">
     <Legend>
-      <CheckedTitles> Expt212N2</CheckedTitles>
-      <CheckedTitles> Expt324N3</CheckedTitles>
-      <CheckedTitles> Expt504N3</CheckedTitles>
     </Legend>
     <Plot name="Predicted">
       <SeriesType>Solid line</SeriesType>
