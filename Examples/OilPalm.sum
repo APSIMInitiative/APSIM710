@@ -15,15 +15,15 @@ Title                  = OilPalm
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                 "AnnualOutput" = %apsim%\Model\Report.dll
-   Component                "MonthlyOutput" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component              "Palm Management" = %apsim%\Model\Manager.dll
+   Component          "IndicatorCalculator" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "OilPalm" = %apsim%\Model\Plant2.dll
-   Component                      "tracker" = %apsim%\Model\Tracker.dll
+   Component            "Indicator Tracker" = %apsim%\Model\Tracker.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -43,7 +43,7 @@ Paddock:
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\Popondetta.met
+     INPUT File name: %apsim%\Tests\Validation\OilPalm\Popondetta.met
 
 ------- AnnualOutput Initialisation -------------------------------------------
      Output frequency:
@@ -56,40 +56,44 @@ Paddock:
         CumulativeFrondNumber
         AnnualBunches
         AnnualRain
+        AnnualRunoff
+        AnnualDrainage
         AnnualEo
+        AnnualRadiation
         AnnualNPP
-        AnnualNFixation
-        UnderstoryCoverGreen
-
-     Output file = OilPalm Block AnnualOutput.out
-     Format = normal
-
-------- MonthlyOutput Initialisation ------------------------------------------
-     Output frequency:
-        end_month
-     Output variables:
-        year
-        dd/mm/yyyy as Date
-        Age
-        Month
-        MonthlyRain
-        MonthlyPalmBunches
-        MonthlyPalmYield
-        MonthlyPalmBunchSize
-        LAI
-        Stemmass
+        AnnualRootNPP
+        AnnualFrondNPP
+        AnnualStemNPP
+        AnnualBunchNPP
+        AnnualTotalVegetativeNPP
+        AnnualPalmVegetativeNPP
+        AnnualNUptake
+        AnnualUnderstoryNPP
+        AnnualUnderstoryNFixation
+        AnnualUnderstoryNUptake
+        AnnualN2O
+        AnnualDenitrification
+        AnnualNLeach
+        AnnualCO2atm
         oc(1)
         oc(2)
         oc(3)
         carbon_tot()
         nit_tot()
-        MonthlyN2O
-        MonthlyNLeach
-        MonthlyDenit
-        surfaceom_wt_oilpalmstem as FelledStemMass
-        surfaceom_wt_oilpalm as FrondPileMass
+        AnnualAverageNO3
+        AnnualAverageSW
+        dul_dep() as ProfileDUL
+        ll15_dep() as ProfileLL
+        sat_dep() as ProfileSAT
+        AnnualAverageLitterWt
+        AnnualAverageLitterN
+        AnnualNRemoved
+        AnnualFertiliserNAdded
+        AnnualAverageWaterStress
+        AnnualAverageNStress
+        AnnualTotalNInput
 
-     Output file = OilPalm Block MonthlyOutput.out
+     Output file = OilPalm Block AnnualOutput.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -125,6 +129,44 @@ Paddock:
      
      Manager creating a new local real variable : plant_population = 0.00000
 
+------- IndicatorCalculator Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     co2atm = 0
+     totalvegetativenpp = 0
+     palmvegetativenpp = 0
+     understorynpp = 0
+     frondnpp = 0
+     stemnpp = 0
+     rootnpp = 0
+     bunchnpp = 0
+     totalninput = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     co2atm = dlt_biom_c_atm + dlt_res_c_atm + dlt_hum_c_atm + dlt_fom_c_atm
+     totalvegetativenpp = (rootgrowth + stemgrowth + frondgrowth + understorydltdm) * 10
+     palmvegetativenpp = (rootgrowth + stemgrowth + frondgrowth) * 10
+     understorynpp = understorydltdm * 10
+     frondnpp = frondgrowth * 10
+     rootnpp = rootgrowth * 10
+     stemnpp = stemgrowth * 10
+     bunchnpp = bunchgrowth * 10
+     totalninput = understorynfixation + fertiliser
+     END of rules
+     
+     Manager creating a new local real variable : co2atm = 0.00000
+     Manager creating a new local real variable : totalvegetativenpp = 0.00000
+     Manager creating a new local real variable : palmvegetativenpp = 0.00000
+     Manager creating a new local real variable : understorynpp = 0.00000
+     Manager creating a new local real variable : frondnpp = 0.00000
+     Manager creating a new local real variable : stemnpp = 0.00000
+     Manager creating a new local real variable : rootnpp = 0.00000
+     Manager creating a new local real variable : bunchnpp = 0.00000
+     Manager creating a new local real variable : totalninput = 0.00000
+
 ------- Soil Water Initialisation ---------------------------------------------
      
          - Reading constants
@@ -147,12 +189,12 @@ Paddock:
           600.-  900.  0.137  0.410  0.510  0.560  0.510  1.140  0.000  0.700
           900.- 1200.  0.135  0.406  0.506  0.556  0.506  1.150  0.000  0.700
          1200.- 1500.  0.135  0.406  0.506  0.556  0.506  1.150  0.000  0.700
-         1500.- 2000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.000
-         2000.- 2500.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.000
-         2500.- 3000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.000
-         3000.- 3500.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.000
-         3500.- 4000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.000
-         4000.- 5000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.000
+         1500.- 2000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.700
+         2000.- 2500.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.700
+         2500.- 3000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.700
+         3000.- 3500.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.700
+         3500.- 4000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.700
+         4000.- 5000.  0.100  0.300  0.400  0.450  0.400  1.430  0.000  0.700
         ---------------------------------------------------------------------
      
      
@@ -305,19 +347,39 @@ Paddock:
            Totals  310670.8 31067.1  1181.2   147.6  1200.0    40.0
           ---------------------------------------------------------
 
-------- tracker Initialisation ------------------------------------------------
+------- Indicator Tracker Initialisation --------------------------------------
      Tracker variables:
         sum of HarvestFFB on harvesting from AnnualOutput.reported to now as AnnualYield
         sum of HarvestBunches on harvesting from AnnualOutput.reported to now as AnnualBunches
         sum of Rain on post from AnnualOutput.reported to now as AnnualRain
         sum of eo on post from AnnualOutput.reported to now as AnnualEo
+        sum of runoff on post from AnnualOutput.reported to now as AnnualRunoff
+        sum of drain on post from AnnualOutput.reported to now as AnnualDrainage
+        sum of radn on post from AnnualOutput.reported to now as AnnualRadiation
         sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP
-        sum of n2o_atm() on post from MonthlyOutput.reported to now as MonthlyN2O
-        sum of leach_no3 on post from MonthlyOutput.reported to now as MonthlyNLeach
-        sum of dnit() on post from MonthlyOutput.reported to now as MonthlyDenit
-        sum of UnderstoryNFixation on post from AnnualOutput.reported to now as AnnualNFixation
-        sum of Rain on post from MonthlyOutput.reported to now as MonthlyRain
-        sum of HarvestFFB on harvesting from MonthlyOutput.reported to now as MonthlyYield
+        sum of NUptake() on post from AnnualOutput.reported to now as AnnualNUptake
+        sum of RootNPP on post from AnnualOutput.reported to now as AnnualRootNPP
+        sum of StemNPP on post from AnnualOutput.reported to now as AnnualStemNPP
+        sum of FrondNPP on post from AnnualOutput.reported to now as AnnualFrondNPP
+        sum of BunchNPP on post from AnnualOutput.reported to now as AnnualBunchNPP
+        sum of UnderstoryNFixation on post from AnnualOutput.reported to now as AnnualUnderstoryNFixation
+        sum of UnderstoryNUptake() on post from AnnualOutput.reported to now as AnnualUnderstoryNUptake
+        sum of UnderstoryNPP on post from AnnualOutput.reported to now as AnnualUnderstoryNPP
+        sum of TotalVegetativeNPP  on post from AnnualOutput.reported to now as AnnualTotalVegetativeNPP
+        sum of n2o_atm() on post from AnnualOutput.reported to now as AnnualN2O
+        sum of CO2atm on post from AnnualOutput.reported to now as AnnualCO2atm
+        sum of leach_no3 on post from AnnualOutput.reported to now as AnnualNLeach
+        sum of dnit() on post from AnnualOutput.reported to now as AnnualDenitrification
+        sum of PalmVegetativeNPP  on post from AnnualOutput.reported to now as AnnualPalmVegetativeNPP
+        average of no3() on post from AnnualOutput.reported to now as AnnualAverageNO3
+        average of sw_dep() on post from AnnualOutput.reported to now as AnnualAverageSW
+        average of surfaceom_wt on post from AnnualOutput.reported to now as AnnualAverageLitterWt
+        average of surfaceom_n on post from AnnualOutput.reported to now as AnnualAverageLitterN
+        sum of HarvestNRemoved on harvesting from AnnualOutput.reported to now as AnnualNRemoved
+        sum of fertiliser on post from AnnualOutput.reported to now as AnnualFertiliserNAdded
+        average of Fn on post from AnnualOutput.reported to now as AnnualAverageNStress
+        average of Fw on post from AnnualOutput.reported to now as AnnualAverageWaterStress
+        sum of TotalNInput on post from AnnualOutput.reported to now as AnnualTotalNInput
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : ppsm = 0.01350
      Manager sending message :- oilpalm sow  population = 0.01350, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
