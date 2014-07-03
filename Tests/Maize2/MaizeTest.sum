@@ -15,7 +15,6 @@ Title                  = MaizeTest
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                      "Outputs" = %apsim%\Model\Report.dll
-   Component         "Leaf Cohort Analysis" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
@@ -41,7 +40,7 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/10/2000
+     Simulation start date = 15/10/2000
      Simulation end date   =  1/06/2001
      Time step =           = 1440 (mins)
 
@@ -55,6 +54,7 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         AccumTtemerg
+        PhenologyThermalTimeValue
         StageCodeValue
         no3()
         nh4()
@@ -199,36 +199,18 @@ Paddock:
         AboveGroundLiveWt
         GrainAccumThermalTimeValue
         GrainSize
+        StructureRelativeNodeApperancex
+        fertiliser
+        irrigation
+        StructureMaxNumberOfLeavesValue
+        LeafCohortSize
+        LeafCohortMaxSize
+        LeafPotentialGrowth
+        LeafDMSupplyPhotosynthesis
+        LeafSpecificArea
+        ArbitratorDMSupply
 
      Output file = MaizeTest Outputs.out
-     Format = normal
-
-------- Leaf Cohort Analysis Initialisation -----------------------------------
-     Output frequency:
-        post
-     Output variables:
-        dd/mm/yyyy as Date
-        LeafCohortLiveStructuralWt
-        LeafCohortLiveNonStructuralWt
-        LeafCohortLiveMetabolicWt
-        LeafCohortLiveStructuralN
-        LeafCohortLiveMetabolicN
-        LeafCohortLiveNonStructuralN
-        LeafCohortStructuralFrac
-        LeafStructuralFractionValue
-        LeafCohortLiveStructuralNConc
-        LeafCohortLiveMetabolicNconc
-        LeafCohortLiveNconc
-        LeafMaximumNConcValue
-        LeafMinimumNConcValue
-        LeafCohortSLA
-        LeafSpecificLeafAreaMaxValue
-        LeafSpecificLeafAreaMinValue
-        LeafCohortSize
-        LeafCohortArea
-        LeafCohortDeadArea
-
-     Output file = MaizeTest Leaf Cohort Analysis.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -253,7 +235,7 @@ Paddock:
      harvest = 0
            if (today = date('15-oct')) then
                if (paddock_is_fallow() = 1 then
-     maize2 sow population = 12, depth = 20, cultivar = pionere1234, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
+     maize2 sow population = 12, depth = 20, cultivar = pioneer_3153, maxcover = 1.0, budnumber = 1, row_spacing = 720, crop_class = plant
                endif
            endif
      
@@ -269,8 +251,8 @@ Paddock:
      SECTION:- start_of_day
               if (maize2.plant_status = 'alive') then
      no3_available = no3(1) + no3(2) + no3(3)
-     if (no3_available <= 100) then
-        n_deficit = 200 - no3_available
+     if (no3_available <= 25) then
+        n_deficit = 30 - no3_available
         'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = no3_n ()
      endif
               endif
@@ -515,440 +497,158 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : harvest = 0.00000
+     Manager sending message :- maize2 sow  population = 12, depth = 20, cultivar = pioneer_3153, maxcover = 1.0, budnumber = 1, row_spacing = 720, crop_class = plant
+     Manager creating a new local real variable : no3_available = 79.99940
      Manager creating a new local real variable : initialsoilomn = 18129.14648
      Manager creating a new local real variable : initialsurfaceomn = 0.00000
      Manager creating a new local real variable : initialmineraln = 102.00060
-1 October 2000(Day of year=275): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-2 October 2000(Day of year=276): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-3 October 2000(Day of year=277): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-4 October 2000(Day of year=278): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-5 October 2000(Day of year=279): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-6 October 2000(Day of year=280): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-7 October 2000(Day of year=281): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-8 October 2000(Day of year=282): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 October 2000(Day of year=283): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-10 October 2000(Day of year=284): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-11 October 2000(Day of year=285): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-12 October 2000(Day of year=286): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-13 October 2000(Day of year=287): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-14 October 2000(Day of year=288): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.rootnuptake" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.leaftranspiration" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     The variable "maize2.stagecodevalue" could not be retrieved.
-     Component name: paddock.Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-15 October 2000(Day of year=289), Sowing rule: 
-     Manager sending message :- maize2 sow  population = 12, depth = 20, cultivar = pionere1234, maxcover = 1.0, budnumber = 1, row_spacing = 650, crop_class = plant
-15 October 2000(Day of year=289), Fertilise incrop on critical NO3 level- top up: 
-     Manager creating a new local real variable : no3_available = 63.52759
-     Manager creating a new local real variable : n_deficit = 136.47241
-     Manager sending message :- fertiliser apply  amount = 136.47241 (kg/ha), depth = 50 (mm), type = no3_n
-15 October 2000(Day of year=289), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       136.47 of N as nitrate (no3_n)
-                                         added at depth   50.00 (layer   1)
 16 October 2000 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-28 October 2000 - Emergence
+21 October 2000 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-22 December 2000(Day of year=357), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 103.21487 (kg/ha), depth = 50 (mm), type = no3_n
-22 December 2000(Day of year=357), fertiliser: 
+5 December 2000 - End_Juvenile
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1.88 (g/m^2)
+6 December 2000 - Floral_Initiation
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 2.04 (g/m^2)
+23 January 2001(Day of year=23), Fertilise incrop on critical NO3 level- top up: 
+     Manager creating a new local real variable : n_deficit = 6.82814
+     Manager sending message :- fertiliser apply  amount = 6.82814 (kg/ha), depth = 50 (mm), type = no3_n
+23 January 2001(Day of year=23), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       103.21 of N as nitrate (no3_n)
+         6.83 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-29 December 2000(Day of year=364), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 108.66794 (kg/ha), depth = 50 (mm), type = no3_n
-29 December 2000(Day of year=364), fertiliser: 
+25 January 2001(Day of year=25), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 6.22558 (kg/ha), depth = 50 (mm), type = no3_n
+25 January 2001(Day of year=25), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       108.67 of N as nitrate (no3_n)
+         6.23 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-4 January 2001(Day of year=4), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 109.65155 (kg/ha), depth = 50 (mm), type = no3_n
-4 January 2001(Day of year=4), fertiliser: 
+26 January 2001(Day of year=26), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 6.13087 (kg/ha), depth = 50 (mm), type = no3_n
+26 January 2001(Day of year=26), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       109.65 of N as nitrate (no3_n)
+         6.13 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-10 January 2001(Day of year=10), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 112.57507 (kg/ha), depth = 50 (mm), type = no3_n
-10 January 2001(Day of year=10), fertiliser: 
+28 January 2001(Day of year=28), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 5.35325 (kg/ha), depth = 50 (mm), type = no3_n
+28 January 2001(Day of year=28), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       112.58 of N as nitrate (no3_n)
+         5.35 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-16 January 2001(Day of year=16), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 113.57373 (kg/ha), depth = 50 (mm), type = no3_n
-16 January 2001(Day of year=16), fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-       113.57 of N as nitrate (no3_n)
-                                         added at depth   50.00 (layer   1)
-19 January 2001 - FlagLeaf
-                            LAI = 3.86 (m^2/m^2)
-           Above Ground Biomass = 1090.98 (g/m^2)
-24 January 2001 - Flowering
-                            LAI = 3.75 (m^2/m^2)
-           Above Ground Biomass = 1254.64 (g/m^2)
 30 January 2001(Day of year=30), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 102.84015 (kg/ha), depth = 50 (mm), type = no3_n
+     Manager sending message :- fertiliser apply  amount = 6.26568 (kg/ha), depth = 50 (mm), type = no3_n
 30 January 2001(Day of year=30), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       102.84 of N as nitrate (no3_n)
+         6.27 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-4 February 2001 - StartGrainFill
-                            LAI = 3.50 (m^2/m^2)
-           Above Ground Biomass = 1663.58 (g/m^2)
-10 March 2001(Day of year=69), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 100.43783 (kg/ha), depth = 50 (mm), type = no3_n
-10 March 2001(Day of year=69), fertiliser: 
+31 January 2001(Day of year=31), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 6.60060 (kg/ha), depth = 50 (mm), type = no3_n
+31 January 2001(Day of year=31), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       100.44 of N as nitrate (no3_n)
+         6.60 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-4 May 2001(Day of year=124), Fertilise incrop on critical NO3 level- top up: 
-     Manager sending message :- fertiliser apply  amount = 100.24149 (kg/ha), depth = 50 (mm), type = no3_n
-4 May 2001(Day of year=124), fertiliser: 
+1 February 2001(Day of year=32), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 6.19070 (kg/ha), depth = 50 (mm), type = no3_n
+1 February 2001(Day of year=32), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       100.24 of N as nitrate (no3_n)
+         6.19 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 February 2001(Day of year=35), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 8.00833 (kg/ha), depth = 50 (mm), type = no3_n
+4 February 2001(Day of year=35), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.01 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+5 February 2001(Day of year=36), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 6.57526 (kg/ha), depth = 50 (mm), type = no3_n
+5 February 2001(Day of year=36), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.58 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+8 February 2001(Day of year=39), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 7.84955 (kg/ha), depth = 50 (mm), type = no3_n
+8 February 2001(Day of year=39), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.85 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+9 February 2001(Day of year=40), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 5.55659 (kg/ha), depth = 50 (mm), type = no3_n
+9 February 2001(Day of year=40), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.56 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+11 February 2001(Day of year=42), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 7.18913 (kg/ha), depth = 50 (mm), type = no3_n
+11 February 2001(Day of year=42), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.19 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 February 2001(Day of year=45), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 8.62531 (kg/ha), depth = 50 (mm), type = no3_n
+14 February 2001(Day of year=45), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.63 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 February 2001 - Flag_Leaf
+                            LAI = 5.35 (m^2/m^2)
+           Above Ground Biomass = 266.70 (g/m^2)
+16 February 2001(Day of year=47), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 5.83329 (kg/ha), depth = 50 (mm), type = no3_n
+16 February 2001(Day of year=47), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.83 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+19 February 2001 - Flowering
+                            LAI = 5.26 (m^2/m^2)
+           Above Ground Biomass = 277.01 (g/m^2)
+28 February 2001 - StartGrainFill
+                            LAI = 4.75 (m^2/m^2)
+           Above Ground Biomass = 277.01 (g/m^2)
+14 March 2001(Day of year=73), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 5.75137 (kg/ha), depth = 50 (mm), type = no3_n
+14 March 2001(Day of year=73), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.75 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+27 March 2001(Day of year=86), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 5.25716 (kg/ha), depth = 50 (mm), type = no3_n
+27 March 2001(Day of year=86), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.26 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+12 April 2001(Day of year=102), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 6.45640 (kg/ha), depth = 50 (mm), type = no3_n
+12 April 2001(Day of year=102), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.46 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 April 2001(Day of year=112), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 5.24743 (kg/ha), depth = 50 (mm), type = no3_n
+22 April 2001(Day of year=112), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.25 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
 1 June 2001(Day of year=152), clock: 
      Simulation is terminating due to end criteria being met.
