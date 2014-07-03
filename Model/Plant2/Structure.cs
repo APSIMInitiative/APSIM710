@@ -88,6 +88,8 @@ public class Structure
         {
             if (Leaf.CohortsInitialised == false) //FIXME introduced to removed colateral damage during testing.  Need to remove and fix max leaf area parameterisation in potato.xml
                 return 0;
+            if (MainStemFinalNodeNo == 0)
+                return 0;
             else
                 return MainStemNodeNo / MainStemFinalNodeNo; 
         } 

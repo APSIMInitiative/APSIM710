@@ -6,10 +6,12 @@ using CSGeneral;
 public class Nodule : GenericOrgan, BelowGround
 {
  #region Paramater Input Classes
-    [Link]
+    [Link(IsOptional = true)]
     Function FixationMetabolicCost = null;
-    [Link]
+    [Link(IsOptional = true)]
     Function SpecificNitrogenaseActivity = null;
+    [Link(IsOptional = true)]
+    Function FixationSwitch = null;
     [Link]
     Function FT = null;
     [Link]
@@ -29,7 +31,12 @@ public class Nodule : GenericOrgan, BelowGround
     {
         get
         {
-            return FixationMetabolicCost.Value;
+            double Cost = 0;
+            if (FixationMetabolicCost == null)
+                Cost = 0;
+            else
+                Cost = FixationMetabolicCost.Value; 
+            return Cost;
         }
     }
     public override BiomassAllocationType NAllocation
@@ -56,7 +63,10 @@ public class Nodule : GenericOrgan, BelowGround
             if (Live != null)
             {
                 // Now add in our fixation
-                Supply.Fixation = Live.StructuralWt * SpecificNitrogenaseActivity.Value * Math.Min(FT.Value, Math.Min(FW.Value, FWlog.Value));
+                if (FixationSwitch == null)
+                    Supply.Fixation = Live.StructuralWt * SpecificNitrogenaseActivity.Value * Math.Min(FT.Value, Math.Min(FW.Value, FWlog.Value));
+                else
+                    Supply.Fixation = FixationSwitch.Value * 10000000; //  If fixation switch option is used alows the crop to potential fix a large amount of N (whatever it needs to fill the N demand gap)   
             }
             return Supply;
         }

@@ -1,0 +1,630 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = FullIrrigation
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                  "operations1" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component                    "TempFudge" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
+   Component             "SoilTemperature2" = %apsim%\Model\SoilTemp2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component            "WheatPMFPrototype" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/02/2013
+     Simulation end date   =  1/02/2014
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\WheatPMFPrototype\Leeston.met
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy as Date
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNSupplyUptake
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundLiveWt
+        BelowGroundWt
+        TotalWt
+        LeafDeadWt
+        LeafLiveWt
+        StemLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLiveWt
+        GrainDeadWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        TotalLiveN
+        TotalDeadN
+        LeafDeadN
+        LeafLiveN
+        StemLiveN
+        RootLiveN
+        RootDeadN
+        GrainLiveN
+        GrainDeadN
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
+        GrainLiveNConc
+        FloretLiveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        sw
+        no3
+        LeafPartitionFractionValue
+        GrainPartitionFractionValue
+        RootPartitionFractionValue
+        GrainMinimumNConcValue
+        LeafMinimumNConcValue
+        RootMinimumNConcValue
+        GrainMaximumNConcValue
+        LeafMaximumNConcValue
+        RootMaximumNConcValue
+        StemLiveNonStructuralN
+        StemLiveStructuralN
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafLiveNonStructuralN
+        LeafLiveNonStructuralWt
+        LeafLiveStructuralN
+        LeafLiveStructuralWt
+        LeafTotalStructuralN
+        LeafTotalNonStructuralN
+        LeafTotalStructuralWt
+        LeafTotalNonStructuralWt
+        LeafLiveMetabolicWt
+        ArbitratorNDemand
+        LeafExpandedCohortNo
+        LeafPlantAppearedGreenLeafNo
+        LeafExpandingCohortNo
+        LeafAppearedCohortNo
+        LeafDeadCohortNo
+        LeafSenescingCohortNo
+        StructurePrimaryBudTotalNodeNo
+        MaxT
+        MinT
+        maxt_soil(1)
+        mint_soil(1)
+        ave_soil_temp(1)
+        LeafThermalTimeValue
+        StructureMainStemFinalNodeNumberValue
+        LeafSpecificArea
+        SpikeLiveWt
+        GrainNumber
+        WaterSupplyDemandRatio
+        GrainAccumThermalTimeValue
+        GrainSize
+        StructurePopulation
+        StructureMainStemPopn
+        StructureTotalStemPopn
+        StructureMainStemPrimordiaNo
+        StructureMainStemNodeNo
+        EarLiveWt
+        ZadokStageValue
+        LeafCohortSize(1)
+        LeafCohortSize(2)
+        LeafCohortSize(3)
+        LeafCohortSize(4)
+        LeafCohortSize(5)
+        LeafCohortSize(6)
+        LeafCohortSize(7)
+        LeafCohortSize(8)
+        LeafCohortSize(9)
+        LeafCohortSize(10)
+        LeafCohortSize(11)
+        LeafCohortSize(12)
+        LeafCohortSize(13)
+        LeafCohortSize(14)
+        LeafCohortSize(15)
+        LeafCohortSize(16)
+        LeafCohortSize(17)
+        LeafCohortSize(18)
+        StructureRelativeNodeApperance
+        LeafCohortLiveMetabolicWt(12)
+        LeafCohortDeadMetabolicWt(12)
+
+     Output file = FullIrrigation Outputs.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations1 Initialisation --------------------------------------------
+     Operations Schedule
+     ===================
+      14/05/2013  Prepare      irrigation apply amount= 25 (mm)
+      29/05/2013  Prepare      irrigation apply amount= 9.2 (mm)
+      11/06/2013  Prepare      irrigation apply amount= 12 (mm)
+      16/09/2013  Prepare      irrigation apply amount= 34.6 (mm)
+      25/09/2013  Prepare      irrigation apply amount= 46.5 (mm)
+       1/10/2013  Prepare      irrigation apply amount= 19.3 (mm)
+       8/10/2013  Prepare      irrigation apply amount= 24.9 (mm)
+      15/10/2013  Prepare      irrigation apply amount= 21 (mm)
+      22/10/2013  Prepare      irrigation apply amount= 39 (mm)
+      29/10/2013  Prepare      irrigation apply amount= 44 (mm)
+       5/11/2013  Prepare      irrigation apply amount= 40 (mm)
+      12/11/2013  Prepare      irrigation apply amount=35 (mm)
+      19/11/2013  Prepare      irrigation apply amount= 33 (mm)
+      26/11/2013  Prepare      irrigation apply amount= 32 (mm)
+       3/12/2013  Prepare      irrigation apply amount= 33 (mm)
+      10/12/2013  Prepare      irrigation apply amount= 49 (mm)
+      17/12/2013  Prepare      irrigation apply amount= 47 (mm)
+      24/12/2013  Prepare      irrigation apply amount= 0 (mm)
+      31/12/2013  Prepare      irrigation apply amount= 0 (mm)
+      31/12/2013  Prepare
+       7/01/2014  Prepare
+      14/01/2014  Prepare
+      21/01/2014  Prepare
+      28/01/2014  Prepare
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('25/3/2013') then
+        wheatpmfprototype sow population = 165, depth = 20, cultivar = wakanui, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+     endif
+     END of rules
+     
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('01/01/2013, 01/01/2015') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * -100 / 100
+        co2 = 350
+      endif
+     
+     SECTION:- init
+     co2 = 350
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 350.00000
+
+------- TempFudge Initialisation ----------------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('01/01/2013, 01/08/2013') = 1) then
+         mint = mint + -1
+       endif
+     
+     SECTION:- init
+     co2 = 350
+     END of rules
+     
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     if today > date('25/3/2013') then
+     accumplantn =  accumplantn - wheatpmfprototype.rootnuptake
+     endif
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     if today > date('25/3/2013') then
+     accumep = accumep - wheatpmfprototype.leaftranspiration
+     endif
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if today > date('25/3/2013') then
+     if wheatpmfprototype.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + wheatpmfprototype.phenologythermaltimevalue
+     endif
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Templeton deep 1  Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-   20.  0.050  0.100  0.350  0.419  0.350  1.000  0.171  0.900*******
+           20.-  200.  0.050  0.100  0.350  0.419  0.350  1.000  0.684  0.900*******
+          200.-  400.  0.100  0.100  0.330  0.405  0.330  1.324  0.135  0.500389.229
+          400.-  600.  0.149  0.149  0.330  0.400  0.330  1.350  0.009  0.600 16.362
+          600.-  800.  0.140  0.140  0.330  0.400  0.330  1.301  0.000  0.400 97.995
+          800.- 1000.  0.150  0.150  0.330  0.400  0.330  1.301  0.000  0.400 97.995
+         1000.- 1200.  0.149  0.149  0.330  0.400  0.330  1.301  0.000  0.400 97.995
+         1200.- 1400.  0.100  0.100  0.330  0.400  0.330  1.301  0.000  0.900 97.995
+         1400.- 1600.  0.060  0.060  0.330  0.400  0.330  1.301  0.000  0.900 97.995
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-   20.       2.00       5.00       5.00       1.38
+           20.-  200.      18.00      45.00      45.00      12.42
+          200.-  400.      20.00      46.00      46.00      15.00
+          400.-  600.      29.80      36.20      36.20      14.00
+          600.-  800.      28.00      38.00      38.00      14.00
+          800.- 1000.      30.00      36.00      36.00      14.00
+         1000.- 1200.      29.80      36.20      36.20      14.00
+         1200.- 1400.      20.00      46.00      46.00      14.00
+         1400.- 1600.      12.00      54.00      54.00      14.00
+          ---------------------------------------------------------
+               Totals     189.60     342.40     342.40     112.80
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        1.50 (mm^0.5)
+            Critical Dates:       Summer        1-sep
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SoilTemperature2 Initialisation ---------------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Templeton deep 1  Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.63   53.00    0.30    0.00
+             2     6.00  2.47  477.00    2.70    0.00
+             3     6.00  0.92   15.00    2.00    0.00
+             4     6.00  0.32   15.00    1.00    0.00
+             5     6.00  0.28   10.00    1.00    0.00
+             6     6.00  0.21    5.00    1.00    0.00
+             7     6.00  0.20    5.00    1.00    0.00
+             8     6.00  0.20    5.00    1.00    0.00
+             9     6.00  0.20    5.00    1.00    0.00
+          ------------------------------------------------
+           Totals              590.01   10.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       5155.6   468.7    94.4    11.8   126.3     3.2
+             2      43753.7  3977.6   742.3    92.8    90.1     2.3
+             3      24282.1  2207.5   106.0    13.3    61.9     1.5
+             4       8516.8   774.3    15.2     1.9    42.6     1.1
+             5       7224.4   656.8     9.2     1.2    29.2     0.7
+             6       5409.2   491.7     2.9     0.4    20.1     0.5
+             7       5203.1   473.0     0.9     0.1    13.8     0.3
+             8       5203.1   473.0     0.9     0.1     9.5     0.2
+             9       5203.1   473.0     0.9     0.1     6.5     0.2
+          ---------------------------------------------------------
+           Totals  109951.1  9995.6   972.7   121.6   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : initialsoilomn = 10127.14160
+     Manager creating a new local real variable : initialsurfaceomn = 5.00000
+     Manager creating a new local real variable : initialmineraln = 600.99988
+25 March 2013(Day of year=84), Sow on a fixed date: 
+     Manager sending message :- wheatpmfprototype sow  population = 165, depth = 20, cultivar = wakanui, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+26 March 2013 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+30 March 2013 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+14 May 2013(Day of year=134), operations1: 
+      Sending apply message to irrigation
+29 May 2013(Day of year=149), operations1: 
+      Sending apply message to irrigation
+6 June 2013 - TerminalSpikelet
+                            LAI = 1.65 (m^2/m^2)
+           Above Ground Biomass = 118.76 (g/m^2)
+11 June 2013(Day of year=162), operations1: 
+      Sending apply message to irrigation
+16 September 2013(Day of year=259), operations1: 
+      Sending apply message to irrigation
+25 September 2013(Day of year=268), operations1: 
+      Sending apply message to irrigation
+1 October 2013(Day of year=274), operations1: 
+      Sending apply message to irrigation
+8 October 2013(Day of year=281), operations1: 
+      Sending apply message to irrigation
+15 October 2013(Day of year=288), operations1: 
+      Sending apply message to irrigation
+21 October 2013 - FlagLeaf
+                            LAI = 9.85 (m^2/m^2)
+           Above Ground Biomass = 1287.36 (g/m^2)
+22 October 2013(Day of year=295), operations1: 
+      Sending apply message to irrigation
+29 October 2013(Day of year=302), operations1: 
+      Sending apply message to irrigation
+5 November 2013(Day of year=309), operations1: 
+      Sending apply message to irrigation
+12 November 2013(Day of year=316), operations1: 
+      Sending apply message to irrigation
+17 November 2013 - Flowering
+                            LAI = 6.14 (m^2/m^2)
+           Above Ground Biomass = 1727.90 (g/m^2)
+19 November 2013(Day of year=323), operations1: 
+      Sending apply message to irrigation
+25 November 2013 - StartGrainFill
+                            LAI = 5.36 (m^2/m^2)
+           Above Ground Biomass = 1876.82 (g/m^2)
+26 November 2013(Day of year=330), operations1: 
+      Sending apply message to irrigation
+3 December 2013(Day of year=337), operations1: 
+      Sending apply message to irrigation
+10 December 2013(Day of year=344), operations1: 
+      Sending apply message to irrigation
+17 December 2013(Day of year=351), operations1: 
+      Sending apply message to irrigation
+24 December 2013(Day of year=358), operations1: 
+      Sending apply message to irrigation
+31 December 2013(Day of year=365), operations1: 
+      Sending apply message to irrigation
+      Sending  message to
+31 December 2013 - EndGrainFill
+                            LAI = 2.38 (m^2/m^2)
+           Above Ground Biomass = 2608.93 (g/m^2)
+7 January 2014(Day of year=7), operations1: 
+      Sending  message to
+13 January 2014 - Maturity
+                            LAI = 0.26 (m^2/m^2)
+           Above Ground Biomass = 2828.18 (g/m^2)
+14 January 2014(Day of year=14), operations1: 
+      Sending  message to
+21 January 2014(Day of year=21), operations1: 
+      Sending  message to
+28 January 2014(Day of year=28), operations1: 
+      Sending  message to
+1 February 2014(Day of year=32), clock: 
+     Simulation is terminating due to end criteria being met.
+

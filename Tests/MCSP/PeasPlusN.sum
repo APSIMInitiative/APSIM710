@@ -1,0 +1,351 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = PeasPlusN
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "MCSP" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/09/1988
+     Simulation end date   =  1/03/1989
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy as Date
+        LeafLAI
+        TotalWt
+        TotalN
+        LeafLiveN
+        LeafLiveWt
+        ProductLiveWt
+        Cover_green
+        PhenologyAccumulatedThermalTimeValue
+        RootDepth
+        LeafLiveNonStructuralN
+        LeafLiveStructuralN
+        ProductLiveN
+        RootNUptake
+        RootNSupplyUptake
+        RootLiveN
+
+     Output file = PeasPlusN.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+      26/09/1988  Prepare      fertiliser apply amount= 50 (kg/ha), type= nh4so4_n, depth= 10 (mm)
+       6/10/1988  Prepare      irrigation apply amount= 27 (mm)
+      13/10/1988  Prepare      irrigation apply amount= 10 (mm)
+      20/10/1988  Prepare      irrigation apply amount= 30 (mm)
+      27/10/1988  Prepare      irrigation apply amount= 25 (mm)
+       3/11/1988  Prepare      irrigation apply amount= 25 (mm)
+      10/11/1988  Prepare      irrigation apply amount= 47 (mm)
+      17/11/1988  Prepare      irrigation apply amount= 32 (mm)
+      24/11/1988  Prepare      irrigation apply amount= 18 (mm)
+       1/12/1988  Prepare      irrigation apply amount= 35 (mm)
+       8/12/1988  Prepare      irrigation apply amount= 24 (mm)
+      15/12/1988  Prepare      irrigation apply amount= 43 (mm)
+      22/12/1988  Prepare      irrigation apply amount= 32 (mm)
+      29/12/1988  Prepare      irrigation apply amount= 36 (mm)
+      02/11/1988  Prepare      fertiliser apply amount= 70 (kg/ha), type= nh4so4_n, depth= 10 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('01/09/1988, 31/12/1989') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = 0
+        radn = radn + radn * 0 / 100
+        co2 = 350
+      endif
+     END of rules
+     
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('07/09/1988') then
+        mcsp sow population =100, depth = 60, cultivar = dried_peas, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+     endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Templeton deep 1  Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.050  0.100  0.320  0.419  0.320  1.311  0.613  0.900*******
+          100.-  300.  0.050  0.100  0.300  0.395  0.310  1.524  0.340  0.750389.229
+          300.-  500.  0.157  0.157  0.290  0.360  0.295  1.650  0.048  0.500 16.362
+          500.-  700.  0.173  0.173  0.200  0.366  0.310  1.601  0.000  0.205 97.995
+          700.-  900.  0.173  0.173  0.310  0.366  0.320  1.601  0.000  0.205 97.995
+          900.- 1100.  0.165  0.165  0.300  0.358  0.305  1.601  0.000  0.650 97.995
+         1100.- 1300.  0.165  0.165  0.300  0.358  0.300  1.601  0.000  0.900 97.995
+         1300.- 1500.  0.115  0.115  0.230  0.316  0.265  1.601  0.000  0.900 97.995
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      10.00      22.00      22.00       9.90
+          100.-  300.      20.00      42.00      40.00      19.00
+          300.-  500.      31.40      27.60      26.60      14.00
+          500.-  700.      34.60      27.40       5.40      33.20
+          700.-  900.      34.60      29.40      27.40      11.20
+          900.- 1100.      33.00      28.00      27.00      11.60
+         1100.- 1300.      33.00      27.00      27.00      11.60
+         1300.- 1500.      23.00      30.00      23.00      17.20
+          ---------------------------------------------------------
+               Totals     219.60     233.40     198.40     127.70
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        1.50 (mm^0.5)
+            Critical Dates:       Summer        1-oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat          500.0   200.0     2.5     0.0   0.221     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- Templeton deep 1  Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: paddock.Templeton deep 1  Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: paddock.Templeton deep 1  Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.63  138.75    2.31    0.00
+             2     6.00  1.94  168.50    2.93    0.00
+             3     6.00  0.78   15.41    0.51    0.00
+             4     6.00  0.26   12.39    0.25    0.00
+             5     6.00  0.20    7.50    0.00    0.00
+             6     6.00  0.10    5.00    0.00    0.00
+             7     6.00  0.00    5.00    0.00    0.00
+             8     6.00  0.00    5.00    0.00    0.00
+          ------------------------------------------------
+           Totals              357.56    6.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      33794.8  3072.3   618.9    77.4   137.5     3.4
+             2      58331.9  5302.9   677.4    84.7    92.2     2.3
+             3      25678.9  2334.4    94.1    11.8    61.8     1.5
+             4       8379.8   761.8     9.4     1.2    41.4     1.0
+             5       6529.8   593.6     2.3     0.3    27.8     0.7
+             6       3201.5   291.0     0.5     0.1    18.6     0.5
+             7          0.0     0.0     0.0     0.0    12.5     0.3
+             8          0.0     0.0     0.0     0.0     8.4     0.2
+          ---------------------------------------------------------
+           Totals  135916.7 12356.1  1402.7   175.3   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : co2 = 350.00000
+7 September 1988(Day of year=251), Sow on a fixed date: 
+     Manager sending message :- mcsp sow  population = 100, depth = 60, cultivar = dried_peas, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+26 September 1988(Day of year=270), operations: 
+      Sending apply message to fertiliser
+26 September 1988(Day of year=270), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of ammonium sulphate (nh4so4_n)
+                                         added at depth   10.00 (layer   1)
+6 October 1988(Day of year=280), operations: 
+      Sending apply message to irrigation
+13 October 1988(Day of year=287), operations: 
+      Sending apply message to irrigation
+20 October 1988(Day of year=294), operations: 
+      Sending apply message to irrigation
+27 October 1988(Day of year=301), operations: 
+      Sending apply message to irrigation
+2 November 1988(Day of year=307), operations: 
+      Sending apply message to fertiliser
+2 November 1988(Day of year=307), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        70.00 of ammonium sulphate (nh4so4_n)
+                                         added at depth   10.00 (layer   1)
+3 November 1988(Day of year=308), operations: 
+      Sending apply message to irrigation
+10 November 1988(Day of year=315), operations: 
+      Sending apply message to irrigation
+17 November 1988(Day of year=322), operations: 
+      Sending apply message to irrigation
+24 November 1988(Day of year=329), operations: 
+      Sending apply message to irrigation
+1 December 1988(Day of year=336), operations: 
+      Sending apply message to irrigation
+8 December 1988(Day of year=343), operations: 
+      Sending apply message to irrigation
+15 December 1988(Day of year=350), operations: 
+      Sending apply message to irrigation
+22 December 1988(Day of year=357), operations: 
+      Sending apply message to irrigation
+29 December 1988(Day of year=364), operations: 
+      Sending apply message to irrigation
+1 March 1989(Day of year=60), clock: 
+     Simulation is terminating due to end criteria being met.
+

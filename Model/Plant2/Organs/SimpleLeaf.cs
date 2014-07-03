@@ -322,7 +322,20 @@ class SimpleLeaf : BaseOrgan, AboveGround
         Live.Clear();
         Dead.Clear();
     }
-
+    public override double MaxNconc
+    {
+        get
+        {
+            return NConc.Value;
+        }
+    }
+    public override double MinNconc
+    {
+        get
+        {
+            return NConc.Value;
+        }
+    }
 
     public override BiomassPoolType NDemand
     {

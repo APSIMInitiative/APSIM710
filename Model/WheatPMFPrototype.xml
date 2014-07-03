@@ -30,7 +30,7 @@
       <CropType type="text" description="CropType">Wheat</CropType>
       <Arbitrator>
         <NArbitrationOption type="text" description="NArbitrationOption">PrioritythenRelativeAllocation</NArbitrationOption>
-        <DMArbitrationOption type="text" description="DMArbitrationOption">RelativeAllocation</DMArbitrationOption>
+        <DMArbitrationOption type="text" description="DMArbitrationOption">PrioritythenRelativeAllocation</DMArbitrationOption>
         <Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
                1) it allocates N and DM along a hirachy of priorities
                2) it allocates potential DM then allocates N then limits DM below potential if there is insufficient N to meet Min N content
@@ -46,8 +46,8 @@
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0</XY>
-                  <XY>30 30</XY>
-                  <XY>40 0</XY>
+                  <XY>26 26</XY>
+                  <XY>34 0</XY>
                 </XYPairs>
               </SoilTemperatureFunction>
             </PhaseLookupValue>
@@ -57,8 +57,8 @@
               <AirTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0</XY>
-                  <XY>30 30</XY>
-                  <XY>40 0</XY>
+                  <XY>26 26</XY>
+                  <XY>34 0</XY>
                 </XYPairs>
               </AirTemperatureFunction>
             </PhaseLookupValue>
@@ -91,14 +91,14 @@
           <Start type="text" description="Start">Germination</Start>
           <End type="text" description="End">Emergence</End>
           <ShootLag type="text" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
-          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">4</ShootRate>
+          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">1.5</ShootRate>
           <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
         <GenericPhase name="Vegetative">
           <Start type="text" description="Start stage name">Emergence</Start>
-          <End type="text" description="End stage name">VernalisationSaturation</End>
+          <End type="text" description="End stage name">TerminalSpikelet</End>
           <Constant name="Target">
-            <Value type="text" description="Value">60</Value>
+            <Value type="text" description="Value">401</Value>
           </Constant>
           <MultiplyFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime">
             <PhaseLookup shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup">
@@ -125,57 +125,30 @@
               </MultiplyFunction>
             </AddFunction>
           </MultiplyFunction>
+          <MinimumFunction name="Stress">
+            <VariableReference name="VernalisationEffect">
+              <VariableName type="text" description="Variable Name">Phenology.Vernalisation.VernEff</VariableName>
+              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                     </Memo>
+            </VariableReference>
+            <VariableReference name="PhotoperiodEffect">
+              <VariableName type="text" description="Variable Name"> Phenology.Vernalisation.PhotopEff</VariableName>
+              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                     </Memo>
+            </VariableReference>
+          </MinimumFunction>
         </GenericPhase>
-        <GenericPhase name="EarlyReproductive">
-          <Start type="text" description="Start stage name">VernalisationSaturation</Start>
-          <End type="text" description="End stage name">TerminalSpikelet</End>
-          <LinearInterpolationFunction name="Target">
-            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-            <XYPairs>
-              <XY>0 650</XY>
-              <XY>10 650</XY>
-              <XY>16 400</XY>
-              <XY>24 400</XY>
-            </XYPairs>
-            <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
-          </LinearInterpolationFunction>
-          <MultiplyFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime">
-            <PhaseLookup shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup">
-              <PhaseLookupValue name="SoilTemperature" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature">
-                <SoilTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime">
-                  <XYPairs shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime/XYPairs" />
-                </SoilTemperatureFunction>
-              </PhaseLookupValue>
-              <PhaseLookupValue name="AirTemperature" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature">
-                <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime">
-                  <XYPairs shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime/XYPairs" />
-                </AirTemperatureFunction>
-              </PhaseLookupValue>
-            </PhaseLookup>
-            <AddFunction name="DroughtPhenologyAcelleration" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration">
-              <Memo shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Memo" />
-              <Constant name="One" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/One" />
-              <MultiplyFunction name="Stress" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress">
-                <Memo shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/Memo" />
-                <Constant name="StressResponseCoefficient" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressResponseCoefficient" />
-                <LinearInterpolationFunction name="StressFactor" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor">
-                  <XYPairs shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor/XYPairs" />
-                </LinearInterpolationFunction>
-              </MultiplyFunction>
-            </AddFunction>
-          </MultiplyFunction>
-        </GenericPhase>
-        <LeafAppearancePhase name="PseudoStemExtension">
+        <LeafAppearancePhase name="FloralInitiationToFlagLeaf">
           <Start>TerminalSpikelet</Start>
           <End>FlagLeaf</End>
           <RemainingLeaves type="text" description="RemainingLeaves">0</RemainingLeaves>
           <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime" />
         </LeafAppearancePhase>
-        <GenericPhase name="EarDevelopment">
+        <GenericPhase name="SpikeDevelopment">
           <Start>FlagLeaf</Start>
           <End>Flowering</End>
           <Constant name="Target">
-            <Value type="text" description="Value">100</Value>
+            <Value type="text" description="Value">333</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
@@ -183,7 +156,7 @@
           <Start>Flowering</Start>
           <End>StartGrainFill</End>
           <Constant name="Target">
-            <Value type="text" description="Value">20</Value>
+            <Value type="text" description="Value">120</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime">
             <XYPairs />
@@ -204,7 +177,7 @@
           <Start>StartGrainFill</Start>
           <End>EndGrainFill</End>
           <Constant name="Target">
-            <Value type="text" description="Value">650</Value>
+            <Value type="text" description="Value">545</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
@@ -220,7 +193,7 @@
           <Start>Maturity</Start>
           <End>HarvestRipe</End>
           <Constant name="Target">
-            <Value type="text" description="Value">600</Value>
+            <Value type="text" description="Value">300</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
@@ -232,6 +205,24 @@
         <PhotoperiodFunction name="Photoperiod">
           <Twilight type="text" description="Twilight">-6</Twilight>
         </PhotoperiodFunction>
+        <VernalisationCW name="Vernalisation">
+          <StartStageForEffects type="text" description="StartStageForEffects">Emergence</StartStageForEffects>
+          <EndStageForEffects type="text" description="EndStageForEffects">TerminalSpikelet</EndStageForEffects>
+          <StartStageForCumulativeVD type="text" description="StartStageForCumulativeVD">Germination</StartStageForCumulativeVD>
+          <EndStageForCumulativeVD type="text" description="EndStageForCumulativeVD">TerminalSpikelet</EndStageForCumulativeVD>
+          <VernSens type="text" description="VernSens">2.5</VernSens>
+          <PhotopSens type="text" description="PhotopSens">2</PhotopSens>
+          <AirTemperatureFunction name="VDModel">
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>2 1</XY>
+              <XY>15 0</XY>
+            </XYPairs>
+          </AirTemperatureFunction>
+          <PhotoperiodFunction name="Photoperiod">
+            <Twilight type="text" description="Twilight">-6</Twilight>
+          </PhotoperiodFunction>
+        </VernalisationCW>
       </Phenology>
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
@@ -248,7 +239,7 @@
                  </Memo>
               </VariableReference>
               <Constant name="PrimordiaPerMainstemNode">
-                <Value type="text" description="Value">1.2</Value>
+                <Value type="text" description="Value">2</Value>
               </Constant>
             </DivideFunction>
           </PhaseLookupValue>
@@ -258,14 +249,14 @@
           <LinearInterpolationFunction name="LeafStageFactor">
             <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
             <XYPairs>
-              <XY>0 0.75</XY>
-              <XY>1.9999 0.9</XY>
-              <XY>8 1.2</XY>
-              <XY>18 1.5</XY>
+              <XY>0 0.6</XY>
+              <XY>2 0.8</XY>
+              <XY>7 1.2</XY>
+              <XY>14 1.4</XY>
             </XYPairs>
           </LinearInterpolationFunction>
           <Constant name="BasePhyllochron">
-            <Value type="text" description="Value">90</Value>
+            <Value type="text" description="Value">120</Value>
           </Constant>
         </MultiplyFunction>
         <HeightFunction name="Height">
@@ -275,8 +266,8 @@
           <LinearInterpolationFunction name="PotentialHeight">
             <XProperty>StageCode.Value</XProperty>
             <XYPairs>
-              <XY>3 20</XY>
-              <XY>4 20</XY>
+              <XY>3 10</XY>
+              <XY>4 50</XY>
               <XY>4.8 100</XY>
               <XY>6 1100</XY>
               <XY>7 1200</XY>
@@ -299,10 +290,10 @@
               <LinearInterpolationFunction name="PotentialBranchingRate">
                 <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
                 <XYPairs>
-                  <XY>3 0</XY>
-                  <XY>4 0.85</XY>
-                  <XY>20 0.85</XY>
-                  <XY>21 0.85</XY>
+                  <XY>1 0</XY>
+                  <XY>2 1</XY>
+                  <XY>5 2</XY>
+                  <XY>14 2</XY>
                 </XYPairs>
               </LinearInterpolationFunction>
             </PhaseLookupValue>
@@ -325,8 +316,8 @@
             <XProperty type="text" description="XProperty">Leaf.CoverGreen</XProperty>
             <XYPairs>
               <XY>0 1</XY>
-              <XY>0.5 1</XY>
-              <XY>0.8 0</XY>
+              <XY>0.6 1</XY>
+              <XY>0.75 0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
@@ -339,8 +330,8 @@
               <XYPairs>
                 <XY>0 0</XY>
                 <XY>0.98 0</XY>
-                <XY>0.99 0.1</XY>
-                <XY>1 0.1</XY>
+                <XY>0.99 0.01</XY>
+                <XY>1 0.01</XY>
               </XYPairs>
             </LinearInterpolationFunction>
           </PhaseLookupValue>
@@ -348,7 +339,7 @@
         <PhaseLookup name="DroughtInducedBranchMortality">
           <PhaseLookupValue>
             <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">EndGrainFill</End>
+            <End type="text" description="End">StartGrainFill</End>
             <LinearInterpolationFunction name="DroughtInducedBranchMortality">
               <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
               <XYPairs>
@@ -384,7 +375,7 @@
           </AddFunction>
         </MultiplyFunction>
         <MainStemFinalNodeNumberFunction name="MainStemFinalNodeNumber">
-          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">18</MaximumMainStemNodeNumber>
           <Memo> 
 			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
 			</Memo>
@@ -432,12 +423,12 @@
           <Value>0.12</Value>
         </Constant>
         <StageBasedInterpolation name="MinimumNConc">
-          <Stages type="text" description="Stages">Germination Emergence VernalisationSaturation TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
-          <Values type="text" description="Values">0.006           0.006          0.006                             0.006             0.006      0.006       0.006            0.006          0.006    0.006</Values>
+          <Stages type="text" description="Stages">Germination Emergence TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
+          <Values type="text" description="Values">0.006           0.006                   0.006             0.006      0.006       0.006            0.006          0.006    0.006</Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MaximumNConc">
-          <Stages type="text" description="Stages">Germination Emergence VernalisationSaturation TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
-          <Values type="text" description="Values">0.022           0.022          0.022                             0.022             0.022      0.022       0.022            0.022          0.022    0.022</Values>
+          <Stages type="text" description="Stages">Germination Emergence TerminalSpikelet FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
+          <Values type="text" description="Values">0.022          0.022                             0.022             0.022      0.022       0.022            0.022          0.022    0.022</Values>
         </StageBasedInterpolation>
         <PhaseLookup name="NFillingRate1">
           <PhaseLookupValue name="EarlyGrainGrowth">
@@ -632,18 +623,10 @@
         <KDead type="text" description="KDead">.03</KDead>
         <LeafCohort name="InitialLeaves[1]">
           <Rank type="text" description="Rank">1</Rank>
-          <Area type="text" description="Area">100</Area>
+          <Area type="text" description="Area">200</Area>
         </LeafCohort>
         <LeafCohort name="InitialLeaves[2]">
           <Rank type="text" description="Rank">2</Rank>
-          <Area type="text" description="Area">0</Area>
-        </LeafCohort>
-        <LeafCohort name="InitialLeaves[3]">
-          <Rank type="text" description="Rank">3</Rank>
-          <Area type="text" description="Area">0</Area>
-        </LeafCohort>
-        <LeafCohort name="xInitialLeaves[4]">
-          <Rank type="text" description="Rank">4</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
         <CompositeBiomass name="Live">
@@ -666,7 +649,7 @@
         </ArrayBiomass>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
-            <Value type="text" description="Value">1.2</Value>
+            <Value type="text" description="Value">1.24</Value>
           </Constant>
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
@@ -708,33 +691,21 @@
           <Value type="text" description="Value">.05</Value>
         </Constant>
         <Constant name="NRetranslocationFactor">
-          <Value type="text" description="Value">0</Value>
+          <Value type="text" description="Value">.1</Value>
+        </Constant>
+        <Constant name="DMReallocationFactor">
+          <Value type="text" description="Value">1</Value>
         </Constant>
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <MultiplyFunction name="NodeAppearanceRate">
-          <Memo>Multiplies the values of the children of this node</Memo>
-          <LinearInterpolationFunction name="LeafStageFactor">
-            <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
-            <XYPairs>
-              <XY>0 0.75</XY>
-              <XY>1.9999 1</XY>
-              <XY>7.999 1</XY>
-              <XY>8 1.3</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <Constant name="BasePhyllochron">
-            <Value type="text" description="Value">80</Value>
-          </Constant>
-        </MultiplyFunction>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <LinearInterpolationFunction name="PotentialExtinctionCoeff">
             <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
             <XYPairs>
-              <XY>0 0.45</XY>
-              <XY>0.45 0.55</XY>
+              <XY>0 0.7</XY>
+              <XY>0.45 0.7</XY>
             </XYPairs>
           </LinearInterpolationFunction>
           <LinearInterpolationFunction name="WaterStress">
@@ -745,19 +716,14 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
-        <LinearInterpolationFunction name="MaxArea">
-          <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
+        <LinearInterpolationFunction name="xMaxArea">
+          <XProperty type="text" description="XProperty">Structure.RelativeNodeApperance</XProperty>
           <XYPairs>
-            <XY>1 300</XY>
-            <XY>2 600</XY>
-            <XY>3 1000</XY>
-            <XY>4 1500</XY>
-            <XY>5 2600</XY>
-            <XY>6 3500</XY>
-            <XY>7 4500</XY>
-            <XY>8 5050</XY>
-            <XY>9 3800</XY>
-            <XY>10 1</XY>
+            <XY>0 300</XY>
+            <XY>0.7 2000</XY>
+            <XY>0.75 3000</XY>
+            <XY>0.95 4500</XY>
+            <XY>1 4500</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="CellDivisionStress">
@@ -784,16 +750,16 @@
           <LinearInterpolationFunction name="NumberOfExpandingLeaves">
             <XProperty type="text" description="XProperty">Structure.RelativeNodeApperance</XProperty>
             <XYPairs>
-              <XY>0 2</XY>
-              <XY>1 2</XY>
+              <XY>0 1</XY>
+              <XY>1 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
         <Constant name="LagDuration">
-          <Value type="text" description="Value">800</Value>
+          <Value type="text" description="Value">900</Value>
         </Constant>
         <Constant name="SenescenceDuration">
-          <Value type="text" description="Value">600</Value>
+          <Value type="text" description="Value">200</Value>
         </Constant>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
@@ -835,17 +801,20 @@
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
           <XProperty>Structure.MainStemNodeNo</XProperty>
           <XYPairs>
-            <XY>1 40000</XY>
-            <XY>9 40000</XY>
+            <XY>1 20000</XY>
+            <XY>9 20000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SpecificLeafAreaMin">
           <XProperty>Structure.MainStemNodeNo</XProperty>
           <XYPairs>
-            <XY>1 15000</XY>
-            <XY>9 15000</XY>
+            <XY>1 10000</XY>
+            <XY>9 10000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <Constant name="InitialNConc">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.5</Value>
         </Constant>
@@ -864,24 +833,40 @@
           <XYPairs>
             <XY>0 0</XY>
             <XY>0.7 0</XY>
-            <XY>0.8 0.02</XY>
-            <XY>0.97 0.02</XY>
-            <XY>0.98 0.1</XY>
+            <XY>0.8 0</XY>
+            <XY>0.97 0</XY>
+            <XY>0.98 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <AirTemperatureFunction name="ThermalTime" shortcut="/WheatPMFPrototype/Model/Plant/Phenology/ThermalTime" />
-        <Constant name="InitialNConc">
-          <Value type="text" description="Value">0</Value>
-        </Constant>
-        <Constant name="DMReallocationFactor">
-          <Value type="text" description="Value">1</Value>
-        </Constant>
+        <MultiplyFunction name="MaxArea">
+          <Memo>Multiplies the values of the children of this node.  Drop on nodes as appropriate</Memo>
+          <LinearInterpolationFunction name="Length">
+            <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>1 100</XY>
+              <XY>10 270</XY>
+              <XY>15 200</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="Width">
+            <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>1 4</XY>
+              <XY>9 14</XY>
+              <XY>15 22</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="TaperFactor">
+            <Value type="text" description="Value">0.61</Value>
+          </Constant>
+        </MultiplyFunction>
       </Leaf>
       <GenericAboveGroundOrgan name="Spike">
         <PopulationBasedDemandFunction name="DMDemandFunction">
-          <StartStage type="text" description="StartStage">6.2</StartStage>
-          <GrowthDuration type="text" description="GrowthDuration">120</GrowthDuration>
-          <MaximumOrganWt type="text" description="MaximumOrganWt">.133</MaximumOrganWt>
+          <StartStage type="text" description="StartStage">5.2</StartStage>
+          <GrowthDuration type="text" description="GrowthDuration">453</GrowthDuration>
+          <MaximumOrganWt type="text" description="MaximumOrganWt">0.7</MaximumOrganWt>
           <PhaseLookup name="ThermalTime">
             <PhaseLookupValue name="SoilTemperature">
               <Start type="text" description="Start">Sowing</Start>
@@ -957,8 +942,8 @@
               <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
               <XYPairs>
                 <XY>3 0</XY>
-                <XY>4.5 0.0005</XY>
-                <XY>6 0.3</XY>
+                <XY>4 6</XY>
+                <XY>6 60</XY>
               </XYPairs>
             </LinearInterpolationFunction>
             <VariableReference name="DeltaNodes">
@@ -970,7 +955,7 @@
           </MultiplyFunction>
           <MultiplyFunction name="HeightLimitedDemand">
             <Constant name="SpecificStemLengthMax">
-              <Value type="text" description="Value">.0022</Value>
+              <Value type="text" description="Value">.022</Value>
             </Constant>
             <VariableReference name="DeltaHeight">
               <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
@@ -1018,12 +1003,8 @@
       </GenericAboveGroundOrgan>
       <Summary />
       <StageBasedInterpolation name="StageCode">
-        <Stages type="text" description="Stages">Sowing      Germination     Emergence  VernalisationSaturation TerminalSpikelet FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
-        <Values type="text" description="Values">   1               2              3            4                       5            6            7             8           9      10   11</Values>
-      </StageBasedInterpolation>
-      <StageBasedInterpolation name="ZadokStage">
-        <Stages>Sowing      Germination     Emergence  VernalisationSaturation TerminalSpikelet FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
-        <Values>   0               5              10            25                    30             37       65          70             85           90      90</Values>
+        <Stages type="text" description="Stages">Sowing      Germination     Emergence  TerminalSpikelet FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
+        <Values type="text" description="Values">   1               2                        3                      4                       5            6            7                     8                    9            10 </Values>
       </StageBasedInterpolation>
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>
@@ -1049,6 +1030,10 @@
       <CompositeBiomass name="AboveGroundLive">
         <Property type="text" description="Property">Organs[AboveGround].Live</Property>
       </CompositeBiomass>
+      <StageBasedInterpolation name="ZadokStage">
+        <Stages type="text" description="Stages">Sowing      Germination     Emergence  TerminalSpikelet FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
+        <Values type="text" description="Values">   0               5                         10                        30             39              65                 70             85               90            100</Values>
+      </StageBasedInterpolation>
     </Plant>
     <Cultivar name="Wakanui">
       <Construct type="text" description="Construct">Plant</Construct>

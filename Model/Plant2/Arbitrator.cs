@@ -412,7 +412,7 @@ public class Arbitrator
         double BiomassFixed = 0;
         if (BAT.TotalFixationSupply > 0.00000000001)
         {
-            // Calculate how much fixation N each demanding organ is allocated based on relative demands
+            // Calculate how much fixation each demanding organ is allocated based on relative demands
             if (string.Compare(Option, "RelativeAllocation", true) == 0)
                 RelativeAllocation(Organs, BAT.TotalFixationSupply, ref BiomassFixed, BAT);
             if (string.Compare(Option, "PriorityAllocation", true) == 0)
@@ -420,7 +420,7 @@ public class Arbitrator
             if (string.Compare(Option, "PrioritythenRelativeAllocation", true) == 0)
                 PrioritythenRelativeAllocation(Organs, BAT.TotalFixationSupply, ref BiomassFixed, BAT);
 
-            // Then calculate how much N is fixed from each supplying organ based on relative fixation supply
+            // Then calculate how much is fixed from each supplying organ based on relative fixation supply
             if (BiomassFixed > 0)
             {
                 for (int i = 0; i < Organs.Count; i++)
