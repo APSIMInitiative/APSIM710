@@ -13,7 +13,7 @@ PROJECTTYPE = dll
 ifeq ($(PLATFORM),WIN32VS)
   OBJEXT = obj
   DLLEXT = dll
-  R_HOME = d:/R-3.0.1
+  R_HOME = C:/Progra~1/R/R-3.1.0/
   REXE:=$(shell $(R_HOME)\bin\R.exe --version)
   ifeq ($(REXE),)
     R_MAKE=echo

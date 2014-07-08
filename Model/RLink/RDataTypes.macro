@@ -114,16 +114,16 @@ void RComponent::myApsim[type.name]Event(const std::string &handler, struct [typ
 }
 [endfor]
 
-void RComponent::subscribe(const std::string &event, const std::string &type, const std::string &handler)
+void RComponent::subscribe(const std::string &eventName, const std::string &type, const std::string &handler)
 {
    if (boost::iequals(type, "Null")) {
-     //apsimAPI.subscribe(event, namedNullFunction(handler, &RComponent::myApsimNullEvent));
-     apsimAPI.subscribe(event, boost::function0< void >(
+     //apsimAPI.subscribe(eventName, namedNullFunction(handler, &RComponent::myApsimNullEvent));
+     apsimAPI.subscribe(eventName, boost::function0< void >(
                                boost::bind(&RComponent::myApsimNullEvent, this, handler)));
      return;
    }
 [foreach types.type]  if (boost::iequals(type, "[type.name]")) {
-     apsimAPI.subscribe(event, boost::function1<void, [type.name]Type& >(
+     apsimAPI.subscribe(eventName, boost::function1<void, [type.name]Type& >(
                                boost::bind(&RComponent::myApsim[type.name]Event, this, handler, _1)));
      return;
    }
