@@ -178,7 +178,7 @@ int main(int argc, char **argv)
       }
    // If simPath is actually a .apsim file then convert to sim.
    bool DeleteSim = false;
-   if (fileExtension(simPath) == "apsim")
+   if (ToLower(fileExtension(simPath)) == "apsim")
       {
       string simulationName = "";
       if (argc == 3)
