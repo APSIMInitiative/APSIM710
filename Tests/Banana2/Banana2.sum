@@ -1,0 +1,718 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Banana2
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component "Fertilise incrop on critical NO3 level- top up" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "Banana2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/11/2010
+     Simulation end date   = 20/02/2012
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: SouthJohnstone.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        StageCodeValue
+        PhenologyCurrentPhaseName
+        PhenologyCurrentStageName
+        LeafLAI
+        AboveGroundWt
+        sw_dep()
+        WaterDemand
+        LeafFw
+        LeafTranspiration
+        LeafWaterDemand
+        RootWaterUptake
+        surfaceom_wt
+        no3()
+        StructureMainStemNodeNo
+        LeafExpandedNodeNo
+        LeafExpandedCohortNo
+        LeafThermalTimeValue
+        StemLiveWt
+        StemLiveStructuralNConc
+        StemLiveNConc
+        CormLiveWt
+        BelowGroundWt
+        TotalWt
+        LeafLiveWt
+        RootLiveWt
+        FruitLiveWt
+        Banana2.LeafLiveN
+
+     Output file = Banana2.out
+     Format = normal
+
+------- Plant2 diagnostic variables Initialisation ----------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        LeafDeadWt
+        LeafLiveWt
+        StemDeadWt2
+        StemLiveWt
+        CormDeadWt
+        CormLiveWt
+        RootDeadWt
+        RootLiveWt
+        FruitLIveWt
+        FruitDeadWt
+        FlowerLIveWt
+        FlowerDeadWt
+        RootLiveN
+        RootDeadN
+        LeafDeadN
+        LeafLiveN
+        StemDeadN
+        StemLiveN
+        CormDeadN
+        CormLiveN
+        FruitLiveN
+        FruitDeadN
+        FlowerLiveN
+        FlowerDeadN
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafFrgr
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafDeadN
+        LeafDeadWt
+        LeafLeafSizeValue
+        LeafLiveN
+        StemLiveN
+        TotalNonStructuralN
+        TotalStructuralN
+        Yield
+
+     Output file = Banana2 Plant2 diagnostic variables.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('02/11/2010') then
+       banana2 sow population =0.15, depth = 1, cultivar = cavendish, maxcover = 1.0, budnumber = 1, row_spacing = 3000, crop_class = plant
+              endif
+     END of rules
+     
+
+------- Fertilise incrop on critical NO3 level- top up Initialisation ---------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (banana2.plant_status = 'alive') then
+     no3_available = no3(1) + no3(2) + no3(3)
+     if (no3_available <= 100) then
+        n_deficit = 200 - no3_available
+        'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = no3_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if ('banana2' = 'cotton') then
+       if (banana2.ozcot_status > 0) then
+           banana2 harvest
+       endif
+                elseif (banana2.phenologycurrentstagename = 'harvestripe' or banana2.plant_status = 'dead') then
+       banana2  harvest
+       banana2  end_crop
+                endif
+     END of rules
+     
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  (banana2.leafliven + banana2.leafdeadn + banana2.stemliven + banana2.stemdeadn + banana2.cormliven + banana2.cormdeadn ) * 10
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - banana2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300100.000
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300100.000
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300100.000
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300100.000
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300100.000
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300100.000
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300100.000
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300100.000
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300100.000
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300100.000
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300100.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOrganicMatter Initialisation -----------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04   56.76    5.23    0.00
+             2     8.80  0.89   18.52    0.88    0.00
+             3     9.00  0.89   36.68    1.75    0.00
+             4     9.20  0.89   29.69    1.75    0.00
+             5     9.20  0.77   30.86    1.81    0.00
+             6     9.10  0.45   32.31    1.90    0.00
+             7     9.00  0.27   32.61    1.92    0.00
+             8     9.00  0.22   33.48    1.97    0.00
+             9     8.90  0.16   34.36    2.02    0.00
+            10     8.90  0.13   34.94    2.06    0.00
+            11     8.90  0.12   36.39    2.14    0.00
+          ------------------------------------------------
+           Totals              376.60   23.42    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : initialsoilomn = 12432.34863
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 400.01379
+1 November 2010(Day of year=305): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.leafliven" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.leafdeadn" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.stemliven" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.stemdeadn" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.cormliven" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.cormdeadn" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.leaftranspiration" could not be retrieved.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "accumoutflowlat".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "banana2.phenologycurrentstagename" could not be retrieved.
+     Component name: paddock.Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 November 2010(Day of year=306), Sow on a fixed date: 
+     Manager sending message :- banana2 sow  population = 0.15, depth = 1, cultivar = cavendish, maxcover = 1.0, budnumber = 1, row_spacing = 3000, crop_class = plant
+2 November 2010(Day of year=306), Fertilise incrop on critical NO3 level- top up: 
+     Manager creating a new local real variable : no3_available = 113.40648
+3 November 2010 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+4 November 2010 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+18 November 2010(Day of year=322), Fertilise incrop on critical NO3 level- top up: 
+     Manager creating a new local real variable : n_deficit = 102.90173
+     Manager sending message :- fertiliser apply  amount = 102.90173 (kg/ha), depth = 50 (mm), type = no3_n
+18 November 2010(Day of year=322), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       102.90 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+13 December 2010 - EndDependance
+                            LAI = 0.13 (m^2/m^2)
+           Above Ground Biomass = 25.25 (g/m^2)
+23 December 2010(Day of year=357), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 104.85035 (kg/ha), depth = 50 (mm), type = no3_n
+23 December 2010(Day of year=357), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       104.85 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+3 January 2011(Day of year=3), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 100.36424 (kg/ha), depth = 50 (mm), type = no3_n
+3 January 2011(Day of year=3), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.36 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 January 2011(Day of year=22), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 105.83186 (kg/ha), depth = 50 (mm), type = no3_n
+22 January 2011(Day of year=22), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       105.83 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+5 February 2011(Day of year=36), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 105.38644 (kg/ha), depth = 50 (mm), type = no3_n
+5 February 2011(Day of year=36), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       105.39 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 February 2011(Day of year=53), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 100.80532 (kg/ha), depth = 50 (mm), type = no3_n
+22 February 2011(Day of year=53), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.81 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+3 March 2011(Day of year=62), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 102.72665 (kg/ha), depth = 50 (mm), type = no3_n
+3 March 2011(Day of year=62), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       102.73 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 March 2011 - FloralInitiation
+                            LAI = 2.27 (m^2/m^2)
+           Above Ground Biomass = 884.94 (g/m^2)
+13 March 2011(Day of year=72), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 109.87431 (kg/ha), depth = 50 (mm), type = no3_n
+13 March 2011(Day of year=72), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       109.87 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+30 March 2011(Day of year=89), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 109.66933 (kg/ha), depth = 50 (mm), type = no3_n
+30 March 2011(Day of year=89), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       109.67 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 April 2011(Day of year=112), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.05837 (kg/ha), depth = 50 (mm), type = no3_n
+22 April 2011(Day of year=112), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.06 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+21 May 2011 - FinalLeaf
+                            LAI = 2.98 (m^2/m^2)
+           Above Ground Biomass = 2030.81 (g/m^2)
+23 June 2011 - Flowering
+                            LAI = 2.98 (m^2/m^2)
+           Above Ground Biomass = 2310.52 (g/m^2)
+2 July 2011(Day of year=183), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 107.32999 (kg/ha), depth = 50 (mm), type = no3_n
+2 July 2011(Day of year=183), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       107.33 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 August 2011(Day of year=234), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.56775 (kg/ha), depth = 50 (mm), type = no3_n
+22 August 2011(Day of year=234), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.57 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+28 August 2011 - StartFruitFill
+                            LAI = 2.98 (m^2/m^2)
+           Above Ground Biomass = 3027.71 (g/m^2)
+23 September 2011(Day of year=266), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 100.78371 (kg/ha), depth = 50 (mm), type = no3_n
+23 September 2011(Day of year=266), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.78 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+3 December 2011(Day of year=337), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 102.35693 (kg/ha), depth = 50 (mm), type = no3_n
+3 December 2011(Day of year=337), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       102.36 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+18 January 2012 - EndFruitFill
+                            LAI = 2.98 (m^2/m^2)
+           Above Ground Biomass = 5297.82 (g/m^2)
+22 January 2012(Day of year=22), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.78211 (kg/ha), depth = 50 (mm), type = no3_n
+22 January 2012(Day of year=22), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.78 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+25 January 2012 - Maturity
+                            LAI = 2.98 (m^2/m^2)
+           Above Ground Biomass = 5402.05 (g/m^2)
+2 February 2012 - HarvestRipe
+                            LAI = 2.98 (m^2/m^2)
+           Above Ground Biomass = 5548.60 (g/m^2)
+2 February 2012(Day of year=33), Harvesting rule: 
+     Manager sending message :- banana2 harvest
+
+     2 February 2012  - Harvesting Fruit from Banana2
+     -----------------------------------------------------
+     Fruit Yield DWt: 1050.00 (g/m^2)
+     Fruit Size: 0.04 (g)
+     Fruit Number: 25000.00 (/m^2)
+
+     Manager sending message :- banana2 end_crop
+6 February 2012(Day of year=37), Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 101.21610 (kg/ha), depth = 50 (mm), type = no3_n
+6 February 2012(Day of year=37), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       101.22 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+20 February 2012(Day of year=51), clock: 
+     Simulation is terminating due to end criteria being met.
+
