@@ -22,7 +22,7 @@ public class EventHandler : Attribute
     public string EventName
     {
         get { return _EventName; }
-        set { _EventName = EventName; }
+        set { _EventName = value; }
     }
 }
 
