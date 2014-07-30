@@ -63,15 +63,15 @@ Paddock:
      Output file = Continuous Maize and Weeds.out
      Format = normal
 
-------- accum Initialisation --------------------------------------------------
+------- paddock.accum Initialisation ------------------------------------------
      Initialising
 
-------- Canopy Initialisation -------------------------------------------------
+------- paddock.Canopy Initialisation -----------------------------------------
       Initialising
       Module rotation for intercropping :
      maize                           weed
 
-------- Sow using a variable rule with intercropping Initialisation -----------
+------- paddock.Sow using a variable rule with intercropping Initialisation ---
      Manager rules:
      
      SECTION:- init
@@ -291,8 +291,7 @@ Paddock:
      Manager creating a new local real variable : wht_sow_opp_days = 0.00000
      Manager creating a new local real variable : days_this_year = 0.00000
 
-------- Sow WEEDS using a variable rule with intercropping Initialisation -----
-     Manager rules:
+------- paddock.Sow WEEDS using a variable rule with intercropping Initialisation      Manager rules:
      
      SECTION:- init
               next = 1
@@ -397,7 +396,7 @@ Paddock:
      
      Manager creating a new local real variable : fert_day_pre_sow = 0.00000
 
-------- Output at harvesting for intercropping Initialisation -----------------
+------- paddock.Output at harvesting for intercropping Initialisation ---------
      Manager rules:
      
      SECTION:- end_of_day
@@ -407,7 +406,7 @@ Paddock:
      END of rules
      
 
-------- Harvesting rule for intercropping Initialisation ----------------------
+------- paddock.Harvesting rule for intercropping Initialisation --------------
      Manager rules:
      
      SECTION:- init
@@ -440,8 +439,7 @@ Paddock:
      
      Manager creating a new local real variable : maize_to_harvest = 0.00000
 
-------- Weeding at threshold weed biomass or maximum days Initialisation ------
-     Manager rules:
+------- paddock.Weeding at threshold weed biomass or maximum days Initialisation      Manager rules:
      
      SECTION:- init
                daemerge = 0
@@ -500,7 +498,7 @@ Paddock:
      
      Manager creating a new local real variable : daemerge = 0.00000
 
-------- Remove all residues on a fixed date Initialisation --------------------
+------- paddock.Remove all residues on a fixed date Initialisation ------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -510,7 +508,7 @@ Paddock:
      END of rules
      
 
-------- Soil Water Initialisation ---------------------------------------------
+------- paddock.Soil Water Initialisation -------------------------------------
      
          - Reading constants
      
@@ -588,7 +586,7 @@ Paddock:
             CONA:                     2.50 ()
             Eo from priestly-taylor
 
-------- SurfaceOrganicMatter Initialisation -----------------------------------
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
      
          - Reading constants
      
@@ -607,7 +605,7 @@ Paddock:
                       Effective Cover from Surface Materials =   0.0
      
 
-------- Soil Nitrogen Initialisation ------------------------------------------
+------- paddock.Soil Nitrogen Initialisation ----------------------------------
      
         - Reading Parameters
      
@@ -662,7 +660,7 @@ Paddock:
            Totals  150711.3 10393.9   358.7    44.8   400.0     8.9
           ---------------------------------------------------------
 
-------- maize Initialisation --------------------------------------------------
+------- paddock.maize Initialisation ------------------------------------------
       Initialising, V1.0 2000.01.21
      
          - Reading constants
@@ -671,11 +669,11 @@ Paddock:
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : wd_sow_opp_days = 0.00000
      Manager creating a new local real variable : weed_count_in = 0.00000
-1 October 1985(Day of year=274), Sow WEEDS using a variable rule with intercropping: 
+1 October 1985(Day of year=274), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager creating a new local real variable : surface_moist = 0.47575
-10 October 1985(Day of year=283), Sow WEEDS using a variable rule with intercropping: 
+10 October 1985(Day of year=283), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-10 October 1985(Day of year=283), weed: 
+10 October 1985(Day of year=283), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -744,15 +742,15 @@ Paddock:
             283   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-11 October 1985(Day of year=284), weed: 
+11 October 1985(Day of year=284), paddock.weed: 
       stage 2.0 germination
-15 October 1985(Day of year=288), weed: 
+15 October 1985(Day of year=288), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   14.23 (mm)
-1 November 1985(Day of year=305), Sow using a variable rule with intercropping: 
+1 November 1985(Day of year=305), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
-1 November 1985(Day of year=305), maize: 
+1 November 1985(Day of year=305), paddock.maize: 
      Sowing initiate
      
      
@@ -812,7 +810,7 @@ Paddock:
      
      
      Manager sending message :- weed kill_crop  plants_kill_fraction = 1
-1 November 1985(Day of year=305), weed: 
+1 November 1985(Day of year=305), paddock.weed: 
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =     0.0  (kg/ha)
@@ -821,20 +819,20 @@ Paddock:
                           N  (kg/ha) =                   0.79                    0.12
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-1 November 1985(Day of year=305), SurfaceOrganicMatter: 
+1 November 1985(Day of year=305), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
      Manager sending message :- soil water tillage  type = user_defined, cn_red = 0, cn_rain = 0
-1 November 1985(Day of year=305), Soil Water: 
+1 November 1985(Day of year=305), paddock.Soil Water: 
      Soil tilled using user_defined
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
-1 November 1985(Day of year=305), Weeding at threshold weed biomass or maximum days: 
+1 November 1985(Day of year=305), paddock.Weeding at threshold weed biomass or maximum days: 
      Manager creating a new local real variable : weed_count_out = 0.00000
-2 November 1985(Day of year=306), Sow WEEDS using a variable rule with intercropping: 
+2 November 1985(Day of year=306), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-2 November 1985(Day of year=306), weed: 
+2 November 1985(Day of year=306), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -903,40 +901,40 @@ Paddock:
             306   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-2 November 1985(Day of year=306), maize: 
+2 November 1985(Day of year=306), paddock.maize: 
       stage    2.0 germination
-3 November 1985(Day of year=307), weed: 
+3 November 1985(Day of year=307), paddock.weed: 
       stage 2.0 germination
-6 November 1985(Day of year=310), weed: 
+6 November 1985(Day of year=310), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   14.89 (mm)
-7 November 1985(Day of year=311), maize: 
+7 November 1985(Day of year=311), paddock.maize: 
       stage    3.0 emergence
                           biomass =          0.4400000E-01   lai =    0.8360000E-03
                           stover N conc =    4.400000       extractable sw =    21.13015
-21 November 1985(Day of year=325), maize: 
+21 November 1985(Day of year=325), paddock.maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9098176       lai =    0.1190429E-01
                           stover N conc =    3.464698       extractable sw =    28.91637
-24 November 1985(Day of year=328), maize: 
+24 November 1985(Day of year=328), paddock.maize: 
       stage    5.0 floral_initiation
                           biomass =           1.440009       lai =    0.1887110E-01
                           stover N conc =    3.319690       extractable sw =    26.37302
-6 December 1985(Day of year=340), Sow using a variable rule with intercropping: 
+6 December 1985(Day of year=340), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
 6 December 1985(Day of year=340), fertiliser: 
      
    - Reading Fertiliser Type Parameters
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
-6 December 1985(Day of year=340), weed: 
+6 December 1985(Day of year=340), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =          28.04 (g/m^2)   lai          =   0.226 (m^2/m^2)
                      stover N conc =     2.96 (%)    extractable sw =   24.70 (mm)
-10 December 1985(Day of year=344), Weeding at threshold weed biomass or maximum days: 
+10 December 1985(Day of year=344), paddock.Weeding at threshold weed biomass or maximum days: 
      Manager sending message :- weed harvest  remove = 0
-10 December 1985(Day of year=344), weed: 
+10 December 1985(Day of year=344), paddock.weed: 
      
       flowering day          =    0                           stover (kg/ha)         =      423.7
       maturity day           =    0                           grain yield (kg/ha)    =        0.0
@@ -979,13 +977,13 @@ Paddock:
                           N  (kg/ha) =                   0.18                    0.19
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
-10 December 1985(Day of year=344), SurfaceOrganicMatter: 
+10 December 1985(Day of year=344), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
-12 December 1985(Day of year=346), Sow WEEDS using a variable rule with intercropping: 
+12 December 1985(Day of year=346), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-12 December 1985(Day of year=346), weed: 
+12 December 1985(Day of year=346), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -1054,57 +1052,57 @@ Paddock:
             346   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-13 December 1985(Day of year=347), weed: 
+13 December 1985(Day of year=347), paddock.weed: 
       stage 2.0 germination
-15 December 1985(Day of year=349), weed: 
+15 December 1985(Day of year=349), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =    5.01 (mm)
-9 January 1986(Day of year=9), weed: 
+9 January 1986(Day of year=9), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =          15.05 (g/m^2)   lai          =   0.177 (m^2/m^2)
                      stover N conc =     2.28 (%)    extractable sw =    5.54 (mm)
-9 January 1986(Day of year=9), maize: 
+9 January 1986(Day of year=9), paddock.maize: 
       stage    6.0 flag_leaf
                           biomass =           138.8917       lai =    0.4578446
                           stover N conc =    2.054228       extractable sw =    7.322514
-10 January 1986(Day of year=10), maize: 
+10 January 1986(Day of year=10), paddock.maize: 
       stage    7.0 flowering
                           biomass =           141.8089       lai =    0.4477454
                           stover N conc =    2.016629       extractable sw =    6.740234
-19 January 1986(Day of year=19), maize: 
+19 January 1986(Day of year=19), paddock.maize: 
       stage    8.0 start_grain_fill
                           biomass =           150.3324       lai =    0.3100356
                           stover N conc =    1.958731       extractable sw =    2.484447
-10 February 1986(Day of year=41), weed: 
+10 February 1986(Day of year=41), paddock.weed: 
       stage 5.0 floral_initiation
                      biomass =          52.80 (g/m^2)   lai          =   0.613 (m^2/m^2)
                      stover N conc =     1.14 (%)    extractable sw =   11.53 (mm)
-13 February 1986(Day of year=44), weed: 
+13 February 1986(Day of year=44), paddock.weed: 
       stage 6.0 flowering
                      biomass =          58.02 (g/m^2)   lai          =   0.652 (m^2/m^2)
                      stover N conc =     1.04 (%)    extractable sw =    6.56 (mm)
-20 February 1986(Day of year=51), maize: 
+20 February 1986(Day of year=51), paddock.maize: 
       stage    9.0 end_grain_fill
                           biomass =           223.7560       lai =    0.2030593
                           stover N conc =    1.381175       extractable sw =    2.890416
-21 February 1986(Day of year=52), maize: 
+21 February 1986(Day of year=52), paddock.maize: 
       stage   10.0 maturity
                           biomass =           224.2396       lai =    0.1946610
                           stover N conc =    1.379158       extractable sw =    2.664355
-21 February 1986(Day of year=52), weed: 
+21 February 1986(Day of year=52), paddock.weed: 
       stage 7.0 start_grain_fill
                      biomass =          65.72 (g/m^2)   lai          =   0.541 (m^2/m^2)
                      stover N conc =     0.98 (%)    extractable sw =    1.60 (mm)
-22 February 1986(Day of year=53), maize: 
+22 February 1986(Day of year=53), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           224.2396       lai =    0.8360147E-03
                           stover N conc =    1.408884       extractable sw =    2.266955
-23 February 1986(Day of year=54), maize: 
+23 February 1986(Day of year=54), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           224.2396       lai =    0.8360147E-03
                           stover N conc =    1.408884       extractable sw =    2.205397
-23 February 1986(Day of year=54), Harvesting rule for intercropping: 
+23 February 1986(Day of year=54), paddock.Harvesting rule for intercropping: 
      Manager sending message :- maize harvest  remove = 0.95
      
      
@@ -1150,29 +1148,29 @@ Paddock:
      
      Manager creating a new local real variable : fert_tot = 0.00000
      Manager creating a new local real variable : sow_year = 0.00000
-17 March 1986(Day of year=76), weed: 
+17 March 1986(Day of year=76), paddock.weed: 
       stage 8.0 end_grain_fill
                      biomass =          69.58 (g/m^2)   lai          =   0.116 (m^2/m^2)
                      stover N conc =     1.13 (%)    extractable sw =    0.22 (mm)
-21 March 1986(Day of year=80), weed: 
+21 March 1986(Day of year=80), paddock.weed: 
       stage 9.0 maturity
                      biomass =          69.77 (g/m^2)   lai          =   0.030 (m^2/m^2)
                      stover N conc =     1.25 (%)    extractable sw =    0.18 (mm)
-22 March 1986(Day of year=81), weed: 
+22 March 1986(Day of year=81), paddock.weed: 
       stage 10.0 harvest_ripe
                      biomass =          69.82 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     1.31 (%)    extractable sw =    0.18 (mm)
-23 March 1986(Day of year=82), weed: 
+23 March 1986(Day of year=82), paddock.weed: 
       stage 11.0 end_crop
-8 May 1986(Day of year=128), Remove all residues on a fixed date: 
+8 May 1986(Day of year=128), paddock.Remove all residues on a fixed date: 
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-8 May 1986(Day of year=128), SurfaceOrganicMatter: 
+8 May 1986(Day of year=128), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
-13 November 1986(Day of year=317), Sow using a variable rule with intercropping: 
+13 November 1986(Day of year=317), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
-13 November 1986(Day of year=317), maize: 
+13 November 1986(Day of year=317), paddock.maize: 
      Sowing initiate
      
      
@@ -1232,7 +1230,7 @@ Paddock:
      
      
      Manager sending message :- weed kill_crop  plants_kill_fraction = 1
-13 November 1986(Day of year=317), weed: 
+13 November 1986(Day of year=317), paddock.weed: 
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =   104.6  (kg/ha)
@@ -1241,18 +1239,18 @@ Paddock:
                           N  (kg/ha) =                   6.75                    0.81
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-13 November 1986(Day of year=317), SurfaceOrganicMatter: 
+13 November 1986(Day of year=317), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
      Manager sending message :- soil water tillage  type = user_defined, cn_red = 0, cn_rain = 0
-13 November 1986(Day of year=317), Soil Water: 
+13 November 1986(Day of year=317), paddock.Soil Water: 
      Soil tilled using user_defined
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
-14 November 1986(Day of year=318), Sow WEEDS using a variable rule with intercropping: 
+14 November 1986(Day of year=318), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-14 November 1986(Day of year=318), weed: 
+14 November 1986(Day of year=318), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -1321,40 +1319,40 @@ Paddock:
             318   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-14 November 1986(Day of year=318), maize: 
+14 November 1986(Day of year=318), paddock.maize: 
       stage    2.0 germination
-15 November 1986(Day of year=319), weed: 
+15 November 1986(Day of year=319), paddock.weed: 
       stage 2.0 germination
-18 November 1986(Day of year=322), maize: 
+18 November 1986(Day of year=322), paddock.maize: 
       stage    3.0 emergence
                           biomass =          0.4400000E-01   lai =    0.8360000E-03
                           stover N conc =    4.400000       extractable sw =    17.90888
-18 November 1986(Day of year=322), weed: 
+18 November 1986(Day of year=322), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   17.91 (mm)
-5 December 1986(Day of year=339), maize: 
+5 December 1986(Day of year=339), paddock.maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9516089       lai =    0.1131284E-01
                           stover N conc =    3.332661       extractable sw =    47.30816
-9 December 1986(Day of year=343), maize: 
+9 December 1986(Day of year=343), paddock.maize: 
       stage    5.0 floral_initiation
                           biomass =           1.757508       lai =    0.1952476E-01
                           stover N conc =    3.178262       extractable sw =    68.10746
-18 December 1986(Day of year=352), Sow using a variable rule with intercropping: 
+18 December 1986(Day of year=352), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
 18 December 1986(Day of year=352), fertiliser: 
      
    - Reading Fertiliser Type Parameters
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
-19 December 1986(Day of year=353), weed: 
+19 December 1986(Day of year=353), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =          26.59 (g/m^2)   lai          =   0.192 (m^2/m^2)
                      stover N conc =     3.01 (%)    extractable sw =   58.81 (mm)
-22 December 1986(Day of year=356), Weeding at threshold weed biomass or maximum days: 
+22 December 1986(Day of year=356), paddock.Weeding at threshold weed biomass or maximum days: 
      Manager sending message :- weed harvest  remove = 0
-22 December 1986(Day of year=356), weed: 
+22 December 1986(Day of year=356), paddock.weed: 
      
       flowering day          =    0                           stover (kg/ha)         =      408.2
       maturity day           =    0                           grain yield (kg/ha)    =        0.0
@@ -1402,13 +1400,13 @@ Paddock:
                           N  (kg/ha) =                   0.18                    0.19
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
-22 December 1986(Day of year=356), SurfaceOrganicMatter: 
+22 December 1986(Day of year=356), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
-6 January 1987(Day of year=6), Sow WEEDS using a variable rule with intercropping: 
+6 January 1987(Day of year=6), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-6 January 1987(Day of year=6), weed: 
+6 January 1987(Day of year=6), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -1477,49 +1475,49 @@ Paddock:
               6   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-7 January 1987(Day of year=7), weed: 
+7 January 1987(Day of year=7), paddock.weed: 
       stage 2.0 germination
-9 January 1987(Day of year=9), weed: 
+9 January 1987(Day of year=9), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   17.83 (mm)
-19 January 1987(Day of year=19), maize: 
+19 January 1987(Day of year=19), paddock.maize: 
       stage    6.0 flag_leaf
                           biomass =           282.7080       lai =     1.379899
                           stover N conc =    1.635329       extractable sw =    55.35367
-20 January 1987(Day of year=20), maize: 
+20 January 1987(Day of year=20), paddock.maize: 
       stage    7.0 flowering
                           biomass =           290.2527       lai =     1.344940
                           stover N conc =    1.617244       extractable sw =    59.13600
-28 January 1987(Day of year=28), maize: 
+28 January 1987(Day of year=28), paddock.maize: 
       stage    8.0 start_grain_fill
                           biomass =           347.0842       lai =     1.144227
                           stover N conc =    1.429085       extractable sw =    97.41239
-31 January 1987(Day of year=31), weed: 
+31 January 1987(Day of year=31), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =           2.98 (g/m^2)   lai          =   0.058 (m^2/m^2)
                      stover N conc =     2.87 (%)    extractable sw =   25.70 (mm)
-26 February 1987(Day of year=57), maize: 
+26 February 1987(Day of year=57), paddock.maize: 
       stage    9.0 end_grain_fill
                           biomass =           581.8039       lai =    0.8148032
                           stover N conc =   0.9384637       extractable sw =    25.89926
-27 February 1987(Day of year=58), maize: 
+27 February 1987(Day of year=58), paddock.maize: 
       stage   10.0 maturity
                           biomass =           585.0703       lai =    0.7911224
                           stover N conc =   0.9341318       extractable sw =    23.12462
-28 February 1987(Day of year=59), maize: 
+28 February 1987(Day of year=59), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           585.0703       lai =    0.8355379E-03
                           stover N conc =   0.9569328       extractable sw =    22.31796
-1 March 1987(Day of year=60), weed: 
+1 March 1987(Day of year=60), paddock.weed: 
       stage 5.0 floral_initiation
                      biomass =          25.75 (g/m^2)   lai          =   0.483 (m^2/m^2)
                      stover N conc =     1.04 (%)    extractable sw =    2.95 (mm)
-1 March 1987(Day of year=60), maize: 
+1 March 1987(Day of year=60), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           585.0703       lai =    0.8355379E-03
                           stover N conc =   0.9569328       extractable sw =    21.93874
-1 March 1987(Day of year=60), Harvesting rule for intercropping: 
+1 March 1987(Day of year=60), paddock.Harvesting rule for intercropping: 
      Manager sending message :- maize harvest  remove = 0.95
      
      
@@ -1563,37 +1561,37 @@ Paddock:
                           N  (kg/ha) =                  4.55                    7.07
                           P  (kg/ha) =                  0.00                    0.00
      
-4 March 1987(Day of year=63), weed: 
+4 March 1987(Day of year=63), paddock.weed: 
       stage 6.0 flowering
                      biomass =          27.75 (g/m^2)   lai          =   0.491 (m^2/m^2)
                      stover N conc =     1.00 (%)    extractable sw =    4.60 (mm)
-13 March 1987(Day of year=72), weed: 
+13 March 1987(Day of year=72), paddock.weed: 
       stage 7.0 start_grain_fill
                      biomass =          35.46 (g/m^2)   lai          =   0.416 (m^2/m^2)
                      stover N conc =     0.88 (%)    extractable sw =    2.97 (mm)
-11 April 1987(Day of year=101), weed: 
+11 April 1987(Day of year=101), paddock.weed: 
       stage 8.0 end_grain_fill
                      biomass =          48.65 (g/m^2)   lai          =   0.060 (m^2/m^2)
                      stover N conc =     0.55 (%)    extractable sw =    2.60 (mm)
-16 April 1987(Day of year=106), weed: 
+16 April 1987(Day of year=106), paddock.weed: 
       stage 9.0 maturity
                      biomass =          49.46 (g/m^2)   lai          =   0.023 (m^2/m^2)
                      stover N conc =     0.53 (%)    extractable sw =    2.45 (mm)
-17 April 1987(Day of year=107), weed: 
+17 April 1987(Day of year=107), paddock.weed: 
       stage 10.0 harvest_ripe
                      biomass =          49.58 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.53 (%)    extractable sw =    2.42 (mm)
-18 April 1987(Day of year=108), weed: 
+18 April 1987(Day of year=108), paddock.weed: 
       stage 11.0 end_crop
-8 May 1987(Day of year=128), Remove all residues on a fixed date: 
+8 May 1987(Day of year=128), paddock.Remove all residues on a fixed date: 
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-8 May 1987(Day of year=128), SurfaceOrganicMatter: 
+8 May 1987(Day of year=128), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
-13 November 1987(Day of year=317), Sow using a variable rule with intercropping: 
+13 November 1987(Day of year=317), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
-13 November 1987(Day of year=317), maize: 
+13 November 1987(Day of year=317), paddock.maize: 
      Sowing initiate
      
      
@@ -1653,7 +1651,7 @@ Paddock:
      
      
      Manager sending message :- weed kill_crop  plants_kill_fraction = 1
-13 November 1987(Day of year=317), weed: 
+13 November 1987(Day of year=317), paddock.weed: 
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =    74.0  (kg/ha)
@@ -1662,18 +1660,18 @@ Paddock:
                           N  (kg/ha) =                   5.93                    0.58
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-13 November 1987(Day of year=317), SurfaceOrganicMatter: 
+13 November 1987(Day of year=317), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
      Manager sending message :- soil water tillage  type = user_defined, cn_red = 0, cn_rain = 0
-13 November 1987(Day of year=317), Soil Water: 
+13 November 1987(Day of year=317), paddock.Soil Water: 
      Soil tilled using user_defined
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
-14 November 1987(Day of year=318), Sow WEEDS using a variable rule with intercropping: 
+14 November 1987(Day of year=318), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-14 November 1987(Day of year=318), weed: 
+14 November 1987(Day of year=318), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -1742,40 +1740,40 @@ Paddock:
             318   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-14 November 1987(Day of year=318), maize: 
+14 November 1987(Day of year=318), paddock.maize: 
       stage    2.0 germination
-15 November 1987(Day of year=319), weed: 
+15 November 1987(Day of year=319), paddock.weed: 
       stage 2.0 germination
-18 November 1987(Day of year=322), weed: 
+18 November 1987(Day of year=322), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   18.21 (mm)
-18 November 1987(Day of year=322), maize: 
+18 November 1987(Day of year=322), paddock.maize: 
       stage    3.0 emergence
                           biomass =          0.4400000E-01   lai =    0.8360000E-03
                           stover N conc =    4.400000       extractable sw =    18.20786
-3 December 1987(Day of year=337), maize: 
+3 December 1987(Day of year=337), paddock.maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.9537396       lai =    0.1164984E-01
                           stover N conc =    3.362459       extractable sw =    55.92915
-6 December 1987(Day of year=340), maize: 
+6 December 1987(Day of year=340), paddock.maize: 
       stage    5.0 floral_initiation
                           biomass =           1.646603       lai =    0.1912374E-01
                           stover N conc =    3.215600       extractable sw =    47.97726
-16 December 1987(Day of year=350), weed: 
+16 December 1987(Day of year=350), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =          26.67 (g/m^2)   lai          =   0.222 (m^2/m^2)
                      stover N conc =     2.94 (%)    extractable sw =   61.24 (mm)
-18 December 1987(Day of year=352), Sow using a variable rule with intercropping: 
+18 December 1987(Day of year=352), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
 18 December 1987(Day of year=352), fertiliser: 
      
    - Reading Fertiliser Type Parameters
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
-22 December 1987(Day of year=356), Weeding at threshold weed biomass or maximum days: 
+22 December 1987(Day of year=356), paddock.Weeding at threshold weed biomass or maximum days: 
      Manager sending message :- weed harvest  remove = 0
-22 December 1987(Day of year=356), weed: 
+22 December 1987(Day of year=356), paddock.weed: 
      
       flowering day          =    0                           stover (kg/ha)         =      620.9
       maturity day           =    0                           grain yield (kg/ha)    =        0.0
@@ -1823,13 +1821,13 @@ Paddock:
                           N  (kg/ha) =                   0.18                    0.24
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
-22 December 1987(Day of year=356), SurfaceOrganicMatter: 
+22 December 1987(Day of year=356), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
-24 December 1987(Day of year=358), Sow WEEDS using a variable rule with intercropping: 
+24 December 1987(Day of year=358), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-24 December 1987(Day of year=358), weed: 
+24 December 1987(Day of year=358), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -1898,53 +1896,53 @@ Paddock:
             358   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-25 December 1987(Day of year=359), weed: 
+25 December 1987(Day of year=359), paddock.weed: 
       stage 2.0 germination
-27 December 1987(Day of year=361), weed: 
+27 December 1987(Day of year=361), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   11.48 (mm)
-15 January 1988(Day of year=15), maize: 
+15 January 1988(Day of year=15), paddock.maize: 
       stage    6.0 flag_leaf
                           biomass =           241.2653       lai =     1.208463
                           stover N conc =    1.397793       extractable sw =    46.59778
-16 January 1988(Day of year=16), maize: 
+16 January 1988(Day of year=16), paddock.maize: 
       stage    7.0 flowering
                           biomass =           243.6059       lai =     1.208463
                           stover N conc =    1.402329       extractable sw =    48.19788
-20 January 1988(Day of year=20), weed: 
+20 January 1988(Day of year=20), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =           8.05 (g/m^2)   lai          =   0.155 (m^2/m^2)
                      stover N conc =     2.84 (%)    extractable sw =   40.30 (mm)
-25 January 1988(Day of year=25), maize: 
+25 January 1988(Day of year=25), paddock.maize: 
       stage    8.0 start_grain_fill
                           biomass =           324.5919       lai =     1.176338
                           stover N conc =    1.160565       extractable sw =    73.25926
-22 February 1988(Day of year=53), weed: 
+22 February 1988(Day of year=53), paddock.weed: 
       stage 5.0 floral_initiation
                      biomass =          59.25 (g/m^2)   lai          =   0.968 (m^2/m^2)
                      stover N conc =     1.13 (%)    extractable sw =   33.92 (mm)
-25 February 1988(Day of year=56), weed: 
+25 February 1988(Day of year=56), paddock.weed: 
       stage 6.0 flowering
                      biomass =          65.01 (g/m^2)   lai          =   1.018 (m^2/m^2)
                      stover N conc =     1.08 (%)    extractable sw =   30.89 (mm)
-28 February 1988(Day of year=59), maize: 
+28 February 1988(Day of year=59), paddock.maize: 
       stage    9.0 end_grain_fill
                           biomass =           500.2303       lai =    0.7095487
                           stover N conc =   0.8641436       extractable sw =    77.95031
-29 February 1988(Day of year=60), maize: 
+29 February 1988(Day of year=60), paddock.maize: 
       stage   10.0 maturity
                           biomass =           502.0168       lai =    0.6930416
                           stover N conc =   0.8642249       extractable sw =    83.18767
-1 March 1988(Day of year=61), maize: 
+1 March 1988(Day of year=61), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           502.0168       lai =    0.8358955E-03
                           stover N conc =   0.8828557       extractable sw =    83.93549
-2 March 1988(Day of year=62), maize: 
+2 March 1988(Day of year=62), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           502.0168       lai =    0.8358955E-03
                           stover N conc =   0.8828557       extractable sw =    83.10837
-2 March 1988(Day of year=62), Harvesting rule for intercropping: 
+2 March 1988(Day of year=62), paddock.Harvesting rule for intercropping: 
      Manager sending message :- maize harvest  remove = 0.95
      
      
@@ -1988,33 +1986,33 @@ Paddock:
                           N  (kg/ha) =                  2.03                    5.63
                           P  (kg/ha) =                  0.00                    0.00
      
-5 March 1988(Day of year=65), weed: 
+5 March 1988(Day of year=65), paddock.weed: 
       stage 7.0 start_grain_fill
                      biomass =          87.51 (g/m^2)   lai          =   1.063 (m^2/m^2)
                      stover N conc =     0.94 (%)    extractable sw =   56.86 (mm)
-6 April 1988(Day of year=97), weed: 
+6 April 1988(Day of year=97), paddock.weed: 
       stage 8.0 end_grain_fill
                      biomass =         155.14 (g/m^2)   lai          =   0.139 (m^2/m^2)
                      stover N conc =     0.82 (%)    extractable sw =  162.48 (mm)
-11 April 1988(Day of year=102), weed: 
+11 April 1988(Day of year=102), paddock.weed: 
       stage 9.0 maturity
                      biomass =         157.47 (g/m^2)   lai          =   0.053 (m^2/m^2)
                      stover N conc =     0.88 (%)    extractable sw =  200.18 (mm)
-12 April 1988(Day of year=103), weed: 
+12 April 1988(Day of year=103), paddock.weed: 
       stage 10.0 harvest_ripe
                      biomass =         158.07 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.89 (%)    extractable sw =  202.37 (mm)
-13 April 1988(Day of year=104), weed: 
+13 April 1988(Day of year=104), paddock.weed: 
       stage 11.0 end_crop
-8 May 1988(Day of year=129), Remove all residues on a fixed date: 
+8 May 1988(Day of year=129), paddock.Remove all residues on a fixed date: 
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-8 May 1988(Day of year=129), SurfaceOrganicMatter: 
+8 May 1988(Day of year=129), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
-17 November 1988(Day of year=322), Sow using a variable rule with intercropping: 
+17 November 1988(Day of year=322), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- maize sow  cultivar = sc401, plants = 2.2 (plants/m2), sowing_depth = 100, row_spacing = 0.9
-17 November 1988(Day of year=322), maize: 
+17 November 1988(Day of year=322), paddock.maize: 
      Sowing initiate
      
      
@@ -2074,7 +2072,7 @@ Paddock:
      
      
      Manager sending message :- weed kill_crop  plants_kill_fraction = 1
-17 November 1988(Day of year=322), weed: 
+17 November 1988(Day of year=322), paddock.weed: 
      Plant kill. 100.00% crop killed because of external action.
      Manager sending message :- weed end_crop
      Crop ended. Yield (dw) =   235.8  (kg/ha)
@@ -2083,18 +2081,18 @@ Paddock:
                           N  (kg/ha) =                  21.33                    1.78
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-17 November 1988(Day of year=322), SurfaceOrganicMatter: 
+17 November 1988(Day of year=322), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
      Manager sending message :- soil water tillage  type = user_defined, cn_red = 0, cn_rain = 0
-17 November 1988(Day of year=322), Soil Water: 
+17 November 1988(Day of year=322), paddock.Soil Water: 
      Soil tilled using user_defined
                                              CN reduction =     0.00
                                              Acc rain     =     0.00
-18 November 1988(Day of year=323), Sow WEEDS using a variable rule with intercropping: 
+18 November 1988(Day of year=323), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-18 November 1988(Day of year=323), weed: 
+18 November 1988(Day of year=323), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -2163,40 +2161,40 @@ Paddock:
             323   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-18 November 1988(Day of year=323), maize: 
+18 November 1988(Day of year=323), paddock.maize: 
       stage    2.0 germination
-19 November 1988(Day of year=324), weed: 
+19 November 1988(Day of year=324), paddock.weed: 
       stage 2.0 germination
-21 November 1988(Day of year=326), weed: 
+21 November 1988(Day of year=326), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =   22.09 (mm)
-22 November 1988(Day of year=327), maize: 
+22 November 1988(Day of year=327), paddock.maize: 
       stage    3.0 emergence
                           biomass =          0.4400000E-01   lai =    0.8360000E-03
                           stover N conc =    4.400000       extractable sw =    16.97269
-6 December 1988(Day of year=341), maize: 
+6 December 1988(Day of year=341), paddock.maize: 
       stage    4.0 end_of_juvenile
                           biomass =          0.8660091       lai =    0.1093857E-01
                           stover N conc =    3.397619       extractable sw =    45.72028
-9 December 1988(Day of year=344), maize: 
+9 December 1988(Day of year=344), paddock.maize: 
       stage    5.0 floral_initiation
                           biomass =           1.513169       lai =    0.2028975E-01
                           stover N conc =    3.231017       extractable sw =    44.90421
-18 December 1988(Day of year=353), weed: 
+18 December 1988(Day of year=353), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =          25.03 (g/m^2)   lai          =   0.219 (m^2/m^2)
                      stover N conc =     3.05 (%)    extractable sw =   58.46 (mm)
-22 December 1988(Day of year=357), Sow using a variable rule with intercropping: 
+22 December 1988(Day of year=357), paddock.Sow using a variable rule with intercropping: 
      Manager sending message :- fertiliser apply  amount = 27 (kg/ha), depth = 50 (mm), type = nh4no3
 22 December 1988(Day of year=357), fertiliser: 
      
    - Reading Fertiliser Type Parameters
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
-25 December 1988(Day of year=360), Weeding at threshold weed biomass or maximum days: 
+25 December 1988(Day of year=360), paddock.Weeding at threshold weed biomass or maximum days: 
      Manager sending message :- weed harvest  remove = 0
-25 December 1988(Day of year=360), weed: 
+25 December 1988(Day of year=360), paddock.weed: 
      
       flowering day          =    0                           stover (kg/ha)         =      684.1
       maturity day           =    0                           grain yield (kg/ha)    =        0.0
@@ -2244,21 +2242,21 @@ Paddock:
                           N  (kg/ha) =                   0.18                    0.25
      
      Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.1, tillage_depth = 25
-25 December 1988(Day of year=360), SurfaceOrganicMatter: 
+25 December 1988(Day of year=360), paddock.SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.10
                                              Incorporated Depth    =    25.00
-19 January 1989(Day of year=19), maize: 
+19 January 1989(Day of year=19), paddock.maize: 
       stage    6.0 flag_leaf
                           biomass =           266.0273       lai =     1.179674
                           stover N conc =    1.484429       extractable sw =    91.98656
-20 January 1989(Day of year=20), maize: 
+20 January 1989(Day of year=20), paddock.maize: 
       stage    7.0 flowering
                           biomass =           273.5462       lai =     1.154617
                           stover N conc =    1.454599       extractable sw =    86.34393
-25 January 1989(Day of year=25), Sow WEEDS using a variable rule with intercropping: 
+25 January 1989(Day of year=25), paddock.Sow WEEDS using a variable rule with intercropping: 
      Manager sending message :- weed sow  crop_class = summer_grass, plants = 5 (plants/m2), sowing_depth = 15, cultivar = early, row_spacing = 350
-25 January 1989(Day of year=25), weed: 
+25 January 1989(Day of year=25), paddock.weed: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = early
@@ -2327,37 +2325,37 @@ Paddock:
              25   15.0    5.0  350.0   0.0   0.0 early
          ------------------------------------------------
      
-26 January 1989(Day of year=26), weed: 
+26 January 1989(Day of year=26), paddock.weed: 
       stage 2.0 germination
-29 January 1989(Day of year=29), weed: 
+29 January 1989(Day of year=29), paddock.weed: 
       stage 3.0 emergence
                      biomass =           0.30 (g/m^2)   lai          =   0.001 (m^2/m^2)
                      stover N conc =     6.00 (%)    extractable sw =    3.61 (mm)
-29 January 1989(Day of year=29), maize: 
+29 January 1989(Day of year=29), paddock.maize: 
       stage    8.0 start_grain_fill
                           biomass =           349.2366       lai =     1.080729
                           stover N conc =    1.271521       extractable sw =    74.64526
-22 February 1989(Day of year=53), weed: 
+22 February 1989(Day of year=53), paddock.weed: 
       stage 4.0 end_of_juvenile
                      biomass =           1.21 (g/m^2)   lai          =   0.013 (m^2/m^2)
                      stover N conc =     2.70 (%)    extractable sw =    0.01 (mm)
-1 March 1989(Day of year=60), maize: 
+1 March 1989(Day of year=60), paddock.maize: 
       stage    9.0 end_grain_fill
                           biomass =           487.4361       lai =    0.5954810
                           stover N conc =   0.9622066       extractable sw =    40.79907
-2 March 1989(Day of year=61), maize: 
+2 March 1989(Day of year=61), paddock.maize: 
       stage   10.0 maturity
                           biomass =           490.8781       lai =    0.5817388
                           stover N conc =   0.9558862       extractable sw =    40.10489
-3 March 1989(Day of year=62), maize: 
+3 March 1989(Day of year=62), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           490.8781       lai =    0.8361340E-03
                           stover N conc =   0.9772601       extractable sw =    39.42754
-4 March 1989(Day of year=63), maize: 
+4 March 1989(Day of year=63), paddock.maize: 
       stage   11.0 harvest_ripe
                           biomass =           490.8781       lai =    0.8361340E-03
                           stover N conc =   0.9772601       extractable sw =    39.42284
-4 March 1989(Day of year=63), Harvesting rule for intercropping: 
+4 March 1989(Day of year=63), paddock.Harvesting rule for intercropping: 
      Manager sending message :- maize harvest  remove = 0.95
      
      
@@ -2401,15 +2399,15 @@ Paddock:
                           N  (kg/ha) =                  3.55                    6.05
                           P  (kg/ha) =                  0.00                    0.00
      
-26 March 1989(Day of year=85), weed: 
+26 March 1989(Day of year=85), paddock.weed: 
       stage 5.0 floral_initiation
                      biomass =           2.81 (g/m^2)   lai          =   0.033 (m^2/m^2)
                      stover N conc =     2.76 (%)    extractable sw =   40.76 (mm)
-31 March 1989(Day of year=90), weed: 
+31 March 1989(Day of year=90), paddock.weed: 
       stage 6.0 flowering
                      biomass =           4.60 (g/m^2)   lai          =   0.050 (m^2/m^2)
                      stover N conc =     2.51 (%)    extractable sw =   62.79 (mm)
-9 April 1989(Day of year=99), weed: 
+9 April 1989(Day of year=99), paddock.weed: 
       stage 7.0 start_grain_fill
                      biomass =          10.18 (g/m^2)   lai          =   0.074 (m^2/m^2)
                      stover N conc =     2.23 (%)    extractable sw =   68.95 (mm)

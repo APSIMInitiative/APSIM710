@@ -95,10 +95,10 @@ Paddock:
      Output file = WF_Millet water.out
      Format = normal
 
-------- accum Initialisation --------------------------------------------------
+------- paddock.accum Initialisation ------------------------------------------
      Initialising
 
-------- Sow on a fixed date Initialisation ------------------------------------
+------- paddock.Sow on a fixed date Initialisation ----------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -108,7 +108,7 @@ Paddock:
      END of rules
      
 
-------- Harvesting rule Initialisation ----------------------------------------
+------- paddock.Harvesting rule Initialisation --------------------------------
      Manager rules:
      
      SECTION:- end_of_day
@@ -119,7 +119,7 @@ Paddock:
      END of rules
      
 
-------- Sowing fertiliser Initialisation --------------------------------------
+------- paddock.Sowing fertiliser Initialisation ------------------------------
      Manager rules:
      
      SECTION:- wf_millet.sowing
@@ -127,8 +127,7 @@ Paddock:
      END of rules
      
 
-------- Reset water, nitrogen and surfaceOM on fixed date Initialisation ------
-     Manager rules:
+------- paddock.Reset water, nitrogen and surfaceOM on fixed date Initialisation      Manager rules:
      
      SECTION:- start_of_day
               if (today = date('23/9/2004')) then
@@ -149,7 +148,7 @@ Paddock:
      END of rules
      
 
-------- Logic Initialisation --------------------------------------------------
+------- paddock.Logic Initialisation ------------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -178,7 +177,7 @@ Paddock:
      END of rules
      
 
-------- clearview 10104) Water Initialisation ---------------------------------
+------- paddock.clearview 10104) Water Initialisation -------------------------
      
          - Reading constants
      
@@ -254,7 +253,7 @@ Paddock:
                                   Winter        1-apr
             Eo from priestly-taylor
 
-------- surface organic matter Initialisation ---------------------------------
+------- paddock.surface organic matter Initialisation -------------------------
      
          - Reading constants
      
@@ -273,7 +272,7 @@ Paddock:
                       Effective Cover from Surface Materials =   0.4
      
 
-------- clearview 10104) Nitrogen Initialisation ------------------------------
+------- paddock.clearview 10104) Nitrogen Initialisation ----------------------
      
         - Reading Parameters
      
@@ -323,14 +322,14 @@ Paddock:
            Totals  234461.5 19538.5  2202.5   275.3   400.0    10.0
           ---------------------------------------------------------
 
-------- Cl Initialisation -----------------------------------------------------
+------- paddock.Cl Initialisation ---------------------------------------------
      Initialising
      
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
-23 September 2004(Day of year=267), Sow on a fixed date: 
+23 September 2004(Day of year=267), paddock.Sow on a fixed date: 
      Manager sending message :- wf_millet sow  plants = 22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
-23 September 2004(Day of year=267), WF_Millet: 
+23 September 2004(Day of year=267), paddock.WF_Millet: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = wf_millet
@@ -394,11 +393,11 @@ Paddock:
             267   20.0   22.0  330.0   0.0   0.0 wf_millet
          ------------------------------------------------
      
-23 September 2004(Day of year=267), Reset water, nitrogen and surfaceOM on fixed date: 
+23 September 2004(Day of year=267), paddock.Reset water, nitrogen and surfaceOM on fixed date: 
      Manager creating a new local string variable : resetwater = yes
      Manager creating a new local string variable : resetnitrogen = yes
      Manager creating a new local string variable : resetsurfaceom = no
-23 September 2004(Day of year=267), clearview 10104) Water: 
+23 September 2004(Day of year=267), paddock.clearview 10104) Water: 
      
          - Reading constants
      
@@ -406,24 +405,24 @@ Paddock:
      
         - Reading Soil Profile Parameters
      Initial soilwater distributed using "sw" parameter.
-23 September 2004(Day of year=267), clearview 10104) Nitrogen: 
+23 September 2004(Day of year=267), paddock.clearview 10104) Nitrogen: 
      
         - Reading Parameters
      
         - Reading Constants
      Using standard soil mineralisation for soil type Red Chromosol
       stage 2.0 germination
-28 September 2004(Day of year=272), WF_Millet: 
+28 September 2004(Day of year=272), paddock.WF_Millet: 
       stage 3.0 emergence
                      biomass =           0.10 (g/m^2)   lai          =   0.005 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   13.21 (mm)
-9 November 2004(Day of year=314), WF_Millet: 
+9 November 2004(Day of year=314), paddock.WF_Millet: 
       stage 4.0 endjuv_to_fi
                      biomass =         166.27 (g/m^2)   lai          =   1.140 (m^2/m^2)
                      stover N conc =     4.62 (%)    extractable sw =   92.39 (mm)
-18 November 2004(Day of year=323), Logic: 
+18 November 2004(Day of year=323), paddock.Logic: 
      Manager sending message :- wf_millet end_crop
-18 November 2004(Day of year=323), WF_Millet: 
+18 November 2004(Day of year=323), paddock.WF_Millet: 
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
                           DM (kg/ha) =                2996.7                  2711.2

@@ -304,8 +304,8 @@ namespace ModelFramework
                     if (ModelInstance != null)
                     {
                         Console.WriteLine();
-                        Console.Write("------- " + ModelInstance.Name + " Initialisation ");
-                        int col = ModelInstance.Name.Length + 24;
+                        Console.Write("------- " + ModelInstance.InstanceName + " Initialisation ");
+                        int col = ModelInstance.InstanceName.Length + 24;
                         String line = new String('-', 80 - col - 1);
                         Console.Write(line);
                         Console.WriteLine();

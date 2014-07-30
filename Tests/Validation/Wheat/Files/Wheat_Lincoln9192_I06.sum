@@ -102,10 +102,10 @@ Paddock:
      Output file = Wheat_Lincoln9192_I06 SWOutputfile.out
      Format = normal
 
-------- accum Initialisation --------------------------------------------------
+------- paddock.accum Initialisation ------------------------------------------
      Initialising
 
-------- Irrigation Initialisation ---------------------------------------------
+------- paddock.Irrigation Initialisation -------------------------------------
       Initialising
      
         - Reading Parameters
@@ -117,7 +117,7 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- Sow on a fixed date Initialisation ------------------------------------
+------- paddock.Sow on a fixed date Initialisation ----------------------------
      Manager rules:
      
      SECTION:- start_of_day
@@ -127,7 +127,7 @@ Paddock:
      END of rules
      
 
-------- Harvesting rule Initialisation ----------------------------------------
+------- paddock.Harvesting rule Initialisation --------------------------------
      Manager rules:
      
      SECTION:- end_of_day
@@ -138,8 +138,7 @@ Paddock:
      END of rules
      
 
-------- Reset water, nitrogen and surfaceOM on fixed date Initialisation ------
-     Manager rules:
+------- paddock.Reset water, nitrogen and surfaceOM on fixed date Initialisation      Manager rules:
      
      SECTION:- start_of_day
      if (today = date('02-sep') then
@@ -159,7 +158,7 @@ Paddock:
      END of rules
      
 
-------- ETcalc Initialisation -------------------------------------------------
+------- paddock.ETcalc Initialisation -----------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -173,7 +172,7 @@ Paddock:
      
      Manager creating a new local real variable : et = 0.00000
 
-------- Irrigator Initialisation ----------------------------------------------
+------- paddock.Irrigator Initialisation --------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -205,7 +204,7 @@ Paddock:
      END of rules
      
 
-------- Fertilizer Initialisation ---------------------------------------------
+------- paddock.Fertilizer Initialisation -------------------------------------
      Manager rules:
      
      SECTION:- init
@@ -225,7 +224,7 @@ Paddock:
      END of rules
      
 
-------- LincolnField Water Initialisation -------------------------------------
+------- paddock.LincolnField Water Initialisation -----------------------------
      
          - Reading constants
      
@@ -299,7 +298,7 @@ Paddock:
             CONA:                     3.00 ()
             Eo from priestly-taylor
 
-------- Surface Organic Matter Initialisation ---------------------------------
+------- paddock.Surface Organic Matter Initialisation -------------------------
      
          - Reading constants
      
@@ -318,7 +317,7 @@ Paddock:
                       Effective Cover from Surface Materials =   0.4
      
 
-------- LincolnField Nitrogen Initialisation ----------------------------------
+------- paddock.LincolnField Nitrogen Initialisation --------------------------
      
         - Reading Parameters
      
@@ -371,7 +370,7 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- wheat sow  plants = 300, sowing_depth = 40, cultivar = rongotea, row_spacing = 250
-8 June 1991(Day of year=159), wheat: 
+8 June 1991(Day of year=159), paddock.wheat: 
      Crop Sow
         ------------------------------------------------
         cultivar                   = rongotea
@@ -429,41 +428,41 @@ Paddock:
             159   40.0  300.0  250.0   0.0   0.0 rongotea
          ------------------------------------------------
      
-9 June 1991(Day of year=160), wheat: 
+9 June 1991(Day of year=160), paddock.wheat: 
       stage 2.0 germination
-10 June 1991(Day of year=161), Irrigator: 
+10 June 1991(Day of year=161), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 7 (mm)
-10 June 1991(Day of year=161), Fertilizer: 
+10 June 1991(Day of year=161), paddock.Fertilizer: 
      Manager sending message :- fertiliser apply  amount = 30 (kg/ha), depth = 50 (mm), type = no3_n
 10 June 1991(Day of year=161), fertiliser: 
      
    - Reading Fertiliser Type Parameters
         30.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-26 June 1991(Day of year=177), wheat: 
+26 June 1991(Day of year=177), paddock.wheat: 
       stage 3.0 emergence
                      biomass =           1.38 (g/m^2)   lai          =   0.060 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   55.91 (mm)
-27 June 1991(Day of year=178), wheat: 
+27 June 1991(Day of year=178), paddock.wheat: 
       stage 4.0 end_of_juvenile
                      biomass =           1.40 (g/m^2)   lai          =   0.060 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   55.47 (mm)
-16 August 1991(Day of year=228), Irrigator: 
+16 August 1991(Day of year=228), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 7 (mm)
-16 August 1991(Day of year=228), Fertilizer: 
+16 August 1991(Day of year=228), paddock.Fertilizer: 
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
 16 August 1991(Day of year=228), fertiliser: 
      
    - Reading Fertiliser Type Parameters
        100.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-29 August 1991(Day of year=241), Irrigator: 
+29 August 1991(Day of year=241), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 20 (mm)
-2 September 1991(Day of year=245), Reset water, nitrogen and surfaceOM on fixed date: 
+2 September 1991(Day of year=245), paddock.Reset water, nitrogen and surfaceOM on fixed date: 
      Manager creating a new local string variable : resetwater = yes
      Manager creating a new local string variable : resetnitrogen = no
      Manager creating a new local string variable : resetsurfaceom = no
-2 September 1991(Day of year=245), LincolnField Water: 
+2 September 1991(Day of year=245), paddock.LincolnField Water: 
      
          - Reading constants
      
@@ -471,46 +470,46 @@ Paddock:
      
         - Reading Soil Profile Parameters
      Initial soilwater distributed using "sw" parameter.
-7 September 1991(Day of year=250), Irrigator: 
+7 September 1991(Day of year=250), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 12 (mm)
-12 September 1991(Day of year=255), Irrigator: 
+12 September 1991(Day of year=255), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 22 (mm)
-19 September 1991(Day of year=262), Irrigator: 
+19 September 1991(Day of year=262), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 14 (mm)
-26 September 1991(Day of year=269), Irrigator: 
+26 September 1991(Day of year=269), paddock.Irrigator: 
      Manager sending message :- irrigation apply  amount = 7 (mm)
-26 September 1991(Day of year=269), Fertilizer: 
+26 September 1991(Day of year=269), paddock.Fertilizer: 
      Manager sending message :- fertiliser apply  amount = 50 (kg/ha), depth = 50 (mm), type = no3_n
 26 September 1991(Day of year=269), fertiliser: 
      
    - Reading Fertiliser Type Parameters
         50.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-9 October 1991(Day of year=282), wheat: 
+9 October 1991(Day of year=282), paddock.wheat: 
       stage 5.0 floral_initiation
                      biomass =         447.12 (g/m^2)   lai          =   5.930 (m^2/m^2)
                      stover N conc =     3.29 (%)    extractable sw =  177.65 (mm)
-25 November 1991(Day of year=329), wheat: 
+25 November 1991(Day of year=329), paddock.wheat: 
       stage 6.0 flowering
                      biomass =        1372.26 (g/m^2)   lai          =   3.666 (m^2/m^2)
                      stover N conc =     1.57 (%)    extractable sw =   55.37 (mm)
-7 December 1991(Day of year=341), wheat: 
+7 December 1991(Day of year=341), paddock.wheat: 
       stage 7.0 start_grain_fill
                      biomass =        1534.30 (g/m^2)   lai          =   2.974 (m^2/m^2)
                      stover N conc =     1.32 (%)    extractable sw =   40.69 (mm)
-12 January 1992(Day of year=12), wheat: 
+12 January 1992(Day of year=12), paddock.wheat: 
       stage 8.0 end_grain_fill
                      biomass =        1715.41 (g/m^2)   lai          =   0.798 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   17.62 (mm)
-14 January 1992(Day of year=14), wheat: 
+14 January 1992(Day of year=14), paddock.wheat: 
       stage 9.0 maturity
                      biomass =        1715.64 (g/m^2)   lai          =   0.798 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   17.31 (mm)
-15 January 1992(Day of year=15), wheat: 
+15 January 1992(Day of year=15), paddock.wheat: 
       stage 10.0 harvest_ripe
                      biomass =        1715.64 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   17.04 (mm)
-15 January 1992(Day of year=15), Harvesting rule: 
+15 January 1992(Day of year=15), paddock.Harvesting rule: 
      Manager sending message :- wheat harvest
      
       flowering day          =  329                           stover (kg/ha)         =    10696.3

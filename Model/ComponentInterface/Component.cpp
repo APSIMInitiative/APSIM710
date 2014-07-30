@@ -786,15 +786,15 @@ namespace protocol {
 
 void Component::writeString(const FString& lines)
    {
-   writeStringToStream(asString(lines), cout, name);
+   writeStringToStream(asString(lines), cout, getFQName());
    }
 void Component::writeString(const std::string& st)
    {
-   writeStringToStream(st, cout, name);
+   writeStringToStream(st, cout, getFQName());
    }
 void Component::writeString(const char *st)
    {
-   writeStringToStream(st, cout, name);
+   writeStringToStream(st, cout, getFQName());
    }
 void Component::writeStdErr(const std::string& st)
    {
