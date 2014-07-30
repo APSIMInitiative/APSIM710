@@ -6622,7 +6622,7 @@ cRC      Changes by RCichota, 30/Jan/2010
        double precision d1,d2,d3 ! dummy variables
        double precision t_psi(0:M)
        double precision t_th(0:M)
-       character        string*200
+       character        string*500
 
 *- Implementation Section ----------------------------------
 
@@ -6636,17 +6636,17 @@ cRC      Changes by RCichota, 30/Jan/2010
       call write_string('     Error Report Status')
       call write_string('================================')
       write(string,*) 'time =',g%day,g%year,mod(g%t-g%dt,24d0)
-      call write_string(string)
+      call write_string(trim(string))
       write(string,*) 'dt=',g%dt*2.0
-      call write_string(string)
+      call write_string(trim(string))
       write(string,*) 'psi= ',(t_psi(i),i=0,p%n)
-      call write_string(string)
+      call write_string(trim(string))
       write(string,*) 'th= ',(t_th(i),i=0,p%n)
-      call write_string(string)
+      call write_string(trim(string))
       write(string,*) 'h =',g%h
-      call write_string(string)
+      call write_string(trim(string))
       write(string,*) 'ron =',g%ron
-      call write_string(string)
+      call write_string(trim(string))
       call write_string('================================')
 
       return
