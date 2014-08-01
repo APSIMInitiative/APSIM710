@@ -538,6 +538,14 @@
          <WorkingDirectory>%APSIM%/Model/SWIM3</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
+      <Job name="Compile SWIMDotNet">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/SWIM3DotNet</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
       <Job name="Compile SysBal">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
