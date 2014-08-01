@@ -44,7 +44,6 @@ public class Swim3
 
     #region "Global" variables
     double[] _swf;
-    double potet;  // from met file
     [Input]
     [Units("mm")]
     double rain = Double.NaN;   // from met file
@@ -187,6 +186,13 @@ public class Swim3
 
     int[] uptake_water_id; // Property number for returning crop water uptake
     int[][] supply_solute_id; // Property number for returning crop solute supply
+
+    int[] leach_id;
+    int[] flow_id;
+    int[] exco_id;
+    int[] conc_water_id;
+    int[] conc_adsorb_id;
+    int[] subsurface_drain_id;
 
     int nveg;
     double[][] RootRadius; // Was root_radius
@@ -1287,7 +1293,7 @@ public class Swim3
         ReadConstants();
         ReadParam();
         ReadSoluteParams();
-        //RegisterSoluteOutputs();
+        // RegisterSoluteOutputs(); // This is the wrong place! We don't yet know what solutes are being modelled
         InitCalc();
         CheckInputs();
         SendNewProfile();
@@ -1453,7 +1459,7 @@ public class Swim3
         // NOT USED
     }
 
-    [EventHandler(EventName="new_solute")]
+    [EventHandler(EventName = "new_solute")]
     public void OnNewSolute(NewSoluteType newsolute)
     {
         //+  Purpose
@@ -1467,7 +1473,8 @@ public class Swim3
 
         for (int counter = 0; counter < numvals; counter++)
         {
-            if ((names[counter] == "no3") ||
+            if (SwimSoluteParameters != null &&
+                (names[counter] == "no3") ||
                 (names[counter] == "nh4") ||
                 (names[counter] == "urea") ||
                 (names[counter] == "cl") ||
@@ -1505,6 +1512,8 @@ public class Swim3
 
                 for (int node = 0; node <= n; node++)
                     ex[num_solutes - 1][node] = rhob[node] * exco[num_solutes - 1][node];
+
+                RegisterSoluteOutputs(num_solutes - 1);
             }
             else
             {
@@ -1707,7 +1716,7 @@ public class Swim3
                     {
                         // value is negative, throw a fatal error (using same error limit as for thomas algorithm, may need to look at this better)
 
-                        string mess = String.Format("  Solution {0}({1,3}) = {2,12:0.######}",
+                        string mess = String.Format("  Solution {0}({1,3}) = {2,12:G6}",
                                      solute_names[solnum],
                                      node,
                                      csl[solnum][node]);
@@ -1958,36 +1967,36 @@ public class Swim3
 
     private void ReportStatus()
     {
-//+  Purpose
-//   Dump a series of values to output file to be used by users in
-//   determining convergence problems, etc.
+        //+  Purpose
+        //   Dump a series of values to output file to be used by users in
+        //   determining convergence problems, etc.
 
-      double[] t_psi = new double[n + 1];
-      double[] t_th = new double[n + 1];
-      double d1, d2, d3;
-      for (int i = 0; i <= n; i++)
-      {
-          Trans(_p[i], out t_psi[i], out d1, out d2);
-          Interp(i, t_psi[i], out t_th[i], out d1, out d2, out d3);
-      }
+        double[] t_psi = new double[n + 1];
+        double[] t_th = new double[n + 1];
+        double d1, d2, d3;
+        for (int i = 0; i <= n; i++)
+        {
+            Trans(_p[i], out t_psi[i], out d1, out d2);
+            Interp(i, t_psi[i], out t_th[i], out d1, out d2, out d3);
+        }
 
-      Console.WriteLine();
-      Console.WriteLine("================================");
-      Console.WriteLine("     Error Report Status");
-      Console.WriteLine("================================");
-      Console.WriteLine(String.Format("time = {0} {1} {2}", day, year, (t-_dt) % 24.0));
-      Console.WriteLine(String.Format("dt= {0}", _dt*2.0));
-      Console.Write("psi =");
-      for (int i = 0; i <= n; i++)
-          Console.Write(String.Format(" {0}", t_psi[i]));
-      Console.WriteLine();
-      Console.Write("th =");
-      for (int i = 0; i <= n; i++)
-          Console.Write(String.Format(" {0}", t_th[i]));
-      Console.WriteLine();
-      Console.WriteLine("h = {0}", _h);
-      Console.WriteLine("ron ={0}", ron);
-      Console.WriteLine("================================");
+        Console.WriteLine();
+        Console.WriteLine("================================");
+        Console.WriteLine("     Error Report Status");
+        Console.WriteLine("================================");
+        Console.WriteLine(String.Format("time = {0} {1} {2}", day, year, (t - _dt) % 24.0));
+        Console.WriteLine(String.Format("dt= {0}", _dt * 2.0));
+        Console.Write("psi =");
+        for (int i = 0; i <= n; i++)
+            Console.Write(String.Format(" {0}", t_psi[i]));
+        Console.WriteLine();
+        Console.Write("th =");
+        for (int i = 0; i <= n; i++)
+            Console.Write(String.Format(" {0}", t_th[i]));
+        Console.WriteLine();
+        Console.WriteLine("h = {0}", _h);
+        Console.WriteLine("ron ={0}", ron);
+        Console.WriteLine("================================");
     }
 
     private void InitChangeUnits()
@@ -2173,9 +2182,32 @@ public class Swim3
 
     }
 
+    private void RegisterSoluteOutputs(int solnum)
+    {
+        string solutename = solute_names[solnum];
+
+        string variable_name = "flow_" + solutename;
+        flow_id[solnum] = My.RegisterProperty(variable_name, "<type kind=\"double\" array=\"T\" unit=\"kg/ha\"/>", true, false, false, "", "", getPropertyValue);
+
+        variable_name = "leach_" + solutename;
+        leach_id[solnum] = My.RegisterProperty(variable_name, "<type kind=\"double\" array=\"F\" unit=\"kg/ha\"/>", true, false, false, "", "", getPropertyValue);
+
+        variable_name = "exco_" + solutename;
+        exco_id[solnum] = My.RegisterProperty(variable_name, "<type kind=\"double\" array=\"T\"/>", true, false, false, "", "", getPropertyValue);
+
+        variable_name = "conc_water_" + solutename;
+        conc_water_id[solnum] = My.RegisterProperty(variable_name, "<type kind=\"double\" array=\"T\" unit=\"ug/g\"/>", true, false, false, "", "", getPropertyValue);
+
+        variable_name = "conc_adsorb_" + solutename;
+        conc_adsorb_id[solnum] = My.RegisterProperty(variable_name, "<type kind=\"double\" array=\"T\" unit=\"ug/g\"/>", true, false, false, "", "", getPropertyValue);
+
+        variable_name = "subsurface_drain_" + solutename;
+        subsurface_drain_id[solnum] = My.RegisterProperty(variable_name, "<type kind=\"double\" array=\"F\" unit=\"mm\"/>", true, false, false, "", "", getPropertyValue);
+    }
+
     public bool getPropertyValue(int propID, ref TPropertyInfo value, bool isReqSet)
     {
-        double[] uptake;
+        double[] valueArray = new double[n + 1];
         bool uflag;
         if (isReqSet)  // currently only handling read requests, so fail if this is not.
             return false;
@@ -2184,18 +2216,62 @@ public class Swim3
 
             if (uptake_water_id[crop] == propID)
             {
-                GetSWUptake(crop, out uptake, out uflag);
-                value.setValue(uptake);
+                GetSWUptake(crop, out valueArray, out uflag);
+                value.setValue(valueArray);
                 return true;
             }
             for (int sol = 0; sol < num_solutes; sol++)
             {
                 if (supply_solute_id[crop][sol] == propID)
                 {
-                    GetSupply(crop, sol, out uptake, out uflag);
-                    value.setValue(uptake);
+                    GetSupply(crop, sol, out valueArray, out uflag);
+                    value.setValue(valueArray);
                     return true;
                 }
+            }
+        }
+
+        for (int solnum = 0; solnum < num_solutes; solnum++)
+        {
+            if (leach_id[solnum] == propID)
+            {
+                value.setValue(TD_soldrain[solnum]);
+                return true;
+            }
+
+            if (flow_id[solnum] == propID)
+            {
+                GetFlow(solute_names[solnum], out valueArray, out uflag);
+                value.setValue(valueArray);
+                return true;
+            }
+
+            if (exco_id[solnum] == propID)
+            {
+                for (int node = 0; node < n; node++)
+                    valueArray[node] = ex[solnum][node] / rhob[node];
+                value.setValue(valueArray);
+                return true;
+            }
+
+            if (conc_water_id[solnum] == propID)
+            {
+                ConcWaterSolute(solute_names[solnum], ref valueArray);
+                value.setValue(valueArray);
+                return true;
+            }
+
+            if (conc_adsorb_id[solnum] == propID)
+            {
+                ConcAdsorbSolute(solute_names[solnum], ref valueArray);
+                value.setValue(valueArray);
+                return true;
+            }
+
+            if (subsurface_drain_id[solnum] == propID)
+            {
+                value.setValue(TD_slssof[solnum]);
+                return true;
             }
         }
         return false;
@@ -2473,6 +2549,13 @@ public class Swim3
         Array.Resize(ref ex, newSize);
         Array.Resize(ref fip, newSize);
         Array.Resize(ref exco, newSize);
+
+        Array.Resize(ref leach_id, newSize);
+        Array.Resize(ref flow_id, newSize);
+        Array.Resize(ref exco_id, newSize);
+        Array.Resize(ref conc_water_id, newSize);
+        Array.Resize(ref conc_adsorb_id, newSize);
+        Array.Resize(ref subsurface_drain_id, newSize);
 
         Array.Resize(ref psuptake, newSize); // 0->num_crops, 0->n
 
@@ -2857,7 +2940,7 @@ public class Swim3
 
                 if (csl[solnum][node] < 0.0)
                 {
-                    string mess = String.Format(" solution {0}({1,3}) = {2,12:0.######}",
+                    string mess = String.Format(" solution {0}({1,3}) = {2,12:G6}",
                                  solute_names[solnum],
                                  node,
                                  csl[solnum][node]);
@@ -2880,7 +2963,7 @@ public class Swim3
                 else if (Ctot < 0.0)
                 {
                     // Ctot is negative and a fatal error is thrown. Should not happen as it has been tested on apswim_freundlich
-                    string mess = String.Format(" Total {0}({1,3}) = {2,12:0.######}",
+                    string mess = String.Format(" Total {0}({1,3}) = {2,12:G6}",
                                         solute_names[solnum],
                                         node,
                                         Ctot);
@@ -2912,7 +2995,10 @@ public class Swim3
             else if (solute_names[solnum] == "no3")
                 Array.Copy(dlt_solute_s, ndata.DeltaNO3, n + 1);
             else
-                My.Set("dlt_" + solute_names[solnum], dlt_solute_s);
+            {
+                string compName = Paddock.SiblingNameFromId(solute_owners[solnum]);
+                My.Set(compName + ".dlt_" + solute_names[solnum], dlt_solute_s);
+            }
         }
 
         // Send a NitrogenChanged event to the system
@@ -3745,7 +3831,7 @@ public class Swim3
                         qmax = Math.Max(qmax, Math.Abs(qssif[i]));
                         qmax = Math.Max(qmax, Math.Abs(qssof[i]));
                         qmax = Math.Max(qmax, Math.Abs(q[i]));
-                    }  
+                    }
                     qmax = Math.Max(qmax, Math.Abs(q[n + 1]));
                     if (qmax > 0.0)
                         _dt = MathUtility.Divide(dw, qmax, 0.0);
@@ -3803,7 +3889,7 @@ public class Swim3
             double old_time = t;
 
             //   new step
-            //40       continue
+        //40       continue
         retry:
 
             t += _dt;
@@ -3927,7 +4013,7 @@ public class Swim3
             for (int layer = 0; layer < x.Length; layer++)
             {
                 Watvar(layer, _p[layer], out dummy1, out dummy2, out dummy3, out dummy4, ref dummy5, out k, ref dummy6);
-                Console.WriteLine(String.Format("     {0,6:0.#}         {1,9:0.#######} {2,10:0.###} {3,10:0.###} {4,10:0.###} {5,10:0.###}",
+                Console.WriteLine(String.Format("     {0,6:F1}         {1,9:F7} {2,10:0.###} {3,10:F3} {4,10:F3} {5,10:F3}",
                                   x[layer] * 10.0,
                                   th[layer],
                                   _psi[layer],
@@ -4598,6 +4684,39 @@ loop:
         }
     }
 
+    private void GetFlow(string flowName, out double[] flowArray, out bool flowFlag)
+    {
+        //+  Initial Data Values
+        // set to false to start - if match is found it is
+        // set to true.
+        flowFlag = false;
+
+        string flowUnits;
+        flowArray = new double[n + 1];
+
+        if (flowName == "water")
+        {
+            flowFlag = true;
+            flowUnits = "(mm)";
+            for (int node = 0; node <= n + 1; node++)
+                flowArray[node] = TD_wflow[node];
+        }
+        else
+        {
+            for (int solnum = 0; solnum < num_solutes; solnum++)
+            {
+                if (solute_names[solnum] == flowName)
+                {
+                    for (int node = 0; node <= n + 1; node++)
+                        flowArray[node] = TD_sflow[solnum][node];
+                    flowFlag = true;
+                    flowUnits = "(kg/ha)";
+                    return;
+                }
+            }
+        }
+    }
+
     private void ConcWaterSolute(string solname, ref double[] concWaterSolute)
     {
         //+  Changes
@@ -4641,7 +4760,7 @@ loop:
                 if (solute_n[node] < -(negative_conc_fatal))
                 {
 
-                    string mess = String.Format("   Total {0}({1,3}) = {2,12:0.######}",
+                    string mess = String.Format("   Total {0}({1,3}) = {2,12:G6}",
                                     solute_names[solnum],
                                     node,
                                     solute_n[node]);
@@ -4652,7 +4771,7 @@ loop:
 
                 else if (solute_n[node] < -(negative_conc_warn))
                 {
-                    string mess = String.Format("   Total {0}({1,3}) = {2,12:0.######} - Value will be set to zero",
+                    string mess = String.Format("   Total {0}({1,3}) = {2,12:G6} - Value will be set to zero",
                                     solute_names[solnum],
                                     node,
                                     solute_n[node]);
@@ -4678,10 +4797,107 @@ loop:
 
                 cslstart[solnum][node] = solute_n[node];
                 solute_n[node] = solute_n[node]
-                                 * 1e9F               // ug/kg
-                                 / (dx[node] * 1e8); // cc soil/ha
+                                 * 1.0e9               // ug/kg
+                                 / (dx[node] * 1.0e8); // cc soil/ha
 
                 concWaterSolute[node] = SolveFreundlich(node, solnum, solute_n[node]);
+            }
+        }
+
+        else
+            throw new Exception("You have asked apswim to use a solute that it does not know about :-" + solname);
+    }
+
+    private void ConcAdsorbSolute(string solname, ref double[] concAdsorbSolute)
+    {
+        //+  Purpose
+        //      Calculate the concentration of solute adsorbed (ug/g soil). Note that
+        //      this routine is used to calculate output variables and input
+        //      variablesand so can be called at any time during the simulation.
+        //      It therefore must use a solute profile obtained from the solute's
+        //      owner module.  It therefore also follows that this routine cannot
+        //      be used for internal calculations of solute concentration during
+        //      the process stage etc.
+        //+  Changes
+        //     30-01-2010 - RCichota - added test for -ve values, causes a fatal error if so
+
+        concAdsorbSolute = new double[n + 1];  // init with zeroes
+        double[] solute_n = new double[n + 1]; // solute at each node
+
+        int solnum = SoluteNumber(solname);
+
+        if (solnum >= 0)
+        {
+            // only continue if solute exists.
+            if (solute_owners[solnum] != 0)
+            {
+                string compName = Paddock.SiblingNameFromId(solute_owners[solnum]);
+                if (!My.Get(compName + "." + solname, out solute_n))
+                    throw new Exception("No module has registered ownership for solute: " + solname);
+            }
+
+            for (int node = 0; node <= n; node++)
+            {
+
+                //````````````````````````````````````````````````````````````````````````````````
+                //RC            Changes by RCichota, 30/Jan/2010
+                // Note: Sometimes small numerical errors can leave -ve concentrations.
+                // This will check for -ve or very small values being passed by other modules
+                //  and define the appropriate response:
+
+                if (solute_n[node] < -(negative_conc_fatal))
+                {
+
+                    string mess = String.Format("   Total {0}({1,3}) = {2,12:G6}",
+                                    solute_names[solnum],
+                                    node,
+                                    solute_n[node]);
+                    throw new Exception("-ve value for solute was passed to SWIM" + Environment.NewLine + mess);
+
+                    solute_n[node] = 0.0;
+                }
+
+                else if (solute_n[node] < -(negative_conc_warn))
+                {
+                    string mess = String.Format("   Total {0}({1,3}) = {2,12:G6} - Value will be set to zero",
+                                    solute_names[solnum],
+                                    node,
+                                    solute_n[node]);
+                    My.Warning("'-ve value for solute was passed to SWIM" + Environment.NewLine + mess);
+
+                    solute_n[node] = 0.0;
+                }
+
+                else if (solute_n[node] < 1.0e-100)
+                {
+                    // Value is REALLY small, no need to tell user,
+                    // set value to zero to avoid underflow with reals
+
+                    solute_n[node] = 0.0;
+                }
+
+                // else Value is positive and considerable
+
+                //````````````````````````````````````````````````````````````````````````````````
+
+                // convert solute from kg/ha to ug/cc soil
+                // ug Sol    kg Sol    ug   ha(node)
+                // ------- = ------- * -- * -------
+                // cc soil   ha(node)  kg   cc soil
+
+                solute_n[node] = solute_n[node]   // kg/ha
+                            * 1.0e9               // ug/kg
+                            / (dx[node] * 1.0e8); // cc soil/ha
+
+                double concWaterSolute = SolveFreundlich(node, solnum, solute_n[node]);
+
+                //                  conc_adsorb_solute(node) =
+                //     :              ddivide(solute_n(node)
+                //     :                         - conc_water_solute * g%th(node)
+                //     :                      ,p%rhob(node)
+                //     :                      ,0d0)
+
+                concAdsorbSolute[node] = ex[solnum][node] * Math.Pow(concWaterSolute, fip[solnum][node]);
             }
         }
 
@@ -4727,7 +4943,7 @@ loop:
         else if (Ctot < 0.0)
         {
             // negative value for Ctot, this should have been catched already
-            string mess = String.Format("   Total {0}({1,3}) = {2,12:0.######}",
+            string mess = String.Format("   Total {0}({1,3}) = {2,12:G6}",
                                        solute_names[solnum],
                                        node,
                                        Ctot);
@@ -4769,7 +4985,7 @@ loop:
                 Cw = Math.Pow(MathUtility.Divide(Ctot, (th[node] + ex[solnum][node]), 0.0), (1.0 / fip[solnum][node]));
                 if (Cw < 0.0)            // test added by RCichota 09/Jul/2010
                 {
-                    string mess = String.Format("  {0}({1}) = {2,12:0.######} - Iteration: 0",
+                    string mess = String.Format("  {0}({1}) = {2,12:G6} - Iteration: 0",
                                         solute_names[solnum],
                                         node,
                                         Cw);
@@ -4812,7 +5028,7 @@ loop:
                         Cw = Cw - MathUtility.Divide(error_amount, 2 * dfdCw, 0.0);
                         if (Cw < 0.0)             // test added by RCichota 09/Jul/2010
                         {
-                            string mess = String.Format("  {0}({1}) = {2,12:0.######} - Iteration: {3}",
+                            string mess = String.Format("  {0}({1}) = {2,12:G6} - Iteration: {3}",
                                           solute_names[solnum],
                                           node,
                                           Cw,
@@ -4851,7 +5067,7 @@ loop:
             else if (Cw < 0)
             {
                 // Cw is negative, this is a fatal error.
-                string mess = String.Format(" {0}({1,3}) = {2,12:0.######}",
+                string mess = String.Format(" {0}({1,3}) = {2,12:G6}",
                                      solute_names[solnum],
                                      node,
                                      Cw);
@@ -4896,7 +5112,7 @@ loop:
         else if (Cw < 0.0)
         {
             // Cw is negative, this is a fatal error.
-            string mess = String.Format(" Solution {0}({1,3}) = {2,12:0.######}",
+            string mess = String.Format(" Solution {0}({1,3}) = {2,12:G6}",
                                  solute_names[solnum],
                                  node,
                                  Cw);
