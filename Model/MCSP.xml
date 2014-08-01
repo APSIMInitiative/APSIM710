@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.6-r3484" name="MCSP">
+<Type version="36" creator="Apsim 7.6-r3485" name="MCSP">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -50,8 +50,8 @@
         <EmergingPhase name="Emerging">
           <Start type="text" description="Start">Germination</Start>
           <End type="text" description="End">Emergence</End>
-          <ShootLag type="text" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
-          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">4</ShootRate>
+          <ShootLag type="text" description="Time lag before linear coleoptile growth starts">0</ShootLag>
+          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile">0</ShootRate>
           <AirTemperatureFunction name="ThermalTime" shortcut="/MCSP/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/XYPairs" />
             <Memo shortcut="/MCSP/Model/Plant/Phenology/ThermalTime/Memo" />
@@ -115,6 +115,15 @@
           <Memo>This function accumlates the daily values of all childern functions between the start and end phases.</Memo>
           <VariableReference>
             <VariableName type="text" description="Variable Name">Phenology.ThermalTime.Value</VariableName>
+            <Memo>Returns the value of a nominated Plant2 variable.</Memo>
+          </VariableReference>
+        </AccumulateFunction>
+        <AccumulateFunction name="AccumulatedEmergingThermalTime">
+          <StartStageName type="text" description="StartStageName">Germination</StartStageName>
+          <EndStageName type="text" description="StartStageName">Emergence</EndStageName>
+          <Memo>This function accumlates the daily values of all childern functions between the start and end phases.</Memo>
+          <VariableReference>
+            <VariableName type="text" description="Variable Name">Phenology.Emerging.ThermalTime.Value</VariableName>
             <Memo>Returns the value of a nominated Plant2 variable.</Memo>
           </VariableReference>
         </AccumulateFunction>
@@ -1282,7 +1291,7 @@ Thus change the duration rate for the cultivar</Memo>
         <b type="text" description="b">399</b>
       </Override>
       <Override name="ExpectedYield">
-        <Value type="text" description="Value">1100</Value>
+        <Value type="text" description="Value">1450</Value>
       </Override>
       <Override name="RootProportion">
         <Value type="text" description="Value">0.1</Value>
@@ -1290,7 +1299,7 @@ Thus change the duration rate for the cultivar</Memo>
       <Override name="HarvestIndex">
         <XYPairs>
           <XY>0 0.08</XY>
-          <XY>1733 0.6 </XY>
+          <XY>1733 0.6</XY>
         </XYPairs>
       </Override>
       <Override name="ProductDMProportion">
@@ -2308,7 +2317,7 @@ Thus change the duration rate for the cultivar</Memo>
         <b type="text" description="b">180</b>
       </Override>
       <Override name="ExpectedYield">
-        <Value type="text" description="Value">800</Value>
+        <Value type="text" description="Value">630</Value>
       </Override>
       <Override name="RootProportion">
         <Value type="text" description="Value">0.1</Value>
@@ -2326,13 +2335,13 @@ Thus change the duration rate for the cultivar</Memo>
         <Value type="text" description="Value">707</Value>
       </Override>
       <Override name="Phenology.YieldIncreasing.Target">
-        <Value type="text" description="Value">643</Value>
+        <Value type="text" description="Value">400</Value>
       </Override>
       <Override name="Phenology.Senescing.Target">
-        <Value type="text" description="Value">300</Value>
+        <Value type="text" description="Value">200</Value>
       </Override>
       <Override name="Phenology.Maturing.Target">
-        <Value type="text" description="Value">300</Value>
+        <Value type="text" description="Value">100</Value>
       </Override>
       <Override name="Root">
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00 </xf>
@@ -2355,7 +2364,7 @@ Thus change the duration rate for the cultivar</Memo>
         <Value type="text" description="Value">0.015</Value>
       </Override>
       <Override name="Nodule.FixationSwitch">
-        <Value type="text" description="Value">1.0</Value>
+        <Value type="text" description="Value">0.5</Value>
       </Override>
     </Cultivar>
     <Cultivar name="Dried_Peas">
@@ -2626,7 +2635,7 @@ Thus change the duration rate for the cultivar</Memo>
         <b type="text" description="b">270</b>
       </Override>
       <Override name="ExpectedYield">
-        <Value type="text" description="Value">6400</Value>
+        <Value type="text" description="Value">6000</Value>
       </Override>
       <Override name="RootProportion">
         <Value type="text" description="Value">0.1</Value>
@@ -2634,14 +2643,14 @@ Thus change the duration rate for the cultivar</Memo>
       <Override name="HarvestIndex">
         <XYPairs>
           <XY>0 0.84</XY>
-          <XY>11000 0.95 </XY>
+          <XY>11000 0.97</XY>
         </XYPairs>
       </Override>
       <Override name="ProductDMProportion">
         <Value type="text" description="Value">0.22</Value>
       </Override>
       <Override name="Phenology.CanopyExpanding.Target">
-        <Value type="text" description="Value">679</Value>
+        <Value type="text" description="Value">479</Value>
       </Override>
       <Override name="Phenology.YieldIncreasing.Target">
         <Value type="text" description="Value">1271</Value>
@@ -2704,7 +2713,7 @@ Thus change the duration rate for the cultivar</Memo>
         <b type="text" description="b">330</b>
       </Override>
       <Override name="ExpectedYield">
-        <Value type="text" description="Value">7100</Value>
+        <Value type="text" description="Value">5800</Value>
       </Override>
       <Override name="RootProportion">
         <Value type="text" description="Value">0.1</Value>
@@ -2712,7 +2721,7 @@ Thus change the duration rate for the cultivar</Memo>
       <Override name="HarvestIndex">
         <XYPairs>
           <XY>0 0.84</XY>
-          <XY>11000 0.95 </XY>
+          <XY>11000 0.97</XY>
         </XYPairs>
       </Override>
       <Override name="ProductDMProportion">
@@ -2790,7 +2799,7 @@ Thus change the duration rate for the cultivar</Memo>
       <Override name="HarvestIndex">
         <XYPairs>
           <XY>0 0.76</XY>
-          <XY>19000 0.95 </XY>
+          <XY>19000 0.95</XY>
         </XYPairs>
       </Override>
       <Override name="ProductDMProportion">
