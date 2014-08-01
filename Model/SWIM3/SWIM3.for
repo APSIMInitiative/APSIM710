@@ -66,9 +66,9 @@
          real             swf(0:M)
          real             potet  ! from met file
          real             rain   ! from met file
-         real             mint
-         real             maxt
-         real             radn
+         double precision mint
+         double precision maxt
+         double precision radn
 
          integer          SWIMRainNumPairs
          integer          SWIMEvapNumPairs
@@ -145,7 +145,7 @@
 
          integer day
          integer year
-         real    apsim_timestep
+         double precision apsim_timestep
          integer start_day
          integer start_year
          character apsim_time*10
@@ -179,12 +179,13 @@
          double precision root_conductance(0:M,MV)
          double precision pep(MV)
          double precision solute_demand (MV,nsol)
-         real             canopy_height(MV),cover_tot(MV)
+         double precision canopy_height(MV)
+         double precision cover_tot(MV)
 
          double precision crop_cover
          double precision residue_cover
          double precision cover_green_sum
-         real             cover_surface_runoff
+         double precision cover_surface_runoff
          
          double precision qbp
          double precision qbpd
@@ -220,7 +221,7 @@
          character        evap_source*50
          character        echo_directives*5
          logical          diagnostics
-         real             salb
+         double precision salb
 
          double precision dlayer(0:M)
          double precision ll15(0:M),DUL(0:M),SAT(0:M),Ks(0:M)
@@ -287,9 +288,9 @@
          double precision imperm_depth
 
 
-         real   cn2_bare
-         real   cn_red
-         real   cn_cov
+         double precision cn2_bare
+         double precision cn_red
+         double precision cn_cov
 
       End Type APSwimParameters
 ! =====================================================================
@@ -299,19 +300,19 @@
          sequence
          double precision lb_solute, ub_solute
 
-         real             min_crit_temp
-         real             max_crit_temp
-         real             max_albedo
-         real             residue_albedo
+         double precision min_crit_temp
+         double precision max_crit_temp
+         double precision max_albedo
+         double precision residue_albedo
 
          double precision a_to_evap_fact
          double precision canopy_eos_coef
 
          character        cover_effects*5
 
-         real    canopy_fact(max_table)              ! canopy factors for cover runoff effect ()
-         real    canopy_fact_height(max_table)       ! heights for canopy factors (mm)
-         real    canopy_fact_default                  ! default canopy factor in absence of height ()
+         double precision canopy_fact(max_table)              ! canopy factors for cover runoff effect ()
+         double precision canopy_fact_height(max_table)       ! heights for canopy factors (mm)
+         double precision canopy_fact_default                  ! default canopy factor in absence of height ()
          integer   num_canopy_fact                    ! number of canopy factors read ()
 
          double precision negative_conc_warn
@@ -696,42 +697,42 @@ c     :              1d0)
 
          ! Read in soil albedo from parameter file
 
-      call Read_real_var (
+      call Read_double_var (
      :              parameters_section,
      :              'salb',
      :              '(??)',
      :              p%salb,
      :              numvals,
-     :              0.0,
-     :              1.0)
+     :              0d0,
+     :              1d0)
 
 
-         call Read_real_var (
+         call Read_double_var (
      :              parameters_section,
      :              'cn2_bare',
      :              '()',
      :              p%cn2_bare,
      :              numvals,
-     :              0e0,
-     :              1e2)  
+     :              0d0,
+     :              1d2)  
 
-         call Read_real_var (
+         call Read_double_var (
      :              parameters_section,
      :              'cn_red',
      :              '()',
      :              p%cn_red,
      :              numvals,
-     :              0e0,
-     :              1e2)  
+     :              0d0,
+     :              1d2)  
 
-         call Read_real_var (
+         call Read_double_var (
      :              parameters_section,
      :              'cn_cov',
      :              '()',
      :              p%cn_cov,
      :              numvals,
-     :              0e0,
-     :              1e0)       
+     :              0d0,
+     :              1d0)       
      
       if (p%isbc.eq.2) then
 
@@ -915,30 +916,30 @@ c     :              1d0)
 
 *- Implementation Section ----------------------------------
 
-      call get_real_var (
+      call get_double_var (
      :           unknown_module,
      :           'radn',
      :           '(MJ)',
      :           g%radn,
      :           numvals,
-     :           0.0,
-     :           50.0)
-      call get_real_var (
+     :           0d0,
+     :           50d0)
+      call get_double_var (
      :           unknown_module,
      :           'maxt',
      :           '(oC)',
      :           g%maxt,
      :           numvals,
-     :           -50.0,
-     :           70.0)
-      call get_real_var (
+     :           -50d0,
+     :           70d0)
+      call get_double_var (
      :           unknown_module,
      :           'mint',
      :           '(oC)',
      :           g%mint,
      :           numvals,
-     :           -50.0,
-     :           50.0)
+     :           -50d0,
+     :           50d0)
 
 
       return
@@ -1204,7 +1205,7 @@ c     :              1d0)
      :            g%CN_runoff)
 
       else if (Variable_name .eq. 'cover_surface_runoff') then
-         call respond2Get_real_var (
+         call respond2Get_double_var (
      :            Variable_name,
      :            '(0-1)',
      :            g%cover_surface_runoff)
@@ -1326,7 +1327,7 @@ c     :              1d0)
      :            p%n+1)
 
       else if (Variable_name .eq. 'salb') then
-         call respond2Get_real_var (
+         call respond2Get_double_var (
      :            Variable_name,
      :            '(0-1)',
      :            p%salb)
@@ -1954,9 +1955,9 @@ c      eqr0 = 0d0
       g%nveg = 0
       g%potet = 0.0
       g%rain = 0.0
-      g%mint = 0.0
-      g%maxt = 0.0
-      g%radn = 0.0
+      g%mint = 0d0
+      g%maxt = 0d0
+      g%radn = 0d0
 
       g%SWIMRainNumPairs = 0 
       g%SWIMEvapNumPairs = 0
@@ -3546,7 +3547,7 @@ c      eqr0  = 0.d0
 
 
 * ====================================================================
-       real function apswim_eqrain (time)
+       double precision function apswim_eqrain (time)
 * ====================================================================
 
       implicit none
@@ -4205,8 +4206,7 @@ c      eqr0  = 0.d0
       integer vegnum                   ! solute array index counter
       integer layer                    ! layer number specifier
       integer numvals                  ! number of values returned
-      real    bare                     ! amount of bare area
-      real    cover                    ! cover for each crop
+      double precision bare            ! amount of bare area
       integer crop                     ! crop number
       integer   solnum                 ! solute number for array index
       character solute_demand_name*(strsize)  ! key name for solute demand
@@ -4304,24 +4304,24 @@ c      eqr0  = 0.d0
            endif
          endif
 
-         call get_real_var (
+         call get_double_var (
      :           id,
      :           'height',
      :           '(mm)',
      :           g%canopy_height(vegnum),
      :           numvals,
-     :           0.0,
-     :           50e3)
+     :           0d0,
+     :           50d3)
 
-         call get_real_var (
+         call get_double_var (
      :           id,
      :           'cover_tot',
      :           '()',
      :           g%cover_tot(vegnum),
      :           numvals,
-     :           0.0,
-     :           1.0)
-         bare = bare * (1.0 - g%cover_tot(vegnum))
+     :           0d0,
+     :           1d0)
+         bare = bare * (1d0 - dble(g%cover_tot(vegnum)))
 
          do 99 solnum = 1, p%num_solutes
 
@@ -5042,7 +5042,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       implicit none
 
 *+  Sub-Program Arguments
-      real       pot_eo      ! (output) potential evapotranspiration
+      double precision       pot_eo      ! (output) potential evapotranspiration
 
 *+  Purpose
 *       calculate potential evapotranspiration
@@ -5086,7 +5086,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
 
 *     ===========================================================
-      real function apswim_eeq_fac ()
+      double precision function apswim_eeq_fac ()
 *     ===========================================================
 
 
@@ -5235,41 +5235,41 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              0d0,
      :              10d0)
 
-       call Read_real_var (
+       call Read_double_var (
      :              section_name,
      :              'min_crit_temp',
      :              '(oC)',
      :              c%min_crit_temp,
      :              numvals,
-     :              -10.0,
-     :              100.0)
+     :              -10d0,
+     :              100d0)
 
-      call Read_real_var (
+      call Read_double_var (
      :              section_name,
      :              'max_crit_temp',
      :              '(oC)',
      :              c%max_crit_temp,
      :              numvals,
-     :              -10.0,
-     :              100.0)
+     :              -10d0,
+     :              100d0)
 
-      call Read_real_var (
+      call Read_double_var (
      :              section_name,
      :              'max_albedo',
      :              '(oC)',
      :              c%max_albedo,
      :              numvals,
-     :              -10.0,
-     :              100.0)
+     :              -10d0,
+     :              100d0)
 
-      call Read_real_var (
+      call Read_double_var (
      :              section_name,
      :              'residue_albedo',
      :              '()',
      :              c%residue_albedo,
      :              numvals,
-     :              0.0,
-     :              1.0)
+     :              0d0,
+     :              1d0)
 
       call Read_double_var (
      :              section_name,
@@ -5346,15 +5346,15 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :              10d0)
 
 
-      call read_real_array (section_name
+      call read_double_array (section_name
      :                   , 'canopy_fact', max_table, '()'
      :                   , c%canopy_fact, c%num_canopy_fact
-     :                   , 0.0, 1.0)
+     :                   , 0d0, 1d0)
 
-      call read_real_array (section_name
+      call read_double_array (section_name
      :                   , 'canopy_fact_height', max_table, '(mm)'
      :                   , c%canopy_fact_height, numvals
-     :                   , 0.0, 100000.0)
+     :                   , 0d0, 100000.0d0)
       if (numvals.ne. c%num_canopy_fact) then
          call fatal_error (err_user
      :                    , 'No. of canopy_fact coeffs do not match '
@@ -5363,10 +5363,10 @@ cnh NOTE - intensity is not part of the official design !!!!?
          ! matching number of coeffs
       endif
 
-      call read_real_var (section_name
+      call read_double_var (section_name
      :                   , 'canopy_fact_default', '()'
      :                   , c%canopy_fact_default, numvals
-     :                   , 0.0, 1.0)
+     :                   , 0d0, 1d0)
 
 
       call Read_char_var (
@@ -5493,7 +5493,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       implicit none
 
 *+  Local Variables
-      real amount
+      double precision amount
       double precision duration
       integer numvals
       character time*10
@@ -5502,7 +5502,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
 *- Implementation Section ----------------------------------
 
-      if ( reals_are_equal (g%apsim_timestep, 1440.) ) then
+      if ( doubles_are_equal (g%apsim_timestep, 1440.d0) ) then
          ! timestep is 24 hours - OK
 
          ! calculate evaporation for entire timestep
@@ -5539,7 +5539,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
          call apswim_insert_loginfo (time_mins
      :                              ,duration
-     :                              ,dble(amount)
+     :                              ,amount
      :                              ,g%SWIMEvapTime
      :                              ,g%SWIMEvapAmt
      :                              ,g%SWIMEvapNumPairs
@@ -7270,10 +7270,10 @@ cRC            Changes by RCichota, 30/Jan/2010
 *      Approach taken from directly from Soilwat code.
 
 *+  Local Variables
-      real       eos_canopy_fract      ! fraction of potential soil evaporation
-                                       ! limited by crop canopy (mm)
-      real       eos_residue_fract     ! fraction of potential soil evaporation
-                                       ! limited by crop residue (mm)
+      double precision eos_canopy_fract  ! fraction of potential soil evaporation
+                                         ! limited by crop canopy (mm)
+      double precision eos_residue_fract ! fraction of potential soil evaporation
+                                         ! limited by crop residue (mm)
 
 *- Implementation Section ----------------------------------
 
@@ -7467,7 +7467,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       ! NIH - assume daily time step for now until someone needs to
       !       do otherwise.
       g%apsim_time = '00:00'
-      g%apsim_timestep = 1440
+      g%apsim_timestep = 1440d0
 
       ! Started new timestep so purge all old timecourse information
       ! ============================================================
@@ -7763,14 +7763,14 @@ cRC            Changes by RCichota, 30/Jan/2010
       implicit none
 
 *+  Sub-Program Arguments
-      real       cover_surface_runoff   ! (output) effective runoff cover (0-1)
+      double precision cover_surface_runoff   ! (output) effective runoff cover (0-1)
 
 
 *+  Local Variables
-      real       canopy_fact           ! canopy factor (0-1)
-      integer    crop                  ! crop number
-      real       effective_crop_cover  ! effective crop cover (0-1)
-      real       cover_surface_crop    ! efective total cover (0-1)
+      double precision canopy_fact           ! canopy factor (0-1)
+      integer    crop                        ! crop number
+      double precision effective_crop_cover  ! effective crop cover (0-1)
+      double precision cover_surface_crop    ! efective total cover (0-1)
  
 *- Implementation Section ----------------------------------
 
@@ -7782,29 +7782,67 @@ cRC            Changes by RCichota, 30/Jan/2010
           ! weight effectiveness of crop canopies
           !    0 (no effect) to 1 (full effect)
 
-      cover_surface_crop = 0.0
+      cover_surface_crop = 0d0
       do 1000 crop = 1, g%num_crops
-         if (g%canopy_height(crop).ge.0.0) then
-            canopy_fact = linear_interp_real (g%canopy_height(crop)
-     :                                       , c%canopy_fact_height
-     :                                       , c%canopy_fact
-     :                                       , c%num_canopy_fact)
+         if (g%canopy_height(crop).ge.0d0) then
+            canopy_fact = dlinint (g%canopy_height(crop)
+     :                             , c%canopy_fact_height
+     :                             , c%canopy_fact
+     :                             , c%num_canopy_fact)
          else
             canopy_fact = c%canopy_fact_default
          endif
 
          effective_crop_cover = g%cover_tot(crop) * canopy_fact
-         cover_surface_crop = add_cover (cover_surface_crop
+         cover_surface_crop = dadd_cover (cover_surface_crop
      :                                   , effective_crop_cover)
 1000  continue
           ! add cover known to affect runoff
           !    ie residue with canopy shading residue
 
-      cover_surface_runoff = add_cover (cover_surface_crop
-     :                         ,  real(g%residue_cover))
+      cover_surface_runoff = dadd_cover (cover_surface_crop
+     :                         ,  g%residue_cover)
 
       return
       end subroutine
+
+      double precision function dadd_cover (cover1, cover2)
+   !     ===========================================================
+      implicit none
+
+   !+ Sub-Program Arguments
+      double precision cover1                ! (INPUT) first cover to combine (0-1)
+      double precision cover2                ! (INPUT) second cover to combine (0-1)
+
+   !+ Purpose
+   !     Combines two covers
+
+   !+  Definition
+   !     "cover1" and "cover2" are numbers between 0 and 1 which
+   !     indicate what fraction of sunlight is intercepted by the
+   !     foliage of plants.  This function returns a number between
+   !     0 and 1 indicating the fraction of sunlight intercepted
+   !     when "cover1" is combined with "cover2", i.e. both sets of
+   !     plants are present.
+
+   !+  Mission Statement
+   !     cover as a result of %1 and %2
+
+   !+ Changes
+   !       130896 jngh specified and programmed
+
+   !+ Calls
+
+   !+ Local Variables
+      double precision bare                  ! bare proportion (0-1)
+
+   !- Implementation Section ----------------------------------
+
+      bare = (1d0 - cover1)*(1d0 - cover2)
+      dadd_cover = 1d0 - bare
+
+      return
+      end function
 
 *     ===========================================================
       subroutine apswim_scs_runoff (rain,runoff)
@@ -7821,25 +7859,25 @@ cRC            Changes by RCichota, 30/Jan/2010
 
 
 *+  Local Variables
-      real       cn                    ! scs curve number
-      real       cn1                   ! curve no. for dry soil (antecedant)
+      double precision cn              ! scs curve number
+      double precision cn1             ! curve no. for dry soil (antecedant)
                                        !    moisture
-      real       cn3                   ! curve no. for wet soil (antecedant)
+      double precision cn3             ! curve no. for wet soil (antecedant)
                                        !    moisture
-      real       cover_fract           ! proportion of maximum cover effect on
+      double precision cover_fract     ! proportion of maximum cover effect on
                                        !    runoff (0-1)
-      real       cnpd                  ! cn proportional in dry range
+      double precision cnpd            ! cn proportional in dry range
                                        !    (dul to ll15)
       integer    layer                 ! layer counter
 
-      real       s                     ! potential max retention
+      double precision s               ! potential max retention
                                        !    (surface ponding + infiltration)
-      real       xpb                   ! intermedite variable for deriving
+      double precision xpb             ! intermedite variable for deriving
                                        !    runof
 *
-      real       runoff_wf(0:M)   ! weighting factor for depth for each la
-      real       tillage_reduction     ! reduction in cn due to tillage
-      real       cn2_new
+      double precision runoff_wf(0:M)  ! weighting factor for depth for each la
+      double precision tillage_reduction  ! reduction in cn due to tillage
+      double precision cn2_new
       
 *- Implementation Section ----------------------------------
 
@@ -7855,34 +7893,34 @@ cRC            Changes by RCichota, 30/Jan/2010
 
       call apswim_runoff_depth_factor (runoff_wf)
 
-      cnpd = 0.0
+      cnpd = 0d0
       do 100 layer = 0, p%n
          cnpd = cnpd
      :        +(g%th(layer)-p%ll15(layer))/(p%dul(layer)-p%ll15(layer))
      :        * runoff_wf(layer)
   100 continue
-      cnpd = bound (cnpd, 0.0, 1.0)
+      cnpd = Min(Max(cnpd, 0d0), 1d0)
 
           ! reduce CN2 for the day due to cover effect
 
-      cover_fract = divide (g%cover_surface_runoff, p%cn_cov, 0.0)
-      cover_fract = bound (cover_fract, 0.0, 1.0)
+      cover_fract = ddivide (g%cover_surface_runoff, p%cn_cov, 0d0)
+      cover_fract = Min(Max(cover_fract, 0d0), 1d0)
 
       cn2_new = p%cn2_bare - (p%cn_red * cover_fract)
 
-      cn2_new = bound (cn2_new, 0.0, 100.0)
+      cn2_new = Min(Max(cn2_new, 0d0), 100d0)
 
-      cn1 = divide (cn2_new, (2.334 - 0.01334*cn2_new), 0.0)
-      cn3 = divide (cn2_new, (0.4036 + 0.005964*cn2_new), 0.0)
+      cn1 = ddivide (cn2_new, (2.334d0 - 0.01334d0*cn2_new), 0.0d0)
+      cn3 = ddivide (cn2_new, (0.4036d0 + 0.005964d0*cn2_new), 0.0d0)
       cn = cn1 + (cn3 - cn1) *cnpd
 
           ! curve number will be decided from scs curve number table ??dms
 
-      s = 254.0* (divide (100.0, cn, 1000000.0) - 1.0)
-      xpb = rain - 0.2*s
-      xpb = l_bound (xpb, 0.0)
+      s = 254.0d0* (ddivide (100.0d0, cn, 1000000.0d0) - 1.0d0)
+      xpb = rain - 0.2d0*s
+      xpb = Max(xpb, 0.0d0)
 
-      runoff = (xpb*xpb)/(rain + 0.8*s)
+      runoff = (xpb*xpb)/(rain + 0.8d0*s)
 
 c      call bound_check_real_var (runoff
 c     :                          ,0.0
@@ -7920,31 +7958,31 @@ c     :                          ,'runoff')
       implicit none
 
 *+  Sub-Program Arguments
-      real    runoff_wf(0:M)              ! (OUTPUT) weighting factor for runoff
+      double precision runoff_wf(0:M)              ! (OUTPUT) weighting factor for runoff
 
 *+  Purpose
 *      Calculate the weighting factor hydraulic effectiveness used
 *      to weight the effect of soil moisture on runoff.
 
 *+  Local Variables
-      real       profile_depth         ! current depth of soil profile
+      double precision  profile_depth         ! current depth of soil profile
                                        ! - for when erosion turned on
-      real       cum_depth             ! cumulative depth (mm)
+      double precision  cum_depth             ! cumulative depth (mm)
       double precision  hydrol_effective_depth ! hydrologically effective depth for
                                         ! runoff (mm)
       integer    hydrol_effective_layer ! layer number that the effective
                                         ! depth occurs in ()
       integer    layer                 ! layer counter
 
-      real       scale_fact            ! scaling factor for wf function to
+      double precision  scale_fact     ! scaling factor for wf function to
                                        ! sum to 1
-      real       wf_tot                ! total of wf ()
-      real       wx                    ! depth weighting factor for current
+      double precision  wf_tot         ! total of wf ()
+      double precision  wx             ! depth weighting factor for current
                                        !    total depth.
                                        !    intermediate variable for
                                        !    deriving wf
                                        !    (total wfs to current layer)
-      real       xx                    ! intermediate variable for deriving wf
+      double precision  xx             ! intermediate variable for deriving wf
                                        ! total wfs to previous layer
 
 *- Implementation Section ----------------------------------
@@ -7961,7 +7999,7 @@ c     :                          ,'runoff')
       hydrol_effective_depth = min (c%hydrol_effective_depth
      :                            , profile_depth)
 
-      scale_fact = 1.0/(1.0 - exp(-4.16))
+      scale_fact = 1d0/(1d0 - exp(-4.16d0))
       hydrol_effective_layer = find_swim_layer (hydrol_effective_depth)
 
       do 100 layer = 0, hydrol_effective_layer
@@ -7972,7 +8010,7 @@ c     :                          ,'runoff')
             ! sum of wf should = 1 - may need to be bounded? <dms 7-7-95>
 
          wx = scale_fact 
-     :      * (1.0 - exp( - 4.16* cum_depth/hydrol_effective_depth))
+     :      * (1d0 - exp( - 4.16d0* cum_depth/hydrol_effective_depth))
          runoff_wf(layer) = wx - xx
          xx = wx
 
@@ -7980,7 +8018,7 @@ c     :                          ,'runoff')
 
   100 continue
 
-      call bound_check_real_var (wf_tot, 0.9999, 1.0001, 'wf_tot')
+      call bound_check_double_var (wf_tot, 0.9999d0, 1.0001d0, 'wf_tot')
 
       return
       end subroutine
