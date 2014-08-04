@@ -842,7 +842,7 @@ public class Swim3
         {
             double value = 0.0;
             for (int i = 0; i <= n; i++)
-                value += Math.Max(0.0, th[i] - _ll15[i] * _dlayer[i]);
+                value += Math.Max(0.0, (th[i] - _ll15[i]) * _dlayer[i]);
             return value;
         }
     }
@@ -1828,7 +1828,7 @@ public class Swim3
             }
 
             if ((length > 0.0) && (length < min_total_root_length))
-                My.Warning("Possible error with low total RLV for " + crop_owners[cropNo] + ":" + crop_names[cropNo]);
+                IssueWarning("Possible error with low total RLV for " + crop_owners[cropNo] + ":" + crop_names[cropNo]);
         }
     }
 
@@ -2493,9 +2493,9 @@ public class Swim3
 
         if (!found)
         {
-            My.Warning("Using default root parameters for " + crop_names[vegnum]);
+            IssueWarning("Using default root parameters for " + crop_names[vegnum]);
 
-            for (int crop = 0; crop < num_crops; crop++)
+            for (int crop = 0; crop < crop_name.Length; crop++)
             {
                 if (crop_name[crop] == "default")
                 {
@@ -2700,7 +2700,7 @@ public class Swim3
                             length = length + temp_rlv_l[layer] * _dlayer[layer];
                         }
                         if ((length > 0.0) && (length < min_total_root_length))
-                            My.Warning("Possible error with low total RLV for " + crop_names[vegnum]);
+                            IssueWarning("Possible error with low total RLV for " + crop_names[vegnum]);
                     }
                     else
                         throw new Exception("no rlv returned from " + crop_names[vegnum]);
@@ -2947,7 +2947,7 @@ public class Swim3
                     throw new Exception("-ve concentration in apswim_set_solute_variables" + Environment.NewLine + mess);
                 }
                 double Ctot, dCtot;
-                Freundlich(node, solnum, csl[solnum][node], out Ctot, out dCtot);
+                Freundlich(node, solnum, ref csl[solnum][node], out Ctot, out dCtot);
 
                 // Note:- Sometimes small numerical errors can leave
                 // -ve concentrations. Test if values are within limits.
@@ -3290,7 +3290,7 @@ public class Swim3
         }
 
         if (wf_tot < 0.9999 || wf_tot > 1.0001)
-            My.Warning("The value for 'wf_tot' of " + wf_tot.ToString() + " is not near the expected value of 1.0");
+            IssueWarning("The value for 'wf_tot' of " + wf_tot.ToString() + " is not near the expected value of 1.0");
     }
 
     private int FindSwimLayer(double depth)
@@ -4145,7 +4145,7 @@ public class Swim3
             it++;
             //        get balance eqns
             // LOOK OUT. THE FORTRAN CODE USED ARRAY INDICES STARTING AT -1
-            Baleq(it, iroots, ref slos, ref csl, out i1, out i2, ref a, ref b, ref c, ref rhs);
+            Baleq(it, ref iroots, ref slos, ref csl, out i1, out i2, ref a, ref b, ref c, ref rhs);
             //   test for convergence to soln
             // nh hey - wpf has no arguments !
             // nh         _wp = wpf(n, _dx, th)
@@ -4775,7 +4775,7 @@ loop:
                                     solute_names[solnum],
                                     node,
                                     solute_n[node]);
-                    My.Warning("'-ve value for solute was passed to SWIM" + mess);
+                    IssueWarning("'-ve value for solute was passed to SWIM" + mess);
 
                     solute_n[node] = 0.0;
                 }
@@ -4863,7 +4863,7 @@ loop:
                                     solute_names[solnum],
                                     node,
                                     solute_n[node]);
-                    My.Warning("'-ve value for solute was passed to SWIM" + Environment.NewLine + mess);
+                    IssueWarning("'-ve value for solute was passed to SWIM" + Environment.NewLine + mess);
 
                     solute_n[node] = 0.0;
                 }
@@ -4994,7 +4994,7 @@ loop:
 
                 // calculate value of isotherm function and the derivative.
 
-                Freundlich(node, solnum, Cw, out f, out dfdCw);
+                Freundlich(node, solnum, ref Cw, out f, out dfdCw);
 
                 double error_amount = f - Ctot;
 
@@ -5037,7 +5037,7 @@ loop:
                         }
 
                         // calculate new value of isotherm function and derivative.
-                        Freundlich(node, solnum, Cw, out f, out dfdCw);
+                        Freundlich(node, solnum, ref Cw, out f, out dfdCw);
                         error_amount = f - Ctot;
 
                         if (Math.Abs(error_amount) < tolerance)
@@ -5091,7 +5091,7 @@ loop:
         }
     }
 
-    private void Freundlich(int node, int solnum, double Cw, out double Ctot, out double dCtot)
+    private void Freundlich(int node, int solnum, ref double Cw, out double Ctot, out double dCtot)
     {
         //+  Changes
         //   RCichota - 30/Jan/2010 - implement test for -ve values passed in, test for linear isotherm
@@ -5452,7 +5452,7 @@ loop:
     private int ilast = 0;
     private double gr = 0.0;
 
-    private void Baleq(int it, int iroots, ref double[] tslos, ref double[][] tcsl, out int ibegin, out int iend, ref double[] a, ref double[] b, ref double[] c, ref double[] rhs)
+    private void Baleq(int it, ref int iroots, ref double[] tslos, ref double[][] tcsl, out int ibegin, out int iend, ref double[] a, ref double[] b, ref double[] c, ref double[] rhs)
     {
         //     Short Description:
         //     gets coefficient matrix and rhs for Newton soln of balance eqns
