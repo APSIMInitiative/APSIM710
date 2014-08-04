@@ -1273,6 +1273,9 @@ public class Swim3
 
                 PurgeLogInfo(start_timestep, ref TEMPSolTime, ref TEMPSolAmt);
 
+                numPairs = TEMPSolTime.Length;
+                Array.Resize(ref SWIMSolTime[solnum], numPairs);
+                Array.Resize(ref SWIMSolAmt[solnum], numPairs);
                 for (int counter = 0; counter < TEMPSolTime.Length; counter++)
                 {
                     SWIMSolTime[solnum][counter] = TEMPSolTime[counter];
