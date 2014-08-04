@@ -303,11 +303,12 @@
          -->
       <x_lai>0     4     6     8</x_lai>
       <y_sla_max description="maximum specific leaf area for delta LAI">60000 18000 10000 5500    </y_sla_max>
-      <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>
+      <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>  
       <!-- ______________________________________________________________________________
          TPLA  - USED TO INTIALISE THE INITIAL LAI
-         -->
-      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100.0</initial_tpla>
+               <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100.0</initial_tpla>  version 7.6
+-->
+      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">1000.0</initial_tpla> <!--version 1.6-->
       <!-- ______________________________________________________________________________
          HARVESTING EFFECTS ON LEAF AREA
          -->
@@ -355,7 +356,8 @@
          sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
          stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
          -->
-      <transp_eff_cf units="Pa">0     0    .004  .004  .004  .004  .004  .004   .0025 .00    0</transp_eff_cf>
+      <!--<transp_eff_cf units="Pa">0     0    .004  .004  .004  .004  .004  .004   .0025 .00    0</transp_eff_cf>  version 7.6-->
+      <transp_eff_cf units="Pa">0     0    .005  .005  .005  .005  .005  .005   .0025 .00    0</transp_eff_cf> <!-- version1.6 -->
       <!-- __________________________________________________________________________________________________________-
          VPD FRACTION
          Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
@@ -464,7 +466,8 @@
          instantly transferred from leaves to stem
          -->
       <root_n_sen_conc>0.008</root_n_sen_conc>
-      <leaf_n_sen_conc>0.015</leaf_n_sen_conc>
+      <leaf_n_sen_conc>0.015</leaf_n_sen_conc>  
+
       <stem_n_sen_conc>0.0</stem_n_sen_conc>
       <pod_n_sen_conc>0.0</pod_n_sen_conc>
       <meal_n_sen_conc>0.0</meal_n_sen_conc>
@@ -505,7 +508,9 @@
       <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1    0       </y_senescence_fac>
       <x_maxt_senescence description="minimum temperature for heat senescence table (oC)">34.0 34.1 45.0     </x_maxt_senescence>
       <y_heatsenescence_fac description="daily fraction of leaf area senesced due to heat (0-1)">0  0.0  0.0       </y_heatsenescence_fac> 	  
-      <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
+     <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
+     <!--  <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>   this makes a difference to obs pred version 1.6 -->
+
       <!-- ______________________________________________________________________________
          DETACHMENT
          root
@@ -532,9 +537,11 @@
          crop failure
          -->
       <leaf_no_crit description="critical number of leaves, below which portion of the crop may die due to water stress">10.0</leaf_no_crit>
-      <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">300.0</tt_emerg_limit>
+       <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">300.0</tt_emerg_limit> version 7.6
+
       <days_germ_limit units="days" description="maximum days allowed after sowing for germination to take place (days)">40.0</days_germ_limit>
       <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
+
       <swdf_photo_rate description="rate of plant reduction with photosynthesis water stress">0.0</swdf_photo_rate>
       <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop fails (unitless)">25</swdf_pheno_limit>
       <!-- ______________________________________________________________________________
