@@ -1610,6 +1610,9 @@ c      read(ret_string, *, iostat = err_code) g%rain
        double precision dble_fip(0:M)
        double precision dr              ! timestep rainfall (during g%dt)(mm)
        double precision dummy(0:M)
+       double precision dummy1
+       double precision dummy2
+       double precision dummy3
        double precision eo
        double precision h_mm
        double precision hmin_mm
@@ -1728,6 +1731,21 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            Variable_name,
      :            '(??)',
      :            g%psi(0),
+     :            p%n+1)
+      else if (Variable_name .eq. 'hyd_cond') then
+         do 15 node=0,p%n
+            call apswim_interp (
+     :            node, 
+     :            g%psi(node),
+     :            dummy1,
+     :            dummy2,
+     :            dummy(node),
+     :            dummy3)
+   15    continue
+         call respond2Get_double_array (
+     :            Variable_name,
+     :            '(mm/h)',
+     :            dummy(0),
      :            p%n+1)
       else if ((Variable_name .eq. 'rain').and.
      :         (p%rainfall_source .ne. 'rain')) then
