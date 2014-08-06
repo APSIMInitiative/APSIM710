@@ -3825,9 +3825,9 @@ c     real       N_demand              ! sum N demand for plant parts (g/plant)
       call Expose('dm_green', 'g/m2', 'Green leaf and stem',
      :            .false.,g%out_dm_green,g%out_numlayers,max_layer)
       call Expose('n_green', 'g/m2', 'N in green leaf and stem',
-     :            .false.,g%out_n_dead,g%out_numlayers,max_layer)
-      call Expose('n_dead', 'g/m2', 'N in green leaf and stem',
      :            .false.,g%out_n_green,g%out_numlayers,max_layer)
+      call Expose('n_dead', 'g/m2', 'N in dead leaf and stem',
+     :            .false.,g%out_n_dead,g%out_numlayers,max_layer)
       call Expose('tsdm', 'kg/ha', 'Total Standing Dry Matter',
      :            .false.,g%out_tsdm)
 
