@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.6-r3493" name="Developers">
+<folder version="36" creator="Apsim 7.6-r3511" name="Developers">
   <Plant2>
     <ini />
   </Plant2>
@@ -671,31 +671,32 @@ endif
     </Inhibitor>
     <SWIM2gui>
       <dummy1 type="category" description=" SWIM boundary conditions:" />
-      <top_boundary_condition type="list" listvalues="0,1,2,3" description="   Select the top boundary condition (0=inf conduct; 1=const potential; 2=limtd conduct):">0</top_boundary_condition>
-      <runoff type="list" listvalues="0,1,2" description="   Select the runnof/pond condition (0=all runoff; 1=all pond; 2=calc runoff):">1</runoff>
-      <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="   Select the bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable;3=seepage):">3</bottom_boundary_condition>
-      <run_solutes type="text" description="   Type the list of solutes SWIM should move:">urea  nh4  no3</run_solutes>
-      <max_water_increment type="text" description="   Type base water increment value:">0.5</max_water_increment>
-      <dummy2 type="category" description=" Description of the soil profile" />
-      <x type="text" description="   Type the list of nodes defining the swim soil layers (mm):">0          10         20         30         50         70         90         110        140        160        190        210        250        270        330        370        430        470        530        570        650        710        790        860        940        1060       1140       1260       1340       1440       1500</x>
-      <soil_type type="text" description="   Type the tags defining the soil type for each layer:">H1_EyreB   H1_EyreB   H1_EyreB   H1_EyreB   H1_EyreB   -          H2_EyreB   H2_EyreB   -          H3_EyreB   H3_EyreB   -          H4_EyreB   H4_EyreB   H4_EyreB   H4_EyreB   -          H5_EyreB   H5_EyreB   -          H6_EyreB   H6_EyreB   H6_EyreB   H6_EyreB   -          H7_EyreB   H7_EyreB   H7_EyreB   H7_EyreB   H7_EyreB   H7_EyreB</soil_type>
-      <psi type="text" description="   Type the inital values of the soil matric potential for each layer (cm):">-100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100       -100</psi>
-      <salb type="text" description="   Type the soil's surface albedo:">0.23</salb>
-      <dummy3 type="category" description=" Infiltration/runnof parameters" />
-      <surface_conductance type="text" description="   Surface water conductance (1/cm):">0.004</surface_conductance>
-      <surface_storage type="text" description="   Water storage in soil surface (roughness - mm):">1.00</surface_storage>
+      <top_boundary_condition type="list" listvalues="0,1,2,3" description="   Top boundary condition (0=infinite conduct; 1=const potential; 2=limited conductance):">0</top_boundary_condition>
+      <runoff type="list" listvalues="0,1,2" description="   How runoff/ponding will be computed (0=all runoff; 1=all pond; 2=calculate runoff):">1</runoff>
+      <bottom_boundary_condition type="list" listvalues="0,1,2,3" description="   Bottom boundary condition (0=set pot grad; 1=set potential; 2=impermeable; 3=seepage):">3</bottom_boundary_condition>
+      <run_solutes type="text" description="   List of solutes that SWIM should move:">urea  nh4  no3</run_solutes>
+      <dummy2 type="category" description=" SWIM parameters for numerical solution" />
+      <max_water_increment type="text" description="   Base water increment value:">1</max_water_increment>
+      <dummy3 type="category" description=" Description of the soil profile" />
+      <x type="text" description="   List of nodes defining the swim soil layers (mm):">0      10     20     30     50     70     90     110    140   160     200   230       270   310     360     410     470     530     590    650    720     780      840     900    940     1000</x>
+      <soil_type type="text" description="   Tags defining the soil type (horizon) for each layer:">A_ZL   A_ZL   A_ZL   A_ZL   A_ZL   A_ZL   A_ZL   A_ZL   -     AB_ZL   AB_ZL   AB_ZL   -     B1_ZL   B1_ZL   B1_ZL   B1_ZL   B1_ZL   -      B2_ZL   B2_ZL   B2_ZL   B2_ZL   -      BC_ZL   BC_ZL</soil_type>
+      <psi type="text" description="   Initial values of the soil matric potential for each layer (cm):">-100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0  -100.0</psi>
+      <salb type="text" description="   Albedo of bare soil:">0.23</salb>
+      <dummy4 type="category" description=" Infiltration/runoff parameters" />
+      <surface_conductance type="text" description="   Surface water conductance (1/cm):">0.005</surface_conductance>
+      <surface_storage type="text" description="   Water storage capacity of the soil surface (surface roughness - mm):">1.00</surface_storage>
       <runoff_rate_factor type="text" description="   Runoff rate factor:">7.0</runoff_rate_factor>
-      <dummy4 type="category" description=" Bottom boundary conditions parameters" />
+      <dummy5 type="category" description=" Bottom boundary condition parameters" />
       <bottom_constant_gradient type="text" description="   Constant matric potential gradient at the bottom of the soil (used if bottom boundary condition = 0):">0.0</bottom_constant_gradient>
-      <bottom_constant_potential type="text" description="   Constant soil matric potential at the bottom of the soil  (used if bottom boundary condition = 1):">-10</bottom_constant_potential>
-      <dummy5 type="category" description=" Subsurface drainage settings" />
+      <bottom_constant_potential type="text" description="   Constant soil matric potential at the bottom of the soil  (used if bottom boundary condition = 1 or 3):">-10</bottom_constant_potential>
+      <dummy6 type="category" description=" Subsurface drainage settings" />
       <subsurface_drain type="list" listvalues="on,off" description="   Select whether subsurface drainage is on or off:">off</subsurface_drain>
       <drain_depth type="text" description="   Depth of the drainage system (mm):">450</drain_depth>
       <drain_spacing type="text" description="   Space between mole/tile drains (mm):">2000</drain_spacing>
       <drain_radius type="text" description="   Radius of the mole/tile drains (mm):">35</drain_radius>
       <drain_klat type="text" description="   Hydraulic conductivity of mole/tile drains (mm/day):">1000</drain_klat>
       <drain_impdepth type="text" description="   Depth of the impermeable layer (mm):">800</drain_impdepth>
-      <dummy6 type="category" description=" Bypass flow parameters" />
+      <dummy7 type="category" description=" Bypass flow parameters" />
       <bypass_flow type="list" listvalues="on,off" description="   Select whether calculation for bypass flow is on or off:">off</bypass_flow>
       <bypass_depth type="text" description="   Bypass flow depth (mm):">11</bypass_depth>
       <bypass_conductance type="text" description="   Conductance of macropores during bypass flow (1/cm):">0.1</bypass_conductance>
@@ -708,24 +709,38 @@ endif
       </ini>
     </SWIM2gui>
     <SoilNitrogen>
-      <category type="category" description="Parameters to initialise soil organic matter" />
-      <root_wt type="text" description="Type the initial FOM amount in the soil (kgDM/ha):">2000</root_wt>
-      <root_cn type="text" description="Type the initial C:N ratio of FOM:">30</root_cn>
-      <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
-      <mcn type="text" description="Type the C:N ratio of soil microbial biomass:">8</mcn>
-      <category type="category" description="Enter the values for each layer" />
-      <ph type="text" description="Type the inital soil pH:">6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0     6.0</ph>
-      <oc type="text" description="Type the initial soil organic carbon content (%):">2.758      2.743      2.726      2.701      2.672      2.642      2.437      2.188      1.976      1.796      1.639      1.474      1.331      1.172      1.013      0.890      0.799      0.729      0.678      0.633      0.597      0.573      0.557      0.546      0.537      0.532      0.529      0.528      0.527      0.526      0.526</oc>
-      <finert type="text" description="Type the inert fraction of soil humus (0-1):"> 0.234      0.240      0.247      0.253      0.266      0.306      0.388      0.470      0.546      0.607      0.663      0.713      0.761      0.801      0.849      0.878      0.904      0.920      0.935      0.944      0.955      0.962      0.970      0.975      0.979      0.984      0.987      0.989      0.991      0.992      0.993</finert>
-      <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080   0.080   0.080   0.080   0.079   0.078   0.075   0.069   0.061   0.050   0.040   0.029   0.021   0.013   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008   0.008</fbiom>
-      <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50    6.00    7.20    7.50    7.50    7.50    7.50    7.50    7.50    7.35    6.90    6.45    6.00    5.55    4.80    4.05    3.45    2.70    2.40    2.13    1.95    1.77    1.53    1.32    1.17    1.02    0.90    0.78    0.63    0.60    0.60</no3ppm>
-      <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50    2.00    2.40    2.50    2.50    2.50    2.50    2.50    2.50    2.45    2.30    2.15    2.00    1.85    1.60    1.35    1.15    0.90    0.80    0.71    0.65    0.59    0.51    0.44    0.39    0.34    0.30    0.26    0.21    0.20    0.20</nh4ppm>
-      <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00</ureappm>
-      <category type="category" description="Parameters to compute Nitrification" />
-      <Nitrification_pot type="text" description="Potential Nitrification rate (mg NH4/kg soil/day):">80</Nitrification_pot>
-      <nh4_at_half_pot type="text" description="NH4 concentration at half of Nitrification rate (ppm):">90</nh4_at_half_pot>
-      <opt_temp type="text" description="Optimal temperature for nitrification (oC)">28  28</opt_temp>
+      <dummy1 type="category" description=" Parameters for initialising soil organic matter" />
+      <root_wt type="text" description="   Initial FOM amount in the soil (kgDM/ha):">2000</root_wt>
+      <root_cn type="text" description="   Depth to distributed initial FOM (mm):">30</root_cn>
+      <soil_cn type="text" description="   Initial C:N ratio of FOM:">12.5</soil_cn>
+      <mcn type="text" description="   C:N ratio of soil humus:">8</mcn>
+      <dummy2 type="category" description=" Initial soil status (values for each layer)" />
+      <ph type="text" description="   Initial soil pH:">6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0    6.0</ph>
+      <oc type="text" description="   Initial soil organic carbon content (%):">4.00   4.00   4.00   4.00   4.00   4.00   4.00   1.75   1.75   1.75   1.25   1.25   1.25   1.25   1.25   0.75   0.75   0.75   0.75   0.50   0.50</oc>
+      <fbiom type="text" description="   Inert C fraction, of soil humus (0-1):">0.450  0.450  0.450  0.450  0.450  0.450  0.450  0.725  0.725  0.725  0.875  0.875  0.875  0.875  0.875  0.920  0.920  0.920  0.920  0.960  0.960</fbiom>
+      <finert type="text" description="   Microbial biomass fraction, of total OC (0-1):">0.080  0.080  0.080  0.080  0.079  0.075  0.060  0.040  0.023  0.013  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008  0.008</finert>
+      <no3ppm type="text" description="   Initial concentration of NO3 in the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617</no3ppm>
+      <nh4ppm type="text" description="   Initial concentration of NH4 in the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617</nh4ppm>
+      <ureappm type="text" description="   Initial concentration of urea in the soil (ppm):">0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000</ureappm>
+      <dummy3 type="category" description=" Parameters for computing Nitrification" />
+      <Nitrification_pot type="text" description="   Potential nitrification rate (mg NH4/kg soil/day):">80</Nitrification_pot>
+      <nh4_at_half_pot type="text" description="   NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+      <opt_temp type="text" description="   Optimal temperature for nitrification, at aerobic and anaerobic conditions (oC):">28  28</opt_temp>
     </SoilNitrogen>
+    <SoilTemperature2>
+      <dummy1 type="category" description=" Basic parameters for SoilTemperature" />
+      <MaxTTimeDefault type="text" description="   Time of the day for maximum temperature (24 hours clock):">14</MaxTTimeDefault>
+      <BoundaryLayerConductanceSource type="list" listvalues="calc,constant" description="   How the BoundaryLayerCounductance will be defined:">calc</BoundaryLayerConductanceSource>
+      <BoundaryLayerConductance type="text" description="   Value to use if BoundaryLayerConductance is constant (W/m2/K):">20</BoundaryLayerConductance>
+      <BoundaryLayerConductanceIterations type="text" description="   Number of iterations to calculate BoundaryLayerConductance (0-10):">1</BoundaryLayerConductanceIterations>
+      <NetRadiationSource type="list" listvalues="calc,eos" description="   Source for net radiation values:">calc</NetRadiationSource>
+      <DefaultWindSpeed type="text" description="   Default value for wind speed (m/s):">3.0</DefaultWindSpeed>
+      <DefaultAltitude type="text" description="   Local altitude (m):">50</DefaultAltitude>
+      <DefaultInstrumentHeight type="text" description="   Height of measured wind and temperature (m)">1.2</DefaultInstrumentHeight>
+      <BareSoilHeight type="text" description="   Average height of the bare soil roughness (mm)">57</BareSoilHeight>
+      <dummy2 type="category" description=" Parameters needed when using SWIM2" />
+      <Clay type="text" description="   Clay content for each soil layer (%):">20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0   20.0</Clay>
+    </SoilTemperature2>
     <SWIM2ui>
       <ini name="Ini_SWIM2">
         <filename input="yes">%apsim%\SoilData\SWIM2ui2_Data.xml</filename>
@@ -778,18 +793,6 @@ endif
       <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
       <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
     </SoilNui>
-    <SoilTemperature2>
-      <MaxTTimeDefault>14</MaxTTimeDefault>
-      <BoundaryLayerConductanceSource>calc</BoundaryLayerConductanceSource>
-      <BoundaryLayerConductance>20</BoundaryLayerConductance>
-      <BoundaryLayerConductanceIterations>1</BoundaryLayerConductanceIterations>
-      <NetRadiationSource>calc</NetRadiationSource>
-      <DefaultWindSpeed>3</DefaultWindSpeed>
-      <DefaultAltitude>18</DefaultAltitude>
-      <DefaultInstrumentHeight>1.2</DefaultInstrumentHeight>
-      <BareSoilHeight>57</BareSoilHeight>
-      <Clay>25.0    25.0    25.0    25.0    25.2    25.3    25.3    25.3    25.3    26.7    28.0    28.0    28.0    27.7    27.3    27.3    27.3    26.7    26.0    26.0    26.0    26.0    26.0    26.0    26.0    26.0</Clay>
-    </SoilTemperature2>
   </folder>
   <folder name="Solute2">
     <tracer2 name="Tracer">
