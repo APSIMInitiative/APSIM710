@@ -1669,7 +1669,6 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            '(mm)',
      :            dummy(0),
      :            p%n+1)
-
       else if (Variable_name .eq. 'll15') then
          call respond2Get_double_array (
      :            Variable_name,
@@ -1729,7 +1728,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
       else if (Variable_name .eq. 'psi') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(??)',
+     :            '(cm)',
      :            g%psi(0),
      :            p%n+1)
       else if (Variable_name .eq. 'hyd_cond') then
@@ -1741,6 +1740,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            dummy2,
      :            dummy(node),
      :            dummy3)
+            dummy(node) = exp(dlog(10d0)*dummy(node))
    15    continue
          call respond2Get_double_array (
      :            Variable_name,
@@ -1749,18 +1749,14 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            p%n+1)
       else if ((Variable_name .eq. 'rain').and.
      :         (p%rainfall_source .ne. 'rain')) then
-!      else if (Variable_name .eq. 'rain') then
-
          start_of_day = apswim_time (g%year,g%day,
      :                               apswim_time_to_mins(g%apsim_time))
          end_of_day = apswim_time (g%year
      :                            ,g%day
      :                            ,apswim_time_to_mins(g%apsim_time)
      :                                +int(g%apsim_timestep))
-
          daily_rain = (apswim_crain(end_of_day)-
      :                     apswim_crain(start_of_day))*10d0
-
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
@@ -1770,17 +1766,12 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            Variable_name,
      :            '(mm)',
      :            g%TD_runoff)
-
       else if (Variable_name .eq. 'infiltration') then
-
-!         infiltration = max(0d0
-!     :                     ,g%TD_wflow(0) + g%TD_evap)
          infiltration = g%TD_wflow(0)
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            infiltration)
-
       else if (Variable_name .eq. 'es') then
          call respond2Get_double_var (
      :            Variable_name,
@@ -1791,13 +1782,11 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            Variable_name,
      :            '(mm)',
      :            g%TD_pevap)
-cnh      print*,g%TD_pevap
       else if (Variable_name .eq. 'drain') then
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            g%TD_drain)
-
       else if ((Variable_name .eq. 'eo').and.
      :         (p%evap_source .ne. 'eo')) then
          start_of_day = apswim_time (g%year,g%day,
@@ -1806,14 +1795,11 @@ cnh      print*,g%TD_pevap
      :                            ,g%day
      :                            ,apswim_time_to_mins(g%apsim_time)
      :                                +int(g%apsim_timestep))
-
          eo = (apswim_cevap(end_of_day)-apswim_cevap(start_of_day))*10d0
-
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            eo)
-
       else if (index (Variable_name, 'uptake_').eq.1) then
          call split_line (Variable_name(8:),uname,ucrop,'_')
          call apswim_get_uptake (ucrop, uname, uptake, uunits,uflag)
@@ -1826,7 +1812,6 @@ cnh      print*,g%TD_pevap
          else
             Call Message_Unused()
          endif
-
       else if (index (Variable_name, 'supply_').eq.1) then
          call split_line (Variable_name(8:),uname,ucrop,'_')
          call apswim_get_supply (ucrop, uname, uptake, uunits,uflag)
@@ -1839,14 +1824,12 @@ cnh      print*,g%TD_pevap
          else
             Call Message_Unused()
          endif
-
       else if (index (Variable_name, 'psix').eq.1) then
             call respond2Get_double_array (
      :            Variable_name,
      :            'cm',
      :            g%psix,
      :            mv)
-
       else if (index(Variable_name,'leach_').eq.1) then
          solnum = apswim_solute_number (Variable_name(7:))
          if (solnum.ne.0) then
@@ -1858,11 +1841,9 @@ cnh      print*,g%TD_pevap
            ! Unknown solute - give no reply
            call Message_Unused ()
         endif
-
       else if (index(Variable_name,'flow_').eq.1) then
          ! Flow represents flow downward out of a layer
          ! and so start at node 1 (not 0)
-
          flow_name = Variable_name(len('flow_')+1:)
          call apswim_get_flow (flow_name
      :                        ,flow_array
@@ -1877,7 +1858,6 @@ cnh      print*,g%TD_pevap
          else
             Call Message_Unused()
          endif
-
       else if (Variable_name.eq. 'flow') then
          ! Flow represents flow downward out of a layer
          ! and so start at node 1 (not 0)
@@ -1886,25 +1866,21 @@ cnh      print*,g%TD_pevap
      :            '(kg/ha)',
      :            g%TD_wflow(1),
      :            p%n+1)
-
       else if (Variable_name .eq. 'salb') then
          call respond2Get_real_var (
      :            Variable_name,
      :            '(??)',
      :            p%salb)
-
       else if (Variable_name .eq. 'hmin') then
          if (p%isbc.eq.2) then
             hmin_mm =g%hmin * 10d0
          else
             hmin_mm = 0.0d0
          endif
-
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            hmin_mm)
-
       else if (Variable_name .eq. 'h'
      :    .OR. variable_name .eq. 'pond') then
          h_mm = g%h * 10.d0
@@ -1912,138 +1888,99 @@ cnh      print*,g%TD_pevap
      :            Variable_name,
      :            '(mm)',
      :            h_mm)
-
       else if (Variable_name .eq. 'scon') then
-
          call respond2Get_double_var (
      :            Variable_name,
      :            '(/h)',
      :            g%gsurf)
-
       else if (Variable_name .eq. 'scon_min') then
-
          call respond2Get_double_var (
      :            Variable_name,
      :            '(/h)',
      :            p%g0)
-
       else if (Variable_name .eq. 'scon_max') then
-
          call respond2Get_double_var (
      :            Variable_name,
      :            '(/h)',
      :            p%g1)
-
       else if (Variable_name .eq. 'dr') then
          dr=(apswim_crain(g%t) - apswim_crain(g%t-g%dt))*10d0
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            dr)
-
       else if (Variable_name .eq. 'dt') then
          call respond2Get_double_var (
      :            Variable_name,
      :            '(min)',
      :            g%dt*60d0)
-
-!      else if (Variable_name .eq. 'crop_cover') then
-!         call respond2Get_double_var (
-!     :            Variable_name,
-!     :            '(0-1)',
-!     :            g%crop_cover)
-
 cnh added as per request by Dr Val Snow
-
       else if (index(Variable_name,'exco_').eq.1) then
-
          solnum = apswim_solute_number (Variable_name(6:))
          do 200 node=0,p%n
             dble_exco(node) = p%ex(solnum,node)/p%rhob(node)
   200    continue
-
          call respond2Get_double_array (
      :            Variable_name,
      :            '()',
      :            dble_exco(0),
      :            p%n+1)
-
       else if (index(Variable_name,'fip_').eq.1) then            !VOS added 19 March 2012
-
          solnum = apswim_solute_number (Variable_name(5:))
          do 210 node=0,p%n
             dble_fip(node) = p%fip(solnum,node)
   210    continue
-
          call respond2Get_double_array (
      :            Variable_name,
      :            '()',
      :            dble_fip(0),
      :            p%n+1)
-
       else if (index(Variable_name,'dis_').eq.1) then
-
          solnum = apswim_solute_number (Variable_name(5:))
          do 300 node=0,p%n
             dble_dis(node) = p%dis(solnum,node)
   300    continue
-
          call respond2Get_double_array (
      :            Variable_name,
      :            '()',
      :            dble_dis(0),
      :            p%n+1)
-
       else if (index(Variable_name,'conc_water_').eq.1) then
-
          solname = Variable_name(12:)
-
          call apswim_conc_water_solute (solname, conc_water_solute)
-
          call respond2Get_double_array (
      :            Variable_name,
      :            '(ug/g)',
      :            conc_water_solute(0),
      :            p%n+1)
-
       else if (index(Variable_name,'conc_adsorb_').eq.1) then
-
          solname = Variable_name(13:)
-
          call apswim_conc_adsorb_solute (solname, conc_adsorb_solute)
-
          call respond2Get_double_array (
      :            Variable_name,
      :            '(ug/g)',
      :            conc_adsorb_solute(0),
      :            p%n+1)
-
       else if (Variable_name .eq. 'subsurface_drain') then
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            g%TD_subsurface_drain)
-
       else if (index(Variable_name,'subsurface_drain_').eq.1) then
-
          solname = Variable_name(18:)
          solnum = apswim_solute_number(solname)
-
          if (solnum .ne.0) then
             call respond2Get_double_var (
      :            Variable_name,
      :            '(kg/ha)',
      :            g%TD_slssof(solnum))
-
          endif
-
       else if (Variable_name .eq. 'water_table') then
          water_table = apswim_water_table()
          call respond2Get_double_var (
      :            Variable_name,
      :            '(mm)',
      :            water_table)
-
       else
          call Message_Unused ()
       endif
@@ -9100,7 +9037,7 @@ c      pause
             inquire(LUNlog, NAME=filename)
             call fatal_error(err_user,'Error reading log file: '
      :      //filename)
-			   
+   
          elseif (line.eq.blank) then
             goto 100 ! try reading next line
 
@@ -9950,7 +9887,7 @@ cRC            Changes by RCichota, 30/Jan/2010
 
 *+  Local Variables
       integer, intent(in) :: variant
-      integer, intent(in) :: fromID	  
+      integer, intent(in) :: fromID  
       type(newSoluteType) :: newsolute
       integer numvals
       integer sender
@@ -9962,7 +9899,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       call push_routine (my_name)
 
       call unpack_newsolute(variant, newsolute)
-	  
+  
       sender = fromID
       numvals = newsolute%num_solutes
 
