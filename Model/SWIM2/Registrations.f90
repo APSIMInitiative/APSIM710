@@ -79,6 +79,7 @@ module Registrations
       dummy = add_reg(respondToGetReg, 'eo', doubleTypeDDML, 'mm', 'Potential daily evapotranspiration')
       dummy = add_reg(respondToGetReg, 'psix', doublearrayTypeDDML, 'cm', 'Xylem water potential')
       dummy = add_reg(respondToGetReg, 'flow', doublearrayTypeDDML, 'kg/ha', 'Flow of ??? (water, no3, urea, etc) from each layer')
+      dummy = add_reg(respondToGetReg, 'flow_x', doublearrayTypeDDML, 'mm or kg/ha', 'Flow of x (water, no3, urea, etc) from each layer')
       dummy = add_reg(respondToGetReg, 'salb', doubleTypeDDML, '', 'Soil surface albedo')
       dummy = add_reg(respondToGetReg, 'hmin', doubleTypeDDML, 'mm', 'Minimum water storage at surface')
       dummy = add_reg(respondToGetReg, 'h', doubleTypeDDML, 'mm', 'Water storage at soil surface')
@@ -90,6 +91,12 @@ module Registrations
       dummy = add_reg(respondToGetReg, 'dt', doubleTypeDDML, 'min', 'SWIM timestep')
       dummy = add_reg(respondToGetReg, 'subsurface_drain', doubleTypeDDML, 'mm', 'Sub-surface water drainage')
       dummy = add_reg(respondToGetReg, 'water_table', doubleTypeDDML, 'mm', 'Water table depth')
+      dummy = add_reg(respondToGetReg, 'exco_x', doublearrayTypeDDML, 'g/cm^3', 'Freundlich exchange factor for solute x (no3, urea, etc)')
+      dummy = add_reg(respondToGetReg, 'fip_x', doublearrayTypeDDML, '', 'Freundlich exponent factor for solute x (no3, urea, etc) ')
+      dummy = add_reg(respondToGetReg, 'dis_x', doublearrayTypeDDML, 'cm', 'Dispersion coefficient for solute x (no3, urea, etc) ')
+      dummy = add_reg(respondToGetReg, 'conc_water_x', doublearrayTypeDDML, 'ug/g', 'Concentration of x (no3, urea, etc) in the soil solution')
+      dummy = add_reg(respondToGetReg, 'conc_adsorb_x', doublearrayTypeDDML, 'ug/g', 'Concentration of x (no3, urea, etc) adsorbed')
+      dummy = add_reg(respondToGetReg, 'leach_x', doubleTypeDDML, 'kg/ha', 'Amount of x (no3, urea, etc) leached at bottom of profile')
 
       end subroutine
 end module Registrations
