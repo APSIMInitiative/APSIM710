@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
 using System.IO;
 using CSGeneral;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 
 namespace ApsimFile
@@ -51,25 +46,13 @@ namespace ApsimFile
                     throw new Exception("Unknown APSIM file type: " + FileName + ". Cannot run APSIM.");
             }
 
-            // If there is only one job then run it now - don't need job scheduler. (the second job is the .sim deletion)
-            if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-            {
-				ApsimJobs[0].Run ();
-                while (!ApsimJobs[0].HasExited) 
-                    Application.DoEvents(); // Allow the GUI's progress bar to update
-				if (! ApsimJobs[0].HasErrors && ApsimJobs.Count == 2) 
-					ApsimJobs[1].Run ();
-			}
-            else if (ApsimJobs.Count > 2)
-            {
-                Project P = new Project();
-                Target T = new Target();
-                T.Name = "Apsim.exe";
-                T.Jobs = ApsimJobs;
-                P.Targets.Add(T);
-                Scheduler = new JobScheduler();
-                Scheduler.Start(P);
-            }
+            Project P = new Project();
+            Target T = new Target();
+            T.Name = "Apsim.exe";
+            T.Jobs = ApsimJobs;
+            P.Targets.Add(T);
+            Scheduler = new JobScheduler();
+            Scheduler.Start(P);
         }
 
         /// <summary>
@@ -77,10 +60,7 @@ namespace ApsimFile
         /// </summary>
         public void WaitUntilFinished()
         {
-            if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-                ApsimJobs[0].WaitUntilExit();
-            else if (ApsimJobs.Count > 2)
-                Scheduler.WaitForFinish();
+            if (Scheduler != null) Scheduler.WaitForFinish();
         }
 
         /// <summary>
@@ -90,9 +70,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-                    return ApsimJobs[0].PercentComplete;
-                else if (Scheduler != null)
+                if (Scheduler != null)
                     return Scheduler.PercentComplete;
                 else
                     return 0;
@@ -104,9 +82,7 @@ namespace ApsimFile
         /// </summary>
         public void Stop()
         {
-            if (ApsimJobs.Count == 1)
-                ApsimJobs[0].Stop();
-            else if (Scheduler != null)
+             if (Scheduler != null)
                 Scheduler.Stop();
         }
 
@@ -117,9 +93,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-                    return ApsimJobs[0].HasErrors;
-                else if (Scheduler != null)
+                if (Scheduler != null)
                     return Scheduler.HasErrors;
                 else
                     return false;
@@ -133,9 +107,7 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-                    return ApsimJobs[0].HasExited;
-                else if (Scheduler != null)
+                if  (Scheduler != null)
                     return Scheduler.HasFinished;
                 else
                     return false;
@@ -160,13 +132,9 @@ namespace ApsimFile
         {
             get
             {
-                if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-                    if (ApsimJobs[0].HasExited)
-                        return 1;
-                    else
-                        return 0;
-                else
+                if (Scheduler != null)
                     return Scheduler.NumJobsCompleted;
+                return 0;
             }
         }
 
@@ -177,16 +145,7 @@ namespace ApsimFile
         {
             get
             {
-                if ((ApsimJobs.Count == 1 || ApsimJobs.Count == 2) && ApsimJobs[0].HasErrors)
-                    {
-                        string path = ApsimJobs[0].Name;
-                        int pos = path.LastIndexOf("/");
-                        if (pos > 0)
-                            path = path.Substring(pos + 1);
-
-                        return path;
-                    }
-                else if (ApsimJobs.Count > 2)
+                if (Scheduler != null)
                     return Scheduler.FirstJobWithError;
                 return "";
             }
@@ -194,14 +153,7 @@ namespace ApsimFile
 
         public void SaveLogFile(string FileName)
         {
-            if (ApsimJobs.Count == 1 || ApsimJobs.Count == 2)
-            {
-                XmlSerializer x = new XmlSerializer(typeof(Job));
-                StreamWriter s = new StreamWriter(FileName);
-                x.Serialize(s, ApsimJobs[0]);
-                s.Close();
-            }
-            else if (Scheduler != null)
+            if (Scheduler != null)
                 Scheduler.SaveLogFile(FileName);
         }
 
