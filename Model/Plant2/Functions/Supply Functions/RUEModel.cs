@@ -73,6 +73,19 @@ public class RUEModel
         }
     }
     /// <summary>
+    /// Total plant "potential" radiation use efficiency (for the day) corrected by reducing factors (g biomass/MJ global solar radiation) CHCK-EIT 
+    /// </summary>
+    [Output("RueAct")]
+    [Units("gDM/MJ")]
+    private double RuePot
+    {
+        get
+        {
+            double RueReductionFactor = Math.Min(Ft.Value, Math.Min(Fn.Value, Fvpd.Value)) * Fco2.Value;
+            return RUE.Value * RueReductionFactor;
+        }
+    }
+    /// <summary>
     /// Daily growth increment of total plant biomass
     /// </summary>
     /// <param name="RadnInt">intercepted radiation</param>
@@ -81,6 +94,17 @@ public class RUEModel
     {
         return RadnInt * RueAct;
     }
+
+    /// <summary>
+    /// Daily growth increment of total plant biomass
+    /// </summary>
+    /// <param name="RadnInt">intercepted radiation</param>
+    /// <returns>g dry matter/m2 soil/day</returns>
+    public double PotentialGrowth(double RadnInt)
+    {
+        return RadnInt * RuePot;
+    }
+
 
     private void PublishNewPotentialGrowth()
     {

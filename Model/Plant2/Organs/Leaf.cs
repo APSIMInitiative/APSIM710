@@ -46,6 +46,9 @@ public class Leaf : BaseOrgan, AboveGround
     public Function DMDemandFunction = null;
     [Output]
     public List<LeafCohort> Leaves = new List<LeafCohort>();
+    [Link(IsOptional = true)]
+    public Function TranspirationFunction = null;
+    
  #endregion
 
  #region Class Fields
@@ -483,9 +486,15 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
+            double demand = 0;
             double F = 0;
-            if (PEP > 0)
-                F = EP / PEP;
+            if (TranspirationFunction != null)
+                demand = TranspirationFunction.Value;
+            else
+                demand = PEP;
+
+            if (demand > 0)
+                F = EP / demand;
             else
                 F = 1;
             return F;
@@ -924,7 +933,15 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("mm")]
-    public override double WaterDemand { get { return PEP; } }
+    public override double WaterDemand 
+    { 
+        get 
+        {
+           if (TranspirationFunction != null)
+                return TranspirationFunction.Value;
+           return PEP; 
+        } 
+    }
     public override double WaterAllocation
     {
       get { return _WaterAllocation; }
