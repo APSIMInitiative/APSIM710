@@ -4124,6 +4124,20 @@ public class Swim3
             surfcon = gsurf;
     }
 
+    // In the Fortran version, the data for ponding water was held in
+    // array members with an index of -1.
+    // In this version, I've created this structure to hold those values.
+    // Note, however, that SWIM3 in APSIM never allowed the user to
+    // set the value for isbc, which controls the way ponding is handled;
+    // as a consequence, this version of the logic remains untested.
+    private struct PondingData
+    {
+      public double b;
+      public double c;
+      public double rhs;
+      public double v;
+     };
+
     private void Solve(int itlim, ref bool fail)
     {
         //     Short description:
@@ -4142,13 +4156,14 @@ public class Swim3
         double[] rhs = new double[n + 1];
         double[] dp = new double[n + 1];
         double[] vbp = new double[n + 1];
+        PondingData pondingData = new PondingData();
 
         do
         {
             it++;
             //        get balance eqns
             // LOOK OUT. THE FORTRAN CODE USED ARRAY INDICES STARTING AT -1
-            Baleq(it, ref iroots, ref slos, ref csl, out i1, out i2, ref a, ref b, ref c, ref rhs);
+            Baleq(it, ref iroots, ref slos, ref csl, out i1, out i2, ref a, ref b, ref c, ref rhs, ref pondingData);
             //   test for convergence to soln
             // nh hey - wpf has no arguments !
             // nh         _wp = wpf(n, _dx, th)
@@ -4171,7 +4186,7 @@ public class Swim3
             else
             {
                 int neq = i2 - i1 + 1;
-                Thomas(i1, neq, ref a, ref b, ref c, ref rhs, ref d, ref dp, out fail);
+                Thomas(i1, neq, ref a, ref b, ref c, ref rhs, ref d, ref dp, ref pondingData, out fail);
                 _work += neq;
                 //nh            if(fail)go to 90
                 if (fail)
@@ -4208,7 +4223,8 @@ public class Swim3
                     j++;
                 }
                 if (i1 == -1)
-                    _h = Math.Max(0.0, _h + dp[-1]);
+                    _h = Math.Max(0.0, _h + pondingData.v);
+                     //_h = Math.Max(0.0, _h + dp[-1]);
             }
         }
         while (fail && it < itlim);
@@ -4224,7 +4240,7 @@ public class Swim3
         {
             for (int solnum = 0; solnum < num_solutes; solnum++)
             {
-                GetSol(solnum, ref a, ref b, ref c, ref d, ref rhs, ref dp, ref vbp, ref fail);
+                GetSol(solnum, ref a, ref b, ref c, ref d, ref rhs, ref dp, ref vbp, ref pondingData, ref fail);
                 if (fail)
                 {
                     Console.WriteLine("swim will reduce timestep to solve solute movement");
@@ -4234,7 +4250,7 @@ public class Swim3
         }
     }
 
-    private void GetSol(int solnum, ref double[] a, ref double[] b, ref double[] c, ref double[] d, ref double[] rhs, ref double[] c1, ref double[] c2, ref bool fail)
+    private void GetSol(int solnum, ref double[] a, ref double[] b, ref double[] c, ref double[] d, ref double[] rhs, ref double[] c1, ref double[] c2, ref PondingData pondingData, ref bool fail)
     {
         //     Short description:
         //     get and solve solute balance eqns
@@ -4484,7 +4500,7 @@ loop:
         double[] csltemp = new double[n + 1];
         for (int i = 0; i <= n; i++)
             csltemp[i] = csl[solnum][i];
-        Thomas(k, neq, ref a, ref b, ref c, ref rhs, ref d, ref csltemp, out fail);
+        Thomas(k, neq, ref a, ref b, ref c, ref rhs, ref d, ref csltemp, ref pondingData, out fail);
         for (int i = 0; i <= n; i++)
             csl[solnum][i] = csltemp[i];
         // nh end subroutine
@@ -5424,28 +5440,44 @@ loop:
         }
     }
 
-    private void Thomas(int istart, int n, ref double[] a, ref double[] b, ref double[] c, ref double[] rhs, ref double[] d, ref double[] v, out bool fail)
+    private void Thomas(int istart, int n, ref double[] a, ref double[] b, ref double[] c, ref double[] rhs, ref double[] d, ref double[] v, ref PondingData pondingData, out bool fail)
     {
         //     Short description:
         //     Thomas algorithm for solving tridiagonal system of eqns
 
         fail = true; // Indicate failure if we return early
-
-        if (b[istart] == 0.0)
-            return;
+        
         double piv = b[istart];
-        v[istart] = rhs[istart] / piv;
+        if (istart == -1)
+            piv = pondingData.b;
+        if (piv == 0.0)
+            return;
+        if (istart == -1)
+            pondingData.v = pondingData.rhs / piv;
+        else
+            v[istart] = rhs[istart] / piv;
         for (int i = istart + 1; i < istart + n; i++)
         {
-            d[i] = c[i - 1] / piv;
+            if (i == 0)
+                d[i] = pondingData.c / piv;
+            else
+                d[i] = c[i - 1] / piv;
             piv = b[i] - a[i] * d[i];
             if (piv == 0.0)
                 return;
-            v[i] = (rhs[i] - a[i] * v[i - 1]) / piv;
+            if (i == 0)
+               v[i] = (rhs[i] - a[i] * pondingData.v) / piv;
+            else
+               v[i] = (rhs[i] - a[i] * v[i - 1]) / piv;
         }
 
         for (int i = istart + n - 2; i >= istart; i--)
-            v[i] = v[i] - d[i + 1] * v[i + 1];
+        {
+            if (i == -1)
+               pondingData.v = pondingData.v - d[i + 1] * v[i + 1];
+            else
+               v[i] = v[i] - d[i + 1] * v[i + 1];
+        }
 
         fail = false;
     }
@@ -5455,7 +5487,7 @@ loop:
     private int ilast = 0;
     private double gr = 0.0;
 
-    private void Baleq(int it, ref int iroots, ref double[] tslos, ref double[][] tcsl, out int ibegin, out int iend, ref double[] a, ref double[] b, ref double[] c, ref double[] rhs)
+    private void Baleq(int it, ref int iroots, ref double[] tslos, ref double[][] tcsl, out int ibegin, out int iend, ref double[] a, ref double[] b, ref double[] c, ref double[] rhs, ref PondingData pondingData)
     {
         //     Short Description:
         //     gets coefficient matrix and rhs for Newton soln of balance eqns
@@ -5746,6 +5778,9 @@ loop:
                     qp1[0] = g_ + gh * (_h - _psi[0]);
                     qp2[0] = -g_ * psip[0];
                     // WE MAY NEED TO HANDLE THE -1 INDICES SOMEHOW (though I'm not sure they are ever used)
+                    pondingData.rhs = -(ron - roff - res - q[0] - (_h - hold) / _dt);
+                    pondingData.b = -roffd - qp1[0] - 1.0 / _dt;
+                    pondingData.c = -qp2[0];
                     //rhs[-1] = -(ron - roff - res - q[0] - (_h - hold) / _dt);
                     //b[-1] = -roffd - qp1[0] - 1.0 / _dt;
                     //c[-1] = -qp2[0];
