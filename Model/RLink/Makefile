@@ -25,8 +25,10 @@ endif
 ifeq ($(PLATFORM),Linux)
   OBJEXT = o
   DLLEXT = so
-  R_MAKE=make
+  R_MAKE=make -e
   R_HOME = /usr
+  #PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  #SHELL=/bin/bash
 endif
 
 LIBS = General ApsimShared ComponentInterface2
