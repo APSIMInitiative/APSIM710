@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SlopeEffectsOnWeather")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AgResearch Limited")]
+[assembly: AssemblyCompany("AgResearch")]
 [assembly: AssemblyProduct("SlopeEffectsOnWeather")]
-[assembly: AssemblyCopyright("Copyright © AgResearch Limited 2014")]
+[assembly: AssemblyCopyright("Copyright © AgResearch 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2c0b5799-e228-41e2-b9fe-b89bd4b5d269")]
+[assembly: Guid("b5137dc9-4e51-43d3-abba-aabe6c796911")]
 
 // Version information for an assembly consists of the following four values:
 //

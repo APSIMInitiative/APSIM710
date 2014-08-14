@@ -21,9 +21,10 @@ public class SlopeEffectsOnWeather
     #region Links and Parameters
 
     [Link]
-    Clock MyClock = null;
+    public Clock Clock = null;
+
     [Link]
-    MetFile MyMetFile = null;
+    public MetFile MyMetFile = null;
 
     /// <summary>
     /// Angle of the slope, from horizontal
@@ -244,6 +245,8 @@ public class SlopeEffectsOnWeather
 
     private double LatitudeAngle;
     private double SlopeFactor;
+
+    private bool HasInitialised = false;
     
     #endregion
 
@@ -277,6 +280,7 @@ public class SlopeEffectsOnWeather
         dRH = Math.Max(0.0, 1 + dRH / 100);
 
         SlopeFactor = 1 - (SlopeAngle / Math.PI);
+        HasInitialised = true;
 
         Console.WriteLine("");
         Console.WriteLine("     Weather variables will be adjusted for slope and aspect");
@@ -291,103 +295,106 @@ public class SlopeEffectsOnWeather
     {
         double WindSpeed;
 
-        // Extraterrestrial radiation - following classic formulae (Almorox and Hontoria, 2004; Allen et al., 2005)
-        double DayAngle = (2 * Math.PI * (Math.Min(MyClock.day_of_year, 365) - 1)) / 365;
-        double SolarDeclination = 0.006918 - 0.399912 * Math.Cos(DayAngle)
-           + 0.070257 * Math.Sin(DayAngle)
-           - 0.006758 * Math.Cos(2 * DayAngle)
-           + 0.000907 * Math.Sin(2 * DayAngle)
-           - 0.002697 * Math.Cos(3 * DayAngle)
-           + 0.001480 * Math.Sin(3 * DayAngle);
-        double EarthEccentricity = 1.00011 + 0.034221 * Math.Cos(DayAngle)
-           + 0.00128 * Math.Sin(DayAngle)
-           + 0.000719 * Math.Cos(2 * DayAngle)
-           + 0.000077 * Math.Sin(2 * DayAngle);
-        double SunriseAngle = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(LatitudeAngle) * Math.Tan(SolarDeclination))));
-        //DayLength = 2 * SunriseAngle / (15 * Math.PI / 180)
-        ExtraterrestrialRadn = (24 * 3600 * SolarConstant / 1000000) * EarthEccentricity
-           * (Math.Cos(LatitudeAngle) * Math.Cos(SolarDeclination) * Math.Sin(SunriseAngle)
-           + SunriseAngle * Math.Sin(LatitudeAngle) * Math.Sin(SolarDeclination)) / Math.PI;
-
-        // Sky clearness index - following typical approach (Boland et al., 2008; Dervishi and Mahdavi, 2012)
-        ClearnessIndex = Math.Min(1.0, Math.Max(0.0, MyMetFile.Radn / ExtraterrestrialRadn));
-
-        // Diffuse radiation fraction - approach similar to Boland et al. (2008); Fitted to NZ 
-        DiffuseRadnFraction = 1 / (1 + Math.Exp(A_diffuseR + B_diffuseR * ClearnessIndex));
-
-        // Adjust for direct and diffuse radiation - based on geometric corrections (Revfeim, 1978, Tian et al. 2001)
-        double EffectiveLatitude = Math.Asin(Math.Sin(LatitudeAngle) * Math.Cos(SlopeAngle) - Math.Cos(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle));
-        double DayLightShift = Math.Asin(Math.Sin(SlopeAngle) * Math.Sin(AspectAngle) / Math.Cos(EffectiveLatitude));
-        double SunriseAngleSlope = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(EffectiveLatitude) * Math.Tan(SolarDeclination))));
-        double SunriseHour = Math.Min(SunriseAngle, DayLightShift + SunriseAngleSlope);
-        double SunsetHour = Math.Max(-SunriseAngle, DayLightShift - SunriseAngleSlope);
-        double DayDur = (SunriseHour - SunsetHour) / 2;
-        double MidDay = (SunriseHour + SunsetHour) / 2;
-        //double DayLengthSlope = 2 * DayDur / (15 * Math.PI / 180)
-        DirRadnRatio = Math.Sin(EffectiveLatitude) * (DayDur - Math.Sin(DayDur) * Math.Cos(MidDay) * Math.Cos(DayLightShift) / Math.Cos(SunriseAngleSlope))
-           / (Math.Sin(LatitudeAngle) * (SunriseAngle - Math.Tan(SunriseAngle)));
-
-        // Prepare the radiation outputs
-        RadnMeasured = MyMetFile.Radn;
-        RadnDirect = RadnMeasured * DirRadnRatio * (1 - DiffuseRadnFraction);
-        RadnDiffuse = RadnMeasured * SlopeFactor * DiffuseRadnFraction;
-        RadnReflected = RadnMeasured * EnviroAlbedo * (1 - SlopeFactor);
-        double ActualRadn = RadnDirect + RadnDiffuse + RadnReflected;
-
-        FracRadnDirect = RadnDirect / ActualRadn;
-        FracRadnDiffuse = RadnDiffuse / ActualRadn;
-        FracRadnReflected = RadnReflected / ActualRadn;
-
-        // Get and adjust windspeed
-
-        bool myAux = MyMetFile.Get("wind", out WindSpeed);
-        if (Math.Abs(dWind) > 0.000001)
-            WindSpeed *= dWind;
-
-        // Prepare the temperature outputs
-        upperTmaxVariation = uT_dTemp * Math.Exp(-bT_dTemp * WindSpeed);
-        upperTminVariation = upperTmaxVariation * Fx_dTemp;
-        double F_rR = (DirRadnRatio >= 1.0 ? 1.0 : 0.5);
-        if (Math.Abs(DirRadnRatio - 1) > 0.000001)
+        if (HasInitialised)
         {
-            dltTmax = upperTmaxVariation * F_rR * (DirRadnRatio - 1) / (kT_dTemp + Math.Abs(DirRadnRatio - 1));
-            dltTmin = upperTminVariation * F_rR * (DirRadnRatio - 1) / (kT_dTemp + Math.Abs(DirRadnRatio - 1));
-        }
-        TmaxMeasured = MyMetFile.MaxT;
-        TminMeasured = MyMetFile.MinT;
+            // Extraterrestrial radiation - following classic formulae (Almorox and Hontoria, 2004; Allen et al., 2005)
+            double DayAngle = (2 * Math.PI * (Math.Min(Clock.day_of_year, 365) - 1)) / 365;
+            double SolarDeclination = 0.006918 - 0.399912 * Math.Cos(DayAngle)
+               + 0.070257 * Math.Sin(DayAngle)
+               - 0.006758 * Math.Cos(2 * DayAngle)
+               + 0.000907 * Math.Sin(2 * DayAngle)
+               - 0.002697 * Math.Cos(3 * DayAngle)
+               + 0.001480 * Math.Sin(3 * DayAngle);
+            double EarthEccentricity = 1.00011 + 0.034221 * Math.Cos(DayAngle)
+               + 0.00128 * Math.Sin(DayAngle)
+               + 0.000719 * Math.Cos(2 * DayAngle)
+               + 0.000077 * Math.Sin(2 * DayAngle);
+            double SunriseAngle = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(LatitudeAngle) * Math.Tan(SolarDeclination))));
+            //DayLength = 2 * SunriseAngle / (15 * Math.PI / 180)
+            ExtraterrestrialRadn = (24 * 3600 * SolarConstant / 1000000) * EarthEccentricity
+               * (Math.Cos(LatitudeAngle) * Math.Cos(SolarDeclination) * Math.Sin(SunriseAngle)
+               + SunriseAngle * Math.Sin(LatitudeAngle) * Math.Sin(SolarDeclination)) / Math.PI;
 
-        // Get and adjust RH
-        double myRHmin;
-        double myRHmax;
-        myAux = MyMetFile.Get("rhmin", out myRHmin);
-        myRHmin = Math.Min(100.0, Math.Max(0.0, myRHmin * dRH));
-        myAux = MyMetFile.Get("rhmax", out myRHmax);
-        myRHmax = Math.Min(100.0, Math.Max(myRHmin, myRHmax * dRH));
+            // Sky clearness index - following typical approach (Boland et al., 2008; Dervishi and Mahdavi, 2012)
+            ClearnessIndex = Math.Min(1.0, Math.Max(0.0, MyMetFile.Radn / ExtraterrestrialRadn));
 
-        // Set the adjusted weather variables
-        if (Math.Abs(dRain) > 0.000001)
-            MyMetFile.Rain *= (float)dRain;
-        if (Math.Abs(dRH) > 0.000001)
-        {
-            MyMetFile.Set("rhmin", (float)myRHmin);
-            MyMetFile.Set("rhmax", (float)myRHmax);
-        }
-        if (Math.Abs(dWind) > 0.000001)
-            MyMetFile.Set("wind", (float)WindSpeed);
-        if (MyMetFile.Radn != ActualRadn)
-            MyMetFile.Radn = (float)ActualRadn;
-        if (dltTmax != 0.0)
-            MyMetFile.MaxT += (float)dltTmax;
-        if (dltTmin != 0.0)
-        {
-            if (MyMetFile.MinT + dltTmin > MyMetFile.MaxT)
-                MyMetFile.MinT = MyMetFile.MaxT;
-            else
-                MyMetFile.MinT += (float)dltTmin;
-        }
+            // Diffuse radiation fraction - approach similar to Boland et al. (2008); Fitted to NZ 
+            DiffuseRadnFraction = 1 / (1 + Math.Exp(A_diffuseR + B_diffuseR * ClearnessIndex));
 
-        // Prepare outputs
-        TmeanActual = (MyMetFile.MaxT + MyMetFile.MinT) / 2;
+            // Adjust for direct and diffuse radiation - based on geometric corrections (Revfeim, 1978, Tian et al. 2001)
+            double EffectiveLatitude = Math.Asin(Math.Sin(LatitudeAngle) * Math.Cos(SlopeAngle) - Math.Cos(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle));
+            double DayLightShift = Math.Asin(Math.Sin(SlopeAngle) * Math.Sin(AspectAngle) / Math.Cos(EffectiveLatitude));
+            double SunriseAngleSlope = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(EffectiveLatitude) * Math.Tan(SolarDeclination))));
+            double SunriseHour = Math.Min(SunriseAngle, DayLightShift + SunriseAngleSlope);
+            double SunsetHour = Math.Max(-SunriseAngle, DayLightShift - SunriseAngleSlope);
+            double DayDur = (SunriseHour - SunsetHour) / 2;
+            double MidDay = (SunriseHour + SunsetHour) / 2;
+            //double DayLengthSlope = 2 * DayDur / (15 * Math.PI / 180)
+            DirRadnRatio = Math.Sin(EffectiveLatitude) * (DayDur - Math.Sin(DayDur) * Math.Cos(MidDay) * Math.Cos(DayLightShift) / Math.Cos(SunriseAngleSlope))
+               / (Math.Sin(LatitudeAngle) * (SunriseAngle - Math.Tan(SunriseAngle)));
+
+            // Prepare the radiation outputs
+            RadnMeasured = MyMetFile.Radn;
+            RadnDirect = RadnMeasured * DirRadnRatio * (1 - DiffuseRadnFraction);
+            RadnDiffuse = RadnMeasured * SlopeFactor * DiffuseRadnFraction;
+            RadnReflected = RadnMeasured * EnviroAlbedo * (1 - SlopeFactor);
+            double ActualRadn = RadnDirect + RadnDiffuse + RadnReflected;
+
+            FracRadnDirect = RadnDirect / ActualRadn;
+            FracRadnDiffuse = RadnDiffuse / ActualRadn;
+            FracRadnReflected = RadnReflected / ActualRadn;
+
+            // Get and adjust windspeed
+
+            bool myAux = MyMetFile.Get("wind", out WindSpeed);
+            if (Math.Abs(dWind) > 0.000001)
+                WindSpeed *= dWind;
+
+            // Prepare the temperature outputs
+            upperTmaxVariation = uT_dTemp * Math.Exp(-bT_dTemp * WindSpeed);
+            upperTminVariation = upperTmaxVariation * Fx_dTemp;
+            double F_rR = (DirRadnRatio >= 1.0 ? 1.0 : 0.5);
+            if (Math.Abs(DirRadnRatio - 1) > 0.000001)
+            {
+                dltTmax = upperTmaxVariation * F_rR * (DirRadnRatio - 1) / (kT_dTemp + Math.Abs(DirRadnRatio - 1));
+                dltTmin = upperTminVariation * F_rR * (DirRadnRatio - 1) / (kT_dTemp + Math.Abs(DirRadnRatio - 1));
+            }
+            TmaxMeasured = MyMetFile.MaxT;
+            TminMeasured = MyMetFile.MinT;
+
+            // Get and adjust RH
+            double myRHmin;
+            double myRHmax;
+            myAux = MyMetFile.Get("rhmin", out myRHmin);
+            myRHmin = Math.Min(100.0, Math.Max(0.0, myRHmin * dRH));
+            myAux = MyMetFile.Get("rhmax", out myRHmax);
+            myRHmax = Math.Min(100.0, Math.Max(myRHmin, myRHmax * dRH));
+
+            // Set the adjusted weather variables
+            if (Math.Abs(dRain) > 0.000001)
+                MyMetFile.Rain *= (float)dRain;
+            if (Math.Abs(dRH) > 0.000001)
+            {
+                MyMetFile.Set("rhmin", (float)myRHmin);
+                MyMetFile.Set("rhmax", (float)myRHmax);
+            }
+            if (Math.Abs(dWind) > 0.000001)
+                MyMetFile.Set("wind", (float)WindSpeed);
+            if (MyMetFile.Radn != ActualRadn)
+                MyMetFile.Radn = (float)ActualRadn;
+            if (dltTmax != 0.0)
+                MyMetFile.MaxT += (float)dltTmax;
+            if (dltTmin != 0.0)
+            {
+                if (MyMetFile.MinT + dltTmin > MyMetFile.MaxT)
+                    MyMetFile.MinT = MyMetFile.MaxT;
+                else
+                    MyMetFile.MinT += (float)dltTmin;
+            }
+
+            // Prepare outputs
+            TmeanActual = (MyMetFile.MaxT + MyMetFile.MinT) / 2;
+        }
     }
 
     #endregion
