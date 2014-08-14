@@ -51,6 +51,11 @@ public class AccumulateFunction : Function
     {
         AccumulatedValue -= FractionRemovedOnCut * AccumulatedValue;
     }
+    [EventHandler]
+    public void OnPrune()
+    {
+        AccumulatedValue = 0;
+    }
 
 }
 

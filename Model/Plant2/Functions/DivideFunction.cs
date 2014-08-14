@@ -22,7 +22,10 @@ public class DivideFunction : Function
                     for (int i = 1; i < Children.Count; i++)
                     {
                         F = Children[i] as Function;
-                        returnValue = returnValue / F.Value;
+                        if (returnValue != 0 && F.Value != 0)
+                            returnValue = returnValue / F.Value;
+                        else 
+                            returnValue = 0;
                     }
 
             }

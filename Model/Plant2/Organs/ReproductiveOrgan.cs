@@ -122,6 +122,14 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         Number = 0;
         _ReadyForHarvest = false;
     }
+    [EventHandler]
+     public void OnPrune(PruneType Prune)
+    {
+    Live.Clear();
+        Dead.Clear();
+        Number = 0;
+        _ReadyForHarvest = false;
+    }
  #endregion
 
  #region Event handlers
@@ -141,7 +149,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         Number = 0;
         _ReadyForHarvest = false;
     }
- #endregion
+    #endregion
 
  #region Arbitrator methods
     public override void DoActualGrowth()
