@@ -1,0 +1,2207 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = SlopeEffectsOnWeather
+   Component                        "clock" = %apsim%\Model\Clock.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component "Regular harvest or grazing (with return)" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component "Regular harvest or grazing (with return)" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component "Regular harvest or grazing (with return)" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component "Regular harvest or grazing (with return)" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/1980
+     Simulation end date   = 30/06/1981
+     Time step =           = 1440 (mins)
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundLiveWt
+        HerbageGrowthWt
+        HarvestWt
+        ExtraterrestrialRadn
+        RadnMeasured
+        radn as RadnAdjusted
+        mean as TmeanMeasured
+        TmeanActual as TmeanAdjusted
+        Rain
+        Wind
+        GLFtemp
+        GLFwater
+        GLFn
+        GLFnConcentration
+        GLFrgr
+        sw_dep()
+        sw_dep(1)
+
+     Output file = SlopeEffectsOnWeather Pdk-Flat.out
+     Format = normal
+
+------- Pdk-Flat.met Initialisation -------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation adjusted based on the model of Revfeim (1978), with diffuse fraction from Boland et al (2008)
+      - Temperature max and min adjusted as function of changes in direct radiation, Cichota (2014)
+      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope
+
+
+------- Pdk-Flat.accum Initialisation -----------------------------------------
+     Initialising
+
+------- Pdk-Flat.Irrigation Initialisation ------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk-Flat.Regular harvest or grazing (with return) Initialisation ------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if ( (today = date('01/07/1900')) or
+          (today >date('01/07/1900') and account = 21 )) then
+       account = 0
+       'agpasture' graze type = 'setresidueamount', amount = 1500 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.85)
+       n_returned = harvestn * 0.85
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+        'surfaceorganicmatter' add_surfaceom name = 'agpasture', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr  = 1.0 ()
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+      endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- Pdk-Flat.Micromet Initialisation --------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk-Flat.SoilLismore Water Initialisation -----------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk-Flat.SurfaceOrganicMatter Initialisation --------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk-Flat.SoilLismore Nitrogen Initialisation --------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-Flat.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-Flat.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    9.52    0.16    0.00
+             2     5.90  2.50   19.05    0.35    0.00
+             3     5.90  0.50   14.28    0.49    0.00
+             4     5.90  0.10   14.28    0.49    0.00
+             5     5.90  0.10   14.29    0.49    0.00
+             6     5.90  0.00   14.28    0.50    0.00
+             7     5.90  0.00   14.28    0.51    0.00
+          ------------------------------------------------
+           Totals              100.00    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        2000.0   1500.0   500.0  2.10   800.0     57.9       900.0
+          whiteclover      501.7    385.0   116.7  0.55   200.7     16.8       400.0
+         -----------------------------------------------------------------------------
+          Totals          2501.7   1885.0   616.7  2.65  1000.7     74.7       900.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.597
+            1     100-300      0.352
+            2     300-600      0.050
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundLiveWt
+        HerbageGrowthWt
+        HarvestWt
+        ExtraterrestrialRadn
+        RadnMeasured
+        radn as RadnAdjusted
+        mean as TmeanMeasured
+        TmeanActual as TmeanAdjusted
+        Rain
+        Wind
+        GLFtemp
+        GLFwater
+        GLFn
+        GLFnConcentration
+        GLFrgr
+        sw_dep()
+        sw_dep(1)
+
+     Output file = SlopeEffectsOnWeather Pdk-North20.out
+     Format = normal
+
+------- Pdk-North20.met Initialisation ----------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation adjusted based on the model of Revfeim (1978), with diffuse fraction from Boland et al (2008)
+      - Temperature max and min adjusted as function of changes in direct radiation, Cichota (2014)
+      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope
+
+
+------- Pdk-North20.accum Initialisation --------------------------------------
+     Initialising
+
+------- Pdk-North20.Irrigation Initialisation ---------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk-North20.Regular harvest or grazing (with return) Initialisation ---
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if ( (today = date('01/07/1900')) or
+          (today >date('01/07/1900') and account = 21 )) then
+       account = 0
+       'agpasture' graze type = 'setresidueamount', amount = 1500 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.85)
+       n_returned = harvestn * 0.85
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+        'surfaceorganicmatter' add_surfaceom name = 'agpasture', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr  = 1.0 ()
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+      endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- Pdk-North20.Micromet Initialisation -----------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk-North20.SoilLismore Water Initialisation --------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk-North20.SurfaceOrganicMatter Initialisation -----------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk-North20.SoilLismore Nitrogen Initialisation -----------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-North20.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-North20.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    9.52    0.16    0.00
+             2     5.90  2.50   19.05    0.35    0.00
+             3     5.90  0.50   14.28    0.49    0.00
+             4     5.90  0.10   14.28    0.49    0.00
+             5     5.90  0.10   14.29    0.49    0.00
+             6     5.90  0.00   14.28    0.50    0.00
+             7     5.90  0.00   14.28    0.51    0.00
+          ------------------------------------------------
+           Totals              100.00    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        2000.0   1500.0   500.0  2.10   800.0     57.9       900.0
+          whiteclover      501.7    385.0   116.7  0.55   200.7     16.8       400.0
+         -----------------------------------------------------------------------------
+          Totals          2501.7   1885.0   616.7  2.65  1000.7     74.7       900.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.597
+            1     100-300      0.352
+            2     300-600      0.050
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundLiveWt
+        HerbageGrowthWt
+        HarvestWt
+        ExtraterrestrialRadn
+        RadnMeasured
+        radn as RadnAdjusted
+        mean as TmeanMeasured
+        TmeanActual as TmeanAdjusted
+        Rain
+        Wind
+        GLFtemp
+        GLFwater
+        GLFn
+        GLFnConcentration
+        GLFrgr
+        sw_dep()
+        sw_dep(1)
+
+     Output file = SlopeEffectsOnWeather Pdk-South20.out
+     Format = normal
+
+------- Pdk-South20.met Initialisation ----------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation adjusted based on the model of Revfeim (1978), with diffuse fraction from Boland et al (2008)
+      - Temperature max and min adjusted as function of changes in direct radiation, Cichota (2014)
+      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope
+
+
+------- Pdk-South20.accum Initialisation --------------------------------------
+     Initialising
+
+------- Pdk-South20.Irrigation Initialisation ---------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk-South20.Regular harvest or grazing (with return) Initialisation ---
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if ( (today = date('01/07/1900')) or
+          (today >date('01/07/1900') and account = 21 )) then
+       account = 0
+       'agpasture' graze type = 'setresidueamount', amount = 1500 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.85)
+       n_returned = harvestn * 0.85
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+        'surfaceorganicmatter' add_surfaceom name = 'agpasture', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr  = 1.0 ()
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+      endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- Pdk-South20.Micromet Initialisation -----------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk-South20.SoilLismore Water Initialisation --------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk-South20.SurfaceOrganicMatter Initialisation -----------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk-South20.SoilLismore Nitrogen Initialisation -----------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-South20.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-South20.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    9.52    0.16    0.00
+             2     5.90  2.50   19.05    0.35    0.00
+             3     5.90  0.50   14.28    0.49    0.00
+             4     5.90  0.10   14.28    0.49    0.00
+             5     5.90  0.10   14.29    0.49    0.00
+             6     5.90  0.00   14.28    0.50    0.00
+             7     5.90  0.00   14.28    0.51    0.00
+          ------------------------------------------------
+           Totals              100.00    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        2000.0   1500.0   500.0  2.10   800.0     57.9       900.0
+          whiteclover      501.7    385.0   116.7  0.55   200.7     16.8       400.0
+         -----------------------------------------------------------------------------
+          Totals          2501.7   1885.0   616.7  2.65  1000.7     74.7       900.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.597
+            1     100-300      0.352
+            2     300-600      0.050
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundLiveWt
+        HerbageGrowthWt
+        HarvestWt
+        ExtraterrestrialRadn
+        RadnMeasured
+        radn as RadnAdjusted
+        mean as TmeanMeasured
+        TmeanActual as TmeanAdjusted
+        Rain
+        Wind
+        GLFtemp
+        GLFwater
+        GLFn
+        GLFnConcentration
+        GLFrgr
+        sw_dep()
+        sw_dep(1)
+
+     Output file = SlopeEffectsOnWeather Pdk-FlatRain.out
+     Format = normal
+
+------- Pdk-FlatRain.met Initialisation ---------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation adjusted based on the model of Revfeim (1978), with diffuse fraction from Boland et al (2008)
+      - Temperature max and min adjusted as function of changes in direct radiation, Cichota (2014)
+      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope
+
+
+------- Pdk-FlatRain.accum Initialisation -------------------------------------
+     Initialising
+
+------- Pdk-FlatRain.Irrigation Initialisation --------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk-FlatRain.Regular harvest or grazing (with return) Initialisation --
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if ( (today = date('01/07/1900')) or
+          (today >date('01/07/1900') and account = 21 )) then
+       account = 0
+       'agpasture' graze type = 'setresidueamount', amount = 1500 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.85)
+       n_returned = harvestn * 0.85
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+        'surfaceorganicmatter' add_surfaceom name = 'agpasture', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr  = 1.0 ()
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+      endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- Pdk-FlatRain.Micromet Initialisation ----------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk-FlatRain.SoilLismore Water Initialisation -------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk-FlatRain.SurfaceOrganicMatter Initialisation ----------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk-FlatRain.SoilLismore Nitrogen Initialisation ----------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-FlatRain.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk-FlatRain.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    9.52    0.16    0.00
+             2     5.90  2.50   19.05    0.35    0.00
+             3     5.90  0.50   14.28    0.49    0.00
+             4     5.90  0.10   14.28    0.49    0.00
+             5     5.90  0.10   14.29    0.49    0.00
+             6     5.90  0.00   14.28    0.50    0.00
+             7     5.90  0.00   14.28    0.51    0.00
+          ------------------------------------------------
+           Totals              100.00    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        2000.0   1500.0   500.0  2.10   800.0     57.9       900.0
+          whiteclover      501.7    385.0   116.7  0.55   200.7     16.8       400.0
+         -----------------------------------------------------------------------------
+          Totals          2501.7   1885.0   616.7  2.65  1000.7     74.7       900.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.597
+            1     100-300      0.352
+            2     300-600      0.050
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
+Agpasture.ongraze
+21 July 1980(Day of year=203), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager creating a new local real variable : digest = 0.68802
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 119.25180 (kg/ha), n = 4.51268 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.06141 (kg/ha), depth = 50 (mm), type = urea_n
+21 July 1980(Day of year=203), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.70761 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.71 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+21 July 1980(Day of year=203), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager creating a new local real variable : digest = 0.68028
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 143.29292 (kg/ha), n = 5.23779 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.71401 (kg/ha), depth = 50 (mm), type = urea_n
+21 July 1980(Day of year=203), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.71 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.14268 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.14 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+21 July 1980(Day of year=203), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager creating a new local real variable : digest = 0.68770
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 98.50746 (kg/ha), n = 3.69497 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 3.32548 (kg/ha), depth = 50 (mm), type = urea_n
+21 July 1980(Day of year=203), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.33 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.21698 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.22 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+21 July 1980(Day of year=203), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager creating a new local real variable : digest = 0.68821
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 119.16927 (kg/ha), n = 4.51439 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.06295 (kg/ha), depth = 50 (mm), type = urea_n
+21 July 1980(Day of year=203), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.70864 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.71 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 August 1980(Day of year=224), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 103.94103 (kg/ha), n = 4.35966 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 3.92369 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1980(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.92 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.61580 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.62 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 August 1980(Day of year=224), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 133.23824 (kg/ha), n = 5.55585 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 5.00026 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1980(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.33351 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.33 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 August 1980(Day of year=224), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 70.35598 (kg/ha), n = 2.87828 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.59045 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1980(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.59 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.72696 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.73 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 August 1980(Day of year=224), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 104.25938 (kg/ha), n = 4.37803 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 3.94023 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1980(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.94 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.62682 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.63 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 September 1980(Day of year=245), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 172.27075 (kg/ha), n = 7.52765 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.77488 (kg/ha), depth = 50 (mm), type = urea_n
+1 September 1980(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.77 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.51659 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.52 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 September 1980(Day of year=245), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 191.43727 (kg/ha), n = 8.46407 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.61766 (kg/ha), depth = 50 (mm), type = urea_n
+1 September 1980(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.62 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.07844 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.08 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 September 1980(Day of year=245), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 127.70277 (kg/ha), n = 5.33857 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.80471 (kg/ha), depth = 50 (mm), type = urea_n
+1 September 1980(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.80 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 3.20314 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.20 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 September 1980(Day of year=245), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 172.53702 (kg/ha), n = 7.54438 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.78995 (kg/ha), depth = 50 (mm), type = urea_n
+1 September 1980(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.79 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.52663 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.53 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+22 September 1980(Day of year=266), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 263.55301 (kg/ha), n = 10.66086 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.59478 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.59 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.39652 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.40 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+22 September 1980(Day of year=266), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 277.25729 (kg/ha), n = 11.36597 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.22937 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.23 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.81958 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.82 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+22 September 1980(Day of year=266), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 234.17110 (kg/ha), n = 9.61829 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.65646 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.66 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.77098 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.77 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+22 September 1980(Day of year=266), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 280.34192 (kg/ha), n = 11.78108 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.60298 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.60 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.06865 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.07 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+13 October 1980(Day of year=287), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 339.17615 (kg/ha), n = 12.28833 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.05950 (kg/ha), depth = 50 (mm), type = urea_n
+13 October 1980(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.37300 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.37 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+13 October 1980(Day of year=287), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 343.17984 (kg/ha), n = 12.68185 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.41367 (kg/ha), depth = 50 (mm), type = urea_n
+13 October 1980(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.41 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.60911 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.61 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+13 October 1980(Day of year=287), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 291.88614 (kg/ha), n = 10.84540 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.76086 (kg/ha), depth = 50 (mm), type = urea_n
+13 October 1980(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.76 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.50724 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.51 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+13 October 1980(Day of year=287), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 344.53894 (kg/ha), n = 12.91452 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.62306 (kg/ha), depth = 50 (mm), type = urea_n
+13 October 1980(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.62 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.74871 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.75 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+3 November 1980(Day of year=308), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 445.18527 (kg/ha), n = 14.63608 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 13.17247 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1980(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.17 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.78165 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+3 November 1980(Day of year=308), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 440.56839 (kg/ha), n = 14.82385 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 13.34147 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1980(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.34 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.89431 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.89 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+3 November 1980(Day of year=308), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 397.82578 (kg/ha), n = 13.18980 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.87083 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1980(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.87 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.91388 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.91 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+3 November 1980(Day of year=308), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 453.50497 (kg/ha), n = 15.23452 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 13.71106 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1980(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.71 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.14071 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.14 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+24 November 1980(Day of year=329), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 426.70529 (kg/ha), n = 14.10736 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 12.69662 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1980(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.70 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.46442 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.46 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+24 November 1980(Day of year=329), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 423.72714 (kg/ha), n = 14.24212 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 12.81790 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1980(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.82 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.54527 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.55 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+24 November 1980(Day of year=329), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 396.41504 (kg/ha), n = 13.04028 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.73625 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1980(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.74 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.82416 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.82 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+24 November 1980(Day of year=329), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 439.11188 (kg/ha), n = 14.73291 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 13.25962 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1980(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.26 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.83974 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.84 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+15 December 1980(Day of year=350), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 434.89371 (kg/ha), n = 13.89206 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 12.50285 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 1980(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.50 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.33524 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.34 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+15 December 1980(Day of year=350), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 421.79886 (kg/ha), n = 13.71992 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 12.34792 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 1980(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.35 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.23195 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+15 December 1980(Day of year=350), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 407.09357 (kg/ha), n = 12.90878 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.61790 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 1980(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.62 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 7.74527 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         7.75 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+15 December 1980(Day of year=350), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 443.45514 (kg/ha), n = 14.34755 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 12.91279 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 1980(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.91 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.60853 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.61 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+5 January 1981(Day of year=5), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 529.85376 (kg/ha), n = 16.45914 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 14.81323 (kg/ha), depth = 50 (mm), type = urea_n
+5 January 1981(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.81 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.87548 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.88 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+5 January 1981(Day of year=5), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 509.11136 (kg/ha), n = 16.14342 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 14.52908 (kg/ha), depth = 50 (mm), type = urea_n
+5 January 1981(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.53 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.68605 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.69 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+5 January 1981(Day of year=5), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 492.46320 (kg/ha), n = 15.32618 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 13.79356 (kg/ha), depth = 50 (mm), type = urea_n
+5 January 1981(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.79 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.19571 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.20 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+5 January 1981(Day of year=5), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 531.25226 (kg/ha), n = 16.73194 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 15.05874 (kg/ha), depth = 50 (mm), type = urea_n
+5 January 1981(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 10.03916 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+        10.04 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+26 January 1981(Day of year=26), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 490.43704 (kg/ha), n = 15.74762 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 14.17286 (kg/ha), depth = 50 (mm), type = urea_n
+26 January 1981(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.17 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.44857 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.45 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+26 January 1981(Day of year=26), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 463.92966 (kg/ha), n = 15.02950 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 13.52654 (kg/ha), depth = 50 (mm), type = urea_n
+26 January 1981(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.53 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.01770 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.02 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+26 January 1981(Day of year=26), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 447.18066 (kg/ha), n = 14.29271 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 12.86344 (kg/ha), depth = 50 (mm), type = urea_n
+26 January 1981(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.86 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 8.57562 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         8.58 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+26 January 1981(Day of year=26), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 483.06354 (kg/ha), n = 15.56749 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 14.01074 (kg/ha), depth = 50 (mm), type = urea_n
+26 January 1981(Day of year=26), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.01 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 9.34049 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         9.34 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+16 February 1981(Day of year=47), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 345.71625 (kg/ha), n = 11.49788 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.34810 (kg/ha), depth = 50 (mm), type = urea_n
+16 February 1981(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.35 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.89873 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.90 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+16 February 1981(Day of year=47), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 330.99899 (kg/ha), n = 10.99146 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.89231 (kg/ha), depth = 50 (mm), type = urea_n
+16 February 1981(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.89 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.59487 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.59 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+16 February 1981(Day of year=47), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 310.63760 (kg/ha), n = 10.20128 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.18116 (kg/ha), depth = 50 (mm), type = urea_n
+16 February 1981(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.18 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.12077 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.12 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+16 February 1981(Day of year=47), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 348.76978 (kg/ha), n = 11.65764 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.49187 (kg/ha), depth = 50 (mm), type = urea_n
+16 February 1981(Day of year=47), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.49 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 6.99458 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.99 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+9 March 1981(Day of year=68), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 269.31216 (kg/ha), n = 9.55976 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.60379 (kg/ha), depth = 50 (mm), type = urea_n
+9 March 1981(Day of year=68), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.60 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.73586 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.74 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+9 March 1981(Day of year=68), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 254.22365 (kg/ha), n = 9.00645 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.10581 (kg/ha), depth = 50 (mm), type = urea_n
+9 March 1981(Day of year=68), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.11 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.40387 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.40 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+9 March 1981(Day of year=68), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 221.76404 (kg/ha), n = 7.89308 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.10377 (kg/ha), depth = 50 (mm), type = urea_n
+9 March 1981(Day of year=68), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.10 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.73585 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.74 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+9 March 1981(Day of year=68), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 270.09375 (kg/ha), n = 9.62879 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.66591 (kg/ha), depth = 50 (mm), type = urea_n
+9 March 1981(Day of year=68), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.67 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.77727 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+30 March 1981(Day of year=89), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 256.40488 (kg/ha), n = 9.62479 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.66231 (kg/ha), depth = 50 (mm), type = urea_n
+30 March 1981(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.66 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.77488 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.77 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+30 March 1981(Day of year=89), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 248.79388 (kg/ha), n = 9.36460 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.42813 (kg/ha), depth = 50 (mm), type = urea_n
+30 March 1981(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.43 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.61876 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.62 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+30 March 1981(Day of year=89), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 189.23154 (kg/ha), n = 7.26721 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.54049 (kg/ha), depth = 50 (mm), type = urea_n
+30 March 1981(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.54 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.36033 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.36 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+30 March 1981(Day of year=89), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 255.08931 (kg/ha), n = 9.60182 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.64163 (kg/ha), depth = 50 (mm), type = urea_n
+30 March 1981(Day of year=89), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.64 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 5.76109 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.76 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+20 April 1981(Day of year=110), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 203.50314 (kg/ha), n = 7.85158 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.06642 (kg/ha), depth = 50 (mm), type = urea_n
+20 April 1981(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.07 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.71095 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.71 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+20 April 1981(Day of year=110), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 199.77972 (kg/ha), n = 7.69899 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.92909 (kg/ha), depth = 50 (mm), type = urea_n
+20 April 1981(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.93 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.61940 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.62 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+20 April 1981(Day of year=110), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 122.54382 (kg/ha), n = 4.69891 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.22902 (kg/ha), depth = 50 (mm), type = urea_n
+20 April 1981(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.23 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.81934 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.82 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+20 April 1981(Day of year=110), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 202.80844 (kg/ha), n = 7.87581 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.08823 (kg/ha), depth = 50 (mm), type = urea_n
+20 April 1981(Day of year=110), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.09 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 4.72549 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.73 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 May 1981(Day of year=131), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 115.80972 (kg/ha), n = 4.62063 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.15856 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 1981(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.16 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.77238 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.77 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 May 1981(Day of year=131), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 106.46554 (kg/ha), n = 4.14010 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 3.72609 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 1981(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.73 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.48406 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.48 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 May 1981(Day of year=131), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 53.79264 (kg/ha), n = 2.09642 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 1.88677 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 1981(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.89 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.25785 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.26 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+11 May 1981(Day of year=131), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 115.77573 (kg/ha), n = 4.63919 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.17527 (kg/ha), depth = 50 (mm), type = urea_n
+11 May 1981(Day of year=131), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.18 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 2.78351 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.78 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 June 1981(Day of year=152), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 45.69170 (kg/ha), n = 2.04580 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 1.84122 (kg/ha), depth = 50 (mm), type = urea_n
+1 June 1981(Day of year=152), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.84 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.22748 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 June 1981(Day of year=152), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 35.90955 (kg/ha), n = 1.49358 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 1.34423 (kg/ha), depth = 50 (mm), type = urea_n
+1 June 1981(Day of year=152), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.34 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 0.89615 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         0.90 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 June 1981(Day of year=152), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 13.10256 (kg/ha), n = 0.59544 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.53589 (kg/ha), depth = 50 (mm), type = urea_n
+1 June 1981(Day of year=152), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.54 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 0.35726 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         0.36 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+1 June 1981(Day of year=152), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 45.64621 (kg/ha), n = 2.05333 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 1.84800 (kg/ha), depth = 50 (mm), type = urea_n
+1 June 1981(Day of year=152), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.85 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 1.23200 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.23 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+Agpasture.ongraze
+22 June 1981(Day of year=173), Pdk-Flat.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+Agpasture.ongraze
+22 June 1981(Day of year=173), Pdk-North20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+Agpasture.ongraze
+22 June 1981(Day of year=173), Pdk-South20.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+Agpasture.ongraze
+22 June 1981(Day of year=173), Pdk-FlatRain.Regular harvest or grazing (with return): 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = grass, mass = 0.02386 (kg/ha), n = 0.00104 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00094 (kg/ha), depth = 50 (mm), type = urea_n
+22 June 1981(Day of year=173), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         0.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager sending message :- fertiliser apply  amount = 0.00062 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         0.00 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   2)
+30 June 1981(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.
+

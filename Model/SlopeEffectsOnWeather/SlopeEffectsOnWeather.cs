@@ -91,6 +91,12 @@ public class SlopeEffectsOnWeather
     [Units("%")]
     private double dWind;
     /// <summary>
+    /// Relative change in vapour pressure
+    /// </summary>
+    [Param]
+    [Units("%")]
+    private double dVapPressure;
+    /// <summary>
     /// Relative change in relative humidity
     /// </summary>
     [Param]
@@ -277,6 +283,7 @@ public class SlopeEffectsOnWeather
             LatitudeAngle = Math.PI * MyMetFile.Latitude / 180;
         dRain = Math.Max(0.0, 1 + dRain / 100);
         dWind = Math.Max(0.0, 1 + dWind / 100);
+        dVapPressure = Math.Max(0.0, 1 + dVapPressure / 100);
         dRH = Math.Max(0.0, 1 + dRH / 100);
 
         SlopeFactor = 1 - (SlopeAngle / Math.PI);
@@ -286,7 +293,7 @@ public class SlopeEffectsOnWeather
         Console.WriteLine("     Weather variables will be adjusted for slope and aspect");
         Console.WriteLine("      - Radiation adjusted based on the model of Revfeim (1978), with diffuse fraction from Boland et al (2008)");
         Console.WriteLine("      - Temperature max and min adjusted as function of changes in direct radiation, Cichota (2014)");
-        Console.WriteLine("      - Rainfall, wind, and RH are simple relative changes - not explicitly linked to slope");
+        Console.WriteLine("      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope");
         Console.WriteLine("");
     }
 
@@ -322,8 +329,8 @@ public class SlopeEffectsOnWeather
             DiffuseRadnFraction = 1 / (1 + Math.Exp(A_diffuseR + B_diffuseR * ClearnessIndex));
 
             // Adjust for direct and diffuse radiation - based on geometric corrections (Revfeim, 1978, Tian et al. 2001)
-            double EffectiveLatitude = Math.Asin(Math.Sin(LatitudeAngle) * Math.Cos(SlopeAngle) - Math.Cos(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle));
-            double DayLightShift = Math.Asin(Math.Sin(SlopeAngle) * Math.Sin(AspectAngle) / Math.Cos(EffectiveLatitude));
+            double EffectiveLatitude = Math.Asin(Math.Sin(LatitudeAngle) * Math.Cos(SlopeAngle) + Math.Cos(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle));
+            double DayLightShift = Math.Asin(-Math.Sin(SlopeAngle) * Math.Sin(AspectAngle) / Math.Cos(EffectiveLatitude));
             double SunriseAngleSlope = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(EffectiveLatitude) * Math.Tan(SolarDeclination))));
             double SunriseHour = Math.Min(SunriseAngle, DayLightShift + SunriseAngleSlope);
             double SunsetHour = Math.Max(-SunriseAngle, DayLightShift - SunriseAngleSlope);
@@ -371,14 +378,16 @@ public class SlopeEffectsOnWeather
             myRHmax = Math.Min(100.0, Math.Max(myRHmin, myRHmax * dRH));
 
             // Set the adjusted weather variables
-            if (Math.Abs(dRain) > 0.000001)
+            if (Math.Abs(dRain - 1) > 0.000001)
                 MyMetFile.Rain *= (float)dRain;
-            if (Math.Abs(dRH) > 0.000001)
+            if (Math.Abs(dVapPressure - 1) > 0.000001)
+                MyMetFile.vp *= (float)dVapPressure;
+            if (Math.Abs(dRH - 1) > 0.000001)
             {
                 MyMetFile.Set("rhmin", (float)myRHmin);
                 MyMetFile.Set("rhmax", (float)myRHmax);
             }
-            if (Math.Abs(dWind) > 0.000001)
+            if (Math.Abs(dWind - 1) > 0.000001)
                 MyMetFile.Set("wind", (float)WindSpeed);
             if (MyMetFile.Radn != ActualRadn)
                 MyMetFile.Radn = (float)ActualRadn;
