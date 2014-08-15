@@ -1,0 +1,671 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Hybrid Rainfed
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                 "AnnualOutput" = %apsim%\Model\Report.dll
+   Component                "MonthlyOutput" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Palm Management" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "OilPalm" = %apsim%\Model\Plant2.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/03/1999
+     Simulation end date   = 30/04/2014
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Validation\OilPalm\Jerantut.met
+
+------- AnnualOutput Initialisation -------------------------------------------
+     Output frequency:
+        end_year
+     Output variables:
+        year
+        dd/mm/yyyy as Date
+        OilPalm.Age
+        AnnualYield
+        CumulativeFrondNumber
+        AnnualBunches
+        AnnualRain
+        AnnualEo
+        AnnualNPP
+        AnnualNFixation
+        UnderstoryCoverGreen
+        AnnualIrrigation
+        AnnualFrond
+
+     Output file = Hybrid Rainfed Block AnnualOutput.out
+     Format = normal
+
+------- MonthlyOutput Initialisation ------------------------------------------
+     Output frequency:
+        end_month
+     Output variables:
+        year
+        dd/mm/yyyy as Date
+        Age
+        Month
+        MonthlyRain
+        MonthlyEo
+        LAI
+        StemMassTPHa
+        oc(1)
+        oc(2)
+        oc(3)
+        carbon_tot()
+        nit_tot()
+        MonthlyN2O
+        MonthlyNLeach
+        MonthlyDenit
+        surfaceom_wt_oilpalmstem as FelledStemMass
+        surfaceom_wt_oilpalm as FrondPileMass
+        MonthlyWaterStress
+        MonthlySoilWater
+        MonthlyNitrogenStress
+        Frond17Area
+        MonthlyEP
+        MonthlyEs
+        MonthlyUnderstoryEP
+        MonthlyPEP
+
+     Output file = Hybrid Rainfed Block MonthlyOutput.out
+     Format = normal
+
+------- Block.accum Initialisation --------------------------------------------
+     Initialising
+
+------- Block.Irrigation Initialisation ---------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.90
+           depth for calculating available soil water =    1100.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Block.Palm Management Initialisation ----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     ppsm = 136/10000
+     endif
+     if today = date('01/03/1999') then
+         oilpalm sow population = ppsm, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+     endif
+     if today = date('15-jan') or today = date('15-may') or today = date('15-sep') then
+        if age <= 1 then
+           nrate = 136 * 0.14 / 3
+        elseif age <= 2 then
+           nrate = 136 * 0.3 / 3
+        elseif age <= 3 then
+           nrate = 136 * 0.6 / 3
+        elseif age <= 4 then
+           nrate = 136 * 0.9 / 3
+        else
+           nrate = 136 *  1.05/ 3
+        endif
+        fertiliser apply amount = nrate, type = nh4no3, depth = 1
+     endif
+     if today = date('31-dec') then
+       annualfrond = cumulativefrondnumber - lastyearfrondno
+       lastyearfrondno = cumulativefrondnumber
+     endif
+     weeklyrain = weeklyrain + rain
+     if end_week = 1 then
+        irrigrequired = 0 - weeklyrain
+        if irrigrequired > 0 then
+           irrigation apply amount = irrigrequired
+        endif
+        weeklyrain = 0
+     endif
+     stemmasstpha = stemmass / 100.
+     
+     SECTION:- init
+     plant_population = 0
+     lastyearfrondno = 0
+     stemmasstpha = 0
+     weeklyrain = 0
+     irrigrequired = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
+     Manager creating a new local real variable : lastyearfrondno = 0.00000
+     Manager creating a new local real variable : stemmasstpha = 0.00000
+     Manager creating a new local real variable : weeklyrain = 0.00000
+     Manager creating a new local real variable : irrigrequired = 0.00000
+
+------- Block.Soil Water Initialisation ---------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.130  0.250  0.380  0.650  0.380  0.800  0.613  0.550
+          100.-  300.  0.130  0.250  0.380  0.650  0.380  0.830  0.340  0.550
+          300.-  600.  0.130  0.270  0.370  0.640  0.370  0.930  0.048  0.550
+          600.-  900.  0.130  0.270  0.370  0.560  0.370  1.150  0.000  0.550
+          900.- 1200.  0.130  0.340  0.420  0.560  0.420  1.150  0.000  0.550
+         1200.- 1500.  0.130  0.340  0.420  0.560  0.420  1.150  0.000  0.550
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      25.00      13.00      13.00      27.00
+          100.-  300.      50.00      26.00      26.00      54.00
+          300.-  600.      81.00      30.00      30.00      81.00
+          600.-  900.      81.00      30.00      30.00      57.00
+          900.- 1200.     102.00      24.00      24.00      42.00
+         1200.- 1500.     102.00      24.00      24.00      42.00
+          ---------------------------------------------------------
+               Totals     441.00     147.00     147.00     303.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.18       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- Block.surface organic matter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mass =     24000.00
+             exceeds upper limit of    20000.00
+     Component name: Block.surface organic matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mass =     63000.00
+             exceeds upper limit of    20000.00
+     Component name: Block.surface organic matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          oilpalm   oilpalm      24000.0 10560.0   270.8     0.0   0.992     0.0
+          oilpalmsteoilpalmstem  63000.0 27720.0   191.2     0.0   0.270     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   1.0
+     
+
+------- Block.Soil Nitrogen Initialisation ------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Clay Soil
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.30  2.46  217.00    0.00    0.00
+             2     6.55  1.73   30.00    0.00    0.00
+             3     6.80  1.00    5.00    0.00    0.00
+             4     6.80  0.70    5.00    0.00    0.00
+             5     6.80  0.70    0.00    0.00    0.00
+             6     6.80  0.70    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals              257.00    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      18630.4  1863.0  1049.6   131.2   497.6    16.6
+             2      27665.9  2766.6  1052.1   131.5   333.5    11.1
+             3      27482.9  2748.3   417.1    52.1   183.0     6.1
+             4      24145.3  2414.5     4.7     0.6   100.5     3.3
+             5      24145.3  2414.5     4.7     0.6    55.1     1.8
+             6      24145.3  2414.5     4.7     0.6    30.3     1.0
+          ---------------------------------------------------------
+           Totals  146215.0 14621.5  2533.0   316.6  1200.0    40.0
+          ---------------------------------------------------------
+
+------- Block.tracker Initialisation ------------------------------------------
+     Tracker variables:
+        sum of HarvestFFB on harvesting from AnnualOutput.reported to now as AnnualYield
+        sum of HarvestBunches on harvesting from AnnualOutput.reported to now as AnnualBunches
+        sum of Rain on post from AnnualOutput.reported to now as AnnualRain
+        sum of eo on post from AnnualOutput.reported to now as AnnualEo
+        sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP
+        sum of n2o_atm() on post from MonthlyOutput.reported to now as MonthlyN2O
+        sum of leach_no3 on post from MonthlyOutput.reported to now as MonthlyNLeach
+        sum of dnit() on post from MonthlyOutput.reported to now as MonthlyDenit
+        sum of UnderstoryNFixation on post from AnnualOutput.reported to now as AnnualNFixation
+        sum of Rain on post from MonthlyOutput.reported to now as MonthlyRain
+        sum of HarvestFFB on harvesting from MonthlyOutput.reported to now as MonthlyYield
+        sum of irrigation on post from AnnualOutput.reported to now as AnnualIrrigation
+        average of eo on post from MonthlyOutput.reported to now as MonthlyEo
+        average of Fw on post from MonthlyOutput.reported to now as MonthlyWaterStress
+        average of sw_dep() on post from MonthlyOutput.reported to now as MonthlySoilWater
+        average of ep on post from MonthlyOutput.reported to now as MonthlyEP
+        average of es on post from MonthlyOutput.reported to now as MonthlyEs
+        average of UnderstoryEP on post from MonthlyOutput.reported to now as MonthlyUnderstoryEP
+        average of Fn on post from MonthlyOutput.reported to now as MonthlyNitrogenStress
+        average of PEP on post from MonthlyOutput.reported to now as MonthlyPEP
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : ppsm = 0.01360
+     Manager sending message :- oilpalm sow  population = 0.01360, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+15 May 1999(Day of year=135), Block.Palm Management: 
+     Manager creating a new local real variable : nrate = 6.34667
+     Manager sending message :- fertiliser apply  amount = 6.34667, type = nh4no3, depth = 1
+15 May 1999(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.35 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 1999(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 6.34667, type = nh4no3, depth = 1
+15 September 1999(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.35 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+31 December 1999(Day of year=365), Block.Palm Management: 
+     Manager creating a new local real variable : annualfrond = 47.00000
+15 January 2000(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 6.34667, type = nh4no3, depth = 1
+15 January 2000(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.35 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2000(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 13.60000, type = nh4no3, depth = 1
+15 May 2000(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2000(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 13.60000, type = nh4no3, depth = 1
+15 September 2000(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2001(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 13.60000, type = nh4no3, depth = 1
+15 January 2001(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2001(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 27.20000, type = nh4no3, depth = 1
+15 May 2001(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.20 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2001(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 27.20000, type = nh4no3, depth = 1
+15 September 2001(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.20 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2002(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 27.20000, type = nh4no3, depth = 1
+15 January 2002(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.20 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2002(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 40.80000, type = nh4no3, depth = 1
+15 May 2002(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.80 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2002(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 40.80000, type = nh4no3, depth = 1
+15 September 2002(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.80 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2003(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 40.80000, type = nh4no3, depth = 1
+15 January 2003(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.80 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2003(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2003(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2003(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2003(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2004(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2004(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2004(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2004(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2004(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2004(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2005(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2005(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2005(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2005(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2005(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2005(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2006(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2006(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2006(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2006(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2006(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2006(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2007(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2007(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2007(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2007(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2007(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2007(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2008(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2008(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2008(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2008(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2008(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2008(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2009(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2009(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2009(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2009(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2009(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2009(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2010(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2010(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2010(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2010(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2010(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2010(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2011(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2011(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2011(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2011(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2011(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2011(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2012(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2012(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2012(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2012(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2012(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2012(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2013(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2013(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 May 2013(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2013(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 September 2013(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2013(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+15 January 2014(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2014(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+30 April 2014(Day of year=120), clock: 
+     Simulation is terminating due to end criteria being met.
+

@@ -1,0 +1,1518 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.6
+Title                  = Hybrid Irrigated
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                 "AnnualOutput" = %apsim%\Model\Report.dll
+   Component                "MonthlyOutput" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component              "Palm Management" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "OilPalm" = %apsim%\Model\Plant2.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/03/1999
+     Simulation end date   = 30/04/2014
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Validation\OilPalm\Jerantut.met
+
+------- AnnualOutput Initialisation -------------------------------------------
+     Output frequency:
+        end_year
+     Output variables:
+        year
+        dd/mm/yyyy as Date
+        OilPalm.Age
+        AnnualYield
+        CumulativeFrondNumber
+        AnnualBunches
+        AnnualRain
+        AnnualEo
+        AnnualNPP
+        AnnualNFixation
+        UnderstoryCoverGreen
+        AnnualIrrigation
+        AnnualFrond
+
+     Output file = Hybrid Irrigated Block AnnualOutput.out
+     Format = normal
+
+------- MonthlyOutput Initialisation ------------------------------------------
+     Output frequency:
+        end_month
+     Output variables:
+        year
+        dd/mm/yyyy as Date
+        Age
+        Month
+        MonthlyRain
+        MonthlyEo
+        LAI
+        StemMassTPHa
+        oc(1)
+        oc(2)
+        oc(3)
+        carbon_tot()
+        nit_tot()
+        MonthlyN2O
+        MonthlyNLeach
+        MonthlyDenit
+        surfaceom_wt_oilpalmstem as FelledStemMass
+        surfaceom_wt_oilpalm as FrondPileMass
+        MonthlyWaterStress
+        MonthlySoilWater
+        MonthlyNitrogenStress
+        Frond17Area
+        MonthlyEP
+        MonthlyEs
+        MonthlyUnderstoryEP
+        MonthlyPEP
+
+     Output file = Hybrid Irrigated Block MonthlyOutput.out
+     Format = normal
+
+------- Block.accum Initialisation --------------------------------------------
+     Initialising
+
+------- Block.Irrigation Initialisation ---------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.90
+           depth for calculating available soil water =    1100.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Block.Palm Management Initialisation ----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     ppsm = 136/10000
+     endif
+     if today = date('01/03/1999') then
+         oilpalm sow population = ppsm, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+     endif
+     if today = date('15-jan') or today = date('15-may') or today = date('15-sep') then
+        if age <= 1 then
+           nrate = 136 * 0.14 / 3
+        elseif age <= 2 then
+           nrate = 136 * 0.3 / 3
+        elseif age <= 3 then
+           nrate = 136 * 0.6 / 3
+        elseif age <= 4 then
+           nrate = 136 * 0.9 / 3
+        else
+           nrate = 136 *  1.05/ 3
+        endif
+        fertiliser apply amount = nrate, type = nh4no3, depth = 1
+     endif
+     if today = date('31-dec') then
+       annualfrond = cumulativefrondnumber - lastyearfrondno
+       lastyearfrondno = cumulativefrondnumber
+     endif
+     weeklyrain = weeklyrain + rain
+     if end_week = 1 then
+        irrigrequired = 35 - weeklyrain
+        if irrigrequired > 0 then
+           irrigation apply amount = irrigrequired
+        endif
+        weeklyrain = 0
+     endif
+     stemmasstpha = stemmass / 100.
+     
+     SECTION:- init
+     plant_population = 0
+     lastyearfrondno = 0
+     stemmasstpha = 0
+     weeklyrain = 0
+     irrigrequired = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
+     Manager creating a new local real variable : lastyearfrondno = 0.00000
+     Manager creating a new local real variable : stemmasstpha = 0.00000
+     Manager creating a new local real variable : weeklyrain = 0.00000
+     Manager creating a new local real variable : irrigrequired = 0.00000
+
+------- Block.Soil Water Initialisation ---------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.130  0.250  0.380  0.650  0.380  0.800  0.613  0.550
+          100.-  300.  0.130  0.250  0.380  0.650  0.380  0.830  0.340  0.550
+          300.-  600.  0.130  0.270  0.370  0.640  0.370  0.930  0.048  0.550
+          600.-  900.  0.130  0.270  0.370  0.560  0.370  1.150  0.000  0.550
+          900.- 1200.  0.130  0.340  0.420  0.560  0.420  1.150  0.000  0.550
+         1200.- 1500.  0.130  0.340  0.420  0.560  0.420  1.150  0.000  0.550
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      25.00      13.00      13.00      27.00
+          100.-  300.      50.00      26.00      26.00      54.00
+          300.-  600.      81.00      30.00      30.00      81.00
+          600.-  900.      81.00      30.00      30.00      57.00
+          900.- 1200.     102.00      24.00      24.00      42.00
+         1200.- 1500.     102.00      24.00      24.00      42.00
+          ---------------------------------------------------------
+               Totals     441.00     147.00     147.00     303.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.18       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- Block.surface organic matter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mass =     24000.00
+             exceeds upper limit of    20000.00
+     Component name: Block.surface organic matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mass =     63000.00
+             exceeds upper limit of    20000.00
+     Component name: Block.surface organic matter
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          oilpalm   oilpalm      24000.0 10560.0   270.8     0.0   0.992     0.0
+          oilpalmsteoilpalmstem  63000.0 27720.0   191.2     0.0   0.270     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   1.0
+     
+
+------- Block.Soil Nitrogen Initialisation ------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Clay Soil
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.30  2.46  217.00    0.00    0.00
+             2     6.55  1.73   30.00    0.00    0.00
+             3     6.80  1.00    5.00    0.00    0.00
+             4     6.80  0.70    5.00    0.00    0.00
+             5     6.80  0.70    0.00    0.00    0.00
+             6     6.80  0.70    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals              257.00    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      18630.4  1863.0  1049.6   131.2   497.6    16.6
+             2      27665.9  2766.6  1052.1   131.5   333.5    11.1
+             3      27482.9  2748.3   417.1    52.1   183.0     6.1
+             4      24145.3  2414.5     4.7     0.6   100.5     3.3
+             5      24145.3  2414.5     4.7     0.6    55.1     1.8
+             6      24145.3  2414.5     4.7     0.6    30.3     1.0
+          ---------------------------------------------------------
+           Totals  146215.0 14621.5  2533.0   316.6  1200.0    40.0
+          ---------------------------------------------------------
+
+------- Block.tracker Initialisation ------------------------------------------
+     Tracker variables:
+        sum of HarvestFFB on harvesting from AnnualOutput.reported to now as AnnualYield
+        sum of HarvestBunches on harvesting from AnnualOutput.reported to now as AnnualBunches
+        sum of Rain on post from AnnualOutput.reported to now as AnnualRain
+        sum of eo on post from AnnualOutput.reported to now as AnnualEo
+        sum of dltDM on post from AnnualOutput.reported to now as AnnualNPP
+        sum of n2o_atm() on post from MonthlyOutput.reported to now as MonthlyN2O
+        sum of leach_no3 on post from MonthlyOutput.reported to now as MonthlyNLeach
+        sum of dnit() on post from MonthlyOutput.reported to now as MonthlyDenit
+        sum of UnderstoryNFixation on post from AnnualOutput.reported to now as AnnualNFixation
+        sum of Rain on post from MonthlyOutput.reported to now as MonthlyRain
+        sum of HarvestFFB on harvesting from MonthlyOutput.reported to now as MonthlyYield
+        sum of irrigation on post from AnnualOutput.reported to now as AnnualIrrigation
+        average of eo on post from MonthlyOutput.reported to now as MonthlyEo
+        average of Fw on post from MonthlyOutput.reported to now as MonthlyWaterStress
+        average of sw_dep() on post from MonthlyOutput.reported to now as MonthlySoilWater
+        average of ep on post from MonthlyOutput.reported to now as MonthlyEP
+        average of es on post from MonthlyOutput.reported to now as MonthlyEs
+        average of UnderstoryEP on post from MonthlyOutput.reported to now as MonthlyUnderstoryEP
+        average of Fn on post from MonthlyOutput.reported to now as MonthlyNitrogenStress
+        average of PEP on post from MonthlyOutput.reported to now as MonthlyPEP
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : ppsm = 0.01360
+     Manager sending message :- oilpalm sow  population = 0.01360, depth = 200, cultivar = dami, maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant
+18 March 1999(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.60000
+29 April 1999(Day of year=119), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.10000
+6 May 1999(Day of year=126), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.20000
+15 May 1999(Day of year=135), Block.Palm Management: 
+     Manager creating a new local real variable : nrate = 6.34667
+     Manager sending message :- fertiliser apply  amount = 6.34667, type = nh4no3, depth = 1
+15 May 1999(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.35 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+3 June 1999(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.40000
+8 July 1999(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.40000
+15 July 1999(Day of year=196), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.90000
+22 July 1999(Day of year=203), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.10000
+30 July 1999(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.90000
+6 August 1999(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.00000
+13 August 1999(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 24.60000
+15 September 1999(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 6.34667, type = nh4no3, depth = 1
+15 September 1999(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.35 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 1999(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.60000
+24 September 1999(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.20000
+1 October 1999(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.20000
+8 October 1999(Day of year=281), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.40000
+19 November 1999(Day of year=323), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.40000
+17 December 1999(Day of year=351), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.40000
+31 December 1999(Day of year=365), Block.Palm Management: 
+     Manager creating a new local real variable : annualfrond = 47.00000
+     Manager sending message :- irrigation apply  amount = 31.40000
+15 January 2000(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 6.34667, type = nh4no3, depth = 1
+15 January 2000(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.35 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+4 February 2000(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.70000
+11 March 2000(Day of year=71), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.50000
+25 March 2000(Day of year=85), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.70000
+13 May 2000(Day of year=134), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.20000
+15 May 2000(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 13.60000, type = nh4no3, depth = 1
+15 May 2000(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2000(Day of year=141), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.90000
+27 May 2000(Day of year=148), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 28.60000
+10 June 2000(Day of year=162), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.30000
+24 June 2000(Day of year=176), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.00000
+1 July 2000(Day of year=183), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.90000
+8 July 2000(Day of year=190), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.10000
+15 July 2000(Day of year=197), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.80000
+22 July 2000(Day of year=204), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.90000
+30 July 2000(Day of year=212), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.40000
+6 August 2000(Day of year=219), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.50000
+13 August 2000(Day of year=226), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.00000
+27 August 2000(Day of year=240), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.40000
+3 September 2000(Day of year=247), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.00000
+15 September 2000(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 13.60000, type = nh4no3, depth = 1
+15 September 2000(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+8 October 2000(Day of year=282), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.20000
+12 November 2000(Day of year=317), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.50000
+3 December 2000(Day of year=338), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.00000
+10 December 2000(Day of year=345), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.00000
+7 January 2001(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.60000
+14 January 2001(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.80000
+15 January 2001(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 13.60000, type = nh4no3, depth = 1
+15 January 2001(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+28 January 2001(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.70000
+4 March 2001(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.40000
+6 May 2001(Day of year=126), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.60000
+15 May 2001(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 27.20000, type = nh4no3, depth = 1
+15 May 2001(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.20 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2001(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.80000
+27 May 2001(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.70000
+3 June 2001(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.60000
+10 June 2001(Day of year=161), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 4.90000
+17 June 2001(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.50000
+1 July 2001(Day of year=182), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.90000
+8 July 2001(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.30000
+30 July 2001(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.10000
+13 August 2001(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.80000
+10 September 2001(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.50000
+15 September 2001(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 27.20000, type = nh4no3, depth = 1
+15 September 2001(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.20 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2001(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.90000
+8 October 2001(Day of year=281), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.20000
+12 November 2001(Day of year=316), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.50000
+26 November 2001(Day of year=330), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.00000
+3 December 2001(Day of year=337), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.30000
+7 January 2002(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+14 January 2002(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.00000
+15 January 2002(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 27.20000, type = nh4no3, depth = 1
+15 January 2002(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        27.20 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2002(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.60000
+4 February 2002(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+11 February 2002(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.30000
+18 February 2002(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.80000
+25 February 2002(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.70000
+4 March 2002(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.00000
+11 March 2002(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.80000
+18 March 2002(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.00000
+1 April 2002(Day of year=91), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.70000
+8 April 2002(Day of year=98), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.80000
+22 April 2002(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 4.40000
+13 May 2002(Day of year=133), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.10000
+15 May 2002(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 40.80000, type = nh4no3, depth = 1
+15 May 2002(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.80 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2002(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.60000
+3 June 2002(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.80000
+10 June 2002(Day of year=161), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.70000
+17 June 2002(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.70000
+24 June 2002(Day of year=175), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.10000
+8 July 2002(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 28.80000
+15 July 2002(Day of year=196), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.40000
+22 July 2002(Day of year=203), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 24.00000
+30 July 2002(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.10000
+6 August 2002(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.00000
+13 August 2002(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.00000
+20 August 2002(Day of year=232), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.40000
+15 September 2002(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 40.80000, type = nh4no3, depth = 1
+15 September 2002(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.80 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2002(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.60000
+1 October 2002(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.20000
+29 October 2002(Day of year=302), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.10000
+5 November 2002(Day of year=309), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.30000
+12 November 2002(Day of year=316), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.80000
+26 November 2002(Day of year=330), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.40000
+3 December 2002(Day of year=337), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.80000
+10 December 2002(Day of year=344), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.20000
+17 December 2002(Day of year=351), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.80000
+14 January 2003(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.50000
+15 January 2003(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 40.80000, type = nh4no3, depth = 1
+15 January 2003(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.80 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2003(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 6.50000
+28 January 2003(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.70000
+11 February 2003(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.90000
+18 February 2003(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.00000
+25 February 2003(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.30000
+4 March 2003(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.80000
+11 March 2003(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.60000
+18 March 2003(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+8 April 2003(Day of year=98), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.90000
+15 April 2003(Day of year=105), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.60000
+22 April 2003(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.60000
+29 April 2003(Day of year=119), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 24.40000
+13 May 2003(Day of year=133), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.00000
+15 May 2003(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2003(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2003(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.40000
+27 May 2003(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.70000
+10 June 2003(Day of year=161), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.70000
+17 June 2003(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.50000
+24 June 2003(Day of year=175), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.50000
+8 July 2003(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.50000
+15 July 2003(Day of year=196), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.20000
+22 July 2003(Day of year=203), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.10000
+30 July 2003(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.60000
+6 August 2003(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.00000
+13 August 2003(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.50000
+27 August 2003(Day of year=239), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.50000
+3 September 2003(Day of year=246), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.60000
+10 September 2003(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 28.00000
+15 September 2003(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2003(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2003(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.90000
+24 September 2003(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.10000
+1 October 2003(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.80000
+5 November 2003(Day of year=309), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.20000
+12 November 2003(Day of year=316), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.20000
+26 November 2003(Day of year=330), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.90000
+24 December 2003(Day of year=358), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.50000
+31 December 2003(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+7 January 2004(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.70000
+14 January 2004(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.50000
+15 January 2004(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2004(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2004(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.30000
+11 February 2004(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.60000
+18 February 2004(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.00000
+25 February 2004(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.90000
+25 March 2004(Day of year=85), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.00000
+1 April 2004(Day of year=92), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.90000
+15 April 2004(Day of year=106), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.00000
+22 April 2004(Day of year=113), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.40000
+13 May 2004(Day of year=134), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.80000
+15 May 2004(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2004(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2004(Day of year=141), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.00000
+3 June 2004(Day of year=155), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.30000
+17 June 2004(Day of year=169), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.60000
+24 June 2004(Day of year=176), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.20000
+15 July 2004(Day of year=197), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.30000
+6 August 2004(Day of year=219), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.60000
+13 August 2004(Day of year=226), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.50000
+27 August 2004(Day of year=240), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.20000
+3 September 2004(Day of year=247), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.10000
+10 September 2004(Day of year=254), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.30000
+15 September 2004(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2004(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2004(Day of year=261), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.00000
+24 September 2004(Day of year=268), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.80000
+15 October 2004(Day of year=289), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.70000
+19 November 2004(Day of year=324), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.90000
+26 November 2004(Day of year=331), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.30000
+17 December 2004(Day of year=352), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.30000
+24 December 2004(Day of year=359), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.90000
+7 January 2005(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.30000
+14 January 2005(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.70000
+15 January 2005(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2005(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2005(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+28 January 2005(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+4 February 2005(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.30000
+11 February 2005(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+18 February 2005(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.90000
+25 February 2005(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+4 March 2005(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.10000
+11 March 2005(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+18 March 2005(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.90000
+25 March 2005(Day of year=84), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.60000
+1 April 2005(Day of year=91), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.00000
+8 April 2005(Day of year=98), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.20000
+15 April 2005(Day of year=105), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.20000
+22 April 2005(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.60000
+6 May 2005(Day of year=126), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.80000
+15 May 2005(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2005(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2005(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.10000
+27 May 2005(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.70000
+3 June 2005(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.70000
+10 June 2005(Day of year=161), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.70000
+17 June 2005(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.20000
+24 June 2005(Day of year=175), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.00000
+1 July 2005(Day of year=182), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.90000
+8 July 2005(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.20000
+15 July 2005(Day of year=196), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.60000
+6 August 2005(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.70000
+13 August 2005(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.90000
+20 August 2005(Day of year=232), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.70000
+3 September 2005(Day of year=246), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.20000
+10 September 2005(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.20000
+15 September 2005(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2005(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+1 October 2005(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.70000
+15 October 2005(Day of year=288), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.30000
+31 December 2005(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.10000
+7 January 2006(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.00000
+14 January 2006(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.20000
+15 January 2006(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2006(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2006(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.70000
+28 January 2006(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.90000
+4 February 2006(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.90000
+4 March 2006(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.30000
+11 March 2006(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.90000
+18 March 2006(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+15 April 2006(Day of year=105), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.10000
+22 April 2006(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 6.70000
+6 May 2006(Day of year=126), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 4.10000
+15 May 2006(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2006(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2006(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.20000
+27 May 2006(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.60000
+3 June 2006(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.40000
+17 June 2006(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.90000
+1 July 2006(Day of year=182), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.10000
+8 July 2006(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.70000
+15 July 2006(Day of year=196), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.20000
+30 July 2006(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.20000
+13 August 2006(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.90000
+10 September 2006(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.90000
+15 September 2006(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2006(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2006(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.00000
+24 September 2006(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.10000
+1 October 2006(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.80000
+8 October 2006(Day of year=281), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.10000
+22 October 2006(Day of year=295), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.50000
+3 December 2006(Day of year=337), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.70000
+10 December 2006(Day of year=344), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.20000
+17 December 2006(Day of year=351), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 6.10000
+31 December 2006(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.00000
+15 January 2007(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2007(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2007(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.20000
+28 January 2007(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.50000
+4 February 2007(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.60000
+11 February 2007(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+18 February 2007(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.20000
+25 February 2007(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.10000
+4 March 2007(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.80000
+11 March 2007(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.70000
+18 March 2007(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.50000
+1 April 2007(Day of year=91), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.70000
+8 April 2007(Day of year=98), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.70000
+15 April 2007(Day of year=105), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.40000
+22 April 2007(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 24.50000
+29 April 2007(Day of year=119), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.30000
+6 May 2007(Day of year=126), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.40000
+15 May 2007(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2007(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+27 May 2007(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.70000
+3 June 2007(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.60000
+10 June 2007(Day of year=161), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.30000
+17 June 2007(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.20000
+1 July 2007(Day of year=182), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.40000
+6 August 2007(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.20000
+13 August 2007(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.80000
+20 August 2007(Day of year=232), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.00000
+3 September 2007(Day of year=246), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.30000
+10 September 2007(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.70000
+15 September 2007(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2007(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+1 October 2007(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.40000
+3 December 2007(Day of year=337), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.90000
+24 December 2007(Day of year=358), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.60000
+31 December 2007(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.80000
+14 January 2008(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 4.80000
+15 January 2008(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2008(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+28 January 2008(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.10000
+4 February 2008(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.50000
+11 February 2008(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.10000
+18 February 2008(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.90000
+25 February 2008(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.10000
+8 April 2008(Day of year=99), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.50000
+15 May 2008(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2008(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2008(Day of year=141), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.30000
+27 May 2008(Day of year=148), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.00000
+17 June 2008(Day of year=169), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.40000
+15 July 2008(Day of year=197), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.80000
+3 September 2008(Day of year=247), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.30000
+15 September 2008(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2008(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2008(Day of year=261), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 6.30000
+24 September 2008(Day of year=268), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.70000
+1 October 2008(Day of year=275), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.90000
+8 October 2008(Day of year=282), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.10000
+15 October 2008(Day of year=289), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.50000
+17 December 2008(Day of year=352), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.30000
+24 December 2008(Day of year=359), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.10000
+14 January 2009(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.80000
+15 January 2009(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2009(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2009(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+28 January 2009(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.30000
+4 February 2009(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.80000
+11 February 2009(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.60000
+18 February 2009(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.70000
+25 February 2009(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.80000
+18 March 2009(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.00000
+15 May 2009(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2009(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2009(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.60000
+3 June 2009(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.90000
+10 June 2009(Day of year=161), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.70000
+24 June 2009(Day of year=175), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.90000
+8 July 2009(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.20000
+22 July 2009(Day of year=203), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.90000
+30 July 2009(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.70000
+6 August 2009(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.10000
+13 August 2009(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.20000
+20 August 2009(Day of year=232), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.70000
+3 September 2009(Day of year=246), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.50000
+10 September 2009(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.70000
+15 September 2009(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2009(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2009(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.30000
+24 September 2009(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.30000
+1 October 2009(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 4.30000
+15 October 2009(Day of year=288), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.50000
+22 October 2009(Day of year=295), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.10000
+10 December 2009(Day of year=344), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.70000
+17 December 2009(Day of year=351), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.20000
+31 December 2009(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.40000
+14 January 2010(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.30000
+15 January 2010(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2010(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2010(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 24.40000
+28 January 2010(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 28.90000
+4 February 2010(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+11 February 2010(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.70000
+18 February 2010(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.70000
+25 February 2010(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.60000
+11 March 2010(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+18 March 2010(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.90000
+25 March 2010(Day of year=84), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.40000
+1 April 2010(Day of year=91), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.30000
+8 April 2010(Day of year=98), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 27.40000
+6 May 2010(Day of year=126), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.40000
+15 May 2010(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2010(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+22 July 2010(Day of year=203), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.40000
+6 August 2010(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.60000
+13 August 2010(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 12.40000
+20 August 2010(Day of year=232), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.50000
+27 August 2010(Day of year=239), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.20000
+3 September 2010(Day of year=246), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.80000
+15 September 2010(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2010(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+24 September 2010(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.10000
+8 October 2010(Day of year=281), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.30000
+15 October 2010(Day of year=288), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.00000
+22 October 2010(Day of year=295), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 22.10000
+29 October 2010(Day of year=302), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.10000
+3 December 2010(Day of year=337), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.40000
+17 December 2010(Day of year=351), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.40000
+15 January 2011(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2011(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2011(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.20000
+28 January 2011(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.90000
+11 February 2011(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.60000
+18 February 2011(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 23.30000
+25 February 2011(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 28.50000
+18 March 2011(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 10.50000
+25 March 2011(Day of year=84), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.00000
+15 April 2011(Day of year=105), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.80000
+22 April 2011(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+13 May 2011(Day of year=133), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+15 May 2011(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2011(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2011(Day of year=140), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.10000
+27 May 2011(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.70000
+3 June 2011(Day of year=154), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.20000
+17 June 2011(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.00000
+24 June 2011(Day of year=175), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.00000
+1 July 2011(Day of year=182), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.80000
+8 July 2011(Day of year=189), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.20000
+15 July 2011(Day of year=196), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.00000
+30 July 2011(Day of year=211), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.10000
+6 August 2011(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.40000
+13 August 2011(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.70000
+20 August 2011(Day of year=232), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.00000
+10 September 2011(Day of year=253), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.00000
+15 September 2011(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2011(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+24 September 2011(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.30000
+1 October 2011(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.40000
+8 October 2011(Day of year=281), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.20000
+15 October 2011(Day of year=288), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.50000
+5 November 2011(Day of year=309), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.90000
+19 November 2011(Day of year=323), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 13.60000
+3 December 2011(Day of year=337), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 2.50000
+31 December 2011(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.70000
+7 January 2012(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.60000
+15 January 2012(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2012(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2012(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.00000
+28 January 2012(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+11 February 2012(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.70000
+25 February 2012(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.50000
+18 March 2012(Day of year=78), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.20000
+1 April 2012(Day of year=92), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.00000
+22 April 2012(Day of year=113), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.20000
+6 May 2012(Day of year=127), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 9.80000
+13 May 2012(Day of year=134), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.00000
+15 May 2012(Day of year=136), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2012(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+20 May 2012(Day of year=141), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 11.20000
+27 May 2012(Day of year=148), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.30000
+10 June 2012(Day of year=162), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.30000
+17 June 2012(Day of year=169), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+24 June 2012(Day of year=176), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+1 July 2012(Day of year=183), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+8 July 2012(Day of year=190), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.60000
+15 July 2012(Day of year=197), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.60000
+22 July 2012(Day of year=204), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.80000
+6 August 2012(Day of year=219), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.10000
+20 August 2012(Day of year=233), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 14.70000
+3 September 2012(Day of year=247), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.40000
+10 September 2012(Day of year=254), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 21.20000
+15 September 2012(Day of year=259), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2012(Day of year=259), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2012(Day of year=261), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.00000
+24 September 2012(Day of year=268), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 15.40000
+1 October 2012(Day of year=275), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.10000
+8 October 2012(Day of year=282), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.40000
+15 October 2012(Day of year=289), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.40000
+12 November 2012(Day of year=317), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.10000
+3 December 2012(Day of year=338), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 7.60000
+10 December 2012(Day of year=345), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 0.30000
+7 January 2013(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 31.10000
+14 January 2013(Day of year=14), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.50000
+15 January 2013(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2013(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2013(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 4.90000
+28 January 2013(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.50000
+4 February 2013(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 1.50000
+25 February 2013(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.10000
+18 March 2013(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.20000
+25 March 2013(Day of year=84), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.70000
+1 April 2013(Day of year=91), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 30.60000
+8 April 2013(Day of year=98), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.10000
+22 April 2013(Day of year=112), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.70000
+13 May 2013(Day of year=133), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 18.20000
+15 May 2013(Day of year=135), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 May 2013(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+27 May 2013(Day of year=147), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.50000
+17 June 2013(Day of year=168), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.40000
+24 June 2013(Day of year=175), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+6 August 2013(Day of year=218), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 28.00000
+13 August 2013(Day of year=225), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.40000
+27 August 2013(Day of year=239), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 19.40000
+15 September 2013(Day of year=258), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 September 2013(Day of year=258), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+17 September 2013(Day of year=260), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 32.80000
+24 September 2013(Day of year=267), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+1 October 2013(Day of year=274), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.20000
+8 October 2013(Day of year=281), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.70000
+29 October 2013(Day of year=302), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 3.50000
+5 November 2013(Day of year=309), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 16.20000
+26 November 2013(Day of year=330), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 17.00000
+17 December 2013(Day of year=351), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 25.80000
+24 December 2013(Day of year=358), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 5.70000
+31 December 2013(Day of year=365), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+7 January 2014(Day of year=7), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 8.20000
+15 January 2014(Day of year=15), Block.Palm Management: 
+     Manager sending message :- fertiliser apply  amount = 47.60000, type = nh4no3, depth = 1
+15 January 2014(Day of year=15), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        47.60 of ammonium nitrate (nh4no3)
+                                         added at depth    1.00 (layer   1)
+21 January 2014(Day of year=21), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 29.50000
+28 January 2014(Day of year=28), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 33.40000
+4 February 2014(Day of year=35), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.30000
+11 February 2014(Day of year=42), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+18 February 2014(Day of year=49), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.80000
+25 February 2014(Day of year=56), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+4 March 2014(Day of year=63), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 34.90000
+11 March 2014(Day of year=70), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 35.00000
+18 March 2014(Day of year=77), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 20.60000
+25 March 2014(Day of year=84), Block.Palm Management: 
+     Manager sending message :- irrigation apply  amount = 26.20000
+30 April 2014(Day of year=120), clock: 
+     Simulation is terminating due to end criteria being met.
+
