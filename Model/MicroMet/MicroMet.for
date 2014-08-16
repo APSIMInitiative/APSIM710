@@ -450,6 +450,13 @@ CCC End new code
      :              ,'()'              ! variable units
      :              ,sum(g%peta(:,:))) ! variable
 
+      elseif (Variable_name.eq.'pet_total') then
+
+         call respond2get_real_var (
+     :               variable_name       ! variable name
+     :              ,'()'              ! variable units
+     :              ,sum(g%peta(:,:))+sum(g%petr(:,:))) ! variable
+
       elseif (Variable_name.eq.'net_radn') then
 
          net_radn = g%radn * (1.0 - g%albedo)
