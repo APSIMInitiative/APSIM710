@@ -61,7 +61,6 @@ public class Manager2
             Model = CompiledAssembly.CreateInstance(ScriptClassName);
 
             // Populate its params from the UI.
-            #if (APSIMX == false)
                 if (ui != null)
                 {
                     foreach (XmlNode Child in XmlHelper.ChildNodes(ui, ""))
@@ -80,22 +79,6 @@ public class Manager2
                         ScriptNode.AppendChild(ScriptNode.OwnerDocument.ImportNode(Child, true));
                 }
                 MySystem.AddModel(ScriptNode, CompiledAssembly);
-
-
-            #else
-                if (ui != null)
-                {
-                    foreach (XmlNode Child in XmlHelper.ChildNodes(ui, ""))
-                    {
-                        if (!XmlHelper.Attribute(Child, "type").Equals("category", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            // Find a public field or property with the childs name.
-                            Utility.SetValueOfFieldOrProperty(Child.Name, Model, Child.InnerText);
-                        }
-                    }
-                }
-                MySystem.Add(Model);
-#endif
 
         }
         catch (Exception err)
@@ -129,19 +112,9 @@ public class Manager2
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
                 Params.ReferencedAssemblies.Add("System.Xml.dll");
-                if (Path.GetFileNameWithoutExtension(DllFileName).ToLower() == "apsimx")
-                {
-                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimX.exe"));
-                    foreach (string ApsimXFileName in Directory.GetFiles(Configuration.ApsimBinDirectory(), "*X.dll"))
-                        Params.ReferencedAssemblies.Add(ApsimXFileName);
-
-                }
-                else
-                {
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CMPServices.dll"));
-                }
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
 
                 foreach (string v in XmlHelper.ValuesRecursive(Manager2Xml.ParentNode, "Reference"))

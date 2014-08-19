@@ -88,10 +88,6 @@ public class Types
     {
         return MetaData(TypeName, "IsCrop") == "Yes";
     }
-    public bool IsApsimXCompatible(string TypeName)
-    {
-        return MetaData(TypeName, "ApsimXCompatible") == "Yes";
-    }
     public bool AllowComponentAdd(string ChildTypeName, string ParentTypeName)
     {
         // Return true if an instance of the specified ChildTypeName can 

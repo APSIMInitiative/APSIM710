@@ -96,9 +96,7 @@ class Program
                     }
                     else
                     {
-                        J.CommandLine = StringManip.DQuote("%APSIM%/Model/ApsimX.exe") + " " +
-                                      StringManip.DQuote(FileName) + " " +
-                                      StringManip.DQuote("Simulation=" + SimulationName);
+                        // ???
                     }
                     J.IgnoreErrors = true;
                     J.WorkingDirectory = Path.GetDirectoryName(FileName);
@@ -190,7 +188,7 @@ class Program
         string Pattern;
         if (Path.GetExtension(FileName).ToLower() == ".con")
             Pattern = "^\\[(.+)\\]";
-        else if (Path.GetExtension(FileName) == ".apsim" || Path.GetExtension(FileName) == ".apsimx")
+        else if (Path.GetExtension(FileName) == ".apsim")
             Pattern = "<simulation name=\"(.+)\"";
         else
             throw new Exception("Cannot find simulations in file: " + FileName);

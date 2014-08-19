@@ -6,9 +6,7 @@ using ModelFramework;
 using CSGeneral;
 //using ApsimFile;
 using System.Xml.Serialization;
-#if (APSIMX == false)
 using CMPServices;
-#endif
 
 ///<summary>
 /// .NET port of the Fortran SoilWat model
@@ -1279,7 +1277,6 @@ public class SoilWater
         //*+  Mission Statement
         //*     Get crop Variables
 
-        #if (APSIMX == false)
         Double coverLive;
         Double coverTotal;
         Double height;
@@ -1314,15 +1311,12 @@ public class SoilWater
                         "These 3 output variables are needed by the SoilWater module (for evaporation, runoff etc.");
                 }
         }
-        #endif
-
     }
 
 
     private void soilwat2_get_solute_variables()
     {
         //for the number of solutes that was read in by OnNewSolute event handler)
-        #if (APSIMX == false)
         for (int solnum = 0; solnum < num_solutes; solnum++)
         {
             double[] Value;
@@ -1335,7 +1329,6 @@ public class SoilWater
               // Should check array size here to be sure it matches...
               Array.Copy(Value, solutes[solnum].amount, Math.Min(Value.Length, solutes[solnum].amount.Length));
         }
-        #endif
     }
 
     //this is called in the On Process event handler
@@ -1391,7 +1384,6 @@ public class SoilWater
         NitrogenChanges.DeltaNO3 = new double[dlayer.Length];
 
         //for all solutes in this simulation.
-        #if (APSIMX == false)
         for (int solnum = 0; solnum < num_solutes; solnum++)
         {
             //convert to float array
@@ -1415,7 +1407,6 @@ public class SoilWater
             }
         }
         NitrogenChanged.Invoke(NitrogenChanges);
-        #endif
     }
 
     //this is called in the On Process event handler
@@ -1738,19 +1729,12 @@ public class SoilWater
 
     #region Bounds checking and warning functions
 
-#if (APSIMX == true)
-    private void IssueWarning(string warningText)
-    {
-        Console.WriteLine(warningText);
-    }
-#else
     [Link]
     private Component My = null;  // Get access to "Warning" function
     private void IssueWarning(string warningText)
     {
     My.Warning(warningText);
     }
-#endif
 
 
     private double bound(double A, double MinVal, double MaxVal)
@@ -3094,7 +3078,6 @@ public class SoilWater
         //*       But, for now we either retrieve it "manually", or use priestly-taylor.
 
         eo_system = Double.NaN;
-#if (APSIMX == false)
         if (_eo_source != "" && My.Get(_eo_source, out eo_system) && !Double.IsNaN(eo_system))
         {
             eo = eo_system;                     //! eo is provided by system
@@ -3103,9 +3086,6 @@ public class SoilWater
         {
             soilwat2_priestly_taylor();    //! eo from priestly taylor
         }
-#else
-            soilwat2_priestly_taylor();    //! eo from priestly taylor
-#endif
     }
 
     private void soilwat2_pot_evapotranspiration_effective()
@@ -4958,44 +4938,6 @@ public class SoilWater
         day = Clock.Today.DayOfYear;
         year = Clock.Today.Year;
 
-        #if (APSIMX == true)
-        initDone = false;
-        Clock.Prepare += new NullTypeDelegate(OnPrepare);
-        Clock.Process += new NullTypeDelegate(OnProcess);
-        MetFile.NewMet += new NewMetDelegate(OnNewMet);
-        ApsimFile.Soil Soil = (ApsimFile.Soil) Paddock.Get("Soil");
-        diffus_const = Soil.SoilWater.DiffusConst;
-        diffus_slope = Soil.SoilWater.DiffusSlope;
-        cn2_bare = Soil.SoilWater.CN2Bare;
-        cn_red = Soil.SoilWater.CNRed;
-        cn_cov = Soil.SoilWater.CNCov;
-        if (!double.IsNaN(Soil.SoilWater.MaxPond))
-            max_pond = Soil.SoilWater.MaxPond;
-        salb = Soil.SoilWater.Salb;
-        summerdate = Soil.SoilWater.SummerDate;
-        summeru = Soil.SoilWater.SummerU;
-        summercona = Soil.SoilWater.SummerCona;
-        winterdate = Soil.SoilWater.WinterDate;
-        winteru = Soil.SoilWater.WinterU;
-        wintercona = Soil.SoilWater.WinterCona;
-        slope = Soil.SoilWater.Slope;
-        discharge_width = Soil.SoilWater.DischargeWidth;
-        catchment_area = Soil.SoilWater.CatchmentArea;
-        
-        dlayer = Soil.Thickness;
-        sat = Soil.SAT;
-        dul = Soil.DUL;
-        sw = Soil.SW;
-        ll15 = Soil.LL15;
-        air_dry = Soil.AirDry;
-        swcon = Soil.SoilWater.SWCON;
-        mwcon = Soil.SoilWater.MWCON;
-        ks = Soil.Water.KS;
-        bd = Soil.Water.BD;
-        klat = Soil.SoilWater.KLAT;
-        initDone = true;
-        #endif
-
         //Save State
         soilwat2_save_state();
 
@@ -5250,7 +5192,6 @@ public class SoilWater
 
     }
 
-#if (APSIMX == false)
     public bool getPropertyValue(int propID, ref TPropertyInfo value, bool isReqSet)
     {
         if (isReqSet)  // currently only handling read requests, so fail if this is not.
@@ -5274,7 +5215,6 @@ public class SoilWater
         }
         return false;
     }
-#endif
 
     [EventHandler(EventName="new_solute")]
     public void OnNew_solute(NewSoluteType newsolute)
@@ -5295,13 +5235,8 @@ public class SoilWater
         string name;
 
         //*- Implementation Section ----------------------------------
-#if (APSIMX == true)
-        sender = newsolute.sender_id;
-        string compName = "";
-#else
         sender = (int)My.eventSenderId;
         string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
-#endif
         numvals = newsolute.solutes.Length;
 
         Array.Resize(ref solutes, num_solutes + numvals);
@@ -5322,10 +5257,8 @@ public class SoilWater
             solutes[num_solutes].up = new double[nLayers];
             // Register new "flow" and "leach" outputs for these solutes
             // See "getPropertyValue" function for the callback used to actually retrieve the values
-#if (APSIMX == false)
             solutes[num_solutes].get_flow_id = My.RegisterProperty("flow_" + name, "<type kind=\"double\" array=\"T\" unit=\"kg/ha\"/>", true, false, false, "flow of " + name, "", getPropertyValue);
             solutes[num_solutes].get_leach_id = My.RegisterProperty("leach_" + name, "<type kind=\"double\" unit=\"kg/ha\"/>", true, false, false, "leaching of " + name, "", getPropertyValue);
-#endif
             num_solutes = num_solutes + 1;
         }
     }
@@ -5666,15 +5599,9 @@ public class SoilWatTillageType
     {
         tillage_types = new Dictionary<string, float[]>();
 
-        #if (APSIMX == true)
-            foreach (System.Xml.XmlNode xnc in Nodes)
-                    if (xnc.NodeType == System.Xml.XmlNodeType.Element)
-                        tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
-        #else
             foreach (System.Xml.XmlNode xnc in xe.ChildNodes)
                 if (xnc.NodeType == System.Xml.XmlNodeType.Element)
                     tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
-        #endif
     }
 
     public TillageType GetTillageData(string name)

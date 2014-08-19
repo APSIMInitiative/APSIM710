@@ -640,19 +640,6 @@
          <WorkingDirectory>%APSIM%/Model/FarmSimGraze</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-      <Job name="Compile ApsimX">
-         <DependsOn>Compile CSGeneral</DependsOn>
-         <DependsOn>Compile ApsimUI</DependsOn>
-         <DependsOn>Compile DataTypes</DependsOn>
-         <DependsOn>Compile DotNetProxies</DependsOn>
-         <WorkingDirectory>%APSIM%/Model/ApsimX</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-      </Job>
-      <Job name="Create ApsimX Serialiser">
-         <DependsOn>Compile ApsimX</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>sgen ApsimX.exe /force</CommandLine>
-      </Job>      
       <Job name="Compile ApsimToSim">
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile ApsimUI</DependsOn>
@@ -945,7 +932,7 @@
       <Job name="Find .apsim Tests">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
+         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.apsim TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Find .con Tests">
          <DependsOn>Compile FindJobs</DependsOn>
@@ -955,7 +942,7 @@
       <Job name="Find Examples">
          <DependsOn>Compile FindJobs</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Examples/*.apsim? TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
+         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Examples/*.apsim TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
       </Job>
       <Job name="Remove all .out and .sum files from Examples folder">
          <WorkingDirectory>%APSIM%/Examples</WorkingDirectory>

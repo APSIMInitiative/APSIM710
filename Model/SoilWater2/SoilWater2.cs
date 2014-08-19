@@ -4,9 +4,7 @@ using System.Text;
 using System.IO;
 using ModelFramework;
 using CSGeneral;
-#if (APSIMX == false)
 using CMPServices;
-#endif
 
 ///<summary>
 /// .NET port of the Fortran SoilWat model
@@ -1908,11 +1906,7 @@ public class SoilWater
 
     private void IssueWarning(string warningText)
     {
-#if (APSIMX == true)
-        Console.WriteLine(warningText);
-#else
         My.Warning(warningText);
-#endif
     }
 
     private double bound(double A, double MinVal, double MaxVal)
@@ -4215,7 +4209,6 @@ public class SoilWater
 
     }
 
-#if (APSIMX == false)
     public bool getPropertyValue(int propID, ref TPropertyInfo value, bool isReqSet)
     {
         if (isReqSet)  // currently only handling read requests, so fail if this is not.
@@ -4239,7 +4232,6 @@ public class SoilWater
         }
         return false;
     }
-#endif
 
     [EventHandler(EventName="new_solute")]
     public void OnNew_solute(NewSoluteType newsolute)
@@ -4260,13 +4252,8 @@ public class SoilWater
         string name;
 
         //*- Implementation Section ----------------------------------
-#if (APSIMX == true)
-        sender = newsolute.sender_id;
-        string compName = "";
-#else
         sender = (int)My.eventSenderId;
         string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
-#endif
         numvals = newsolute.solutes.Length;
 
         Array.Resize(ref solutes, num_solutes + numvals);
@@ -4292,10 +4279,8 @@ public class SoilWater
             solutes[num_solutes].up = new double[nLayers];
             // Register new "flow" and "leach" outputs for these solutes
             // See "getPropertyValue" function for the callback used to actually retrieve the values
-#if (APSIMX == false)
             solutes[num_solutes].get_flow_id = My.RegisterProperty("flow_" + name, "<type kind=\"double\" array=\"T\" unit=\"kg/ha\"/>", true, false, false, "flow of " + name, "", getPropertyValue);
             solutes[num_solutes].get_leach_id = My.RegisterProperty("leach_" + name, "<type kind=\"double\" unit=\"kg/ha\"/>", true, false, false, "leaching of " + name, "", getPropertyValue);
-#endif
             solutes[num_solutes].parms = My.LinkByName(name) as SoluteParams;
             if (solutes[num_solutes].parms == null)
                 solutes[num_solutes].parms = new SoluteParams();

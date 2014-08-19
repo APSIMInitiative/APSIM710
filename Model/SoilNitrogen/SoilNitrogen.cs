@@ -57,36 +57,6 @@ public partial class SoilNitrogen
 	[EventHandler]
 	public void OnInitialised()
 	{
-		// Variable handling when using APSIMX
-#if (APSIMX == true)
-		initDone = false;
-		ApsimFile.Soil Soil = (ApsimFile.Soil)Paddock.Get("Soil");
-		dlayer = Soil.Thickness;
-		SoilDensity = Soil.Water.BD;
-		sat_dep = MathUtility.Multiply(Soil.Water.SAT, Soil.Thickness);
-		dul_dep = MathUtility.Multiply(Soil.Water.DUL, Soil.Thickness);
-		ll15_dep = MathUtility.Multiply(Soil.Water.LL15, Soil.Thickness);
-		sw_dep = MathUtility.Multiply(Soil.SW, Soil.Thickness);
-		oc = Soil.OC;
-		ph = Soil.Analysis.PH;
-		salb = Soil.SoilWater.Salb;
-		no3ppm = Soil.NO3;
-		nh4ppm = Soil.NH4;
-
-		fbiom = Soil.SoilOrganicMatter.FBiom;
-		finert = Soil.SoilOrganicMatter.FInert;
-		HumusCNr = Soil.SoilOrganicMatter.SoilCN;
-		InitialFOMAmount = Soil.SoilOrganicMatter.RootWt;
-		InitialCNrFOM = Soil.SoilOrganicMatter.RootCN;
-		enr_a_coeff = Soil.SoilOrganicMatter.EnrACoeff;
-		enr_b_coeff = Soil.SoilOrganicMatter.EnrBCoeff;
-		Clock.Tick += new TimeDelegate(OnTick);
-		Clock.Process += new NullTypeDelegate(OnProcess);
-		//Clock.Post += new NullTypeDelegate(OnPost);
-
-		initDone = true;
-#endif
-
 		// set the size of arrays
 		ResizeLayeredVariables(dlayer.Length);
 

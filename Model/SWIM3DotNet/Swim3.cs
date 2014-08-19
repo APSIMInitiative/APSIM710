@@ -7,9 +7,7 @@ using ModelFramework;
 using CSGeneral;
 //using ApsimFile;
 using System.Xml.Serialization;
-#if (APSIMX == false)
 using CMPServices;
-#endif
 
 ///<summary>
 /// .NET port of the Fortran SWIM3 model
