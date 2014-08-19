@@ -21,6 +21,8 @@ ifeq ($(PLATFORM),WIN32VS)
 endif
 
 ifeq ($(PLATFORM),Linux)
+  export SHELL=/bin/bash
+  export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   OBJEXT = o
   DLLEXT = so
   R_HOME = /usr
