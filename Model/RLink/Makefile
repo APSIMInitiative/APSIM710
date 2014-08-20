@@ -21,10 +21,12 @@ ifeq ($(PLATFORM),WIN32VS)
 endif
 
 ifeq ($(PLATFORM),Linux)
-  export SHELL=/bin/bash
-  export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   OBJEXT = o
   DLLEXT = so
+  SHELL:=/bin/bash
+  PATH:=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  export SHELL
+  export PATH
   R_HOME = /usr
   RINSTALLED:=$(shell $(R_HOME)/bin/R --version)
 endif
@@ -38,8 +40,8 @@ ifneq ($(RINSTALLED),)
   RLDFLAGS := 	$(RLDFLAGS)	$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
   RCPPFLAGS := 	$(RCPPFLAGS)	-Wall
   RCXXFLAGS := 	$(RCPPFLAGS) -I $(APSIM)/Model
-  RCXX := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
-  RLD := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
+  RCXX := 	$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
+  RLD := 	$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
 endif
 
 LIBS = General ApsimShared ComponentInterface2
