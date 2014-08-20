@@ -28,20 +28,20 @@ ifeq ($(PLATFORM),Linux)
   export SHELL
   export PATH
   R_HOME = /usr
-  RINSTALLED:=$(shell $(R_HOME)/bin/R --version)
+  RINSTALLED:=$(shell PATH=$(PATH); $(R_HOME)/bin/R --version)
 endif
 
 ifneq ($(RINSTALLED),)
   PREBUILD = ../REmbed.$(DLLEXT)
-  RCPPFLAGS := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config --cppflags)
-  RCPPFLAGS := 	$(RCPPFLAGS) $(shell echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
-  RLDFLAGS := 	$(RLDFLAGS)	$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
-  RCPPFLAGS := 	$(RCPPFLAGS)	$(shell echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
-  RLDFLAGS := 	$(RLDFLAGS)	$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RCPPFLAGS := 		$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config --cppflags)
+  RCPPFLAGS := 	$(RCPPFLAGS) $(shell PATH=$(PATH); echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RLDFLAGS := 	$(RLDFLAGS)	$(shell PATH=$(PATH); echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RCPPFLAGS := 	$(RCPPFLAGS)	$(shell PATH=$(PATH); echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RLDFLAGS := 	$(RLDFLAGS)	$(shell PATH=$(PATH); echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RCXX := 	$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
+  RLD := 	$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
   RCPPFLAGS := 	$(RCPPFLAGS)	-Wall
   RCXXFLAGS := 	$(RCPPFLAGS) -I $(APSIM)/Model
-  RCXX := 	$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
-  RLD := 	$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
 endif
 
 LIBS = General ApsimShared ComponentInterface2
@@ -67,10 +67,8 @@ RDataTypesEmbedded.o: RDataTypesEmbedded.cpp RDataTypes.h
 dllProcAddressWrapper.o: dllProcAddressWrapper.cpp
 	$(RCXX) -c $(CXXFLAGS) dllProcAddressWrapper.cpp
 
-ifneq ($(RINSTALLED),)
 ../REmbed.dll: REmbedder.o RDataTypesEmbedded.o dllProcAddressWrapper.o libRLink.a
 	$(RLD) $(RLDFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesEmbedded.o dllProcAddressWrapper.o libRLink.a $(RLDLIBS) -lstdc++
-endif
 
 ../REmbed.so: REmbedder.o RDataTypesEmbedded.o
 	$(RLD) $(RLDFLAGS) -shared -s -o $@ REmbedder.o  RDataTypesEmbedded.o $(RLDLIBS)
