@@ -28,8 +28,13 @@ public class OilPalm
     [Param]
     double height = 0.0;
     [Output]
-    [Param]
-    double cover_tot = 0.0;
+    double cover_tot 
+    {
+        get
+        {
+            return cover_green + (1 - cover_green) * UnderstoryCoverGreen;
+        }
+    }
     [Output]
     double interception = 0.0;
 
