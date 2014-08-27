@@ -70,9 +70,6 @@ public partial class SurfaceOM
     public void OnActualresiduedecompositioncalculated(SurfaceOrganicMatterDecompType SOMDecomp) { surfom_decompose_surfom(SOMDecomp); }
 
     [EventHandler]
-    public void OnProp_up(Prop_upType data) { surfom_prop_up(data); }
-
-    [EventHandler]
     public void OnAddFaeces(AddFaecesType data) { surfom_add_faeces(data); }
 }
 
