@@ -135,12 +135,18 @@ public class Manager2
         if (VB) {
            System.Diagnostics.Process P = Utility.RunProcess("/bin/ln", "-sf /usr/bin/vbnc vbnc", ".");
            Utility.CheckProcessExitedProperly(P);
+        } else {
+           System.Diagnostics.Process P = Utility.RunProcess("/bin/ln", "-sf /usr/bin/dmcs dmcs", ".");
+           Utility.CheckProcessExitedProperly(P);
         }
 #endif
                 CompilerResults results = Provider.CompileAssemblyFromSource(Params, source);
 #if __MonoCS__
         if (VB) {
            System.Diagnostics.Process P = Utility.RunProcess("/bin/rm", "-f vbnc", ".");
+           Utility.CheckProcessExitedProperly(P);
+        } else {
+           System.Diagnostics.Process P = Utility.RunProcess("/bin/rm", "-f dmcs", ".");
            Utility.CheckProcessExitedProperly(P);
         }
 #endif
