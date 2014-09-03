@@ -258,11 +258,11 @@ void RComponent::oneTimeInit(void)
        {
        dll = paths[path] + "/" + libs[lib] ;
 #ifndef __WIN32__
-       dll +=  "/lib/lib"+ libs[lib] + ".so";
+       dll +=  "/libs/lib"+ libs[lib] + ".so";
+       apsimAPI.write("Trying to load " +  dll + "\n");
 #else
        dll +=  "/libs/i386/" + libs[lib] + ".dll";
 #endif
-       //apsimAPI.write("Trying to load " +  dll + "\n");
        if (fileExists(dll) && (RDLLHandle = loadDLL(dll)) != NULL)
        	  break;
        } /* for path ...*/
