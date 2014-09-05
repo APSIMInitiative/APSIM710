@@ -1188,7 +1188,7 @@ public class SugarCane
 
         #region ConvertModule.f90 (FortranInfrastructure)
 
-            public const double mm2m = 1.0 / 1000.0;          //! conversion of mm to m
+            public const double smm2m = 1.0 / 1000.0;          //! conversion of mm to m
 
             public const double sm2smm = 1000000.0;       //! conversion of square metres to square mm
 
@@ -4258,11 +4258,6 @@ public class SugarCane
                 //      subroutine sugar_bio_water (Option)
                 //*     ===========================================================
 
-                //*+  Purpose
-                //*       bio transpiration efficiency
-
-                //*+  Mission Statement
-                //*     Calcuate biomass transpiration efficiency
 
 
                 //!     ===========================================================
@@ -4286,6 +4281,14 @@ public class SugarCane
 
                 int         l_deepest_layer_ob;   //! deepest layer in which the roots are growing
                 double      l_sw_supply_sum;   //! Water available to roots (mm)
+
+                 //transpiration efficiency is grams of carbo / mm of water
+
+                 //when water stress occurs the plant is not able to get all the water it needs.
+                 //it can only get what is available (ie. sw_supply)
+                 //So based on the water that the plant was able to get, 
+                 //we need to work out how much biomass it could grow. 
+                 //biomass able to be grown(g) = transp_eff(g/mm) * supply(mm)
 
 
                     //! potential (supply) by transpiration
@@ -6013,13 +6016,13 @@ public class SugarCane
                     l_no3ppm = i_no3gsm[layer] * MathUtility.Divide(1000.0, i_bd[layer]*i_dlayer[layer], 0.0);
                     l_nh4ppm = i_nh4gsm[layer] * MathUtility.Divide(1000.0, i_bd[layer]*i_dlayer[layer], 0.0);
 
-                    if ((c_kno3 > 0) & (l_no3ppm > c_no3ppm_min))
+                    if ((c_kno3 > 0) && (l_no3ppm > c_no3ppm_min))
                         o_no3gsm_uptake_pot[layer] = l_bound(i_no3gsm[layer]-i_no3gsm_min[layer],0.0);
                     else
                         o_no3gsm_uptake_pot[layer] = 0.0;
 
 
-                    if ((c_knh4 > 0) & (l_nh4ppm > c_nh4ppm_min))
+                    if ((c_knh4 > 0) && (l_nh4ppm > c_nh4ppm_min))
                         o_nh4gsm_uptake_pot[layer] = l_bound(i_nh4gsm[layer]-i_nh4gsm_min[layer],0.0);
                     else
                         o_nh4gsm_uptake_pot[layer] = 0.0;
@@ -6197,7 +6200,7 @@ public class SugarCane
 
 
 
-            //    if ((i_uptake_source == "apsim")  & (i_crop_type != "")) 
+            //    if ((i_uptake_source == "apsim")  && (i_crop_type != "")) 
             //        {
             //         //! NB - if crop type is blank then swim will know nothing
             //         //! about this crop (eg if not initialised yet)
@@ -6606,7 +6609,7 @@ public class SugarCane
                 //*     Crop death due to lack of germination
 
 
-                if (stage_is_between(sowing, sprouting, i_current_stage) & (sum_between_zb(zb(sowing), zb(now), i_days_tot) >= c_days_germ_limit)) 
+                if (stage_is_between(sowing, sprouting, i_current_stage) && (sum_between_zb(zb(sowing), zb(now), i_days_tot) >= c_days_germ_limit)) 
                     {
                      o_dlt_plants = - i_plants;
                      Console.WriteLine(" crop failure because of lack of" + "/n" + "         germination within" + c_days_germ_limit + " days of sowing");
@@ -6636,7 +6639,7 @@ public class SugarCane
                 //*     Crop death due to lack of emergence
 
 
-                if (stage_is_between(sprouting, emerg, i_current_stage) & (sum_between_zb(zb(sprouting), zb(now), i_tt_tot) > c_tt_emerg_limit)) 
+                if (stage_is_between(sprouting, emerg, i_current_stage) && (sum_between_zb(zb(sprouting), zb(now), i_tt_tot) > c_tt_emerg_limit)) 
                     {
                      o_dlt_plants = - i_plants;
                     Console.WriteLine(" failed emergence due to deep planting");
@@ -6663,7 +6666,8 @@ public class SugarCane
                 //*      Determine plant death from all leaf area senescing.
 
 
-                if ((i_lai <= 0.0) & (stage_is_between(emerg, crop_end, i_current_stage)))
+                //if ((i_lai <= 0.0) && (stage_is_between(emerg, crop_end, i_current_stage)))
+                if ( (mu.reals_are_equal(i_lai, 0.0) || (i_lai < 0.0)) && stage_is_between(emerg, crop_end, i_current_stage) ) //sv- I changed this because what if i_lai is 0.0000001, it is still not equal to 0.0
                     {
                     o_dlt_plants = - i_plants;
                     i_lai = 0.0;
@@ -6706,7 +6710,7 @@ public class SugarCane
                 l_cswd_photo = sum_between_zb(zb(emerg), zb(crop_end), i_cswd_photo);
                 l_leaf_no = sum_between_zb(zb(emerg), zb(now), i_leaf_no);
 
-                if ((l_leaf_no < c_leaf_no_crit) & (l_cswd_photo > c_swdf_photo_limit) & (i_swdef_photo < 1.0)) 
+                if ((l_leaf_no < c_leaf_no_crit) && (l_cswd_photo > c_swdf_photo_limit) && (i_swdef_photo < 1.0)) 
                     {
                     l_killfr = c_swdf_photo_rate * (l_cswd_photo - c_swdf_photo_limit);
                     l_killfr = bound(l_killfr, 0.0, 1.0);
@@ -9139,7 +9143,7 @@ public class SugarCane
 
 
 
-                    //POTENTIAL TRANSPIRATION (reduced by available water supply from roots)
+                    //BIOMASS(DRY MATTER) PRODUCTION (restricted by water stress -> biomass (grams) = transp_eff(g/mm) * supply(mm))
 
                     //sugar_bio_water(1)
                     g_dlt_dm_pot_te = cproc_bio_water1(g_root_depth, g_sw_supply, g_transp_eff);
@@ -9153,16 +9157,19 @@ public class SugarCane
 
 
 
-                    //BIOMASS(DRY MATTER) PRODUCTION
+                    //BIOMASS(DRY MATTER) PRODUCTION (with no water stress but with every other type of stress)
 
                     //sugar_bio_RUE(1);
                     g_dlt_dm_pot_rue = sugar_dm_pot_rue(crop.rue, g_current_stage, g_radn_int, g_nfact_photo, g_temp_stress_photo, g_oxdef_photo, g_lodge_redn_photo);
                     g_dlt_dm_pot_rue_pot = sugar_dm_pot_rue_pot(crop.rue, g_current_stage, g_radn_int);
 
-                    //sugar_bio_actual(1);
+                    //sugar_bio_actual(1); //sv- get initial value
                     sugar_dm_init(crop.dm_cabbage_init, crop.dm_leaf_init, crop.dm_sstem_init, crop.dm_sucrose_init, crop.specific_root_length,
                                 g_current_stage, dlayer, g_plants, g_root_length,
                                 ref g_dm_green, ref g_leaf_dm_zb);
+
+
+                    //BIOMASS(DRY MATTER) PRODUCTION (choose between "water stressed" and "non water stressed")  
 
                 
 
@@ -10213,7 +10220,16 @@ public class SugarCane
         void Onkill_crop(KillCropType KillCropData)
             {            
             //sv- Killing kills just this plant or ratoon (crop_status is set to "crop_dead") but the biomass is left there standing. 
-            //      You need to do a tillage to get rid of the above ground biomass. It can still ratoon again.
+            //      You need to do a tillage to get rid of the above ground biomass. It will not grow or ratoon again. It just sits there dead with above ground biomass.
+
+            //      Kill crop and End Crop is used in other crop modules as part of the Crop Rotations. 
+            //      You want to kill the crop and set its status to dead but you want to leave it there until someone does a tillage event to plow it in just before they
+            //      plant another crop.
+            //      Killing also prevents another crop from being planted by the Crop Rotations manager. If you want the next crop in the rotation to be planted you then
+            //      have to use the End Crop command. End Crop specifies the status as Crop Out which means that there is nothing in the ground and you can plant another crop.
+            //      It will also get rid of the biomass.
+            //      Perhaps we need to create a new Event for SugarCane called "KillButRegrowCrop" which will kill the crop but let is start growing again.
+            //      I guess it will have to detach the dead biomass over time rather than tilling it back into the soil.  
 
             sugar_kill_crop(ref g_crop_status, g_dm_dead, g_dm_green, g_dm_senesced);
             }
