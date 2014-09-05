@@ -2905,6 +2905,11 @@ cmjr
       real       rlv(max_layer)
       real       ep
       real       esw(max_layer)
+      
+      real      leaves
+      real      green_leaves
+      real      dead_leaves
+      
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -2965,6 +2970,13 @@ cnh         endif
 c      elseif (variable_name .eq. 'days_tot') then
 c I removed this NIH
 
+
+
+      !sv- START - Total leaves pushed out since crop start
+      
+      !sv- The suffix "_no" should be interpretated more as an id number eg. "_id"
+      !nb.  node number and leaf number is the same thing since only 1 leaf per node.
+
       elseif (variable_name .eq. 'leaf_no') then
          call respond2get_real_array (variable_name
      :                              , '()'
@@ -2975,6 +2987,46 @@ c I removed this NIH
      :                              , '()'
      :                              , g%node_no_dead
      :                              , max_stage)
+     
+      !sv- I added this, 1 Aug 2014
+      elseif (variable_name .eq. 'node_no_detached') then 
+         call respond2get_real_var (variable_name
+     :                             , '()'
+     :                             , g%node_no_detached)
+     
+      !sv- END
+      
+
+      !sv- START - Leaves still on the Plant at any given time
+      !(added this section on 1 Aug 2014)
+
+      elseif (variable_name .eq. 'leaves') then   
+         leaves = sum_real_array (g%leaf_no, max_stage)
+     :                 - g%node_no_detached
+         call respond2get_real_var (variable_name
+     :                             , '()'
+     :                             , leaves)      
+     
+      elseif (variable_name .eq. 'green_leaves') then   
+         green_leaves = sum_real_array (g%leaf_no, max_stage)
+     :                 - sum_real_array (g%node_no_dead, max_stage)
+         call respond2get_real_var (variable_name
+     :                             , '()'
+     :                             , green_leaves)  
+     
+      elseif (variable_name .eq. 'dead_leaves') then   
+         leaves = sum_real_array (g%leaf_no, max_stage)
+     :                 - g%node_no_detached      
+         green_leaves = sum_real_array (g%leaf_no, max_stage)
+     :                 - sum_real_array (g%node_no_dead, max_stage)
+         dead_leaves = leaves - green_leaves
+         call respond2get_real_var (variable_name
+     :                             , '()'
+     :                             , dead_leaves)
+     
+      !sv- END
+
+
 
       elseif (variable_name .eq. 'leaf_area') then
          call respond2get_real_array (variable_name

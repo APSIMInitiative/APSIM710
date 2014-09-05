@@ -8027,12 +8027,41 @@ public class SugarCane
  	 	 { get { return g_tt_tot;} }
 
 
+      //!sv- START - Total leaves pushed out since crop start
+      
+      //!sv- The suffix "_no" should be interpretated more as an id number eg. "_id"
+      //nb.  node number and leaf number is the same thing since only 1 leaf per node.
+
+
      [Output] [Units("()")] double[] leaf_no
          { get { return g_leaf_no_zb;} }
 
 
      [Output] [Units("()")] double[]  node_no_dead
  	 	 { get { return g_node_no_dead_zb;} }
+
+      //!sv- I added this, 1 Aug 2014
+     [Output] [Units("()")] double  node_no_detached //scalar not an array. Which is why it is one based. 
+ 	 	 { get { return g_node_no_detached_ob; } }
+
+     
+      //!sv- END
+
+
+
+      //!sv- START - Leaves still on the Plant at any given time
+      //(added this section on 1 Aug 2014)
+
+     [Output] [Units("()")] double leaves
+ 	 	 { get { return SumArray(g_leaf_no_zb, max_stage) - g_node_no_detached_ob; } }    
+
+     [Output] [Units("()")] double green_leaves
+ 	 	 { get { return SumArray(g_leaf_no_zb, max_stage) - SumArray(g_node_no_dead_zb, max_stage); } }    
+
+     [Output] [Units("()")] double dead_leaves
+ 	 	 { get { return leaves - green_leaves; } }    
+ 
+      //!sv- END
 
 
      [Output] [Units("()")]double[]  leaf_area
