@@ -359,6 +359,17 @@ void RootPart::plant_root_depth (void)
 
    float sw_avail_factor = sw_fac_root.value(fasw);
 
+   float RelRFV=-1.0;
+   scienceAPI.getOptional("RelRFV", "-", RelRFV,0.0,1.0);
+   if(RelRFV>0.0)
+   	 {
+       // There is an output out there for relative root front velocity so use this
+       // instead of soil water factor here
+       sw_avail_factor = RelRFV;
+       }
+
+   
+   
    // this equation allows soil water in the deepest
    // layer in which roots are growing
    // to affect the daily increase in rooting depth.
