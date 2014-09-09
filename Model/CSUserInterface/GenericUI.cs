@@ -460,7 +460,9 @@ namespace CSUserInterface
 				if (Dialog.ShowDialog() == DialogResult.OK) {
 					string Text = "";
 					foreach (string FileName in Dialog.FileNames) {
-						Text += FileName + Environment.NewLine;
+                        if (Text != "")
+                            Text += Environment.NewLine;
+						Text += FileName;
 					}
 					Grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = Text;
 				}
