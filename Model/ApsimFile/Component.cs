@@ -351,23 +351,41 @@ namespace ApsimFile
                     XmlNode SoilSampleNode = XmlHelper.FindByType(SoilNode, "Sample");
                     if (InitWaterNode == null && InitNitrogenNode == null && SoilSampleNode == null)
                     {
-                        InitWaterNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("InitWater"));
+                        // Default to a full profile
+                        InitWaterNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("InitialWater"));
+                        XmlHelper.SetName(InitWaterNode, "InitialWater");
                         InitWaterNode.InnerXml =
-                            "<percentmethod>" +
-                            "  <percent>1</percent>" +
-                            "  <distributed>filled from top</distributed>" +
-                            "</percentmethod>";
+                            "<FractionFull>1</FractionFull>" +
+                            "<PercentMethod>FilledFromTop</PercentMethod>";
 
                         InitNitrogenNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("Sample"));
-                        XmlHelper.SetName(InitNitrogenNode, "Initial nitrogen");
-                        InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />" +
-                                                     "<Layer>" +
-                                                     "   <Thickness units=\"mm\">100</Thickness>" +
-                                                     "   <NO3 units=\"ppm\">0</NO3>" +
-                                                     "   <NH4 units=\"ppm\">0</NH4>" +
-                                                     "   <SW units=\"mm/mm\">0</SW>" +
-                                                     "</Layer>";
+                        XmlHelper.SetName(InitNitrogenNode, "InitialNitrogen");
 
+                        // If possible, set up nitrogen node based on any existing Analysis node
+                        // Otherwise, use water node to initialise the layer structure
+                        // If that doesn't work, just add 1 dummy layer
+
+                        // Similarly, transfer values for pH and EC, if they exist.
+
+                        XmlNode AnalysisNode = XmlHelper.FindByType(SoilNode, "Analysis");
+                        XmlNode WaterNode = XmlHelper.FindByType(SoilNode, "Water");
+                        string Thickness = "<Thickness units=\"mm\">100</Thickness>";
+                        string pHUnits = "<PHUnits>Water</PHUnits>";
+                        XmlNode ThicknessNode = null;
+                        if (AnalysisNode != null)
+                            ThicknessNode = XmlHelper.Find(AnalysisNode, "Thickness");
+                        if (ThicknessNode == null && WaterNode != null)
+                            ThicknessNode = XmlHelper.Find(WaterNode, "Thickness");
+                        if (ThicknessNode != null)
+                           Thickness = ThicknessNode.OuterXml;
+
+                        InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />" +
+                                                     Thickness +
+                                                     "  <NO3Units>ppm</NO3Units>" +
+                                                     "  <NH4Units>ppm</NH4Units>" +
+                                                     "  <SWUnits>Volumetric</SWUnits>" +
+                                                     "  <OCUnits>Total</OCUnits>" +
+                                                     "  <PHUnits>Water</PHUnits>";
                     }
                 }
 

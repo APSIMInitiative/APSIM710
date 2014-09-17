@@ -87,7 +87,7 @@ namespace ApsimFile
         }
         public void SWUnitsSet(SWUnitsEnum ToUnits, Soil Soil)
         {
-            if (ToUnits != SWUnits)
+            if (ToUnits != SWUnits && SW != null)
             {
                 // convert the numbers
                 if (SWUnits == SWUnitsEnum.Volumetric)
@@ -111,8 +111,8 @@ namespace ApsimFile
                     else if (ToUnits == SWUnitsEnum.Gravimetric)
                         SW = MathUtility.Divide(MathUtility.Divide(SW, Thickness), Soil.BDMapped(Thickness));
                 }
-                SWUnits = ToUnits;
             }
+            SWUnits = ToUnits;
         }
 
         // Support for OC units.
@@ -126,15 +126,15 @@ namespace ApsimFile
         }
         public void OCUnitsSet(OCSampleUnitsEnum ToUnits)
         {
-            if (ToUnits != OCUnits)
+            if (ToUnits != OCUnits && OC != null)
             {
                 // convert the numbers
                 if (ToUnits == OCSampleUnitsEnum.WalkleyBlack)
                     OC = MathUtility.Divide_Value(OC, 1.3);
                 else
                     OC = MathUtility.Multiply_Value(OC, 1.3);
-                OCUnits = ToUnits;
             }
+            OCUnits = ToUnits;
         }
 
         // Support for PH units.
@@ -148,7 +148,7 @@ namespace ApsimFile
         }
         public void PHUnitsSet(PHSampleUnitsEnum ToUnits)
         {
-            if (ToUnits != PHUnits)
+            if (ToUnits != PHUnits && PH != null)
             {
                 // convert the numbers
                 if (ToUnits == PHSampleUnitsEnum.Water)
@@ -161,10 +161,8 @@ namespace ApsimFile
                     // pH in CaCl = (pH in water + 0.1375) / 1.1045
                     PH = MathUtility.Divide_Value(MathUtility.Add_Value(PH, 0.1375), 1.1045);
                 }
-                PHUnits = ToUnits;
             }
-
-
+            PHUnits = ToUnits;
         }
 
         /// <summary>

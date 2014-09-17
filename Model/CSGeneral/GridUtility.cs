@@ -179,6 +179,9 @@ namespace CSGeneral
         /// </summary>
         public static int FindLastRow(DataGridView Grid)
         {
+            if (Grid.RowCount == 0)
+                return -1;
+
             int Row = Grid.RowCount - 1;
             do
             {
