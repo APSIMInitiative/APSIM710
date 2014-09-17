@@ -40,6 +40,11 @@ namespace CSUserInterface
         private object OurObject;
 
         /// <summary>
+        /// Flag to avoid recursion when handling OnCellValueChange
+        /// </summary>
+        private bool settingSelf = false;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public ProfileUI()
@@ -192,90 +197,98 @@ namespace CSUserInterface
         /// </summary>
         private void SetupGrid()
         {
-            foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
+            settingSelf = true;
+            try
             {
-                bool Ignore = Property.IsDefined(typeof(System.Xml.Serialization.XmlIgnoreAttribute), false);
-                if (!Ignore && Property.CanWrite)
+                foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
                 {
-                    // Get metadata from property.
-                    string[] Metadata = null;
-                    PropertyInfo MetadataInfo = OurObject.GetType().GetProperty(Property.Name + "Metadata");
-                    if (MetadataInfo != null)
-                        Metadata = (string[])MetadataInfo.GetValue(OurObject, null);
-
-                    //////// double[]
-                    if (Property.PropertyType.Name == "Double[]")
+                    bool Ignore = Property.IsDefined(typeof(System.Xml.Serialization.XmlIgnoreAttribute), false);
+                    if (!Ignore && Property.CanWrite)
                     {
-                        // Get values.
-                        double[] Values = (double[]) Property.GetValue(OurObject, null);
+                        // Get metadata from property.
+                        string[] Metadata = null;
+                        PropertyInfo MetadataInfo = OurObject.GetType().GetProperty(Property.Name + "Metadata");
+                        if (MetadataInfo != null)
+                            Metadata = (string[])MetadataInfo.GetValue(OurObject, null);
 
-                        // Create a column in the grid.
-                        if (Property.Name == "Thickness")
-                            GridUtility.AddColumn(Grid, "Depth\r\n(cm)", Soil.ToDepthStrings(Values));
-                        else
+                        //////// double[]
+                        if (Property.PropertyType.Name == "Double[]")
                         {
-                            string Format = "f3";
+                            // Get values.
+                            double[] Values = (double[])Property.GetValue(OurObject, null);
 
-                            // Get units from property
-                            string Units;
-                            PropertyInfo UnitsInfo = OurObject.GetType().GetProperty(Property.Name + "Units");
-                            MethodInfo UnitsToStringInfo = OurObject.GetType().GetMethod(Property.Name + "UnitsToString");
-                            ContextMenuStrip UnitsMenu = null;
-                            if (UnitsInfo == null)
-                                Units = GetAttribute(Property, "Units");
+                            // Create a column in the grid.
+                            if (Property.Name == "Thickness")
+                                GridUtility.AddColumn(Grid, "Depth\r\n(cm)", Soil.ToDepthStrings(Values));
                             else
                             {
-                                // Get the units string and create a units context menu.
-                                Enum U = UnitsInfo.GetValue(OurObject, null) as Enum;
-                                Units = (string) UnitsToStringInfo.Invoke(OurObject, new object[] { U });
-                                UnitsMenu = new ContextMenuStrip();
-                                UnitsMenu.ItemClicked += UnitsMenuItemClicked;
-                                UnitsMenu.Tag = OurObject.GetType().GetMethod(Property.Name + "UnitsSet");
-                                foreach (object E in Enum.GetValues(U.GetType()))
+                                string Format = "f3";
+
+                                // Get units from property
+                                string Units;
+                                PropertyInfo UnitsInfo = OurObject.GetType().GetProperty(Property.Name + "Units");
+                                MethodInfo UnitsToStringInfo = OurObject.GetType().GetMethod(Property.Name + "UnitsToString");
+                                ContextMenuStrip UnitsMenu = null;
+                                if (UnitsInfo == null)
+                                    Units = GetAttribute(Property, "Units");
+                                else
                                 {
-                                    ToolStripItem Item = UnitsMenu.Items.Add((string)UnitsToStringInfo.Invoke(OurObject, new object[] { E }));
-                                    Item.Tag = E;
+                                    // Get the units string and create a units context menu.
+                                    Enum U = UnitsInfo.GetValue(OurObject, null) as Enum;
+                                    Units = (string)UnitsToStringInfo.Invoke(OurObject, new object[] { U });
+                                    UnitsMenu = new ContextMenuStrip();
+                                    UnitsMenu.ItemClicked += UnitsMenuItemClicked;
+                                    UnitsMenu.Tag = OurObject.GetType().GetMethod(Property.Name + "UnitsSet");
+                                    foreach (object E in Enum.GetValues(U.GetType()))
+                                    {
+                                        ToolStripItem Item = UnitsMenu.Items.Add((string)UnitsToStringInfo.Invoke(OurObject, new object[] { E }));
+                                        Item.Tag = E;
+                                    }
+
+                                    if (Property.Name == "NO3" || Property.Name == "NH4")
+                                    {
+                                        ToolStripItem Item = UnitsMenu.Items.Add("Set total");
+                                        Item.Tag = Property.Name + "(" + Units + ")";
+                                    }
+                                }
+
+                                // Create a column.
+                                string ColumnName = Property.Name;
+                                if (Units != "")
+                                    ColumnName += "\r\n(" + Units + ")";
+                                DataGridViewColumn Column = GridUtility.AddColumn(Grid, ColumnName, Values, Format, ToolTips: Metadata);
+
+                                // Attach a unit menu if necessary
+                                if (UnitsMenu != null)
+                                {
+                                    Column.HeaderCell.ContextMenuStrip = UnitsMenu;
                                 }
 
                                 if (Property.Name == "NO3" || Property.Name == "NH4")
-                                {
-                                    ToolStripItem Item = UnitsMenu.Items.Add("Set total");
-                                    Item.Tag = Property.Name + "(" + Units + ")";
-                                }
+                                    UpdateTotal(Column);
                             }
-
-                            // Create a column.
-                            string ColumnName = Property.Name;
-                            if (Units != "")
-                                ColumnName += "\r\n(" + Units + ")";
-                            DataGridViewColumn Column = GridUtility.AddColumn(Grid, ColumnName, Values, Format, ToolTips: Metadata);
-
-                            // Attach a unit menu if necessary
-                            if (UnitsMenu != null)
-                            {
-                                Column.HeaderCell.ContextMenuStrip = UnitsMenu;
-                            }
-
-                            if (Property.Name == "NO3" || Property.Name == "NH4")
-                                UpdateTotal(Column);
                         }
-                    }
 
-                    //////// string[]
-                    else if (!Property.Name.Contains("Metadata") && Property.PropertyType.Name == "String[]")
-                    {
-                        // Get values.
-                        string[] Values = (string[])Property.GetValue(OurObject, null);
-                        GridUtility.AddColumn(Grid, Property.Name, Values, ToolTips: Metadata);
-                    }
+                        //////// string[]
+                        else if (!Property.Name.Contains("Metadata") && Property.PropertyType.Name == "String[]")
+                        {
+                            // Get values.
+                            string[] Values = (string[])Property.GetValue(OurObject, null);
+                            GridUtility.AddColumn(Grid, Property.Name, Values, ToolTips: Metadata);
+                        }
 
-                    //////// SoilCrop[]
-                    else if (Property.PropertyType.FullName.Contains("SoilCrop"))
-                        AddCropColumns();
+                        //////// SoilCrop[]
+                        else if (Property.PropertyType.FullName.Contains("SoilCrop"))
+                            AddCropColumns();
+                    }
                 }
+                if (OurObject is SoilOrganicMatter)
+                    AddSoilOrganicMatterColumns();
             }
-            if (OurObject is SoilOrganicMatter)
-                AddSoilOrganicMatterColumns();
+            finally
+            {
+                settingSelf = false;
+            }
         }
 
         /// <summary>
@@ -341,54 +354,54 @@ namespace CSUserInterface
         /// </summary>
         private void AddCropColumns()
         {
-            Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
-            Color[] PredictedCropColors = { Color.FromArgb(233, 191, 255), Color.FromArgb(244, 226, 255) };
+                Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
+                Color[] PredictedCropColors = { Color.FromArgb(233, 191, 255), Color.FromArgb(244, 226, 255) };
 
-//            DataGridViewColumn SAT = Grid.Columns["SAT\r\n(mm/mm)"];
-//            SAT.Frozen = true;
-            Grid.Columns[Grid.ColumnCount - 1].Frozen = true;
+                //            DataGridViewColumn SAT = Grid.Columns["SAT\r\n(mm/mm)"];
+                //            SAT.Frozen = true;
+                Grid.Columns[Grid.ColumnCount - 1].Frozen = true;
 
-            int CropIndex = 0;
-            int PredictedCropIndex = 0;
-            foreach (string CropName in Soil.CropNames.Union(Soil.PredictedCropNames, StringComparer.OrdinalIgnoreCase))
-            {
-                SoilCrop Crop = Soil.Crop(CropName);
-
-                bool IsReadonly;
-                Color CropColour;
-                Color ForeColour = Color.Black;
-                if (Crop.LLMetadata != null && Crop.LLMetadata.First() == "Estimated")
+                int CropIndex = 0;
+                int PredictedCropIndex = 0;
+                foreach (string CropName in Soil.CropNames.Union(Soil.PredictedCropNames, StringComparer.OrdinalIgnoreCase))
                 {
-                    CropColour = PredictedCropColors[PredictedCropIndex];
-                    ForeColour = Color.Gray;
-                    IsReadonly = true;
-                    PredictedCropIndex++;
-                    if (PredictedCropIndex >= PredictedCropColors.Length)
-                        PredictedCropIndex = 0;
+                    SoilCrop Crop = Soil.Crop(CropName);
+
+                    bool IsReadonly;
+                    Color CropColour;
+                    Color ForeColour = Color.Black;
+                    if (Crop.LLMetadata != null && Crop.LLMetadata.First() == "Estimated")
+                    {
+                        CropColour = PredictedCropColors[PredictedCropIndex];
+                        ForeColour = Color.Gray;
+                        IsReadonly = true;
+                        PredictedCropIndex++;
+                        if (PredictedCropIndex >= PredictedCropColors.Length)
+                            PredictedCropIndex = 0;
+                    }
+                    else
+                    {
+                        CropColour = CropColors[CropIndex];
+                        IsReadonly = false;
+                        CropIndex++;
+                        if (CropIndex >= CropColors.Length)
+                            CropIndex = 0;
+                    }
+
+                    double[] PAWCmm = MathUtility.Multiply(Soil.PAWCCropAtWaterThickness(CropName),
+                                                          Soil.Water.Thickness);
+
+                    DataGridViewColumn LL = GridUtility.AddColumn(Grid, CropName + " LL\r\n(mm/mm)", Crop.LL, "f3", CropColour, ForeColour, ToolTips: Crop.LLMetadata, ReadOnly: IsReadonly);
+                    DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n", PAWCmm, "f1", CropColour, Color.Gray,
+                                                                    ReadOnly: true,
+                                                                    ToolTips: StringManip.CreateStringArray("Calculated from crop LL and DUL", PAWCmm.Length));
+                    DataGridViewColumn KL = GridUtility.AddColumn(Grid, CropName + " KL\r\n(/day)", Crop.KL, "f2", CropColour, ForeColour, ToolTips: Crop.KLMetadata, ReadOnly: IsReadonly);
+                    DataGridViewColumn XF = GridUtility.AddColumn(Grid, CropName + " XF\r\n(0-1)", Crop.XF, "f1", CropColour, ForeColour, ToolTips: Crop.XFMetadata, ReadOnly: IsReadonly);
+
+                    PAWC.ToolTipText = "Calculated from crop LL and DUL";
+                    PAWC.ReadOnly = true;
+                    UpdateTotal(PAWC);
                 }
-                else
-                {
-                    CropColour = CropColors[CropIndex];
-                    IsReadonly = false;
-                    CropIndex++;
-                    if (CropIndex >= CropColors.Length)
-                        CropIndex = 0;
-                }
-
-                double[] PAWCmm = MathUtility.Multiply(Soil.PAWCCropAtWaterThickness(CropName),
-                                                      Soil.Water.Thickness);
-
-                DataGridViewColumn LL = GridUtility.AddColumn(Grid, CropName + " LL\r\n(mm/mm)", Crop.LL, "f3", CropColour, ForeColour, ToolTips: Crop.LLMetadata, ReadOnly: IsReadonly);
-                DataGridViewColumn PAWC = GridUtility.AddColumn(Grid, CropName + " PAWC\r\n", PAWCmm, "f1", CropColour, Color.Gray, 
-                                                                ReadOnly:true, 
-                                                                ToolTips:StringManip.CreateStringArray("Calculated from crop LL and DUL", PAWCmm.Length));
-                DataGridViewColumn KL = GridUtility.AddColumn(Grid, CropName + " KL\r\n(/day)", Crop.KL, "f2", CropColour, ForeColour, ToolTips: Crop.KLMetadata, ReadOnly: IsReadonly);
-                DataGridViewColumn XF = GridUtility.AddColumn(Grid, CropName + " XF\r\n(0-1)", Crop.XF, "f1", CropColour, ForeColour, ToolTips: Crop.XFMetadata, ReadOnly: IsReadonly);
-
-                PAWC.ToolTipText = "Calculated from crop LL and DUL";
-                PAWC.ReadOnly = true;
-                UpdateTotal(PAWC);
-            }
         }
         
         /// <summary>
@@ -446,7 +459,7 @@ namespace CSUserInterface
         /// </summary>
         private void OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (!settingSelf && e.RowIndex >= 0)
             {
                 try
                 {
@@ -533,7 +546,15 @@ namespace CSUserInterface
             string CropName = CropNameFromColumn(PAWC.Index);
             double[] PAWCmm = MathUtility.Multiply(Soil.PAWCCropAtWaterThickness(CropName),
                                                    Soil.Water.Thickness);
-            GridUtility.SetColumnValues(Grid, PAWC.Index, PAWCmm);
+            settingSelf = true;
+            try
+            {
+                GridUtility.SetColumnValues(Grid, PAWC.Index, PAWCmm);
+            }
+            finally
+            {
+                settingSelf = false;
+            }
             UpdateTotal(PAWC);
         }
 
