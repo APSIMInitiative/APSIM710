@@ -199,9 +199,16 @@ namespace CSGeneral
         //-------------------------------------------------------------------------
         public static double Sum(IEnumerable Values)
         {
+            if (Values == null)
+                return double.NaN;
             double result = 0.0;
             foreach (double Value in Values)
-                result += Value;
+            {
+                if (!double.IsNaN(Value))
+                {
+                    result += Value;
+                }
+            }
             return result;
         }
 
@@ -210,12 +217,17 @@ namespace CSGeneral
         //-------------------------------------------------------------------------
         public static double Average(IEnumerable Values)
         {
+            if (Values == null)
+                return double.NaN;
             double Sum = 0.0;
             int Count = 0;
             foreach (double Value in Values)
             {
-                Sum += Value;
-                Count++;
+                if (!double.IsNaN(Value))
+                {
+                    Sum += Value;
+                    Count++;
+                }
             }
             if (Count > 0)
                 return Sum / Count;

@@ -430,7 +430,7 @@ namespace Graph
                     bool AnyPointNull = false;
                     foreach (ValueList L in S.ValuesLists)
                     {
-                        if (i < L.Count && L[i] == MathUtility.MissingValue)
+                        if (i < L.Count && (L[i] == MathUtility.MissingValue || double.IsNaN(L[i])))
                         {
                             AnyPointNull = true;
                             break;

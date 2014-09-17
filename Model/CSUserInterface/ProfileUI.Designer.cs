@@ -113,7 +113,7 @@ namespace CSUserInterface
             this.Grid.RowHeadersVisible = false;
             this.Grid.Size = new System.Drawing.Size(380, 227);
             this.Grid.TabIndex = 25;
-            this.Grid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnEndEdit);
+            this.Grid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
             // 
             // panel1
             // 

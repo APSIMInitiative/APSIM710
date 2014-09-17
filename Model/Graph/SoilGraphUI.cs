@@ -168,7 +168,7 @@ namespace Graph
         /// </summary>
         override public void OnSave()
         {
-            if (UserHasChangedProperties)
+            if (UserHasChangedProperties && Data != null)
             {
                 // Strip out any LL series.
                 for (int i = Chart.Series.Count - 1; i >= 0; i--)

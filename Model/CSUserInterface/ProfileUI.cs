@@ -444,55 +444,58 @@ namespace CSUserInterface
         /// <summary>
         /// User has finished editing a cell. Update PAWC column or total in header if necessary.
         /// </summary>
-        private void OnEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            try
+            if (e.RowIndex >= 0)
             {
-                if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
+                try
                 {
-                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
-                    Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-
-                    // Update all PAWC columns.
-                    foreach (DataGridViewColumn Column in Grid.Columns)
+                    if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
                     {
-                        if (Column.HeaderText.Contains("PAWC"))
-                            UpdatePAWCColumn(Column);
-                    }
-                }
-                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
-                {
-                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
-                    string CropName = CropNameFromColumn(e.ColumnIndex);
-                    Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                    UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
-                }
-                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
-                {
-                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
-                    string CropName = CropNameFromColumn(e.ColumnIndex);
-                    Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                    UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
-                }
-                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
-                {
-                    Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
-                    string CropName = CropNameFromColumn(e.ColumnIndex);
-                    Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
-                    UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
-                }
-                else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("NO3") ||
-                         Grid.Columns[e.ColumnIndex].HeaderText.Contains("NH4"))
-                    UpdateTotal(Grid.Columns[e.ColumnIndex]);
+                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
 
-                if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
-                    Graph.Populate(Soil, OurComponent.Type);
-                else
-                    Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                        // Update all PAWC columns.
+                        foreach (DataGridViewColumn Column in Grid.Columns)
+                        {
+                            if (Column.HeaderText.Contains("PAWC"))
+                                UpdatePAWCColumn(Column);
+                        }
+                    }
+                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
+                    {
+                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        string CropName = CropNameFromColumn(e.ColumnIndex);
+                        Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                        UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
+                    }
+                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
+                    {
+                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        string CropName = CropNameFromColumn(e.ColumnIndex);
+                        Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                        UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
+                    }
+                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
+                    {
+                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        string CropName = CropNameFromColumn(e.ColumnIndex);
+                        Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                        UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
+                    }
+                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("NO3") ||
+                             Grid.Columns[e.ColumnIndex].HeaderText.Contains("NH4"))
+                        UpdateTotal(Grid.Columns[e.ColumnIndex]);
+
+                    if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
+                        Graph.Populate(Soil, OurComponent.Type);
+                    else
+                        Graph.Populate(Grid.ToTable(), OurComponent.Type, Soil);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -553,7 +556,7 @@ namespace CSUserInterface
                 string headerText = Col.HeaderText;
                 string units = "(" + StringManip.SplitOffBracketedValue(ref headerText, '(', ')') + ")";
                 int Pos = Col.HeaderText.IndexOf("\n");
-                Col.HeaderText = Col.HeaderText.Substring(0, Pos + 1) + Total.ToString("f1") + " " + units;
+                Col.HeaderText = Col.HeaderText.Substring(0, Pos + 1) + (double.IsNaN(Total) ? string.Empty : Total.ToString("f1")) + " " + units;
                 Col.HeaderCell.Style.ForeColor = Color.Red;
             }
         }
