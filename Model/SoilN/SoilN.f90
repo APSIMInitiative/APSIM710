@@ -186,7 +186,8 @@ module Soiln2Module
       real         dlt_NO3_net(max_layer) ! net NO3 change today
       real         dlt_NH4_net(max_layer) ! net NH4 change today
 
-      ! PROFILE
+      ! PROFILE    
+      real         sw_lim_dep(max_layer)  !sv- denitrifcation variable added for henrike
       real         bd(max_layer)          ! moist bulk density of soil (g/cm^3)
       real         dlayer(max_layer)      ! thickness of soil layer  (mm)
       real         dul_dep(max_layer)     ! drained upper limit soil water content
@@ -214,7 +215,7 @@ module Soiln2Module
                                           !    (kg/ha)      
       real       dlt_urea_hydrol(max_layer) ! nitrogen moved by hydrolysis (kg/ha)
       real       excess_nh4(max_layer)      ! excess N required above NH4 supply
-
+      
       real DailyInitialC
 	  real DailyInitialN
       real oldC
@@ -291,6 +292,10 @@ module Soiln2Module
       integer      num_dnit_wfps
       real         dnit_nitrf_loss        ! fraction of nitrification lost as denitrification (0-1)
 
+      real         wfps_lim                !sv- added for henrike. 
+      logical      wfps_lim_exists
+      
+      
       ! MINERALISATION CONSTANTS
       real         ef_biom                ! fraction of biomass C mineralized
                                           ! retained in system (0-1)
@@ -317,6 +322,8 @@ module Soiln2Module
       real         rd_hum(2)              ! potential rate of humus
                                           ! mineralization (per day)
       real      fraction_urine_added
+     
+      
    end type Soiln2Constants
 ! ====================================================================
    type IDsType
@@ -684,6 +691,18 @@ subroutine soiln2_read_param ()
       g%urea(layer) = divide (ureappm(layer), soiln2_fac (layer), 0.0)
    end do
 
+   
+    call read_real_var_optional (section_name, 'WFPS_lim', '(0-1)', c%wfps_lim, numvals, 0.0, 1.0)
+   if (numvals .eq. 0) then
+       c%wfps_lim_exists = .false.
+   else
+       c%wfps_lim_exists = .true.
+       write(*,*) 'WFPS_lim :', c%wfps_lim
+   endif    
+
+    
+   
+   
    call pop_routine (my_name)
    return
 end subroutine
@@ -1418,6 +1437,7 @@ subroutine soiln2_send_my_variable (variable_name)
 
       call respond2get_real_array (variable_name,'(kg/ha)', fom_n_pool3, num_layers)
 
+
    elseif (variable_name .eq. 'hum_n') then
    !                           -----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
@@ -1442,7 +1462,8 @@ subroutine soiln2_send_my_variable (variable_name)
       end do
       call respond2get_real_array (variable_name,'(kg/ha)', temp, num_layers)
 
-elseif (variable_name .eq. 'fom_c') then
+
+   elseif (variable_name .eq. 'fom_c') then
    !                           -----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call fill_real_array (fom_c, 0.0, max_layer)
@@ -1643,6 +1664,12 @@ elseif (variable_name .eq. 'fom_c') then
       temp = g%dlt_NO3_dnit(1:num_layers)+g%dlt_NH4_dnit(1:num_layers)
       call respond2get_real_array (variable_name,'(kg/ha)', temp, num_layers)
 
+   elseif (variable_name .eq. 'sw_lim_dep') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      temp = g%sw_lim_dep(1:num_layers)/g%dlayer(1:num_layers)
+      call respond2get_real_array (variable_name,'(mm/mm)', temp, num_layers)   
+      
    elseif (variable_name .eq. 'n2o_atm') then
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
@@ -4065,7 +4092,11 @@ subroutine soiln2_denitrification (layer, dlt_n_atm, n2o_atm)
       active_c = 0.0031*(fom_c_conc + hum_c_conc) + 24.5
 
       ! Get water factor (0-1)
-      wf = soiln2_wf_denit (layer)
+      if (c%wfps_lim_exists .eqv. .false.) then
+          wf = soiln2_wf_denit (layer)
+      else
+          wf = soiln2_wf_denit_wfps_lim(layer)
+      endif
 
       ! get temperature factor from soil temperature (0-1)
       ! This is an empirical dimensionless function to account for
@@ -4213,6 +4244,58 @@ real function soiln2_wf_denit (layer)
    call pop_routine (my_name)
    return
 end function
+
+
+!     ===========================================================
+real function soiln2_wf_denit_wfps_lim (layer)
+!     ===========================================================
+
+   implicit none
+
+!+  Sub-Program Arguments
+   integer    layer                 ! (INPUT) layer number
+
+!+  Purpose
+!       Calculates a 0-1 water factor for denitrification
+
+!+  Assumptions
+!       1 < layer < num_layers
+
+!+  Mission Statement
+!     Water factor for denitrification in %1
+
+!+  Constant Values
+   character  my_name*(*)           ! name of subroutine
+   parameter (my_name = 'soiln2_wf_denit_wfps_lim')
+
+!+  Local Variables
+   real       wfd                   ! temporary water factor (0-1)
+   real       sw_lim_dep
+
+!- Implementation Section ----------------------------------
+
+   call push_routine (my_name)
+
+   !sv- calculate the limit 
+   g%sw_lim_dep(layer) = c%wfps_lim * g%sat_dep(layer)
+   
+   if (g%sw_dep(layer).gt.sw_lim_dep) then
+
+     ! saturated
+      wfd = divide (g%sw_dep(layer) - g%sw_lim_dep(layer), g%sat_dep(layer) - g%sw_lim_dep(layer), 0.0)**c%dnit_wf_power
+      write (*,*) , 'dnit wf power: ' ,  wfd
+   else
+
+     ! unsaturated
+      wfd = 0
+   endif
+
+   soiln2_wf_denit_wfps_lim = bound (wfd, 0.0, 1.0)
+
+   call pop_routine (my_name)
+   return
+end function
+
 
 
 
