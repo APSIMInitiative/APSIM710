@@ -74,6 +74,7 @@ module Registrations
       dummy = add_reg(respondToGetReg, 'infiltration', doubleTypeDDML, 'mm', 'Water infiltration amount')
       dummy = add_reg(respondToGetReg, 'es', doubleTypeDDML, 'mm', 'Water evaporation amount')
       dummy = add_reg(respondToGetReg, 'eos', doubleTypeDDML, 'mm', 'Potential daily evaporation')
+      dummy = add_reg(respondToGetReg, 'bypass', doubleTypeDDML, 'mm', 'Bypass flow amount')
       dummy = add_reg(respondToGetReg, 'drain', doubleTypeDDML, 'mm', 'Drainage amount at bottom of soil profile')
       dummy = add_reg(respondToGetReg, 'eo', doubleTypeDDML, 'mm', 'Potential daily evapotranspiration')
       dummy = add_reg(respondToGetReg, 'psix', doublearrayTypeDDML, 'cm', 'Xylem water potential')

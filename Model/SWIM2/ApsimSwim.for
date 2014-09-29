@@ -131,6 +131,7 @@
          double precision TD_rain
          double precision TD_evap
          double precision TD_pevap
+         double precision TD_bypass
          double precision TD_drain
          double precision TD_subsurface_drain
          double precision TD_soldrain(nsol)
@@ -1782,6 +1783,11 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            Variable_name,
      :            '(mm)',
      :            g%TD_pevap)
+      else if (Variable_name .eq. 'bypass') then
+         call respond2Get_double_var (
+     :            Variable_name,
+     :            '(mm)',
+     :            g%TD_bypass)
       else if (Variable_name .eq. 'drain') then
          call respond2Get_double_var (
      :            Variable_name,
@@ -3732,6 +3738,7 @@ cRC   lines for g%th and g%csl added by RCichota, 09/02/2010
 *              update variables
                g%TD_runoff = g%TD_runoff + g%roff*g%dt*10d0
                g%TD_evap   = g%TD_evap   + g%res*g%dt*10d0
+               g%TD_bypass = g%TD_bypass + g%qbp*g%dt*10d0
                g%TD_drain  = g%TD_drain  + g%q(p%n+1)*g%dt*10d0
                g%TD_rain   = g%TD_rain   + g%ron*g%dt*10d0
                g%TD_pevap  = g%TD_pevap  + g%resp*g%dt*10d0
@@ -4279,6 +4286,7 @@ cnh     :       p%x(layer), p%soil_type(layer), g%th(layer),g%psi(layer)*1000.,
       g%TD_rain    = 0.0
       g%TD_evap    = 0.0
       g%TD_pevap   = 0.0
+      g%TD_bypass  = 0.0
       g%TD_drain   = 0.0
       g%TD_subsurface_drain   = 0.0
       g%TD_slssof(:) = 0d0

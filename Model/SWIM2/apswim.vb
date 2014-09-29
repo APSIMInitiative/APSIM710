@@ -92,6 +92,7 @@ Dim td_runoff as double
 Dim td_rain as double
 Dim td_evap as double
 Dim td_pevap as double
+Dim td_bypass as double
 Dim td_drain as double
 Dim td_subsurface_drain as double
 Dim td_soldrain(nsol) as double
