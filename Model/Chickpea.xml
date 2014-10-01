@@ -1,6 +1,6 @@
 <Type name="chickpea">
   <MetaData>
-    <UItype>CSUserInterface.EmptyUI</UItype>
+    <UItype>CSUserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\Chickpea.jpg</Image>
@@ -22,7 +22,7 @@
         <executable name="[dll]" version="1.0" />
         <initdata>
                [Model]
-               <ModifyKL>[ChickPea.ModifyKL]</ModifyKL>
+               <ModifyKL>no</ModifyKL>
                <MaxRootDepth>[ChickPea.MaxRootDepth]</MaxRootDepth>
                <ll>[soil.[InstanceName] ll]</ll>
                <kl>[soil.[InstanceName] kl]</kl>
@@ -572,6 +572,19 @@
       <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
       <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
       <tt_harvest_ripe units="oCd">1.0</tt_harvest_ripe>
+      
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION - Root KL modifiers:
+         Hochman et. al. (2007) Simulating the effects of saline and sodic subsoils on wheat
+         crops growing on Vertosols. Australian Journal of Agricultural Research, 58, 802:810
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      -->
+      <ClA>4.0</ClA>
+      <ClB>-0.005</ClB>
+      <ESPA>10.0</ESPA>
+      <ESPB>-0.15</ESPB>
+      <ECA>3.0</ECA>
+      <ECB>-1.3</ECB>      
     </plant>
     <!-- ***********************************************************************************************************
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES
