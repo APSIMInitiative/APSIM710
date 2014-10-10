@@ -4625,45 +4625,57 @@ public class AgPasture
 
 	[Output]
 	[Description("Gross primary productivity")]
-	[Units("kgDM/ha")]
+	[Units("kgC/ha")]
 	public double GPP
 	{
 		get
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result = SP[s].Pgross * 2.5;   // assume 40% C in DM
+				result += SP[s].Pgross;
 			return result;
 		}
 	}
 	[Output]
 	[Description("Net primary productivity")]
-	[Units("kgDM/ha")]
+	[Units("kgC/ha")]
 	public double NPP
 	{
 		get
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result = SP[s].Pgross * 0.75 + SP[s].Resp_m;
-			result *= 2.5;   // assume 40% C in DM
+				result += SP[s].Pgross * 0.75 - SP[s].Resp_m;
 			return result;
 		}
 	}
 	[Output]
 	[Description("Net above-ground primary productivity")]
-	[Units("kgDM/ha")]
+	[Units("kgC/ha")]
 	public double NAPP
 	{
 		get
 		{
 			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				result = SP[s].Pgross * SP[s].fShoot * 0.75 + SP[s].Resp_m;
-					result /= 2.5;   // assume 40% C in DM
+				result += (SP[s].Pgross * SP[s].growthEfficiency - SP[s].Resp_m) * SP[s].fShoot;
 			return result;
 		}
 	}
+
+    [Output]
+    [Description("Net below-ground primary productivity")]
+    [Units("kgC/ha")]
+    public double NBPP
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < Nspecies; s++)
+                result += (SP[s].Pgross * SP[s].growthEfficiency - SP[s].Resp_m) * (1.0 - SP[s].fShoot);
+            return result;
+        }
+    }
 
 	#endregion
 	//=================================================================
