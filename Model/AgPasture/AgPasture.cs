@@ -1693,7 +1693,6 @@ public class AgPasture
 	[EventHandler]
 	public void OnGraze(GrazeType GZ)
 	{
-		Console.WriteLine("Agpasture.ongraze");
 		if ((!p_Live) || p_totalDM == 0)
 			return;
 
@@ -1717,7 +1716,7 @@ public class AgPasture
 		}
 		else
 		{
-			Console.WriteLine("  AgPasture - Method to set amount to remove not recognized, command will be ignored");
+			Console.WriteLine("  AgPasture - Method to set amount to remove was not recognized, command will be ignored");
 		}
 		// get the actual amount to remove
 		double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
@@ -2242,8 +2241,38 @@ public class AgPasture
 	[Units("")]
 	public string Crop_type
 	{
-		get { return thisCropName; }
+        get { return thisCropName; }  // micrometType[0]
 	}
+
+    [Output]
+    [Description("Name of this crop")]
+    [Units("")]
+    public string Crop_name
+    {
+        get { return thisCropName; }
+    }
+
+    [Output]
+    [Description("Generic crop type of each species")]
+    [Units("")]
+    public string[] SpeciesCrop_type
+    {
+        get { return micrometType; }
+    }
+
+    [Output]
+    [Description("Name of each species")]
+    [Units("")]
+    public string[] Species_name
+    {
+        get
+        {
+            string[] result = new string[Nspecies];
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].speciesName;
+            return result;
+        }
+    }
 
 	[Output]
 	[Description("Plant status (dead, alive, etc)")]
@@ -2496,6 +2525,47 @@ public class AgPasture
 	[Units("g/m^2")]
 	public double stemsenescedwt { get { return StemDeadWt / 10; } }
 
+    [Output]
+    [Description("Plant potential carbon assimilation")]
+    [Units("kgC/ha")]
+    public double PlantPotentialCarbonAssimilation
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < Nspecies; s++)
+                result += SP[s].Pgross;
+            return result;
+        }
+    }
+
+    [Output]
+    [Description("Plant carbon loss by respiration")]
+    [Units("kgC/ha")]
+    public double PlantCarbonLossRespiration
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < Nspecies; s++)
+                result += SP[s].Resp_m + SP[s].Pgross * (1 - SP[s].growthEfficiency);
+            return result;
+        }
+    }
+
+    [Output]
+    [Description("Plant gross potential growth")]
+    [Units("kgDM/ha")]
+    public double PlantPotentialGrossGrowth
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < Nspecies; s++)
+                result += SP[s].Pgross * 2.5;
+            return result;
+        }
+    }
 	[Output]
 	[Description("Potential plant growth, correct for extreme temperatures")]
 	[Units("kgDM/ha")]
@@ -2526,6 +2596,13 @@ public class AgPasture
 	{
 		get { return p_dHerbage; }
 	}
+    [Output]
+    [Description("Plant effective growth (actual minus tissue turnover)")]
+    [Units("kgDM/ha")]
+    public double PlantEffectiveGrowthWt
+    {
+        get { return p_dGrowth - p_dLitter - p_dRootSen; }
+    }
 
 	[Output]
 	[Description("Dry matter amount of litter deposited onto soil surface")]
@@ -2940,7 +3017,20 @@ public class AgPasture
 	{
 		get { return p_Nfix; }
 	}
-	
+
+    [Output]
+    [Description("Amount of N from senescing tissue potentially remobilisable")]
+    [Units("kgN/ha")]
+    public double PlantRemobilisableSenescedN
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < Nspecies; s++)
+                result += SP[s].Nremob;
+            return result;
+        }
+    }
 	[Output]
 	[Description("Amount of N remobilised from senescing tissue")]
 	[Units("kgN/ha")]
@@ -3048,7 +3138,7 @@ public class AgPasture
 
 	[Output]
 	[Description("Nitrogen concentration in new growth")]
-	[Units("kgN/kgDM")]
+	[Units("-")]
 	public double PlantGrowthNconc
 	{
 		get
@@ -3164,7 +3254,7 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			if (p_dGrowth <= 0)
+			if (p_dGrowth > 0)
 				result = DMToRoots / p_dGrowth;
 			return result;
 		}
@@ -3721,10 +3811,15 @@ public class AgPasture
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
 			{
-				result[s] = SP[s].Ncstol1 * SP[s].dmstol1
-						  + SP[s].Ncstol2 * SP[s].dmstol2
-						  + SP[s].Ncstol3 * SP[s].dmstol3;
-				result[s] = result[s] / SP[s].dmstol;
+                if (SP[s].dmstol > 0)
+                {
+                    result[s] = SP[s].Ncstol1 * SP[s].dmstol1
+                          + SP[s].Ncstol2 * SP[s].dmstol2
+                          + SP[s].Ncstol3 * SP[s].dmstol3;
+                    result[s] = result[s] / SP[s].dmstol;
+                }
+                else
+                    result[s] = 0.0;
 			}
 			return result;
 		}
@@ -4179,6 +4274,45 @@ public class AgPasture
 		}
 	}
 
+    [Output]
+    [Description("Potential growth, after water stress, for each species")]
+    [Units("kgDM/ha")]
+    public double[] SpeciesPotGrowthW
+    {
+        get
+        {
+            double[] result = new double[Nspecies];
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].dGrowthW;
+            return result;
+        }
+    }
+    [Output]
+    [Description("Gross potential growth for each species")]
+    [Units("kgDM/ha")]
+    public double[] SpeciesPotGrowthGross
+    {
+        get
+        {
+            double[] result = new double[Nspecies];
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].Pgross * 2.5;
+            return result;
+        }
+    }
+    [Output]
+    [Description("Net potential growth for each species (after respiration)")]
+    [Units("kgDM/ha")]
+    public double[] SpeciesPotGrowthNet
+    {
+        get
+        {
+            double[] result = new double[Nspecies];
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].dGrowthPot;
+            return result;
+        }
+    }
 
 	[Output]
 	[Description("Actual growth for each species")]
@@ -4193,6 +4327,7 @@ public class AgPasture
 			return result;
 		}
 	}
+
 	[Output]
 	[Description("Litter amount deposited onto soil surface, for each species")]
 	[Units("kgDM/ha")]
@@ -4336,10 +4471,26 @@ public class AgPasture
 		}
 	}
 
+
+    [Output]
+    [Description("Amount of N from senescing tissue potentially remobilisable, for each species")]
+    [Units("kgN/ha")]
+    public double[] SpeciesSenescedNRemobilisable
+    {
+        get
+        {
+            double[] result = new double[SP.Length];
+            for (int s = 0; s < Nspecies; s++)
+            {
+                result[s] = SP[s].Nremob;
+            }
+            return result;
+        }
+    }
 	[Output]
 	[Description("Amount of N remobilised from senesced material, for each species")]
 	[Units("kgN/ha")]
-	public double[] SpeciesRemobilisedN
+	public double[] SpeciesSenescedNRemobilised
 	{
 		get
 		{
@@ -4352,26 +4503,11 @@ public class AgPasture
 		}
 	}
 
-	[Output]
-	[Description("Amount of luxury N remobilised, for each species")]
-	[Units("kgN/ha")]
-	public double[] SpeciesLuxuryNRemobilised
-	{
-		get
-		{
-			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nspecies; s++)
-			{
-				result[s] = SP[s].NFastRemob2 + SP[s].NFastRemob3;
-			}
-			return result;
-		}
-	}
 
 	[Output]
 	[Description("Amount of luxury N potentially remobilisable, for each species")]
 	[Units("kgN/ha")]
-	public double[] SpeciesRemobilisableLuxuryN
+	public double[] SpeciesRemobilisableNLuxury
 	{
 		get
 		{
@@ -4383,7 +4519,22 @@ public class AgPasture
 			return result;
 		}
 	}
-	
+
+    [Output]
+    [Description("Amount of luxury N remobilised, for each species")]
+    [Units("kgN/ha")]
+    public double[] SpeciesLuxuryNRemobilised
+    {
+        get
+        {
+            double[] result = new double[SP.Length];
+            for (int s = 0; s < Nspecies; s++)
+            {
+                result[s] = SP[s].NFastRemob2 + SP[s].NFastRemob3;
+            }
+            return result;
+        }
+    }
 	[Output]
 	[Description("Amount of atmospheric N fixed, for each species")]
 	[Units("kgN/ha")]
@@ -4458,7 +4609,7 @@ public class AgPasture
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < Nspecies; s++)
 			{
-				result[s] += SP[s].newGrowthN;
+				result[s] = SP[s].newGrowthN;
 			}
 			return result;
 		}
@@ -4467,7 +4618,7 @@ public class AgPasture
 	[Output]
 	[Description("Nitrogen concentration in new growth, for each species")]
 	[Units("kgN/kgDM")]
-	public double[] SpeciesGrowthNconc
+    public double[] SpeciesGrowthNconc
 	{
 		get
 		{
@@ -4475,7 +4626,7 @@ public class AgPasture
 			for (int s = 0; s < Nspecies; s++)
 			{
 				if (SP[s].dGrowth > 0)
-					result[s] += SP[s].newGrowthN / SP[s].dGrowth;
+					result[s] = SP[s].newGrowthN / SP[s].dGrowth;
 				else
 					result[s] = 0.0;
 			}
@@ -4564,8 +4715,9 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nspecies; s++)
-				result[s] = SP[s].gftemp;
+            double Tmnw = 0.75 * MetData.maxt + 0.25 * MetData.mint;  // weighted Tmean
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].GFTemperature(Tmnw);
 			return result;
 		}
 	}
@@ -4617,8 +4769,8 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[SP.Length];
-			for (int s = 0; s < Nspecies; s++)
-				result[s] = (float)SP[s].Resp_m;
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].Resp_m + SP[s].Pgross * (1.0 - SP[s].growthEfficiency);
 			return result;
 		}
 	}
