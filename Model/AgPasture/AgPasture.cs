@@ -278,7 +278,7 @@ public class AgPasture
 		}
 	}
 
-	private double[] SRL;   // mm/g
+	private double[] SRL;   // mm/g = m/kg
 	[Param]
 	[Description("Root length per dry matter weight")]
 	[Units("m/gDM")]
@@ -4936,10 +4936,10 @@ public class AgPasture
 						if (DepthTop >= p_rootFrontier)
 							result[layer] = 0.0;
 						else if (DepthTop + dlayer[layer] <= p_rootFrontier)
-							result[layer] = 1.0;
+                            result[layer] = dlayer[layer];
 						else
-							result[layer] = (p_rootFrontier - DepthTop) / dlayer[layer];
-						sumProportion += result[layer] * dlayer[layer];
+							result[layer] = p_rootFrontier - DepthTop;
+						sumProportion += result[layer];
 						DepthTop += dlayer[layer];
 					}
 					break;
@@ -4969,23 +4969,23 @@ public class AgPasture
 						if (DepthTop >= p_rootFrontier)
 							result[layer] = 0.0;
 						else if (DepthTop + dlayer[layer] <= DepthFirstStage)
-							result[layer] = 1.0;
+							result[layer] = dlayer[layer];  // 1.0
 						else
 						{
 							if (DepthTop < DepthFirstStage)
-								result[layer] = (DepthFirstStage - DepthTop) / dlayer[layer];
+                                result[layer] = (DepthFirstStage - DepthTop);   // / dlayer[layer]
 							if ((p_ExpoLinearDepthParam < 1.0) && (p_ExpoLinearCurveParam > 0.0))
 							{
 								double thisDepth = Math.Max(0.0, DepthTop - DepthFirstStage);
 								double Ftop = (thisDepth - DepthSecondStage) * Math.Pow(1 - thisDepth / DepthSecondStage, p_ExpoLinearCurveParam) / (p_ExpoLinearCurveParam + 1);
 								thisDepth = Math.Min(DepthTop + dlayer[layer] - DepthFirstStage, DepthSecondStage);
 								double Fbottom = (thisDepth - DepthSecondStage) * Math.Pow(1 - thisDepth / DepthSecondStage, p_ExpoLinearCurveParam) / (p_ExpoLinearCurveParam + 1);
-								result[layer] += Math.Max(0.0, Fbottom - Ftop) / dlayer[layer];
+                                result[layer] += Math.Max(0.0, Fbottom - Ftop);  // / dlayer[layer]
 							}
 							else if (DepthTop + dlayer[layer] <= p_rootFrontier)
-							    result[layer] += Math.Min(DepthTop + dlayer[layer], p_rootFrontier) - Math.Max(DepthTop, DepthFirstStage) / dlayer[layer];
+                                result[layer] += Math.Min(DepthTop + dlayer[layer], p_rootFrontier) - Math.Max(DepthTop, DepthFirstStage);  //  / dlayer[layer]
 						}
-						sumProportion += result[layer];
+                        sumProportion += result[layer];
 						DepthTop += dlayer[layer];
 					}
 					break;
