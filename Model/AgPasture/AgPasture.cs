@@ -303,6 +303,35 @@ public class AgPasture
 	[Units("")]
 	private double[] allocationSeasonF;
 
+    [Param]
+    [Description("Flag whether DM allocation (shoot/root) will be adjusted using latitude")]
+    [Units("")]
+    private string useLatitudeFunction = "no";
+
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining the start of period with high allocation to shoot")]
+    [Units("")]
+    private double paramALatfunction;
+
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining the maximum duration of high allocation period")]
+    [Units("")]
+    private double paramBLatfunction;
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining the variation of the period of high allocation")]
+    [Units("")]
+    private double paramCLatfunction;
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining of duration of onset phase")]
+    [Units("")]
+    private double paramDLatfunction;
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining the duration of offset phase")]
+    [Units("")]
+    private double paramELatfunction;
+
+
+
 	// this has been removed from params as it is not actually used
 	private double[] leafRate;
 	[Param]
@@ -774,6 +803,14 @@ public class AgPasture
 		SP[s].dRootDepth = (int)dRootDepth[s];
 		SP[s].maxRootDepth = (int)maxRootDepth[s];
 		SP[s].allocationSeasonF = allocationSeasonF[s];
+        SP[s].usingLatFunctionFShoot = (useLatitudeFunction == "no" ? false : true);
+        SP[s].ParamALatFunction = paramALatfunction;
+        SP[s].ParamBLatFunction = paramBLatfunction;
+        SP[s].ParamCLatFunction = paramCLatfunction;
+        SP[s].ParamDLatFunction = paramDLatfunction;
+        SP[s].ParamELatFunction = paramELatfunction;
+
+
 		SP[s].NdilutCoeff = NdilutCoeff[s];
 		SP[s].rootDepth = (int)rootDepth[s];
 		//**SP[s].rootFnType = (int)rootFnType[s];
@@ -5347,10 +5384,19 @@ public class Species
 	//**public double maxResidCover;//Maximum Residue Cover (0-1) (added to ccov to define cover)
 	public int dRootDepth;        //Daily root growth (mm)
 	public int maxRootDepth;    //Maximum root depth (mm)
-	public double allocationSeasonF; //factor for different biomass allocation among seasons
 	public double NdilutCoeff;
 	public int rootDepth;       //current root depth (mm)
 	//**public int rootFnType;        //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
+
+
+    public double allocationSeasonF; //factor for different biomass allocation among seasons
+    internal bool usingLatFunctionFShoot = false;
+    internal double ParamALatFunction = 6.4;
+    internal double ParamBLatFunction = 245;
+    internal double ParamCLatFunction = 148;
+    internal double ParamDLatFunction = 0.5;
+    internal double ParamELatFunction = 0.5;
+
 
 	public double growthTmin;   //Minimum temperature (grtmin) - originally 0
 	public double growthTmax;   //Maximum temperature (grtmax) - originally 30
@@ -6674,30 +6720,52 @@ public class Species
 		// toRoot = toRoot + 0.25*maxSRratio * Math.Sin(pd);
 
 		int doyC = 232;             // Default as in South-hemisphere
-		if (latitude > 0)           // If it is in North-hemisphere.
-			doyC = doyC - 181;
+        int[] ReproSeasonIntval = new int[] { 30, 60, 35 };
 
-		int doyF = doyC + 35;   //75
-		int doyD = doyC + 95;   // 110;
-		int doyE = doyC + 125;  // 140;
-		if (doyE > 365) doyE = doyE - 365;
+        if (usingLatFunctionFShoot)
+        {
+            doyC = (int)(Math.Abs(latitude) * ParamALatFunction);
+            ReproSeasonIntval[1] = (int)(ParamBLatFunction * Math.Exp(-doyC / ParamCLatFunction));
+            ReproSeasonIntval[0] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamDLatFunction));
+            ReproSeasonIntval[2] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamELatFunction));
+        }
+        if (latitude > 0)           // If it is in North-hemisphere.
+            doyC = doyC - 183;
 
-		if (doy > doyC)
-		{
-			if (doy <= doyF)
-				fac = minF + (1 - minF) * (doy - doyC) / (doyF - doyC);
-			else if (doy <= doyD)
-				fac = 1.0;
-			else if (doy <= doyE)
-				fac = 1 - (1 - minF) * (doy - doyD) / (doyE - doyD);
-		}
-		else
-		{
-			fac = minF;
-			if (doyE < doyC && doy <= doyE)    //only happens in south hemisphere
-				fac = 1 - (1 - minF) * (365 + doy - doyD) / (doyE - doyD);
+        //int doyF = doyC + 35;   //75
+        //int doyD = doyC + 95;   // 110;
+        //int doyE = doyC + 125;  // 140;
+        //if (doyE > 365) doyE = doyE - 365;
 
-		}
+        int doyF = doyC + ReproSeasonIntval[0];
+        int doyD = doyF + ReproSeasonIntval[1];
+        int doyE = doyD + ReproSeasonIntval[2];
+
+        int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
+
+        if (doy > doyC)
+        {
+            if (doy <= doyF)
+                fac = minF + (1 - minF) * (doy - doyC) / (doyF - doyC);
+            else if (doy <= doyD)
+                fac = 1.0;
+            else if (doy <= doyE)
+                fac = 1 - (1 - minF) * (doy - doyD) / (doyE - doyD);
+            else
+                fac = minF;
+        }
+        else
+        {
+            // check whether the high allocation period goes across the year (should only needed for southern hemisphere)
+            if ((doyD > doyEoY) && (doy <= doyD - doyEoY))
+                fac = 1.0;
+            //if (doyE < doyC && doy <= doyE)    //only happens in south hemisphere
+            //    fac = 1 - (1 - minF) * (365 + doy - doyD) / (doyE - doyD);
+            else if ((doyE > doyEoY) && (doy <= doyE - doyEoY))
+                fac = minF + (1 - minF) * (1 - (doyEoY + doy - doyD) / (doyE - doyD));
+            else
+                fac = minF;
+        }
 		maxSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root)
 		//fac = 0.8 ~ 1; i.e., maxSR = 1.0 ~ 1.25 of maxSRratio (i.e., SRratio may be 1.25 times of specified maxSRratio during reproductive stage)
 
