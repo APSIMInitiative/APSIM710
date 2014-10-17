@@ -299,8 +299,8 @@ public class AgPasture
 	[Units("")]
 	private double[] maxRootFraction;
 	[Param]
-	[Description("Factor for seasonality in growth allocation (shoot/root)")]
-	[Units("")]
+	[Description("Factor for increasing DM allocation to shoot over 'spring' (seasonality in growth allocation)")]
+	[Units("0-1")]
 	private double[] allocationSeasonF;
 
     [Param]
@@ -3022,10 +3022,10 @@ public class AgPasture
 			if (!p_Live || (StemWt + LeafWt) <= 0)
 				return 0;
 
-			double digest = 0.0;
+			double result = 0.0;
 			for (int s = 0; s < Nspecies; s++)
-				digest += SP[s].digestHerbage * (SP[s].dmstem + SP[s].dmleaf) / (StemWt + LeafWt);  //(dm_stem + dm_leaf);
-			return digest;
+				result += SP[s].digestHerbage * (SP[s].dmstem + SP[s].dmleaf) / (StemWt + LeafWt);  //(dm_stem + dm_leaf);
+			return result;
 		}
 	}
 	[Output]
@@ -3042,11 +3042,17 @@ public class AgPasture
 	{
 		get
 		{
-			double me = 16 * HerbageDigestibility * (StemWt + LeafWt);
-			return me;
+			double result = 16 * HerbageDigestibility * (StemWt + LeafWt);
+			return result;
 		}
 	}
-
+    [Output]
+    [Description("Average ME concentration of herbage")]
+    [Units("(MJ/kgDM)")]
+    public double HerbageMEconc
+    {
+        get { return 16 * HerbageDigestibility; }
+    }
 	[Output]
 	[Description("Amount of atmospheric N fixed")]
 	[Units("kgN/ha")]
@@ -4866,6 +4872,19 @@ public class AgPasture
         }
     }
 
+    [Output]
+    [Description("Fraction of DM allocated to shoot")]
+    [Units("0-1")]
+    public double[] speciesFShoot
+    {
+        get
+        {
+            double[] result = new double[Nspecies];
+            for (int s = 0; s < Nspecies; s++)
+                result[s] = SP[s].fShoot;
+            return result;
+        }
+    }
 	#endregion
 	//=================================================================
 
@@ -5388,7 +5407,6 @@ public class Species
 	public int rootDepth;       //current root depth (mm)
 	//**public int rootFnType;        //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
 
-
     public double allocationSeasonF; //factor for different biomass allocation among seasons
     internal bool usingLatFunctionFShoot = false;
     internal double ParamALatFunction = 6.4;
@@ -5636,7 +5654,6 @@ public class Species
 	{
 		dmdefoliated = 0.0;
 		Ndefoliated = 0.0;
-		digestHerbage = 0.0;
 		digestDefoliated = 0.0;
 	}
 
@@ -6284,7 +6301,7 @@ public class Species
 	//Calculate species N demand for potential growth (soilNdemand);
 	public double CalcNdemand()
 	{
-		fShoot = NewGrowthToShoot();
+        fShoot = NewGrowthToShoot();
 		double fL = UpdatefLeaf(); //to consider more dm to leaf when DM is lower?
 
 		double toRoot = dGrowthW * (1.0 - fShoot);
@@ -6698,114 +6715,94 @@ public class Species
 		return dGrowth;
 	}
 
+    private double NewGrowthToShoot()
+    {
+        //The input maxSRratio (maximum percentage allocated to roots = 20%) was converted into
+        //the real ratio (=4) at the beginning when setting specific values
+        double GFmin = Math.Min(gfwater, gfn);      //To consider other nutrients later
 
-	//Species ------------------------------------------------------------------
-	private double NewGrowthToShoot()
-	{
-		//The input maxSRratio (maximum percentage allocated to roots = 20%) was converted into
-		//the real ratio (=4) at the beginning when setting specific values
-		double GFmin = Math.Min(gfwater, gfn);      //To consider other nutrients later
-
-		//Variable maxSR - maximum shoot/root ratio accoding to phenoloty
-		double maxSR = maxSRratio;
-		// fac: Assuming the new growth partition is towards a shoot:root ratio of 'maxSR' during reproductive stage,
-		//      then the partition will be towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage
-
-		double minF = allocationSeasonF;    //default = 0.8;
-		double fac = 1.0;                   //day-to-day fraction of reduction
-		int doy = day_of_month + (int)((month - 1) * 30.5);
-
-		// double pd = 4*Math.PI* doy/365;
-		// double toRoot = 1/(1 + maxSRratio);
-		// toRoot = toRoot + 0.25*maxSRratio * Math.Sin(pd);
-
-		int doyC = 232;             // Default as in South-hemisphere
-        int[] ReproSeasonIntval = new int[] { 30, 60, 35 };
-
-        if (usingLatFunctionFShoot)
+        //Variable maxSR - maximum shoot/root ratio accoding to phenoloty
+        double targetSR = maxSRratio;
+        double newSR = targetSR;
+        // fac: Assuming the new growth partition is towards a shoot:root ratio of 'maxSR' during reproductive stage,
+        //      then the partition will be towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage
+       
+        if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
         {
-            doyC = (int)(Math.Abs(latitude) * ParamALatFunction);
-            ReproSeasonIntval[1] = (int)(ParamBLatFunction * Math.Exp(-doyC / ParamCLatFunction));
-            ReproSeasonIntval[0] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamDLatFunction));
-            ReproSeasonIntval[2] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamELatFunction));
-        }
-        if (latitude > 0)           // If it is in North-hemisphere.
-            doyC = doyC - 183;
+            double fac = 1.0;                   //day-to-day fraction of reduction
+            //double minF = allocationSeasonF;    //default = 0.8;
+            double doy = day_of_month + (int)((month - 1) * 30.5);
+            // NOTE: the type for doy has to be double or the divisions below will be rounded (to int) and thus be [slightly] wrong
 
-        //int doyF = doyC + 35;   //75
-        //int doyD = doyC + 95;   // 110;
-        //int doyE = doyC + 125;  // 140;
-        //if (doyE > 365) doyE = doyE - 365;
+            int doyC = 232;             // Default as in South-hemisphere
+            int[] ReproSeasonIntval = new int[] { 35, 60, 30 };
 
-        int doyF = doyC + ReproSeasonIntval[0];
-        int doyD = doyF + ReproSeasonIntval[1];
-        int doyE = doyD + ReproSeasonIntval[2];
+            if (usingLatFunctionFShoot)
+            {
+                doyC = (int)(Math.Abs(latitude) * ParamALatFunction);
+                ReproSeasonIntval[1] = (int)(ParamBLatFunction * Math.Exp(-doyC / ParamCLatFunction));
+                ReproSeasonIntval[0] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamDLatFunction));
+                ReproSeasonIntval[2] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamELatFunction));
+            }
+            if (latitude > 0)           // If it is in North-hemisphere.
+                doyC = doyC - 183;
 
-        int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
+            //int doyF = doyC + 35;   //75
+            //int doyD = doyC + 95;   // 110;
+            //int doyE = doyC + 125;  // 140;
+            //if (doyE > 365) doyE = doyE - 365;
 
-        if (doy > doyC)
-        {
-            if (doy <= doyF)
-                fac = minF + (1 - minF) * (doy - doyC) / (doyF - doyC);
-            else if (doy <= doyD)
-                fac = 1.0;
-            else if (doy <= doyE)
-                fac = 1 - (1 - minF) * (doy - doyD) / (doyE - doyD);
+            int doyF = doyC + ReproSeasonIntval[0];
+            int doyD = doyF + ReproSeasonIntval[1];
+            int doyE = doyD + ReproSeasonIntval[2];
+
+            int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
+
+            if (doy > doyC)
+            {
+                if (doy <= doyF)
+                    fac = 1.0 + allocationSeasonF * (doy - doyC) / (doyF - doyC);
+                else if (doy <= doyD)
+                    fac = 1.0 + allocationSeasonF;
+                else if (doy <= doyE)
+                    fac = 1 + allocationSeasonF * (1 - (doy - doyD) / (doyE - doyD));
+            }
             else
-                fac = minF;
+            {
+                // check whether the high allocation period goes across the year (should only needed for southern hemisphere)
+                if ((doyD > doyEoY) && (doy <= doyD - doyEoY))
+                    fac = 1.0 + allocationSeasonF;
+                else if ((doyE > doyEoY) && (doy <= doyE - doyEoY))
+                    fac = 1.0 + allocationSeasonF * (1 - (doyEoY + doy - doyD) / (doyE - doyD));
+            }
+            targetSR = fac * maxSRratio;
+            //targetSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root)
+            //fac = 0.8 ~ 1; i.e., maxSR = 1.0 ~ 1.25 of maxSRratio (i.e., SRratio may be 1.25 times of specified maxSRratio during reproductive stage)
+
+            //calculate shoot:root partitioning: fShoot = fraction to shoot [eq.4.12c]
+            //if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
+            //{
+            double presentSR = dmgreen / pS.dmroot;
+            //if (presentSR > targetSR) presentSR = targetSR;
+            if (presentSR > targetSR)
+                newSR = GFmin * targetSR;
+            else
+                newSR = GFmin * targetSR * targetSR / presentSR;
+
+            fShoot = newSR / (1.0 + newSR);
         }
         else
         {
-            // check whether the high allocation period goes across the year (should only needed for southern hemisphere)
-            if ((doyD > doyEoY) && (doy <= doyD - doyEoY))
-                fac = 1.0;
-            //if (doyE < doyC && doy <= doyE)    //only happens in south hemisphere
-            //    fac = 1 - (1 - minF) * (365 + doy - doyD) / (doyE - doyD);
-            else if ((doyE > doyEoY) && (doy <= doyE - doyEoY))
-                fac = minF + (1 - minF) * (1 - (doyEoY + doy - doyD) / (doyE - doyD));
-            else
-                fac = minF;
+            fShoot = 1.0;  // shouldn't this be zero??
         }
-		maxSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root)
-		//fac = 0.8 ~ 1; i.e., maxSR = 1.0 ~ 1.25 of maxSRratio (i.e., SRratio may be 1.25 times of specified maxSRratio during reproductive stage)
+        if (fShoot / (1 - fShoot) < targetSR)
+            fShoot = targetSR / (1 + targetSR);   // as the specified that the system maxSR towards to (useful under stress)
 
-		phenoFactor = fac;
-		//calculate shoot:root partitioning: fShoot = fraction to shoot [eq.4.12c]
-		if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
-		{
-			double SRratio = dmgreen / pS.dmroot;
-			if (SRratio > maxSR) SRratio = maxSR;
+        if (dmgreen < pS.dmroot)  //this may happen under stress. There may be CHTs move up too
+            fShoot = 1.0;
 
-			double param = GFmin * maxSR * maxSR / SRratio;
-			fShoot = param / (1.0 + param);
-		}
-		else
-		{
-			fShoot = 1.0;
-		}
-
-
-		/* resistance after drought
-		*
-		* if (gfwater > 0.5 && dayCounter >= 5 && sumGFW < 1)
-		{
-		fShoot = 1;
-		sumGFW = 0;
-		}
-		else
-		{
-		dayCounter++;
-		sumGFW +=gfwater;
-		}*/
-
-		if (fShoot / (1 - fShoot) < maxSR)  // Set daily minimum fraction to shoot (i.e., maximum to root)
-			fShoot = maxSR / (1 + maxSR);   // as the specified that the system maxSR towards to (useful under stress)
-
-		if (dmgreen < pS.dmroot)  //this may happen under stress. There may be CHTs move up too
-			fShoot = 1.0;
-
-		return fShoot;
-	}
+        return fShoot;
+    }
 
 	//Species -------------------------------------------------------------------
 	public float coverGreen
