@@ -309,27 +309,43 @@ public class AgPasture
     private string useLatitudeFunction = "no";
 
     [Param]
-    [Description("Parameter of LatitudeFunction, for defining the start of period with high allocation to shoot")]
-    [Units("")]
-    private double paramALatfunction;
-
+    [Description("Reference latitude, for defining period with high DM allocation to shoot")]
+    [Units("degrees")]
+    private double[] ReferenceLatitude;
     [Param]
-    [Description("Parameter of LatitudeFunction, for defining the maximum duration of high allocation period")]
-    [Units("")]
-    private double paramBLatfunction;
+    [Description("Parameter of LatitudeFunction, for defining the start of period with high allocation to shoot")]
+    [Units("days/degree")]
+    private double[] paramALatfunction;
+    [Param]
+    [Description("Parameter of LatitudeFunction, asymptote for defining start of high allocation period")]
+    [Units("days")]
+    private double[] paramBLatfunction;
+
     [Param]
     [Description("Parameter of LatitudeFunction, for defining the variation of the period of high allocation")]
-    [Units("")]
-    private double paramCLatfunction;
+    [Units("days")]
+    private double[] paramCLatfunction;
     [Param]
     [Description("Parameter of LatitudeFunction, for defining of duration of onset phase")]
-    [Units("")]
-    private double paramDLatfunction;
+    [Units("0-1")]
+    private double[] paramDLatfunction;
     [Param]
     [Description("Parameter of LatitudeFunction, for defining the duration of offset phase")]
-    [Units("")]
-    private double paramELatfunction;
+    [Units("0-1")]
+    private double[] paramELatfunction;
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining the maximum duration of shoulder periods")]
+    [Units("days")]
+    private double[] paramFLatfunction;
 
+    [Param]
+    [Description("Latitude where maximum DM allocation to shoot is reached")]
+    [Units("degrees")]
+    private double[] Latitude4Max;
+    [Param]
+    [Description("Maximum increase in DM allocation to shoot at 'spring' period")]
+    [Units("0-1")]
+    private double[] allocationMax;
 
 
 	// this has been removed from params as it is not actually used
@@ -804,11 +820,15 @@ public class AgPasture
 		SP[s].maxRootDepth = (int)maxRootDepth[s];
 		SP[s].allocationSeasonF = allocationSeasonF[s];
         SP[s].usingLatFunctionFShoot = (useLatitudeFunction == "no" ? false : true);
-        SP[s].ParamALatFunction = paramALatfunction;
-        SP[s].ParamBLatFunction = paramBLatfunction;
-        SP[s].ParamCLatFunction = paramCLatfunction;
-        SP[s].ParamDLatFunction = paramDLatfunction;
-        SP[s].ParamELatFunction = paramELatfunction;
+        SP[s].ReferenceLatitude = ReferenceLatitude[s];
+        SP[s].ParamALatFunction = paramALatfunction[s];
+        SP[s].ParamBLatFunction = paramBLatfunction[s];
+        SP[s].ParamCLatFunction = paramCLatfunction[s];
+        SP[s].ParamDLatFunction = paramDLatfunction[s];
+        SP[s].ParamELatFunction = paramELatfunction[s];
+        SP[s].ParamFLatFunction = paramFLatfunction[s];
+        SP[s].Latitude4Max = Latitude4Max[s];
+        SP[s].allocationMax = allocationMax[s];
 
 
 		SP[s].NdilutCoeff = NdilutCoeff[s];
@@ -5409,12 +5429,15 @@ public class Species
 
     public double allocationSeasonF; //factor for different biomass allocation among seasons
     internal bool usingLatFunctionFShoot = false;
+    internal double ReferenceLatitude = 45;
     internal double ParamALatFunction = 6.4;
-    internal double ParamBLatFunction = 245;
+    internal double ParamBLatFunction = 365;
     internal double ParamCLatFunction = 148;
     internal double ParamDLatFunction = 0.5;
     internal double ParamELatFunction = 0.5;
-
+    internal double ParamFLatFunction = 60;
+    internal double Latitude4Max = 70;
+    internal double allocationMax = 0.4;
 
 	public double growthTmin;   //Minimum temperature (grtmin) - originally 0
 	public double growthTmax;   //Maximum temperature (grtmax) - originally 30
@@ -6734,17 +6757,38 @@ public class Species
             double doy = day_of_month + (int)((month - 1) * 30.5);
             // NOTE: the type for doy has to be double or the divisions below will be rounded (to int) and thus be [slightly] wrong
 
-            int doyC = 232;             // Default as in South-hemisphere
+            double doyC = 232;             // Default as in South-hemisphere
+            int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
             int[] ReproSeasonIntval = new int[] { 35, 60, 30 };
+            double allocationIncrease = allocationSeasonF;
 
             if (usingLatFunctionFShoot)
             {
-                doyC = (int)(Math.Abs(latitude) * ParamALatFunction);
-                ReproSeasonIntval[1] = (int)(ParamBLatFunction * Math.Exp(-doyC / ParamCLatFunction));
-                ReproSeasonIntval[0] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamDLatFunction));
-                ReproSeasonIntval[2] = Math.Min(60, (int)(ReproSeasonIntval[1] * ParamELatFunction));
+                // compute the day to start the period with higher DM allocation to shoot
+                if (latitude < ReferenceLatitude)
+                    doyC = Math.Abs(latitude) * ParamALatFunction;
+                else
+                {
+                    double myBase = ReferenceLatitude * ParamALatFunction;
+                    double myK = (ParamBLatFunction - myBase) / ParamALatFunction;
+                    doyC = myBase + (ParamBLatFunction - myBase) * (latitude - ReferenceLatitude) / (myK + latitude - ReferenceLatitude);
+                }
+
+                // compute the duration of the three phases (onset, plateau, and outset)
+                double maxPlateauPeriod = doyEoY - 2 * ParamFLatFunction;
+                ReproSeasonIntval[1] = (int)(maxPlateauPeriod * Math.Exp(-doyC / ParamCLatFunction));
+                ReproSeasonIntval[0] = (int)Math.Min(ParamFLatFunction, ReproSeasonIntval[1] * ParamDLatFunction);
+                ReproSeasonIntval[2] = (int)Math.Min(ParamFLatFunction, ReproSeasonIntval[1] * ParamELatFunction);
+                if (ReproSeasonIntval.Sum() > doyEoY)
+                    throw new Exception("Error when calculating period with high DM allocation, greater then one year");
+
+                // compute the factor to augment allocation
+                if (latitude < Latitude4Max)
+                    allocationIncrease = allocationMax * (3 - Math.Abs(latitude) / Latitude4Max) * Math.Pow(Math.Abs(latitude) / Latitude4Max, 2);
+                else
+                    allocationIncrease = allocationMax;
             }
-            if (latitude > 0)           // If it is in North-hemisphere.
+            if (latitude > 0)           // If it is in northern hemisphere.
                 doyC = doyC - 183;
 
             //int doyF = doyC + 35;   //75
@@ -6752,28 +6796,26 @@ public class Species
             //int doyE = doyC + 125;  // 140;
             //if (doyE > 365) doyE = doyE - 365;
 
-            int doyF = doyC + ReproSeasonIntval[0];
+            int doyF = (int)doyC + ReproSeasonIntval[0];
             int doyD = doyF + ReproSeasonIntval[1];
             int doyE = doyD + ReproSeasonIntval[2];
-
-            int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
 
             if (doy > doyC)
             {
                 if (doy <= doyF)
-                    fac = 1.0 + allocationSeasonF * (doy - doyC) / (doyF - doyC);
+                    fac = 1.0 + allocationIncrease * (doy - doyC) / (doyF - doyC);
                 else if (doy <= doyD)
-                    fac = 1.0 + allocationSeasonF;
+                    fac = 1.0 + allocationIncrease;
                 else if (doy <= doyE)
-                    fac = 1 + allocationSeasonF * (1 - (doy - doyD) / (doyE - doyD));
+                    fac = 1 + allocationIncrease * (1 - (doy - doyD) / (doyE - doyD));
             }
             else
             {
                 // check whether the high allocation period goes across the year (should only needed for southern hemisphere)
                 if ((doyD > doyEoY) && (doy <= doyD - doyEoY))
-                    fac = 1.0 + allocationSeasonF;
+                    fac = 1.0 + allocationIncrease;
                 else if ((doyE > doyEoY) && (doy <= doyE - doyEoY))
-                    fac = 1.0 + allocationSeasonF * (1 - (doyEoY + doy - doyD) / (doyE - doyD));
+                    fac = 1.0 + allocationIncrease * (1 - (doyEoY + doy - doyD) / (doyE - doyD));
             }
             targetSR = fac * maxSRratio;
             //targetSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root)
