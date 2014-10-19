@@ -322,21 +322,25 @@ public class AgPasture
     private double[] paramBLatfunction;
 
     [Param]
-    [Description("Parameter of LatitudeFunction, for defining the variation of the period of high allocation")]
+    [Description("Parameter of LatitudeFunction, for defining of duration of onset phase")]
     [Units("days")]
     private double[] paramCLatfunction;
     [Param]
-    [Description("Parameter of LatitudeFunction, for defining of duration of onset phase")]
+    [Description("Parameter of LatitudeFunction, for defining the duration of offset phase")]
     [Units("0-1")]
     private double[] paramDLatfunction;
     [Param]
-    [Description("Parameter of LatitudeFunction, for defining the duration of offset phase")]
+    [Description("Parameter of LatitudeFunction, for defining the maximum duration of shoulder periods")]
     [Units("0-1")]
     private double[] paramELatfunction;
     [Param]
-    [Description("Parameter of LatitudeFunction, for defining the maximum duration of shoulder periods")]
+    [Description("Parameter of LatitudeFunction, for defining the minimum period wiht high allocation")]
     [Units("days")]
     private double[] paramFLatfunction;
+    [Param]
+    [Description("Parameter of LatitudeFunction, for defining the variation high allocation period")]
+    [Units("days")]
+    private double[] paramGLatfunction;
 
     [Param]
     [Description("Latitude where maximum DM allocation to shoot is reached")]
@@ -827,6 +831,7 @@ public class AgPasture
         SP[s].ParamDLatFunction = paramDLatfunction[s];
         SP[s].ParamELatFunction = paramELatfunction[s];
         SP[s].ParamFLatFunction = paramFLatfunction[s];
+        SP[s].ParamGLatFunction = paramGLatfunction[s];
         SP[s].Latitude4Max = Latitude4Max[s];
         SP[s].allocationMax = allocationMax[s];
 
@@ -5432,10 +5437,11 @@ public class Species
     internal double ReferenceLatitude = 45;
     internal double ParamALatFunction = 6.4;
     internal double ParamBLatFunction = 365;
-    internal double ParamCLatFunction = 148;
+    internal double ParamCLatFunction = 0.5;
     internal double ParamDLatFunction = 0.5;
-    internal double ParamELatFunction = 0.5;
-    internal double ParamFLatFunction = 60;
+    internal double ParamELatFunction = 60;
+    internal double ParamFLatFunction = 15;
+    internal double ParamGLatFunction = 2.75;
     internal double Latitude4Max = 70;
     internal double allocationMax = 0.4;
 
@@ -6765,26 +6771,26 @@ public class Species
             if (usingLatFunctionFShoot)
             {
                 // compute the day to start the period with higher DM allocation to shoot
-                if (latitude < ReferenceLatitude)
+                if (Math.Abs(latitude) < ReferenceLatitude)
                     doyC = Math.Abs(latitude) * ParamALatFunction;
                 else
                 {
                     double myBase = ReferenceLatitude * ParamALatFunction;
                     double myK = (ParamBLatFunction - myBase) / ParamALatFunction;
-                    doyC = myBase + (ParamBLatFunction - myBase) * (latitude - ReferenceLatitude) / (myK + latitude - ReferenceLatitude);
+                    doyC = myBase + (ParamBLatFunction - myBase) * (Math.Abs(latitude) - ReferenceLatitude) / (myK + Math.Abs(latitude) - ReferenceLatitude);
                 }
 
                 // compute the duration of the three phases (onset, plateau, and outset)
-                double maxPlateauPeriod = doyEoY - 2 * ParamFLatFunction;
-                ReproSeasonIntval[1] = (int)(maxPlateauPeriod * Math.Exp(-doyC / ParamCLatFunction));
-                ReproSeasonIntval[0] = (int)Math.Min(ParamFLatFunction, ReproSeasonIntval[1] * ParamDLatFunction);
-                ReproSeasonIntval[2] = (int)Math.Min(ParamFLatFunction, ReproSeasonIntval[1] * ParamELatFunction);
+                double maxPlateauPeriod = doyEoY - 2 * ParamELatFunction;
+                ReproSeasonIntval[1] = (int)(ParamFLatFunction + (maxPlateauPeriod - ParamFLatFunction) * Math.Pow(1 - Math.Abs(latitude) / 90, ParamGLatFunction));
+                ReproSeasonIntval[0] = (int)Math.Min(ParamELatFunction, ReproSeasonIntval[1] * ParamCLatFunction);
+                ReproSeasonIntval[2] = (int)Math.Min(ParamELatFunction, ReproSeasonIntval[1] * ParamDLatFunction);
                 if (ReproSeasonIntval.Sum() > doyEoY)
                     throw new Exception("Error when calculating period with high DM allocation, greater then one year");
 
                 // compute the factor to augment allocation
-                if (latitude < Latitude4Max)
-                    allocationIncrease = allocationMax * (3 - Math.Abs(latitude) / Latitude4Max) * Math.Pow(Math.Abs(latitude) / Latitude4Max, 2);
+                if (Math.Abs(latitude) < Latitude4Max)
+                    allocationIncrease = allocationMax * (3 - 2 * Math.Abs(latitude) / Latitude4Max) * Math.Pow(Math.Abs(latitude) / Latitude4Max, 2);
                 else
                     allocationIncrease = allocationMax;
             }
