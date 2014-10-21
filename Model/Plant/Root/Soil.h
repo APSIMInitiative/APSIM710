@@ -74,34 +74,24 @@ class Soil
 
       void doWaterUptakeExternal (string uptake_source, string crop_type);
 
-      void crop_check_sw(float minsw, float *dlayer, float *dul_dep, float *sw_dep);
+      void crop_check_sw();
+      void crop_check_sw_params();
 
-
-
-
-
-
+      float air_dry_dep[max_layer];
       float ll15_dep[max_layer];
       float sat_dep[max_layer];
       float bd[max_layer];
-
-
-
-
+      
       float sw_avail[max_layer];                        // actual extractable soil water (mm)
-
 
       float no3gsm_mflow_avail[max_layer];              // potential NO3 (supply) from soil (g/m^2) by mass flow
       float no3gsm_diffn_pot[max_layer];                // potential NO3 (supply) from soil (g/m^2), by diffusion
 
-
       float nh4gsm_mflow_avail[max_layer];              // potential NH4 (supply) from soil (g/m^2) by mass flow
       float nh4gsm_diffn_pot[max_layer];                // potential NH4 (supply) from soil (g/m^2), by diffusion
 
-
       int find_layer_no(float,const vector<float>&);
       int find_layer_no(float, float *, int);
-
 
       float sw_lb;                                      // lower limit of soilwater  (mm/mm)
       float sw_ub;                                      // upper limit of soilwater  (mm/mm)

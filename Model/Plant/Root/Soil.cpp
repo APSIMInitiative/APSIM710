@@ -27,6 +27,7 @@ void Soil::kl_setter(const std::vector<float> values) {
 void Soil::ll_dep_setter(const std::vector<float> values) {
  for (unsigned i = 0; i < min(values.size(), ll_dep.size()); i++)
       ll_dep[i] = values[i];
+ crop_check_sw_params();
 }
 
 void Soil::onInit1(protocol::Component *)
@@ -151,6 +152,7 @@ void Soil::Read(void)
       scienceAPI.read("ECA", ECA, -100.0f, 100.0f);
       scienceAPI.read("ECB", ECB, -100.0f, 100.0f);
       }
+   crop_check_sw_params();
    }
 
 void Soil::onNewProfile(protocol::NewProfileType &v)
@@ -178,6 +180,10 @@ void Soil::onNewProfile(protocol::NewProfileType &v)
     scratch = v.sat_dep;
     for (unsigned i = 0; i < scratch.size(); i++)
       sat_dep[i] = scratch[i];
+
+    scratch = v.air_dry_dep;
+    for (unsigned i = 0; i < scratch.size(); i++)
+      air_dry_dep[i] = scratch[i];
 
 //    scratch = v.sw_dep;
 //    for (unsigned i = 0; i < scratch.size(); i++)
@@ -230,6 +236,7 @@ void Soil::zero(void)
       fill_real_array (ll15_dep , 0.0, max_layer);
       fill_real_array (dul_dep , 0.0, max_layer);
       fill_real_array (sat_dep , 0.0, max_layer);
+      fill_real_array (air_dry_dep , 0.0, max_layer);
       fill_real_array (bd , 0.0, max_layer);
       fill_real_array (no3gsm , 0.0, max_layer);
       fill_real_array (nh4gsm , 0.0, max_layer);
@@ -445,7 +452,7 @@ void Soil::doWaterSupply (float root_depth)
 // Calculate today's daily water supply from this root system
 // based on the KL approach
    {
-   crop_check_sw(sw_lb, dlayer, dul_dep, sw_dep);
+   crop_check_sw();
 
    // potential extractable sw
    doPotentialExtractableSW(root_depth);
@@ -457,82 +464,97 @@ void Soil::doWaterSupply (float root_depth)
    }
 
 //=========================================================================
-void Soil::crop_check_sw(
-                   float minsw,    // (INPUT)  lowest acceptable value for ll
-                   float *dlayer,   // (INPUT)  thickness of soil layer I (mm)
-                   float *dul_dep,  // (INPUT)  drained upper limit soil water content for soil layer L (mm water)
-                   float *sw_dep)   // (INPUT)  soil water content of layer L (mm)
+void Soil::crop_check_sw()
+{
+    char err_msg[120];          // error message
+    int num_layers = count_of_real_vals (dlayer, max_layer);  //XX index_of_real_vals
+    for (int layer = 0; layer <= num_layers; layer++)
+    {
+        float sw = (float)divide (sw_dep[layer], dlayer[layer], 0.0);
+        if (sw < sw_lb)
+        {
+            sprintf(err_msg,
+                " Soil water of %8.2f in layer %d is below acceptable value of %8.2f",
+                sw, layer, sw_lb);
+            scienceAPI.warning(err_msg);
+        }
+    }
+}
 
-//=========================================================================
-/*  Purpose
-*       Check validity of soil water parameters for all soil profile layers.
-*
-*  Mission Statement
-*       Check validity of soil water parameters for all soil profile layers.
-*
-*  Notes
-*           Reports an error if
-*           - ll_dep and dul_dep are not in ascending order
-*           - ll is below c_minsw
-*           - sw < c_minsw
-*
-*  Changes
-*     21/5/2003 ad converted to BC++
-*     010994 jngh specified and programmed
-*     970216 slw generalised to avoid common blocks
-*/
-   {
-   //  Local Variables
-   float dul;              // drained upper limit water content of layer (mm water/mm soil)
-   char err_msg[120];          // error message
-   int layer;              // layer number
-   float ll;               // lower limit water content of layer (mm water/mm soil)
-   float sw;               // soil water content of layer l (mm water/mm soil)
-   int num_layers;
-   // Implementation Section ----------------------------------
+void Soil::crop_check_sw_params()
+    //=========================================================================
+    /*  Purpose
+    *       Check validity of soil water parameters for all soil profile layers.
+    *
+    *  Mission Statement
+    *       Check validity of soil water parameters for all soil profile layers.
+    *
+    *  Notes
+    *           Reports an error if
+    *           - ll_dep and dul_dep are not in ascending order
+    *           - ll is below c_minsw
+    *           - ll is below ll_15
+    *
+    *          Fatal error if
+    *           - ll is below air_dry
+    *
+    *  Changes
+    *     21/5/2003 ad converted to BC++
+    *     010994 jngh specified and programmed
+    *     970216 slw generalised to avoid common blocks
+    *     141003 ejz added tests against air_dry and ll15; separated checks of parameters from check of current sw
+    */
+{
+    //  Local Variables
+    float dul;              // drained upper limit water content of layer (mm water/mm soil)
+    char err_msg[120];          // error message
+    int layer;              // layer number
+    float ll;               // lower limit water content of layer (mm water/mm soil)
+    float sw;               // soil water content of layer l (mm water/mm soil)
+    int num_layers;
+    // Implementation Section ----------------------------------
 
-   num_layers = count_of_real_vals (dlayer, max_layer);  //XX index_of_real_vals
-   for(layer = 0; layer <= num_layers; layer++)
-      {
-      sw = (float)divide (sw_dep[layer], dlayer[layer], 0.0);
-      dul = (float)divide (dul_dep[layer], dlayer[layer], 0.0);
-      ll = (float)divide (ll_dep[layer], dlayer[layer], 0.0);
+    float epsilon = 100.0 * numeric_limits<float>::epsilon();
+    num_layers = count_of_real_vals (dlayer, max_layer);  //XX index_of_real_vals
+    for(layer = 0; layer <= num_layers; layer++)
+    {
+        sw = (float)divide (sw_dep[layer], dlayer[layer], 0.0);
+        dul = (float)divide (dul_dep[layer], dlayer[layer], 0.0);
+        ll = (float)divide (ll_dep[layer], dlayer[layer], 0.0);
 
-      if (ll < minsw)
-         {
-         sprintf(err_msg,
-            " lower limit of %8.2f in layer %d\n         is below acceptable value of %8.2f",
-            ll, layer, minsw);
-         scienceAPI.warning(err_msg);
-         }
-      else
-         {
-         }
+        if (ll + epsilon < sw_lb)
+        {
+            sprintf(err_msg,
+                " lower limit of %8.2f in layer %d is below acceptable value of %8.2f",
+                ll, layer, sw_lb);
+            scienceAPI.warning(err_msg);
+        }
 
-      if (dul < ll)
-         {
+        if (ll_dep[layer] + epsilon < air_dry_dep[layer])
+        {
+            sprintf(err_msg,
+                "The lower limit of %8.2f in layer %d is below the air_dry value of %8.2f",
+                ll, layer, divide (air_dry_dep[layer], dlayer[layer], 0.0));
+            throw std::runtime_error(err_msg); // this one is fatal
+        }
 
-         sprintf(err_msg,
-            " Drained upper limit of %8.2f in layer %d\n         is at or below lower limit of %8.2f",
-            dul,layer, ll);
-         scienceAPI.warning(err_msg);
-         }
-      else
-         {
-         }
-      if (sw < minsw)
-         {
-         sprintf(err_msg,
-            " Soil water of %8.2f in layer %d\n         is below acceptable value of %8.2f",
-            sw, layer, minsw);
-         scienceAPI.warning(err_msg);
-         }
-      else
-         {
-         }
-      }
+        if (ll_dep[layer] + epsilon < ll15_dep[layer])
+        {
+            sprintf(err_msg,
+                " lower limit of %8.2f in layer %d is below the -15 bar value of %8.2f",
+                ll, layer, divide(ll15_dep[layer], dlayer[layer], 0.0));
+            scienceAPI.warning(err_msg);
+        }
 
-   }
+        if (dul + epsilon < ll)
+        {
+            sprintf(err_msg,
+                " Drained upper limit of %8.2f in layer %d is at or below lower limit of %8.2f",
+                dul,layer, ll);
+            scienceAPI.warning(err_msg);
+        }
+    }
+}
 
 void Soil::doWaterUptakeExternal (string uptake_source, string crop_type)
 //=======================================================================================
