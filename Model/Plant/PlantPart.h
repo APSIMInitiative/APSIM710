@@ -47,8 +47,8 @@ public:
    Delta& Growth;
    Delta& Detaching;
    Delta& Retranslocation;
-   Delta GreenRemoved;
-   Delta SenescedRemoved;
+   Delta& GreenRemoved;
+   Delta& SenescedRemoved;
 
    // pools
    Pool& Green;
@@ -242,7 +242,8 @@ protected:
 
       // protected constructor called by CompositePart only.
       plantPart(ScienceAPI& api, plantInterface *p, const string &name,
-                Pool& green, Pool& senesced, Delta& growth, Delta& senescing, Delta& detaching, Delta& Retranslocation);
+                Pool& green, Pool& senesced, Delta& growth, Delta& senescing, Delta& detaching, Delta& retranslocation,
+                Delta& greenRemoved, Delta& senescedRemoved);
 
     void doInit1(protocol::Component *system);
 

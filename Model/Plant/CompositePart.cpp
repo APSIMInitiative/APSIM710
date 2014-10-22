@@ -18,7 +18,10 @@ CompositePart::CompositePart(XMLNode parameters, ScienceAPI& scienceAPI, plantIn
                *new CompositeDelta (scienceAPI, "Growth", name),
                *new CompositeDelta (scienceAPI, "Senescing", name),
                *new CompositeDelta (scienceAPI, "Detaching", name),
-               *new CompositeDelta (scienceAPI, "Retranslocation", name))
+               *new CompositeDelta (scienceAPI, "Retranslocation", name),
+               *new CompositeDelta (scienceAPI, "GreenRemoved", name),
+               *new CompositeDelta (scienceAPI, "SenescedRemoved", name)
+               )
    {
    deleteChildren = true;
    if (doCreateParts)
@@ -164,6 +167,8 @@ void CompositePart::add(plantPart* part)
    CompositeDelta& SenescingDelta = (CompositeDelta&) Senescing;
    CompositeDelta& DetachingDelta = (CompositeDelta&) Detaching;
    CompositeDelta& RetranslocationDelta = (CompositeDelta&) Retranslocation;
+   CompositeDelta& GreenRemovedDelta = (CompositeDelta&) GreenRemoved;
+   CompositeDelta& SenescedRemovedDelta = (CompositeDelta&) SenescedRemoved;
    
    CompositePool& GrainPool = (CompositePool&) Grain;
    CompositePool& GrainTotalPool = (CompositePool&) GrainTotal;
@@ -173,6 +178,8 @@ void CompositePart::add(plantPart* part)
    SenescingDelta.Add(part->Senescing);
    DetachingDelta.Add(part->Detaching);
    RetranslocationDelta.Add(part->Retranslocation);
+   GreenRemovedDelta.Add(part->GreenRemoved);
+   SenescedRemovedDelta.Add(part->SenescedRemoved);
 
    Vegetative.AddPool(part->Vegetative);
    VegetativeTotal.AddPool(part->VegetativeTotal);

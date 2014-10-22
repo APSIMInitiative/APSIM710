@@ -8,8 +8,8 @@ plantPart::plantPart(ScienceAPI& api, plantInterface *p, const string &name)
 //=======================================================================================
      : plantThing(api, name),
        // deltas
-       GreenRemoved (api,"GreenRemoved",name),
-       SenescedRemoved (api,"SenescedRemoved",name),
+       GreenRemoved(*new Delta(api,"GreenRemoved", name)),
+       SenescedRemoved(*new Delta(api,"SenescedRemoved",name)),
 
        // pools
        Green(*new Pool(*p, api, "Green", name)),
@@ -33,12 +33,14 @@ plantPart::plantPart(ScienceAPI& api, plantInterface *p, const string &name)
      }
 
 plantPart::plantPart(ScienceAPI& api, plantInterface *p, const string &name,
-                     Pool& green, Pool& senesced, Delta& growth, Delta& senescing, Delta& detaching, Delta& retranslocation)
+                     Pool& green, Pool& senesced, Delta& growth, Delta& senescing, Delta& detaching, Delta& retranslocation,
+                     Delta& greenRemoved, Delta& senescedRemoved
+)
 //=======================================================================================
      : plantThing(api, name),
        // deltas
-       GreenRemoved (api, "GreenRemoved", name),
-       SenescedRemoved (api, "SenescedRemoved", name),
+       GreenRemoved (greenRemoved),
+       SenescedRemoved (senescedRemoved),
 
        // pools
        Green(green),
