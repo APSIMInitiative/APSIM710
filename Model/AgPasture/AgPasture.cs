@@ -55,7 +55,7 @@ public class AgPasture
 
     [Param]
     [Description("Reference leaf C assimilation during photosynthesis")]
-    [Units("gCO2/m^2/s")]
+    [Units("mgCO2/m^2/s")]
     private double[] Pm;
     [Param]
     [Description("Pgrowth/Pgross")]
@@ -74,10 +74,6 @@ public class AgPasture
 	[Description("Minimum temperature for growth")]
 	[Units("")]
 	private double[] growthTmin;
-	[Param]
-	[Description("Maximum temperature for growth")]
-	[Units("")]
-	private double[] growthTmax;
 	[Param]
 	[Description("Optimum temperature for growth")]
 	[Units("")]
@@ -99,7 +95,11 @@ public class AgPasture
 	[Description("temperature sum for recovery - sum of (25-mean)")]
 	[Units("")]
 	private double[] heatSumT;
-	[Param]
+    [Param]
+    [Description("")]
+    [Units("oC")]
+    private double[] BaseTemp4HeatStress;
+    [Param]
 	[Description("onset tempeature for cold effects")]
 	[Units("")]
 	private double[] coldOnsetT;
@@ -111,6 +111,10 @@ public class AgPasture
 	[Description("temperature sum for recovery - sum of means")]
 	[Units("")]
 	private double[] coldSumT;
+    [Param]
+    [Description("")]
+    [Units("oC")]
+    private double[] BaseTemp4ColdStress;
     [Param]
     [Description("Base CO2 content in atmosphere")]
     [Units("")]
@@ -141,6 +145,20 @@ public class AgPasture
     [Description("Factor for increasing DM allocation to shoot during reproductive growth")]
 	[Units("0-1")]
 	private double[] allocationSeasonF;
+
+    [Param]
+    [Description("")]
+	[Units("0-1")]
+	private double[] StartHighAllocation;
+    [Param]
+    [Description("")]
+	[Units("0-1")]
+	private double[] DurationHighAllocation;
+    [Param]
+    [Description("")]
+	[Units("0-1")]
+	private double[] ShoulderHighAllocation;
+
 
     [Param]
     [Description("Whether DM allocation (shoot/root) will be adjusted using latitude")]
@@ -713,19 +731,36 @@ public class AgPasture
 
 		//Create and initialise each species  -----------------------------------------------------------------------------
         // added by RCichota, Oct/2003 - check which species to run
+        
+        // check number of species
         if (NumSpecies > speciesName.Length)
             throw new Exception("Number of species to simulate is greater than the number of species for which parameters were given");
+        // check for duplicates and non-existing species
+        for (int s1 = 0; s1 < NumSpecies; s1++)
+        {
+            for (int s2 = s1+1; s2 < NumSpecies; s2++)
+                if (speciesToSimulate[s2].ToLower() == speciesToSimulate[s1].ToLower())
+                    throw new Exception("The name \"" + speciesToSimulate[s1] + "\" was given more than once. Only one is allowed");
+
+            int myCount = 0;
+            for (int s2 = 0; s2 < speciesName.Length; s2++)
+                if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
+                    myCount += 1;
+            if(myCount < 1)
+                throw new Exception("The name \"" + speciesToSimulate[s1] +"\" does not correspond to any parameterised species, check spelling");
+        }
 
         SP = new Species[NumSpecies];
         for (int s1 = 0; s1 < NumSpecies; s1++)
             for (int s2 = 0; s2 < speciesName.Length; s2++)
             {
-            if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
-            {
-                SP[s1] = new Species();
-                InitSpeciesValues(s1, s2);
+                if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
+                {
+                    SP[s1] = new Species();
+                    InitSpeciesValues(s1, s2);
+                    break;
+                }
             }
-		}
 
 		FractionToHarvest = new double[NumSpecies];
 
@@ -823,6 +858,9 @@ public class AgPasture
 
 
         SP[s1].allocationSeasonF = allocationSeasonF[s2];
+        SP[s1].startHighAllocation = StartHighAllocation[s2];
+        SP[s1].durationHighAllocation = DurationHighAllocation[s2];
+        SP[s1].shoulderHighAllocation = ShoulderHighAllocation[s2];
         SP[s1].usingLatFunctionFShoot = (useLatitudeFunction.ToLower() == "yes");
         SP[s1].referenceLatitude = ReferenceLatitude[s2];
         SP[s1].paramALatFunction = paramALatFunction[s2];
@@ -838,7 +876,6 @@ public class AgPasture
 		SP[s1].NdilutCoeff = NdilutCoeff[s2];
 		SP[s1].rootDepth = (int)rootDepth[s2];
 		SP[s1].growthTmin = growthTmin[s2];
-		SP[s1].growthTmax = growthTmax[s2];
 		SP[s1].growthTopt = growthTopt[s2];
 		SP[s1].growthTq = growthTq[s2];
 		SP[s1].massFluxTmin = massFluxTmin[s2];
@@ -848,10 +885,12 @@ public class AgPasture
 		SP[s1].heatOnsetT = heatOnsetT[s2];            //onset tempeature for heat effects
 		SP[s1].heatFullT = heatFullT[s2];            //full temperature for heat effects
 		SP[s1].heatSumT = heatSumT[s2];                //temperature sum for recovery - sum of (25-mean)
-		SP[s1].coldOnsetT = coldOnsetT[s2];           //onset tempeature for cold effects
+        SP[s1].BaseTemp4HeatStress = BaseTemp4HeatStress[s2];
+        SP[s1].coldOnsetT = coldOnsetT[s2];           //onset tempeature for cold effects
 		SP[s1].coldFullT = coldFullT[s2];            //full tempeature for cold effects
 		SP[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
-		SP[s1].Pm = Pm[s2];                            //reference leaf co2 g/m^2/s maximum
+        SP[s1].BaseTemp4ColdStress = BaseTemp4ColdStress[s2];
+        SP[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
 		SP[s1].maintRespiration = maintRespiration[s2];    //in %
 		SP[s1].growthEfficiency = growthEfficiency[s2];
 		SP[s1].specificLeafArea = specificLeafArea[s2];
@@ -5405,6 +5444,9 @@ public class Species
 	//**public int rootFnType;        //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
 
     public double allocationSeasonF; //factor for different biomass allocation among seasons
+    internal double startHighAllocation;
+    internal double durationHighAllocation;
+    internal double shoulderHighAllocation;
     internal bool usingLatFunctionFShoot = false;
     internal double referenceLatitude = 60;
     internal double paramALatFunction = 5.0;
@@ -5417,17 +5459,18 @@ public class Species
     internal double paramCLatFunction = 4.0;
 
 	public double growthTmin;   //Minimum temperature (grtmin) - originally 0
-	public double growthTmax;   //Maximum temperature (grtmax) - originally 30
 	public double growthTopt;   //Optimum temperature (grtopt) - originally 20
 	public double growthTq;        //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
 
 	public double heatOnsetT;            //onset tempeature for heat effects
 	public double heatFullT;            //full temperature for heat effects
 	public double heatSumT;            //temperature sum for recovery - sum of (25-mean)
-	public double coldOnsetT;          //onset tempeature for cold effects
+    internal double BaseTemp4HeatStress;
+    public double coldOnsetT;          //onset tempeature for cold effects
 	public double coldFullT;            //full tempeature for cold effects
 	public double coldSumT;            //temperature sum for recovery - sum of means
-	public double Pm;                    //reference leaf co2 g/m^2/s maximum
+    internal double BaseTemp4ColdStress;
+    public double Pm;                    //reference leaf co2 mg/m^2/s maximum
 	public double maintRespiration;    //in %
 	public double growthEfficiency;
 
@@ -6588,7 +6631,7 @@ public class Species
         double newSR = targetSR;
         // fac: Assuming the new growth partition is towards a shoot:root ratio of 'maxSR' during reproductive stage,
         //      then the partition will be towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage
-       
+
         if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
         {
             double fac = 1.0;                   //day-to-day fraction of reduction
@@ -6596,10 +6639,13 @@ public class Species
             double doy = day_of_month + (int)((month - 1) * 30.5);
             // NOTE: the type for doy has to be double or the divisions below will be rounded (to int) and thus be [slightly] wrong
 
-            double doyC = 232;             // Default as in South-hemisphere
+            double doyC = startHighAllocation;             // Default as in South-hemisphere: 232
             int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
-            int[] ReproSeasonIntval = new int[] { 35, 60, 30 };
+            int[] ReproSeasonIntval = new int[3]; // { 35, 60, 30 };
             double allocationIncrease = allocationSeasonF;
+            ReproSeasonIntval[0] = (int)(durationHighAllocation * shoulderHighAllocation * 1.17);
+            ReproSeasonIntval[1] = (int)durationHighAllocation;
+            ReproSeasonIntval[2] = (int)(durationHighAllocation * shoulderHighAllocation);
 
             if (usingLatFunctionFShoot)
             {
@@ -6628,7 +6674,7 @@ public class Species
                 if (Math.Abs(latitude) < referenceLatitude)
                 {
                     double myB = Math.Abs(latitude) / referenceLatitude;
-                    allocationIncrease *= (paramCLatFunction - paramCLatFunction*myB+myB) * Math.Pow(myB, paramCLatFunction-1.0);
+                    allocationIncrease *= (paramCLatFunction - paramCLatFunction * myB + myB) * Math.Pow(myB, paramCLatFunction - 1.0);
                 }
             }
 
@@ -6722,11 +6768,11 @@ public class Species
 	{
 		double gft3 = 0.0;
 		double T = (MetData.maxt + MetData.mint) / 2;
-		if (T > growthTmin && T < growthTmax)
+        double growthTmax = growthTopt + (growthTopt - growthTmin) / growthTq;
+        if (T > growthTmin && T < growthTmax)
 		{
-			double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-			double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+			double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
+			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
 			gft3 = val1 / val2;
 
 			if (gft3 < 0.0) gft3 = 0.0;
@@ -6739,11 +6785,11 @@ public class Species
 	public double GFTempC3(double T)
 	{
 		double gft3 = 0.0;
+        double growthTmax = growthTopt + (growthTopt - growthTmin) / growthTq;
 		if (T > growthTmin && T < growthTmax)
 		{
-			double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-			double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+			double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
+			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
 			gft3 = val1 / val2;
 
 			if (gft3 < 0.0) gft3 = 0.0;
@@ -6808,9 +6854,9 @@ public class Species
 		if (highTempEffect < 1.0)
 		{
 			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-			if (25 - meanT > 0)
+            if (BaseTemp4HeatStress > meanT)
 			{
-				accumT += (25 - meanT);
+				accumT += (BaseTemp4HeatStress - meanT);
 			}
 
 			if (accumT < heatSumT)
@@ -6851,9 +6897,9 @@ public class Species
 		if (lowTempEffect < 1.0)
 		{
 			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-			if (meanT > 0)
+			if (meanT > BaseTemp4ColdStress)
 			{
-				accumTLow += meanT;
+                accumTLow += (meanT - BaseTemp4ColdStress);
 			}
 
 			if (accumTLow < coldSumT)
