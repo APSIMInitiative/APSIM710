@@ -73,48 +73,68 @@ public class AgPasture
 	[Param]
 	[Description("Minimum temperature for growth")]
 	[Units("")]
-	private double[] growthTmin;
+	private double[] tempMinGrowth;
 	[Param]
 	[Description("Optimum temperature for growth")]
 	[Units("")]
-	private double[] growthTopt;
-	[Param]
+	private double[] tempOptGrowth;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] tempRefGrowth;
+    [Param]
 	[Description("Coefficient q on temperature function for plant growth")]
 	[Units("")]
-	private double[] growthTq;
+	private double[] exponentTempGrowth;
 
+    [Param]
+    [Description("Whether heat stress is considered, reduces photosynthesis")]
+    [Units("yes/no")]
+    private string[] useHeatStress;
 	[Param]
 	[Description("onset tempeature for heat effects")]
 	[Units("")]
-	private double[] heatOnsetT;
+	private double[] tempOnsetHeatStress;
 	[Param]
 	[Description("full temperature for heat effects")]
 	[Units("")]
-	private double[] heatFullT;
-	[Param]
-	[Description("temperature sum for recovery - sum of (25-mean)")]
-	[Units("")]
-	private double[] heatSumT;
+	private double[] tempFullHeatStress;
     [Param]
     [Description("")]
     [Units("oC")]
-    private double[] BaseTemp4HeatStress;
+    private double[] tempRecoverHeatStress;
+    [Param]
+	[Description("temperature sum for recovery - sum of (25-mean)")]
+	[Units("")]
+	private double[] sumTempHeatStress;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] exponentHeatStress;
+    [Param]
+    [Description("Whether cold stress is considered, reduces photosynthesis")]
+    [Units("yes/no")]
+    private string[] useColdStress;
     [Param]
 	[Description("onset tempeature for cold effects")]
 	[Units("")]
-	private double[] coldOnsetT;
+	private double[] tempOnsetColdStress;
 	[Param]
 	[Description("full tempeature for cold effects")]
 	[Units("")]
-	private double[] coldFullT;
-	[Param]
-	[Description("temperature sum for recovery - sum of means")]
-	[Units("")]
-	private double[] coldSumT;
+	private double[] tempFullColdStress;
     [Param]
     [Description("")]
     [Units("oC")]
-    private double[] BaseTemp4ColdStress;
+    private double[] tempRecoverColdStress;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] exponentColdStress;
+    [Param]
+    [Description("temperature sum for recovery - sum of means")]
+    [Units("")]
+    private double[] sumTempColdStress;
     [Param]
     [Description("Base CO2 content in atmosphere")]
     [Units("")]
@@ -163,7 +183,7 @@ public class AgPasture
     [Param]
     [Description("Whether DM allocation (shoot/root) will be adjusted using latitude")]
     [Units("yes/no")]
-    private string useLatitudeFunction = "no";
+    private string[] useLatitudeFunction;
 
     [Param]
     [Description("Reference latitude, beyond which DM allocation is hardly affected")]
@@ -261,24 +281,28 @@ public class AgPasture
     [Param]
     [Description("Mass flux minimum temperature")]
     [Units("")]
-    private double[] massFluxTmin;
+    private double[] tempMinTissueTurnover;
     [Param]
     [Description("Mass flux optimum temperature")]
     [Units("")]
-    private double[] massFluxTopt;
+    private double[] tempMaxTissueTurnover;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] exponentTissueTurnover;
     [Param(MinVal = 1.0)]
     [Description("Mass flux scale factor at GLFwater=0.0")]
     [Units("")]
-    private double[] massFluxW0;
+    private double[] maxWEffectTissueTurnover;
     [Param]
     [Description("Mass flux optimum GLFwater=0.5")]
     [Units("")]
-    private double[] massFluxWopt;
+    private double[] referenceGLFWTissueTurnover;
 
     [Param]
 	[Description("Parameter for stock influence on senescence")]
 	[Units("")]
-	private double[] stockParameter;
+	private double[] stockParamTissueTurnover;
     [Param]
     [Description("Coefficient for using luxury N from tissue 2 to Nremob")]
     [Units("0-1")]
@@ -304,10 +328,18 @@ public class AgPasture
 	[Param(IsOptional = true)]
 	private double[] dmtotal = null;	//This would be deleted (it has been replaced by dmshoot - but keep as optional for back-compatibility)
 
+    // -- Initial values (to be input from interface, overwrites the values of dmShoot, dmRoot, and rootDepth
+    [Param(IsOptional = true)]
+    private double[] iniShootDM = null;
+    [Param(IsOptional = true)]
+    private double[] iniRootDM = null;
+    [Param(IsOptional = true)]
+    private double[] iniRootDepth = null;
+
 	[Param]
 	[Description("Shoot dry weight")]
 	[Units("kgDM/ha")]
-	private double[] dmshoot;  //initial shoot mass (RCichota May 2014, change from dmtotal to dmshoot)
+	private double[] dmshoot;  //initial, deafult shoot mass (RCichota May 2014, change from dmtotal to dmshoot)
 
 	//following varibles will be calculated, not [Param] any more
 	private double[] dmleaf1;            //leaf 1 (kg/ha)
@@ -481,7 +513,7 @@ public class AgPasture
     [Output]
     [Description("Fraction of root depth where its proportion starts to decrease")]
     [Units("0-1")]
-    public double[] ExpoLinearDepthParam
+    public double[] fractionTopRootDistribution
     {
         get { return p_ExpoLinearDepthParam; }
         set
@@ -499,7 +531,7 @@ public class AgPasture
     [Output]
     [Description("Exponent to determine mass distribution in the soil profile")]
     [Units("")]
-    public double[] ExpoLinearCurveParam
+    public double[] exponentRootDistribution
     {
         get { return p_ExpoLinearCurveParam; }
         set
@@ -856,12 +888,11 @@ public class AgPasture
         SP[s1].dRootDepth = 1; //(int)dRootDepth[s];
         SP[s1].maxRootDepth = 10; //(int)maxRootDepth[s];
 
-
         SP[s1].allocationSeasonF = allocationSeasonF[s2];
         SP[s1].startHighAllocation = StartHighAllocation[s2];
         SP[s1].durationHighAllocation = DurationHighAllocation[s2];
         SP[s1].shoulderHighAllocation = ShoulderHighAllocation[s2];
-        SP[s1].usingLatFunctionFShoot = (useLatitudeFunction.ToLower() == "yes");
+        SP[s1].usingLatFunctionFShoot = (useLatitudeFunction[s2].ToLower() == "yes");
         SP[s1].referenceLatitude = ReferenceLatitude[s2];
         SP[s1].paramALatFunction = paramALatFunction[s2];
         SP[s1].onsetFacLatFunction = onsetFacLatFunction[s2];
@@ -874,32 +905,45 @@ public class AgPasture
 
 
 		SP[s1].NdilutCoeff = NdilutCoeff[s2];
-		SP[s1].rootDepth = (int)rootDepth[s2];
-		SP[s1].growthTmin = growthTmin[s2];
-		SP[s1].growthTopt = growthTopt[s2];
-		SP[s1].growthTq = growthTq[s2];
-		SP[s1].massFluxTmin = massFluxTmin[s2];
-		SP[s1].massFluxTopt = massFluxTopt[s2];
-		SP[s1].massFluxW0 = massFluxW0[s2];
-		SP[s1].massFluxWopt = massFluxWopt[s2];
-		SP[s1].heatOnsetT = heatOnsetT[s2];            //onset tempeature for heat effects
-		SP[s1].heatFullT = heatFullT[s2];            //full temperature for heat effects
-		SP[s1].heatSumT = heatSumT[s2];                //temperature sum for recovery - sum of (25-mean)
-        SP[s1].BaseTemp4HeatStress = BaseTemp4HeatStress[s2];
-        SP[s1].coldOnsetT = coldOnsetT[s2];           //onset tempeature for cold effects
-		SP[s1].coldFullT = coldFullT[s2];            //full tempeature for cold effects
-		SP[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
-        SP[s1].BaseTemp4ColdStress = BaseTemp4ColdStress[s2];
+		SP[s1].tempMinGrowth = tempMinGrowth[s2];
+        SP[s1].tempOptGrowth = tempOptGrowth[s2];
+        SP[s1].tempRefGrowth = tempRefGrowth[s2];
+        SP[s1].exponentTempGrowth = exponentTempGrowth[s2];
+		SP[s1].tempMinTissueTurnover = tempMinTissueTurnover[s2];
+        SP[s1].tempMaxTissueTurnover = tempMaxTissueTurnover[s2];
+        SP[s1].exponentTissueTurnover = exponentTissueTurnover[s2];
+        SP[s1].maxWEffectTissueTurnover = maxWEffectTissueTurnover[s2];
+        SP[s1].referenceGLFWTissueTurnover = referenceGLFWTissueTurnover[s2];
+
+        if (s1 < iniRootDepth.Length && iniRootDepth[s1] >= 0)
+        { // an initial value for rootdepth has been given, overwrite the default
+            rootDepth[s2] = iniRootDepth[s1];    // note that iniRootDepth was given for the species to simulate, not the parametersied ones
+        }
+        SP[s1].rootDepth = (int)rootDepth[s2];
+
         SP[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
-		SP[s1].maintRespiration = maintRespiration[s2];    //in %
-		SP[s1].growthEfficiency = growthEfficiency[s2];
-		SP[s1].specificLeafArea = specificLeafArea[s2];
+        SP[s1].maintRespiration = maintRespiration[s2];    //in %
+        SP[s1].growthEfficiency = growthEfficiency[s2];
+        SP[s1].usingHeatStress = (useHeatStress[s2].ToLower() == "yes");
+		SP[s1].tempOnsetHeatStress = tempOnsetHeatStress[s2];            //onset tempeature for heat effects
+		SP[s1].tempFullHeatStress = tempFullHeatStress[s2];            //full temperature for heat effects
+        SP[s1].tempRecoverHeatStress = tempRecoverHeatStress[s2];
+        SP[s1].sumTempHeatStress = sumTempHeatStress[s2];                //temperature sum for recovery - sum of (25-mean)
+        SP[s1].exponentHeatStress = exponentHeatStress[s2];
+        SP[s1].usingColdStress = (useColdStress[s2].ToLower() == "yes");
+        SP[s1].tempOnsetColdStress = tempOnsetColdStress[s2];           //onset tempeature for cold effects
+		SP[s1].tempFullColdStress = tempFullColdStress[s2];            //full tempeature for cold effects
+        SP[s1].tempRecoverColdStress = tempRecoverColdStress[s2];
+        SP[s1].sumTempColdStress = sumTempColdStress[s2];                //temperature sum for recovery - sum of means
+        SP[s1].exponentColdStress = exponentColdStress[s2];
+
+        SP[s1].specificLeafArea = specificLeafArea[s2];
         SP[s1].specificRootLength = specificRootLength[s2];
 		SP[s1].lightExtCoeff = lightExtCoeff[s2];
 		SP[s1].rateLive2Dead = rateLive2Dead[s2];
 		SP[s1].rateDead2Litter = rateDead2Litter[s2];
 		SP[s1].rateRootSen = rateRootSen[s2];
-		SP[s1].stockParameter = stockParameter[s2];
+		SP[s1].stockParamTissueTurnover = stockParamTissueTurnover[s2];
 		SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
 		SP[s1].leafRate = 0.0;
 		SP[s1].fLeaf = fLeaf[s2];
@@ -909,10 +953,14 @@ public class AgPasture
 
         if (dmtotal[s2] >= 0.0)
         { // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for back-compatibility-RCichota, May2014)
-            dmshoot[s1] = dmtotal[s2];
+            dmshoot[s2] = dmtotal[s2];
         }
-        else
-            SP[s1].dmshoot = dmshoot[s2];
+        else if (s1 < iniShootDM.Length && iniShootDM[s1] >= 0)
+        { // an initial value for dmshoot has been given, overwrite the default
+            dmshoot[s2] = iniShootDM[s1];    // note that iniShootDM was given for the species to simulate, not the parametersied ones
+        }
+        SP[s1].dmshoot = dmshoot[s2];
+
         if (SP[s1].dmshoot == 0.0) SP[s1].phenoStage = 0;
 		else SP[s1].phenoStage = 1;
 
@@ -945,6 +993,10 @@ public class AgPasture
             SP[s1].dmstol3 = SP[s1].dmshoot * initialDMFractions_legume[10];
         }
 
+        if (s1 < iniRootDM.Length && iniRootDM[s1] >= 0)
+        { // an initial value for dmroot has been given, overwrite the default
+            dmroot[s2] = iniRootDM[s1];    // note that iniShootDM was given for the species to simulate, not the parametersied ones
+        }
 		if (dmroot[s2] >= 0)
 			SP[s1].dmroot = dmroot[s2];
 		else
@@ -5395,55 +5447,55 @@ public class Species
 	//const double growthTref = 20.0;      //reference temperature
 
 	//static variables for common parameters among species
-	public static NewMetType MetData = new NewMetType();    //climate data applied to all species
-	public static double latitude;
-	public static double dayLength;                         //day length
-	public static double CO2 = 380;                         //CO2 concentration
-	public static int day_of_month;
-	public static int month;
-	public static int year;
-	public static double PIntRadn;                          //total Radn intecepted by pasture
-	public static double PCoverGreen;
-	public static double PLightExtCoeff;                    //k of mixed pasture
-	public static double Pdmshoot;
+	internal static NewMetType MetData = new NewMetType();    //climate data applied to all species
+	internal static double latitude;
+	internal static double dayLength;                         //day length
+	internal static double CO2 = 380;                         //CO2 concentration
+	internal static int day_of_month;
+	internal static int month;
+	internal static int year;
+	internal static double PIntRadn;                          //total Radn intecepted by pasture
+	internal static double PCoverGreen;
+	internal static double PLightExtCoeff;                    //k of mixed pasture
+	internal static double Pdmshoot;
 
 
-	public double intRadnFrac;     //fraction of Radn intercepted by this species = intRadn/Radn
-	public double intRadn;         //Intercepted Radn by this species
+	internal double intRadnFrac;     //fraction of Radn intercepted by this species = intRadn/Radn
+	internal double intRadn;         //Intercepted Radn by this species
 
-	public string speciesName;
-	public string micrometType;
+	internal string speciesName;
+	internal string micrometType;
 
-	public bool isAnnual;        //Species type (1=annual,0=perennial)
-	public bool isLegume;        //Legume (0=no,1=yes)
-	public int photoPath;       //Phtosynthesis pathways: 3=C3, 4=C4; //no consideration for CAM(=3)
+	internal bool isAnnual;        //Species type (1=annual,0=perennial)
+	internal bool isLegume;        //Legume (0=no,1=yes)
+	internal int photoPath;       //Phtosynthesis pathways: 3=C3, 4=C4; //no consideration for CAM(=3)
 
 	//annual species parameters
-	public int dayEmerg;         //Earlist day of emergence (for annuals only)
-	public int monEmerg;        //Earlist month of emergence (for annuals only)
-	public int dayAnth;            //Earlist day of anthesis (for annuals only)
-	public int monAnth;            //Earlist month of anthesis (for annuals only)
-	public int daysToMature;    //Days from anthesis to maturity (for annuals only)
-	public int daysEmgToAnth;   //Days from emergence to Anthesis (calculated, annual only)
-	public int phenoStage = 1;  //pheno stages: 0 - pre_emergence, 1 - vegetative, 2 - reproductive
-	public double phenoFactor = 1;
-	public int daysfromEmergence = 0;   //days
-	public int daysfromAnthesis = 0;    //days
+	internal int dayEmerg;         //Earlist day of emergence (for annuals only)
+	internal int monEmerg;        //Earlist month of emergence (for annuals only)
+	internal int dayAnth;            //Earlist day of anthesis (for annuals only)
+	internal int monAnth;            //Earlist month of anthesis (for annuals only)
+	internal int daysToMature;    //Days from anthesis to maturity (for annuals only)
+	internal int daysEmgToAnth;   //Days from emergence to Anthesis (calculated, annual only)
+	internal int phenoStage = 1;  //pheno stages: 0 - pre_emergence, 1 - vegetative, 2 - reproductive
+	internal double phenoFactor = 1;
+	internal int daysfromEmergence = 0;   //days
+	internal int daysfromAnthesis = 0;    //days
 
 	private bool bSown = false;
 	private double DDSfromSowing = 0;
 	private double DDSfromEmergence = 0;
 	private double DDSfromAnthesis = 0;
 
-	//**public double cropFactor;    //Crop Factor
-	//**public double maxResidCover;//Maximum Residue Cover (0-1) (added to ccov to define cover)
-	public int dRootDepth;        //Daily root growth (mm)
-	public int maxRootDepth;    //Maximum root depth (mm)
-	public double NdilutCoeff;
-	public int rootDepth;       //current root depth (mm)
-	//**public int rootFnType;        //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
+	//**internal double cropFactor;    //Crop Factor
+	//**internal double maxResidCover;//Maximum Residue Cover (0-1) (added to ccov to define cover)
+	internal int dRootDepth;        //Daily root growth (mm)
+	internal int maxRootDepth;    //Maximum root depth (mm)
+	internal double NdilutCoeff;
+	internal int rootDepth;       //current root depth (mm)
+	//**internal int rootFnType;        //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
 
-    public double allocationSeasonF; //factor for different biomass allocation among seasons
+    internal double allocationSeasonF; //factor for different biomass allocation among seasons
     internal double startHighAllocation;
     internal double durationHighAllocation;
     internal double shoulderHighAllocation;
@@ -5458,228 +5510,238 @@ public class Species
     internal double allocationMax = 0.4;
     internal double paramCLatFunction = 4.0;
 
-	public double growthTmin;   //Minimum temperature (grtmin) - originally 0
-	public double growthTopt;   //Optimum temperature (grtopt) - originally 20
-	public double growthTq;        //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
+	internal double tempMinGrowth;   //Minimum temperature (grtmin) - originally 0
+	internal double tempOptGrowth;   //Optimum temperature (grtopt) - originally 20
+    internal double tempRefGrowth;
+	internal double exponentTempGrowth;        //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
 
-	public double heatOnsetT;            //onset tempeature for heat effects
-	public double heatFullT;            //full temperature for heat effects
-	public double heatSumT;            //temperature sum for recovery - sum of (25-mean)
-    internal double BaseTemp4HeatStress;
-    public double coldOnsetT;          //onset tempeature for cold effects
-	public double coldFullT;            //full tempeature for cold effects
-	public double coldSumT;            //temperature sum for recovery - sum of means
-    internal double BaseTemp4ColdStress;
-    public double Pm;                    //reference leaf co2 mg/m^2/s maximum
-	public double maintRespiration;    //in %
-	public double growthEfficiency;
+    internal bool usingHeatStress;
+	internal double tempOnsetHeatStress;            //onset tempeature for heat effects
+	internal double tempFullHeatStress;            //full temperature for heat effects
+    internal double tempRecoverHeatStress;
+    internal double sumTempHeatStress;            //temperature sum for recovery - sum of (25-mean)
+    internal double exponentHeatStress;
+
+    internal bool usingColdStress;
+    internal double tempOnsetColdStress;          //onset tempeature for cold effects
+	internal double tempFullColdStress;            //full tempeature for cold effects
+    internal double tempRecoverColdStress;
+    internal double sumTempColdStress;            //temperature sum for recovery - sum of means
+    internal double exponentColdStress;
+
+    internal double Pm;                    //reference leaf co2 mg/m^2/s maximum
+	internal double maintRespiration;    //in %
+	internal double growthEfficiency;
 
 
-	private double highTempEffect = 1;  //fraction of growth rate due to high temp. effect
-	private double lowTempEffect = 1;   //fraction of growth rate due to low temp. effect
-	private double accumT = 0;          //accumulated temperature from previous heat strike = sum of '25-MeanT'(>0)
-	private double accumTLow = 0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
+	private double highTempStress = 1;  //fraction of growth rate due to high temp. effect
+    private double heatFactor = 1.0;
+	private double accumTHeat = 0;          //accumulated temperature from previous heat strike = sum of '25-MeanT'(>0)
+    private double lowTempStress = 1;   //fraction of growth rate due to low temp. effect
+    private double coldFactor = 0.0;
+    private double accumTCold = 0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
 
-	public double massFluxTmin;            //grfxt1    Mass flux minimum temperature
-	public double massFluxTopt;            //grfxt2    Mass flux optimum temperature
-	public double massFluxW0;            //grfw1        Mass flux scale factor at GLFwater=0 (must be > 1)
-	public double massFluxWopt;         //grfw2        Mass flux optimum temperature
+	internal double tempMinTissueTurnover;            //grfxt1    Mass flux minimum temperature
+	internal double tempMaxTissueTurnover;            //grfxt2    Mass flux optimum temperature
+    internal double exponentTissueTurnover;
+	internal double maxWEffectTissueTurnover;            //grfw1        Mass flux scale factor at GLFwater=0 (must be > 1)
+	internal double referenceGLFWTissueTurnover;         //grfw2        Mass flux optimum temperature
 
-	//**public double satRadn;         //Saturated canopy radiation Pnet (MJ/m^2/day)
-	public double specificLeafArea;                //Specific leaf area (m2/kg dwt)
+	//**internal double satRadn;         //Saturated canopy radiation Pnet (MJ/m^2/day)
+	internal double specificLeafArea;                //Specific leaf area (m2/kg dwt)
     internal double specificRootLength;
-	public double lightExtCoeff;    //Light extinction coefficient
-	public double rue;              //radiaiton use efficiency
-	public double maxAssimiRate;    //Maximum Assimulation rate at reference temp & daylength (20C & 12Hrs)
-	public double rateLive2Dead;    //Decay coefficient between live and dead
-	public double rateDead2Litter;    //Decay coefficient between dead and litter
-	public double rateRootSen;      //Decay reference root senescence rate (%/day)
-	public double stockParameter;   //Stock influence parameter
-	public double maxSRratio;       //Shoot-Root ratio maximum
-	public double leafRate;         //reference leaf appearance rate without stress
-	public double fLeaf;            //Fixed growth partition to leaf (0-1)
-	public double fStolon;            //Fixed growth partition to stolon (0-1)
+	internal double lightExtCoeff;    //Light extinction coefficient
+	internal double rue;              //radiaiton use efficiency
+	internal double maxAssimiRate;    //Maximum Assimulation rate at reference temp & daylength (20C & 12Hrs)
+	internal double rateLive2Dead;    //Decay coefficient between live and dead
+	internal double rateDead2Litter;    //Decay coefficient between dead and litter
+	internal double rateRootSen;      //Decay reference root senescence rate (%/day)
+	internal double stockParamTissueTurnover;   //Stock influence parameter
+	internal double maxSRratio;       //Shoot-Root ratio maximum
+	internal double leafRate;         //reference leaf appearance rate without stress
+	internal double fLeaf;            //Fixed growth partition to leaf (0-1)
+	internal double fStolon;            //Fixed growth partition to stolon (0-1)
 
-	public double digestLive;   //Digestibility of live plant material (0-1)
-	public double digestDead;   //Digestibility of dead plant material (0-1)
+	internal double digestLive;   //Digestibility of live plant material (0-1)
+	internal double digestDead;   //Digestibility of dead plant material (0-1)
 
-	public double dmleaf1;    //leaf 1 (kg/ha)
-	public double dmleaf2;    //leaf 2 (kg/ha)
-	public double dmleaf3;    //leaf 3 (kg/ha)
-	public double dmleaf4;    //leaf dead (kg/ha)
-	public double dmstem1;    //sheath and stem 1 (kg/ha)
-	public double dmstem2;    //sheath and stem 2 (kg/ha)
-	public double dmstem3;    //sheath and stem 3 (kg/ha)
-	public double dmstem4;    //sheath and stem dead (kg/ha)
-	public double dmstol1;    //stolon 1 (kg/ha)
-	public double dmstol2;    //stolon 2 (kg/ha)
-	public double dmstol3;    //stolon 3 (kg/ha)
-	public double dmroot;    //root (kg/ha)
-	public double dmgreenmin; // minimum grenn dm
-	public double dmdeadmin; // minimum dead dm
-	public float Frgr;
+	internal double dmleaf1;    //leaf 1 (kg/ha)
+	internal double dmleaf2;    //leaf 2 (kg/ha)
+	internal double dmleaf3;    //leaf 3 (kg/ha)
+	internal double dmleaf4;    //leaf dead (kg/ha)
+	internal double dmstem1;    //sheath and stem 1 (kg/ha)
+	internal double dmstem2;    //sheath and stem 2 (kg/ha)
+	internal double dmstem3;    //sheath and stem 3 (kg/ha)
+	internal double dmstem4;    //sheath and stem dead (kg/ha)
+	internal double dmstol1;    //stolon 1 (kg/ha)
+	internal double dmstol2;    //stolon 2 (kg/ha)
+	internal double dmstol3;    //stolon 3 (kg/ha)
+	internal double dmroot;    //root (kg/ha)
+	internal double dmgreenmin; // minimum grenn dm
+	internal double dmdeadmin; // minimum dead dm
+	internal float Frgr;
 
 	//CO2
-    public double referenceCO2 = 380;                  //ambient CO2 concentration
-    public double CO2PmaxScale;
-	public double CO2NScale;
-	public double CO2NMin;
-	public double CO2NCurvature;
+    internal double referenceCO2 = 380;                  //ambient CO2 concentration
+    internal double CO2PmaxScale;
+	internal double CO2NScale;
+	internal double CO2NMin;
+	internal double CO2NCurvature;
 
 	//water
-	public double swuptake;
-	public double swdemandFrac;
-	public double waterStressFactor;
-	public double soilSatFactor;
+	internal double swuptake;
+	internal double swdemandFrac;
+	internal double waterStressFactor;
+	internal double soilSatFactor;
 
 	//Nc - N concentration
-	public double NcstemFr;   //stem Nc as % of leaf Nc
-	public double NcstolFr;   //stolon Nc as % of leaf Nc
-	public double NcrootFr;   //root Nc as % of leaf Nc
+	internal double NcstemFr;   //stem Nc as % of leaf Nc
+	internal double NcstolFr;   //stolon Nc as % of leaf Nc
+	internal double NcrootFr;   //root Nc as % of leaf Nc
 
-	public double NcRel2;     //N concentration in tissue 2 relative to tissue 1
-	public double NcRel3;     //N concentration in tissue 3 relative to tissue 1
+	internal double NcRel2;     //N concentration in tissue 2 relative to tissue 1
+	internal double NcRel3;     //N concentration in tissue 3 relative to tissue 1
 
 	//current
-	public double Ncleaf1;    //leaf 1  (critical N %)
-	public double Ncleaf2;    //leaf 2
-	public double Ncleaf3;    //leaf 3
-	public double Ncleaf4;    //leaf dead
-	public double Ncstem1;    //sheath and stem 1
-	public double Ncstem2;    //sheath and stem 2
-	public double Ncstem3;    //sheath and stem 3
-	public double Ncstem4;    //sheath and stem dead
-	public double Ncstol1;    //stolon 1
-	public double Ncstol2;    //stolon 2
-	public double Ncstol3;    //stolon 3
-	public double Ncroot;        //root
+	internal double Ncleaf1;    //leaf 1  (critical N %)
+	internal double Ncleaf2;    //leaf 2
+	internal double Ncleaf3;    //leaf 3
+	internal double Ncleaf4;    //leaf dead
+	internal double Ncstem1;    //sheath and stem 1
+	internal double Ncstem2;    //sheath and stem 2
+	internal double Ncstem3;    //sheath and stem 3
+	internal double Ncstem4;    //sheath and stem dead
+	internal double Ncstol1;    //stolon 1
+	internal double Ncstol2;    //stolon 2
+	internal double Ncstol3;    //stolon 3
+	internal double Ncroot;        //root
 
 	//Max, Min & Opt = critical N
-	public double NcleafOpt;    //leaf   (critical N %)
-	public double NcstemOpt;    //sheath and stem
-	public double NcstolOpt;    //stolon
-	public double NcrootOpt;    //root
-	public double NcleafMax;    //leaf  (critical N %)
-	public double NcstemMax;    //sheath and stem
-	public double NcstolMax;    //stolon
-	public double NcrootMax;    //root
-	public double NcleafMin;
-	public double NcstemMin;
-	public double NcstolMin;
-	public double NcrootMin;
-	public double MaxFix;   //N-fix fraction when no soil N available, read in later
-	public double MinFix;   //N-fix fraction when soil N sufficient
+	internal double NcleafOpt;    //leaf   (critical N %)
+	internal double NcstemOpt;    //sheath and stem
+	internal double NcstolOpt;    //stolon
+	internal double NcrootOpt;    //root
+	internal double NcleafMax;    //leaf  (critical N %)
+	internal double NcstemMax;    //sheath and stem
+	internal double NcstolMax;    //stolon
+	internal double NcrootMax;    //root
+	internal double NcleafMin;
+	internal double NcstemMin;
+	internal double NcstolMin;
+	internal double NcrootMin;
+	internal double MaxFix;   //N-fix fraction when no soil N available, read in later
+	internal double MinFix;   //N-fix fraction when soil N sufficient
 
 	//N in each pool (calculated as dm * Nc)
-	public double Nleaf1 = 0;    //leaf 1 (kg/ha)
-	public double Nleaf2 = 0;    //leaf 2 (kg/ha)
-	public double Nleaf3 = 0;    //leaf 3 (kg/ha)
-	public double Nleaf4 = 0;    //leaf dead (kg/ha)
-	public double Nstem1 = 0;    //sheath and stem 1 (kg/ha)
-	public double Nstem2 = 0;    //sheath and stem 2 (kg/ha)
-	public double Nstem3 = 0;    //sheath and stem 3 (kg/ha)
-	public double Nstem4 = 0;    //sheath and stem dead (kg/ha)
-	public double Nstol1 = 0;    //stolon 1 (kg/ha)
-	public double Nstol2 = 0;    //stolon 2 (kg/ha)
-	public double Nstol3 = 0;    //stolon 3 (kg/ha)
-	public double Nroot = 0;    //root (kg/ha)
+	internal double Nleaf1 = 0;    //leaf 1 (kg/ha)
+	internal double Nleaf2 = 0;    //leaf 2 (kg/ha)
+	internal double Nleaf3 = 0;    //leaf 3 (kg/ha)
+	internal double Nleaf4 = 0;    //leaf dead (kg/ha)
+	internal double Nstem1 = 0;    //sheath and stem 1 (kg/ha)
+	internal double Nstem2 = 0;    //sheath and stem 2 (kg/ha)
+	internal double Nstem3 = 0;    //sheath and stem 3 (kg/ha)
+	internal double Nstem4 = 0;    //sheath and stem dead (kg/ha)
+	internal double Nstol1 = 0;    //stolon 1 (kg/ha)
+	internal double Nstol2 = 0;    //stolon 2 (kg/ha)
+	internal double Nstol3 = 0;    //stolon 3 (kg/ha)
+	internal double Nroot = 0;    //root (kg/ha)
 
 	//calculated
 	//DM
-	public double dmtotal;      //=dmgreen + dmdead
-	public double dmgreen;
-	public double dmdead;
-	public double dmleaf;
-	public double dmstem;
-	public double dmleaf_green;
-	public double dmstem_green;
-	public double dmstol_green;
-	public double dmstol;
-	public double dmshoot;
+	internal double dmtotal;      //=dmgreen + dmdead
+	internal double dmgreen;
+	internal double dmdead;
+	internal double dmleaf;
+	internal double dmstem;
+	internal double dmleaf_green;
+	internal double dmstem_green;
+	internal double dmstol_green;
+	internal double dmstol;
+	internal double dmshoot;
 
-	public double dmdefoliated;
-	public double Ndefoliated;
-	public double digestHerbage;
-	public double digestDefoliated;
+	internal double dmdefoliated;
+	internal double Ndefoliated;
+	internal double digestHerbage;
+	internal double digestDefoliated;
 	//LAI
-	public double greenLAI; //sum of 3 pools
-	public double deadLAI;  //pool dmleaf4
-	public double totalLAI;
+	internal double greenLAI; //sum of 3 pools
+	internal double deadLAI;  //pool dmleaf4
+	internal double totalLAI;
 	//N plant
-	public double Nshoot;    //above-ground total N (kg/ha)
-	public double Nleaf;    //leaf N
-	public double Nstem;    //stem N
-	public double Ngreen;    //live N
-	public double Ndead;    //in standing dead (kg/ha)
-	public double Nstolon;    //stolon
+	internal double Nshoot;    //above-ground total N (kg/ha)
+	internal double Nleaf;    //leaf N
+	internal double Nstem;    //stem N
+	internal double Ngreen;    //live N
+	internal double Ndead;    //in standing dead (kg/ha)
+	internal double Nstolon;    //stolon
 
-	public double NremobMax;  //maximum N remob of the day
-	public double Nremob = 0;       //N remobiliesd N during senescing
-	public double Cremob = 0;
-	public double Nleaf3Remob = 0;
-	public double Nstem3Remob = 0;
-	public double Nstol3Remob = 0;
-	public double NrootRemob = 0;
-	public double remob2NewGrowth = 0;
-	public double newGrowthN = 0;    //N plant-soil
-	public double NdemandLux;      //N demand for new growth, with luxury uptake
-	public double NdemandOpt;
-	public double Nfix;         //N fixed by legumes
+	internal double NremobMax;  //maximum N remob of the day
+	internal double Nremob = 0;       //N remobiliesd N during senescing
+	internal double Cremob = 0;
+	internal double Nleaf3Remob = 0;
+	internal double Nstem3Remob = 0;
+	internal double Nstol3Remob = 0;
+	internal double NrootRemob = 0;
+	internal double remob2NewGrowth = 0;
+	internal double newGrowthN = 0;    //N plant-soil
+	internal double NdemandLux;      //N demand for new growth, with luxury uptake
+	internal double NdemandOpt;
+	internal double Nfix;         //N fixed by legumes
 
-	public double Kappa2 = 0.0;
-	public double Kappa3 = 0.0;
-	public double Kappa4 = 0.0;
-	public double NLuxury2;		       // luxury N (above Nopt) potentially remobilisable
-	public double NLuxury3;		       // luxury N (above Nopt)potentially remobilisable
-	public double NFastRemob2 = 0.0;   // amount of luxury N remobilised from tissue 2
-	public double NFastRemob3 = 0.0;   // amount of luxury N remobilised from tissue 3
+	internal double Kappa2 = 0.0;
+	internal double Kappa3 = 0.0;
+	internal double Kappa4 = 0.0;
+	internal double NLuxury2;		       // luxury N (above Nopt) potentially remobilisable
+	internal double NLuxury3;		       // luxury N (above Nopt)potentially remobilisable
+	internal double NFastRemob2 = 0.0;   // amount of luxury N remobilised from tissue 2
+	internal double NFastRemob3 = 0.0;   // amount of luxury N remobilised from tissue 3
 
     internal int rootDistributionMethod = 2;
     internal double expoLinearDepthParam = 0.12;
     internal double expoLinearCurveParam = 3.2;
 
-	public double soilNAvail;   //N available to this species
-	public double soilNdemand;  //N demand from soil (=Ndemand-Nremob-Nfixed)
-	public double soilNdemandMax;   //N demand for luxury uptake
-	public double soilNuptake;  //N uptake of the day
+	internal double soilNAvail;   //N available to this species
+	internal double soilNdemand;  //N demand from soil (=Ndemand-Nremob-Nfixed)
+	internal double soilNdemandMax;   //N demand for luxury uptake
+	internal double soilNuptake;  //N uptake of the day
 
 	//growth limiting factors
-	public double gfwater;  //from water stress
-	public double gftemp;   //from temperature
-	public double gfn;      //from N deficit
-	public double Ncfactor;
-	public double fNavail2Max; //demand/Luxruy uptake
+	internal double gfwater;  //from water stress
+	internal double gftemp;   //from temperature
+	internal double gfn;      //from N deficit
+	internal double Ncfactor;
+	internal double fNavail2Max; //demand/Luxruy uptake
 
 	//calculated, species delta
-	public double dGrowthPot;    //daily growth potential
-	public double dGrowthW;      //daily growth with water-deficit incorporated
-	public double dGrowth;       //daily growth
-	public double dGrowthRoot;   //daily root growth
-	public double dGrowthHerbage; //daily growth shoot
+	internal double dGrowthPot;    //daily growth potential
+	internal double dGrowthW;      //daily growth with water-deficit incorporated
+	internal double dGrowth;       //daily growth
+	internal double dGrowthRoot;   //daily root growth
+	internal double dGrowthHerbage; //daily growth shoot
 
-	public double dLitter;       //daily litter production
-	public double dNLitter;      //N in dLitter
-	public double dRootSen;      //daily root sennesce
-	public double dNrootSen;     //N in dRootSen
+	internal double dLitter;       //daily litter production
+	internal double dNLitter;      //N in dLitter
+	internal double dRootSen;      //daily root sennesce
+	internal double dNrootSen;     //N in dRootSen
 
-	public double fShoot;         //actual fraction of dGrowth to shoot
-	public int dayCounter;
-	public double sumGFW;
+	internal double fShoot;         //actual fraction of dGrowth to shoot
+	internal int dayCounter;
+	internal double sumGFW;
 
 	// transfer coefficients 
-	public double gama = 0.0;	// from tissue 1 to 2, then 3 then 4
-	public double gamas = 0.0;	// for stolons
-	public double gamad = 0.0;	// from dead to litter
-	public double gamar = 0.0;	// for roots (to dead/FOM)
+	internal double gama = 0.0;	// from tissue 1 to 2, then 3 then 4
+	internal double gamas = 0.0;	// for stolons
+	internal double gamad = 0.0;	// from dead to litter
+	internal double gamar = 0.0;	// for roots (to dead/FOM)
 
-	//public double leafPref = 1;    //leaf preference
-	// public double accumtotalnewG = 0;
-	// public double accumtotalnewN = 0;
-	public double IL1;
-	public double Pgross;
-	public double Resp_m;
-	public double Resp_root;
-	public static double coverRF = 1;    //temp. for reduce IL considering other canopies
+	//internal double leafPref = 1;    //leaf preference
+	// internal double accumtotalnewG = 0;
+	// internal double accumtotalnewN = 0;
+	internal double IL1;
+	internal double Pgross;
+	internal double Resp_m;
+	internal double Resp_root;
+	internal static double coverRF = 1;    //temp. for reduce IL considering other canopies
 
 	//Species ------------------------------------------------------------
 	public Species()
@@ -6057,9 +6119,9 @@ public class Species
 
 		//Maintenance respiration
 		double Teffect = 0;                         //Add temperature effects on respi
-		if (Tmean > growthTmin)
+		if (Tmean > tempMinGrowth)
 		{
-			if (Tmean < growthTopt)
+			if (Tmean < tempOptGrowth)
 			{
 				Teffect = GFTemperature(Tmean);
 				//Teffect = Math.Pow(Teffect, 1.5);
@@ -6067,7 +6129,7 @@ public class Species
 			else
 			{
 				//Teffect = 1;
-				Teffect = Tmean / growthTopt;        // Using growthTopt (e.g., 20 C) as reference, and set maximum
+				Teffect = Tmean / tempOptGrowth;        // Using growthTopt (e.g., 20 C) as reference, and set maximum
 				if (Teffect > 1.25) Teffect = 1.25;  // Resp_m
 			}   //The extreme high temperatue (heat) effect is added separately
 		}
@@ -6425,7 +6487,7 @@ public class Species
 		gamas = gama;                                    //for stolon of legumes
 		//double gamad = gftt * gfwt * rateDead2Litter;
 		double SR = 0;  //stocking rate affacting transfer of dead to little (default as 0 for now)
-		gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParameter * SR;
+		gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParamTissueTurnover * SR;
 
 		gamar = gftt * (2 - gfwater) * rateRootSen;  //gfwt * rateRootSen;
 
@@ -6768,11 +6830,11 @@ public class Species
 	{
 		double gft3 = 0.0;
 		double T = (MetData.maxt + MetData.mint) / 2;
-        double growthTmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-        if (T > growthTmin && T < growthTmax)
+        double growthTmax = tempOptGrowth + (tempOptGrowth - tempMinGrowth) / exponentTempGrowth;
+        if (T > tempMinGrowth && T < growthTmax)
 		{
-			double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
+			double val1 = Math.Pow((T - tempMinGrowth), exponentTempGrowth) * (growthTmax - T);
+			double val2 = Math.Pow((tempOptGrowth - tempMinGrowth), exponentTempGrowth) * (growthTmax - tempOptGrowth);
 			gft3 = val1 / val2;
 
 			if (gft3 < 0.0) gft3 = 0.0;
@@ -6785,15 +6847,15 @@ public class Species
 	public double GFTempC3(double T)
 	{
 		double gft3 = 0.0;
-        double growthTmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-		if (T > growthTmin && T < growthTmax)
+        double growthTmax = tempOptGrowth + (tempOptGrowth - tempMinGrowth) / exponentTempGrowth;
+		if (T > tempMinGrowth && T < growthTmax)
 		{
-			double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
+			double val1 = Math.Pow((T - tempMinGrowth), exponentTempGrowth) * (growthTmax - T);
+			double val2 = Math.Pow((tempRefGrowth - tempMinGrowth), exponentTempGrowth) * (growthTmax - tempRefGrowth);
 			gft3 = val1 / val2;
 
 			if (gft3 < 0.0) gft3 = 0.0;
-			if (gft3 > 1.0) gft3 = 1.0;
+			//if (gft3 > 1.0) gft3 = 1.0;
 		}
 		return gft3;
 	}
@@ -6805,18 +6867,18 @@ public class Species
 		double gft4 = 0.0;          // Assign value 0 for the case of T < Tmin
 		double T = (MetData.maxt + MetData.mint) / 2;
 
-		if (T > growthTmin)         // same as GFTempC3 for [Tmin,Topt], but T as Topt if T > Topt
+		if (T > tempMinGrowth)         // same as GFTempC3 for [Tmin,Topt], but T as Topt if T > Topt
 		{
-			if (T > growthTopt)
-				T = growthTopt;
+			if (T > tempOptGrowth)
+				T = tempOptGrowth;
 
-			double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-			double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+			double Tmax = tempOptGrowth + (tempOptGrowth - tempMinGrowth) / exponentTempGrowth;
+			double val1 = Math.Pow((T - tempMinGrowth), exponentTempGrowth) * (Tmax - T);
+            double val2 = Math.Pow((tempRefGrowth - tempMinGrowth), exponentTempGrowth) * (Tmax - tempRefGrowth);
 			gft4 = val1 / val2;
 
 			if (gft4 < 0.0) gft4 = 0.0;
-			if (gft4 > 1.0) gft4 = 1.0;
+			//if (gft4 > 1.0) gft4 = 1.0;
 		}
 		return gft4;
 	}
@@ -6827,105 +6889,174 @@ public class Species
 	{
 		double gft4 = 0.0;          // Assign value 0 for the case of T < Tmin
 
-		if (T > growthTmin)         // same as GFTempC3 for [Tmin,Topt], but T as Topt if T > Topt
+		if (T > tempMinGrowth)         // same as GFTempC3 for [Tmin,Topt], but T as Topt if T > Topt
 		{
-			if (T > growthTopt)
-				T = growthTopt;
+			if (T > tempOptGrowth)
+				T = tempOptGrowth;
 
-			double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-			double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+			double Tmax = tempOptGrowth + (tempOptGrowth - tempMinGrowth) / exponentTempGrowth;
+			double val1 = Math.Pow((T - tempMinGrowth), exponentTempGrowth) * (Tmax - T);
+            double val2 = Math.Pow((tempRefGrowth - tempMinGrowth), exponentTempGrowth) * (Tmax - tempRefGrowth);
 			gft4 = val1 / val2;
 
 			if (gft4 < 0.0) gft4 = 0.0;
-			if (gft4 > 1.0) gft4 = 1.0;
+			//if (gft4 > 1.0) gft4 = 1.0;
 		}
 		return gft4;
 	}
 
 	//Species ---------------------------------------------
+    private double HeatEffect()
+    {
+
+        if (usingHeatStress)
+        {
+            // check heat stress factor
+            if (MetData.maxt > tempFullHeatStress)
+            {
+                heatFactor = 0.0;
+                accumTHeat = 0.0;
+            }
+            else if (MetData.maxt > tempOnsetHeatStress)
+            {
+                heatFactor = highTempStress * (tempFullHeatStress - MetData.maxt) / (tempFullHeatStress - tempOnsetHeatStress);
+                accumTHeat = 0.0;
+            }
+
+            // check recovery factor
+            double recoveryFactor = 0.0;
+            if (MetData.maxt < tempOnsetHeatStress)
+                recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / sumTempHeatStress, exponentHeatStress);
+
+            // accumulate temperature
+            double meanT = 0.5 * (MetData.maxt + MetData.mint);
+            accumTHeat += Math.Max(0.0, tempRecoverHeatStress - meanT);
+
+            // heat stress
+            highTempStress = Math.Min(1.0, heatFactor + recoveryFactor);
+
+            return highTempStress;
+        }
+        else
+            return 1.0;
+    }
+
 	// Heat effect: reduction = (MaxT-28)/35, recovery after accumulating 50C of (meanT-25)
-	private double HeatEffect()
+	private double HeatEffect_old()
 	{
 		//constants are now set from interface
 		//recover from the previous high temp. effect
 		double recoverF = 1.0;
 
-		if (highTempEffect < 1.0)
+		if (highTempStress < 1.0)
 		{
 			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-            if (BaseTemp4HeatStress > meanT)
+            if (tempRecoverHeatStress > meanT)
 			{
-				accumT += (BaseTemp4HeatStress - meanT);
+				accumTHeat += (tempRecoverHeatStress - meanT);
 			}
 
-			if (accumT < heatSumT)
+			if (accumTHeat < sumTempHeatStress)
 			{
-				recoverF = highTempEffect + (1 - highTempEffect) * accumT / heatSumT;
+				recoverF = highTempStress + (1 - highTempStress) * accumTHeat / sumTempHeatStress;
 			}
 		}
 
 		//possible new high temp. effect
 		double newHeatF = 1.0;
-		if (MetData.maxt > heatFullT)
+		if (MetData.maxt > tempFullHeatStress)
 		{
 			newHeatF = 0;
 		}
-		else if (MetData.maxt > heatOnsetT)
+		else if (MetData.maxt > tempOnsetHeatStress)
 		{
-			newHeatF = (MetData.maxt - heatOnsetT) / (heatFullT - heatOnsetT);
+			newHeatF = (MetData.maxt - tempOnsetHeatStress) / (tempFullHeatStress - tempOnsetHeatStress);
 		}
 
 		// If this new high temp. effect is compounded with the old one &
 		// re-start of the recovery from the new effect
 		if (newHeatF < 1.0)
 		{
-			highTempEffect = recoverF * newHeatF;
-			accumT = 0;
-			recoverF = highTempEffect;
+			highTempStress = recoverF * newHeatF;
+			accumTHeat = 0;
+			recoverF = highTempStress;
 		}
 
 		return recoverF;
 	}
 
 	//Species ---------------------------------------------
+    private double ColdEffect()
+    {
+        if (usingColdStress)
+        {
+            // check cold stress factor
+            if (MetData.mint < tempFullColdStress)
+            {
+                coldFactor = 0.0;
+                accumTCold = 0.0;
+            }
+            else if (MetData.mint < tempOnsetColdStress)
+            {
+                coldFactor = lowTempStress * (MetData.mint - tempFullColdStress) / (tempOnsetColdStress - tempFullColdStress);
+                accumTCold = 0.0;
+            }
+
+            // check recovery factor
+            double recoveryFactor = 0.0;
+            if (MetData.mint > tempOnsetColdStress)
+                recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / sumTempColdStress, exponentColdStress);
+
+            // accumulate temperature
+            double meanT = 0.5 * (MetData.maxt + MetData.mint);
+            accumTCold += Math.Max(0.0, meanT - tempRecoverColdStress);
+
+            // cold stress
+            lowTempStress = Math.Min(1.0, coldFactor + recoveryFactor);
+
+            return lowTempStress;
+        }
+        else
+            return 1.0;
+    }
+
 	// Cold effect: reduction, recovery after accumulating 20C of meanT
-	private double ColdEffect()
+	private double ColdEffect_old()
 	{
 		//recover from the previous high temp. effect
 		double recoverF = 1.0;
-		if (lowTempEffect < 1.0)
+		if (lowTempStress < 1.0)
 		{
 			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-			if (meanT > BaseTemp4ColdStress)
+			if (meanT > tempRecoverColdStress)
 			{
-                accumTLow += (meanT - BaseTemp4ColdStress);
+                accumTCold += (meanT - tempRecoverColdStress);
 			}
 
-			if (accumTLow < coldSumT)
+			if (accumTCold < sumTempColdStress)
 			{
-				recoverF = lowTempEffect + (1 - lowTempEffect) * accumTLow / coldSumT;
+				recoverF = lowTempStress + (1 - lowTempStress) * accumTCold / sumTempColdStress;
 			}
 		}
 
 		//possible new low temp. effect
 		double newColdF = 1.0;
-		if (MetData.mint < coldFullT)
+		if (MetData.mint < tempFullColdStress)
 		{
 			newColdF = 0;
 		}
-		else if (MetData.mint < coldOnsetT)
+		else if (MetData.mint < tempOnsetColdStress)
 		{
-			newColdF = (MetData.mint - coldFullT) / (coldOnsetT - coldFullT);
+			newColdF = (MetData.mint - tempFullColdStress) / (tempOnsetColdStress - tempFullColdStress);
 		}
 
 		// If this new cold temp. effect happens when serious cold effect is still on,
 		// compound & then re-start of the recovery from the new effect
 		if (newColdF < 1.0)
 		{
-			lowTempEffect = newColdF * recoverF;
-			accumTLow = 0;
-			recoverF = lowTempEffect;
+			lowTempStress = newColdF * recoverF;
+			accumTCold = 0;
+			recoverF = lowTempStress;
 		}
 
 		return recoverF;
@@ -6937,11 +7068,11 @@ public class Species
 	{
 		double gfwt = 1.0;
 
-		if (gfwater < massFluxWopt)
-			gfwt = 1 + (massFluxW0 - 1.0) * ((massFluxWopt - gfwater) / massFluxWopt);
+		if (gfwater < referenceGLFWTissueTurnover)
+			gfwt = 1 + (maxWEffectTissueTurnover - 1.0) * ((referenceGLFWTissueTurnover - gfwater) / referenceGLFWTissueTurnover);
 
 		if (gfwt < 1.0) gfwt = 1.0;
-		if (gfwt > massFluxW0) gfwt = massFluxW0;
+		if (gfwt > maxWEffectTissueTurnover) gfwt = maxWEffectTissueTurnover;
 		return gfwt;
 	}
 
@@ -6953,11 +7084,11 @@ public class Species
 		double T = (MetData.maxt + MetData.mint) / 2;
 
 		double gftt = 0.0;        //default as T < massFluxTmin
-		if (T > massFluxTmin && T <= massFluxTopt)
+		if (T > tempMinTissueTurnover && T <= tempMaxTissueTurnover)
 		{
-			gftt = (T - massFluxTmin) / (massFluxTopt - massFluxTmin);
+            gftt = Math.Pow((T - tempMinTissueTurnover) / (tempMaxTissueTurnover - tempMinTissueTurnover), exponentTissueTurnover);
 		}
-		else if (T > massFluxTopt)
+		else if (T > tempMaxTissueTurnover)
 		{
 			gftt = 1.0;
 		}
