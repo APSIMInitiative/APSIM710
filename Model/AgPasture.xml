@@ -33,14 +33,10 @@
 	</MetaData>
 	<Model>
 		<AgPasture>
-			<!-- General and optional parameters -->
 			<thisCropName description="Name of the sward mix">AgPasture</thisCropName>
 			<speciesToSimulate description="Name of species to simulate">ryegrass  whiteclover</speciesToSimulate>
-			<iniShootDM description="Initial shoot dry matter weight for the species to be simulated (kgDM/ha)">-10  -10</iniShootDM>
-			<iniRootDM description="Initial root dry matter weight for the species to be simulated (kgDM/ha)">-10  -10</iniRootDM>
-			<iniRootDepth description="Initial rooting depth for species to be simulated (mm)">-10  -10</iniRootDepth>
 
-			<!-- Parameters for various species -->
+			<!-- Parameters for various species-->
 			<speciesName description="Name of each parameterised species">ryegrass  whiteclover  paspalum</speciesName>
 			<micrometType description="Plant type for micromet/SWIM">grass  grass  grass</micrometType>
 			<photoPath description="Photosynthesis pathway (C3=3, C4=4)">3  3  4</photoPath>
@@ -50,22 +46,17 @@
 			<growthEfficiency description="Growth efficiency factor - photosynthesis minus growth respiration (0-1)">0.75  0.75  0.75</growthEfficiency>
 			<maintRespiration description="Maintenance respiration coefficient (%)">3.0  3.0  3.0</maintRespiration>
 			<lightExtCoeff description="Light extinction coefficient (0-1)">0.5  0.8  0.6</lightExtCoeff>
-			<tempMinGrowth description="Minimum temperature for growth (oC)">2.0  4.0  10.0</tempMinGrowth>
-      <tempOptGrowth description="Optimum temperature for growth (oC)">20.0  20.0  20.0</tempOptGrowth>
-      <tempRefGrowth description="Reference temperature for growth (oC)">20.0  20.0  20.0</tempRefGrowth>
-      <exponentTempGrowth description="Curve parameter for growth response to temperature">2.0  2.0  1.2</exponentTempGrowth>
-			<useHeatStress description="Whether heat stress is considered, reduces photosynthesis (yes/no)">no  no  no</useHeatStress>
-			<tempOnsetHeatStress description="Onset temperature for heat effects on growth (oC)">25.0  30.0  35.0</tempOnsetHeatStress>
-			<tempFullHeatStress description="Temperature for full heat effects on growth (oC)">31.0  35.0  40.0</tempFullHeatStress>
-			<tempRecoverHeatStress description="Base temperature for recovery from heat stress (oC)">25.0  25.0  25.0</tempRecoverHeatStress>
-			<sumTempHeatStress description="Temperature sum for recovery from heat effects (oC)">30.0  20.0  50.0</sumTempHeatStress>
-			<exponentHeatStress description="Exponent for computing recovery from heat stress">1.0  1.0  1.0</exponentHeatStress>
-			<useColdStress description="Whether cold stress is considered, reduces photosynthesis (yes/no)">no  no  no</useColdStress>
-			<tempOnsetColdStress description="Onset temperature for cold effects on growth (oC)">1.0  1.0  8.0</tempOnsetColdStress>
-			<tempFullColdStress description="Temperature for full cold effects on growth (oC)">-3.0  -3.0  3.0</tempFullColdStress>
-			<tempRecoverColdStress description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</tempRecoverColdStress>
-			<sumTempColdStress description="Temperature sum for recovery from cold effects (oC)">30.0  30.0  50.0</sumTempColdStress>
-			<exponentColdStress description="Exponent for computing recovery from cold stress">1.0  1.0  1.0</exponentColdStress>
+			<growthTmin description="Minimum temperature for growth (oC)">2.0  4.0  10.0</growthTmin>
+			<growthTopt description="Optimum temperature for growth (oC)">20.0  20.0  20.0</growthTopt>
+			<growthTq description="Curve parameter for growth response to temperature">2.0  2.0  1.2</growthTq>
+			<heatOnsetT description="Onset temperature for heat effects on growth (oC)">50.0  50.0  50.0</heatOnsetT>
+			<heatFullT description="Temperature for full heat effects on growth (oC)">50.0  50.0  50.0</heatFullT>
+			<heatSumT description="Temperature sum for recovery from heat effects (oC)">50.0  50.0  50.0</heatSumT>
+			<BaseTemp4HeatStress description="Base temperature for recovery from heat stress (oC)">25.0  25.0  25.0</BaseTemp4HeatStress>
+			<coldOnsetT description="Onset temperature for cold effects on growth (oC)">-20.0  -20.0  -20.0</coldOnsetT>
+			<coldFullT description="Temperature for full cold effects on growth (oC)">-20.0  -20.0  -20.0</coldFullT>
+			<coldSumT description="Temperature sum for recovery from cold effects (oC)">20.0  20.0  30.0</coldSumT>
+			<BaseTemp4ColdStress description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</BaseTemp4ColdStress>
 			<referenceCO2 description="Reference atmospheric CO2 content for photosynthesis (ppm)">380  380  380</referenceCO2>
 			<CO2PmaxScale description="Scale factor for CO2 effect on photosynthesis (ppm)">700  700  150</CO2PmaxScale>
 			<CO2NScale description="Scale factor for CO2 effects on plant N concentration (ppm)">600  600  600</CO2NScale>
@@ -77,7 +68,7 @@
 			<StartHighAllocation description="Day for starting the period with higher DM allocation to shoot">232  232  232</StartHighAllocation>
 			<DurationHighAllocation description="Duration of main phase for higher DM allocation to shoot (days)">60  60  60</DurationHighAllocation>
 			<ShoulderHighAllocation description="Relative duration of shoulder periods for higher shoot allocation (0-1)">0.5  0.5  0.5</ShoulderHighAllocation>
-			<useLatitudeFunction description="Whether DM allocation (shoot/root) will be adjusted using latitude (yes/no)">no  no  no</useLatitudeFunction>
+			<useLatitudeFunction description="Whether DM allocation (shoot/root) will be adjusted using latitude (yes/no)">no</useLatitudeFunction>
 			<ReferenceLatitude description="Reference latitude, beyond which DM allocation is hardly affected (degrees)">60.0  60.0  60.0</ReferenceLatitude>
 			<paramALatFunction description="Exponent of function for defining the start of period with high allocation to shoot (>1.0)">5.0  5.0  5.0</paramALatFunction>
 			<onsetFacLatFunction description="Define the duration of onset phase with high allocation, fraction of main phase (0-1)">0.5  0.5  0.5</onsetFacLatFunction>
@@ -95,23 +86,21 @@
 			<rateLive2Dead description="Reference senescence rate for shoot - live to dead tissue (0-1)">0.05  0.05  0.05</rateLive2Dead>
 			<rateDead2Litter description="Reference littering rate - dead tissue to litter (0-1)">0.11  0.11  0.11</rateDead2Litter>
 			<rateRootSen description="Reference senescence rate for roots (0-1)">0.02  0.02  0.02</rateRootSen>
-			<tempMinTissueTurnover description="Minimum temperature for tissue turnover (oC)">2.0  2.0  5.0</tempMinTissueTurnover>
-			<tempMaxTissueTurnover description="Optimum temperature for tissue turnover (oC)">20.0  20.0  20.0</tempMaxTissueTurnover>
-			<exponentTissueTurnover description="Exponent of function for temperature effect on tissue turnover">1.0  1.0  1.0</exponentTissueTurnover>
-			<maxWEffectTissueTurnover description="Scale factor for GLFWater effect on DM turnover, maximum increase (>1.0)">2.0  2.0  2.0</maxWEffectTissueTurnover>
-			<referenceGLFWTissueTurnover description="Reference GLFwater for tissue turnover (0-1)">0.5  0.5  0.5</referenceGLFWTissueTurnover>
-			<stockParamTissueTurnover description="Parameter for stock influence on tissue senescence">0.05  0.05  0.05</stockParamTissueTurnover>
+			<massFluxTmin description="Minimum temperature for DM turnover (oC)">2.0  2.0  5.0</massFluxTmin>
+			<massFluxTopt description="Optimum temperature for DM turnover (oC)">20.0  20.0  20.0</massFluxTopt>
+			<massFluxW0 description="Scale factor for response of DM turnover to soil moisture (>1.0)">2.0  2.0  2.0</massFluxW0>
+			<massFluxWopt description="Reference GLFwater for tissue turnover (0-1)">0.5  0.5  0.5</massFluxWopt>
+			<stockParameter description="Parameter for stock influence on tissue senescence">0.05  0.05  0.05</stockParameter>
 			<Kappa2_Remob description="Coefficient for remobilisation of luxury N from tissue2 (0-1)">0.0  0.0  0.0</Kappa2_Remob>
 			<Kappa3_Remob description="Coefficient for remobilisation of luxury N from tissue3 (0-1)">0.0  0.0  0.0</Kappa3_Remob>
 			<Kappa4_Remob description="Coefficient for partitioning non-used Nremob into tissue4 (0-1)">0.0  0.0  0.0</Kappa4_Remob>
-
 			<digestLive description="Digestibility of live plant material (0-1)">0.6  0.6  0.6</digestLive>
 			<digestDead description="Digestibility of dead plant material (0-1)">0.2  0.2  0.2</digestDead>
 
-			<dmtotal description="shoot dm, being deprecated">-10  -10  -10</dmtotal>
+			<dmtotal description="">-10  -10  -10</dmtotal>
 			<!-- The dmtotal would be deleted (it has been replaced by dmshoot), but was kept as optional parameter for back-compatibility-->
-			<dmshoot description="Default initial shoot dry matter weight (kgDM/ha)">1500  500  300</dmshoot>
-			<dmroot description="Default initial root dry matter weight - if negative, start value is calculated (kgDM/ha)">-10  -10  -10</dmroot>
+			<dmshoot description="Initial shoot dry matter weight (kgDM/ha)">1500  500  300</dmshoot>
+			<dmroot description="Initial root dry matter weight - if negative, start value is calculated (kgDM/ha)">-10   -10   -10</dmroot>
 			<dmgreenmin description="Minimum allowable green dry matter weight (kgDM/ha)">120  40  25</dmgreenmin>
 			<dmdeadmin description="Minimum allowable dead dry matter weight (kgDM/ha)">0  0  0</dmdeadmin>
 			<initialDMFractions_grass description="Fractions of initial dmshoot for each biomass pool, for grasses">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
@@ -120,7 +109,7 @@
 
 			<NconcOptimum_leaves description="Optimum N concentration of young leaves (%)">4.0  4.5  3.0</NconcOptimum_leaves>
 			<NconcMaximum_leaves description="Maximum N concentration in leaves, with luxury uptake (%)">5.0  5.5  3.5</NconcMaximum_leaves>
-			<NconcMinimum_leaves description="Minimum N concentration in leaves, at senescence (%])">1.2  2.0  0.5</NconcMinimum_leaves>
+			<NconcMinimum_leaves description="Minimum N concentration in leaves, at senescence (%])">1.2  1.2  0.8</NconcMinimum_leaves>
 			<RelativeNconc_Stems description="Relative N concentration in stems, fraction of leaf N (0-1)">0.5  0.5  0.5</RelativeNconc_Stems>
 			<RelativeNconc_Stolons description="Relative N concentration in stolons, fraction of leaf N (0-1)">0.0  0.5  0.0</RelativeNconc_Stolons>
 			<RelativeNconc_Roots description="Relative N concentration in roots, fraction of leaf N (0-1)">0.5  0.5  0.5</RelativeNconc_Roots>
@@ -134,15 +123,15 @@
 			<soilSatFactor description="Coefficient for growth limitations due to soil moisture saturation (0-1)">0.1  0.1  0.1</soilSatFactor>
 			<Frgr description="Generic relative growth limiting factor (0-1)">1.0  1.0  1.0</Frgr>
 
-			<rootDepth description="Default rooting depth (mm)">750  350  850</rootDepth>
+			<rootDepth description="Root zone depth (mm)">750  350  850</rootDepth>
 			<RootDistributionMethod description="Method used to compute root distribution over soil profile">ExpoLinear</RootDistributionMethod>
 			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear-->
-      <fractionTopRootDistribution description="Parameter for ExpoLinear method, fraction of root depth where its proportion starts to decrease (0-1)">0.12  0.20  0.10</fractionTopRootDistribution>
-      <exponentRootDistribution description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">3.2  4.5  3.0</exponentRootDistribution>
-			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
+			<ExpoLinearDepthParam description="Parameter for ExpoLinear method, fraction of root depth where its proportion starts to decrease (0-1)">0.12  0.12  0.12</ExpoLinearDepthParam>
+			<ExpoLinearCurveParam description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">3.2  3.2  3.2</ExpoLinearCurveParam>
 
+			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
 			<ll description="Lower limit moisture for water uptake by this species">0.0</ll>
-			<kl description="Coefficient for water availability for each layer">1.0</kl>
+			<kl description="Coefficient for water extractability for each layer">1.0</kl>
 			<xf description="Exploration factor, fraction of layer resources available to plant">1.0</xf>
 
 			<WaterUptakeSource description="Whether water uptake is calculated by AgPasture (calc) or apsim">calc</WaterUptakeSource>
@@ -158,12 +147,11 @@
 				<XY>3000,150</XY>
 				<XY>4000,250</XY>
 			</LinearInterpolation>
-			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the relationship between vapour deficit and relative growth">
+			<LinearInterpolation name="FVPDFunction" description="">
 				<XY> 0,1.0</XY>
 				<XY>10,1.0</XY>
 				<XY>50,1.0</XY>
 			</LinearInterpolation>
-		
-  </AgPasture>
+		</AgPasture>
 	</Model>
 </Type>
