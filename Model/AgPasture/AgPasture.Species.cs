@@ -87,22 +87,23 @@ public class Species
     internal double allocationMax = 0.4;
     internal double paramCLatFunction = 4.0;
 
-	internal double growthTmin;   //Minimum temperature (grtmin) - originally 0
+    internal double Pm;                    //reference leaf co2 mg/m^2/s maximum
+    internal double maintRespiration;    //in %
+    internal double growthEfficiency;
+    internal double growthTmin;   //Minimum temperature (grtmin) - originally 0
 	internal double growthTopt;   //Optimum temperature (grtopt) - originally 20
-	internal double growthTq;        //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
-
+    internal double growthTref;
+    internal double growthTq;        //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
+    internal bool usingHeatStress = false;
 	internal double heatOnsetT;            //onset tempeature for heat effects
 	internal double heatFullT;            //full temperature for heat effects
 	internal double heatSumT;            //temperature sum for recovery - sum of (25-mean)
-    internal double BaseTemp4HeatStress;
+    internal double heatRecoverT;
+    internal bool usingColdStress = false;
     internal double coldOnsetT;          //onset tempeature for cold effects
 	internal double coldFullT;            //full tempeature for cold effects
 	internal double coldSumT;            //temperature sum for recovery - sum of means
-    internal double BaseTemp4ColdStress;
-    internal double Pm;                    //reference leaf co2 mg/m^2/s maximum
-	internal double maintRespiration;    //in %
-	internal double growthEfficiency;
-
+    internal double coldRecoverT;
 
 	private double highTempEffect = 1;  //fraction of growth rate due to high temp. effect
 	private double lowTempEffect = 1;   //fraction of growth rate due to low temp. effect
@@ -111,6 +112,7 @@ public class Species
 
 	internal double massFluxTmin;            //grfxt1    Mass flux minimum temperature
 	internal double massFluxTopt;            //grfxt2    Mass flux optimum temperature
+    internal double massFluxTq;
 	internal double massFluxW0;            //grfw1        Mass flux scale factor at GLFwater=0 (must be > 1)
 	internal double massFluxWopt;         //grfw2        Mass flux optimum temperature
 
@@ -124,7 +126,8 @@ public class Species
 	internal double rateDead2Litter;    //Decay coefficient between dead and litter
 	internal double rateRootSen;      //Decay reference root senescence rate (%/day)
 	internal double stockParameter;   //Stock influence parameter
-	internal double maxSRratio;       //Shoot-Root ratio maximum
+    internal static double stockingRate = 0;  //stocking rate affacting transfer of dead to little (default as 0 for now)
+    internal double maxSRratio;       //Shoot-Root ratio maximum
 	internal double leafRate;         //reference leaf appearance rate without stress
 	internal double fLeaf;            //Fixed growth partition to leaf (0-1)
 	internal double fStolon;            //Fixed growth partition to stolon (0-1)
@@ -1006,8 +1009,7 @@ public class Species
 		gama = gftt * gfwt * rateLive2Dead;
 		gamas = gama;                                    //for stolon of legumes
 		//double gamad = gftt * gfwt * rateDead2Litter;
-		double SR = 0;  //stocking rate affacting transfer of dead to little (default as 0 for now)
-		gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParameter * SR;
+		gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParameter * stockingRate;
 
 		gamar = gftt * (2 - gfwater) * rateRootSen;  //gfwt * rateRootSen;
 
@@ -1385,9 +1387,9 @@ public class Species
 		if (highTempEffect < 1.0)
 		{
 			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-            if (BaseTemp4HeatStress > meanT)
+            if (heatRecoverT > meanT)
 			{
-				accumT += (BaseTemp4HeatStress - meanT);
+				accumT += (heatRecoverT - meanT);
 			}
 
 			if (accumT < heatSumT)
@@ -1427,9 +1429,9 @@ public class Species
 		if (lowTempEffect < 1.0)
 		{
 			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-			if (meanT > BaseTemp4ColdStress)
+			if (meanT > coldRecoverT)
 			{
-                accumTLow += (meanT - BaseTemp4ColdStress);
+                accumTLow += (meanT - coldRecoverT);
 			}
 
 			if (accumTLow < coldSumT)
@@ -1483,7 +1485,7 @@ public class Species
 		double gftt = 0.0;        //default as T < massFluxTmin
 		if (T > massFluxTmin && T <= massFluxTopt)
 		{
-			gftt = (T - massFluxTmin) / (massFluxTopt - massFluxTmin);
+            gftt = Math.Pow((T - massFluxTmin) / (massFluxTopt - massFluxTmin), massFluxTq);
 		}
 		else if (T > massFluxTopt)
 		{

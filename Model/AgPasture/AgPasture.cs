@@ -287,6 +287,10 @@ public class AgPasture
     [Description("Mass flux optimum temperature")]
     [Units("")]
     private double[] massFluxTopt;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] massFluxTq;
     [Param(MinVal = 1.0)]
     [Description("Mass flux scale factor at GLFwater=0.0")]
     [Units("")]
@@ -296,6 +300,14 @@ public class AgPasture
     [Units("")]
     private double[] massFluxWopt;
 
+    /// <summary>
+    /// Effective stocking rate trampling on pasture (increase senescence)
+    /// </summary>
+    public double StockRate
+    {
+        get { return Species.stockingRate; }
+        set { Species.stockingRate = value; }
+    }
     [Param]
 	[Description("Parameter for stock influence on senescence")]
 	[Units("")]
@@ -325,10 +337,18 @@ public class AgPasture
 	[Param(IsOptional = true)]
 	private double[] dmtotal = null;	//This would be deleted (it has been replaced by dmshoot - but keep as optional for back-compatibility)
 
+    // -- Initial values (to be input from interface, overwrites the values of dmshoot, dmroot, and rootdepth
+    [Param(IsOptional = true)]
+    private double[] iniShootDM = null;
+    [Param(IsOptional = true)]
+    private double[] iniRootDM = null;
+    [Param(IsOptional = true)]
+    private double[] iniRootDepth = null;
+
 	[Param]
 	[Description("Shoot dry weight")]
 	[Units("kgDM/ha")]
-	private double[] dmshoot;  //initial shoot mass (RCichota May 2014, change from dmtotal to dmshoot)
+	private double[] dmshoot;  //default initial shoot mass (RCichota May 2014, change from dmtotal to dmshoot)
 
 	//following varibles will be calculated, not [Param] any more
 	private double[] dmleaf1;            //leaf 1 (kg/ha)
@@ -900,44 +920,62 @@ public class AgPasture
         SP[s1].paramCLatFunction = paramCLatFunction[s2];
 
 
-		SP[s1].NdilutCoeff = NdilutCoeff[s2];
-		SP[s1].rootDepth = (int)rootDepth[s2];
-		SP[s1].growthTmin = growthTmin[s2];
-		SP[s1].growthTopt = growthTopt[s2];
-		SP[s1].growthTq = growthTq[s2];
-		SP[s1].massFluxTmin = massFluxTmin[s2];
-		SP[s1].massFluxTopt = massFluxTopt[s2];
-		SP[s1].massFluxW0 = massFluxW0[s2];
-		SP[s1].massFluxWopt = massFluxWopt[s2];
+        SP[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
+        SP[s1].maintRespiration = maintRespiration[s2];    //in %
+        SP[s1].growthEfficiency = growthEfficiency[s2];
+        SP[s1].lightExtCoeff = lightExtCoeff[s2];
+        
+        SP[s1].growthTmin = growthTmin[s2];
+        SP[s1].growthTopt = growthTopt[s2];
+        SP[s1].growthTref = growthTref[s2];
+        SP[s1].growthTq = growthTq[s2];
+        SP[s1].usingHeatStress = (useHeatStress[s2].ToLower() == "yes");
 		SP[s1].heatOnsetT = heatOnsetT[s2];            //onset tempeature for heat effects
 		SP[s1].heatFullT = heatFullT[s2];            //full temperature for heat effects
 		SP[s1].heatSumT = heatSumT[s2];                //temperature sum for recovery - sum of (25-mean)
-        SP[s1].BaseTemp4HeatStress = heatRecoverT[s2];
+        SP[s1].heatRecoverT = heatRecoverT[s2];
+        SP[s1].usingColdStress = (useColdStress[s2].ToLower() == "yes");
         SP[s1].coldOnsetT = coldOnsetT[s2];           //onset tempeature for cold effects
 		SP[s1].coldFullT = coldFullT[s2];            //full tempeature for cold effects
 		SP[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
-        SP[s1].BaseTemp4ColdStress = coldRecoverT[s2];
-        SP[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
-		SP[s1].maintRespiration = maintRespiration[s2];    //in %
-		SP[s1].growthEfficiency = growthEfficiency[s2];
-		SP[s1].specificLeafArea = specificLeafArea[s2];
-        SP[s1].specificRootLength = specificRootLength[s2];
-		SP[s1].lightExtCoeff = lightExtCoeff[s2];
+        SP[s1].coldRecoverT = coldRecoverT[s2];
+
+        //CO2
+        SP[s1].referenceCO2 = referenceCO2[s2];
+        SP[s1].CO2PmaxScale = CO2PmaxScale[s2];
+        SP[s1].CO2NScale = CO2NScale[s2];
+        SP[s1].CO2NMin = CO2NMin[s2];
+        SP[s1].CO2NCurvature = CO2NCurvature[s2];
+
 		SP[s1].rateLive2Dead = rateLive2Dead[s2];
 		SP[s1].rateDead2Litter = rateDead2Litter[s2];
 		SP[s1].rateRootSen = rateRootSen[s2];
-		SP[s1].stockParameter = stockParameter[s2];
-		SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
+        SP[s1].massFluxTmin = massFluxTmin[s2];
+        SP[s1].massFluxTopt = massFluxTopt[s2];
+        SP[s1].massFluxTq = massFluxTq[s2];
+        SP[s1].massFluxW0 = massFluxW0[s2];
+        SP[s1].massFluxWopt = massFluxWopt[s2];
+        SP[s1].stockParameter = stockParameter[s2];
+		
+        SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
 		SP[s1].leafRate = 0.0;
 		SP[s1].fLeaf = fLeaf[s2];
 		SP[s1].fStolon = fStolon[s2];
-		SP[s1].digestLive = digestLive[s2];
+        SP[s1].specificLeafArea = specificLeafArea[s2];
+        SP[s1].specificRootLength = specificRootLength[s2];
+        SP[s1].digestLive = digestLive[s2];
 		SP[s1].digestDead = digestDead[s2];
 
+        if (iniRootDepth[s1] > 0.0)
+            myRootDepth[s2] = iniRootDepth[s1];
+        SP[s1].rootDepth = (int)myRootDepth[s2];
+
         if (dmtotal[s2] >= 0.0)
-        { // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for back-compatibility-RCichota, May2014)
+        { // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for backward-compatibility-RCichota, May2014)
             dmshoot[s2] = dmtotal[s2];
         }
+        if (iniShootDM[s1] > 0.0)
+            dmshoot[s2] = iniShootDM[s1];
         SP[s1].dmshoot = dmshoot[s2];
 
         if (SP[s1].dmshoot == 0.0) SP[s1].phenoStage = 0;
@@ -972,7 +1010,9 @@ public class AgPasture
             SP[s1].dmstol3 = SP[s1].dmshoot * initialDMFractions_legume[10];
         }
 
-		if (dmroot[s2] >= 0)
+        if (iniRootDM[s1] > 0.0)
+            dmroot[s2] = iniRootDM[s1];
+		if (dmroot[s2] >= 0.0)
 			SP[s1].dmroot = dmroot[s2];
 		else
 			SP[s1].dmroot = dmshoot[s2] / SP[s1].maxSRratio;
@@ -981,13 +1021,6 @@ public class AgPasture
 		SP[s1].dmdeadmin = dmdeadmin[s2];
 
 		SP[s1].Frgr = (float)Frgr[s2];
-
-		//CO2
-        SP[s1].referenceCO2 = referenceCO2[s2];
-		SP[s1].CO2PmaxScale = CO2PmaxScale[s2];
-		SP[s1].CO2NScale = CO2NScale[s2];
-		SP[s1].CO2NMin = CO2NMin[s2];
-		SP[s1].CO2NCurvature = CO2NCurvature[s2];
 
 		SP[s1].waterStressFactor = waterStressFactor[s2];
 		SP[s1].soilSatFactor = soilSatFactor[s2];
@@ -1036,6 +1069,8 @@ public class AgPasture
 
 		SP[s1].MaxFix = NMaxFix[s2];   //N-fix fraction when no soil N available, read in later
 		SP[s1].MinFix = NMinFix[s2];   //N-fix fraction when soil N sufficient
+       
+        SP[s1].NdilutCoeff = NdilutCoeff[s2];
 
 		SP[s1].Kappa2 = Kappa2_Remob[s2];
 		SP[s1].Kappa3 = Kappa3_Remob[s2];
