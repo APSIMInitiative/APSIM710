@@ -932,12 +932,14 @@ public class AgPasture
         SP[s1].usingHeatStress = (useHeatStress[s2].ToLower() == "yes");
 		SP[s1].heatOnsetT = heatOnsetT[s2];            //onset tempeature for heat effects
 		SP[s1].heatFullT = heatFullT[s2];            //full temperature for heat effects
+        SP[s1].heatTq = heatTq[s2];
 		SP[s1].heatSumT = heatSumT[s2];                //temperature sum for recovery - sum of (25-mean)
         SP[s1].heatRecoverT = heatRecoverT[s2];
         SP[s1].usingColdStress = (useColdStress[s2].ToLower() == "yes");
         SP[s1].coldOnsetT = coldOnsetT[s2];           //onset tempeature for cold effects
 		SP[s1].coldFullT = coldFullT[s2];            //full tempeature for cold effects
-		SP[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
+        SP[s1].coldTq = coldTq[s2];
+        SP[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
         SP[s1].coldRecoverT = coldRecoverT[s2];
 
         //CO2
@@ -4669,6 +4671,20 @@ public class AgPasture
 			return result;
 		}
 	}
+
+    [Output]
+    [Description("Stress factor on photosynthesis due to temperature, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesTstress
+    {
+        get
+        {
+            double[] result = new double[SP.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = SP[s].lowTempStress * SP[s].highTempStress;
+            return result;
+        }
+    }
 
 	[Output]
 	[Description("Growth limiting factor due to nitrogen, for each species")]

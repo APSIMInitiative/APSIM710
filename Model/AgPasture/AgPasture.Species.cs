@@ -97,19 +97,23 @@ public class Species
     internal bool usingHeatStress = false;
 	internal double heatOnsetT;            //onset tempeature for heat effects
 	internal double heatFullT;            //full temperature for heat effects
+    internal double heatTq;
 	internal double heatSumT;            //temperature sum for recovery - sum of (25-mean)
     internal double heatRecoverT;
     internal bool usingColdStress = false;
     internal double coldOnsetT;          //onset tempeature for cold effects
 	internal double coldFullT;            //full tempeature for cold effects
-	internal double coldSumT;            //temperature sum for recovery - sum of means
+    internal double coldTq;
+    internal double coldSumT;            //temperature sum for recovery - sum of means
     internal double coldRecoverT;
 
-	private double highTempEffect = 1;  //fraction of growth rate due to high temp. effect
-	private double lowTempEffect = 1;   //fraction of growth rate due to low temp. effect
-	private double accumT = 0;          //accumulated temperature from previous heat strike = sum of '25-MeanT'(>0)
-	private double accumTLow = 0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
-
+    internal double highTempStress = 1;  //fraction of growth rate due to high temp. effect
+    private double accumTHeat = 0;          //accumulated temperature from previous heat strike = sum of '25-MeanT'(>0)
+    private double heatFactor = 0;
+    internal double lowTempStress = 1;   //fraction of growth rate due to low temp. effect
+	private double accumTCold = 0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
+    private double coldFactor = 0;
+    
 	internal double massFluxTmin;            //grfxt1    Mass flux minimum temperature
 	internal double massFluxTopt;            //grfxt2    Mass flux optimum temperature
     internal double massFluxTq;
@@ -1347,11 +1351,11 @@ public class Species
 		if (T > growthTmin && T < growthTmax)
 		{
 			double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
-			gft3 = val1 / val2;
+			double val2 = Math.Pow((growthTref - growthTmin), growthTq) * (growthTmax - growthTref);
+            gft3 = val1 / val2;
 
 			if (gft3 < 0.0) gft3 = 0.0;
-			if (gft3 > 1.0) gft3 = 1.0;
+			//if (gft3 > 1.0) gft3 = 1.0;
 		}
 		return gft3;
 	}
@@ -1368,100 +1372,84 @@ public class Species
 
 			double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
 			double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-			double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+            double val2 = Math.Pow((growthTref - growthTmin), growthTq) * (Tmax - growthTref);
 			gft4 = val1 / val2;
 
 			if (gft4 < 0.0) gft4 = 0.0;
-			if (gft4 > 1.0) gft4 = 1.0;
+			//if (gft4 > 1.0) gft4 = 1.0;
 		}
 		return gft4;
 	}
 
-	// Heat effect: reduction = (MaxT-28)/35, recovery after accumulating 50C of (meanT-25)
-	private double HeatEffect()
-	{
-		//constants are now set from interface
-		//recover from the previous high temp. effect
-		double recoverF = 1.0;
+    // Heat effect: reduction = (MaxT-28)/35, recovery after accumulating 50C of (meanT-25)
+    private double HeatEffect()
+    {
 
-		if (highTempEffect < 1.0)
-		{
-			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-            if (heatRecoverT > meanT)
-			{
-				accumT += (heatRecoverT - meanT);
-			}
+        if (usingHeatStress)
+        {
+            // check heat stress factor
+            if (MetData.maxt > heatFullT)
+            {
+                heatFactor = 0.0;
+                accumTHeat = 0.0;
+            }
+            else if (MetData.maxt > heatOnsetT)
+            {
+                heatFactor = highTempStress * (heatFullT - MetData.maxt) / (heatFullT - heatOnsetT);
+                accumTHeat = 0.0;
+            }
 
-			if (accumT < heatSumT)
-			{
-				recoverF = highTempEffect + (1 - highTempEffect) * accumT / heatSumT;
-			}
-		}
+            // check recovery factor
+            double recoveryFactor = 0.0;
+            if (MetData.maxt < heatOnsetT)
+                recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
 
-		//possible new high temp. effect
-		double newHeatF = 1.0;
-		if (MetData.maxt > heatFullT)
-		{
-			newHeatF = 0;
-		}
-		else if (MetData.maxt > heatOnsetT)
-		{
-			newHeatF = (MetData.maxt - heatOnsetT) / (heatFullT - heatOnsetT);
-		}
+            // accumulate temperature
+            double meanT = 0.5 * (MetData.maxt + MetData.mint);
+            accumTHeat += Math.Max(0.0, heatRecoverT - meanT);
 
-		// If this new high temp. effect is compounded with the old one &
-		// re-start of the recovery from the new effect
-		if (newHeatF < 1.0)
-		{
-			highTempEffect = recoverF * newHeatF;
-			accumT = 0;
-			recoverF = highTempEffect;
-		}
+            // heat stress
+            highTempStress = Math.Min(1.0, heatFactor + recoveryFactor);
 
-		return recoverF;
-	}
+            return highTempStress;
+        }
+        else
+            return 1.0;
+    }
+    // Cold effect: reduction, recovery after accumulating 20C of meanT
+    private double ColdEffect()
+    {
+        if (usingColdStress)
+        {
+            // check cold stress factor
+            if (MetData.mint < coldFullT)
+            {
+                coldFactor = 0.0;
+                accumTCold = 0.0;
+            }
+            else if (MetData.mint < coldOnsetT)
+            {
+                coldFactor = lowTempStress * (MetData.mint - coldFullT) / (coldOnsetT - coldFullT);
+                accumTCold = 0.0;
+            }
 
-	// Cold effect: reduction, recovery after accumulating 20C of meanT
-	private double ColdEffect()
-	{
-		//recover from the previous high temp. effect
-		double recoverF = 1.0;
-		if (lowTempEffect < 1.0)
-		{
-			double meanT = 0.5 * (MetData.maxt + MetData.mint);
-			if (meanT > coldRecoverT)
-			{
-                accumTLow += (meanT - coldRecoverT);
-			}
+            // check recovery factor
+            double recoveryFactor = 0.0;
+            if (MetData.mint > coldOnsetT)
+                recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
 
-			if (accumTLow < coldSumT)
-			{
-				recoverF = lowTempEffect + (1 - lowTempEffect) * accumTLow / coldSumT;
-			}
-		}
+            // accumulate temperature
+            double meanT = 0.5 * (MetData.maxt + MetData.mint);
+            accumTCold += Math.Max(0.0, meanT - coldRecoverT);
 
-		//possible new low temp. effect
-		double newColdF = 1.0;
-		if (MetData.mint < coldFullT)
-		{
-			newColdF = 0;
-		}
-		else if (MetData.mint < coldOnsetT)
-		{
-			newColdF = (MetData.mint - coldFullT) / (coldOnsetT - coldFullT);
-		}
+            // cold stress
+            lowTempStress = Math.Min(1.0, coldFactor + recoveryFactor);
 
-		// If this new cold temp. effect happens when serious cold effect is still on,
-		// compound & then re-start of the recovery from the new effect
-		if (newColdF < 1.0)
-		{
-			lowTempEffect = newColdF * recoverF;
-			accumTLow = 0;
-			recoverF = lowTempEffect;
-		}
-
-		return recoverF;
-	}
+            return lowTempStress;
+        }
+        else
+            return 1.0;
+    }
 
 	// Tissue turnover rate's response to water stress (eq. 4.15h)
 	public double GFWaterTissue()
