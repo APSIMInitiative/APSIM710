@@ -48,15 +48,20 @@
 			<lightExtCoeff description="Light extinction coefficient (0-1)">0.5  0.8  0.6</lightExtCoeff>
 			<growthTmin description="Minimum temperature for growth (oC)">2.0  4.0  10.0</growthTmin>
 			<growthTopt description="Optimum temperature for growth (oC)">20.0  20.0  20.0</growthTopt>
+			<growthTref description="Optimum temperature for growth (oC)">20.0  20.0  20.0</growthTref>
 			<growthTq description="Curve parameter for growth response to temperature">2.0  2.0  1.2</growthTq>
+			<useHeatStress description="whether heat stress function will be used">yes  yes  yes</useHeatStress>
 			<heatOnsetT description="Onset temperature for heat effects on growth (oC)">50.0  50.0  50.0</heatOnsetT>
 			<heatFullT description="Temperature for full heat effects on growth (oC)">50.0  50.0  50.0</heatFullT>
 			<heatSumT description="Temperature sum for recovery from heat effects (oC)">50.0  50.0  50.0</heatSumT>
-			<BaseTemp4HeatStress description="Base temperature for recovery from heat stress (oC)">25.0  25.0  25.0</BaseTemp4HeatStress>
+			<heatRecoverT description="Base temperature for recovery from heat stress (oC)">25.0  25.0  25.0</heatRecoverT>
+			<heatTq description="exponent of heat stress function">1.0  1.0  1.0</heatTq>
+			<useColdStress description="whether cold stress function will be used">yes  yes  yes</useColdStress>
 			<coldOnsetT description="Onset temperature for cold effects on growth (oC)">-20.0  -20.0  -20.0</coldOnsetT>
 			<coldFullT description="Temperature for full cold effects on growth (oC)">-20.0  -20.0  -20.0</coldFullT>
 			<coldSumT description="Temperature sum for recovery from cold effects (oC)">20.0  20.0  30.0</coldSumT>
-			<BaseTemp4ColdStress description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</BaseTemp4ColdStress>
+			<coldRecoverT description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</coldRecoverT>
+			<coldTq description="exponent of cold stress function">1.0  1.0  1.0</coldTq>
 			<referenceCO2 description="Reference atmospheric CO2 content for photosynthesis (ppm)">380  380  380</referenceCO2>
 			<CO2PmaxScale description="Scale factor for CO2 effect on photosynthesis (ppm)">700  700  150</CO2PmaxScale>
 			<CO2NScale description="Scale factor for CO2 effects on plant N concentration (ppm)">600  600  600</CO2NScale>
@@ -68,7 +73,7 @@
 			<StartHighAllocation description="Day for starting the period with higher DM allocation to shoot">232  232  232</StartHighAllocation>
 			<DurationHighAllocation description="Duration of main phase for higher DM allocation to shoot (days)">60  60  60</DurationHighAllocation>
 			<ShoulderHighAllocation description="Relative duration of shoulder periods for higher shoot allocation (0-1)">0.5  0.5  0.5</ShoulderHighAllocation>
-			<useLatitudeFunction description="Whether DM allocation (shoot/root) will be adjusted using latitude (yes/no)">no</useLatitudeFunction>
+			<useLatitudeFunction description="Whether DM allocation (shoot/root) will be adjusted using latitude (yes/no)">no  no  no</useLatitudeFunction>
 			<ReferenceLatitude description="Reference latitude, beyond which DM allocation is hardly affected (degrees)">60.0  60.0  60.0</ReferenceLatitude>
 			<paramALatFunction description="Exponent of function for defining the start of period with high allocation to shoot (>1.0)">5.0  5.0  5.0</paramALatFunction>
 			<onsetFacLatFunction description="Define the duration of onset phase with high allocation, fraction of main phase (0-1)">0.5  0.5  0.5</onsetFacLatFunction>
@@ -88,6 +93,7 @@
 			<rateRootSen description="Reference senescence rate for roots (0-1)">0.02  0.02  0.02</rateRootSen>
 			<massFluxTmin description="Minimum temperature for DM turnover (oC)">2.0  2.0  5.0</massFluxTmin>
 			<massFluxTopt description="Optimum temperature for DM turnover (oC)">20.0  20.0  20.0</massFluxTopt>
+			<massFluxTq description="">1.0  1.0  1.0</massFluxTq>
 			<massFluxW0 description="Scale factor for response of DM turnover to soil moisture (>1.0)">2.0  2.0  2.0</massFluxW0>
 			<massFluxWopt description="Reference GLFwater for tissue turnover (0-1)">0.5  0.5  0.5</massFluxWopt>
 			<stockParameter description="Parameter for stock influence on tissue senescence">0.05  0.05  0.05</stockParameter>
@@ -125,13 +131,13 @@
 
 			<rootDepth description="Root zone depth (mm)">750  350  850</rootDepth>
 			<RootDistributionMethod description="Method used to compute root distribution over soil profile">ExpoLinear</RootDistributionMethod>
-			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear-->
-			<ExpoLinearDepthParam description="Parameter for ExpoLinear method, fraction of root depth where its proportion starts to decrease (0-1)">0.12  0.12  0.12</ExpoLinearDepthParam>
+			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear -->
+			<ExpoLinearDepthParam description="Fraction of root depth where its proportion starts to decrease (0-1)">0.12  0.12  0.12</ExpoLinearDepthParam>
 			<ExpoLinearCurveParam description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">3.2  3.2  3.2</ExpoLinearCurveParam>
 
 			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
 			<ll description="Lower limit moisture for water uptake by this species">0.0</ll>
-			<kl description="Coefficient for water extractability for each layer">1.0</kl>
+			<kl description="Coefficient for water availability for each soil layer">1.0</kl>
 			<xf description="Exploration factor, fraction of layer resources available to plant">1.0</xf>
 
 			<WaterUptakeSource description="Whether water uptake is calculated by AgPasture (calc) or apsim">calc</WaterUptakeSource>
@@ -140,18 +146,19 @@
 			<PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1  1  1</PreferenceForGreenDM>
 			<PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1  1  1</PreferenceForDeadDM>
 
-      <LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
+			<LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
 				<XY>0,0</XY>
 				<XY>1000,25</XY>
 				<XY>2000,75</XY>
 				<XY>3000,150</XY>
 				<XY>4000,250</XY>
 			</LinearInterpolation>
-			<LinearInterpolation name="FVPDFunction" description="">
+			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the growth limiting factor due to vapour pressure deficit">
 				<XY> 0,1.0</XY>
 				<XY>10,1.0</XY>
 				<XY>50,1.0</XY>
 			</LinearInterpolation>
+		
 		</AgPasture>
 	</Model>
 </Type>
