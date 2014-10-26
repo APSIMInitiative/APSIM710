@@ -678,6 +678,7 @@ public class Species
 				//Teffect = 1;
 				Teffect = Tmean / growthTopt;        // Using growthTopt (e.g., 20 C) as reference, and set maximum
 				if (Teffect > 1.25) Teffect = 1.25;  // Resp_m
+                Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp funtion needed this to make the function continuous
 			}   //The extreme high temperatue (heat) effect is added separately
 		}
 
