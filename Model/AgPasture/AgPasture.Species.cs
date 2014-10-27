@@ -90,6 +90,9 @@ public class Species
     internal double Pm;                    //reference leaf co2 mg/m^2/s maximum
     internal double maintRespiration;    //in %
     internal double growthEfficiency;
+    internal double alphaPhoto;
+    internal double thetaPhoto;
+
     internal double growthTmin;   //Minimum temperature (grtmin) - originally 0
 	internal double growthTopt;   //Optimum temperature (grtopt) - originally 20
     internal double growthTref;
@@ -127,7 +130,10 @@ public class Species
 	internal double rue;              //radiaiton use efficiency
 	internal double maxAssimiRate;    //Maximum Assimulation rate at reference temp & daylength (20C & 12Hrs)
 	internal double rateLive2Dead;    //Decay coefficient between live and dead
+    internal double exponentGLFW2dead;
+    internal double facGrowingTissue;
 	internal double rateDead2Litter;    //Decay coefficient between dead and litter
+    internal double rateLive2DeadStolon;
 	internal double rateRootSen;      //Decay reference root senescence rate (%/day)
 	internal double stockParameter;   //Stock influence parameter
     internal static double stockingRate = 0;  //stocking rate affacting transfer of dead to little (default as 0 for now)
@@ -620,8 +626,6 @@ public class Species
 		if (phenoStage == 0 || greenLAI == 0) //Before gemination
 			return dGrowthPot = 0;
 
-		const double alfa = 0.01;                 //P_al, leaf gross photosynthesis rate: mg co2/J
-		const double theta = 0.8;                 //P_th, curvature parameter: J /kg/s
 
 		//following parometers are from input (.xml)
 		double maint_coeff = 0.01 * maintRespiration;  //reference maintnance respiration as % of live weight
@@ -646,10 +650,10 @@ public class Species
 		double IL2 = IL1 / 2;                      //IL for early & late period of a day
 
 		//Photosynthesis per LAI under full irridance at the top of the canopy
-		double Pl1 = (0.5 / theta) * (alfa * IL1 + Pm_day
-		- Math.Sqrt((alfa * IL1 + Pm_day) * (alfa * IL1 + Pm_day) - 4 * theta * alfa * IL1 * Pm_day));
-		double Pl2 = (0.5 / theta) * (alfa * IL2 + Pm_mean
-		- Math.Sqrt((alfa * IL2 + Pm_mean) * (alfa * IL2 + Pm_mean) - 4 * theta * alfa * IL2 * Pm_mean));
+		double Pl1 = (0.5 / thetaPhoto) * (alphaPhoto * IL1 + Pm_day
+		- Math.Sqrt((alphaPhoto * IL1 + Pm_day) * (alphaPhoto * IL1 + Pm_day) - 4 * thetaPhoto * alphaPhoto * IL1 * Pm_day));
+		double Pl2 = (0.5 / thetaPhoto) * (alphaPhoto * IL2 + Pm_mean
+		- Math.Sqrt((alphaPhoto * IL2 + Pm_mean) * (alphaPhoto * IL2 + Pm_mean) - 4 * thetaPhoto * alphaPhoto * IL2 * Pm_mean));
 
 		//Upscaling from 'per LAI' to 'per ground area'
 		double carbon_m2 = 0.000001 * CD2C * 0.5 * tau * (Pl1 + Pl2) * PCoverGreen * intRadnFrac / lightExtCoeff;
@@ -1014,7 +1018,7 @@ public class Species
 		gama = gftt * gfwt * rateLive2Dead;
 		gamas = gama;                                    //for stolon of legumes
 		//double gamad = gftt * gfwt * rateDead2Litter;
-		gamad = rateDead2Litter * Math.Pow(gfwater, 3) * digestDead / 0.4 + stockParameter * stockingRate;
+        gamad = rateDead2Litter * Math.Pow(gfwater, exponentGLFW2dead) * digestDead / 0.4 + stockParameter * stockingRate;
 
 		gamar = gftt * (2 - gfwater) * rateRootSen;  //gfwt * rateRootSen;
 

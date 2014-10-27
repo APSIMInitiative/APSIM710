@@ -65,6 +65,15 @@ public class AgPasture
     [Units("%")]
     private double[] maintRespiration;
     [Param]
+    [Description("Leaf gross photosynthesis rate")]
+    [Units("mg CO2/J")]
+    private double[] alphaPhoto;
+    [Param]
+    [Description("photosynthesis curvature parameter")]
+    [Units("J/kg/s")]
+    private double[] thetaPhoto;
+
+    [Param]
     [Description("Light extinction coefficient")]
     [Units("")]
     private double[] lightExtCoeff;
@@ -266,11 +275,19 @@ public class AgPasture
         }
     }
 
-	[Param]
+    [Param]
+    [Description("Factor for adjusting DM turnover of growing tissue")]
+    [Units("<0.0")]
+    private double[] facGrowingTissue;
+    [Param]
 	[Description("Senescence rate for shoot (live to dead material)")]
 	[Units("")]
 	private double[] rateLive2Dead;
-	[Param]
+    [Param]
+    [Description("Senescence rate for stolon (live to dead material)")]
+    [Units("")]
+    private double[] rateLive2DeadStolon;
+    [Param]
 	[Description("Littering rate (dead to litter)")]
 	[Units("")]
 	private double[] rateDead2Litter;
@@ -299,7 +316,12 @@ public class AgPasture
     [Description("Mass flux optimum GLFwater=0.5")]
     [Units("")]
     private double[] massFluxWopt;
+    [Param]
+    [Description("Mass flux exponent")]
+    [Units("")]
+    private double[] massFluxDeadWq;
 
+    
     /// <summary>
     /// Effective stocking rate trampling on pasture (increase senescence)
     /// </summary>
@@ -923,6 +945,8 @@ public class AgPasture
         SP[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
         SP[s1].maintRespiration = maintRespiration[s2];    //in %
         SP[s1].growthEfficiency = growthEfficiency[s2];
+        SP[s1].alphaPhoto = alphaPhoto[s2];
+        SP[s1].thetaPhoto = thetaPhoto[s2];
         SP[s1].lightExtCoeff = lightExtCoeff[s2];
         
         SP[s1].growthTmin = growthTmin[s2];
@@ -950,6 +974,8 @@ public class AgPasture
         SP[s1].CO2NCurvature = CO2NCurvature[s2];
 
 		SP[s1].rateLive2Dead = rateLive2Dead[s2];
+        SP[s1].facGrowingTissue = facGrowingTissue[s2];
+        SP[s1].rateLive2DeadStolon = rateLive2DeadStolon[s2];
 		SP[s1].rateDead2Litter = rateDead2Litter[s2];
 		SP[s1].rateRootSen = rateRootSen[s2];
         SP[s1].massFluxTmin = massFluxTmin[s2];
@@ -957,6 +983,7 @@ public class AgPasture
         SP[s1].massFluxTq = massFluxTq[s2];
         SP[s1].massFluxW0 = massFluxW0[s2];
         SP[s1].massFluxWopt = massFluxWopt[s2];
+        SP[s1].exponentGLFW2dead = massFluxDeadWq[s2];
         SP[s1].stockParameter = stockParameter[s2];
 		
         SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
