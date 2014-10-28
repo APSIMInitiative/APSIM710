@@ -22,7 +22,6 @@
 
 using namespace std;
 using namespace boost::gregorian;
-using namespace boost;
 
 // ------------------------------------------------------------------
 // Return a blank string when requested to indicate that we don't need a wrapper DLL.

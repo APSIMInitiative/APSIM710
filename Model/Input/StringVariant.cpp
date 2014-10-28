@@ -18,8 +18,8 @@ using namespace protocol;
 // ------------------------------------------------------------------
 // constructor
 // ------------------------------------------------------------------
-StringVariant::StringVariant(Value* v, Component* p)
-   : value(v), parent(p), secondaryValue(NULL)
+StringVariant::StringVariant(Value* v, Component* p, bool asDefault)
+   : value(v), parent(p), defaultValue(asDefault ? v : NULL)
    {
    determineType();
    }
@@ -30,7 +30,7 @@ void StringVariant::sendVariable(QueryValueData& queryData, bool useMainValue)
    {
    Value* valueToUse = value;
    if (!useMainValue)
-      valueToUse = secondaryValue;
+      valueToUse = defaultValue;
    if (valueToUse != NULL)
       {
       std::vector<float> realArray;
@@ -173,15 +173,15 @@ float StringVariant::asInteger()
    }
 // ------------------------------------------------------------------
 // The value object passed in is the main value to use for this variable.
-// The value object already in 'value' is the secondary (backup) value
+// The value object already in 'value' is the default (backup) value
 // so swap them around. This only ever happens when a temporal variable
 // has the same name as a constant variable. When sparse data is allowed,
-// sometimes we'll have to use the secondaryValue when the main temporal
+// sometimes we'll have to use the defaultValue when the main temporal
 // value is not valid (ie when the date isn't the same as today's date.
 // ------------------------------------------------------------------
 void StringVariant::setTemporalValue(Value* v)
    {
-   secondaryValue = value;
+   defaultValue = value;
    value = v;
    }
 

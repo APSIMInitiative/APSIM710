@@ -27,8 +27,8 @@ namespace protocol {
 class EXPORT StringVariant
    {
    public:
-      StringVariant(void) : value(NULL), parent(NULL), secondaryValue(NULL) { }
-      StringVariant(Value* value, protocol::Component* parent);
+      StringVariant(void) : value(NULL), parent(NULL), defaultValue(NULL) { }
+      StringVariant(Value* value, protocol::Component* parent, bool asDefault = false);
 
       void sendVariable(protocol::QueryValueData& queryData, bool useMainValue);
       void setVariable(protocol::QuerySetValueData& setValueData);
@@ -41,7 +41,7 @@ class EXPORT StringVariant
    private:
       protocol::Component* parent;
       Value* value;
-      Value* secondaryValue;
+      Value* defaultValue;
 
       enum Type {Real, Integer, String, RealArray, IntegerArray, StringArray};
       Type type;

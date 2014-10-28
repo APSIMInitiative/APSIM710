@@ -45,17 +45,17 @@ class EXPORT InputComponent : public protocol::Component
 
       virtual void openInputFile(void);
 
-      void addVariable(Value& value);
+      void addVariable(Value& value, bool asDefault);
       void registerAllVariables(void);
       void checkForSparseData(void);
       boost::gregorian::date advanceToTodaysData(void);
       float getVariableValue(const std::string& name);
       Variables::iterator findVariable(const std::string& name);
       void publishNewMetEvent(void);
-      float calcDayLength(void);
-      float dayLength(int dyoyr, float lat, float sun_angle);
+      double calcDayLength(void);
+      double dayLength(int dyoyr, double lat, double sun_angle);
       void getStartEndDate(void);
-      float calcVP(float temp_arg);
+      double calcVP(double temp_arg);
    private:
       unsigned getDataMethodID;
       unsigned returnDataMethodID;

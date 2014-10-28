@@ -20,11 +20,10 @@
 
 
 using namespace std;
-using namespace boost;
 using namespace boost::gregorian;
 
 static const char* dayLengthType =
-   "<type kind=\"single\" unit=\"h\"/>";
+   "<type kind=\"double\" unit=\"h\"/>";
 static const char* vpType =
    "<type kind=\"single\" unit=\"hPa\"/>";
 static const char* startDateType =
@@ -204,7 +203,7 @@ void InputComponent::doInit2(void)
 // ------------------------------------------------------------------
 // add a variable to our list and register it.
 // ------------------------------------------------------------------
-void InputComponent::addVariable(Value& value)
+void InputComponent::addVariable(Value& value, bool asDefault)
    {
    if (!Str_i_Eq(value.name, "year")  &&
        !Str_i_Eq(value.name, "day")   &&
@@ -216,7 +215,7 @@ void InputComponent::addVariable(Value& value)
          i->second.setTemporalValue(&value);
       else
          {
-         StringVariant variable(&value, this);
+         StringVariant variable(&value, this, asDefault);
          variables.insert(make_pair(variable.doRegistration(), variable));
          }
       }
@@ -226,11 +225,10 @@ void InputComponent::addVariable(Value& value)
 // ------------------------------------------------------------------
 void InputComponent::registerAllVariables(void)
    {
-   for_each(data.constantsBegin(), data.constantsEnd(),
-            boost::bind(&InputComponent::addVariable, this, _1));
-
-   for_each(data.fieldsBegin(), data.fieldsEnd(),
-           boost::bind(&InputComponent::addVariable, this, _1));
+       for (ApsimDataFile::iterator i = data.constantsBegin(); i != data.constantsEnd(); i++)
+           addVariable(*i, true);
+       for (ApsimDataFile::iterator i = data.fieldsBegin(); i != data.fieldsEnd(); i++)
+           addVariable(*i, false);
    }
 // ------------------------------------------------------------------
 // Check to see if we need to handle sparse data or not.
@@ -278,7 +276,7 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
       {
       float vp = getVariableValue("vp");
       if (vp == 0.0)
-         vp = calcVP(getVariableValue("mint"));
+         vp = (float)calcVP(getVariableValue("mint"));
       sendVariable(queryData, vp);
       }
    else if (queryData.ID == startDateID)
@@ -324,7 +322,7 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
       MetData.rain = getVariableValue("rain");
       MetData.vp = getVariableValue("vp");
       if (MetData.vp == 0.0)
-         MetData.vp = calcVP(MetData.mint);
+         MetData.vp = (float)calcVP(MetData.mint);
       sendVariable(queryData, MetData);
       }
    else
@@ -438,16 +436,16 @@ InputComponent::Variables::iterator InputComponent::findVariable(const std::stri
 // ------------------------------------------------------------------
 // Calculate and return day length.
 // ------------------------------------------------------------------
-float InputComponent::calcDayLength(void)
+double InputComponent::calcDayLength(void)
    {
-   float latitude = getVariableValue("latitude");
+   double latitude = getVariableValue("latitude");
    if (latitude != 0.0)
       {
       // Twilight is defined as the interval between sunrise or sunset and the
       // time when the true centre of the sun is 6 degrees below the horizon.
       // Sunrise or sunset is defined as when the true centre of the sun is 50'
       // below the horizon.
-      float twligt = -6.0;
+      double twligt = -6.0;
       int dayOfYear = date_duration(todaysDate - date(todaysDate.year(), 1, 1)).days()+1;
       return dayLength(dayOfYear, latitude, twligt);
       }
@@ -458,7 +456,7 @@ float InputComponent::calcDayLength(void)
 // ------------------------------------------------------------------
 // Calculate vp
 // ------------------------------------------------------------------
-float InputComponent::calcVP(float temp_arg)
+double InputComponent::calcVP(double temp_arg)
    {
    return 6.1078 * exp(17.269*temp_arg / (237.3 + temp_arg));
    }
@@ -478,7 +476,7 @@ void InputComponent::publishNewMetEvent(void)
       newmet.rain = getVariableValue("rain");
       newmet.vp = getVariableValue("vp");
       if (newmet.vp == 0.0)
-         newmet.vp = calcVP(newmet.mint);
+         newmet.vp = (float)calcVP(newmet.mint);
       publish(preNewmetID, newmet);
 
       newmet.today = todaysDate.julian_day();
@@ -488,7 +486,7 @@ void InputComponent::publishNewMetEvent(void)
       newmet.rain = getVariableValue("rain");
       newmet.vp = getVariableValue("vp");
       if (newmet.vp == 0.0)
-         newmet.vp = calcVP(newmet.mint);
+         newmet.vp = (float)calcVP(newmet.mint);
       publish(newmetID, newmet);
 
       }
@@ -500,7 +498,7 @@ void InputComponent::publishNewMetEvent(void)
 // or equal to negative zero.
 // Example a = sign (30,-2) ! a is assigned the value -30
 // ------------------------------------------------------------------
-float sign(float a, float b)
+double sign(double a, double b)
    {
    if (b >= 0)
       return fabs(a);
@@ -512,7 +510,7 @@ float sign(float a, float b)
 //    Returns "lower", if "var" is less than "lower".  Returns "upper"
 //    if "var" is greater than "upper".  Otherwise returns "var".
 // ------------------------------------------------------------------
-float bound(float var, float lower, float upper)
+double bound(double var, double lower, double upper)
    {
    if (var < lower)
       return lower;
@@ -527,12 +525,12 @@ float bound(float var, float lower, float upper)
 // NB There is a small err in cos (90), thus a special
 // case is made for this.
 // ------------------------------------------------------------------
-float InputComponent::dayLength(int dyoyr, float lat, float sun_angle)
+double InputComponent::dayLength(int dyoyr, double lat, double sun_angle)
    {
-   float aeqnox = 79.25;               // equinox
-   float pi =  3.14159265359;
-   float dg2rdn = (2.0*pi) / 360.0;
-   float decsol = 23.45116 * dg2rdn;   // amplitude of declination of sun
+   double aeqnox = 79.25;               // equinox
+   double pi =  3.14159265359;
+   double dg2rdn = (2.0*pi) / 360.0;
+   double decsol = 23.45116 * dg2rdn;   // amplitude of declination of sun
                                        //   - declination of sun at solstices.
                                        // cm says here that the maximum
                                        // declination is 23.45116 or 23 degrees
@@ -540,26 +538,26 @@ float InputComponent::dayLength(int dyoyr, float lat, float sun_angle)
                                        // I have seen else_where that it should
                                        // be 23 degrees 26 minutes 30 seconds -
                                        // 23.44167
-   float dy2rdn = (2.0*pi) /365.25;    // convert days to radians
-   float rdn2hr = 24.0/(2.0*pi);       // convert radians to hours
+   double dy2rdn = (2.0*pi) /365.25;    // convert days to radians
+   double rdn2hr = 24.0/(2.0*pi);       // convert radians to hours
 
-   float alt;                          // twilight altitude limited to max/min
+   double alt;                          // twilight altitude limited to max/min
                                        //   sun altitudes end of twilight
                                        //   - altitude of sun. (radians)
-   float altmn;                        // altitude of sun at midnight
-   float altmx;                        // altitude of sun at midday
-   float clcd;                         // cos of latitude * cos of declination
-   float coshra;                       // cos of hour angle - angle between the
+   double altmn;                        // altitude of sun at midnight
+   double altmx;                        // altitude of sun at midday
+   double clcd;                         // cos of latitude * cos of declination
+   double coshra;                       // cos of hour angle - angle between the
                                        //   sun and the meridian.
-   float dec;                          // declination of sun in radians - this
+   double dec;                          // declination of sun in radians - this
                                        //   is the angular distance at solar
                                        //   noon between the sun and the equator.
-   float hrangl;                       // hour angle - angle between the sun
+   double hrangl;                       // hour angle - angle between the sun
                                        //   and the meridian (radians).
-   float hrlt;                         // day_length in hours
-   float latrn;                        // latitude in radians
-   float slsd;                         // sin of latitude * sin of declination
-   float sun_alt;                      // angular distance between
+   double hrlt;                         // day_length in hours
+   double latrn;                        // latitude in radians
+   double slsd;                         // sin of latitude * sin of declination
+   double sun_alt;                      // angular distance between
                                        // sunset and end of twilight - altitude
                                        // of sun. (radians)
                                        // Twilight is defined as the interval
