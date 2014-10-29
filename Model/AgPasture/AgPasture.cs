@@ -493,19 +493,8 @@ public class AgPasture
     [Units("mm")]
     private double[] rootDepth
     {
-        get
-        {
-            return myRootDepth;
-        }
-        set
-        {
-            myRootDepth = value;
-            p_rootFrontier = 0;
-            foreach (double x in myRootDepth)
-            {
-                p_rootFrontier = (x > p_rootFrontier) ? x : p_rootFrontier;
-            }
-        }
+        get { return myRootDepth; }
+        set { myRootDepth = value; }
     }
 
     private int p_RootDistributionMethod = 0;
@@ -775,25 +764,6 @@ public class AgPasture
         // get the actual number os species to simulate
         NumSpecies = speciesToSimulate.Length;
 
-		//Rainss 20110711 - Introduced broken stick root distribution
-		// This hack uses rlvp as interface to pass distribution parameters and then recalc rlvp
-		// This is not what I would call good pratice due to the parameters technically changing meaning during
-		// initilisation, but it will do in the interim.
-		if (rlvp.Length == NumSpecies)
-		{
-			p_RootDistributionMethod = 2;
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                p_ExpoLinearDepthParam[s] = rlvp[s];
-                p_ExpoLinearCurveParam[s] = 1.0;
-            }
-			// This has been maintained for backwards compatibility, use should be avoided
-		}
-
-		// rlvp is used as input only, in the calculations it has been usper-seeded by RootFraction (the proportion of roots mass in each layer)
-		// The RootFraction should add up to 1.0 over the soil profile
-		RootFraction = RootProfileDistribution();
-
 		// check that initialisation fractions have been supplied accordingly
 		Array.Resize(ref initialDMFractions_grass, 11);
 		Array.Resize(ref initialDMFractions_legume, 11);
@@ -867,6 +837,25 @@ public class AgPasture
 
 		if (p_totalLAI == 0) { p_lightExtCoeff = 0.5; }
 		else { p_lightExtCoeff = sum_lightExtCoeff / p_totalLAI; }
+
+        //Rainss 20110711 - Introduced broken stick root distribution
+        // This hack uses rlvp as interface to pass distribution parameters and then recalc rlvp
+        // This is not what I would call good pratice due to the parameters technically changing meaning during
+        // initilisation, but it will do in the interim.
+        if (rlvp.Length == NumSpecies)
+        {
+            p_RootDistributionMethod = 2;
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                p_ExpoLinearDepthParam[s] = rlvp[s];
+                p_ExpoLinearCurveParam[s] = 1.0;
+            }
+            // This has been maintained for backwards compatibility, use should be avoided
+        }
+
+        // rlvp is used as input only, in the calculations it has been usper-seeded by RootFraction (the proportion of roots mass in each layer)
+        // The RootFraction should add up to 1.0 over the soil profile
+        RootFraction = RootProfileDistribution();
 
 		//init
 		p_dGrowthPot = 0.0;
