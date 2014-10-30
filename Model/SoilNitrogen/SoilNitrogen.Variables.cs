@@ -183,7 +183,8 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// Initial amount of FOM in the soil (kgDM/ha)
 	/// </summary>
-	[Param(IsOptional = true, MinVal = 0.0, MaxVal = 100000.0)]
+    [Input(IsOptional = true)]
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100000.0)]
 	[Units("kg/ha")]
 	[Description("Initial amount of FOM in the soil")]
 	public double InitialFOMAmount = 0.0;
@@ -195,6 +196,7 @@ public partial class SoilNitrogen
 	/// If not given fom will be distributed over the whole soil profile
 	/// Distribution follows an exponential function
 	/// </remarks>
+    [Input(IsOptional = true)]
 	[Param(IsOptional = true)]
 	[Units("mm")]
 	[Description("Initial depth over which FOM is distributed in the soil")]
