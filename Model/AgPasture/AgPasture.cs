@@ -166,10 +166,15 @@ public class AgPasture
     [Units("")]
     private double[] CO2NCurvature;
 
-	[Param]
-	[Description("Maximum fraction of biomass allocated to roots")]
-	[Units("0-1")]
-	private double[] maxRootFraction;
+    [Param]
+    [Description("Target or ideal shoot:root ratio, DM allocation")]
+    [Units("-")]
+    private double[] targetSRratio;
+
+    [Param]
+    [Description("Maximum fraction of biomass allocated to roots")]
+    [Units("0-1")]
+    private double[] maxRootFraction;
 
 	[Param]
     [Description("Factor for increasing DM allocation to shoot during reproductive growth")]
@@ -239,11 +244,34 @@ public class AgPasture
 	[Param]
 	[Description("Fraction of new growth allocated to leaf (0-1)")]
 	[Units("")]
-	private double[] fLeaf;
+	private double[] maxFLeaf;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] minFLeaf;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] dmMaxFLeaf;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] dmReferenceFLeaf;
+    [Param]
+    [Description("")]
+    [Units("")]
+    private double[] exponentFLeaf;
+
 	[Param]
 	[Description("Fraction of new growth allocated to stolon (0-1)")]
 	[Units("")]
 	private double[] fStolon;
+
+    
+    [Param]
+    [Description("Number of live leaves per tiller")]
+    [Units("")]
+    private double[] liveLeavesPerTiller;
 
     private double[] specificLeafArea;
     [Param]
@@ -286,7 +314,7 @@ public class AgPasture
     [Param]
     [Description("Senescence rate for stolon (live to dead material)")]
     [Units("")]
-    private double[] rateLive2DeadStolon;
+    private double[] refTurnoverRateStolon;
     [Param]
 	[Description("Littering rate (dead to litter)")]
 	[Units("")]
@@ -896,7 +924,7 @@ public class AgPasture
 		SP[s1].micrometType = micrometType[s2];
 
         SP[s1].isLegume = ((int)isLegume[s2] == 1);
-        SP[s1].photoPath = (int)photoPath[s2];
+        SP[s1].photoPath = "C" + (int)photoPath[s2];
 
 
         // -- deactivating all the annual stuff (never really used)
@@ -914,7 +942,8 @@ public class AgPasture
         SP[s1].dRootDepth = 1; //(int)dRootDepth[s];
         SP[s1].maxRootDepth = 10; //(int)maxRootDepth[s];
 
-
+        // SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
+        SP[s1].targetSRratio = targetSRratio[s2];
         SP[s1].allocationSeasonF = allocationSeasonF[s2];
         SP[s1].startHighAllocation = StartHighAllocation[s2];
         SP[s1].durationHighAllocation = DurationHighAllocation[s2];
@@ -962,10 +991,10 @@ public class AgPasture
         SP[s1].CO2NMin = CO2NMin[s2];
         SP[s1].CO2NCurvature = CO2NCurvature[s2];
 
-		SP[s1].rateLive2Dead = rateLive2Dead[s2];
+		SP[s1].refTissueTurnoverRate = rateLive2Dead[s2];
         SP[s1].facGrowingTissue = facGrowingTissue[s2];
-        SP[s1].rateLive2DeadStolon = rateLive2DeadStolon[s2];
-		SP[s1].rateDead2Litter = rateDead2Litter[s2];
+        SP[s1].refTurnoverRateStolon = refTurnoverRateStolon[s2];
+		SP[s1].refLitteringRate = rateDead2Litter[s2];
 		SP[s1].rateRootSen = rateRootSen[s2];
         SP[s1].massFluxTmin = massFluxTmin[s2];
         SP[s1].massFluxTopt = massFluxTopt[s2];
@@ -975,10 +1004,14 @@ public class AgPasture
         SP[s1].exponentGLFW2dead = massFluxDeadWq[s2];
         SP[s1].stockParameter = stockParameter[s2];
 		
-        SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
-		SP[s1].leafRate = 0.0;
-		SP[s1].fLeaf = fLeaf[s2];
+		SP[s1].maxFLeaf = maxFLeaf[s2];
+        SP[s1].minFLeaf = minFLeaf[s2];
+        SP[s1].dmMaxFLeaf = dmMaxFLeaf[s2];
+        SP[s1].dmReferenceFLeaf = dmReferenceFLeaf[s2];
+        SP[s1].exponentFLeaf = exponentFLeaf[s2];
+
 		SP[s1].fStolon = fStolon[s2];
+        SP[s1].liveLeavesPerTiller = liveLeavesPerTiller[s2];
         SP[s1].specificLeafArea = specificLeafArea[s2];
         SP[s1].specificRootLength = specificRootLength[s2];
         SP[s1].digestLive = digestLive[s2];
@@ -1033,7 +1066,7 @@ public class AgPasture
 		if (dmroot[s2] >= 0.0)
 			SP[s1].dmroot = dmroot[s2];
 		else
-			SP[s1].dmroot = dmshoot[s2] / SP[s1].maxSRratio;
+			SP[s1].dmroot = dmshoot[s2] / SP[s1].targetSRratio;
 
 		SP[s1].dmgreenmin = dmgreenmin[s2];
 		SP[s1].dmdeadmin = dmdeadmin[s2];
@@ -1228,14 +1261,14 @@ public class AgPasture
 		{
 			p_gfwater = 1.0;
 			for (int s = 0; s < NumSpecies; s++)
-				SP[s].gfwater = p_gfwater;
+				SP[s].glfWater = p_gfwater;
 			return;                                 //case (1) return
 		}
 		if (p_waterDemand > 0 && p_waterUptake == 0)
 		{
 			p_gfwater = 0.0;
 			for (int s = 0; s < NumSpecies; s++)
-				SP[s].gfwater = p_gfwater;
+				SP[s].glfWater = p_gfwater;
 			return;                                 //case (2) return
 		}
 
@@ -1271,8 +1304,8 @@ public class AgPasture
 				p_greenLAI = 0;     //update p_greenLAI before using it.
 				for (int s = 0; s < NumSpecies; s++)
 				{
-					SP[s].gfwater = 1 - SP[s].soilSatFactor * (SW - FC) / (Sat - FC);
-					accum_gfwater += SP[s].gfwater * SP[s].greenLAI;   //weighted by greenLAI
+					SP[s].glfWater = 1 - SP[s].soilSatFactor * (SW - FC) / (Sat - FC);
+					accum_gfwater += SP[s].glfWater * SP[s].greenLAI;   //weighted by greenLAI
 					p_greenLAI += SP[s].greenLAI;                      //FLi 19 Sept 2011 for avoiding error of an unupdated
 				}                                                      //p_greenLAI when using SWIM for waterUptake
 				if (p_greenLAI > 0)
@@ -1288,7 +1321,7 @@ public class AgPasture
 		//Original block Set specieS.gfwater = p_gfwater, to distinguish them later
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			SP[s].gfwater = p_gfwater;
+			SP[s].glfWater = p_gfwater;
 		}
 		//Console.Out.WriteLine("gfwater4: " + p_gfwater);
 		return;                                     //case (4) return
@@ -2123,7 +2156,7 @@ public class AgPasture
 				SP[s].soilNuptake = 0.0;
 				SP[s].NFastRemob3 = 0.0;
 				SP[s].NFastRemob2 = 0.0;
-				SP[s].gfn = 1.0;
+				SP[s].glfN = 1.0;
 			}
 			else
 			{
@@ -2134,7 +2167,7 @@ public class AgPasture
 					SP[s].NFastRemob3 = 0.0;
 					SP[s].NFastRemob2 = 0.0;
 					SP[s].newGrowthN += SP[s].soilNuptake;
-					SP[s].gfn = 1.0;
+					SP[s].glfN = 1.0;
 				}
 				else
 				{
@@ -2184,7 +2217,7 @@ public class AgPasture
 						SP[s].NFastRemob3 = 0.0;
 						SP[s].NFastRemob2 = 0.0;
 					}
-					SP[s].gfn = Math.Min(1.0, Math.Max(0.0, SP[s].newGrowthN / SP[s].NdemandOpt));
+					SP[s].glfN = Math.Min(1.0, Math.Max(0.0, SP[s].newGrowthN / SP[s].NdemandOpt));
 				}
 			}
 			p_soilNuptake += SP[s].soilNuptake;
@@ -2196,7 +2229,7 @@ public class AgPasture
 			}
 			else
 			{
-				p_gfn += SP[s].gfn * SP[s].dGrowthW / p_dGrowthW;
+				p_gfn += SP[s].glfN * SP[s].dGrowthW / p_dGrowthW;
 			}
 		}
 
@@ -4429,7 +4462,7 @@ public class AgPasture
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < NumSpecies; s++)
 			{
-				result[s] = SP[s].gamad;
+				result[s] = SP[s].gamaD;
 			}
 			return result;
 		}
@@ -4444,7 +4477,7 @@ public class AgPasture
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < NumSpecies; s++)
 			{
-				result[s] = SP[s].gamas;
+				result[s] = SP[s].gamaS;
 			}
 			return result;
 		}
@@ -4459,7 +4492,7 @@ public class AgPasture
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < NumSpecies; s++)
 			{
-				result[s] = SP[s].gamar;
+				result[s] = SP[s].gamaR;
 			}
 			return result;
 		}
@@ -4711,7 +4744,7 @@ public class AgPasture
 		{
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < NumSpecies; s++)
-				result[s] = SP[s].gfn;
+				result[s] = SP[s].glfN;
 			return result;
 		}
 	}
@@ -4738,7 +4771,7 @@ public class AgPasture
 		{
 			double[] result = new double[SP.Length];
 			for (int s = 0; s < NumSpecies; s++)
-				result[s] = SP[s].gfwater;
+				result[s] = SP[s].glfWater;
 			return result;
 		}
 	}

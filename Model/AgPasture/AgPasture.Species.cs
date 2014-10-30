@@ -45,7 +45,7 @@ public class Species
 
 	internal bool isAnnual;        //Species type (1=annual,0=perennial)
 	internal bool isLegume;        //Legume (0=no,1=yes)
-	internal int photoPath;       //Phtosynthesis pathways: 3=C3, 4=C4; //no consideration for CAM(=3)
+	internal string photoPath;       //Phtosynthesis pathways: 3=C3, 4=C4; //no consideration for CAM(=3)
 
 	//annual species parameters
 	internal int dayEmerg;         //Earlist day of emergence (for annuals only)
@@ -72,6 +72,8 @@ public class Species
 	internal int rootDepth;       //current root depth (mm)
 	//**internal int rootFnType;        //Root function 0=default 1=Ritchie 2=power_law 3=proportional_depth
 
+    internal double targetSRratio;       //Shoot-Root ratio maximum
+    internal double maxRootFraction;       //Root DM allocation maximum (to be deprecated)
     internal double allocationSeasonF; //factor for different biomass allocation among seasons
     internal double startHighAllocation;
     internal double durationHighAllocation;
@@ -92,6 +94,7 @@ public class Species
     internal double growthEfficiency;
     internal double alphaPhoto;
     internal double thetaPhoto;
+    internal double lightExtCoeff;    //Light extinction coefficient
 
     internal double growthTmin;   //Minimum temperature (grtmin) - originally 0
 	internal double growthTopt;   //Optimum temperature (grtopt) - originally 20
@@ -124,22 +127,22 @@ public class Species
 	internal double massFluxWopt;         //grfw2        Mass flux optimum temperature
 
 	//**internal double satRadn;         //Saturated canopy radiation Pnet (MJ/m^2/day)
-	internal double specificLeafArea;                //Specific leaf area (m2/kg dwt)
+    internal double liveLeavesPerTiller;
+    internal double specificLeafArea;                //Specific leaf area (m2/kg dwt)
     internal double specificRootLength;
-	internal double lightExtCoeff;    //Light extinction coefficient
-	internal double rue;              //radiaiton use efficiency
-	internal double maxAssimiRate;    //Maximum Assimulation rate at reference temp & daylength (20C & 12Hrs)
-	internal double rateLive2Dead;    //Decay coefficient between live and dead
+	internal double refTissueTurnoverRate;    //Decay coefficient between live and dead
     internal double exponentGLFW2dead;
     internal double facGrowingTissue;
-	internal double rateDead2Litter;    //Decay coefficient between dead and litter
-    internal double rateLive2DeadStolon;
+	internal double refLitteringRate;    //Decay coefficient between dead and litter
+    internal double refTurnoverRateStolon;
 	internal double rateRootSen;      //Decay reference root senescence rate (%/day)
 	internal double stockParameter;   //Stock influence parameter
     internal static double stockingRate = 0;  //stocking rate affacting transfer of dead to little (default as 0 for now)
-    internal double maxSRratio;       //Shoot-Root ratio maximum
-	internal double leafRate;         //reference leaf appearance rate without stress
-	internal double fLeaf;            //Fixed growth partition to leaf (0-1)
+	internal double maxFLeaf;
+    internal double minFLeaf;
+    internal double dmMaxFLeaf;
+    internal double dmReferenceFLeaf;
+    internal double exponentFLeaf;
 	internal double fStolon;            //Fixed growth partition to stolon (0-1)
 
 	internal double digestLive;   //Digestibility of live plant material (0-1)
@@ -286,9 +289,9 @@ public class Species
 	internal double soilNuptake;  //N uptake of the day
 
 	//growth limiting factors
-	internal double gfwater;  //from water stress
-	internal double gftemp;   //from temperature
-	internal double gfn;      //from N deficit
+	internal double glfWater;  //from water stress
+	internal double glfTemp;   //from temperature
+	internal double glfN;      //from N deficit
 	internal double Ncfactor;
 	internal double fNavail2Max; //demand/Luxruy uptake
 
@@ -305,14 +308,13 @@ public class Species
 	internal double dNrootSen;     //N in dRootSen
 
 	internal double fShoot;         //actual fraction of dGrowth to shoot
-	internal int dayCounter;
-	internal double sumGFW;
-
+    private double fLeaf; 
+    
 	// transfer coefficients 
 	internal double gama = 0.0;	// from tissue 1 to 2, then 3 then 4
-	internal double gamas = 0.0;	// for stolons
-	internal double gamad = 0.0;	// from dead to litter
-	internal double gamar = 0.0;	// for roots (to dead/FOM)
+	internal double gamaS = 0.0;	// for stolons
+	internal double gamaD = 0.0;	// from dead to litter
+	internal double gamaR = 0.0;	// for roots (to dead/FOM)
 
 	//internal double leafPref = 1;    //leaf preference
 	internal double IL1;
@@ -769,8 +771,8 @@ public class Species
 		if (Math.Abs(CO2 - referenceCO2) < 0.5)
 			return 1.0;
 
-		double Kp = CO2PmaxScale; //700; for C3 plants & 150 for C4
-		if (photoPath == 4)     //C4 plants
+		double Kp = CO2PmaxScale;
+		if (photoPath == "C4")
 			Kp = 150;
 
 		double Fp = (CO2 / (Kp + CO2)) * ((referenceCO2 + Kp) / referenceCO2);
@@ -812,6 +814,7 @@ public class Species
 	{
         fShoot = NewGrowthToShoot();
 		double fL = UpdatefLeaf(); //to consider more dm to leaf when DM is lower?
+        fLeaf = maxFLeaf;
 
 		double toRoot = dGrowthW * (1.0 - fShoot);
 		double toStol = dGrowthW * fShoot * fStolon;
@@ -867,7 +870,7 @@ public class Species
 
 		// NcFactor were addeded in Pm and Resp_m, Dec 10
 		//  dGrowthW = dGrowthPot * Math.Min(gfwater, Ncfactor);
-		dGrowthW = dGrowthPot * Math.Pow(gfwater, waterStressFactor);
+		dGrowthW = dGrowthPot * Math.Pow(glfWater, waterStressFactor);
 
 		/*if (dGrowthPot > 0)
 		{
@@ -884,9 +887,9 @@ public class Species
 	{
 		double gfnit = 0.0;
 		if (isLegume)
-			gfnit = gfn;                           //legume no dilution, but reducing more DM (therefore LAI)
+			gfnit = glfN;                           //legume no dilution, but reducing more DM (therefore LAI)
 		else
-			gfnit = Math.Pow(gfn, NdilutCoeff);    // more DM growth than N limited, due to dilution (typically NdilutCoeff = 0.5)
+			gfnit = Math.Pow(glfN, NdilutCoeff);    // more DM growth than N limited, due to dilution (typically NdilutCoeff = 0.5)
 
 		dGrowth = dGrowthW * Math.Min(gfnit, Frgr);
 		return dGrowth;
@@ -1010,17 +1013,18 @@ public class Species
 
 		}  //end of "partition" block
 
-		//**Tussue turnover among the 12 standing biomass pools
-		//The rates are affected by water and temperature factor
+		//**Tissue turnover among the 12 standing biomass pools
+		//The rates are affected by water and temperature factor, as well as the number of leaves
 		double gftt = GFTempTissue();
 		double gfwt = GFWaterTissue();
+        double gftleaf = 3.0 / liveLeavesPerTiller;       // three tissue stages used to simulate a number of leaves
 
-		gama = gftt * gfwt * rateLive2Dead;
-		gamas = gama;                                    //for stolon of legumes
+        gama = refTissueTurnoverRate * gftt * gfwt * gftleaf;
+        gamaS = refTurnoverRateStolon * gftt * gfwt * gftleaf;    //gama;                                    //for stolon of legumes
 		//double gamad = gftt * gfwt * rateDead2Litter;
-        gamad = rateDead2Litter * Math.Pow(gfwater, exponentGLFW2dead) * digestDead / 0.4 + stockParameter * stockingRate;
+        gamaD = refLitteringRate * Math.Pow(glfWater, exponentGLFW2dead) * digestDead / 0.4 + stockParameter * stockingRate;
 
-		gamar = gftt * (2 - gfwater) * rateRootSen;  //gfwt * rateRootSen;
+		gamaR = gftt * (2 - glfWater) * rateRootSen;  //gfwt * rateRootSen;
 
 
 		if (gama == 0.0) //if gama ==0 due to gftt or gfwt, then skip "turnover" part
@@ -1041,7 +1045,7 @@ public class Species
 				{
 					double Kv = (double)daysfromEmergence / daysEmgToAnth;
 					gama *= Kv;
-					gamar *= Kv;
+					gamaR *= Kv;
 				}
 				else if (phenoStage == 2)    //repro
 				{
@@ -1050,19 +1054,15 @@ public class Species
 				}
 			}
 
-			// get daily defoliation: Fd = fraction of defoliation
-			double Fd = 0;                                  //TODO with animal module later
-			if (pS.dmdefoliated != 0 && pS.dmshoot != 0)
+			// get daily defoliation factor
+			double Fd = 0;
+			if (pS.dmdefoliated + pS.dmshoot > 0)
 				Fd = pS.dmdefoliated / (pS.dmdefoliated + pS.dmshoot);
 
-			//gamar = gamar + Fd * Fd * (1 - gamar);
-			//**Nov 09: Decided not to reduce root mass mmediately in a high proportion according to defoliation,
-			//**Gradual process is more reasonable, and this results in a very smmall difference in predicting prodution
-
-			if (isLegume) gamas = gama + Fd * (1 - gama);   //increase stolon senescence
+			if (isLegume) 
+                gamaS = gamaS + Fd * (1 - gamaS);   //increase stolon senescence
 
 			//if today's turnover will result in a dmgreen < dmgreen_minimum, then adjust the rate,
-			//double dmgreenToBe = dmgreen + dGrowth - gamad * (pS.dmleaf4 + pS.dmstem4 + pS.dmstol3);
 			//Possibly to skip this for annuals to allow them to die - phenololgy-related?
 			double dmgreenToBe = dmgreen + dGrowth - gama * (pS.dmleaf3 + pS.dmstem3 + pS.dmstol3);
 			if (dmgreenToBe < dmgreenmin)
@@ -1073,49 +1073,49 @@ public class Species
 					if (dmgreen + dGrowth < dmgreenmin)
 					{
 						gama = 0;
-						gamas = 0;
+						gamaS = 0;
 						//  gamad = 0;
-						gamar = 0;
+						gamaR = 0;
 					}
 					else
 					{
 						double gama_adj = (dmgreen + dGrowth - dmgreenmin) / (pS.dmleaf3 + pS.dmstem3 + pS.dmstol3);
-						gamar = gamar * gama_adj / gama;
-						gamad = gamad * gama_adj / gama;
+						gamaR = gamaR * gama_adj / gama;
+						gamaD = gamaD * gama_adj / gama;
 						gama = gama_adj;
 					}
 				}
 			}
 			if (dmroot < 0.5 * dmgreenmin)          //set a minimum root too
-				gamar = 0;
+				gamaR = 0;
 
 			//Do actual DM turnover
-			dmleaf1 = dmleaf1 - 2 * gama * pS.dmleaf1;                //except dmleaf1, other pool dm* = pS.dm*
-			dmleaf2 = dmleaf2 - gama * pS.dmleaf2 + 2 * gama * pS.dmleaf1;
+            dmleaf1 = dmleaf1 - facGrowingTissue * gama * pS.dmleaf1;                //except dmleaf1, other pool dm* = pS.dm*
+            dmleaf2 = dmleaf2 - gama * pS.dmleaf2 + facGrowingTissue * gama * pS.dmleaf1;
 			dmleaf3 = dmleaf3 - gama * pS.dmleaf3 + gama * pS.dmleaf2;
-			dmleaf4 = dmleaf4 - gamad * pS.dmleaf4 + gama * pS.dmleaf3;
-			dGrowthHerbage -= gamad * pS.dmleaf4;
+			dmleaf4 = dmleaf4 - gamaD * pS.dmleaf4 + gama * pS.dmleaf3;
+			dGrowthHerbage -= gamaD * pS.dmleaf4;
 
-			dmstem1 = dmstem1 - 2 * gama * pS.dmstem1;
-			dmstem2 = dmstem2 - gama * pS.dmstem2 + 2 * gama * pS.dmstem1;
+            dmstem1 = dmstem1 - facGrowingTissue * gama * pS.dmstem1;
+            dmstem2 = dmstem2 - gama * pS.dmstem2 + facGrowingTissue * gama * pS.dmstem1;
 			dmstem3 = dmstem3 - gama * pS.dmstem3 + gama * pS.dmstem2;
-			dmstem4 = dmstem4 - gamad * pS.dmstem4 + gama * pS.dmstem3;
-			dGrowthHerbage -= gamad * pS.dmstem4;
+			dmstem4 = dmstem4 - gamaD * pS.dmstem4 + gama * pS.dmstem3;
+			dGrowthHerbage -= gamaD * pS.dmstem4;
 
-			dmstol1 = dmstol1 - 2 * gamas * pS.dmstol1;
-			dmstol2 = dmstol2 - gamas * pS.dmstol2 + 2 * gamas * pS.dmstol1;
-			dmstol3 = dmstol3 - gamas * pS.dmstol3 + gamas * pS.dmstol2;
-			dGrowthHerbage -= gamas * pS.dmstol3;
+            dmstol1 = dmstol1 - facGrowingTissue * gamaS * pS.dmstol1;
+            dmstol2 = dmstol2 - gamaS * pS.dmstol2 + facGrowingTissue * gamaS * pS.dmstol1;
+			dmstol3 = dmstol3 - gamaS * pS.dmstol3 + gamaS * pS.dmstol2;
+			dGrowthHerbage -= gamaS * pS.dmstol3;
 
-			dRootSen = gamar * pS.dmroot;
+			dRootSen = gamaR * pS.dmroot;
 			dmroot = dmroot - dRootSen;// -Resp_root;
 
 			//Previous: N (assuming that Ncdead = Ncleaf4, Ncstem4 or Nclitter):  Nc --[N]
-			double Nleaf1to2 = Ncleaf1 * 2 * gama * pS.dmleaf1;
+            double Nleaf1to2 = Ncleaf1 * facGrowingTissue * gama * pS.dmleaf1;
 			double Nleaf2to3 = Ncleaf2 * gama * pS.dmleaf2;
 			double Nleaf3to4 = NcleafMin * gama * pS.dmleaf3;         //Ncleaf4 = NcleafMin: [N] in naturally scenescend tissue
 			double Nleaf3Remob = (Ncleaf3 - NcleafMin) * gama * pS.dmleaf3;
-			double Nleaf4toL = Ncleaf4 * gamad * pS.dmleaf4;        //to litter
+			double Nleaf4toL = Ncleaf4 * gamaD * pS.dmleaf4;        //to litter
 			Nleaf1 = Nleaf1 - Nleaf1to2;
 			Nleaf2 = Nleaf2 + Nleaf1to2 - Nleaf2to3;
 			Nleaf3 = Nleaf3 + Nleaf2to3 - Nleaf3to4 - Nleaf3Remob;
@@ -1126,11 +1126,11 @@ public class Species
 			if (dmleaf3 != 0) { Ncleaf3 = Nleaf3 / dmleaf3; }
 			if (dmleaf4 != 0) { Ncleaf4 = Nleaf4 / dmleaf4; }
 
-			double Nstem1to2 = Ncstem1 * 2 * gama * pS.dmstem1;
+            double Nstem1to2 = Ncstem1 * facGrowingTissue * gama * pS.dmstem1;
 			double Nstem2to3 = Ncstem2 * gama * pS.dmstem2;
 			double Nstem3to4 = NcstemMin * gama * pS.dmstem3;
 			double Nstem3Remob = (Ncstem3 - NcstemMin) * gama * pS.dmstem3;
-			double Nstem4toL = Ncstem4 * gamad * pS.dmstem4;   //to litter
+			double Nstem4toL = Ncstem4 * gamaD * pS.dmstem4;   //to litter
 
 			Nstem1 = Nstem1 - Nstem1to2;
 			Nstem2 = Nstem2 + Nstem1to2 - Nstem2to3;
@@ -1142,26 +1142,26 @@ public class Species
 			if (dmstem3 != 0) { Ncstem3 = Nstem3 / dmstem3; }
 			if (dmstem4 != 0) { Ncstem4 = Nstem4 / dmstem4; }
 
-			double Nstol1to2 = Ncstol1 * 2 * gamas * pS.dmstol1;
-			double Nstol2to3 = Ncstol2 * gamas * pS.dmstol2;
-			double Nstol3Remob = 0.5 * (Ncstol3 - NcstolMin) * gamas * pS.dmstol3;       //gamas is acelerated by defoliation
-			double Nstol3toL = Ncstol3 * gamas * pS.dmstol3 - Nstol3Remob;
+            double Nstol1to2 = Ncstol1 * facGrowingTissue * gamaS * pS.dmstol1;
+			double Nstol2to3 = Ncstol2 * gamaS * pS.dmstol2;
+			double Nstol3Remob = 0.5 * (Ncstol3 - NcstolMin) * gamaS * pS.dmstol3;
+			double Nstol3toL = Ncstol3 * gamaS * pS.dmstol3 - Nstol3Remob;
 
 			Nstol1 = Nstol1 - Nstol1to2;
 			Nstol2 = Nstol2 + Nstol1to2 - Nstol2to3;
 			Nstol3 = Nstol3 + Nstol2to3 - Nstol3toL - Nstol3Remob;
 
-			if (dmstol1 != 0) { Ncstol1 = Nstol1 / dmstol1; } //grass has no stolon
+			if (dmstol1 != 0) { Ncstol1 = Nstol1 / dmstol1; }
 			if (dmstol2 != 0) { Ncstol2 = Nstol2 / dmstol2; }
 			if (dmstol3 != 0) { Ncstol3 = Nstol3 / dmstol3; }
 
 			//rootN
-			NrootRemob = 0.5 * (Ncroot - NcrootMin) * dRootSen;    //acelerated by defoliation, the N remob smaller
+			NrootRemob = 0.5 * (Ncroot - NcrootMin) * dRootSen;
 			dNrootSen = Ncroot * dRootSen - NrootRemob;
-			Nroot = Nroot - Ncroot * dRootSen;              // (Ncroot goes to both Remob & FOM in soil)
+			Nroot = Nroot - Ncroot * dRootSen;
 			if (dmroot != 0) Ncroot = Nroot / dmroot;       // dmroot==0 this should not happen
 
-			dLitter = gamad * (pS.dmleaf4 + pS.dmstem4) + gamas * pS.dmstol3;
+			dLitter = gamaD * (pS.dmleaf4 + pS.dmstem4) + gamaS * pS.dmstol3;
 
 			double leftoverNremob = Nremob * (1 - Kappa4);  // fraction of Nremob not used, added to litter
 			dNLitter = Nleaf4toL + Nstem4toL + Nstol3toL + leftoverNremob;    //Nremob of previous day after newgrowth, go to litter
@@ -1181,28 +1181,7 @@ public class Species
 			NLuxury3 *= Kappa3;
 
 			//Sugar remobilisation and C balance:
-			Cremob = 0;// not explicitely considered
-
-			/*Cremob = (Nremob - leftoverNremob) * C2N_protein;    //Cremob is calculated one day later so as to know if it is really
-			//remobilised with N
-			if (Cremob > 0)
-			{
-			if (dLitter > Cremob * C2DM)
-			{
-			dLitter -= Cremob * C2DM;  //remove from litter (most likely in this case)
-			}
-			else
-			{
-			Cremob = dLitter / C2DM;
-			dLitter = 0;
-			}
-			}
-			else
-			{
-			dLitter += Cremob * C2DM;
-			Cremob = 0;
-			}*/
-
+			Cremob = 0;  // not explicitely considered
 
 		}  //end of "turnover" block
 
@@ -1215,17 +1194,10 @@ public class Species
 
     private double NewGrowthToShoot()
     {
-        //The input maxSRratio (maximum percentage allocated to roots = 20%) was converted into
-        //the real ratio (=4) at the beginning when setting specific values
-        double GFmin = Math.Min(gfwater, gfn);      //To consider other nutrients later
+        // shoot/root ratio for today's DM partition
+        double todaysSR = targetSRratio;
 
-        //Variable maxSR - maximum shoot/root ratio accoding to phenoloty
-        double targetSR = maxSRratio;
-        double newSR = targetSR;
-        // fac: Assuming the new growth partition is towards a shoot:root ratio of 'maxSR' during reproductive stage,
-        //      then the partition will be towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage
-
-        if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
+        if (pS.dmroot > 0.00001)
         {
             double fac = 1.0;                   //day-to-day fraction of reduction
             //double minF = allocationSeasonF;    //default = 0.8;
@@ -1297,28 +1269,32 @@ public class Species
                 else if ((doyE > doyEoY) && (doy <= doyE - doyEoY))
                     fac = 1.0 + allocationIncrease * (1 - (doyEoY + doy - doyD) / (doyE - doyD));
             }
-            targetSR = fac * maxSRratio;
-            //targetSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root)
-            //fac = 0.8 ~ 1; i.e., maxSR = 1.0 ~ 1.25 of maxSRratio (i.e., SRratio may be 1.25 times of specified maxSRratio during reproductive stage)
 
-            //calculate shoot:root partitioning: fShoot = fraction to shoot [eq.4.12c]
-            //if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
-            //{
+            // update todays shoot/root partition
+            todaysSR = fac * targetSRratio;
+            double newSR = todaysSR;
+
+            // get the soil related growth limiting factor (the smaller this is the higher the allocation of DM to roots)
+            double GFmin = Math.Min(glfWater, glfN);
+
+            // get the current shoot/root ratio (the smaller this is the higher the allocation of DM to shoot)
             double presentSR = dmgreen / pS.dmroot;
-            //if (presentSR > targetSR) presentSR = targetSR;
-            if (presentSR > targetSR)
-                newSR = GFmin * targetSR;
+
+            // update todays shoot/root partition
+            if (presentSR > todaysSR)
+                newSR = GFmin * todaysSR;
             else
-                newSR = GFmin * targetSR * targetSR / presentSR;
+                newSR = GFmin * todaysSR * todaysSR / presentSR;
 
             fShoot = newSR / (1.0 + newSR);
         }
         else
         {
-            fShoot = 1.0;  // shouldn't this be zero??
+            fShoot = 1.0;  // this should not happen (might happen if plant is dead)
         }
-        if (fShoot / (1 - fShoot) < targetSR)
-            fShoot = targetSR / (1 + targetSR);   // as the specified that the system maxSR towards to (useful under stress)
+
+        if (fShoot / (1 - fShoot) < todaysSR)
+            fShoot = todaysSR / (1 + todaysSR);   // as the specified that the system maxSR towards to (useful under stress)
 
         if (dmgreen < pS.dmroot)  //this may happen under stress. There may be CHTs move up too
             fShoot = 1.0;
@@ -1341,11 +1317,11 @@ public class Species
 		get { return (float)(1.0 - (Math.Exp(-lightExtCoeff * totalLAI))); }
 	}
 
-	public double GFTemperature(double T)       //passing T
+	public double GFTemperature(double T)
 	{
-		if (photoPath == 4) gftemp = GFTempC4(T);
-		else gftemp = GFTempC3(T);
-		return gftemp;
+		if (photoPath == "C4") glfTemp = GFTempC4(T);
+		else glfTemp = GFTempC3(T);
+		return glfTemp;
 	}
 
 	// Photosynthesis temperature response curve for C3 plants, passing T
@@ -1461,8 +1437,8 @@ public class Species
 	{
 		double gfwt = 1.0;
 
-		if (gfwater < massFluxWopt)
-			gfwt = 1 + (massFluxW0 - 1.0) * ((massFluxWopt - gfwater) / massFluxWopt);
+		if (glfWater < massFluxWopt)
+			gfwt = 1 + (massFluxW0 - 1.0) * ((massFluxWopt - glfWater) / massFluxWopt);
 
 		if (gfwt < 1.0) gfwt = 1.0;
 		if (gfwt > massFluxW0) gfwt = massFluxW0;
