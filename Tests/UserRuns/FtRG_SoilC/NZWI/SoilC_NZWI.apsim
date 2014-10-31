@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.6-r3467" name="simulations">
+<folder version="36" creator="Apsim 7.6-r3574" name="simulations">
   <simulation name="NZWI">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Tests\UserRuns\FtRG_SoilC\NZWI\NZWI.met</filename>
@@ -1263,15 +1263,14 @@ End Class
         <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
       </surfaceom>
       <AgPasture>
-        <thisCropName type="text" description="Crop name shown as on the simulation tree">AgPasture</thisCropName>
-        <speciesToSimulate description="Name of species to simulate">ryegrass whiteclover</speciesToSimulate>
-        <dmshoot type="text" description="Initial shoot dry matter (kg/ha)">1000      250</dmshoot>
-        <dmgreenmin type="text" description="Minimum green dry matter (kg/ha)">500        50</dmgreenmin>
-        <rootDepth type="text" description="Root depth (mm)">600        250</rootDepth>
-        <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
-        <ExpoLinearDepthParam type="text" description="Root distribution parameter, fraction of root depth to decrease root proportion (0-1):">0.3</ExpoLinearDepthParam>
-        <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">1.0</ExpoLinearCurveParam>
-        <WaterUptakeSource type="text" description="Water uptake done by AgPasture (calc) or by apsim?">apsim</WaterUptakeSource>
+        <Dummy1 type="category" description="Basic parameters for AgPasture" />
+        <thisCropName type="text" description="  Sward name, as used in the simulation tree:">AgPasture</thisCropName>
+        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
+        <Dummy2 type="category" description="Initial values for each species to be simulated" />
+        <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
+        <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1000   250</iniShootDM>
+        <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">350     85</iniRootDM>
+        <iniRootDepth type="text" description="  Initial rooting depth (mm):">600     250</iniRootDepth>
       </AgPasture>
       <outputfile name="Sim">
         <filename output="yes">NZWI Sim.out</filename>

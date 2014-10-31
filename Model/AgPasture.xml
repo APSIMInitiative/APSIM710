@@ -49,32 +49,32 @@
 			<growthEfficiency description="Growth efficiency factor - photosynthesis minus growth respiration (0-1)">0.75  0.75  0.75</growthEfficiency>
 			<maintRespiration description="Maintenance respiration coefficient (%)">3.0  3.0  3.0</maintRespiration>
 			<alphaPhoto description="Leaf gross photosynthesis rate (mg CO2/J)">0.01  0.01  0.01</alphaPhoto>
-			<thetaPhoto description="Photosynthesis curve parameter (J/kg/s)">0.8  0.8  0.8</thetaPhoto>
+			<thetaPhoto description="Photosynthesis curve parameter (J/kg.s)">0.8  0.8  0.8</thetaPhoto>
 			<lightExtCoeff description="Light extinction coefficient (0-1)">0.5  0.8  0.6</lightExtCoeff>
 			<growthTmin description="Minimum temperature for growth (oC)">2.0  4.0  10.0</growthTmin>
-			<growthTopt description="Optimum temperature for growth (oC)">20.0  23.0  35.0</growthTopt>
-			<growthTref description="Optimum temperature for growth (oC)">20.0  20.0  20.0</growthTref>
+			<growthTopt description="Optimum temperature for growth (oC)">20.0  22.0  35.0</growthTopt>
+			<growthTref description="Reference temperature for growth (oC)">20.0  20.0  20.0</growthTref>
 			<growthTq description="Curve parameter for growth response to temperature">1.5  1.5  1.2</growthTq>
-			<useHeatStress description="whether heat stress function will be used">yes  yes  yes</useHeatStress>
+			<useHeatStress description="Whether heat stress is considered, reduces photosynthesis (yes/no)">yes  yes  yes</useHeatStress>
 			<heatOnsetT description="Onset temperature for heat effects on growth (oC)">26.0  30.0  35.0</heatOnsetT>
 			<heatFullT description="Temperature for full heat effects on growth (oC)">31.0  35.0  40.0</heatFullT>
 			<heatSumT description="Temperature sum for recovery from heat effects (oC)">30.0  20.0  50.0</heatSumT>
+			<heatTq description="Exponent for computing recovery from heat stress">1.0  1.0  1.0</heatTq>
 			<heatRecoverT description="Base temperature for recovery from heat stress (oC)">25.0  25.0  25.0</heatRecoverT>
-			<heatTq description="exponent of heat stress function">1.0  1.0  1.0</heatTq>
-			<useColdStress description="whether cold stress function will be used">yes  yes  yes</useColdStress>
-			<coldOnsetT description="Onset temperature for cold effects on growth (oC)">0.0  0.0  8.0</coldOnsetT>
-			<coldFullT description="Temperature for full cold effects on growth (oC)">3.0  -2.0  3.0</coldFullT>
+			<useColdStress description="Whether cold stress is considered, reduces photosynthesis (yes/no)">yes  yes  yes</useColdStress>
+			<coldOnsetT description="Onset temperature for cold effects on growth (oC)">1.0  0.0  8.0</coldOnsetT>
+			<coldFullT description="Temperature for full cold effects on growth (oC)">-3.0  -2.0  3.0</coldFullT>
 			<coldSumT description="Temperature sum for recovery from cold effects (oC)">30.0  30.0  50.0</coldSumT>
+			<coldTq description="Exponent for computing recovery from cold stress">1.0  1.0  1.0</coldTq>
 			<coldRecoverT description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</coldRecoverT>
-			<coldTq description="exponent of cold stress function">1.0  1.0  1.0</coldTq>
 			<referenceCO2 description="Reference atmospheric CO2 content for photosynthesis (ppm)">380  380  380</referenceCO2>
 			<CO2PmaxScale description="Scale factor for CO2 effect on photosynthesis (ppm)">700  700  150</CO2PmaxScale>
 			<CO2NScale description="Scale factor for CO2 effects on plant N concentration (ppm)">600  600  600</CO2NScale>
 			<CO2NMin description="Minimum reduction of plant N concentration under elevated CO2 (0-1)">0.7  0.7  0.7</CO2NMin>
-			<CO2NCurvature description="Curvature factor of CO2 effect on plant N concentration">2.0  2.0  2.0</CO2NCurvature>
+			<CO2NCurvature description="Curvature factor of CO2 effect on plant N concentration (>1.0)">2.0  2.0  2.0</CO2NCurvature>
 
-			<targetSRratio description="Target or ideal shoot:root ratio, DM allocation (>0.0)">3.0  3.0  3.0</targetSRratio>
-			<maxRootFraction description="Maximum biomass fraction allocated to roots (0-1)">0.25  0.25  0.25</maxRootFraction>
+			<maxRootFraction description="Maximum biomass fraction allocated to roots (0-1)">1.0  1.0  1.0</maxRootFraction>
+			<targetSRratio description="Target or ideal shoot:root ratio, DM allocation">4.0  4.0  4.0</targetSRratio>
 			<allocationSeasonF description="Factor for increasing DM allocation to shoot during reproductive growth (0-1)">0.25  0.25  0.25</allocationSeasonF>
 			<StartHighAllocation description="Day for starting the period with higher DM allocation to shoot">232  232  232</StartHighAllocation>
 			<DurationHighAllocation description="Duration of main phase for higher DM allocation to shoot (days)">60  60  60</DurationHighAllocation>
@@ -89,13 +89,13 @@
 			<paramBLatFunction description="Exponent of function defining the duration of main phase with high allocation">2.75  2.75  2.75</paramBLatFunction>
 			<allocationMax description="Maximum increase in DM allocation to shoot during reproductive growth (0-1)">0.4  0.4  0.4</allocationMax>
 			<paramCLatFunction description="Exponent of function for DM fraction allocated to shoot (>1.0)">4.0  4.0  4.0</paramCLatFunction>
-			<maxFLeaf description="Maximum fraction of new shoot growth allocated to leaves (0-1)">0.70  0.56  0.70</maxFLeaf>
-			<minFLeaf description="Minimum fraction of new shoot growth allocated to leaves (0-1)">0.70  0.28  0.07</minFLeaf>
-			<dmMaxFLeaf descritpion="Shoot DM for maximum leaf allocation, allocation decreases above that (kgDM/ha)">500  500  500</dmMaxFLeaf>
+			<maxFLeaf description="Maximum fraction of new shoot growth allocated to leaves (0-1)">0.70  0.56  0.60</maxFLeaf>
+			<minFLeaf description="Minimum fraction of new shoot growth allocated to leaves (0-1)">0.70  0.28  0.60</minFLeaf>
+			<dmMaxFLeaf description="Shoot DM for maximum leaf allocation, allocation decreases above that (kgDM/ha)">500  500  500</dmMaxFLeaf>
 			<dmReferenceFLeaf description="Reference DM, when allocation to leaves is midway max and min (kgDM/ha)">2000  2000  2000</dmReferenceFLeaf>
 			<exponentFLeaf description="Exponent of function describing DM allocation to leaves (>0.0)">3.0  3.0  3.0</exponentFLeaf>
 			<fStolon description="Fraction of new shoot growth allocated to stolons (0-1)">0.0  0.2  0.0</fStolon>
-			<liveLeavesPerTiller description="Number of live leaves per tiller">3.0  3.0  3.0</liveLeavesPerTiller>
+			<liveLeavesPerTiller description="Number of live leaves per tiller">3.0  3.0  3.5</liveLeavesPerTiller>
 			<SpecificLeafArea description="Specific leaf area, per dry matter weight (m2/kgDM)">20  20  20</SpecificLeafArea>
 			<SpecificRootLength description="Specific root length, per dry matter weight (m/gDM)">75  75  75</SpecificRootLength>
 
@@ -104,32 +104,32 @@
 			<refTurnoverRateStolon description="Reference tissue turnover rate for stolon (0-1)">0.05  0.05  0.05</refTurnoverRateStolon>
 			<rateDead2Litter description="Reference littering rate - dead tissue to litter (0-1)">0.11  0.11  0.11</rateDead2Litter>
 			<rateRootSen description="Reference senescence rate for roots (0-1)">0.02  0.02  0.02</rateRootSen>
-			<massFluxTmin description="Minimum temperature for DM turnover (oC)">2.0  2.0  5.0</massFluxTmin>
-			<massFluxTopt description="Optimum temperature for DM turnover (oC)">20.0  20.0  20.0</massFluxTopt>
+			<massFluxTmin description="Minimum temperature for tissue turnover (oC)">2.0  2.0  5.0</massFluxTmin>
+			<massFluxTopt description="Optimum temperature for tissue turnover (oC)">20.0  20.0  20.0</massFluxTopt>
 			<massFluxTq description="Exponent of function for temperature effect on tissue turnover">1.0  1.0  1.0</massFluxTq>
-			<massFluxW0 description="Scale factor for response of DM turnover to soil moisture (>1.0)">2.0  2.0  2.0</massFluxW0>
+			<massFluxW0 description="Scale factor for GLFWater effect on DM turnover, maximum increase (>1.0)">2.0  2.0  2.0</massFluxW0>
 			<massFluxWopt description="Reference GLFwater for tissue turnover (0-1)">0.5  0.5  0.5</massFluxWopt>
-			<massFluxDeadWq description="Exponent to adjust GLFWater for senescing tissue">3.0  3.0  3.0</massFluxDeadWq>
+			<massFluxDeadWq description="Exponent to adjust GLFWater for senescing tissue (>1.0)">3.0  3.0  3.0</massFluxDeadWq>
 			<stockParameter description="Parameter for stock influence on tissue senescence">0.05  0.05  0.05</stockParameter>
 			<Kappa2_Remob description="Coefficient for remobilisation of luxury N from tissue2 (0-1)">0.0  0.0  0.0</Kappa2_Remob>
 			<Kappa3_Remob description="Coefficient for remobilisation of luxury N from tissue3 (0-1)">0.0  0.0  0.0</Kappa3_Remob>
 			<Kappa4_Remob description="Coefficient for partitioning non-used Nremob into tissue4 (0-1)">0.0  0.0  0.0</Kappa4_Remob>
+
 			<digestLive description="Digestibility of live plant material (0-1)">0.6  0.6  0.6</digestLive>
 			<digestDead description="Digestibility of dead plant material (0-1)">0.2  0.2  0.2</digestDead>
 
-			<dmtotal description="">-10  -10  -10</dmtotal>
-			<!-- The dmtotal would be deleted (it has been replaced by dmshoot), but was kept as optional parameter for back-compatibility-->
-			<dmshoot description="Initial shoot dry matter weight (kgDM/ha)">1500  500  300</dmshoot>
-			<dmroot description="Initial root dry matter weight - if negative, start value is calculated (kgDM/ha)">-10   -10   -10</dmroot>
+			<dmshoot description="Default initial shoot dry matter weight (kgDM/ha)">1500  500  300</dmshoot>
+			<dmroot description="Default initial root dry matter weight - if negative, start value is calculated (kgDM/ha)">450  150  100</dmroot>
 			<dmgreenmin description="Minimum allowable green dry matter weight (kgDM/ha)">120  40  25</dmgreenmin>
 			<dmdeadmin description="Minimum allowable dead dry matter weight (kgDM/ha)">0  0  0</dmdeadmin>
 			<initialDMFractions_grass description="Fractions of initial dmshoot for each biomass pool, for grasses">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
-			<initialDMFractions_legume description="Fractions of initial dmshoot for each biomass pool, for legumes">0.20  0.25  0.25  0.00  0.02  0.04  0.04  0.00  0.06  0.12  0.12</initialDMFractions_legume>
+			<initialDMFractions_legume description="Fractions of initial dmshoot for each biomass pool, for legumes">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
+			<initialDMFractions_herb description="Fractions of initial dmshoot for each biomass pool, for herbss">0.20  0.23  0.23  0.05  0.06  0.08  0.08  0.03  0.00  0.00  0.00</initialDMFractions_herb>
 			<!-- There are 11 pools, in order: dmleaf1, dmleaf2, dmleaf3, dmleaf4, dmstem1, dmstem2, dmstem3, dmstem4, dmstol1, dmstol2, and dmstol3 -->
 
 			<NconcOptimum_leaves description="Optimum N concentration of young leaves (%)">4.0  4.5  3.0</NconcOptimum_leaves>
 			<NconcMaximum_leaves description="Maximum N concentration in leaves, with luxury uptake (%)">5.0  5.5  3.5</NconcMaximum_leaves>
-			<NconcMinimum_leaves description="Minimum N concentration in leaves, at senescence (%])">1.2  1.2  0.8</NconcMinimum_leaves>
+			<NconcMinimum_leaves description="Minimum N concentration in leaves, at senescence (%)">1.2  2.0  0.5</NconcMinimum_leaves>
 			<RelativeNconc_Stems description="Relative N concentration in stems, fraction of leaf N (0-1)">0.5  0.5  0.5</RelativeNconc_Stems>
 			<RelativeNconc_Stolons description="Relative N concentration in stolons, fraction of leaf N (0-1)">0.0  0.5  0.0</RelativeNconc_Stolons>
 			<RelativeNconc_Roots description="Relative N concentration in roots, fraction of leaf N (0-1)">0.5  0.5  0.5</RelativeNconc_Roots>
@@ -143,22 +143,23 @@
 			<soilSatFactor description="Coefficient for growth limitations due to soil moisture saturation (0-1)">0.1  0.1  0.1</soilSatFactor>
 			<Frgr description="Generic relative growth limiting factor (0-1)">1.0  1.0  1.0</Frgr>
 
-			<rootDepth description="Root zone depth (mm)">750  350  850</rootDepth>
+			<PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1  1  1</PreferenceForGreenDM>
+			<PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1  1  1</PreferenceForDeadDM>
+			<PreferenceForLeaves description="Weight factor defining the preference level for leaves over stems">1  1  1</PreferenceForLeaves>
+
+			<rootDepth description="Default rooting depth (mm)">750  350  850</rootDepth>
 			<RootDistributionMethod description="Method used to compute root distribution over soil profile">ExpoLinear</RootDistributionMethod>
 			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear -->
-			<ExpoLinearDepthParam description="Fraction of root depth where its proportion starts to decrease (0-1)">0.12  0.12  0.12</ExpoLinearDepthParam>
-			<ExpoLinearCurveParam description="Parameter for ExpoLinear method, exponent to determine mass distribution in the soil profile">3.2  3.2  3.2</ExpoLinearCurveParam>
-
-			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
-			<ll description="Lower limit moisture for water uptake by this species">0.0</ll>
-			<kl description="Coefficient for water availability for each soil layer">1.0</kl>
-			<xf description="Exploration factor, fraction of layer resources available to plant">1.0</xf>
+			<ExpoLinearDepthParam description="Fraction of rooting depth where the proportion of roots starts to decrease (0-1)">0.12  0.12  0.12</ExpoLinearDepthParam>
+			<ExpoLinearCurveParam description="Exponent to determine the distribution of root DM in the soil profile">3.2  3.2  3.2</ExpoLinearCurveParam>
 
 			<WaterUptakeSource description="Whether water uptake is calculated by AgPasture (calc) or apsim">calc</WaterUptakeSource>
 			<NUptakeSource description="Whether N uptake is calculated by AgPasture (calc) or apsim">calc</NUptakeSource>
 
-			<PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1  1  1</PreferenceForGreenDM>
-			<PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1  1  1</PreferenceForDeadDM>
+			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
+			<ll description="Lower limit moisture for water uptake by this species (cm3/cm3)">0.0</ll>
+			<kl description="Coefficient for water availability for each layer (0-1)">1.0</kl>
+			<xf description="Exploration factor, fraction of layer resources available to plant (0-1)">1.0</xf>
 
 			<LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
 				<XY>0,0</XY>
@@ -167,7 +168,7 @@
 				<XY>3000,150</XY>
 				<XY>4000,250</XY>
 			</LinearInterpolation>
-			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the growth limiting factor due to vapour pressure deficit">
+			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the relationship between vapour deficit and relative growth">
 				<XY> 0,1.0</XY>
 				<XY>10,1.0</XY>
 				<XY>50,1.0</XY>

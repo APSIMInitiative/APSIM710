@@ -384,9 +384,6 @@ public class AgPasture
 	[Units("")]
 	private double[] digestDead;
 
-	[Param(IsOptional = true)]
-	private double[] dmtotal = null;	//This would be deleted (it has been replaced by dmshoot - but keep as optional for back-compatibility)
-
     // -- Initial values (to be input from interface, overwrites the values of dmshoot, dmroot, and rootdepth
     [Param(IsOptional = true)]
     private double[] iniShootDM = null;
@@ -394,6 +391,11 @@ public class AgPasture
     private double[] iniRootDM = null;
     [Param(IsOptional = true)]
     private double[] iniRootDepth = null;
+
+    [Param(IsOptional = true)]
+    private double[] iniRootDepthParam = null;
+    [Param(IsOptional = true)]
+    private double[] iniRootCurveParam = null;
 
 	[Param]
 	[Description("Shoot dry weight")]
@@ -431,11 +433,14 @@ public class AgPasture
 	[Description("Fractions of initial dmshoot for each biomass pool, for non-legumes")]
 	[Units("0-1")]
 	private double[] initialDMFractions_grass;
-
-	[Param]
-	[Description("Fractions of initial dmshoot for each biomass pool, for legume species")]
-	[Units("0-1")]
-	private double[] initialDMFractions_legume;
+    [Param]
+    [Description("Fractions of initial dmshoot for each biomass pool, for legume species")]
+    [Units("0-1")]
+    private double[] initialDMFractions_legume;
+    [Param]
+    [Description("Fractions of initial dmshoot for each biomass pool, for herb species")]
+    [Units("0-1")]
+    private double[] initialDMFractions_herb;
 
 	[Param]
 	[Description("Optimum N concentration of leaves (no stress)")]
@@ -618,9 +623,12 @@ public class AgPasture
 	[Param]
 	[Description("Weight factor defining the preference level for green DM")]
 	private double[] PreferenceForGreenDM;
-	[Param]
-	[Description("Weight factor defining the preference level for dead DM")]
-	private double[] PreferenceForDeadDM;
+    [Param]
+    [Description("Weight factor defining the preference level for dead DM")]
+    private double[] PreferenceForDeadDM;
+    [Param]
+    [Description("Weight factor defining the preference level for dead DM")]
+    private double[] PreferenceForLeaves;
 
 
     [Link]
@@ -794,7 +802,8 @@ public class AgPasture
 
 		// check that initialisation fractions have been supplied accordingly
 		Array.Resize(ref initialDMFractions_grass, 11);
-		Array.Resize(ref initialDMFractions_legume, 11);
+        Array.Resize(ref initialDMFractions_legume, 11);
+        Array.Resize(ref initialDMFractions_herb, 11);
 
 		//Create and initialise each species  -----------------------------------------------------------------------------
         // added by RCichota, Oct/2003 - check which species to run
@@ -881,6 +890,22 @@ public class AgPasture
             // This has been maintained for backwards compatibility, use should be avoided
         }
 
+        // check whether a value of root distribution paramters was given for each species (over-write the default one)
+        if (iniRootDepthParam != null)
+        {
+            if (iniRootDepthParam.Length < NumSpecies)
+                throw new Exception("Number of values for paramater \"iniRootDepthParam\" was smaller than number of species");
+            else
+                ExpoLinearDepthParam = iniRootDepthParam;
+        } 
+        if (iniRootCurveParam != null)
+        {
+            if (iniRootCurveParam.Length < NumSpecies)
+                throw new Exception("Number of values for paramater \"iniRootCurveParam\" was smaller than number of species");
+            else
+                ExpoLinearCurveParam = iniRootCurveParam;
+        }
+
         // rlvp is used as input only, in the calculations it has been usper-seeded by RootFraction (the proportion of roots mass in each layer)
         // The RootFraction should add up to 1.0 over the soil profile
         RootFraction = RootProfileDistribution();
@@ -943,6 +968,7 @@ public class AgPasture
         SP[s1].maxRootDepth = 10; //(int)maxRootDepth[s];
 
         // SP[s1].maxSRratio = (1 - maxRootFraction[s2]) / maxRootFraction[s2]; // The input is actually the max % allocated to roots
+        SP[s1].maxRootFraction = maxRootFraction[s2];
         SP[s1].targetSRratio = targetSRratio[s2];
         SP[s1].allocationSeasonF = allocationSeasonF[s2];
         SP[s1].startHighAllocation = StartHighAllocation[s2];
@@ -1021,10 +1047,6 @@ public class AgPasture
             myRootDepth[s2] = iniRootDepth[s1];
         SP[s1].rootDepth = (int)myRootDepth[s2];
 
-        if (dmtotal[s2] >= 0.0)
-        { // a value for dmtotal was supplied, assume that it should overwrite dmshoot (needed for backward-compatibility-RCichota, May2014)
-            dmshoot[s2] = dmtotal[s2];
-        }
         if (iniShootDM[s1] > 0.0)
             dmshoot[s2] = iniShootDM[s1];
         SP[s1].dmshoot = dmshoot[s2];
@@ -2571,7 +2593,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += SP[s].Resp_m + SP[s].Pgross * (1 - SP[s].growthEfficiency);
+                result += SP[s].Resp_m + SP[s].Resp_g;
             return result;
         }
     }
@@ -4811,7 +4833,7 @@ public class AgPasture
 		{
 			double[] result = new double[SP.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = SP[s].Resp_m + SP[s].Pgross * (1.0 - SP[s].growthEfficiency);
+                result[s] = SP[s].Resp_m + SP[s].Resp_g;
 			return result;
 		}
 	}
@@ -4838,7 +4860,7 @@ public class AgPasture
 		{
 			double result = 0.0;
 			for (int s = 0; s < NumSpecies; s++)
-				result += SP[s].Pgross * 0.75 - SP[s].Resp_m;
+                result += SP[s].Pgross * SP[s].growthEfficiency - SP[s].Resp_m;
 			return result;
 		}
 	}

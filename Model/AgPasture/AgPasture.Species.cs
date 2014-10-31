@@ -289,9 +289,9 @@ public class Species
 	internal double soilNuptake;  //N uptake of the day
 
 	//growth limiting factors
-	internal double glfWater;  //from water stress
-	internal double glfTemp;   //from temperature
-	internal double glfN;      //from N deficit
+	internal double glfWater = 1.0;  //from water stress
+	internal double glfTemp = 1.0;   //from temperature
+	internal double glfN = 1.0;      //from N deficit
 	internal double Ncfactor;
 	internal double fNavail2Max; //demand/Luxruy uptake
 
@@ -319,8 +319,9 @@ public class Species
 	//internal double leafPref = 1;    //leaf preference
 	internal double IL1;
 	internal double Pgross;
-	internal double Resp_m;
-	internal double Resp_root;
+    internal double Resp_m;
+    internal double Resp_g;
+    internal double Resp_root;
 
 	public void DailyRefresh()
 	{
@@ -689,16 +690,17 @@ public class Species
 		}
 
 
-		double YgFactor = 1.0;
 		//Ignore [N] effects in potential growth here
 		Resp_m = maint_coeff * Teffect * PmxNeffect() * (dmgreen + dmroot) * DM2C;       //converting DM to C    (kg/ha)
 		//Dec10: added [N] effects here
+        Resp_g = Pgross * (1 - Yg);
 
 		// ** C budget is not explicitly done here as in EM
 		Cremob = 0;                     // Nremob* C2N_protein;    // No carbon budget here
 		// Nu_remob[elC] := C2N_protein * Nu_remob[elN];
 		// need to substract CRemob from dm rutnover?
-		dGrowthPot = Yg * YgFactor * (Pgross + Cremob - Resp_m);     //Net potential growth (C) of the day (excluding growth respiration)
+		//dGrowthPot = Yg * YgFactor * (Pgross + Cremob - Resp_m);     //Net potential growth (C) of the day (excluding growth respiration)
+        dGrowthPot = (Yg * Pgross) + Cremob - Resp_m;
 		dGrowthPot = Math.Max(0.0, dGrowthPot);
 		//double Resp_g = Pgross * (1 - Yg) / Yg;
 		//dGrowthPot *= PCO2Effects();                      //multiply the CO2 effects. Dec10: This ihas been now incoporated in Pm/leaf area above
@@ -1272,7 +1274,6 @@ public class Species
 
             // update todays shoot/root partition
             todaysSR = fac * targetSRratio;
-            double newSR = todaysSR;
 
             // get the soil related growth limiting factor (the smaller this is the higher the allocation of DM to roots)
             double GFmin = Math.Min(glfWater, glfN);
@@ -1281,23 +1282,19 @@ public class Species
             double presentSR = dmgreen / pS.dmroot;
 
             // update todays shoot/root partition
-            if (presentSR > todaysSR)
-                newSR = GFmin * todaysSR;
-            else
-                newSR = GFmin * todaysSR * todaysSR / presentSR;
+            todaysSR *= GFmin * todaysSR / presentSR;
 
-            fShoot = newSR / (1.0 + newSR);
+            // compute fraction to shoot
+            fShoot = todaysSR / (1.0 + todaysSR);
         }
         else
         {
             fShoot = 1.0;  // this should not happen (might happen if plant is dead)
         }
 
-        if (fShoot / (1 - fShoot) < todaysSR)
-            fShoot = todaysSR / (1 + todaysSR);   // as the specified that the system maxSR towards to (useful under stress)
-
-        if (dmgreen < pS.dmroot)  //this may happen under stress. There may be CHTs move up too
-            fShoot = 1.0;
+        // check for maximum root allocation (kept here mostly for backward compatibility)
+        if (1 - fShoot > maxRootFraction)
+            fShoot = 1 - maxRootFraction;
 
         return fShoot;
     }
