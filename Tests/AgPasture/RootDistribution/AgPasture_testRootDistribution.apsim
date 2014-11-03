@@ -1,21 +1,18 @@
-<folder version="36" creator="Apsim 7.6-r3574" name="Simulations">
+<folder version="36" creator="Apsim 7.6-r3576" name="Simulations">
   <memo name="Info">
  Test for different ways to enter/compute values for root density  -  RootWtFraction (rlvp)           -  RCichota, May 2014, updated June 2014
 
     * rlvp, as output, has been renamed to RootWtFraction, which is the fraction (adds up to one) of root dry matter weight in each soil layer.
- The parameter rlvp', still exists. It can be used to set manually the values of RootWtFraction.
+ The parameter rlvp, still exists. It can be used to set manually the values of RootWtFraction.
 
-    This simulation demonstrate the four ways to define how the values of RootWtFraction are determined (there are in fact three ways to define RootWtFraction, but 
- four ways to set it up, or input its values).  This is demonstrated here for SoilWat as well as SWIM simulations, in each simulation, in different paddocks, all the setup
- possibilities are tested. The choice of method to define RootWtFraction is made by selecting different values for the parameter 'RootDistributionMethod', this can be
- Homogeneous, UserDefined, or ExpoLinear. The simulation describe these as follow:
+    This simulation demonstrate the three ways to define how the values of RootWtFraction are determined.  This is demonstrated here for SoilWat as well as for 
+ SWIM simulations, in each simulation, in different paddocks, all the setup possibilities are tested. The choice of method to define RootWtFraction is made by 
+ selecting different values for the parameter 'RootDistributionMethod', this can be: Homogeneous, UserDefined, or ExpoLinear.
+   The simulation describe these as follow:
     - pad1: RootWtFraction is set as homogeneous over the soil down to the root_depth (this means root density is homogeneous throughout the profile);
     - pad2: rlvp values are supplied, this means that RootWtFraction is entered manually in the GUI (typically one for each layer should be given, but AgPasture will 
        ignore excess values and assume zero for missing values - rlvp value are converted to RootWtFraction by normalising the values so they add up to one);
-    - pad3: RootWtFraction is computed using the ExpoLinear method as shown below. In here the parameter for the model are input using rlvp (for back compatibility),
-       the first value given for rlvp in the GUI is used as the value for 'ExpoLinearDepthParam', The 'ExpoLinearCurveParam' is assumed to be one;
-    - pad4: RootWtFraction is also computed using the ExpoLinear, but now the parameters of the model ('ExpoLinearDepthParam' and 'ExpoLinearCurveParam') are 
-       explicitly set up in the GUI;
+    - pad3: RootWtFraction is computed using the ExpoLinear, two parameters ('ExpoLinearDepthParam' and 'ExpoLinearCurveParam') are set up in the GUI;
 
 
  + ExpoLinear model for distributing roots over the soil profile:
@@ -49,7 +46,7 @@
                                              -|
 
 </memo>
-  <simulation name="Paddock1-SoilWat">
+  <simulation name="Sim01-SoilWat">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/07/1980</start_date>
       <end_date type="date" description="Enter the end date of the simulation">30/06/1981</end_date>
@@ -95,7 +92,7 @@ if ( (today = date('[date1]')) or
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 1.0
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
  endif
@@ -652,8 +649,8 @@ if ( (today = date('[date1]')) or
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.0 1.0</rlvp>
       </AgPasture>
       <outputfile>
-        <filename output="yes">Paddock1-SoilWat pad1.out</filename>
-        <title>Paddock1-SoilWat pad1</title>
+        <filename output="yes">Sim01-SoilWat pad1.out</filename>
+        <title>Sim01-SoilWat pad1</title>
         <variables name="Variables">
           <variable>dd/mmm/yyyy as Date</variable>
           <variable>drain</variable>
@@ -728,18 +725,18 @@ if ( (today = date('[date1]')) or
         </Graph>
       </outputfile>
     </area>
-    <area name="pad2" shortcut="/Simulations/Paddock1-SoilWat/pad1">
-      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Paddock1-SoilWat/pad1/Regular harvest or grazing (with return)" />
-      <micromet name="Micromet" shortcut="/Simulations/Paddock1-SoilWat/pad1/Micromet" />
-      <fertiliser name="Fertiliser" shortcut="/Simulations/Paddock1-SoilWat/pad1/Fertiliser" />
-      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Paddock1-SoilWat/pad1/Surface Organic Matter" />
-      <Soil name="SoilLismore" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Water" />
-        <SoilWater shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/SoilWater" />
-        <SoilOrganicMatter shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Initial nitrogen" />
+    <area name="pad2" shortcut="/Simulations/Sim01-SoilWat/pad1">
+      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Sim01-SoilWat/pad1/Regular harvest or grazing (with return)" />
+      <micromet name="Micromet" shortcut="/Simulations/Sim01-SoilWat/pad1/Micromet" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Sim01-SoilWat/pad1/Fertiliser" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim01-SoilWat/pad1/Surface Organic Matter" />
+      <Soil name="SoilLismore" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore">
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
+        <Water shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Water" />
+        <SoilWater shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilWater" />
+        <SoilOrganicMatter shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial nitrogen" />
       </Soil>
       <AgPasture>
         <Dummy1 type="category" description="Basic parameters for AgPasture" />
@@ -754,88 +751,40 @@ if ( (today = date('[date1]')) or
         <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">UserDefined</RootDistributionMethod>
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.00  0.20  0.10  0.05  0.00  0.00   0.00</rlvp>
       </AgPasture>
-      <outputfile shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile">
-        <filename output="yes">Paddock1-SoilWat pad2.out</filename>
-        <title>Paddock1-SoilWat pad2</title>
-        <variables name="Variables" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Reporting Frequency" />
-        <Graph name="PlantWt" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
+      <outputfile shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile">
+        <filename output="yes">Sim01-SoilWat pad2.out</filename>
+        <title>Sim01-SoilWat pad2</title>
+        <variables name="Variables" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Reporting Frequency" />
+        <Graph name="PlantWt" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="Harvest herbage" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
+        <Graph name="Harvest herbage" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="SpeciesWt" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
-          </Plot>
-        </Graph>
-      </outputfile>
-    </area>
-    <area name="pad3" shortcut="/Simulations/Paddock1-SoilWat/pad1">
-      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Paddock1-SoilWat/pad1/Regular harvest or grazing (with return)" />
-      <micromet name="Micromet" shortcut="/Simulations/Paddock1-SoilWat/pad1/Micromet" />
-      <fertiliser name="Fertiliser" shortcut="/Simulations/Paddock1-SoilWat/pad1/Fertiliser" />
-      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Paddock1-SoilWat/pad1/Surface Organic Matter" />
-      <Soil name="SoilLismore" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Water" />
-        <SoilWater shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/SoilWater" />
-        <SoilOrganicMatter shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Initial nitrogen" />
-      </Soil>
-      <AgPasture>
-        <Dummy1 type="category" description="Basic parameters for AgPasture" />
-        <thisCropName type="text" description="  Sward name, as used in the simulation tree:">AgPasture</thisCropName>
-        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
-        <Dummy2 type="category" description="Initial values for each species to be simulated" />
-        <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
-        <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
-        <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
-        <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
-        <Dummy3 type="category" description="Root distribution parameters (being tested)" />
-        <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
-        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.2         0.2</rlvp>
-      </AgPasture>
-      <outputfile shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile">
-        <filename output="yes">Paddock1-SoilWat pad3.out</filename>
-        <title>Paddock1-SoilWat pad3</title>
-        <variables name="Variables" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Reporting Frequency" />
-        <Graph name="PlantWt" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="Harvest herbage" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="SpeciesWt" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
+        <Graph name="SpeciesWt" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
       </outputfile>
     </area>
-    <area name="pad4" shortcut="/Simulations/Paddock1-SoilWat/pad1">
-      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Paddock1-SoilWat/pad1/Regular harvest or grazing (with return)" />
-      <micromet name="Micromet" shortcut="/Simulations/Paddock1-SoilWat/pad1/Micromet" />
-      <fertiliser name="Fertiliser" shortcut="/Simulations/Paddock1-SoilWat/pad1/Fertiliser" />
-      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Paddock1-SoilWat/pad1/Surface Organic Matter" />
-      <Soil name="SoilLismore" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Water" />
-        <SoilWater shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/SoilWater" />
-        <SoilOrganicMatter shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Paddock1-SoilWat/pad1/SoilLismore/Initial nitrogen" />
+    <area name="pad3" shortcut="/Simulations/Sim01-SoilWat/pad1">
+      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Sim01-SoilWat/pad1/Regular harvest or grazing (with return)" />
+      <micromet name="Micromet" shortcut="/Simulations/Sim01-SoilWat/pad1/Micromet" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Sim01-SoilWat/pad1/Fertiliser" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim01-SoilWat/pad1/Surface Organic Matter" />
+      <Soil name="SoilLismore" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore">
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
+        <Water shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Water" />
+        <SoilWater shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilWater" />
+        <SoilOrganicMatter shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial nitrogen" />
       </Soil>
       <AgPasture>
         <Dummy1 type="category" description="Basic parameters for AgPasture" />
@@ -851,24 +800,24 @@ if ( (today = date('[date1]')) or
         <ExpoLinearDepthParam type="text" description="Root distribution parameter, fraction of root depth to decrease root proportion (0-1):">0.2  0.2</ExpoLinearDepthParam>
         <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">3   3</ExpoLinearCurveParam>
       </AgPasture>
-      <outputfile shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile">
-        <filename output="yes">Paddock1-SoilWat pad4.out</filename>
-        <title>Paddock1-SoilWat pad4</title>
-        <variables name="Variables" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Reporting Frequency" />
-        <Graph name="PlantWt" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
+      <outputfile shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile">
+        <filename output="yes">Sim01-SoilWat pad3.out</filename>
+        <title>Sim01-SoilWat pad3</title>
+        <variables name="Variables" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Reporting Frequency" />
+        <Graph name="PlantWt" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="Harvest herbage" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
+        <Graph name="Harvest herbage" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="SpeciesWt" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt">
-          <Plot shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock1-SoilWat/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
+        <Graph name="SpeciesWt" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
       </outputfile>
@@ -930,7 +879,7 @@ if ( (today = date('[date1]')) or
       </Plot>
     </Graph>
   </simulation>
-  <simulation name="Paddock2-SWIM3">
+  <simulation name="Sim02-SWIM3">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/07/1980</start_date>
       <end_date type="date" description="Enter the end date of the simulation">30/06/1981</end_date>
@@ -976,7 +925,7 @@ if ( (today = date('[date1]')) or
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 1.0
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
  endif
@@ -1595,8 +1544,8 @@ if ( (today = date('[date1]')) or
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.0 1.0</rlvp>
       </AgPasture>
       <outputfile>
-        <filename output="yes">Paddock2-SWIM3 pad1.out</filename>
-        <title>Paddock2-SWIM3 pad1</title>
+        <filename output="yes">Sim02-SWIM3 pad1.out</filename>
+        <title>Sim02-SWIM3 pad1</title>
         <variables name="Variables">
           <variable>dd/mmm/yyyy as Date</variable>
           <variable>drain</variable>
@@ -1671,21 +1620,21 @@ if ( (today = date('[date1]')) or
         </Graph>
       </outputfile>
     </area>
-    <area name="pad2" shortcut="/Simulations/Paddock2-SWIM3/pad1">
-      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Paddock2-SWIM3/pad1/Regular harvest or grazing (with return)" />
-      <micromet name="Micromet" shortcut="/Simulations/Paddock2-SWIM3/pad1/Micromet" />
-      <fertiliser name="Fertiliser" shortcut="/Simulations/Paddock2-SWIM3/pad1/Fertiliser" />
-      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Paddock2-SWIM3/pad1/Surface Organic Matter" />
-      <Soil name="SoilLismore" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Water" />
-        <SoilOrganicMatter shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Initial nitrogen" />
-        <Swim shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Swim">
-          <SwimSoluteParameters shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
+    <area name="pad2" shortcut="/Simulations/Sim02-SWIM3/pad1">
+      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Sim02-SWIM3/pad1/Regular harvest or grazing (with return)" />
+      <micromet name="Micromet" shortcut="/Simulations/Sim02-SWIM3/pad1/Micromet" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Sim02-SWIM3/pad1/Fertiliser" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim02-SWIM3/pad1/Surface Organic Matter" />
+      <Soil name="SoilLismore" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore">
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
+        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
+        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Analysis" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
+        <Swim shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim">
+          <SwimSoluteParameters shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
         </Swim>
-        <LayerStructure shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/LayerStructure" />
+        <LayerStructure shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/LayerStructure" />
       </Soil>
       <AgPasture>
         <Dummy1 type="category" description="Basic parameters for AgPasture" />
@@ -1700,84 +1649,33 @@ if ( (today = date('[date1]')) or
         <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">UserDefined</RootDistributionMethod>
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.00  1.00  1.00  1.00  0.20  0.15  0.10  0.10  0.05  0.00  0.00  0.00</rlvp>
       </AgPasture>
-      <outputfile shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile">
-        <filename output="yes">Paddock2-SWIM3 pad2.out</filename>
-        <title>Paddock2-SWIM3 pad2</title>
-        <variables name="Variables" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Reporting Frequency" />
-        <Graph name="PlantWt" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
+      <outputfile shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile">
+        <filename output="yes">Sim02-SWIM3 pad2.out</filename>
+        <title>Sim02-SWIM3 pad2</title>
+        <variables name="Variables" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Reporting Frequency" />
+        <Graph name="PlantWt" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="Harvest herbage" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
+        <Graph name="Harvest herbage" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="SpeciesWt" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
-          </Plot>
-        </Graph>
-      </outputfile>
-    </area>
-    <area name="pad3" shortcut="/Simulations/Paddock2-SWIM3/pad1">
-      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Paddock2-SWIM3/pad1/Regular harvest or grazing (with return)" />
-      <micromet name="Micromet" shortcut="/Simulations/Paddock2-SWIM3/pad1/Micromet" />
-      <fertiliser name="Fertiliser" shortcut="/Simulations/Paddock2-SWIM3/pad1/Fertiliser" />
-      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Paddock2-SWIM3/pad1/Surface Organic Matter" />
-      <Soil name="SoilLismore" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Water" />
-        <SoilOrganicMatter shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Initial nitrogen" />
-        <Swim shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Swim">
-          <SwimSoluteParameters shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
-        </Swim>
-        <LayerStructure shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/LayerStructure" />
-      </Soil>
-      <AgPasture>
-        <Dummy1 type="category" description="Basic parameters for AgPasture" />
-        <thisCropName type="text" description="  Sward name, as used in the simulation tree:">AgPasture</thisCropName>
-        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">apsim</WaterUptakeSource>
-        <Dummy2 type="category" description="Initial values for each species to be simulated" />
-        <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
-        <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
-        <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
-        <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
-        <Dummy3 type="category" description="Root distribution parameters (being tested)" />
-        <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
-        <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">0.2         0.2</rlvp>
-      </AgPasture>
-      <outputfile shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile">
-        <filename output="yes">Paddock2-SWIM3 pad3.out</filename>
-        <title>Paddock2-SWIM3 pad3</title>
-        <variables name="Variables" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Reporting Frequency" />
-        <Graph name="PlantWt" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="Harvest herbage" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
-          </Plot>
-        </Graph>
-        <Graph name="SpeciesWt" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
+        <Graph name="SpeciesWt" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
       </outputfile>
     </area>
-    <area name="pad4" shortcut="/Simulations/Paddock2-SWIM3/pad1">
-      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Paddock2-SWIM3/pad1/Regular harvest or grazing (with return)" />
-      <micromet name="Micromet" shortcut="/Simulations/Paddock2-SWIM3/pad1/Micromet" />
-      <fertiliser name="Fertiliser" shortcut="/Simulations/Paddock2-SWIM3/pad1/Fertiliser" />
-      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Paddock2-SWIM3/pad1/Surface Organic Matter" />
+    <area name="pad3" shortcut="/Simulations/Sim02-SWIM3/pad1">
+      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Sim02-SWIM3/pad1/Regular harvest or grazing (with return)" />
+      <micromet name="Micromet" shortcut="/Simulations/Sim02-SWIM3/pad1/Micromet" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Sim02-SWIM3/pad1/Fertiliser" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim02-SWIM3/pad1/Surface Organic Matter" />
       <AgPasture>
         <Dummy1 type="category" description="Basic parameters for AgPasture" />
         <thisCropName type="text" description="  Sward name, as used in the simulation tree:">AgPasture</thisCropName>
@@ -1792,35 +1690,35 @@ if ( (today = date('[date1]')) or
         <ExpoLinearDepthParam type="text" description="Root distribution parameter, fraction of root depth to decrease root proportion (0-1):">0.2</ExpoLinearDepthParam>
         <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">3</ExpoLinearCurveParam>
       </AgPasture>
-      <Soil name="SoilLismore" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Water" />
-        <SoilOrganicMatter shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Initial nitrogen" />
-        <Swim shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Swim">
-          <SwimSoluteParameters shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
+      <Soil name="SoilLismore" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore">
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
+        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
+        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Analysis" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
+        <Swim shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim">
+          <SwimSoluteParameters shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
         </Swim>
-        <LayerStructure shortcut="/Simulations/Paddock2-SWIM3/pad1/SoilLismore/LayerStructure" />
+        <LayerStructure shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/LayerStructure" />
       </Soil>
-      <outputfile shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile">
-        <filename output="yes">Paddock2-SWIM3 pad4.out</filename>
-        <title>Paddock2-SWIM3 pad4</title>
-        <variables name="Variables" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Variables" />
-        <events name="Reporting Frequency" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Reporting Frequency" />
-        <Graph name="PlantWt" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
+      <outputfile shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile">
+        <filename output="yes">Sim02-SWIM3 pad3.out</filename>
+        <title>Sim02-SWIM3 pad3</title>
+        <variables name="Variables" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Reporting Frequency" />
+        <Graph name="PlantWt" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="Harvest herbage" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
+        <Graph name="Harvest herbage" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="SpeciesWt" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt">
-          <Plot shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt/Plot">
-            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Paddock2-SWIM3/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
+        <Graph name="SpeciesWt" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
       </outputfile>
