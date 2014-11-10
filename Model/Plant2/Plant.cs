@@ -86,7 +86,7 @@ public class Plant
                     avail.element[cohort].AgeID = "green";
                     avail.element[cohort].Bottom = 0.0;
                     avail.element[cohort].Top = Structure.Height;
-                    avail.element[cohort].Chem = "digestible";
+                    avail.element[cohort].Chem = "ddm";
                     avail.element[cohort].Weight = O.Live.Wt * 0.1;
                     avail.element[cohort].N = O.Live.N;
                     avail.element[cohort].P = 0.0;
@@ -100,7 +100,7 @@ public class Plant
                     avail.element[cohort].AgeID = "senesced";
                     avail.element[cohort].Bottom = 0.0;
                     avail.element[cohort].Top = Structure.Height;
-                    avail.element[cohort].Chem = "digestible";
+                    avail.element[cohort].Chem = "ddm";
                     avail.element[cohort].Weight = O.Dead.Wt * 0.1;
                     avail.element[cohort].N = O.Dead.N;
                     avail.element[cohort].P = 0.0;
@@ -112,7 +112,7 @@ public class Plant
             } 
             return avail; 
         }
-    }
+    } 
  #endregion
 
  #region Plant functions

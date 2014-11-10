@@ -479,7 +479,7 @@ void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
    cohort.AgeID = "green";
    cohort.Bottom = 0.0;
    cohort.Top =    height();
-   cohort.Chem =   "digestible";
+   cohort.Chem =   "ddm";
    cohort.Weight = Green.DM() * gm2kg / sm2ha;
    cohort.N =      Green.N()* gm2kg / sm2ha;
    cohort.P =      Green.P()* gm2kg / sm2ha;
