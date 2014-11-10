@@ -144,54 +144,59 @@ diffdiff C:\prjA\tests\orig C:\prjA\tests\new -t:0.01 -o:C:\prjA\diffs.txt
             Tolerance = decimal.MaxValue;
 
             foreach (string arg in args)
-                if (arg.StartsWith("-"))
-                    switch (arg[1])
-                    {
-                        case 'a':
-                            A = arg.Substring(arg.IndexOf(':') + 1);
-                            break;
-                        case 'b':
-                            B = arg.Substring(arg.IndexOf(':') + 1);
-                            break;
-                        case 'c':
-                            ReportToConsole = arg == "-console";
-                            break;
-                        case 't':
-                            decimal t = 0;
-                            string targ = "";
-                            if (arg.EndsWith("dp"))
-                            {
-                                Method = DiffMethod.dp;
-                                targ = arg.Substring(3).Replace("dp", "");
-                            }
-                            else if (arg.Replace("%", "pct").EndsWith("pct"))
-                            {
-                                Method = DiffMethod.pct;
-                                targ = arg.Substring(3).Replace("pct", "");
-                            }
-                            else
-                                targ = arg.Substring(3);
+            {
+                if (!arg.Contains(".exe"))
+                {
+                    if (arg.StartsWith("-"))
+                        switch (arg[1])
+                        {
+                            case 'a':
+                                A = arg.Substring(arg.IndexOf(':') + 1);
+                                break;
+                            case 'b':
+                                B = arg.Substring(arg.IndexOf(':') + 1);
+                                break;
+                            case 'c':
+                                ReportToConsole = arg == "-console";
+                                break;
+                            case 't':
+                                decimal t = 0;
+                                string targ = "";
+                                if (arg.EndsWith("dp"))
+                                {
+                                    Method = DiffMethod.dp;
+                                    targ = arg.Substring(3).Replace("dp", "");
+                                }
+                                else if (arg.Replace("%", "pct").EndsWith("pct"))
+                                {
+                                    Method = DiffMethod.pct;
+                                    targ = arg.Substring(3).Replace("pct", "");
+                                }
+                                else
+                                    targ = arg.Substring(3);
 
-                            if (!decimal.TryParse(targ, out t))
-                                throw new Exception(string.Format("Error attempting to parse Tolerance\n\t{0} -> {1} (error)", arg, targ));
+                                if (!decimal.TryParse(targ, out t))
+                                    throw new Exception(string.Format("Error attempting to parse Tolerance\n\t{0} -> {1} (error)", arg, targ));
 
-                            Tolerance = t;
-                            break;
-                        case 'o':
-                            Output = arg.Substring(arg.IndexOf(':') + 1);
-                            break;
-                        case 'f':
-                            Filter = arg.Substring(arg.IndexOf(':') + 1);
-                            break;
-                        case 'g':
-                            LoadGUI = arg == "-gui";
-                            break;
-                    }
-                else
-                    if (A == null)
-                        A = arg;
+                                Tolerance = t;
+                                break;
+                            case 'o':
+                                Output = arg.Substring(arg.IndexOf(':') + 1);
+                                break;
+                            case 'f':
+                                Filter = arg.Substring(arg.IndexOf(':') + 1);
+                                break;
+                            case 'g':
+                                LoadGUI = arg == "-gui";
+                                break;
+                        }
                     else
-                        B = arg;
+                        if (A == null)
+                            A = arg;
+                        else
+                            B = arg;
+                }
+            }
 
             LoadGUI |= A == null || B == null || Tolerance == decimal.MaxValue;
         }

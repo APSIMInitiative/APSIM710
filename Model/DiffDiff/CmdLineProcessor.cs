@@ -98,6 +98,7 @@ namespace DiffDiff
                 }
             }
 
+            report.Close();
             return bad_result;
         }
 
@@ -174,11 +175,31 @@ namespace DiffDiff
             if (File.Exists(input))
                 return new string[] { input };
             else if (Directory.Exists(input))
-                return Directory.GetFiles(input, filter);
+            {
+                List<string> fileNames = new List<string>();
+                FindFiles(input, filter, ref fileNames, true, false);
+                return fileNames.ToArray();
+                //return Directory.GetFiles(input, filter);
+            }
             else throw new Exception("Error, input string was invalid (did not correspond to existing file or directory)");
 
         }
+
+
+        /// <summary>
+        /// Return a list of files that match the specified filespec (e.g. *.out). If Recurse is true
+        /// then it will look for matching files in all sub directories. If SearchHiddenFolders is
+        /// true then it will look in hidden folders as well.
+        /// </summary>
+        public static void FindFiles(string DirectoryName, string FileSpec, ref List<string> FileNames,
+                                     bool Recurse = false, bool SearchHiddenFolders = false)
+        {
+            foreach (string FileName in System.IO.Directory.GetFiles(DirectoryName, FileSpec))
+                FileNames.Add(FileName);
+            if (Recurse)
+                foreach (string ChildDirectoryName in System.IO.Directory.GetDirectories(DirectoryName))
+                    if (SearchHiddenFolders || (File.GetAttributes(ChildDirectoryName) & FileAttributes.Hidden) != FileAttributes.Hidden)
+                        FindFiles(ChildDirectoryName, FileSpec, ref FileNames, Recurse, SearchHiddenFolders);
+        }
     }
-
-
   }
