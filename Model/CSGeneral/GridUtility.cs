@@ -123,8 +123,8 @@ namespace CSGeneral
             if (Values != null)
             {
                 Grid.RowCount = Math.Max(Grid.Rows.Count, Values.Count);
-                for (int Row = 0; Row < Values.Count; Row++)
-                    Grid.Rows[Row].Cells[Col].Value = Values[Row];
+                for (int Row = 0; Row < Grid.Rows.Count; Row++)
+                    Grid.Rows[Row].Cells[Col].Value = Row < Values.Count ? Values[Row] : "";
             }
 
         }
@@ -187,7 +187,7 @@ namespace CSGeneral
             {
                 foreach (DataGridViewCell Cell in Grid.Rows[Row].Cells)
                 {
-                    if (Cell.Value != null)
+                    if (Cell.Value != null && !Cell.ReadOnly)
                         return Row;
                 }
                 Row--;

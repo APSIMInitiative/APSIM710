@@ -1412,8 +1412,10 @@ namespace ApsimFile
                 return null;
             for (int i = 0; i < Values.Length; i++)
             {
-                Values[i] = Math.Max(Values[i], AirDry[i]);
-                Values[i] = Math.Min(Values[i], DUL[i]);
+                if (i < AirDry.Length)
+                  Values[i] = Math.Max(Values[i], AirDry[i]);
+                if (i < DUL.Length)
+                  Values[i] = Math.Min(Values[i], DUL[i]);
             }
             return Values;
         }
@@ -1437,10 +1439,10 @@ namespace ApsimFile
                              double[] ToThickness, MapType MapType,
                              double DefaultValueForBelowProfile = double.NaN)
         {
-            if (FValues == null || FThickness == null || FValues.Length != FThickness.Length)
+            if (FValues == null || FThickness == null)
                 return null;
 
-            double[] FromThickness = (double[]) FThickness.Clone();
+            double[] FromThickness = MathUtility.RemoveMissingValuesFromBottom((double[]) FThickness.Clone());
             double[] FromValues = (double[])FValues.Clone();
 
             if (FromValues == null)
@@ -1449,9 +1451,11 @@ namespace ApsimFile
             // remove missing layers.
             for (int i = 0; i < FromValues.Length; i++)
             {
-                if (double.IsNaN(FromValues[i]) || double.IsNaN(FromThickness[i]))
+                if (double.IsNaN(FromValues[i]) || i >= FromThickness.Length || double.IsNaN(FromThickness[i]))
                 {
                     FromValues[i] = double.NaN;
+                    if (i == FromThickness.Length)
+                        Array.Resize(ref FromThickness, i + 1);
                     FromThickness[i] = double.NaN;
                 }
             }
@@ -1650,8 +1654,11 @@ namespace ApsimFile
             double[] PAWC = new double[Thickness.Length];
             if (LL == null)
                 return PAWC;
-            if (Thickness.Length != DUL.Length || Thickness.Length != LL.Length)
-                return null;
+
+            int minLength = Math.Min(Thickness.Length, Math.Min(DUL.Length, LL.Length));
+            Array.Resize(ref DUL, minLength);
+            Array.Resize(ref LL, minLength);
+            Array.Resize(ref Thickness, minLength);
 
             for (int layer = 0; layer != Thickness.Length; layer++)
                 if (DUL[layer] == MathUtility.MissingValue ||
@@ -1662,7 +1669,7 @@ namespace ApsimFile
 
             bool ZeroXFFound = false;
             for (int layer = 0; layer != Thickness.Length; layer++)
-                if (ZeroXFFound || XF != null && XF[layer] == 0)
+                if (ZeroXFFound || XF != null && layer < XF.Length && XF[layer] == 0)
                 {
                     ZeroXFFound = true;
                     PAWC[layer] = 0;

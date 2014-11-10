@@ -463,10 +463,12 @@ namespace CSUserInterface
             {
                 try
                 {
-                    if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("DUL"))
+                    string header = Grid.Columns[e.ColumnIndex].HeaderText;
+                    if (header.Contains("DUL") || header.Contains("Depth"))
                     {
-                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
-                        Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                        Soil.Water.Thickness = MathUtility.RemoveMissingValuesFromBottom(Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0)));
+                        if (header.Contains("DUL"))
+                           Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
 
                         // Update all PAWC columns.
                         foreach (DataGridViewColumn Column in Grid.Columns)
@@ -475,31 +477,38 @@ namespace CSUserInterface
                                 UpdatePAWCColumn(Column);
                         }
                     }
-                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" LL"))
+                    else if (header.Contains("LL15"))
+                        Soil.Water.LL15 =  GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                    else if (header.Contains("AirDry"))
+                        Soil.Water.AirDry =  GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+                    else if (header.Contains("SAT"))
+                        Soil.Water.SAT =  GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
+
+                    else if (header.Contains(" LL"))
                     {
-                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        Soil.Water.Thickness = MathUtility.RemoveMissingValuesFromBottom(Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0)));
                         string CropName = CropNameFromColumn(e.ColumnIndex);
                         Soil.Crop(CropName).LL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                         UpdatePAWCColumn(Grid.Columns[e.ColumnIndex + 1]);
                     }
-                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" KL"))
+                    else if (header.Contains(" KL"))
                     {
-                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        Soil.Water.Thickness = MathUtility.RemoveMissingValuesFromBottom(Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0)));
                         string CropName = CropNameFromColumn(e.ColumnIndex);
                         Soil.Crop(CropName).KL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                         UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 1]);
                     }
-                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains(" XF"))
+                    else if (header.Contains(" XF"))
                     {
-                        Soil.Water.Thickness = Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0));
+                        Soil.Water.Thickness = MathUtility.RemoveMissingValuesFromBottom(Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0)));
                         string CropName = CropNameFromColumn(e.ColumnIndex);
                         Soil.Crop(CropName).XF = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
                         UpdatePAWCColumn(Grid.Columns[e.ColumnIndex - 2]);
                     }
-                    else if (Grid.Columns[e.ColumnIndex].HeaderText.Contains("NO3") ||
-                             Grid.Columns[e.ColumnIndex].HeaderText.Contains("NH4"))
+                    else if (header.Contains("NO3") ||
+                             header.Contains("NH4"))
                         UpdateTotal(Grid.Columns[e.ColumnIndex]);
-
+                    
                     if (OurComponent.Type == "Water" || OurComponent.Type == "SoilOrganicMatter")
                         Graph.Populate(Soil, OurComponent.Type);
                     else
@@ -544,8 +553,8 @@ namespace CSUserInterface
         private void UpdatePAWCColumn(DataGridViewColumn PAWC)
         {
             string CropName = CropNameFromColumn(PAWC.Index);
-            double[] PAWCmm = MathUtility.Multiply(Soil.PAWCCropAtWaterThickness(CropName),
-                                                   Soil.Water.Thickness);
+            double [] PAWCmm = MathUtility.Multiply(Soil.PAWCCropAtWaterThickness(CropName),
+                                                    Soil.Water.Thickness);
             settingSelf = true;
             try
             {
