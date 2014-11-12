@@ -247,6 +247,9 @@ namespace CSUserInterface
 			// Save the variable grid back to the selected data.
 			// --------------------------------------------------
 
+            if (Grid.EditingControl != null)  // Save any current edits
+                Grid.EndEdit();
+
 			// Work out the property type from the currently selected data type by removing the last character.
 			// e.g. if current data type is 'variables' then property type is 'variable'
 			string PropertyType = XmlHelper.Type(Data);
