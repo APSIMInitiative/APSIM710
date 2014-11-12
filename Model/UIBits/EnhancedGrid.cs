@@ -518,8 +518,11 @@ namespace UIBits
                             int Col = ColBase + i;
                             if (Col < ColumnCount)
                             {
-                                if (Row >= RowCount)
-                                    RowCount = RowCount + 1;
+                                int nRows = RowCount;
+                                if (AllowUserToAddRows) // Things get messy when this is true because Windows tries to keep a blank line
+                                    nRows--;            // so we actually have one less line to use than we might think
+                                if (Row >= nRows)
+                                    RowCount++;
                                 Cell = this[Col, Row];
                                 if (!Cell.ReadOnly)
                                 {
@@ -554,6 +557,8 @@ namespace UIBits
                     //else
                     //    break; 
                 }
+                if (AllowUserToAddRows && RowCount > 2 && string.IsNullOrEmpty(Rows[RowCount - 2].Cells[ColBase].Value.ToString()))
+                    RowCount--; // We may have inserted an extra blank line, so remove it now
             }
             catch (Exception err)
             {
