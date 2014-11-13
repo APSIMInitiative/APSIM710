@@ -502,15 +502,19 @@ namespace UIBits
             List<string> ColumnsChanged = new List<string>();
             try
             {
-
                 string[] Lines = Contents.Split('\n');
                 int Row = CellToPasteInto.RowIndex;
                 int ColBase = CellToPasteInto.ColumnIndex;
+                bool addingAllowed = AllowUserToAddRows;  
+                AllowUserToAddRows = false; // Having this turned on mucks up the programmatic addition of new rows. They get inserted at the wrong spot.
                 DataGridViewCell Cell;
-                foreach (string Line in Lines)
+                try
                 {
-                    // if (Line.Length > 0)
+                    for (int iLine = 0; iLine < Lines.Length; iLine++)
                     {
+                        string Line = Lines[iLine];
+                        if (Line.Length == 0 && iLine == Lines.Length - 1) // If we have an empty string at the end (thank you, Excel), ignore it.
+                            break;
                         string[] LineBits = Line.Split('\t');
                         for (int i = 0; i < LineBits.GetLength(0); ++i)
                         {
@@ -518,10 +522,7 @@ namespace UIBits
                             int Col = ColBase + i;
                             if (Col < ColumnCount)
                             {
-                                int nRows = RowCount;
-                                if (AllowUserToAddRows) // Things get messy when this is true because Windows tries to keep a blank line
-                                    nRows--;            // so we actually have one less line to use than we might think
-                                if (Row >= nRows)
+                                while (Row >= RowCount)
                                     RowCount++;
                                 Cell = this[Col, Row];
                                 if (!Cell.ReadOnly)
@@ -554,11 +555,11 @@ namespace UIBits
                         }
                         Row++;
                     }
-                    //else
-                    //    break; 
                 }
-                if (AllowUserToAddRows && RowCount > 2 && string.IsNullOrEmpty(Rows[RowCount - 2].Cells[ColBase].Value.ToString()))
-                    RowCount--; // We may have inserted an extra blank line, so remove it now
+                finally
+                {
+                    AllowUserToAddRows = addingAllowed; // Restore the original value
+                }
             }
             catch (Exception err)
             {
