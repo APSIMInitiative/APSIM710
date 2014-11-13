@@ -96,13 +96,13 @@ namespace ApsimFile
             while (GetNextLine(In, ref Words))
             { }
 
+            In.Seek(FirstLinePosition, SeekOrigin.Begin);
+
             // Get the date from the last line.
             if (Words.Count == 0)
                 throw new Exception("Cannot find last row of file: " + FileName);
             Values = ConvertWordsToObjects(Words, ColumnTypes);
             _LastDate = GetDateFromValues(Values);
-
-            In.Seek(FirstLinePosition, SeekOrigin.Begin);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace ApsimFile
             string PreviousLine = "";
 
             string Line = In.ReadLine();
-            while (!In.EndOfStream)
+            while (Line != "" || !In.EndOfStream)
             {
                 int PosEquals = Line.IndexOf('=');
                 if (PosEquals != -1)

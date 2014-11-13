@@ -38,12 +38,14 @@ namespace protocol {
      {
      return (string(
          "<type name=\"newmet\" array=\"T\">"
+         "  <element>"
          "   <field name=\"today\" kind=\"double\"/>"
          "   <field name=\"radn\" kind=\"single\"/>"
          "   <field name=\"maxt\" kind=\"single\"/>"
          "   <field name=\"mint\" kind=\"single\"/>"
          "   <field name=\"rain\" kind=\"single\"/>"
          "   <field name=\"vp\" kind=\"single\"/>"
+         "  </element>"
          "</type>"));
      }
 }

@@ -231,6 +231,14 @@
          <WorkingDirectory>%APSIM%/Model/SiloInput</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
+      <Job name="Compile PatchData">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/PatchData</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>      
       <Job name="Compile Irrigation">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
