@@ -8759,12 +8759,16 @@ public class SugarCane
               //This function is then used to make sure that given the specific "n_uptake_option" that all the variables this specific option needs has non zero values. 
               if (n_uptake_option == 1)
                   {
-                  if ((NO3_diffn_const == Double.NaN) || (n_supply_preference == ""))
+
+                  //(HOW TO TEST FOR NaN properly, WARNING: (NO3_diffn_const == Double.NaN) does not work)
+                  //http://msdn.microsoft.com/en-us/library/bb264491.aspx  
+
+                  if ( Double.IsNaN(NO3_diffn_const) || (n_supply_preference == ""))
                       throw new Exception("Using n_uptake_option == 1 and missing either 'NO3_diffn_const' or 'n_supply_preference' from ini file");
                   }
               else
                   {
-                  if ((kno3 == Double.NaN) || (no3ppm_min == Double.NaN) || (knh4 == Double.NaN) || (nh4ppm_min == Double.NaN) || (total_n_uptake_max == Double.NaN))
+                  if ( Double.IsNaN(kno3) || Double.IsNaN(no3ppm_min) || Double.IsNaN(knh4) || Double.IsNaN(nh4ppm_min) || Double.IsNaN(total_n_uptake_max))
                       throw new Exception("Using n_uptake_option == 2 and missing either 'kno3', 'no3ppm_min', 'knh4', 'nh4ppm_min' or 'total_n_uptake_max' from ini file");
                   }
               }
