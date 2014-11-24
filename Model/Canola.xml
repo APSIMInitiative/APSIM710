@@ -167,6 +167,10 @@
          -->
       <co2_default units="ppm">350</co2_default>
       <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
+      <x_co2_te_modifier units="ppm co2">350</x_co2_te_modifier>
+      <y_co2_te_modifier>1.0</y_co2_te_modifier>
+      <x_co2_nconc_modifier units="ppm co2">350</x_co2_nconc_modifier>
+      <y_co2_nconc_modifier>1.0</y_co2_nconc_modifier>
       <stage_names description="stage names">sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop </stage_names>
       <stage_code description="numeric code for phenological stages">1      2           3         4               5                 6         7                8              9        10           11</stage_code>
       <!-- __________________________________________________________________________________________________________-
@@ -638,6 +642,16 @@
       <tt_maturity units="oCd">1.0</tt_maturity>
       <tt_harvest_ripe units="oCd">1.0</tt_harvest_ripe>
     </plant>
+    <newplant class="yes">
+        <derived_from>plant</derived_from>
+        <eo_crop_factor_default description="default crop factor for limiting soil">1.5  </eo_crop_factor_default>
+        <transp_eff_cf units="Pa">0      0    .005  .005  .005  .005  .005  .005   .002 .00    0</transp_eff_cf>
+        <x_node_no>1   5   9   13 16 </x_node_no>
+        <y_leaf_size>1500 4000 11000 14000  15000 </y_leaf_size>
+        <x_stage_rue description="numeric code for phenological stages">1      2    3     4     5     6     7      8    8.99  9      10    11</x_stage_rue>
+        <y_rue units="g/MJ">                                            0      0    1.35  1.35  1.35  1.35  1.35   1.35 1.35  0.00  0.00   0</y_rue>
+    </newplant>
+    
     <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       !! section for parameters for triazine tolerant varieties!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -657,7 +671,12 @@
       <x_node_no>1   5    13    16</x_node_no>
       <y_leaf_size>500 1000 10000 10000</y_leaf_size>
     </triazine>
-    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    <newtriazine class="yes">
+      <derived_from>triazine</derived_from>
+      <x_node_no>1   5   9   13 16 </x_node_no>
+      <y_leaf_size>1000 3000 8000 10000 10000</y_leaf_size>
+    </newtriazine>
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !! section for canola regrowth after grazing!!!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     -->
@@ -689,6 +708,27 @@
       <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">60.0</node_sen_rate>
       <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.04</fr_lf_sen_rate>
     </winter>
+    <newwinter class="yes">
+      <derived_from>newplant</derived_from>
+      <x_temp_senescence units="oC" description="temperature senescence table">-20.0 -15.0 -4.0 0.0</x_temp_senescence>
+      <y_senescence_fac units="0-1" description="temperature senescence factor">0.2  0.1   0.05 0.0</y_senescence_fac>
+      <x_maxt_senescence description="minimum temperature for heat senescence table (oC)">34.0 34.1 45.0     </x_maxt_senescence>
+      <y_heatsenescence_fac description="daily fraction of leaf area senesced due to heat (0-1)">0  0.0  0.0       </y_heatsenescence_fac> 
+      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">60.0</node_sen_rate>
+      <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.04</fr_lf_sen_rate>
+    </newwinter>
+  <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !! section for parameters for  hybrid varieties!!! attempt by JL
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -->
+   <hybrid class="yes">
+      <derived_from>plant</derived_from>
+      <class_action>harvest</class_action>
+      <class_change>unchanged</class_change>
+      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">200</initial_tpla>
+      <x_node_no>1   5   9   13 16 </x_node_no>
+      <y_leaf_size>2000 7000 15000 18000  19000 </y_leaf_size>
+   </hybrid>
     <!-- ***********************************************************************************************************
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES
       ***********************************************************************************************************
@@ -1184,5 +1224,359 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm)C">0  1500</y_height>
     </french_winter>
+    <new_H46y78 cultivar="yes">
+      <derived_from>hybrid</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">300  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>600     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </new_H46y78>   
+   <Marlin cultivar="yes">
+      <derived_from>newtriazine</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">260  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>650     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </Marlin>
+   <skipton cultivar="yes">
+      <derived_from>newplant</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">461  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>400     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </skipton>
+   <beacon  cultivar="yes" description="same as skipton, but triazine tolerant">
+      <derived_from>newtriazine</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">461  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>400     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </beacon>
+   <Surpass500 cultivar="yes">
+      <derived_from>newtriazine</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">441  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>404    1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+    </Surpass500>
+    <thunder  cultivar="yes">
+      <derived_from>newtriazine</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">150  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>602     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </thunder>
+   <CBI206 cultivar="yes">
+       <derived_from>newwinter</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    50</cumvd_emergence>
+      <tt_emergence units="oCd">779  100</tt_emergence> <!-- maybe make 800 1
+      -->
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>711     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+     </CBI206>
+   <NPZ2 cultivar="yes">
+      <derived_from>newwinter</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    50</cumvd_emergence>
+      <tt_emergence units="oCd">800  100</tt_emergence> <!-- maybe make 800 1
+      -->
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>685     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+     </NPZ2>
+   <new_Hyola50 cultivar="yes">
+      <derived_from>hybrid</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">1  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>790     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+    </new_Hyola50>
+    <Hyola75 cultivar="yes">
+      <derived_from>hybrid</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">561  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>400     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </Hyola75>
+      <Summit cultivar="yes" description="same as Hyola75, but triazine tolerant">
+      <derived_from>hybrid</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">561  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>400     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </Summit>
+   <AVGarnet cultivar="yes">
+      <derived_from>newplant</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">436  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>418     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </AVGarnet>   
+   <Garnet cultivar="yes">
+      <derived_from>newplant</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">431  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>500     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+    </Garnet>
+    <Garnet_Jeff cultivar="yes">
+      <derived_from>newplant</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    25</cumvd_emergence>
+      <tt_emergence units="oCd">431  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8    16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>500     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">800    800</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+    </Garnet_Jeff>
+    <new_taurus cultivar="yes">
+      <derived_from>newwinter</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    50</cumvd_emergence>
+      <tt_emergence units="oCd">1200  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>670     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </new_taurus>   
+   <new_CBI406 cultivar="yes">
+      <derived_from>hybrid</derived_from>
+      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
+      <y_hi_incr units="1/days">0.0100 0.010</y_hi_incr>
+      <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
+      <y_hi_max_pot>0.30 0.30</y_hi_max_pot>
+      <cumvd_emergence>0    50</cumvd_emergence>
+      <tt_emergence units="oCd">1030  1</tt_emergence>
+      <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>10.8   16.3</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>498     1</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd">250    250</y_tt_floral_initiation>
+      <x_pp_flowering units="h">1      24</x_pp_flowering>
+      <y_tt_flowering units="oCd">200   200</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">700    700</y_tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">1.0</tt_end_grain_fill>
+      <tt_maturity units="oCd">1.0</tt_maturity>
+      <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
+      <y_height units="mm" description="plant canopy height">0  1500</y_height>
+   </new_CBI406>
   </Model>
 </Type>
