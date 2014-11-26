@@ -694,7 +694,10 @@ public class Species
             double toStem = fShoot * (1.0 - fStolon - fLeaf);
 
             //checking
-            double ToAll = toLeaf + toStem + toStol + toRoot;
+            double ToAll = toLeaf
+				         + toStem
+						 + toStol
+						 + toRoot;
             if (Math.Abs(ToAll - 1.0) > 0.0001)
                 throw new Exception("  AgPasture - Mass balance lost on partition of new growth");
             /* {Console.WriteLine("checking partitioning fractions") };*/
@@ -707,7 +710,10 @@ public class Species
             dGrowthHerbage = (toLeaf + toStem + toStol) * dGrowth;
 
             //partitioing N based on not only the DM, but also [N] in plant parts
-            double Nsum = toLeaf * NcleafMax + toStem * NcstemMax + toStol * NcstolMax + toRoot * NcrootMax;
+            double Nsum = toLeaf * NcleafMax
+				        + toStem * NcstemMax
+						+ toStol * NcstolMax
+						+ toRoot * NcrootMax;
             double toLeafN = toLeaf * NcleafMax / Nsum;
             double toStemN = toStem * NcstemMax / Nsum;
             double toStolN = toStol * NcstolMax / Nsum;
@@ -754,13 +760,22 @@ public class Species
         double gfwt = GFWaterTissue();
         double gftleaf = 3.0 / liveLeavesPerTiller;       // three tissue stages used to simulate a number of leaves
 
-        gama = refTissueTurnoverRate * gftt * gfwt * gftleaf;
-        gamaS = refTurnoverRateStolon * gftt * gfwt * gftleaf;    //gama;                                    //for stolon of legumes
+        gama = refTissueTurnoverRate 
+			 * gftt 
+			 * gfwt 
+			 * gftleaf;
+        gamaS = refTurnoverRateStolon 
+			  * gftt 
+			  * gfwt 
+			  * gftleaf;    //gama;  for stolon of legumes
         //double gamad = gftt * gfwt * rateDead2Litter;
-        gamaD = refLitteringRate * Math.Pow(glfWater, exponentGLFW2dead) * digestDead / 0.4 + stockParameter * stockingRate;
-
-        gamaR = gftt * (2 - glfWater) * rateRootSen;  //gfwt * rateRootSen;
-
+        gamaD = refLitteringRate 
+			  * Math.Pow(glfWater, exponentGLFW2dead) 
+			  * digestDead / 0.4 
+			  + stockParameter * stockingRate;
+        gamaR = gftt 
+			  * (2 - glfWater) 
+			  * rateRootSen;
 
         if (gama == 0.0) //if gama ==0 due to gftt or gfwt, then skip "turnover" part
         {
@@ -785,7 +800,9 @@ public class Species
                 else if (phenoStage == 2)    //repro
                 {
                     double Kr = (double)daysfromAnthesis / daysToMature;
-                    gama = 1 - (1 - gama) * (1 - Kr * Kr);
+                    //gama = 1 - (1 - gama) * (1 - Kr * Kr);
+					gama *= (1 - Kr * Kr);
+					gama += Kr * Kr;
                 }
             }
 
