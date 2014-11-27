@@ -17,28 +17,16 @@ public class Species
 	#region Static variables, for parameters common for all species  ------------------------------
 
 	/// <summary>Some Description</summary>
-	internal static NewMetType MetData = new NewMetType();    //climate data applied to all species
+	internal static Clock myClock;
 
 	/// <summary>Some Description</summary>
-	internal static double latitude;
-
-	/// <summary>Some Description</summary>
-	internal static double dayLength;
+	internal static MetFile MetData;
 
 	/// <summary>Some Description</summary>
 	internal static double CO2 = 380;
 
 	/// <summary>Some Description</summary>
-	internal static int day_of_month;
-
-	/// <summary>Some Description</summary>
-	internal static int month;
-
-	/// <summary>Some Description</summary>
-	internal static int year;
-
-	/// <summary>Some Description</summary>
-	internal static double PIntRadn;                          //total Radn intecepted by pasture
+	internal static double PIntRadn;                          //total Radn intercepted by pasture
 
 	/// <summary>Some Description</summary>
 	internal static double PCoverGreen;
@@ -609,43 +597,43 @@ public class Species
 	//// > N and C cycling  >>>
 
 	/// <summary>Some Description</summary>
-	internal double Nremob = 0;       //N remobiliesd N during senescing
+	internal double Nremob = 0.0;       //N remobiliesd N during senescing
 
 	/// <summary>Some Description</summary>
-	internal double Cremob = 0;
+	internal double Cremob = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double Nleaf3Remob = 0;
+	internal double Nleaf3Remob = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double Nstem3Remob = 0;
+	internal double Nstem3Remob = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double Nstol3Remob = 0;
+	internal double Nstol3Remob = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double NrootRemob = 0;
+	internal double NrootRemob = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double remob2NewGrowth = 0;
+	internal double remob2NewGrowth = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double newGrowthN = 0;    //N plant-soil
+	internal double newGrowthN = 0.0;    //N plant-soil
 
 	/// <summary>Some Description</summary>
-	internal double NdemandLux;      //N demand for new growth, with luxury uptake
+	internal double NdemandLux = 0.0;      //N demand for new growth, with luxury uptake
 
 	/// <summary>Some Description</summary>
-	internal double NdemandOpt;
+	internal double NdemandOpt = 0.0;
 
 	/// <summary>Some Description</summary>
-	internal double Nfix;         //N fixed by legumes
+	internal double Nfix = 0.0;         //N fixed by legumes
 
 	/// <summary>Some Description</summary>
-	internal double NLuxury2;		       // luxury N (above Nopt) potentially remobilisable
+	internal double NLuxury2 = 0.0;		       // luxury N (above Nopt) potentially remobilisable
 
 	/// <summary>Some Description</summary>
-	internal double NLuxury3;		       // luxury N (above Nopt)potentially remobilisable
+	internal double NLuxury3 = 0.0;		       // luxury N (above Nopt)potentially remobilisable
 
 	/// <summary>Some Description</summary>
 	internal double NFastRemob2 = 0.0;   // amount of luxury N remobilised from tissue 2
@@ -928,7 +916,7 @@ public class Species
 	internal int Phenology()
 	{
 		const double DDSEmergence = 150;   // to be an input parameter
-		double meanT = 0.5 * (MetData.maxt + MetData.mint);
+		double meanT = 0.5 * (MetData.MaxT + MetData.MinT);
 
 		if (bSown && phenoStage == 0)            //  before emergence
 		{
@@ -938,7 +926,6 @@ public class Species
 				phenoStage = 1;
 				DDSfromSowing = 0;
 				SetEmergentState();      //Initial states at 50% emergence
-
 			}
 		}
 
@@ -971,9 +958,9 @@ public class Species
 	/// <returns>true or false</returns>
 	internal bool annualPhenology()
 	{
-		if (month == monEmerg && day_of_month == dayEmerg)
+		if (myClock.month == monEmerg && myClock.day_of_month == dayEmerg)
 			phenoStage = 1;         //vegetative stage
-		else if (month == monAnth && day_of_month == dayAnth)
+		else if (myClock.month == monAnth && myClock.day_of_month == dayAnth)
 			phenoStage = 2;         //reproductive
 
 		if (phenoStage == 0)        //before emergence
@@ -1066,8 +1053,8 @@ public class Species
 		double Yg = growthEfficiency;                  //default =0.75; //Efficiency of plant photosynthesis growth)
 
 		//Add temp effects to Pm
-		double Tmean = (MetData.maxt + MetData.mint) / 2;
-		double Tday = Tmean + 0.5 * (MetData.maxt - Tmean);
+		double Tmean = (MetData.MaxT + MetData.MinT) / 2;
+		double Tday = Tmean + 0.5 * (MetData.MaxT - Tmean);
 
 		double glfT = GFTemperature(Tmean);
 		double co2Effect = PCO2Effects();
@@ -1078,7 +1065,7 @@ public class Species
 		glfT = GFTemperature(Tday);
 		double Pm_day = Pm * glfT * co2Effect * NcFactor;
 
-		double tau = 3600 * dayLength;                //conversion of hour to seconds
+		double tau = 3600 * MetData.day_length;                //conversion of hour to seconds
 		IL1 = 1.33333 * 0.5 * PIntRadn * PLightExtCoeff * 1000000 / tau;
 		double IL2 = IL1 / 2;                      //IL for early & late period of a day
 
@@ -1291,10 +1278,10 @@ public class Species
 
 		if (gama == 0.0)
 		{ //if gama ==0 due to gftt or gfwt, then skip "turnover" part
-			dLitter = 0;
-			dNLitter = 0;
-			dRootSen = 0;
-			dNrootSen = 0;
+			dLitter = 0.0;
+			dNLitter = 0.0;
+			dRootSen = 0.0;
+			dNrootSen = 0.0;
 		}
 		else
 		{
@@ -1316,7 +1303,7 @@ public class Species
 			}
 
 			// Get daily defoliation factor
-			double Fd = 0;
+			double Fd = 0.0;
 			if (prevState.dmdefoliated + prevState.dmshoot > 0)
 				Fd = prevState.dmdefoliated / (prevState.dmdefoliated + prevState.dmshoot);
 
@@ -1333,10 +1320,10 @@ public class Species
 				{
 					if (dmgreen + dGrowth < dmgreenmin)
 					{
-						gama = 0;
-						gamaS = 0;
-						//  gamad = 0;     -RCichota: Littering should not be affected
-						gamaR = 0;
+						gama = 0.0;
+						gamaS = 0.0;
+						//  gamad = 0.0;     -RCichota: Littering should not be affected
+						gamaR = 0.0;
 					}
 					else
 					{
@@ -1351,7 +1338,7 @@ public class Species
 			// consider a minimum for roots too
 			if (dmroot < 0.5 * dmgreenmin)
 			{
-				gamaR = 0;
+				gamaR = 0.0;
 			}
 
 			//// Do the actual turnover, update DM and N
@@ -1735,11 +1722,11 @@ public class Species
 		{
 			double fac = 1.0;                   //day-to-day fraction of reduction
 			//double minF = allocationSeasonF;    //default = 0.8;
-			double doy = day_of_month + (int)((month - 1) * 30.5);
+			double doy = myClock.day_of_month + (int)((myClock.month - 1) * 30.5);
 			// NOTE: the type for doy has to be double or the divisions below will be rounded (to int) and thus be [slightly] wrong
 
 			double doyC = startHighAllocation;             // Default as in South-hemisphere: 232
-			int doyEoY = 365 + (DateTime.IsLeapYear(year) ? 1 : 0);
+			int doyEoY = 365 + (DateTime.IsLeapYear(myClock.year) ? 1 : 0);
 			int[] ReproSeasonIntval = new int[3]; // { 35, 60, 30 };
 			double allocationIncrease = allocationSeasonF;
 			ReproSeasonIntval[0] = (int)(durationHighAllocation * shoulderHighAllocation * 1.17);
@@ -1748,20 +1735,20 @@ public class Species
 
 			if (usingLatFunctionFShoot)
 			{
-				int doyWinterSolstice = (latitude < 0) ? 171 : 354;
+				int doyWinterSolstice = (MetData.Latitude < 0) ? 171 : 354;
 				// compute the day to start the period with higher DM allocation to shoot
 				double doyIniPlateau = doyWinterSolstice;
-				if (Math.Abs(latitude) > referenceLatitude)
+				if (Math.Abs(MetData.Latitude) > referenceLatitude)
 					doyIniPlateau += 183;
 				else
 				{
-					double myB = Math.Abs(latitude) / referenceLatitude;
+					double myB = Math.Abs(MetData.Latitude) / referenceLatitude;
 					doyIniPlateau += 183 * (paramALatFunction - paramALatFunction * myB + myB) * Math.Pow(myB, paramALatFunction - 1.0);
 				}
 
 				// compute the duration of the three phases (onset, plateau, and outset)
 				double maxPlateauPeriod = doyEoY - 2 * maxShoulderLatFunction;
-				ReproSeasonIntval[1] = (int)(minPlateauLatFunction + (maxPlateauPeriod - minPlateauLatFunction) * Math.Pow(1 - Math.Abs(latitude) / 90, paramBLatFunction));
+				ReproSeasonIntval[1] = (int)(minPlateauLatFunction + (maxPlateauPeriod - minPlateauLatFunction) * Math.Pow(1 - Math.Abs(MetData.Latitude) / 90, paramBLatFunction));
 				ReproSeasonIntval[0] = (int)Math.Min(maxShoulderLatFunction, ReproSeasonIntval[1] * onsetFacLatFunction);
 				ReproSeasonIntval[2] = (int)Math.Min(maxShoulderLatFunction, ReproSeasonIntval[1] * outsetFacLatFunction);
 				if (ReproSeasonIntval.Sum() > doyEoY)
@@ -1770,9 +1757,9 @@ public class Species
 				doyC = doyIniPlateau - ReproSeasonIntval[0];
 				// compute the factor to augment allocation
 				allocationIncrease = allocationMax;
-				if (Math.Abs(latitude) < referenceLatitude)
+				if (Math.Abs(MetData.Latitude) < referenceLatitude)
 				{
-					double myB = Math.Abs(latitude) / referenceLatitude;
+					double myB = Math.Abs(MetData.Latitude) / referenceLatitude;
 					allocationIncrease *= (paramCLatFunction - paramCLatFunction * myB + myB) * Math.Pow(myB, paramCLatFunction - 1.0);
 				}
 			}
@@ -1922,24 +1909,24 @@ public class Species
 		if (usingHeatStress)
 		{
 			// check heat stress factor
-			if (MetData.maxt > heatFullT)
+			if (MetData.MaxT > heatFullT)
 			{
 				heatFactor = 0.0;
 				accumTHeat = 0.0;
 			}
-			else if (MetData.maxt > heatOnsetT)
+			else if (MetData.MaxT > heatOnsetT)
 			{
-				heatFactor = highTempStress * (heatFullT - MetData.maxt) / (heatFullT - heatOnsetT);
+				heatFactor = highTempStress * (heatFullT - MetData.MaxT) / (heatFullT - heatOnsetT);
 				accumTHeat = 0.0;
 			}
 
 			// check recovery factor
 			double recoveryFactor = 0.0;
-			if (MetData.maxt < heatOnsetT)
+			if (MetData.MaxT < heatOnsetT)
 				recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
 
 			// accumulate temperature
-			double meanT = 0.5 * (MetData.maxt + MetData.mint);
+			double meanT = 0.5 * (MetData.MaxT + MetData.MinT);
 			accumTHeat += Math.Max(0.0, heatRecoverT - meanT);
 
 			// heat stress
@@ -1960,24 +1947,24 @@ public class Species
 		if (usingColdStress)
 		{
 			// check cold stress factor
-			if (MetData.mint < coldFullT)
+			if (MetData.MinT < coldFullT)
 			{
 				coldFactor = 0.0;
 				accumTCold = 0.0;
 			}
-			else if (MetData.mint < coldOnsetT)
+			else if (MetData.MinT < coldOnsetT)
 			{
-				coldFactor = lowTempStress * (MetData.mint - coldFullT) / (coldOnsetT - coldFullT);
+				coldFactor = lowTempStress * (MetData.MinT - coldFullT) / (coldOnsetT - coldFullT);
 				accumTCold = 0.0;
 			}
 
 			// check recovery factor
 			double recoveryFactor = 0.0;
-			if (MetData.mint > coldOnsetT)
+			if (MetData.MinT > coldOnsetT)
 				recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
 
 			// accumulate temperature
-			double meanT = 0.5 * (MetData.maxt + MetData.mint);
+			double meanT = 0.5 * (MetData.MaxT + MetData.MinT);
 			accumTCold += Math.Max(0.0, meanT - coldRecoverT);
 
 			// cold stress
@@ -2011,7 +1998,7 @@ public class Species
 	/// <returns>Temp effect</returns>
 	private double GFTempTissue()
 	{
-		double T = (MetData.maxt + MetData.mint) / 2;
+		double T = (MetData.MaxT + MetData.MinT) / 2;
 
 		double gftt = 0.0;        //default as T < massFluxTmin
 		if (T > massFluxTmin && T <= massFluxTopt)
@@ -2172,57 +2159,57 @@ public class Species
 /// </summary>
 public class SpeciesState
 {
-	/// <summary>value</summary>
+	/// <summary>DM of leaf at stage 1</summary>
 	public double dmleaf1;
-	/// <summary>value</summary>
+	/// <summary>DM of leaf at stage 2</summary>
 	public double dmleaf2;
-	/// <summary>value</summary>
+	/// <summary>DM of leaf at stage 3</summary>
 	public double dmleaf3;
-	/// <summary>value</summary>
+	/// <summary>DM of leaf at stage 4</summary>
 	public double dmleaf4;
-	/// <summary>value</summary>
+	/// <summary>DM of stem at stage 1</summary>
 	public double dmstem1;
-	/// <summary>value</summary>
+	/// <summary>DM of stem at stage 2</summary>
 	public double dmstem2;
-	/// <summary>value</summary>
+	/// <summary>DM of stem at stage 3</summary>
 	public double dmstem3;
-	/// <summary>value</summary>
+	/// <summary>DM of stem at stage 4</summary>
 	public double dmstem4;
-	/// <summary>value</summary>
+	/// <summary>DM of stolon at stage 1</summary>
 	public double dmstol1;
-	/// <summary>value</summary>
+	/// <summary>DM of stolon at stage 2</summary>
 	public double dmstol2;
-	/// <summary>value</summary>
+	/// <summary>DM of stolon at stage 3</summary>
 	public double dmstol3;
-	/// <summary>value</summary>
+	/// <summary>DM of roots</summary>
 	public double dmroot;
 
-	/// <summary>value</summary>
+	/// <summary>DM of leaves</summary>
 	public double dmleaf;
-	/// <summary>value</summary>
+	/// <summary>DM of stems and sheath</summary>
 	public double dmstem;
-	/// <summary>value</summary>
-	public double dmleaf_green;
-	/// <summary>value</summary>
-	public double dmstem_green;
-	/// <summary>value</summary>
-	public double dmstol_green;
-	/// <summary>value</summary>
+	/// <summary>DM of stolons</summary>
 	public double dmstol;
-	/// <summary>value</summary>
+	/// <summary>DM of green leaves</summary>
+	public double dmleaf_green;
+	/// <summary>DM of green stems</summary>
+	public double dmstem_green;
+	/// <summary>DM of green stolons</summary>
+	public double dmstol_green;
+	/// <summary>DM above ground</summary>
 	public double dmshoot;
-	/// <summary>value</summary>
+	/// <summary>DM green above ground</summary>
 	public double dmgreen;
-	/// <summary>value</summary>
+	/// <summary>DM dead above ground</summary>
 	public double dmdead;
-	/// <summary>value</summary>
+	/// <summary>Total plant DM</summary>
 	public double dmtotal;
-	/// <summary>value</summary>
+	/// <summary>DM defoliated</summary>
 	public double dmdefoliated;
-	/// <summary>value</summary>
+	/// <summary>N remobilsed from senesced tissue</summary>
 	public double Nremob;
 
-	/// <summary>constructor</summary>
+	/// <summary>The constructor</summary>
 	public SpeciesState() { }
 
 }

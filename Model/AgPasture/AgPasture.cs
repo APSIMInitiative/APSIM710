@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
-using ModelFramework;
 using System.Xml;
 using System.Xml.Schema;
+using ModelFramework;
 using CSGeneral;
 
 /// <summary>
@@ -17,9 +17,10 @@ public class AgPasture
 
 	//// - general parameters (for sward or initialisation only)  ---------------------------------
 
-	[Param]
+	[Link]
+	private Component My = null;
+
 	[Description("Name of the sward mix")]
-	[Units("")]
 	private string thisCropName = "";
 
 	[Param]
@@ -494,7 +495,7 @@ public class AgPasture
 	[Units("0-1")]
 	private double[] Frgr;
 
-	//  >> Preferences for species and parts (on removal)
+	////  >> Preferences for species and parts (on removal)
 	[Param]
 	[Description("Weight factor defining the preference level for green DM")]
 	private double[] PreferenceForGreenDM;
@@ -647,6 +648,11 @@ public class AgPasture
 
 	#region Inputs from othe modules  -------------------------------------------------------------
 
+	[Link]
+	private Clock myClock;
+	[Link]
+	private MetFile MetData;
+
 	[Input]
 	private float[] dlayer;   //Soil Layer Thickness (mm)
 	[Input]
@@ -677,7 +683,7 @@ public class AgPasture
 	private double co2 = 380;
 
 	/// <summary>
-	/// Gets of sets the effective stocking rate, to calculate trampling on pasture (increase senescence)
+	/// Gets or sets the effective stocking rate, to calculate trampling on pasture (increase senescence)
 	/// </summary>
 	public double StockRate
 	{
@@ -698,11 +704,6 @@ public class AgPasture
 	/// Number of species in the sward
 	/// </summary>
 	private int NumSpecies = 0;
-
-	/// <summary>
-	/// Daily Met Data
-	/// </summary>
-	private NewMetType MetData = new NewMetType();
 
 	// - Aggregated pasture parameters of all species (wiht a prefix 'p_')
 	private double p_dGrowthPot;      //daily growth potential
@@ -795,13 +796,23 @@ public class AgPasture
 	[EventHandler]
 	public void OnInit2()
 	{
-		InitParameters();            // Init parameters after reading the data
+		// Init parameters after reading the data
+		InitParameters();
+		thisCropName = My.Name;
 
-		SetSpeciesMetData();         // This is needed for the first day after knowing the number of species
+		// Set Species clock and MetData - needed for the first day after knowing the number of species
+		Species.myClock = myClock;
+		Species.MetData = MetData; 
+		SetSpeciesWithSwardData();
 
-		DoNewCropEvent();            // Tell other modules that I exist
-		DoNewCanopyEvent();          // Tell other modules about my canopy
-		DoNewPotentialGrowthEvent(); // Tell other modules about my current growth status
+		// Tell other modules that I exist
+		DoNewCropEvent();
+
+		// Tell other modules (micromet) about my canopy
+		DoNewCanopyEvent();
+
+		// Tell other modules about my current growth status
+		DoNewPotentialGrowthEvent();
 
 		// write some basic initialisation info
 		writeSummary();
@@ -927,13 +938,6 @@ public class AgPasture
 		p_waterDemand = 0;
 		p_waterUptake = 0;
 		p_gfwater = 0;
-
-		//if (rlvp.Length != dlayer.Length)
-		//{
-		//    String msg = "Warning: Number of layers specified for root length density (rlvp) is different ";
-		//    msg += "\nfrom the number of soil layers.The simulation will run using the minimum of the two.";
-		//    Console.WriteLine(msg);
-		//}
 	}
 
 	/// <summary>
@@ -1254,43 +1258,24 @@ public class AgPasture
 	# region Main daily processes  ----------------------------------------------------------------
 
 	/// <summary>
-	/// Get weather data for today
+	/// Let species know the value of some sward variables
 	/// </summary>
-	/// <param name="NewMetData">MetData</param>
-	[EventHandler]
-	public void OnNewMet(NewMetType NewMetData)
+	private void SetSpeciesWithSwardData()
 	{
-		MetData = NewMetData;
-	}
-
-	/// <summary>
-	/// Let species know weather conditions
-	/// </summary>
-	/// <returns></returns>
-	private void SetSpeciesMetData()
-	{
-		//pass metData & day_length to species (same to all species)
-		Species.dayLength = day_length;
-		Species.latitude = latitude;
-		Species.MetData = MetData;
-		Species.day_of_month = day_of_month;
-		Species.month = month;
-		Species.year = year;
+		// pass CO2 & canopy to species
 		Species.CO2 = co2;
 		Species.PIntRadn = IntRadn;
 		Species.PCoverGreen = Cover_green;
 		Species.PLightExtCoeff = p_lightExtCoeff;
 		Species.Pdmshoot = AboveGroundWt;   //dm_shoot;
 
-		//partition the MetData to species
-		double sumRadnIntercept = 0.0;   //Intercepted Fraction of the solar Radn available to a species
+		// update available and intercepted fraction of the solar Radn available to each species
+		double sumRadnIntercept = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			sumRadnIntercept += mySpecies[s].coverGreen;
 		}
 
-		//update available Radn for each species at current day
-		//IntRadn - the total intecepted radn by whole canopy of mixed species
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			if (sumRadnIntercept == 0)
@@ -1315,8 +1300,8 @@ public class AgPasture
 		EventData.sender = thisCropName;
 		p_gftemp = 0;     //weighted average
 
-		double Tday = (0.75 * MetData.maxt)
-					+ (0.25 * MetData.mint);
+		double Tday = (0.75 * MetData.MaxT)
+					+ (0.25 * MetData.MinT);
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			double prop = 1.0 / NumSpecies;
@@ -1356,11 +1341,7 @@ public class AgPasture
 	[EventHandler]
 	public void OnPrepare()
 	{
-		//  p_harvestDM = 0.0;      // impartant to have this reset because
-		//  p_harvestN = 0.0;       // they are used to DM & N returns
-		//  p_harvestDigest = 0.0;
-
-		// RCichota May2014, moved here from onProcess (really owe to be onNewMet but have issues at initialisation)
+		// RCichota May2014, moved here from onProcess (really ought to be onNewMet but have issues at initialisation)
 		//**Zero out some variables
 		for (int s = 0; s < NumSpecies; s++)
 			mySpecies[s].DailyRefresh();
@@ -1368,6 +1349,7 @@ public class AgPasture
 		// clear FractionHarvest by assigning new
 		FractionToHarvest = new double[NumSpecies];
 
+		// Send info about canopy and potential growth, so other moduels will calculate intercepted radn and PET
 		DoNewCanopyEvent();
 		DoNewPotentialGrowthEvent();
 	}
@@ -1467,7 +1449,7 @@ public class AgPasture
 		}
 
 		// Pass on some parameters to different species
-		SetSpeciesMetData();
+		SetSpeciesWithSwardData();
 
 		// Phenology, for annuals
 		int anyEmerged = 0;
@@ -1518,15 +1500,6 @@ public class AgPasture
 
 		// DM partitioning & tissue turnover
 		GrowthAndPartition();
-
-		/* if (!p_HarvestDay)
-		{
-		p_harvestDM = 0.0;      // impartant to have this reset because
-		p_harvestN = 0.0;       // they are used to DM & N returns
-		p_harvestDigest = 0.0;
-		}
-		p_HarvestDay = false;    //reset the
-		*/
 	}
 
 	/// <summary>
@@ -1745,7 +1718,7 @@ public class AgPasture
 	{
 		//Uptake from the root_zone
 		NitrogenChangedType NUptake = new NitrogenChangedType();
-		NUptake.Sender = "AgPasture";
+		NUptake.Sender = thisCropName;
 		NUptake.SenderType = "Plant";
 		NUptake.DeltaNO3 = new double[dlayer.Length];
 		NUptake.DeltaNH4 = new double[dlayer.Length];
@@ -1951,7 +1924,7 @@ public class AgPasture
 			// Compute the tissue turnover
 			mySpecies[s].TissueTurnover();
 
-			// update aggregated varaibles
+			// update aggregated variables
 			mySpecies[s].updateAggregated();
 
 			p_greenDM += mySpecies[s].dmgreen;
@@ -2133,7 +2106,7 @@ public class AgPasture
 		}
 
 		FOMLayerType FomLayer = new FOMLayerType();
-		FomLayer.Type = "agpasture";
+		FomLayer.Type = thisCropName;
 		FomLayer.Layer = fomLL;
 		IncorpFOM.Invoke(FomLayer);
 	}
@@ -2554,10 +2527,10 @@ public class AgPasture
 	private double VPD()
 	{
 		double SVPfrac = 0.66F;
-		double VPDmint = svp(MetData.mint) - MetData.vp;
+		double VPDmint = svp(MetData.MinT) - MetData.vp;
 		VPDmint = Math.Max(VPDmint, 0.0);
 
-		double VPDmaxt = svp(MetData.maxt) - MetData.vp;
+		double VPDmaxt = svp(MetData.MaxT) - MetData.vp;
 		VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
 		double vdp = (SVPfrac * VPDmaxt)
@@ -2574,13 +2547,13 @@ public class AgPasture
 
 	#region Output properties  --------------------------------------------------------------------
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Intercepted solar radiation")]
 	[Units("MJ")]
 	public float IntRadn;
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Generic type of crop")]         //  useful for SWIM
 	[Units("")]
@@ -2589,7 +2562,7 @@ public class AgPasture
 		get { return thisCropName; }  // micrometType[0]
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Name of this crop")]
 	[Units("")]
@@ -2598,7 +2571,7 @@ public class AgPasture
 		get { return thisCropName; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Generic crop type of each species")]
 	[Units("")]
@@ -2607,7 +2580,7 @@ public class AgPasture
 		get { return micrometType; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Name of each species")]
 	[Units("")]
@@ -2622,7 +2595,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant status (dead, alive, etc)")]
 	[Units("")]
@@ -2635,7 +2608,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant development stage number")]
 	[Units("")]
@@ -2657,7 +2630,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant development stage name")]
 	[Units("")]
@@ -2677,7 +2650,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of C in plants")]
 	[Units("kgDM/ha")]
@@ -2686,7 +2659,7 @@ public class AgPasture
 		get { return 0.4 * (p_totalDM + p_rootMass); }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plants")]
 	[Units("kgDM/ha")]
@@ -2695,7 +2668,7 @@ public class AgPasture
 		get { return AboveGroundWt + BelowGroundWt; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plants above ground")]
 	[Units("kgDM/ha")]
@@ -2710,7 +2683,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plants below ground")]
 	[Units("kgDM/ha")]
@@ -2719,7 +2692,7 @@ public class AgPasture
 		get { return p_rootMass; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of standing plants parts")]
 	[Units("kgDM/ha")]
@@ -2734,7 +2707,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plants alive above ground")]
 	[Units("kgDM/ha")]
@@ -2749,7 +2722,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of dead plants above ground")]
 	[Units("kgDM/ha")]
@@ -2758,7 +2731,7 @@ public class AgPasture
 		get { return p_deadDM; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's leaves")]
 	[Units("kgDM/ha")]
@@ -2773,7 +2746,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's leaves alive")]
 	[Units("kgDM/ha")]
@@ -2788,7 +2761,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's leaves dead")]
 	[Units("kgDM/ha")]
@@ -2803,7 +2776,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's stems")]
 	[Units("kgDM/ha")]
@@ -2818,7 +2791,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's stems alive")]
 	[Units("kgDM/ha")]
@@ -2833,7 +2806,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's stems dead")]
 	[Units("kgDM/ha")]
@@ -2848,7 +2821,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's stolons")]
 	[Units("kgDM/ha")]
@@ -2863,7 +2836,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's roots")]
 	[Units("kgDM/ha")]
@@ -2879,33 +2852,33 @@ public class AgPasture
 	}
 
 	//for consistency, passing variables in Onremove_crop_biomass() similar with other plant modules
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plants above ground")]
 	[Units("kg/ha")]
 	public double biomass { get { return AboveGroundWt; } }
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's leaves alive")]
 	[Units("g/m^2")]
 	public double leafgreenwt { get { return LeafLiveWt / 10; } }
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's leaves dead")]
 	[Units("g/m^2")]
 	public double stemgreenwt { get { return StemLiveWt / 10; } }
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's stems dead")]
 	[Units("g/m^2")]
 	public double leafsenescedwt { get { return LeafDeadWt / 10; } }
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plant's stems alive")]
 	[Units("g/m^2")]
 	public double stemsenescedwt { get { return StemDeadWt / 10; } }
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant potential carbon assimilation")]
 	[Units("kgC/ha")]
@@ -2920,7 +2893,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant carbon loss by respiration")]
 	[Units("kgC/ha")]
@@ -2935,7 +2908,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant gross potential growth")]
 	[Units("kgDM/ha")]
@@ -2950,7 +2923,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Potential plant growth, correct for extreme temperatures")]
 	[Units("kgDM/ha")]
@@ -2959,7 +2932,7 @@ public class AgPasture
 		get { return p_dGrowthPot; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Potential plant growth, correct for temperature and water")]
 	[Units("kgDM/ha")]
@@ -2968,7 +2941,7 @@ public class AgPasture
 		get { return p_dGrowthW; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Actual plant growth (before littering)")]
 	[Units("kgDM/ha")]
@@ -2978,7 +2951,7 @@ public class AgPasture
 		get { return p_dGrowth; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Actual herbage (shoot) growth")]
 	[Units("kgDM/ha")]
@@ -2987,7 +2960,7 @@ public class AgPasture
 		get { return p_dHerbage; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant effective growth (actual minus tissue turnover)")]
 	[Units("kgDM/ha")]
@@ -2996,7 +2969,7 @@ public class AgPasture
 		get { return p_dGrowth - p_dLitter - p_dRootSen; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter amount of litter deposited onto soil surface")]
 	[Units("kgDM/ha")]
@@ -3005,7 +2978,7 @@ public class AgPasture
 		get { return p_dLitter; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter amount of senescent roots added to soil FOM")]
 	[Units("kgDM/ha")]
@@ -3014,7 +2987,7 @@ public class AgPasture
 		get { return p_dRootSen; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant C remobilisation")]
 	[Units("kgC/ha")]
@@ -3029,7 +3002,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter amount available for removal (leaf+stem)")]
 	[Units("kgDM/ha")]
@@ -3045,7 +3018,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of plant dry matter removed by harvest")]
 	[Units("kgDM/ha")]
@@ -3061,7 +3034,7 @@ public class AgPasture
 	}
 
 	//**LAI & Cover
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Leaf area index of green leaves")]
 	[Units("m^2/m^2")]
@@ -3070,7 +3043,7 @@ public class AgPasture
 		get { return p_greenLAI; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Leaf area index of dead leaves")]
 	[Units("m^2/m^2")]
@@ -3079,7 +3052,7 @@ public class AgPasture
 		get { return p_deadLAI; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total leaf area index")]
 	[Units("m^2/m^2")]
@@ -3088,7 +3061,7 @@ public class AgPasture
 		get { return p_totalLAI; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of soil covered by green leaves")]
 	[Units("%")]
@@ -3101,7 +3074,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of soil covered by dead leaves")]
 	[Units("%")]
@@ -3114,7 +3087,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of soil covered by plants")]
 	[Units("%")]
@@ -3128,7 +3101,7 @@ public class AgPasture
 	}
 
 	//** Nitrogen
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in plants")]
 	[Units("kg/ha")]
@@ -3137,7 +3110,7 @@ public class AgPasture
 		get { return AboveGroundN + BelowGroundN; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in plants above ground")]
 	[Units("kgN/ha")]
@@ -3152,7 +3125,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in plants below ground")]
 	[Units("kgN/ha")]
@@ -3167,7 +3140,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Proportion of N above ground in relation to below ground")]
 	[Units("%")]
@@ -3182,7 +3155,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in standing plants")]
 	[Units("kgN/ha")]
@@ -3197,7 +3170,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration of standing plants")]
 	[Units("kgN/kgDM")]
@@ -3217,7 +3190,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in plants alive above ground")]
 	[Units("kgN/ha")]
@@ -3232,7 +3205,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in dead plants above ground")]
 	[Units("kgN/ha")]
@@ -3247,7 +3220,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in the plant's leaves")]
 	[Units("kgN/ha")]
@@ -3262,7 +3235,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in the plant's stems")]
 	[Units("kgN/ha")]
@@ -3277,7 +3250,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in the plant's stolons")]
 	[Units("kgN/ha")]
@@ -3292,7 +3265,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total amount of N in the plant's roots")]
 	[Units("kgN/ha")]
@@ -3307,7 +3280,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration of leaves")]
 	[Units("kgN/kgDM")]
@@ -3326,7 +3299,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in stems")]
 	[Units("kgN/kgDM")]
@@ -3345,7 +3318,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in stolons")]
 	[Units("kgN/kgDM")]
@@ -3363,7 +3336,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in roots")]
 	[Units("kgN/kgDM")]
@@ -3379,7 +3352,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N removed by harvest")]
 	[Units("kgN/ha")]
@@ -3397,7 +3370,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average herbage digestibility")]
 	[Units("0-1")]
@@ -3415,7 +3388,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average digestibility of harvested material")]
 	[Units("0-1")]
@@ -3424,7 +3397,7 @@ public class AgPasture
 		get { return p_harvestDigest; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average ME of herbage")]
 	[Units("(MJ/ha)")]
@@ -3437,7 +3410,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average ME concentration of herbage")]
 	[Units("(MJ/kgDM)")]
@@ -3446,7 +3419,7 @@ public class AgPasture
 		get { return 16 * HerbageDigestibility; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of atmospheric N fixed")]
 	[Units("kgN/ha")]
@@ -3455,7 +3428,7 @@ public class AgPasture
 		get { return p_Nfix; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N from senescing tissue potentially remobilisable")]
 	[Units("kgN/ha")]
@@ -3470,7 +3443,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N remobilised from senescing tissue")]
 	[Units("kgN/ha")]
@@ -3485,7 +3458,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of luxury N remobilised")]
 	[Units("kgN/ha")]
@@ -3500,7 +3473,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of luxury N potentially remobilisable")]
 	[Units("kgN/ha")]
@@ -3515,7 +3488,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N deposited as litter onto soil surface")]
 	[Units("kgN/ha")]
@@ -3524,7 +3497,7 @@ public class AgPasture
 		get { return p_dNLitter; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N added to soil FOM by senescent roots")]
 	[Units("kgN/ha")]
@@ -3533,7 +3506,7 @@ public class AgPasture
 		get { return p_dNRootSen; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant nitrogen requirement with luxury uptake")]
 	[Units("kgN/ha")]
@@ -3550,7 +3523,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant nitrogen requirement for optimum growth")]
 	[Units("kgN/ha")]
@@ -3567,7 +3540,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Nitrogen amount in new growth")]
 	[Units("kgN/ha")]
@@ -3584,7 +3557,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Nitrogen concentration in new growth")]
 	[Units("-")]
@@ -3605,7 +3578,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant nitrogen demand from soil")]
 	[Units("kgN/ha")]
@@ -3614,7 +3587,7 @@ public class AgPasture
 		get { return p_soilNdemand; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant available nitrogen in soil")]
 	[Units("kgN/ha")]
@@ -3623,7 +3596,7 @@ public class AgPasture
 		get { return p_soilNavailable; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant available nitrogen in soil layers")]
 	[Units("kgN/ha")]
@@ -3632,7 +3605,7 @@ public class AgPasture
 		get { return SNSupply; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant nitrogen uptake")]
 	[Units("kgN/ha")]
@@ -3641,7 +3614,7 @@ public class AgPasture
 		get { return p_soilNuptake; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant nitrogen uptake from soil layers")]
 	[Units("kgN/ha")]
@@ -3650,7 +3623,7 @@ public class AgPasture
 		get { return SNUptake; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant growth limiting factor due to nitrogen stress")]
 	[Units("0-1")]
@@ -3659,7 +3632,7 @@ public class AgPasture
 		get { return p_gfn; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant growth limiting factor due to plant N concentration")]
 	[Units("0-1")]
@@ -3674,7 +3647,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter allocated to roots")]
 	[Units("kgDM/ha")]
@@ -3691,7 +3664,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter allocated to shoot")]
 	[Units("kgDM/ha")]
@@ -3708,7 +3681,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of growth allocated to roots")]
 	[Units("0-1")]
@@ -3724,7 +3697,7 @@ public class AgPasture
 	}
 
 	//** water related
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Root length density")]
 	[Units("mm/mm^3")]
@@ -3744,7 +3717,7 @@ public class AgPasture
 	}
 
 	private double[] RootFraction;
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of root dry matter for each soil layer")]
 	[Units("0-1")]
@@ -3753,7 +3726,7 @@ public class AgPasture
 		get { return RootFraction; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant water demand")]
 	[Units("mm")]
@@ -3762,7 +3735,7 @@ public class AgPasture
 		get { return p_waterDemand; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant available water in soil")]
 	[Units("mm")]
@@ -3771,7 +3744,7 @@ public class AgPasture
 		get { return p_waterSupply; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant available water in soil layers")]
 	[Units("mm")]
@@ -3780,7 +3753,7 @@ public class AgPasture
 		get { return SWSupply; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant water uptake")]
 	[Units("mm")]
@@ -3789,7 +3762,7 @@ public class AgPasture
 		get { return p_waterUptake; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant water uptake from soil layers")]
 	[Units("mm")]
@@ -3798,7 +3771,7 @@ public class AgPasture
 		get { return SWUptake; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant growth limiting factor due to water deficit")]
 	[Units("0-1")]
@@ -3808,7 +3781,7 @@ public class AgPasture
 	}
 
 	//**Stress factors
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant growth limiting factor due to temperature")]
 	[Units("0-1")]
@@ -3817,7 +3790,7 @@ public class AgPasture
 		get { return p_gftemp; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Generic plant growth limiting factor, used for other factors")]
 	[Units("0-1")]
@@ -3839,7 +3812,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Sward average height")]                 //needed by micromet
 	[Units("mm")]
@@ -3849,7 +3822,7 @@ public class AgPasture
 	}
 
 	//testing purpose
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter of plant pools at stage 1 (young)")]
 	[Units("kgN/ha")]
@@ -3864,7 +3837,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter of plant pools at stage 2 (developing)")]
 	[Units("kgN/ha")]
@@ -3879,7 +3852,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter of plant pools at stage 3 (mature)")]
 	[Units("kgN/ha")]
@@ -3894,7 +3867,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter of plant pools at stage 4 (senescent)")]
 	[Units("kgN/ha")]
@@ -3909,7 +3882,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N content of plant pools at stage 1 (young)")]
 	[Units("kgN/ha")]
@@ -3924,7 +3897,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N content of plant pools at stage 2 (developing)")]
 	[Units("kgN/ha")]
@@ -3939,7 +3912,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N content of plant pools at stage 3 (mature)")]
 	[Units("kgN/ha")]
@@ -3954,7 +3927,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N content of plant pools at stage 4 (senescent)")]
 	[Units("kgN/ha")]
@@ -3979,7 +3952,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Vapour pressure deficit")]
 	[Units("kPa")]
@@ -3988,7 +3961,7 @@ public class AgPasture
 		get { return VPD(); }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Effect of vapour pressure on growth (used by micromet)")]
 	[Units("0-1")]
@@ -3999,7 +3972,7 @@ public class AgPasture
 
 	//// The following are species values (arrays) ------------------------------------------------
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Leaf area index of green leaves, for each species")]
 	[Units("m^2/m^2")]
@@ -4014,7 +3987,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Leaf area index of dead leaves, for each species")]
 	[Units("m^2/m^2")]
@@ -4029,7 +4002,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total leaf area index, for each species")]
 	[Units("m^2/m^2")]
@@ -4044,7 +4017,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total dry matter weight of plants for each plant species")]
 	[Units("kgDM/ha")]
@@ -4059,7 +4032,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of plants above ground, for each species")]
 	[Units("kgDM/ha")]
@@ -4074,7 +4047,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of plants below ground, for each species")]
 	[Units("kgDM/ha")]
@@ -4089,7 +4062,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of standing herbage, for each species")]
 	[Units("kgDM/ha")]
@@ -4104,7 +4077,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of live standing plants parts for each species")]
 	[Units("kgDM/ha")]
@@ -4119,7 +4092,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of dead standing plants parts for each species")]
 	[Units("kgDM/ha")]
@@ -4134,7 +4107,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of leaves for each species")]
 	[Units("kgN/ha")]
@@ -4149,7 +4122,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stems for each species")]
 	[Units("kgN/ha")]
@@ -4164,7 +4137,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stolons for each species")]
 	[Units("kgN/ha")]
@@ -4179,7 +4152,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of roots for each species")]
 	[Units("kgN/ha")]
@@ -4194,7 +4167,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Total N amount for each plant species")]
 	[Units("kgN/ha")]
@@ -4209,7 +4182,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount of standing herbage, for each species")]
 	[Units("kgN/ha")]
@@ -4224,7 +4197,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in the plant's leaves, for each species")]
 	[Units("kgN/ha")]
@@ -4239,7 +4212,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in the plant's stems, for each species")]
 	[Units("kgN/ha")]
@@ -4254,7 +4227,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in the plant's stolons, for each species")]
 	[Units("kgN/ha")]
@@ -4269,7 +4242,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in the plant's roots, for each species")]
 	[Units("kgN/ha")]
@@ -4284,7 +4257,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in leaves, for each species")]
 	[Units("kgN/kgDM")]
@@ -4305,7 +4278,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in stems, for each species")]
 	[Units("kgN/kgDM")]
@@ -4326,7 +4299,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in stolons, for each species")]
 	[Units("kgN/kgDM")]
@@ -4351,7 +4324,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Average N concentration in roots, for each species")]
 	[Units("kgN/kgDM")]
@@ -4369,7 +4342,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of leaves at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
@@ -4384,7 +4357,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of leaves at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
@@ -4399,7 +4372,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of leaves at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
@@ -4414,7 +4387,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of leaves at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
@@ -4429,7 +4402,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stems at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
@@ -4444,7 +4417,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stems at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
@@ -4459,7 +4432,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stems at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
@@ -4474,7 +4447,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stems at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
@@ -4489,7 +4462,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stolons at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
@@ -4504,7 +4477,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stolons at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
@@ -4519,7 +4492,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Dry matter weight of stolons at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
@@ -4534,7 +4507,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in leaves at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
@@ -4549,7 +4522,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in leaves at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
@@ -4564,7 +4537,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in leaves at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
@@ -4579,7 +4552,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in leaves at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
@@ -4594,7 +4567,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stems at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
@@ -4609,7 +4582,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stems at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
@@ -4624,7 +4597,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stems at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
@@ -4639,7 +4612,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stems at stage 4 (dead) for each species")]
 	[Units("kgN/ha")]
@@ -4654,7 +4627,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stolons at stage 1 (young) for each species")]
 	[Units("kgN/ha")]
@@ -4669,7 +4642,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stolons at stage 2 (developing) for each species")]
 	[Units("kgN/ha")]
@@ -4684,7 +4657,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N amount in stolons at stage 3 (mature) for each species")]
 	[Units("kgN/ha")]
@@ -4699,7 +4672,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of leaves at stage 1 (young) for each species")]
 	[Units("kgN/kgDM")]
@@ -4714,7 +4687,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of leaves at stage 2 (developing) for each species")]
 	[Units("kgN/kgDM")]
@@ -4729,7 +4702,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of leaves at stage 3 (mature) for each species")]
 	[Units("kgN/kgDM")]
@@ -4744,7 +4717,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of leaves at stage 4 (dead) for each species")]
 	[Units("kgN/kgDM")]
@@ -4759,7 +4732,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stems at stage 1 (young) for each species")]
 	[Units("kgN/kgDM")]
@@ -4774,7 +4747,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stems at stage 2 (developing) for each species")]
 	[Units("kgN/kgDM")]
@@ -4789,7 +4762,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stems at stage 3 (mature) for each species")]
 	[Units("kgN/kgDM")]
@@ -4804,7 +4777,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stems at stage 4 (dead) for each species")]
 	[Units("kgN/kgDM")]
@@ -4819,7 +4792,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stolons at stage 1 (young) for each species")]
 	[Units("kgN/kgDM")]
@@ -4834,7 +4807,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stolons at stage 2 (developing) for each species")]
 	[Units("kgN/kgDM")]
@@ -4849,7 +4822,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("N concentration of stolons at stage 3 (mature) for each species")]
 	[Units("kgN/kgDM")]
@@ -4864,7 +4837,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Potential growth, after water stress, for each species")]
 	[Units("kgDM/ha")]
@@ -4879,7 +4852,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Gross potential growth for each species")]
 	[Units("kgDM/ha")]
@@ -4894,7 +4867,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Net potential growth for each species (after respiration)")]
 	[Units("kgDM/ha")]
@@ -4909,7 +4882,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Actual growth for each species")]
 	[Units("kgDM/ha")]
@@ -4924,7 +4897,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Litter amount deposited onto soil surface, for each species")]
 	[Units("kgDM/ha")]
@@ -4939,7 +4912,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of senesced roots added to soil FOM, for each species")]
 	[Units("kgDM/ha")]
@@ -4954,7 +4927,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of dry matter harvestable for each species (leaf+stem)")]
 	[Units("kgDM/ha")]
@@ -4970,7 +4943,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of plant dry matter removed by harvest, for each species")]
 	[Units("kgDM/ha")]
@@ -4985,7 +4958,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Proportion in the dry matter harvested of each species")]
 	[Units("%")]
@@ -5005,7 +4978,7 @@ public class AgPasture
 	}
 
 	private double[] FractionToHarvest;
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction to harvest for each species")]
 	[Units("0-1")]
@@ -5014,7 +4987,7 @@ public class AgPasture
 		get { return FractionToHarvest; }
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Rate of turnover for live DM, for each species")]
 	[Units("0-1")]
@@ -5031,7 +5004,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Rate of turnover for dead DM, for each species")]
 	[Units("0-1")]
@@ -5048,7 +5021,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Rate of DM turnover for stolons, for each species")]
 	[Units("0-1")]
@@ -5065,7 +5038,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Rate of DM turnover for roots, for each species")]
 	[Units("0-1")]
@@ -5082,7 +5055,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N from senescing tissue potentially remobilisable, for each species")]
 	[Units("kgN/ha")]
@@ -5099,7 +5072,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N remobilised from senesced material, for each species")]
 	[Units("kgN/ha")]
@@ -5116,7 +5089,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of luxury N potentially remobilisable, for each species")]
 	[Units("kgN/ha")]
@@ -5133,7 +5106,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of luxury N remobilised, for each species")]
 	[Units("kgN/ha")]
@@ -5150,7 +5123,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of atmospheric N fixed, for each species")]
 	[Units("kgN/ha")]
@@ -5167,7 +5140,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N required with luxury uptake, for each species")]
 	[Units("kgN/ha")]
@@ -5184,7 +5157,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N required for optimum growth, for each species")]
 	[Units("kgN/ha")]
@@ -5201,7 +5174,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N demaned from soil, for each species")]
 	[Units("kgN/ha")]
@@ -5218,7 +5191,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N in new growth, for each species")]
 	[Units("kgN/ha")]
@@ -5235,7 +5208,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Nitrogen concentration in new growth, for each species")]
 	[Units("kgN/kgDM")]
@@ -5255,7 +5228,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N uptake, for each species")]
 	[Units("kgN/ha")]
@@ -5272,7 +5245,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N deposited as litter onto soil surface, for each species")]
 	[Units("kgN/ha")]
@@ -5289,11 +5262,11 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of N from senesced roots added to soil FOM, for each species")]
 	[Units("kgN/ha")]
-	public double[] SpeciesSenescedN
+	public double[] SpeciesRootSenescedN
 	{
 		get
 		{
@@ -5306,7 +5279,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Amount of plant nitrogen removed by harvest, for each species")]
 	[Units("kgN/ha")]
@@ -5321,7 +5294,37 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Amount of water demand for each species")]
+	[Units("mm")]
+	public double[] SpeciesWaterDemand
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].soilWdemand;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Amount of water uptake for each species")]
+	[Units("mm")]
+	public double[] SpeciesWaterUptake
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].soilWuptake;
+			return result;
+		}
+	}
+	
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Stress factor on photosynthesis due to temperature, for each species")]
 	[Units("0-1")]
@@ -5336,7 +5339,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Growth limiting factor due to nitrogen, for each species")]
 	[Units("0-1")]
@@ -5351,7 +5354,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Growth limiting factor due to temperature, for each species")]
 	[Units("0-1")]
@@ -5360,14 +5363,14 @@ public class AgPasture
 		get
 		{
 			double[] result = new double[mySpecies.Length];
-			double Tmnw = (0.75 * MetData.maxt) + (0.25 * MetData.mint);  // weighted Tmean
+			double Tmnw = (0.75 * MetData.MaxT) + (0.25 * MetData.MinT);  // weighted Tmean
 			for (int s = 0; s < NumSpecies; s++)
 				result[s] = mySpecies[s].GFTemperature(Tmnw);
 			return result;
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Growth limiting factor due to water deficit, for each species")]
 	[Units("0-1")]
@@ -5382,9 +5385,9 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
-	[Description("Irridance on the top of canopy")]
+	[Description("Irradiance on the top of canopy")]
 	[Units("W.m^2/m^2")]
 	public double[] SpeciesIrradianceTopCanopy
 	{
@@ -5397,7 +5400,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Potential C assimilation, corrected for extreme temperatures")]
 	[Units("kgC/ha")]
@@ -5412,7 +5415,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Loss of C via respiration")]
 	[Units("kgC/ha")]
@@ -5427,7 +5430,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Gross primary productivity")]
 	[Units("kgC/ha")]
@@ -5442,7 +5445,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Net primary productivity")]
 	[Units("kgC/ha")]
@@ -5457,7 +5460,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Net above-ground primary productivity")]
 	[Units("kgC/ha")]
@@ -5472,7 +5475,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Net below-ground primary productivity")]
 	[Units("kgC/ha")]
@@ -5487,7 +5490,7 @@ public class AgPasture
 		}
 	}
 
-	/// <summary>Output</summary>
+	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of DM allocated to shoot")]
 	[Units("0-1")]
