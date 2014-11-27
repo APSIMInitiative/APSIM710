@@ -424,7 +424,7 @@ namespace CMPServices
         }
         //==============================================================================
         /// <summary>
-        /// Edits the <initdata> and replaces the consts/param values with [model] macro
+        /// Edits the initdata element and replaces the consts/param values with [model] macro
         /// </summary>
         /// <param name="initText">The initdata section XML</param>
         /// <returns>The initdata section with only the inits and comments</returns>
