@@ -587,6 +587,23 @@ public class AgPasture
 		}
 	}
 
+	//// >> Plant height >>>
+	[Param]
+	[Description("Maximum average height for each species in the sward")]
+	[Units("mm")]
+	private double[] MaxPlantHeight;
+	[Param]
+	[Description("Mass above ground when maximum height is reached")]
+	[Units("kgDM/ha")]
+	private double[] MassForMaxHeight;
+	[Param]
+	[Description("Exponent of function describing plant height as function of DM weight")]
+	[Units(">1.0")]
+	private double[] ExponentHeightFromMass;
+
+	[Link]
+	private LinearInterpolation HeightMassFN = null;
+
 	////  >> Soil related (water uptake) >>>
 	[Param]
 	[Output]
@@ -603,8 +620,6 @@ public class AgPasture
 	////  >> Additional functions >>>
 	[Link]
 	private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
-	[Link]
-	private LinearInterpolation HeightMassFN = null;
 
 	//// --  Parameters for annual species  -------------------------------------------------------
 	//  these were de-actived (hiden) as they are not really used and some procedure were
@@ -800,9 +815,10 @@ public class AgPasture
 		InitParameters();
 		thisCropName = My.Name;
 
-		// Set Species clock and MetData - needed for the first day after knowing the number of species
+		// Set the links for Clock and MetData and dlayer for each species
 		Species.myClock = myClock;
-		Species.MetData = MetData; 
+		Species.MetData = MetData;
+		Species.dlayer = dlayer;
 		SetSpeciesWithSwardData();
 
 		// Tell other modules that I exist
@@ -831,8 +847,8 @@ public class AgPasture
 		Array.Resize(ref initialDMFractions_grass, 11);
 		Array.Resize(ref initialDMFractions_legume, 11);
 
-		//Create and initialise each species
-		// added by RCichota, Oct/2003 - check which species to run  ------------------------------
+		//// Create and initialise each species  --------------------------------------------------
+		//        . added by RCichota, Oct/2003 - checks which species will be simulated
 
 		// check number of species
 		if (NumSpecies > speciesName.Length)
@@ -915,9 +931,32 @@ public class AgPasture
 				ExpoLinearCurveParam = iniRootCurveParam;
 		}
 
-		// rlvp is used as input only, in the calculations it has been usper-seeded by RootFraction (the proportion of roots mass in each layer)
+		// rlvp is used as input only, in the calculations it has been super-seeded by RootFraction (the proportion of roots mass in each layer)
 		// The RootFraction should add up to 1.0 over the soil profile
-		RootFraction = RootProfileDistribution();
+		bool usingSpeciesRoot = false;
+		if (usingSpeciesRoot)
+		{
+			// initialise the root fraction in each species
+			for (int s = 0; s < NumSpecies; s++)
+			{
+				mySpecies[s].rootFraction = mySpecies[s].RootProfileDistribution();
+			}
+
+			int nLayers = dlayer.Length;
+			RootFraction = new double[nLayers];
+			for (int layer = 0; layer < nLayers; layer++)
+			{
+				for (int s = 0; s < NumSpecies; s++)
+				{
+					RootFraction[layer] += mySpecies[s].dmroot * mySpecies[s].rootFraction[layer];
+				}
+				RootFraction[layer] /= RootWt;
+			}
+		}
+		else
+		{
+			RootFraction = RootProfileDistribution();
+		}
 
 		//init
 		p_dGrowthPot = 0.0;
@@ -953,7 +992,7 @@ public class AgPasture
 		mySpecies[s1].isLegume = (int)isLegume[s2] == 1;
 		mySpecies[s1].photoPath = "C" + (int)photoPath[s2];
 
-		//// -- deactivating all the annual stuff (never really fully implemented) ----------------------------
+		//// -- deactivating all the annual stuff (never really fully implemented) --------------------------
 		// if (isAnnual[s] == 1) SP[s].isAnnual = true;
 		// else SP[s].isAnnual = false;
 		mySpecies[s1].isAnnual = false;
@@ -967,9 +1006,9 @@ public class AgPasture
 			mySpecies[s1].CalcDaysEmgToAnth();
 		mySpecies[s1].dRootDepth = 1; //(int)dRootDepth[s];
 		mySpecies[s1].maxRootDepth = 10; //(int)maxRootDepth[s];
-		// --------------------------------------------------------------------------------------------------
+		//// ------------------------------------------------------------------------------------------------
 
-		// - potential growth (photosynthesis) ---------------------------
+		//// >> Potential growth (photosynthesis)  >>>
 		mySpecies[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
 		mySpecies[s1].maintRespiration = maintRespiration[s2];    //in %
 		mySpecies[s1].growthEfficiency = growthEfficiency[s2];
@@ -977,7 +1016,7 @@ public class AgPasture
 		mySpecies[s1].thetaPhoto = thetaPhoto[s2];
 		mySpecies[s1].lightExtCoeff = lightExtCoeff[s2];
 
-		// Temperature
+		// Temperature, general effect and extreme, heat and cold effects
 		mySpecies[s1].growthTmin = growthTmin[s2];
 		mySpecies[s1].growthTopt = growthTopt[s2];
 		mySpecies[s1].growthTref = growthTref[s2];
@@ -995,14 +1034,14 @@ public class AgPasture
 		mySpecies[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
 		mySpecies[s1].coldRecoverT = coldRecoverT[s2];
 
-		//CO2
+		// CO2 effects
 		mySpecies[s1].referenceCO2 = referenceCO2[s2];
 		mySpecies[s1].CO2PmaxScale = CO2PmaxScale[s2];
 		mySpecies[s1].CO2NScale = CO2NScale[s2];
 		mySpecies[s1].CO2NMin = CO2NMin[s2];
 		mySpecies[s1].CO2NCurvature = CO2NCurvature[s2];
 
-		// - parition of new growth  -------------------------------------
+		////  >> Parition of new growth  >>>
 		mySpecies[s1].maxRootFraction = maxRootFraction[s2];
 		mySpecies[s1].targetSRratio = targetSRratio[s2];
 		mySpecies[s1].allocationSeasonF = allocationSeasonF[s2];
@@ -1031,7 +1070,7 @@ public class AgPasture
 		mySpecies[s1].specificLeafArea = specificLeafArea[s2];
 		mySpecies[s1].specificRootLength = specificRootLength[s2];
 
-		// - Tissue turnover and senescence ------------------------------
+		////  >> Tissue turnover and senescence  >>>
 		mySpecies[s1].liveLeavesPerTiller = liveLeavesPerTiller[s2];
 
 		mySpecies[s1].refTissueTurnoverRate = rateLive2Dead[s2];
@@ -1050,36 +1089,65 @@ public class AgPasture
 		mySpecies[s1].Kappa3 = Kappa3_Remob[s2];
 		mySpecies[s1].Kappa4 = Kappa4_Remob[s2];
 
-		// - Digestibility and feed quality
+		////  >> Digestibility and feed quality  >>>
 		mySpecies[s1].digestLive = digestLive[s2];
 		mySpecies[s1].digestDead = digestDead[s2];
 
+		////  >> DM limits for harvest and senescence  >>>
 		mySpecies[s1].dmgreenmin = dmgreenmin[s2];
 		mySpecies[s1].dmdeadmin = dmdeadmin[s2];
 
+		////  >> N fixation  >>>
 		mySpecies[s1].MaxFix = NMaxFix[s2];   //N-fix fraction when no soil N available, read in later
 		mySpecies[s1].MinFix = NMinFix[s2];   //N-fix fraction when soil N sufficient
 
+		////  >> Growth limiting factor  >>>
 		mySpecies[s1].NdilutCoeff = NdilutCoeff[s2];
 		mySpecies[s1].waterStressFactor = waterStressFactor[s2];
 		mySpecies[s1].soilSatFactor = soilSatFactor[s2];
 		mySpecies[s1].Frgr = (float)Frgr[s2];
 
-		// = Initialising the species  ============================================================
+		////  >> Root depth and distribution  >>>
+		if (iniRootDepth[s1] > 0.0)
+		{
+			myRootDepth[s2] = iniRootDepth[s1];
+		}
+		
+		mySpecies[s1].rootDepth = (int)myRootDepth[s2];
+		mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
+		mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[s2];
+		mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[s2];
 
-		// shoot DM
+		////  >> Plant height  >>>
+		mySpecies[s1].MaxPlantHeight = MaxPlantHeight[s2];
+		mySpecies[s1].MassForMaxHeight = MassForMaxHeight[s2];
+		mySpecies[s1].ExponentHeightFromMass = ExponentHeightFromMass[s2];
+
+		//// = Initialising the species  ==========================================================
+
+		//// Shoot DM ....................................................
 		if (iniShootDM[s1] > 0.0)
 			dmshoot[s2] = iniShootDM[s1];
 		mySpecies[s1].dmshoot = dmshoot[s2];
 
-		if (mySpecies[s1].dmshoot == 0.0) mySpecies[s1].phenoStage = 0;
-		else mySpecies[s1].phenoStage = 1;
+		if (mySpecies[s1].dmshoot == 0.0)
+		{
+			mySpecies[s1].phenoStage = 0;
+		}
+		else
+		{
+			mySpecies[s1].phenoStage = 1;
+		}
 
 		double[] DMFraction;
 		if (mySpecies[s1].isLegume)
+		{
 			DMFraction = initialDMFractions_legume;
+		}
 		else
+		{
 			DMFraction = initialDMFractions_grass;
+		}
 
 		mySpecies[s1].dmleaf1 = mySpecies[s1].dmshoot * DMFraction[0];
 		mySpecies[s1].dmleaf2 = mySpecies[s1].dmshoot * DMFraction[1];
@@ -1093,19 +1161,22 @@ public class AgPasture
 		mySpecies[s1].dmstol2 = mySpecies[s1].dmshoot * DMFraction[9];
 		mySpecies[s1].dmstol3 = mySpecies[s1].dmshoot * DMFraction[10];
 
-		// Root DM and depth
+		//// Root DM .....................................................
 		if (iniRootDM[s1] > 0.0)
+		{
 			dmroot[s2] = iniRootDM[s1];
+		}
+
 		if (dmroot[s2] >= 0.0)
+		{
 			mySpecies[s1].dmroot = dmroot[s2];
+		}
 		else
+		{
 			mySpecies[s1].dmroot = dmshoot[s2] / mySpecies[s1].targetSRratio;
+		}
 
-		if (iniRootDepth[s1] > 0.0)
-			myRootDepth[s2] = iniRootDepth[s1];
-		mySpecies[s1].rootDepth = (int)myRootDepth[s2];
-
-		// N concentrations
+		//// N concentrations ............................................
 		mySpecies[s1].NcstemFr = RelativeNconc_Stems[s2];
 		mySpecies[s1].NcstolFr = RelativeNconc_Stolons[s2];
 		mySpecies[s1].NcrootFr = RelativeNconc_Roots[s2];
@@ -1113,7 +1184,7 @@ public class AgPasture
 		mySpecies[s1].NcRel2 = RelativeNconc_stage2[s2];
 		mySpecies[s1].NcRel3 = RelativeNconc_stage3[s2];
 
-		// Note: 0.01 is for conversion of % to fraction [i.e., 4% ->0.04]
+		// Note: 0.01 is for conversion of % to fraction
 		mySpecies[s1].NcleafOpt = 0.01 * NconcOptimum_leaves[s2];
 		mySpecies[s1].NcstemOpt = mySpecies[s1].NcleafOpt * mySpecies[s1].NcstemFr;
 		mySpecies[s1].NcstolOpt = mySpecies[s1].NcleafOpt * mySpecies[s1].NcstolFr;
@@ -1146,7 +1217,7 @@ public class AgPasture
 
 		mySpecies[s1].Ncroot = mySpecies[s1].NcrootOpt;
 
-		// Initial N amount in each pool
+		//// Initial N amount in each pool ...............................
 		mySpecies[s1].Nleaf1 = mySpecies[s1].dmleaf1 * mySpecies[s1].Ncleaf1;
 		mySpecies[s1].Nleaf2 = mySpecies[s1].dmleaf2 * mySpecies[s1].Ncleaf2;
 		mySpecies[s1].Nleaf3 = mySpecies[s1].dmleaf3 * mySpecies[s1].Ncleaf3;
@@ -1160,9 +1231,10 @@ public class AgPasture
 		mySpecies[s1].Nstol3 = mySpecies[s1].dmstol3 * mySpecies[s1].Ncstol3;
 		mySpecies[s1].Nroot = mySpecies[s1].dmroot * mySpecies[s1].Ncroot;
 
-		// calculated, DM and LAI,  species-specific
-		mySpecies[s1].updateAggregated();   // agregated properties, such as p_totalLAI
+		//// Calculated aggregated DM variables and LAI ..................
+		mySpecies[s1].updateAggregated();
 
+		//// Additional initialisation bits ..............................
 		mySpecies[s1].fShoot = 1;            // actual fraction of dGrowth allocated to shoot
 
 		SWSupply = new float[dlayer.Length];
@@ -1349,7 +1421,23 @@ public class AgPasture
 		// clear FractionHarvest by assigning new
 		FractionToHarvest = new double[NumSpecies];
 
-		// Send info about canopy and potential growth, so other moduels will calculate intercepted radn and PET
+		// compute plant height
+		bool usingSpeciesHeight = false;
+		if (usingSpeciesHeight)
+		{
+			p_height = mySpecies[1].height * mySpecies[1].dmshoot;
+			for (int s = 1; s < NumSpecies; s++)
+			{
+				p_height += mySpecies[s].height * mySpecies[s].dmshoot;
+			}
+			p_height /= AboveGroundWt;
+		}
+		else
+		{
+			p_height = HeightfromDM;
+		}
+
+		// Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
 		DoNewCanopyEvent();
 		DoNewPotentialGrowthEvent();
 	}

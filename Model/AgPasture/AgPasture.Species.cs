@@ -23,6 +23,9 @@ public class Species
 	internal static MetFile MetData;
 
 	/// <summary>Some Description</summary>
+	internal static float[] dlayer;
+
+	/// <summary>Some Description</summary>
 	internal static double CO2 = 380;
 
 	/// <summary>Some Description</summary>
@@ -594,6 +597,23 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double expoLinearCurveParam = 3.2;
 
+	/// <summary>Some Description</summary>
+	internal double[] rootFraction;
+
+	////  >> Plant height  >>>
+	
+	/// <summary>Some Description</summary>
+	internal double height;
+	
+	/// <summary>Some Description</summary>
+	internal double MaxPlantHeight;
+	
+	/// <summary>Some Description</summary>
+	internal double MassForMaxHeight;
+
+	/// <summary>Some Description</summary>
+	internal double ExponentHeightFromMass;
+
 	//// > N and C cycling  >>>
 
 	/// <summary>Some Description</summary>
@@ -762,7 +782,7 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double gamaR = 0.0;	// for roots (to dead/FOM)
 
-	//// > Radiation  >>>
+	//// > Intercepted radiation  >>>
 
 	/// <summary>Some Description</summary>
 	internal double intRadnFrac;     //fraction of Radn intercepted by this species = intRadn/Radn
@@ -2108,7 +2128,7 @@ public class Species
 	}
 
 	/// <summary>
-	/// Calcualte the average plant digestibility (above ground)
+	/// Calculate the average plant digestibility (above ground)
 	/// </summary>
 	/// <returns>digestibility</returns>
 	internal double calcDigestibility()
@@ -2148,6 +2168,118 @@ public class Species
 		digestHerbage = (1 - deadFrac) * digestabilityLive + deadFrac * digestabilityDead;
 
 		return digestHerbage;
+	}
+
+	/// <summary>
+	/// Compute the distribution of roots in the soil profile (sum is equal to one)
+	/// </summary>
+	/// <returns>The proportion of root mass in each soil layer</returns>
+	internal double[] RootProfileDistribution()
+	{
+		int nLayers = dlayer.Length;
+		double[] result = new double[nLayers];
+		double sumProportion = 0;
+
+		switch (rootDistributionMethod)
+		{
+			case 0:
+				{
+					// homogenous distribution over soil profile (same root density throughout the profile)
+					double DepthTop = 0;
+					for (int layer = 0; layer < nLayers; layer++)
+					{
+						if (DepthTop >= rootDepth)
+							result[layer] = 0.0;
+						else if (DepthTop + dlayer[layer] <= rootDepth)
+							result[layer] = dlayer[layer];
+						else
+							result[layer] = rootDepth - DepthTop;
+						sumProportion += result[layer];
+						DepthTop += dlayer[layer];
+					}
+					break;
+				}
+			case 1:
+				{
+					// distribution given by the user
+					// not implemented in species
+					break;
+				}
+			case 2:
+				{
+					// distribution calculated using ExpoLinear method
+					//  Considers homogeneous distribution from surface down to a fraction of root depth (p_ExpoLinearDepthParam)
+					//   below this depth, the proportion of root decrease following a power function (exponent = p_ExpoLinearCurveParam)
+					//   if exponent is one than the proportion decreases linearly.
+					double DepthTop = 0;
+					double DepthFirstStage = rootDepth * expoLinearDepthParam;
+					double DepthSecondStage = rootDepth - DepthFirstStage;
+					for (int layer = 0; layer < nLayers; layer++)
+					{
+						if (DepthTop >= rootDepth)
+							result[layer] = 0.0;
+						else if (DepthTop + dlayer[layer] <= DepthFirstStage)
+							result[layer] = dlayer[layer];
+						else
+						{
+							if (DepthTop < DepthFirstStage)
+								result[layer] = DepthFirstStage - DepthTop;
+							if ((expoLinearDepthParam < 1.0) && (expoLinearCurveParam > 0.0))
+							{
+								double thisDepth = Math.Max(0.0, DepthTop - DepthFirstStage);
+								double Ftop = (thisDepth - DepthSecondStage)
+											* Math.Pow(1 - (thisDepth / DepthSecondStage), expoLinearCurveParam)
+											/ (expoLinearCurveParam + 1);
+								thisDepth = Math.Min(DepthTop + dlayer[layer] - DepthFirstStage, DepthSecondStage);
+								double Fbottom = (thisDepth - DepthSecondStage)
+											   * Math.Pow(1 - (thisDepth / DepthSecondStage), expoLinearCurveParam)
+											   / (expoLinearCurveParam + 1);
+								result[layer] += Math.Max(0.0, Fbottom - Ftop);
+							}
+							else if (DepthTop + dlayer[layer] <= rootDepth)
+							{
+								result[layer] += Math.Min(DepthTop + dlayer[layer], rootDepth)
+											  - Math.Max(DepthTop, DepthFirstStage);
+							}
+						}
+
+						sumProportion += result[layer];
+						DepthTop += dlayer[layer];
+					}
+					break;
+				}
+			default:
+				{
+					throw new Exception("No valid method for computing root distribution was selected");
+				}
+		}
+		if (sumProportion > 0)
+			for (int layer = 0; layer < nLayers; layer++)
+				result[layer] = result[layer] / sumProportion;
+		else
+			throw new Exception("Could not calculate root distribution");
+		return result;
+	}
+
+	/// <summary>
+	/// Calculate the plant height, as function of DM
+	/// </summary>
+	/// <returns>Plant height</returns>
+	internal double HeightfromDM()
+	{
+		double TodaysHeight = MaxPlantHeight / 1000;
+		double standingDMtonnes = (dmleaf + dmstem) / 1000;
+
+		if (standingDMtonnes <= TodaysHeight)
+		{
+			double linearTerm = ExponentHeightFromMass
+							  - (ExponentHeightFromMass * standingDMtonnes / MassForMaxHeight)
+							  + (standingDMtonnes / MassForMaxHeight);
+			double exponentialTerm = Math.Pow(standingDMtonnes / MassForMaxHeight, ExponentHeightFromMass);
+			TodaysHeight *= linearTerm * exponentialTerm;
+		}
+
+		return TodaysHeight * 1000;
 	}
 
 	#endregion
