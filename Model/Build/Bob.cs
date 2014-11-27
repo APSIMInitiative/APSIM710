@@ -104,7 +104,7 @@ class Bob
                   string revision = DBGet("RevisionNumber", Connection, JobID).ToString();
                   if (revision == "") { Thread.Sleep(1 * 60 * 1000); continue;}  // The job may have "passed" but not yet committed to svn
                   DBUpdate("linuxStatus", "Running", Connection, JobID);
-                  string LogFileName = "/tmp/Apsim7.6-r" + revision + ".linux.txt";
+                  string LogFileName = "/tmp/Apsim7.7-r" + revision + ".linux.txt";
                   StreamWriter Log = new StreamWriter(LogFileName);
 
                   // Clean the tree.
@@ -115,8 +115,8 @@ class Bob
 
                   // Set some environment variables.
                   System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                  System.Environment.SetEnvironmentVariable("PatchFileName", "Apsim7.6-r"+revision);
-                  System.Environment.SetEnvironmentVariable("PatchFileNameShort", "Apsim7.6-r"+revision);
+                  System.Environment.SetEnvironmentVariable("PatchFileName", "Apsim7.7-r"+revision);
+                  System.Environment.SetEnvironmentVariable("PatchFileNameShort", "Apsim7.7-r"+revision);
 
                   // Run the patch.
                   Console.WriteLine("Running revision r" + revision);
@@ -130,9 +130,9 @@ class Bob
                   }
                   // Close log file.
                   Log.Close();
-                  Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.6-r" + revision + ".linux.txt");
+                  Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.7-r" + revision + ".linux.txt");
                   Run("Updating details...", Path.Combine(APSIMDir, "Model/UpdateFieldInDB.exe"), 
-                                           "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.6-r" + revision + ".linux.txt");
+                                           "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.7-r" + revision + ".linux.txt");
 				       	
 				          }
 				   
