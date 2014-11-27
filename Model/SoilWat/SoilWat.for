@@ -4579,6 +4579,7 @@ c  dsg   070302  added runon
          do 4100 layer = 1,num_layers
             call soilwat2_check_profile (layer)
 4100     continue
+         call soilwat2_New_Profile_Event() !sv- new profile event added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
 
       elseif (variable_name .eq. 'dul') then
          call collect_real_array (variable_name, max_layer, '()'
@@ -4591,6 +4592,7 @@ c  dsg   070302  added runon
             g%dul_dep(layer) = temp(layer)*p%dlayer(layer)
             call soilwat2_check_profile (layer)
 4110     continue
+         call soilwat2_New_Profile_Event() !sv- new profile event added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
 
       elseif (variable_name .eq. 'll15_dep') then
          call collect_real_array (variable_name, max_layer, '(mm)'
@@ -4602,6 +4604,7 @@ c  dsg   070302  added runon
          do 4200 layer = 1,num_layers
             call soilwat2_check_profile (layer)
 4200     continue
+         call soilwat2_New_Profile_Event() !sv- new profile event added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
 
       elseif (variable_name .eq. 'll15') then
          call collect_real_array (variable_name, max_layer, '()'
@@ -4614,6 +4617,7 @@ c  dsg   070302  added runon
             g%ll15_dep(layer) = temp(layer)*p%dlayer(layer)
             call soilwat2_check_profile (layer)
 4210     continue
+         call soilwat2_New_Profile_Event() !sv- new profile event added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
 
       elseif (variable_name .eq. 'sat_dep') then
          call collect_real_array (variable_name, max_layer, '(mm)'
@@ -4625,6 +4629,7 @@ c  dsg   070302  added runon
          do 4300 layer = 1,num_layers
             call soilwat2_check_profile (layer)
 4300     continue
+         call soilwat2_New_Profile_Event() !sv- new profile event added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
 
       elseif (variable_name .eq. 'sat') then
          call collect_real_array (variable_name, max_layer, '()'
@@ -4637,6 +4642,7 @@ c  dsg   070302  added runon
             g%sat_dep(layer) = temp(layer)*p%dlayer(layer)
             call soilwat2_check_profile (layer)
 4310     continue
+         call soilwat2_New_Profile_Event() !sv- new profile event added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
 
       elseif (variable_name .eq. 'air_dry_dep') then
          call collect_real_array (variable_name, max_layer, '(mm)'
@@ -4660,6 +4666,36 @@ c  dsg   070302  added runon
             g%air_dry_dep(layer) = temp(layer)*p%dlayer(layer)
             call soilwat2_check_profile (layer)
 4510     continue
+
+
+
+      !sv- added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
+      elseif (variable_name .eq. 'ks') then
+         call collect_real_array (variable_name, max_layer, '(mm/day)'
+     :                               , temp, numvals
+     :                               , 0.0, 7200.)
+
+         call soilwat2_check_set_array(variable_name, numvals)
+         num_layers = count_of_real_vals (p%dlayer, max_layer)
+         do 4520 layer = 1,num_layers
+            p%ks(layer) = temp(layer)
+            call soilwat2_check_profile (layer)
+4520     continue
+         call soilwat2_New_Profile_Event()
+
+      !sv- added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
+      elseif (variable_name .eq. 'bd') then
+         call collect_real_array (variable_name, max_layer, '()'
+     :                               , temp, numvals
+     :                               ,  0.01, 3.0)
+
+         call soilwat2_check_set_array(variable_name, numvals)
+         num_layers = count_of_real_vals (p%dlayer, max_layer)
+         do 4530 layer = 1,num_layers
+            g%bd(layer) = temp(layer)
+            call soilwat2_check_profile (layer)
+4530     continue
+         call soilwat2_New_Profile_Event()
 
       elseif (variable_name .eq. 'dlayer') then
          call collect_real_array (variable_name, max_layer, '(mm)'
@@ -5165,6 +5201,11 @@ c dsg 070302 added runon
          call respond2get_real_array (variable_name, ''
      :                               , p%swcon, num_layers)
 
+      else if (variable_name .eq. 'ks') then
+         num_layers =  count_of_real_vals (p%dlayer, max_layer)
+         call respond2get_real_array (variable_name, '(mm/day)'
+     :                               , p%ks, num_layers)     
+     
       else if (lateral_send_my_variable(lateral, variable_name)) then
          ! we dont need to do anything here
 
@@ -7652,7 +7693,8 @@ c
       dummy = add_reg(respondToGetReg, 'salb',
      .                floatTypeDDML, '0-1',
      .                'bare soil albedo')
-      dummy = add_reg(respondToGetReg, 'bd',
+      !sv- bd made settable for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
+      dummy = add_reg(respondToGetSetReg, 'bd',
      .                floatarrayTypeDDML, 'g/cm^3',
      .                'Bulk density')
       dummy = add_reg(respondToGetReg, 'esw',
@@ -7759,6 +7801,10 @@ c
       dummy = add_reg(respondToGetSetReg, 'swcon',
      .                floatarrayTypeDDML, '',
      . 'Soil water conductivity')
+      !sv- ks added for Jody Biggs change OC in Soil alters Ks, BD, SAT, DUL, LL15
+      dummy = add_reg(respondToGetSetReg, 'ks',
+     .                floatarrayTypeDDML, 'mm/day',
+     . 'Above saturation flow')     
       dummy = add_reg(respondToGetReg, 'cona',
      .                     floatTypeDDML, '',
      . 'Stage 2 evaporation coefficient')
