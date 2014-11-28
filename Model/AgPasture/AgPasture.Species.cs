@@ -23,9 +23,6 @@ public class Species
 	internal static MetFile MetData;
 
 	/// <summary>Some Description</summary>
-	internal static float[] dlayer;
-
-	/// <summary>Some Description</summary>
 	internal static double CO2 = 380;
 
 	/// <summary>Some Description</summary>
@@ -614,6 +611,9 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double ExponentHeightFromMass;
 
+	/// <summary>Some Description</summary>
+	internal double MinimumHeight;
+
 	//// > N and C cycling  >>>
 
 	/// <summary>Some Description</summary>
@@ -790,6 +790,10 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double intRadn;         //Intercepted Radn by this species
 
+	//// > Soil layering  >>>
+	/// <summary>Some Description</summary>
+	internal float[] dlayer;
+
 	#endregion
 
 	#region Internal constants  ----------------------------------------------------------------------
@@ -920,13 +924,14 @@ public class Species
 		Nroot = dmroot * Ncroot;
 
 		//calculated, DM and LAI,  species-specific
-		updateAggregated();   // agregated properties, such as p_totalLAI
+		UpdateAggregated();   // agregated properties, such as p_totalLAI
+		UpdatePlantParts();
 
-		dGrowthPot = 0;       // daily growth potential
-		dGrowthW = 0;         // daily growth considering only water deficit
-		dGrowth = 0;          // daily growth actual
-		dGrowthRoot = 0;      // daily root growth
-		fShoot = 1;              // actual fraction of dGrowth allocated to shoot
+		dGrowthPot = 0.0;        // daily growth potential
+		dGrowthW = 0.0;          // daily growth considering only water deficit
+		dGrowth = 0.0;           // daily growth actual
+		dGrowthRoot = 0.0;       // daily root growth
+		fShoot = 1.0;            // actual fraction of dGrowth allocated to shoot
 	}
 
 	/// <summary>
@@ -1063,10 +1068,9 @@ public class Species
 				return dGrowthPot = 0;
 		}
 
-		//
-		if (phenoStage == 0 || greenLAI == 0) //Before germination
+		// skip growth is plant hasn't germinated yet
+		if (phenoStage == 0 || greenLAI == 0)
 			return dGrowthPot = 0;
-
 
 		//following parameters are from input (.xml)
 		double maint_coeff = 0.01 * maintRespiration;  //reference maintnance respiration as % of live weight
@@ -1490,10 +1494,7 @@ public class Species
 		}
 	}
 
-	/// <summary>
-	/// Update aggregated variables
-	/// </summary>
-	internal void updateAggregated()   //update DM, N & LAI
+	internal void updatesAggregated()   //update DM, N & LAI
 	{
 		//DM
 		dmleaf = dmleaf1 + dmleaf2 + dmleaf3 + dmleaf4;
@@ -1539,6 +1540,93 @@ public class Species
 
 		deadLAI = 0.0001 * dmleaf4 * specificLeafArea;
 		totalLAI = greenLAI + deadLAI;
+	}
+
+	/// <summary>
+	/// Update aggregated variables
+	/// </summary>
+	internal void UpdateAggregated()   //update DM, N
+	{
+		//DM
+		dmleaf = dmleaf1 + dmleaf2 + dmleaf3 + dmleaf4;
+		dmstem = dmstem1 + dmstem2 + dmstem3 + dmstem4;
+		dmstol = dmstol1 + dmstol2 + dmstol3;
+		dmshoot = dmleaf + dmstem + dmstol;
+
+		dmleaf_green = dmleaf1 + dmleaf2 + dmleaf3;
+		dmstem_green = dmstem1 + dmstem2 + dmstem3;
+		dmstol_green = dmstol1 + dmstol2 + dmstol3;
+
+		dmgreen = dmleaf1 + dmleaf2 + dmleaf3
+				+ dmstem1 + dmstem2 + dmstem3
+				+ dmstol1 + dmstol2 + dmstol3;
+
+		dmdead = dmleaf4 + dmstem4;
+
+		//N
+		Nleaf = Nleaf1 + Nleaf2 + Nleaf3 + Nleaf4;
+		Nstem = Nstem1 + Nstem2 + Nstem3 + Nstem4;
+		Nstolon = Nstol1 + Nstol2 + Nstol3;
+
+		Nshoot = Nleaf + Nstem + Nstolon;
+
+		Ngreen = Nleaf1 + Nleaf2 + Nleaf3
+			   + Nstem1 + Nstem2 + Nstem3
+			   + Nstol1 + Nstol2 + Nstol3;
+		Ndead = Nleaf4 + Nstem4;
+	}
+
+	/// <summary>
+	/// Update various plant characteristics: LAI, height, root distribution
+	/// </summary>
+	internal void UpdatePlantParts()
+	{
+		//// - LAI  ------------------------------------------------------
+		greenLAI = GreenLAI();
+		deadLAI = DeadLAI();
+		totalLAI = greenLAI + deadLAI;
+
+		//// - Plant height  ---------------------------------------------
+		height = HeightfromDM();
+
+		//// - Root distribution  ----------------------------------------
+		// New growth
+		rootFraction = RootGrowthDistribution(dGrowth);
+		// After senescence
+		rootFraction = RootGrowthDistribution(-dRootSen);
+	}
+
+	/// <summary>
+	/// Compute the LAI value of green material
+	/// </summary>
+	/// <returns>green LAI</returns>
+	internal double GreenLAI()
+	{
+		double myLAI = (0.0001 * dmleaf_green * specificLeafArea)
+					 + (0.0001 * dmstol * 0.3 * specificLeafArea);
+		// 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming Mass2GLA = 0.3*SLA
+		// Resilience after unfavoured conditions
+		// Consider cover will be bigger for the same amount of DM when DM is low due to
+		// - light extinction coefficient will be bigger - plant leaves will be more horizontal than in dense high swards
+		// - more parts will turn green for photosysnthesis (?)
+		// - quick response of plant shoots to favoured conditions after release of stress
+		// » Specific leaf area should be reduced (RCichota2014)
+		if (!isLegume && dmgreen < 1000)
+		{
+			myLAI += 0.0001 * dmstem_green * specificLeafArea * Math.Sqrt((1000 - dmgreen) / 1000);
+		}
+
+		return myLAI;
+	}
+
+		/// <summary>
+	/// Compute the LAI value of dead material
+	/// </summary>
+	/// <returns>dead LAI</returns>
+	internal double DeadLAI()
+	{
+		double myLAI = 0.0001 * dmleaf4 * specificLeafArea;
+		return myLAI;
 	}
 
 	/// <summary>
@@ -2114,7 +2202,8 @@ public class Species
 		NLuxury3 *= FractionRemainingGreen;
 
 		// update variables
-		updateAggregated();
+		UpdateAggregated();
+		UpdatePlantParts();
 
 		// check balance and set outputs
 		double NremobRemove = PreRemovalNRemob - Nremob;
@@ -2171,93 +2260,19 @@ public class Species
 	}
 
 	/// <summary>
-	/// Compute the distribution of roots in the soil profile (sum is equal to one)
+	/// Compute the distribution of roots in the soil profile after growth (sum is equal to one)
 	/// </summary>
 	/// <returns>The proportion of root mass in each soil layer</returns>
-	internal double[] RootProfileDistribution()
+	private double[] RootGrowthDistribution(double deltaDM)
 	{
 		int nLayers = dlayer.Length;
 		double[] result = new double[nLayers];
-		double sumProportion = 0;
-
-		switch (rootDistributionMethod)
+		double sumProportion = 0.0;
+		for (int layer = 0; layer < nLayers; layer++)
 		{
-			case 0:
-				{
-					// homogenous distribution over soil profile (same root density throughout the profile)
-					double DepthTop = 0;
-					for (int layer = 0; layer < nLayers; layer++)
-					{
-						if (DepthTop >= rootDepth)
-							result[layer] = 0.0;
-						else if (DepthTop + dlayer[layer] <= rootDepth)
-							result[layer] = dlayer[layer];
-						else
-							result[layer] = rootDepth - DepthTop;
-						sumProportion += result[layer];
-						DepthTop += dlayer[layer];
-					}
-					break;
-				}
-			case 1:
-				{
-					// distribution given by the user
-					// not implemented in species
-					break;
-				}
-			case 2:
-				{
-					// distribution calculated using ExpoLinear method
-					//  Considers homogeneous distribution from surface down to a fraction of root depth (p_ExpoLinearDepthParam)
-					//   below this depth, the proportion of root decrease following a power function (exponent = p_ExpoLinearCurveParam)
-					//   if exponent is one than the proportion decreases linearly.
-					double DepthTop = 0;
-					double DepthFirstStage = rootDepth * expoLinearDepthParam;
-					double DepthSecondStage = rootDepth - DepthFirstStage;
-					for (int layer = 0; layer < nLayers; layer++)
-					{
-						if (DepthTop >= rootDepth)
-							result[layer] = 0.0;
-						else if (DepthTop + dlayer[layer] <= DepthFirstStage)
-							result[layer] = dlayer[layer];
-						else
-						{
-							if (DepthTop < DepthFirstStage)
-								result[layer] = DepthFirstStage - DepthTop;
-							if ((expoLinearDepthParam < 1.0) && (expoLinearCurveParam > 0.0))
-							{
-								double thisDepth = Math.Max(0.0, DepthTop - DepthFirstStage);
-								double Ftop = (thisDepth - DepthSecondStage)
-											* Math.Pow(1 - (thisDepth / DepthSecondStage), expoLinearCurveParam)
-											/ (expoLinearCurveParam + 1);
-								thisDepth = Math.Min(DepthTop + dlayer[layer] - DepthFirstStage, DepthSecondStage);
-								double Fbottom = (thisDepth - DepthSecondStage)
-											   * Math.Pow(1 - (thisDepth / DepthSecondStage), expoLinearCurveParam)
-											   / (expoLinearCurveParam + 1);
-								result[layer] += Math.Max(0.0, Fbottom - Ftop);
-							}
-							else if (DepthTop + dlayer[layer] <= rootDepth)
-							{
-								result[layer] += Math.Min(DepthTop + dlayer[layer], rootDepth)
-											  - Math.Max(DepthTop, DepthFirstStage);
-							}
-						}
-
-						sumProportion += result[layer];
-						DepthTop += dlayer[layer];
-					}
-					break;
-				}
-			default:
-				{
-					throw new Exception("No valid method for computing root distribution was selected");
-				}
+			result[layer] = rootFraction[layer];
 		}
-		if (sumProportion > 0)
-			for (int layer = 0; layer < nLayers; layer++)
-				result[layer] = result[layer] / sumProportion;
-		else
-			throw new Exception("Could not calculate root distribution");
+
 		return result;
 	}
 
@@ -2267,19 +2282,20 @@ public class Species
 	/// <returns>Plant height</returns>
 	internal double HeightfromDM()
 	{
-		double TodaysHeight = MaxPlantHeight / 1000;
-		double standingDMtonnes = (dmleaf + dmstem) / 1000;
+		double TodaysHeight = MaxPlantHeight;
+		double standingDM = (dmleaf + dmstem);
 
-		if (standingDMtonnes <= TodaysHeight)
+		if (standingDM <= MassForMaxHeight)
 		{
-			double linearTerm = ExponentHeightFromMass
-							  - (ExponentHeightFromMass * standingDMtonnes / MassForMaxHeight)
-							  + (standingDMtonnes / MassForMaxHeight);
-			double exponentialTerm = Math.Pow(standingDMtonnes / MassForMaxHeight, ExponentHeightFromMass);
-			TodaysHeight *= linearTerm * exponentialTerm;
+			double massRatio = standingDM / MassForMaxHeight;
+			double heightF = ExponentHeightFromMass
+						   - (ExponentHeightFromMass * massRatio)
+						   + massRatio;
+			heightF *= Math.Pow(massRatio, ExponentHeightFromMass - 1);
+			TodaysHeight *= heightF;
 		}
 
-		return TodaysHeight * 1000;
+		return Math.Max(TodaysHeight, MinimumHeight);
 	}
 
 	#endregion

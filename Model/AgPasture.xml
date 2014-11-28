@@ -148,34 +148,42 @@
 			<rootDepth description="Default rooting depth (mm)">750  350  850</rootDepth>
 			<RootDistributionMethod description="Method used to compute root distribution over soil profile">ExpoLinear</RootDistributionMethod>
 			<!-- Root distribution options: Homogeneous, UserDefined, or ExpoLinear -->
-			<ExpoLinearDepthParam description="Fraction of rooting depth where the proportion of roots starts to decrease (0-1)">0.12  0.12  0.12</ExpoLinearDepthParam>
-			<ExpoLinearCurveParam description="Exponent to determine the distribution of root DM in the soil profile">3.2  3.2  3.2</ExpoLinearCurveParam>
+			<ExpoLinearDepthParam description="Fraction of rooting depth where the proportion of roots starts to decrease (0-1)">0.12  0.20  0.11</ExpoLinearDepthParam>
+			<ExpoLinearCurveParam description="Exponent to determine the distribution of root DM in the soil profile">3.2  2.5  3.2</ExpoLinearCurveParam>
 
 			<MaxPlantHeight description="Maximum average height for each species in a sward (mm)">500  300  500</MaxPlantHeight>
 			<MassForMaxHeight description="Mass above ground when maximum height is reached (kgDM/ha)">7000  6000  7000</MassForMaxHeight>
-			<ExponentHeightFromMass description="Exponent of function describing plant height as function of DM weight (>1.0)">2.8  2.0  2.4</ExponentHeightFromMass>
+			<ExponentHeightFromMass description="Exponent of function describing plant height as function of DM weight (>1.0)">3.0  1.75  2.5</ExponentHeightFromMass>
+      <MinimumHeight description="Minimum plant height, for all species (mm)">20.0</MinimumHeight>
 
 			<WaterUptakeSource description="Whether water uptake is calculated by AgPasture (calc) or apsim">calc</WaterUptakeSource>
 			<NUptakeSource description="Whether N uptake is calculated by AgPasture (calc) or apsim">calc</NUptakeSource>
 
-			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
+      <UseHeightBySpecies description="Whether plant height is determined for each species, instead of avg sward (yes/no)">no</UseHeightBySpecies>
+      <UseRootBySpecies description="Whether root distribution is determined for each species, instead of avg sward (yes/no)">no</UseRootBySpecies>
+
+      <!-- Values for each soil layer (read in from interface) -->
 			<ll description="Lower limit moisture for water uptake by this species (cm3/cm3)">0.0</ll>
 			<kl description="Coefficient for water availability for each layer (0-1)">1.0</kl>
-			<xf description="Exploration factor, fraction of layer resources available to plant (0-1)">1.0</xf>
+			<xf description="Exploration factor, define how hospitable the soil is for root growth (0-1)">1.0</xf>
+      <rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
 
-			<LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
-				<XY>0,0</XY>
-				<XY>1000,25</XY>
-				<XY>2000,75</XY>
-				<XY>3000,150</XY>
-				<XY>4000,250</XY>
-			</LinearInterpolation>
 			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the relationship between vapour deficit and relative growth">
 				<XY> 0,1.0</XY>
 				<XY>10,1.0</XY>
 				<XY>50,1.0</XY>
 			</LinearInterpolation>
-		
-		</AgPasture>
+
+      <!-- Parametes for testing or being deprecated -->
+      <UsePairWise description="Whether old pair-wise function to compute plant height is to be used (only if UseHeightBySpecies is no)">yes</UsePairWise>
+      <LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
+        <XY>0,0</XY>
+        <XY>1000,25</XY>
+        <XY>2000,75</XY>
+        <XY>3000,150</XY>
+        <XY>4000,250</XY>
+      </LinearInterpolation>
+
+    </AgPasture>
 	</Model>
 </Type>

@@ -37,6 +37,63 @@ public class AgPasture
 	[Units("calc/apsim")]
 	private string NUptakeSource = "calc";
 
+	private bool usingSpeciesHeight = false;
+	[Param]
+	[Description("Whether plant height is determined for each species, instead of avg sward")]
+	[Units("yes/no")]
+	private string UseHeightBySpecies
+	{
+		get
+		{
+			if (usingSpeciesHeight)
+				return "yes";
+			else
+				return "no";
+		}
+		set
+		{
+			usingSpeciesHeight = value.ToLower() == "yes";
+		}
+	}
+
+	private bool usingSpeciesRoot = false;
+	[Param]
+	[Description("Whether root distribution is determined for each species, instead of avg sward")]
+	[Units("yes/no")]
+	private string UseRootBySpecies
+	{
+		get
+		{
+			if (usingSpeciesRoot)
+				return "yes";
+			else
+				return "no";
+		}
+		set
+		{
+			usingSpeciesRoot = value.ToLower() == "yes";
+		}
+	}
+
+	private bool usingPairWise;
+	[Param]
+	[Description("Whether old pair-wise function to compute plant height is to be used")]
+	[Units("yes/no")]
+	private string UsePairWise
+	{
+		get
+		{
+			if (usingPairWise)
+				return "yes";
+			else
+				return "no";
+		}
+		set
+		{
+			usingPairWise = value.ToLower() == "yes";
+		}
+	}
+
 	//[Param]
 	[Description("Whether the alternative N uptake routine is to be used")]
 	[Units("yes/no")]
@@ -600,6 +657,10 @@ public class AgPasture
 	[Description("Exponent of function describing plant height as function of DM weight")]
 	[Units(">1.0")]
 	private double[] ExponentHeightFromMass;
+	[Param]
+	[Description("Minimum plant height, for all species")]
+	[Units("mm")]
+	private double MinimumHeight;
 
 	[Link]
 	private LinearInterpolation HeightMassFN = null;
@@ -730,7 +791,7 @@ public class AgPasture
 	private double p_dNLitter;        //daily litter formation
 	private double p_dNRootSen;       //daily root senescence
 
-	private double p_height;          // Canopy height (mm)
+	private double swardHeight;          // Canopy height (mm)
 	private double p_greenLAI;
 	private double p_deadLAI;
 	private double p_totalLAI;
@@ -811,20 +872,22 @@ public class AgPasture
 	[EventHandler]
 	public void OnInit2()
 	{
-		// Init parameters after reading the data
-		InitParameters();
-		thisCropName = My.Name;
-
-		// Set the links for Clock and MetData and dlayer for each species
+		// Set the links for Clock and MetData for each species
 		Species.myClock = myClock;
 		Species.MetData = MetData;
-		Species.dlayer = dlayer;
+
+		// Init parameters after reading the data
+		thisCropName = My.Name;
+		InitParameters();
+
+		// Pass on some sward variable to each species
 		SetSpeciesWithSwardData();
 
 		// Tell other modules that I exist
 		DoNewCropEvent();
 
 		// Tell other modules (micromet) about my canopy
+		swardHeight = HeightfromDM();
 		DoNewCanopyEvent();
 
 		// Tell other modules about my current growth status
@@ -877,6 +940,7 @@ public class AgPasture
 				if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
 				{
 					mySpecies[s1] = new Species();
+					mySpecies[s1].dlayer = dlayer;
 					InitSpeciesValues(s1, s2);
 					break;
 				}
@@ -933,13 +997,12 @@ public class AgPasture
 
 		// rlvp is used as input only, in the calculations it has been super-seeded by RootFraction (the proportion of roots mass in each layer)
 		// The RootFraction should add up to 1.0 over the soil profile
-		bool usingSpeciesRoot = false;
 		if (usingSpeciesRoot)
 		{
 			// initialise the root fraction in each species
 			for (int s = 0; s < NumSpecies; s++)
 			{
-				mySpecies[s].rootFraction = mySpecies[s].RootProfileDistribution();
+				mySpecies[s].rootFraction = RootProfileDistribution(s);
 			}
 
 			int nLayers = dlayer.Length;
@@ -955,7 +1018,7 @@ public class AgPasture
 		}
 		else
 		{
-			RootFraction = RootProfileDistribution();
+			RootFraction = RootProfileDistribution(-1);
 		}
 
 		//init
@@ -1122,6 +1185,7 @@ public class AgPasture
 		mySpecies[s1].MaxPlantHeight = MaxPlantHeight[s2];
 		mySpecies[s1].MassForMaxHeight = MassForMaxHeight[s2];
 		mySpecies[s1].ExponentHeightFromMass = ExponentHeightFromMass[s2];
+		mySpecies[s1].MinimumHeight = MinimumHeight;
 
 		//// = Initialising the species  ==========================================================
 
@@ -1161,7 +1225,7 @@ public class AgPasture
 		mySpecies[s1].dmstol2 = mySpecies[s1].dmshoot * DMFraction[9];
 		mySpecies[s1].dmstol3 = mySpecies[s1].dmshoot * DMFraction[10];
 
-		//// Root DM .....................................................
+		//// Root DM  ....................................................
 		if (iniRootDM[s1] > 0.0)
 		{
 			dmroot[s2] = iniRootDM[s1];
@@ -1231,8 +1295,17 @@ public class AgPasture
 		mySpecies[s1].Nstol3 = mySpecies[s1].dmstol3 * mySpecies[s1].Ncstol3;
 		mySpecies[s1].Nroot = mySpecies[s1].dmroot * mySpecies[s1].Ncroot;
 
-		//// Calculated aggregated DM variables and LAI ..................
-		mySpecies[s1].updateAggregated();
+		//// Aggregated DM variables .....................................
+		mySpecies[s1].UpdateAggregated();
+
+		//// Plant height and root distribution ..........................
+		mySpecies[s1].height = mySpecies[s1].HeightfromDM();
+		mySpecies[s1].rootFraction = RootProfileDistribution(s1);
+
+		//// LAI ........................................................
+		mySpecies[s1].greenLAI = mySpecies[s1].GreenLAI();
+		mySpecies[s1].deadLAI = mySpecies[s1].DeadLAI();
+		mySpecies[s1].totalLAI = mySpecies[s1].greenLAI + mySpecies[s1].deadLAI;
 
 		//// Additional initialisation bits ..............................
 		mySpecies[s1].fShoot = 1;            // actual fraction of dGrowth allocated to shoot
@@ -1264,9 +1337,8 @@ public class AgPasture
 		canopy.sender = thisCropName;
 		canopy.lai = (float)p_greenLAI;
 		canopy.lai_tot = (float)p_totalLAI;
-		p_height = HeightfromDM;
-		canopy.height = (int)p_height;             // height effect, mm
-		canopy.depth = (int)p_height;              // canopy depth
+		canopy.height = (int)swardHeight;             // height effect, mm
+		canopy.depth = (int)swardHeight;              // canopy depth
 		canopy.cover = (float)Cover_green;
 		canopy.cover_tot = (float)Cover_tot;
 
@@ -1330,37 +1402,130 @@ public class AgPasture
 	# region Main daily processes  ----------------------------------------------------------------
 
 	/// <summary>
-	/// Let species know the value of some sward variables
+	/// EventHandler - preparation before the main process
 	/// </summary>
-	private void SetSpeciesWithSwardData()
+	[EventHandler]
+	public void OnPrepare()
 	{
-		// pass CO2 & canopy to species
-		Species.CO2 = co2;
-		Species.PIntRadn = IntRadn;
-		Species.PCoverGreen = Cover_green;
-		Species.PLightExtCoeff = p_lightExtCoeff;
-		Species.Pdmshoot = AboveGroundWt;   //dm_shoot;
-
-		// update available and intercepted fraction of the solar Radn available to each species
-		double sumRadnIntercept = 0.0;
+		// RCichota May2014, moved here from onProcess (really ought to be onNewMet but have issues at initialisation)
+		//**Zero out some variables
 		for (int s = 0; s < NumSpecies; s++)
+			mySpecies[s].DailyRefresh();
+
+		// Clear FractionHarvest by assigning new
+		FractionToHarvest = new double[NumSpecies];
+
+		// Get sward average plant height
+		if (usingSpeciesHeight)
 		{
-			sumRadnIntercept += mySpecies[s].coverGreen;
+			swardHeight = mySpecies[0].height * mySpecies[0].dmshoot;
+			for (int s = 1; s < NumSpecies; s++)
+			{
+				swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
+			}
+			swardHeight /= AboveGroundWt;
+		}
+		else
+		{
+			swardHeight = HeightfromDM();
 		}
 
-		for (int s = 0; s < NumSpecies; s++)
+		// Get sward average root distribution
+		if (usingSpeciesRoot)
 		{
-			if (sumRadnIntercept == 0)
+			int nLayers = dlayer.Length;
+			RootFraction = new double[nLayers];
+			for (int layer = 0; layer < nLayers; layer++)
 			{
-				mySpecies[s].intRadnFrac = 0;
-				mySpecies[s].intRadn = 0;
-			}
-			else
-			{
-				mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumRadnIntercept;
-				mySpecies[s].intRadn = IntRadn * mySpecies[s].intRadnFrac;
+				for (int s = 0; s < NumSpecies; s++)
+				{
+					RootFraction[layer] += mySpecies[s].dmroot * mySpecies[s].rootFraction[layer];
+				}
+				RootFraction[layer] /= RootWt;
 			}
 		}
+		else
+			// root distribution does not change 
+		
+
+		// Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
+		DoNewCanopyEvent();
+		DoNewPotentialGrowthEvent();
+	}
+
+	/// <summary>
+	/// Peform the main process phase
+	/// </summary>
+	[EventHandler]
+	public void OnProcess()
+	{
+		if (!p_Live)
+			return;
+
+		// Remember last status, and update root depth frontier (root depth for annuals)
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			mySpecies[s].SetPrevPools();
+
+			double spRootDepth = mySpecies[s].rootGrowth();
+			if (p_rootFrontier < spRootDepth)
+			{ // the deepest root_depth is used
+				p_rootFrontier = spRootDepth;
+			}
+		}
+
+		// Pass on some parameters to different species
+		SetSpeciesWithSwardData();
+
+		// Phenology, for annuals
+		int anyEmerged = 0;
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			anyEmerged += mySpecies[s].Phenology();
+		}
+
+		// Get potential growth
+		p_dGrowthPot = 0;
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			p_dGrowthPot += mySpecies[s].DailyGrowthPot();
+		}
+
+		// Get soil N available in the root zone
+		p_soilNavailable = calcPlantAvailableN();
+
+		// Get the water supply & uptake
+		if (WaterUptakeSource == "calc")
+		{  // uptake is calculated by AgPasture
+			p_waterUptake = SWUptakeProcess();
+		}
+		else
+		{
+			// Water uptake be calculated by other modules (e.g., SWIM) and got via OnWaterUptakesCalculated()
+		}
+
+		// Calculate and set the growth limiting factors
+		SetSpeciesLimitingFactors();
+
+		// Consider water effects (before considering other nutrient limitation)
+		p_dGrowthW = 0;
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			p_dGrowthW += mySpecies[s].DailyGrowthW();
+		}
+
+		// Compute the N budget and uptake
+		double nuptake = NBudgetAndUptake();
+
+		// Compute the actual daily growth
+		p_dGrowth = 0;
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			p_dGrowth += mySpecies[s].DailyGrowthAct();
+		}
+
+		// DM partitioning & tissue turnover
+		GrowthAndPartition();
 	}
 
 	/// <summary>
@@ -1405,41 +1570,6 @@ public class AgPasture
 		// RCichota, Jan/2014: removed AgPasture's Frgr from here, it is considered at the same level as nitrogen etc...
 
 		NewPotentialGrowth.Invoke(EventData);
-	}
-
-	/// <summary>
-	/// EventHandler - preparation before the main process
-	/// </summary>
-	[EventHandler]
-	public void OnPrepare()
-	{
-		// RCichota May2014, moved here from onProcess (really ought to be onNewMet but have issues at initialisation)
-		//**Zero out some variables
-		for (int s = 0; s < NumSpecies; s++)
-			mySpecies[s].DailyRefresh();
-
-		// clear FractionHarvest by assigning new
-		FractionToHarvest = new double[NumSpecies];
-
-		// compute plant height
-		bool usingSpeciesHeight = false;
-		if (usingSpeciesHeight)
-		{
-			p_height = mySpecies[1].height * mySpecies[1].dmshoot;
-			for (int s = 1; s < NumSpecies; s++)
-			{
-				p_height += mySpecies[s].height * mySpecies[s].dmshoot;
-			}
-			p_height /= AboveGroundWt;
-		}
-		else
-		{
-			p_height = HeightfromDM;
-		}
-
-		// Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
-		DoNewCanopyEvent();
-		DoNewPotentialGrowthEvent();
 	}
 
 	/// <summary>
@@ -1516,78 +1646,37 @@ public class AgPasture
 	}
 
 	/// <summary>
-	/// Peform the main process phase
+	/// Let species know the value of some sward variables
 	/// </summary>
-	[EventHandler]
-	public void OnProcess()
+	private void SetSpeciesWithSwardData()
 	{
-		if (!p_Live)
-			return;
+		// pass CO2 & canopy to species
+		Species.CO2 = co2;
+		Species.PIntRadn = IntRadn;
+		Species.PCoverGreen = Cover_green;
+		Species.PLightExtCoeff = p_lightExtCoeff;
+		Species.Pdmshoot = AboveGroundWt;   //dm_shoot;
 
-		// Remember last status, and update root depth frontier (root depth for annuals)
+		// update available and intercepted fraction of the solar Radn available to each species
+		double sumRadnIntercept = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			mySpecies[s].SetPrevPools();
+			sumRadnIntercept += mySpecies[s].coverGreen;
+		}
 
-			double spRootDepth = mySpecies[s].rootGrowth();
-			if (p_rootFrontier < spRootDepth)
-			{ // the deepest root_depth is used
-				p_rootFrontier = spRootDepth;
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			if (sumRadnIntercept == 0)
+			{
+				mySpecies[s].intRadnFrac = 0;
+				mySpecies[s].intRadn = 0;
+			}
+			else
+			{
+				mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumRadnIntercept;
+				mySpecies[s].intRadn = IntRadn * mySpecies[s].intRadnFrac;
 			}
 		}
-
-		// Pass on some parameters to different species
-		SetSpeciesWithSwardData();
-
-		// Phenology, for annuals
-		int anyEmerged = 0;
-		for (int s = 0; s < NumSpecies; s++)
-		{
-			anyEmerged += mySpecies[s].Phenology();
-		}
-
-		// Get potential growth
-		p_dGrowthPot = 0;
-		for (int s = 0; s < NumSpecies; s++)
-		{
-			p_dGrowthPot += mySpecies[s].DailyGrowthPot();
-		}
-
-		// Get soil N available in the root zone
-		p_soilNavailable = calcPlantAvailableN();
-
-		// Get the water supply & uptake
-		if (WaterUptakeSource == "calc")
-		{  // uptake is calculated by AgPasture
-			p_waterUptake = SWUptakeProcess();
-		}
-		else
-		{
-			// Water uptake be calculated by other modules (e.g., SWIM) and got via OnWaterUptakesCalculated()
-		}
-
-		// Calculate and set the growth limiting factors
-		SetSpeciesLimitingFactors();
-
-		// Consider water effects (before considering other nutrient limitation)
-		p_dGrowthW = 0;
-		for (int s = 0; s < NumSpecies; s++)
-		{
-			p_dGrowthW += mySpecies[s].DailyGrowthW();
-		}
-
-		// Compute the N budget and uptake
-		double nuptake = NBudgetAndUptake();
-
-		// Compute the actual daily growth
-		p_dGrowth = 0;
-		for (int s = 0; s < NumSpecies; s++)
-		{
-			p_dGrowth += mySpecies[s].DailyGrowthAct();
-		}
-
-		// DM partitioning & tissue turnover
-		GrowthAndPartition();
 	}
 
 	/// <summary>
@@ -2013,7 +2102,7 @@ public class AgPasture
 			mySpecies[s].TissueTurnover();
 
 			// update aggregated variables
-			mySpecies[s].updateAggregated();
+			mySpecies[s].UpdateAggregated();
 
 			p_greenDM += mySpecies[s].dmgreen;
 			p_deadDM += mySpecies[s].dmdead;
@@ -2023,6 +2112,10 @@ public class AgPasture
 			p_dNLitter += mySpecies[s].dNLitter;
 			p_dRootSen += mySpecies[s].dRootSen;
 			p_dNRootSen += mySpecies[s].dNrootSen;
+
+			// update plant parts (LAI, height, root)
+			mySpecies[s].UpdatePlantParts();
+
 			p_greenLAI += mySpecies[s].greenLAI;
 			p_deadLAI += mySpecies[s].deadLAI;
 
@@ -2106,7 +2199,7 @@ public class AgPasture
 		p_greenDM = 0;
 		p_deadDM = 0;
 		p_totalDM = 0;
-		p_height = 0;
+		swardHeight = 0;
 
 		//root
 		p_rootMass = 0;
@@ -2316,7 +2409,8 @@ public class AgPasture
 		{
 			p_harvestDM += mySpecies[s].dmdefoliated;
 			p_harvestN += mySpecies[s].Ndefoliated;
-			mySpecies[s].updateAggregated();
+			mySpecies[s].UpdateAggregated();
+			mySpecies[s].UpdatePlantParts();
 
 			// RCichota May 2014: store the defoliated amount (to use for senescence)
 			mySpecies[s].prevState.dmdefoliated = mySpecies[s].dmdefoliated;
@@ -2497,11 +2591,22 @@ public class AgPasture
 	/// Compute the distribution of roots in the soil profile (sum is equal to one)
 	/// </summary>
 	/// <returns>The proportion of root mass in each soil layer</returns>
-	private double[] RootProfileDistribution()
+	/// <param name="s">The index of the species to compute root distribution</param>
+	private double[] RootProfileDistribution(int s)
 	{
 		int nLayers = dlayer.Length;
 		double[] result = new double[nLayers];
-		double sumProportion = 0;
+		double sumProportion = 0.0;
+		double myRootDepth = 0.0;
+		if (s >= 0)
+		{
+			myRootDepth = mySpecies[s].rootDepth;
+		}
+		else
+		{
+			myRootDepth = p_rootFrontier;
+			s = 0;   // will use parameters from first species
+		}
 
 		switch (p_RootDistributionMethod)
 		{
@@ -2511,12 +2616,12 @@ public class AgPasture
 					double DepthTop = 0;
 					for (int layer = 0; layer < nLayers; layer++)
 					{
-						if (DepthTop >= p_rootFrontier)
+						if (DepthTop >= myRootDepth)
 							result[layer] = 0.0;
-						else if (DepthTop + dlayer[layer] <= p_rootFrontier)
+						else if (DepthTop + dlayer[layer] <= myRootDepth)
 							result[layer] = dlayer[layer];
 						else
-							result[layer] = p_rootFrontier - DepthTop;
+							result[layer] = myRootDepth - DepthTop;
 						sumProportion += result[layer];
 						DepthTop += dlayer[layer];
 					}
@@ -2540,11 +2645,11 @@ public class AgPasture
 					//   below this depth, the proportion of root decrease following a power function (exponent = p_ExpoLinearCurveParam)
 					//   if exponent is one than the proportion decreases linearly.
 					double DepthTop = 0;
-					double DepthFirstStage = p_rootFrontier * p_ExpoLinearDepthParam[0];
-					double DepthSecondStage = p_rootFrontier - DepthFirstStage;
+					double DepthFirstStage = myRootDepth * p_ExpoLinearDepthParam[s];
+					double DepthSecondStage = myRootDepth - DepthFirstStage;
 					for (int layer = 0; layer < nLayers; layer++)
 					{
-						if (DepthTop >= p_rootFrontier)
+						if (DepthTop >= myRootDepth)
 							result[layer] = 0.0;
 						else if (DepthTop + dlayer[layer] <= DepthFirstStage)
 							result[layer] = dlayer[layer];
@@ -2552,21 +2657,21 @@ public class AgPasture
 						{
 							if (DepthTop < DepthFirstStage)
 								result[layer] = DepthFirstStage - DepthTop;
-							if ((p_ExpoLinearDepthParam[0] < 1.0) && (p_ExpoLinearCurveParam[0] > 0.0))
+							if ((p_ExpoLinearDepthParam[s] < 1.0) && (p_ExpoLinearCurveParam[s] > 0.0))
 							{
 								double thisDepth = Math.Max(0.0, DepthTop - DepthFirstStage);
 								double Ftop = (thisDepth - DepthSecondStage)
-											* Math.Pow(1 - (thisDepth / DepthSecondStage), p_ExpoLinearCurveParam[0])
-											/ (p_ExpoLinearCurveParam[0] + 1);
+											* Math.Pow(1 - (thisDepth / DepthSecondStage), p_ExpoLinearCurveParam[s])
+											/ (p_ExpoLinearCurveParam[s] + 1);
 								thisDepth = Math.Min(DepthTop + dlayer[layer] - DepthFirstStage, DepthSecondStage);
 								double Fbottom = (thisDepth - DepthSecondStage)
-											   * Math.Pow(1 - (thisDepth / DepthSecondStage), p_ExpoLinearCurveParam[0])
-											   / (p_ExpoLinearCurveParam[0] + 1);
+											   * Math.Pow(1 - (thisDepth / DepthSecondStage), p_ExpoLinearCurveParam[s])
+											   / (p_ExpoLinearCurveParam[s] + 1);
 								result[layer] += Math.Max(0.0, Fbottom - Ftop);
 							}
-							else if (DepthTop + dlayer[layer] <= p_rootFrontier)
+							else if (DepthTop + dlayer[layer] <= myRootDepth)
 							{
-								result[layer] += Math.Min(DepthTop + dlayer[layer], p_rootFrontier)
+								result[layer] += Math.Min(DepthTop + dlayer[layer], myRootDepth)
 											  - Math.Max(DepthTop, DepthFirstStage);
 							}
 						}
@@ -2606,6 +2711,35 @@ public class AgPasture
 		fraction_in_layer = (root_depth - depth_to_layer_top) / (depth_to_layer_bottom - depth_to_layer_top);
 
 		return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
+	}
+
+	/// <summary>
+	/// Plant height calculation from DM
+	/// </summary>
+	private double HeightfromDM()
+	{
+		if (usingPairWise)
+		{  // as implemented by Frank Li
+			double ht = HeightMassFN.Value(p_greenDM + p_deadDM);
+			if (ht < 20.0) ht = 20.0;      // minimum = 20mm
+			return ht;
+		}
+		else
+		{
+			double TodaysHeight = MaxPlantHeight[0];
+
+			if (StandingPlantWt <= MassForMaxHeight[0])
+			{
+				double myX = StandingPlantWt / MassForMaxHeight[0];
+				double heightF = ExponentHeightFromMass[0]
+							   - (ExponentHeightFromMass[0] * myX)
+							   + myX;
+				heightF *= Math.Pow(myX, ExponentHeightFromMass[0] - 1);
+				TodaysHeight *= heightF;
+			}
+
+			return Math.Max(TodaysHeight, MinimumHeight);
+		}
 	}
 
 	/// <summary>
@@ -3906,7 +4040,7 @@ public class AgPasture
 	[Units("mm")]
 	public double Height
 	{
-		get { return p_height; }
+		get { return swardHeight; }
 	}
 
 	//testing purpose
@@ -4027,16 +4161,6 @@ public class AgPasture
 			for (int s = 0; s < NumSpecies; s++)
 				result += mySpecies[s].Nleaf4 + mySpecies[s].Nstem4;
 			return result;
-		}
-	}
-
-	private float HeightfromDM        // height calculation from DM, not output
-	{
-		get
-		{
-			float ht = (float)HeightMassFN.Value(p_greenDM + p_deadDM);
-			if (ht < 20.0) ht = 20.0F;      // minimum = 20mm
-			return ht;
 		}
 	}
 
@@ -5589,6 +5713,21 @@ public class AgPasture
 			double[] result = new double[NumSpecies];
 			for (int s = 0; s < NumSpecies; s++)
 				result[s] = mySpecies[s].fShoot;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Plant height for each species")]
+	[Units("mm")]
+	public double[] speciesHeight
+	{
+		get
+		{
+			double[] result = new double[NumSpecies];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].height;
 			return result;
 		}
 	}
