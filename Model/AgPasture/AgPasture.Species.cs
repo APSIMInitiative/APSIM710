@@ -53,7 +53,7 @@ public class Species
 	internal bool isLegume;        //Legume (0=no,1=yes)
 
 	/// <summary>Some Description</summary>
-	internal string photoPath;       //Phtosynthesis pathways: 3=C3, 4=C4; //no consideration for CAM(=3)
+	internal string photoPath;       //Photosynthesis pathways: 3=C3, 4=C4; //no consideration for CAM(=3)
 
 	/// <summary>Previous state</summary>
 	internal SpeciesState prevState = new SpeciesState();              //for remembering the state of previous day
@@ -113,7 +113,7 @@ public class Species
 	internal double Pm;                    //reference leaf co2 mg/m^2/s maximum
 
 	/// <summary>Some Description</summary>
-	internal double maintRespiration;    //in %
+	internal double maintRespiration;
 
 	/// <summary>Some Description</summary>
 	internal double growthEfficiency;
@@ -583,7 +583,10 @@ public class Species
 	//// Root depth and distribution
 
 	/// <summary>Some Description</summary>
-	internal int rootDepth;       //current root depth (mm)
+	internal bool usingSpeciesRoot;
+
+	/// <summary>Some Description</summary>
+	internal double rootDepth;       //current root depth (mm)
 
 	/// <summary>Some Description</summary>
 	internal int rootDistributionMethod = 2;
@@ -598,6 +601,9 @@ public class Species
 	internal double[] rootFraction;
 
 	////  >> Plant height  >>>
+
+	/// <summary>Some Description</summary>
+	internal bool usingSpeciesHeight;
 	
 	/// <summary>Some Description</summary>
 	internal double height;
@@ -707,9 +713,6 @@ public class Species
 	//// > growth limiting factors  >>>
 
 	/// <summary>Some Description</summary>
-	internal float Frgr;
-
-	/// <summary>Some Description</summary>
 	internal double glfWater = 1.0;  //from water stress
 
 	/// <summary>Some Description</summary>
@@ -720,6 +723,12 @@ public class Species
 
 	/// <summary>Some Description</summary>
 	internal double NcFactor;
+
+	/// <summary>Some Description</summary>
+	internal double GLFSFertility;
+
+	/// <summary>Some Description</summary>
+	internal double GLFGeneric;
 
 	//// > Growth deltas  >>>
 
@@ -788,7 +797,7 @@ public class Species
 	internal double intRadnFrac;     //fraction of Radn intercepted by this species = intRadn/Radn
 
 	/// <summary>Some Description</summary>
-	internal double intRadn;         //Intercepted Radn by this species
+	internal double interceptedRadn;         //Intercepted Radn by this species
 
 	//// > Soil layering  >>>
 	/// <summary>Some Description</summary>
@@ -801,19 +810,13 @@ public class Species
 	//// - Constants  -----------------------------------------------------------------------------
 
 	/// <summary>Some Description</summary>
-	const double CD2C = 12.0 / 44.0;    //convert CO2 into C
-
-	/// <summary>Some Description</summary>
-	const double C2DM = 2.5;            //C to DM convertion
-
-	/// <summary>Some Description</summary>
-	const double DM2C = 0.4;            //DM to C converion
+	const double CarbonFractionDM = 0.4;            //DM to C converion
 
 	/// <summary>Some Description</summary>
 	const double N2Protein = 6.25;      //this is for plants... (higher amino acids)
 
 	/// <summary>Some Description</summary>
-	const double C2N_protein = 3.5;     //C:N in remobilised material
+	const double ProteinCNr = 3.5;     //C:N in remobilised material
 
 	#endregion
 
@@ -1072,10 +1075,6 @@ public class Species
 		if (phenoStage == 0 || greenLAI == 0)
 			return dGrowthPot = 0;
 
-		//following parameters are from input (.xml)
-		double maint_coeff = 0.01 * maintRespiration;  //reference maintnance respiration as % of live weight
-		double Yg = growthEfficiency;                  //default =0.75; //Efficiency of plant photosynthesis growth)
-
 		//Add temp effects to Pm
 		double Tmean = (MetData.MaxT + MetData.MinT) / 2;
 		double Tday = Tmean + 0.5 * (MetData.MaxT - Tmean);
@@ -1102,10 +1101,12 @@ public class Species
 		photoAux2 = 4 * thetaPhoto * alphaPhoto * IL2 * Pm_mean;
 		double Pl2 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
 
-		//Upscaling from 'per LAI' to 'per ground area'
+		// Upscaling from 'per LAI' to 'per ground area'
 		double carbon_m2 = 0.5 * (Pl1 + Pl2) * PCoverGreen * intRadnFrac / lightExtCoeff;
-		carbon_m2 *= 0.000001 * CD2C * tau;
-		//tau: per second => per day; 0.000001: mg/m^2=> kg/m^2_ground/day;
+		carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
+		// tau: from second => day; 
+		// 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
+		// (12.0 / 44.0): from CO2 to carbohydrate (DM)
 
 		Pgross = 10000 * carbon_m2;                 //10000: 'kg/m^2' =>'kg/ha'
 
@@ -1113,8 +1114,11 @@ public class Species
 		double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
 		Pgross *= TempStress;
 
-		//Maintenance respiration
-		double Teffect = 0;                         //Add temperature effects on respi
+		// Consider generic growth limiting factor
+		Pgross *= GLFGeneric;
+
+		// Respiration, maintenance and growth
+		double Teffect = 0;
 		if (Tmean > growthTmin)
 		{
 			if (Tmean < growthTopt)
@@ -1125,29 +1129,27 @@ public class Species
 			else
 			{
 				//Teffect = 1;
-				Teffect = Tmean / growthTopt;        // Using growthTopt (e.g., 20 C) as reference, and set maximum
-				if (Teffect > 1.25) Teffect = 1.25;  // Resp_m
+				Teffect = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
+				if (Teffect > 1.25) Teffect = 1.25;
 				Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
 			}   //The extreme high temperatue (heat) effect is added separately
 		}
 
-		//Ignore [N] effects in potential growth here
-		Resp_m = maint_coeff * Teffect * NcFactor * (dmgreen + dmroot) * DM2C;       //converting DM to C    (kg/ha)
-		//Dec10: added [N] effects here
-		Resp_g = Pgross * (1 - Yg);
+		double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
+		Resp_m = maintRespiration * Teffect * NcFactor * LiveDM;
+		Resp_g = Pgross * (1 - growthEfficiency);
 
 		// ** C budget is not explicitly done here as in EM
 		Cremob = 0;                     // Nremob* C2N_protein;    // No carbon budget here
 		// Nu_remob[elC] := C2N_protein * Nu_remob[elN];
 		// need to substract CRemob from dm rutnover?
-		//dGrowthPot = Yg * YgFactor * (Pgross + Cremob - Resp_m);     //Net potential growth (C) of the day (excluding growth respiration)
-		dGrowthPot = (Yg * Pgross) + Cremob - Resp_m;
+		
+		// Net potential growth (C) of the day (excluding growth respiration)
+		dGrowthPot = Pgross + Cremob - Resp_g - Resp_m;
 		dGrowthPot = Math.Max(0.0, dGrowthPot);
-		//double Resp_g = Pgross * (1 - Yg) / Yg;
-		//dGrowthPot *= PCO2Effects();                      //multiply the CO2 effects. Dec10: This ihas been now incoporated in Pm/leaf area above
 
 		//convert C to DM
-		dGrowthPot *= C2DM;
+		dGrowthPot /= CarbonFractionDM;
 
 		// phenologically related reduction of annual species (from IJ)
 		if (isAnnual)
@@ -1179,10 +1181,10 @@ public class Species
 		else
 			gfnit = Math.Pow(glfN, NdilutCoeff);    // more DM growth than N limited, due to dilution (typically NdilutCoeff = 0.5)
 
-		dGrowth = dGrowthW * Math.Min(gfnit, Frgr);
+		dGrowth = dGrowthW * Math.Min(gfnit, GLFSFertility);
 		return dGrowth;
 
-		//RCichota, Jan/2014: updated the function, added account for Frgr
+		//RCichota, Jan/2014: updated the function, added account for Frgr (now GLFSFertility)
 	}
 
 	/// <summary>
@@ -1494,54 +1496,6 @@ public class Species
 		}
 	}
 
-	internal void updatesAggregated()   //update DM, N & LAI
-	{
-		//DM
-		dmleaf = dmleaf1 + dmleaf2 + dmleaf3 + dmleaf4;
-		dmstem = dmstem1 + dmstem2 + dmstem3 + dmstem4;
-		dmstol = dmstol1 + dmstol2 + dmstol3;
-		dmshoot = dmleaf + dmstem + dmstol;
-
-		dmleaf_green = dmleaf1 + dmleaf2 + dmleaf3;
-		dmstem_green = dmstem1 + dmstem2 + dmstem3;
-		dmstol_green = dmstol1 + dmstol2 + dmstol3;
-
-		dmgreen = dmleaf1 + dmleaf2 + dmleaf3
-				+ dmstem1 + dmstem2 + dmstem3
-				+ dmstol1 + dmstol2 + dmstol3;
-
-		dmdead = dmleaf4 + dmstem4;
-
-		//N
-		Nleaf = Nleaf1 + Nleaf2 + Nleaf3 + Nleaf4;
-		Nstem = Nstem1 + Nstem2 + Nstem3 + Nstem4;
-		Nstolon = Nstol1 + Nstol2 + Nstol3;
-
-		Nshoot = Nleaf + Nstem + Nstolon;
-
-		Ngreen = Nleaf1 + Nleaf2 + Nleaf3
-			   + Nstem1 + Nstem2 + Nstem3
-			   + Nstol1 + Nstol2 + Nstol3;
-		Ndead = Nleaf4 + Nstem4;
-
-		// LAI
-		greenLAI = 0.0001 * dmleaf_green * specificLeafArea + 0.0001 * dmstol * 0.3 * specificLeafArea;
-		// 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming Mass2GLA = 0.3*SLA
-
-		// Resilience after unfavoured conditions
-		// Consider cover will be bigger for the same amount of DM when DM is low due to
-		// - light extinction coefficient will be bigger - plant leaves will be more plate than in dense high swards
-		// - more parts will turn green for photosysntheses?
-		// - quick response of plant shoots to fovoured conditions after release of stress
-		if (!isLegume && dmgreen < 1000)
-		{
-			greenLAI += 0.0001 * dmstem_green * specificLeafArea * Math.Sqrt((1000 - dmgreen) / 1000);
-		}
-
-		deadLAI = 0.0001 * dmleaf4 * specificLeafArea;
-		totalLAI = greenLAI + deadLAI;
-	}
-
 	/// <summary>
 	/// Update aggregated variables
 	/// </summary>
@@ -1587,13 +1541,19 @@ public class Species
 		totalLAI = greenLAI + deadLAI;
 
 		//// - Plant height  ---------------------------------------------
-		height = HeightfromDM();
+		if (usingSpeciesHeight)
+		{
+			height = HeightfromDM();
+		}
 
 		//// - Root distribution  ----------------------------------------
-		// New growth
-		rootFraction = RootGrowthDistribution(dGrowth);
-		// After senescence
-		rootFraction = RootGrowthDistribution(-dRootSen);
+		if (usingSpeciesRoot)
+		{
+			// New growth
+			rootFraction = RootGrowthDistribution(dGrowth);
+			// After senescence
+			rootFraction = RootGrowthDistribution(-dRootSen);
+		}
 	}
 
 	/// <summary>
@@ -1929,25 +1889,25 @@ public class Species
 	/// <summary>
 	/// Gets the green cover
 	/// </summary>
-	internal float coverGreen
+	internal double coverGreen
 	{
-		get { return (float)(1.0 - Math.Exp(-lightExtCoeff * greenLAI)); }
+		get { return (1.0 - Math.Exp(-lightExtCoeff * greenLAI)); }
 	}
 
 	/// <summary>
 	/// Gets the dead cover
 	/// </summary>
-	private float coverDead
+	private double coverDead
 	{
-		get { return (float)(1.0 - Math.Exp(-lightExtCoeff * deadLAI)); }
+		get { return (1.0 - Math.Exp(-lightExtCoeff * deadLAI)); }
 	}
 
 	/// <summary>
 	/// Gets the total cover
 	/// </summary>
-	private float coverTot
+	internal double coverTotal
 	{
-		get { return (float)(1.0 - (Math.Exp(-lightExtCoeff * totalLAI))); }
+		get { return (1.0 - (Math.Exp(-lightExtCoeff * totalLAI))); }
 	}
 
 	/// <summary>
@@ -2257,6 +2217,30 @@ public class Species
 		digestHerbage = (1 - deadFrac) * digestabilityLive + deadFrac * digestabilityDead;
 
 		return digestHerbage;
+	}
+
+	/// <summary>
+	/// Find the layer at the bottom of the root zone
+	/// </summary>
+	/// <returns>layer at bottom of root zone</returns>
+	internal int RootZoneLayer()
+	{
+		double depthFromSurface = 0.0;
+		int result = dlayer.Length;
+		for (int layer = 0; layer < dlayer.Length; layer++)
+		{
+			if (depthFromSurface >= rootDepth)
+			{
+				result = layer;
+				layer = dlayer.Length;
+			}
+			else
+			{
+				depthFromSurface += dlayer[layer];
+			}
+		}
+
+		return result;
 	}
 
 	/// <summary>

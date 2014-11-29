@@ -550,7 +550,12 @@ public class AgPasture
 	[Param]
 	[Description("Generic growth limiting factor")]
 	[Units("0-1")]
-	private double[] Frgr;
+	private double[] GenericGLF;
+
+	[Param]
+	[Description("Generic, soil related, growth limiting factor")]
+	[Units("0-1")]
+	private double[] SFertilityGLF;
 
 	////  >> Preferences for species and parts (on removal)
 	[Param]
@@ -675,8 +680,11 @@ public class AgPasture
 	private double[] kl = null;      //SW uptake parameter (/day)
 	[Param]
 	private double[] ll = null;      //Crop Lower Limit (mm/mm)
+
 	[Param]
-	private double[] xf = null;      //effects of X-factors on root growth(fraction)
+	[Description("Exploration factor, for each soil layer - affects root growth")]
+	[Units("0-1")]
+	private double[] xf = null;
 
 	////  >> Additional functions >>>
 	[Link]
@@ -781,54 +789,94 @@ public class AgPasture
 	/// </summary>
 	private int NumSpecies = 0;
 
-	// - Aggregated pasture parameters of all species (wiht a prefix 'p_')
-	private double p_dGrowthPot;      //daily growth potential
-	private double p_dGrowthW;        //daily growth with water-deficit incoprporated
-	private double p_dGrowth;         //daily growth
-	private double p_dHerbage;        //daily herbage (total standing DM) increae
-	private double p_dLitter;         //daily litter formation
-	private double p_dRootSen;        //daily root senescence
-	private double p_dNLitter;        //daily litter formation
-	private double p_dNRootSen;       //daily root senescence
+	//// Pasture sward parameters, aggregated over all species
 
-	private double swardHeight;          // Canopy height (mm)
-	private double p_greenLAI;
-	private double p_deadLAI;
-	private double p_totalLAI;
-	private double p_lightExtCoeff;
-	private double p_greenDM;         //green is the live aboveground herbage mass, kgDM/ha
-	private double p_deadDM;
-	private double p_totalDM;
-	private double p_rootMass;        //total root mass
-	private double p_rootFrontier;    //depth of root frontier
+	/// <summary>Daily potential growth (kg/ha)</summary>
+	private double swardPotentialGrowth;
+	/// <summary>Daily potential growth, after water stress (kg/ha)</summary>
+	private double swardPGrowthWater;
+	/// <summary>Daily actual growth (kg/ha)</summary>
+	private double swardActualGrowth;
+	/// <summary>Daily growth above growund (kg/ha)</summary>
+	private double swardHerbageGrowth;
+	/// <summary>Daily litter formation (kg/ha)</summary>
+	private double swardLitterDM;
+	/// <summary>Daily root senescence (kg/ha)</summary>
+	private double swardSenescedRootDM;
+	/// <summary>Amount of N in litter (kgN/ha)</summary>
+	private double swardLitterN;
+	/// <summary>Amount of N in root senesced (kgN/ha)</summary>
+	private double swardSenescedRootN;
 
-	// uptake related
-	private double p_bottomRootLayer;   //the soil layer just below root zone
-	private double p_soilNdemand;       //plant N demand (shoot + root) for daily growth from soil (excludingfixation and remob)
-	private double p_soilNavailable;    //Plant available N in soil kgN/ha, at the present day
-	private double p_soilNuptake;       //Plant N uptake, daily
-	private float[] SNSupply;
-	private float[] SNUptake;
+	/// <summary>Sward average canopy height (mm)</summary>
+	private double swardHeight;
+	/// <summary>Sward average green LAI</summary>
+	private double swardGreenLAI;
+	/// <summary>Sward average dead LAI</summary>
+	private double swardDeadLAI;
+	/// <summary>Sward average total LAI</summary>
+	private double swardTotalLAI;
+	/// <summary>Sward average light extinction coefficient</summary>
+	private double swardLightExtCoeff;
+	/// <summary>Sward total green shoot DM (kg/ha)</summary>
+	private double swardGreenDM;
+	/// <summary>Sward total dead shoot DM (kg/ha)</summary>
+	private double swardDeadDM;
+	/// <summary>Sward total shoot DM (kg/ha)</summary>
+	private double swardShootDM;
+	/// <summary>Sward total root DM (kg/ha)</summary>
+	private double swardRootDM;
 
-	private double p_waterDemand;   // Daily Soil Water Demand (mm)
-	private double p_waterUptake;   // Daily Soil Water uptake (mm)
-	private double p_waterSupply;   // plant extractable soil moisture (mm)
-	private float[] SWSupply;
-	private float[] SWUptake;
+	/// <summary>sward average root zone depth (mm)</summary>
+	private double swardRootDepth = 0.0;
+	/// <summary>Soil layer at bottom of root zone</summary>
+	private double swardBottomLayerRoots;
 
-	private double p_Nfix = 0;
-	private double p_gfn;               // = effect of p_Nstress on growth
-	private double p_gfwater;       // = effects of water stress on growth
-	private double p_gftemp;
+	/// <summary>Plant N demand from soil (kgN/ha)</summary>
+	private double swardSoilNdemand;
+	/// <summary>Plant available N in soil )kgN/ha)</summary>
+	private double swardSoilNavailable;
+	/// <summary>Amount of N taken up from soil (kgN/ha)</summary>
+	private double swardSoilNuptake;
+	/// <summary>Plant available N for each soil layer (kgN/ha)</summary>
+	private double[] SNSupply;
+	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+	private double[] SNUptake;
 
-	private double p_harvestDM;              //daily harvested dm
-	private double p_harvestN;               //daily harvested n
-	private double p_harvestDigest;
-	private bool p_Live = true;              //flag signialling crop is live (not killed)
+	/// <summary>Daily soil water demand (mm)</summary>
+	private double swardWaterDemand;
+	/// <summary>Daily soil water uptake (mm)</summary>
+	private double swardWaterUptake;
+	/// <summary>Plant extractable soil water (mm)</summary>
+	private double swardWaterSupply;
+	/// <summary>Plant extractable water for each layer (mm)</summary>
+	private double[] SWSupply;
+	/// <summary>Soil water taken up from each layer (mm)</summary>
+	private double[] SWUptake;
+
+	/// <summary>Amount of N fixed by legumes</summary>
+	private double swardNFixed = 0.0;
+	/// <summary>Growth limiting factor due to soil nitrogen</summary>
+	private double swardGLFN;
+	/// <summary>Growth limiting factor due to soil water</summary>
+	private double swardGLFWater;
+	/// <summary>Growth limiting factor due to ambient temperature</summary>
+	private double swardGLFTemp;
+
+	/// <summary>Amount of DM harvested</summary>
+	private double swardHarvestedDM;
+	/// <summary>Amount of N harvested</summary>
+	private double swardHarvestedN;
+	/// <summary>Digestibility of harvested material</summary>
+	private double swardHarvestDigestibility;
 
 	//temporary testing, will be removed later when IL1 can be get from micromet
 	private int canopiesNum = 1;            //number of canpy including this one
 	private double[] canopiesRadn = null;   //Radn intercepted by canopies
+
+	// Constants
+	/// <summary>C fraction on DM, for conversion</summary>
+	const double CarbonFractionDM = 0.4;
 
 	#endregion  -----------------------------------------------------------------------------------
 
@@ -898,26 +946,21 @@ public class AgPasture
 	}
 
 	/// <summary>
-	/// Initialise basic and sward parameters
+	/// Check and initialise sward and species parameters
 	/// </summary>
 	private void InitParameters()
 	{
-		// get the actual number os species to simulate
+		//// Checks which species will be simulated  --------------------------------------------------
+		//        . added by RCichota, Oct/2014
+
+		// get the number of species to be simulated
 		NumSpecies = speciesToSimulate.Length;
 
-		// make sure that DM fractions for initialisation have the right number of values (cut excess or add zeroes)
-		//   there are 12 pools 4 for leaves, 4 for stems, and 3 for stolons
-		Array.Resize(ref initialDMFractions_grass, 11);
-		Array.Resize(ref initialDMFractions_legume, 11);
-
-		//// Create and initialise each species  --------------------------------------------------
-		//        . added by RCichota, Oct/2003 - checks which species will be simulated
-
-		// check number of species
+		// check number of species - no more than those we have parameters for
 		if (NumSpecies > speciesName.Length)
 			throw new Exception("Number of species to simulate is greater than the number of species for which parameters were given");
 
-		// check for duplicates and non-existing species
+		// check for duplicates and whether species have been parameterised
 		for (int s1 = 0; s1 < NumSpecies; s1++)
 		{
 			for (int s2 = s1 + 1; s2 < NumSpecies; s2++)
@@ -933,52 +976,12 @@ public class AgPasture
 		}
 		//// --------------------------------------------------------------------------------------
 
-		mySpecies = new Species[NumSpecies];
-		for (int s1 = 0; s1 < NumSpecies; s1++)
-			for (int s2 = 0; s2 < speciesName.Length; s2++)
-			{
-				if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
-				{
-					mySpecies[s1] = new Species();
-					mySpecies[s1].dlayer = dlayer;
-					InitSpeciesValues(s1, s2);
-					break;
-				}
-			}
+		// make sure that DM fractions for initialisation have the right number of values (cut excess or add zeroes)
+		//   there are 12 pools 4 for leaves, 4 for stems, and 3 for stolons
+		Array.Resize(ref initialDMFractions_grass, 11);
+		Array.Resize(ref initialDMFractions_legume, 11);
 
-		FractionToHarvest = new double[NumSpecies];
-
-		//Initialising the aggregated pasture parameters from initial valuses of each species
-		p_rootFrontier = 0.0;
-		p_rootMass = 0.0;
-		double sum_lightExtCoeff = 0.0;
-
-		for (int s = 0; s < NumSpecies; s++)
-		{
-			//accumulate LAI of all species
-			p_greenLAI += mySpecies[s].greenLAI;
-			p_deadLAI += mySpecies[s].deadLAI;
-
-			p_greenDM += mySpecies[s].dmgreen;
-			p_deadDM += mySpecies[s].dmdead;
-
-			//accumulate the sum for weighted average
-			sum_lightExtCoeff += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
-
-			//Set the deepest root frontier
-			if (mySpecies[s].rootDepth > p_rootFrontier)
-				p_rootFrontier = mySpecies[s].rootDepth;
-
-			p_rootMass += mySpecies[s].dmroot;
-		}
-
-		p_totalLAI = p_greenLAI + p_deadLAI;
-		p_totalDM = p_greenDM + p_deadDM;
-
-		if (p_totalLAI == 0) { p_lightExtCoeff = 0.5; }
-		else { p_lightExtCoeff = sum_lightExtCoeff / p_totalLAI; }
-
-		// check whether a value of root distribution paramters was given for each species (over-write the default one)
+		// check whether values for root distribution parameters were given for each species (over-write the default ones)
 		if (iniRootDepthParam != null)
 		{
 			if (iniRootDepthParam.Length < NumSpecies)
@@ -995,15 +998,78 @@ public class AgPasture
 				ExpoLinearCurveParam = iniRootCurveParam;
 		}
 
-		// rlvp is used as input only, in the calculations it has been super-seeded by RootFraction (the proportion of roots mass in each layer)
-		// The RootFraction should add up to 1.0 over the soil profile
-		if (usingSpeciesRoot)
+		//// Create and initialise each species
+		mySpecies = new Species[NumSpecies];
+		for (int s1 = 0; s1 < NumSpecies; s1++)
+			for (int s2 = 0; s2 < speciesName.Length; s2++)
+			{
+				if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
+				{
+					mySpecies[s1] = new Species();
+					mySpecies[s1].dlayer = dlayer;
+					SetSpeciesParameters(s1, s2);
+					break;
+				}
+			}
+
+		//// Initialising the aggregated parameters (whole sward)
+		double sum_lightExtCoeff = 0.0;
+		for (int s = 0; s < NumSpecies; s++)
 		{
-			// initialise the root fraction in each species
+			//accumulate LAI of all species
+			swardGreenLAI += mySpecies[s].greenLAI;
+			swardDeadLAI += mySpecies[s].deadLAI;
+
+			swardGreenDM += mySpecies[s].dmgreen;
+			swardDeadDM += mySpecies[s].dmdead;
+
+			//accumulate the sum for weighted average
+			sum_lightExtCoeff += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
+
+			//Set the deepest root as sward depth
+			if (mySpecies[s].rootDepth > swardRootDepth)
+			{
+				swardRootDepth = mySpecies[s].rootDepth;
+				swardBottomLayerRoots = mySpecies[s].RootZoneLayer();
+			}
+
+			swardRootDM += mySpecies[s].dmroot;
+		}
+
+		swardTotalLAI = swardGreenLAI + swardDeadLAI;
+		swardShootDM = swardGreenDM + swardDeadDM;
+
+		if (swardTotalLAI == 0)
+		{
+			swardLightExtCoeff = 0.5;
+		}
+		else
+		{
+			swardLightExtCoeff = sum_lightExtCoeff / swardTotalLAI;
+		}
+
+		// Check plant height
+		if (usingSpeciesHeight)
+		{ // each species has its own height
+			swardHeight = mySpecies[0].height * mySpecies[0].dmshoot;
+			for (int s = 1; s < NumSpecies; s++)
+			{
+				swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
+			}
+
+			swardHeight /= AboveGroundWt;
+		}
+		else
+		{ // only sward height is considered
 			for (int s = 0; s < NumSpecies; s++)
 			{
-				mySpecies[s].rootFraction = RootProfileDistribution(s);
+				mySpecies[s].height = HeightfromDM();
 			}
+		}
+
+		// Check root distribution
+		if (usingSpeciesRoot)
+		{ // each species has its own distribution
 
 			int nLayers = dlayer.Length;
 			RootFraction = new double[nLayers];
@@ -1019,27 +1085,17 @@ public class AgPasture
 		else
 		{
 			RootFraction = RootProfileDistribution(-1);
+			for (int s = 0; s < NumSpecies; s++)
+			{
+				mySpecies[s].rootFraction = new double[dlayer.Length];
+				for (int layer = 0; layer < dlayer.Length; layer++)
+				{
+					mySpecies[s].rootFraction[layer] = RootFraction[layer];
+				}
+			}
 		}
 
-		//init
-		p_dGrowthPot = 0.0;
-		p_dGrowthW = 0.0;
-		p_dGrowth = 0.0;
-
-		p_dLitter = 0.0;         //daily litter formation
-		p_dRootSen = 0.0;        //daily root senescence
-		p_dNLitter = 0.0;        //daily litter formation N
-		p_dNRootSen = 0.0;       //daily root senescence N
-
-		//Parameters for environmental factors
-		p_soilNdemand = 0;
-		p_soilNavailable = 0;
-		p_soilNuptake = 0;
-		p_gfn = 0;
-
-		p_waterDemand = 0;
-		p_waterUptake = 0;
-		p_gfwater = 0;
+		FractionToHarvest = new double[NumSpecies];
 	}
 
 	/// <summary>
@@ -1047,7 +1103,7 @@ public class AgPasture
 	/// </summary>
 	/// <param name="s1">The index for the species being setup</param>
 	/// <param name="s2">The index for the species in the parameter set</param>
-	private void InitSpeciesValues(int s1, int s2)
+	private void SetSpeciesParameters(int s1, int s2)
 	{
 		mySpecies[s1].speciesName = speciesName[s2];
 		mySpecies[s1].micrometType = micrometType[s2];
@@ -1073,7 +1129,7 @@ public class AgPasture
 
 		//// >> Potential growth (photosynthesis)  >>>
 		mySpecies[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
-		mySpecies[s1].maintRespiration = maintRespiration[s2];    //in %
+		mySpecies[s1].maintRespiration = maintRespiration[s2] * 0.01; // from % to fraction
 		mySpecies[s1].growthEfficiency = growthEfficiency[s2];
 		mySpecies[s1].alphaPhoto = alphaPhoto[s2];
 		mySpecies[s1].thetaPhoto = thetaPhoto[s2];
@@ -1168,20 +1224,23 @@ public class AgPasture
 		mySpecies[s1].NdilutCoeff = NdilutCoeff[s2];
 		mySpecies[s1].waterStressFactor = waterStressFactor[s2];
 		mySpecies[s1].soilSatFactor = soilSatFactor[s2];
-		mySpecies[s1].Frgr = (float)Frgr[s2];
+		mySpecies[s1].GLFSFertility = SFertilityGLF[s2];
+		mySpecies[s1].GLFGeneric = GenericGLF[s2];
 
 		////  >> Root depth and distribution  >>>
+		mySpecies[s1].usingSpeciesRoot = usingSpeciesRoot;
 		if (iniRootDepth[s1] > 0.0)
 		{
 			myRootDepth[s2] = iniRootDepth[s1];
 		}
-		
-		mySpecies[s1].rootDepth = (int)myRootDepth[s2];
+
+		mySpecies[s1].rootDepth = myRootDepth[s2];
 		mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
 		mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[s2];
 		mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[s2];
 
 		////  >> Plant height  >>>
+		mySpecies[s1].usingSpeciesHeight = usingSpeciesHeight;
 		mySpecies[s1].MaxPlantHeight = MaxPlantHeight[s2];
 		mySpecies[s1].MassForMaxHeight = MassForMaxHeight[s2];
 		mySpecies[s1].ExponentHeightFromMass = ExponentHeightFromMass[s2];
@@ -1299,8 +1358,15 @@ public class AgPasture
 		mySpecies[s1].UpdateAggregated();
 
 		//// Plant height and root distribution ..........................
-		mySpecies[s1].height = mySpecies[s1].HeightfromDM();
-		mySpecies[s1].rootFraction = RootProfileDistribution(s1);
+		if (usingSpeciesHeight)
+		{ // each species has it own height
+			mySpecies[s1].height = mySpecies[s1].HeightfromDM();
+		}
+
+		if (usingSpeciesRoot)
+		{ // each species has it own root distribution
+			mySpecies[s1].rootFraction = RootProfileDistribution(s1);
+		}
 
 		//// LAI ........................................................
 		mySpecies[s1].greenLAI = mySpecies[s1].GreenLAI();
@@ -1310,10 +1376,10 @@ public class AgPasture
 		//// Additional initialisation bits ..............................
 		mySpecies[s1].fShoot = 1;            // actual fraction of dGrowth allocated to shoot
 
-		SWSupply = new float[dlayer.Length];
-		SWUptake = new float[dlayer.Length];
-		SNSupply = new float[dlayer.Length];
-		SNUptake = new float[dlayer.Length];
+		SWSupply = new double[dlayer.Length];
+		SWUptake = new double[dlayer.Length];
+		SNSupply = new double[dlayer.Length];
+		SNUptake = new double[dlayer.Length];
 	}
 
 	/// <summary>
@@ -1321,28 +1387,11 @@ public class AgPasture
 	/// </summary>
 	private void DoNewCropEvent()
 	{
-		// Send out New Crop Event to tell other modules who I am and what I am
-		NewCropType EventData = new NewCropType();
-		EventData.crop_type = micrometType[0];  // need to separate crop type for micromet & canopy name !!
-		EventData.sender = thisCropName;        //
-		NewCrop.Invoke(EventData);
-	}
-
-	/// <summary>
-	/// Event publication - new canopy
-	/// </summary>
-	private void DoNewCanopyEvent()
-	{
-		NewCanopyType canopy = new NewCanopyType();
-		canopy.sender = thisCropName;
-		canopy.lai = (float)p_greenLAI;
-		canopy.lai_tot = (float)p_totalLAI;
-		canopy.height = (int)swardHeight;             // height effect, mm
-		canopy.depth = (int)swardHeight;              // canopy depth
-		canopy.cover = (float)Cover_green;
-		canopy.cover_tot = (float)Cover_tot;
-
-		New_Canopy.Invoke(canopy);
+		// Let other modules (micromet and SWIM) know about the sward
+		NewCropType cropData = new NewCropType();
+		cropData.crop_type = micrometType[0];
+		cropData.sender = thisCropName;
+		NewCrop.Invoke(cropData);
 	}
 
 	/// <summary>
@@ -1373,7 +1422,7 @@ public class AgPasture
 
 		Console.WriteLine("         -----------------------------------------------------------------------------");
 		Console.WriteLine("          Totals          {0,6:F1}   {1,6:F1}  {2,6:F1}  {3,4:F2}  {4,6:F1}    {5,5:F1}      {6,6:F1}",
-		TotalPlantWt, AboveGroundWt, BelowGroundWt, LAI_total, TotalPlantC, TotalPlantN, p_rootFrontier);
+		TotalPlantWt, AboveGroundWt, BelowGroundWt, LAI_total, TotalPlantC, TotalPlantN, swardRootDepth);
 		Console.WriteLine("         -----------------------------------------------------------------------------");
 
 		Console.WriteLine();
@@ -1428,6 +1477,10 @@ public class AgPasture
 		else
 		{
 			swardHeight = HeightfromDM();
+			for (int s = 0; s < NumSpecies; s++)
+			{
+				mySpecies[s].height = swardHeight;
+			}
 		}
 
 		// Get sward average root distribution
@@ -1446,10 +1499,10 @@ public class AgPasture
 		}
 		else
 			// root distribution does not change 
-		
 
-		// Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
-		DoNewCanopyEvent();
+
+			// Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
+			DoNewCanopyEvent();
 		DoNewPotentialGrowthEvent();
 	}
 
@@ -1459,7 +1512,7 @@ public class AgPasture
 	[EventHandler]
 	public void OnProcess()
 	{
-		if (!p_Live)
+		if (!isAlive)
 			return;
 
 		// Remember last status, and update root depth frontier (root depth for annuals)
@@ -1467,10 +1520,11 @@ public class AgPasture
 		{
 			mySpecies[s].SetPrevPools();
 
-			double spRootDepth = mySpecies[s].rootGrowth();
-			if (p_rootFrontier < spRootDepth)
+			double newRootDepth = mySpecies[s].rootGrowth();
+			if (swardRootDepth < newRootDepth)
 			{ // the deepest root_depth is used
-				p_rootFrontier = spRootDepth;
+				swardRootDepth = newRootDepth;
+				swardBottomLayerRoots = mySpecies[s].RootZoneLayer();
 			}
 		}
 
@@ -1485,19 +1539,19 @@ public class AgPasture
 		}
 
 		// Get potential growth
-		p_dGrowthPot = 0;
+		swardPotentialGrowth = 0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			p_dGrowthPot += mySpecies[s].DailyGrowthPot();
+			swardPotentialGrowth += mySpecies[s].DailyGrowthPot();
 		}
 
 		// Get soil N available in the root zone
-		p_soilNavailable = calcPlantAvailableN();
+		swardSoilNavailable = calcPlantAvailableN();
 
 		// Get the water supply & uptake
 		if (WaterUptakeSource == "calc")
 		{  // uptake is calculated by AgPasture
-			p_waterUptake = SWUptakeProcess();
+			swardWaterUptake = SWUptakeProcess();
 		}
 		else
 		{
@@ -1508,20 +1562,20 @@ public class AgPasture
 		SetSpeciesLimitingFactors();
 
 		// Consider water effects (before considering other nutrient limitation)
-		p_dGrowthW = 0;
+		swardPGrowthWater = 0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			p_dGrowthW += mySpecies[s].DailyGrowthW();
+			swardPGrowthWater += mySpecies[s].DailyGrowthW();
 		}
 
 		// Compute the N budget and uptake
 		double nuptake = NBudgetAndUptake();
 
 		// Compute the actual daily growth
-		p_dGrowth = 0;
+		swardActualGrowth = 0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			p_dGrowth += mySpecies[s].DailyGrowthAct();
+			swardActualGrowth += mySpecies[s].DailyGrowthAct();
 		}
 
 		// DM partitioning & tissue turnover
@@ -1529,35 +1583,52 @@ public class AgPasture
 	}
 
 	/// <summary>
+	/// Event publication - new canopy
+	/// </summary>
+	private void DoNewCanopyEvent()
+	{
+		NewCanopyType canopyData = new NewCanopyType();
+		canopyData.sender = thisCropName;
+		canopyData.lai = (float)swardGreenLAI;
+		canopyData.lai_tot = (float)swardTotalLAI;
+		canopyData.height = (int)swardHeight;
+		canopyData.depth = (int)swardHeight;
+		canopyData.cover = (float)Cover_green;
+		canopyData.cover_tot = (float)Cover_tot;
+
+		New_Canopy.Invoke(canopyData);
+	}
+
+	/// <summary>
 	/// Send out plant growth limiting factor for other module calculating potential transp.
 	/// </summary>
 	private void DoNewPotentialGrowthEvent()
 	{
-		NewPotentialGrowthType EventData = new NewPotentialGrowthType();
-		EventData.sender = thisCropName;
-		p_gftemp = 0;     //weighted average
+		NewPotentialGrowthType PGrowthData = new NewPotentialGrowthType();
+		PGrowthData.sender = thisCropName;
+		swardGLFTemp = 0;     //weighted average
 
 		double Tday = (0.75 * MetData.MaxT)
 					+ (0.25 * MetData.MinT);
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			double prop = 1.0 / NumSpecies;
-			if (p_greenDM != 0.0)
+			if (swardGreenDM != 0.0)
 			{
-				prop = mySpecies[s].dmgreen / AboveGroundLiveWt;   // dm_green;
+				prop = mySpecies[s].dmgreen / swardGreenDM;
 			}
 
-			p_gftemp += mySpecies[s].GFTemperature(Tday) * prop;
+			swardGLFTemp += mySpecies[s].GFTemperature(Tday) * prop;
 		}
 
 		double gft = 1;
 		if (Tday < 20)
 		{
-			gft = Math.Sqrt(p_gftemp);
+			gft = Math.Sqrt(swardGLFTemp);
 		}
 		else
 		{
-			gft = p_gftemp;
+			gft = swardGLFTemp;
 		}
 		// Note: p_gftemp is for gross photosysthsis.
 		// This is different from that for net production as used in other APSIM crop models, and is
@@ -1566,10 +1637,11 @@ public class AgPasture
 		// used in wheat). Temperature effects on NET produciton of forage species in other models
 		// (e.g., grassgro) are not so significant for T = 10-20 degrees(C)
 
-		EventData.frgr = (float)Math.Min(FVPD, gft);
-		// RCichota, Jan/2014: removed AgPasture's Frgr from here, it is considered at the same level as nitrogen etc...
+		double grFactor = Math.Min(FVPD, gft);
+		grFactor = Math.Min(grFactor, GLFgeneric);
+		PGrowthData.frgr = (float)grFactor;
 
-		NewPotentialGrowth.Invoke(EventData);
+		NewPotentialGrowth.Invoke(PGrowthData);
 	}
 
 	/// <summary>
@@ -1583,7 +1655,7 @@ public class AgPasture
 		{
 			if (CWB.Canopy[i].name.ToUpper() == thisCropName.ToUpper())
 			{
-				p_waterDemand = (double)CWB.Canopy[i].PotentialEp;
+				swardWaterDemand = (double)CWB.Canopy[i].PotentialEp;
 			}
 		}
 	}
@@ -1629,7 +1701,7 @@ public class AgPasture
 	public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
 	{
 		// Gets the water uptake for each layer as calculated by an external module (SWIM)
-		p_waterUptake = 0;
+		swardWaterUptake = 0;
 		for (int i_Crop = 0; i_Crop != SoilWater.Uptakes.Length; i_Crop++)
 		{
 			string MyName = SoilWater.Uptakes[i_Crop].Name;
@@ -1639,7 +1711,7 @@ public class AgPasture
 				for (int layer = 0; layer < length; layer++)
 				{
 					SWUptake[layer] = (float)SoilWater.Uptakes[i_Crop].Amount[layer];
-					p_waterUptake += SoilWater.Uptakes[i_Crop].Amount[layer];
+					swardWaterUptake += SoilWater.Uptakes[i_Crop].Amount[layer];
 				}
 			}
 		}
@@ -1654,7 +1726,7 @@ public class AgPasture
 		Species.CO2 = co2;
 		Species.PIntRadn = IntRadn;
 		Species.PCoverGreen = Cover_green;
-		Species.PLightExtCoeff = p_lightExtCoeff;
+		Species.PLightExtCoeff = swardLightExtCoeff;
 		Species.Pdmshoot = AboveGroundWt;   //dm_shoot;
 
 		// update available and intercepted fraction of the solar Radn available to each species
@@ -1669,12 +1741,12 @@ public class AgPasture
 			if (sumRadnIntercept == 0)
 			{
 				mySpecies[s].intRadnFrac = 0;
-				mySpecies[s].intRadn = 0;
+				mySpecies[s].interceptedRadn = 0;
 			}
 			else
 			{
 				mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumRadnIntercept;
-				mySpecies[s].intRadn = IntRadn * mySpecies[s].intRadnFrac;
+				mySpecies[s].interceptedRadn = IntRadn * mySpecies[s].intRadnFrac;
 			}
 		}
 	}
@@ -1686,28 +1758,31 @@ public class AgPasture
 	///  - Plant2 breaks this into two parts: WaterSupply and DoWaterUptake
 	/// </summary>
 	/// <returns>Water uptake</returns>
-	private float SWUptakeProcess()
+	private double SWUptakeProcess()
 	{
-		//find out soil available water
-		p_waterSupply = 0;
-		for (int layer = 0; layer < dlayer.Length; layer++)
-		{
-			double layerFrac = LayerFractionForRoots(layer, p_rootFrontier);
-			double waterAmount = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-			double waterSuply = Math.Max(0.0, kl[layer] * waterAmount) * layerFrac;
-			SWSupply[layer] = (float)waterSuply;
+		// zero out the variables
+		swardWaterSupply = 0;
+		Array.Clear(SWSupply, 0, SWSupply.Length);
 
-			if (layer < p_bottomRootLayer)
-				p_waterSupply += SWSupply[layer];
-		}
-
-		//uptake in proportion
+		// initialise water uptake data type
 		WaterChangedType WaterUptake = new WaterChangedType();
 		WaterUptake.DeltaWater = new double[dlayer.Length];
-		float Fraction = (float)Math.Min(1.0, p_waterDemand / p_waterSupply);
-		float actualUptake = 0.0F;
-		for (int layer = 0; layer < p_bottomRootLayer; layer++)
-		{   //water are taken up only in top layers that root can reach.
+
+		// find out soil available water
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{
+			double layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+			double waterAmount = sw_dep[layer] - (ll[layer] * dlayer[layer]);
+			double waterSuply = Math.Max(0.0, kl[layer] * waterAmount) * layerFrac;
+			SWSupply[layer] = waterSuply;
+			swardWaterSupply += waterSuply;
+		}
+
+		// proportion to uptake
+		double Fraction = Math.Min(1.0, swardWaterDemand / swardWaterSupply);
+		double actualUptake = 0.0;
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{   // water is taken up only from the layers that roots can reach.
 			SWUptake[layer] = SWSupply[layer] * Fraction;
 			actualUptake += SWUptake[layer];
 			WaterUptake.DeltaWater[layer] = -SWUptake[layer];
@@ -1729,20 +1804,20 @@ public class AgPasture
 	private double NBudgetAndUptake()
 	{
 		//1) Get the total N demand (species by species)
-		p_Nfix = 0.0;
+		swardNFixed = 0.0;
 		double p_Ndemand = 0.0;
 		double p_NdemandOpt = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			p_Nfix += mySpecies[s].CalcNdemand();       //minimum N fixation
+			swardNFixed += mySpecies[s].CalcNdemand();       //minimum N fixation
 			p_NdemandOpt += mySpecies[s].NdemandOpt;    //demand for optimum [N]
 			p_Ndemand += mySpecies[s].NdemandLux;       //demand for luxury [N]
 		}
 
 		//2) Update Nfix of legume species under N stress
 		double Nstress = 1.0;
-		if (p_Ndemand > 0.0 && (p_Ndemand > p_soilNavailable + p_Nfix))
-			Nstress = p_soilNavailable / (p_Ndemand - p_Nfix);
+		if (p_Ndemand > 0.0 && (p_Ndemand > swardSoilNavailable + swardNFixed))
+			Nstress = swardSoilNavailable / (p_Ndemand - swardNFixed);
 
 		for (int s = 0; s < NumSpecies; s++)
 		{
@@ -1753,12 +1828,12 @@ public class AgPasture
 				newNfix *= mySpecies[s].NdemandLux;
 				double moreNfix = Math.Max(0.0, newNfix - mySpecies[s].Nfix);
 				mySpecies[s].Nfix = newNfix;
-				p_Nfix += moreNfix;
+				swardNFixed += moreNfix;
 			}
 		}
 
 		//3) Get N remobilised and calculate N demand from soil
-		p_soilNdemand = 0.0;
+		swardSoilNdemand = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			if (mySpecies[s].NdemandLux <= mySpecies[s].Nremob + mySpecies[s].Nfix)
@@ -1777,12 +1852,12 @@ public class AgPasture
 			}
 
 			mySpecies[s].newGrowthN = mySpecies[s].remob2NewGrowth + mySpecies[s].Nfix;
-			p_soilNdemand += mySpecies[s].soilNdemand;
+			swardSoilNdemand += mySpecies[s].soilNdemand;
 		}
 
 		//4) Compute soil N uptake, newGrowthN and N limitation factor
-		p_soilNuptake = 0.0;
-		p_gfn = 0.0;
+		swardSoilNuptake = 0.0;
+		swardGLFN = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			if (mySpecies[s].soilNdemand == 0.0)
@@ -1794,7 +1869,7 @@ public class AgPasture
 			}
 			else
 			{
-				if (p_soilNavailable >= p_soilNdemand)
+				if (swardSoilNavailable >= swardSoilNdemand)
 				{
 					// soil can supply all remaining N needed
 					mySpecies[s].soilNuptake = mySpecies[s].soilNdemand;
@@ -1806,7 +1881,7 @@ public class AgPasture
 				else
 				{
 					// soil cannot supply all N needed. Get the available N and partition between species
-					mySpecies[s].soilNuptake = p_soilNavailable * mySpecies[s].soilNdemand / p_soilNdemand;
+					mySpecies[s].soilNuptake = swardSoilNavailable * mySpecies[s].soilNdemand / swardSoilNdemand;
 					mySpecies[s].newGrowthN += mySpecies[s].soilNuptake;
 
 					// check whether demand for optimum growth is satisfied
@@ -1858,16 +1933,16 @@ public class AgPasture
 				}
 			}
 
-			p_soilNuptake += mySpecies[s].soilNuptake;
+			swardSoilNuptake += mySpecies[s].soilNuptake;
 
 			//weighted average of species gfn
-			if (p_dGrowthW == 0)
+			if (swardPGrowthWater == 0)
 			{
-				p_gfn = 1;
+				swardGLFN = 1;
 			}
 			else
 			{
-				p_gfn += mySpecies[s].glfN * mySpecies[s].dGrowthW / p_dGrowthW;
+				swardGLFN += mySpecies[s].glfN * mySpecies[s].dGrowthW / swardPGrowthWater;
 			}
 		}
 
@@ -1901,9 +1976,9 @@ public class AgPasture
 		NUptake.DeltaNH4 = new double[dlayer.Length];
 
 		float Fraction = 0;
-		if (p_soilNavailable > 0)
+		if (swardSoilNavailable > 0)
 		{
-			Fraction = (float)Math.Min(1.0, p_soilNuptake / p_soilNavailable);
+			Fraction = (float)Math.Min(1.0, swardSoilNuptake / swardSoilNavailable);
 		}
 
 		double n_uptake = 0;
@@ -1958,7 +2033,7 @@ public class AgPasture
 			diffNO3_bylayer = diffNO3_bylayer.Select(x => x / sum_diff).ToArray();
 
 			double avail_withwater = availableNH4_bylayer.Sum() + availableNO3_bylayer.Sum();
-			double shortfall_withwater = p_soilNuptake - avail_withwater;
+			double shortfall_withwater = swardSoilNuptake - avail_withwater;
 
 			if (shortfall_withwater > 0)
 			{
@@ -1972,7 +2047,7 @@ public class AgPasture
 			NUptake.DeltaNH4 = availableNH4_bylayer.Select(x => x * -1).ToArray();
 			NUptake.DeltaNO3 = availableNO3_bylayer.Select(x => x * -1).ToArray();
 
-			for (int layer = 0; layer < p_bottomRootLayer; layer++)
+			for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 				n_uptake += SNUptake[layer] = (float)(NUptake.DeltaNH4[layer] + NUptake.DeltaNO3[layer]) * -1;
 
 			double[] diffs = NUptake.DeltaNO3.Select((x, i) => Math.Max(no3[i] + x + 0.00000001, 0)).ToArray();
@@ -1991,7 +2066,7 @@ public class AgPasture
 		}*/
 		else
 		{
-			for (int layer = 0; layer < p_bottomRootLayer; layer++)
+			for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 			{   //N are taken up only in top layers that root can reach (including buffer Zone).
 				n_uptake += (no3[layer] + nh4[layer]) * Fraction;
 				SNUptake[layer] = (no3[layer] + nh4[layer]) * Fraction;
@@ -2007,72 +2082,65 @@ public class AgPasture
 	}
 
 	/// <summary>
-	/// Set drought stress factor to each species
-	/// Worth more efforts in this area
+	/// Set soil moisture stress factor to each species
+	/// Worth more efforts in this area (F. Li)
 	/// </summary>
 	private void SetSpeciesLimitingFactors()
 	{
-		if (p_waterDemand == 0)
+		if (swardWaterDemand == 0)
 		{
-			p_gfwater = 1.0;
+			swardGLFWater = 1.0;
 			for (int s = 0; s < NumSpecies; s++)
-				mySpecies[s].glfWater = p_gfwater;
-			return;                                 //case (1) return
+				mySpecies[s].glfWater = swardGLFWater;
+			return;
 		}
 
-		if (p_waterDemand > 0 && p_waterUptake == 0)
+		if (swardWaterDemand > 0 && swardWaterUptake == 0)
 		{
-			p_gfwater = 0.0;
+			swardGLFWater = 0.0;
 			for (int s = 0; s < NumSpecies; s++)
-				mySpecies[s].glfWater = p_gfwater;
-			return;                                 //case (2) return
+				mySpecies[s].glfWater = swardGLFWater;
+			return;
 		}
 
-		p_gfwater = p_waterUptake / p_waterDemand;
-		float spDepth = 0;              // soil profile depth
-		if (p_gfwater > 0.999)  //possible saturation
+		swardGLFWater = swardWaterUptake / swardWaterDemand;
+		if (swardGLFWater > 0.999)  //possible saturation
 		{
 			// calculate soil moisture content in root zone
 			double SW = 0;      //soil water content
 			double Sat = 0;     //water content at saturation
 			double FC = 0;      //water contenct at field capacity
 
-			for (int layer = 0; layer < dlayer.Length; layer++)
+			for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 			{
-				spDepth += dlayer[layer];
-				if (spDepth <= p_rootFrontier)
-				{
-					SW += sw_dep[layer];
-					Sat += SAT[layer] * dlayer[layer];
-					FC += DUL[layer] * dlayer[layer];
-				}
+				SW += sw_dep[layer];
+				Sat += SAT[layer] * dlayer[layer];
+				FC += DUL[layer] * dlayer[layer];
 			}
 
 			if (SW > FC) //if saturated
 			{
 				double accum_gfwater = 0;
-				p_greenLAI = 0;     //update p_greenLAI before using it.
+				swardGreenLAI = 0;     //update GreenLAI before using it.
 				for (int s = 0; s < NumSpecies; s++)
 				{
 					mySpecies[s].glfWater = 1 - (mySpecies[s].soilSatFactor * (SW - FC) / (Sat - FC));
 					accum_gfwater += mySpecies[s].glfWater * mySpecies[s].greenLAI;   //weighted by greenLAI
-					p_greenLAI += mySpecies[s].greenLAI;                      //FLi 19 Sept 2011 for avoiding error of an unupdated
-				}                                                      //p_greenLAI when using SWIM for waterUptake
+					swardGreenLAI += mySpecies[s].greenLAI;
+				}
 
-				if (p_greenLAI > 0)
-					p_gfwater = accum_gfwater / p_greenLAI;
+				if (swardGreenLAI > 0)
+					swardGLFWater = accum_gfwater / swardGreenLAI;
 				else
-					p_gfwater = 1.0;
-				return;                         //case (3) return
+					swardGLFWater = 1.0;
+				return;
 			}
-			//Reaching here is possible (SW < FC) even with a p_gfwater ==1     //FLi 20 Oct 2012
-			//not return, but go though to the case (4) below
 		}
 
-		//Original block Set specieS.gfwater = p_gfwater, to distinguish them later
+		// Original block Set specieS.gfwater = p_gfwater, to distinguish them later
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			mySpecies[s].glfWater = p_gfwater;
+			mySpecies[s].glfWater = swardGLFWater;
 		}
 	}
 
@@ -2082,16 +2150,16 @@ public class AgPasture
 	private void GrowthAndPartition()
 	{
 		// reset some variables
-		p_greenLAI = 0;
-		p_deadLAI = 0;
-		p_greenDM = 0.0;
-		p_deadDM = 0.0;
-		p_dHerbage = 0.0;
-		p_rootMass = 0.0;
-		p_dLitter = 0;
-		p_dNLitter = 0;
-		p_dRootSen = 0;
-		p_dNRootSen = 0;
+		swardGreenLAI = 0.0;
+		swardDeadLAI = 0.0;
+		swardGreenDM = 0.0;
+		swardDeadDM = 0.0;
+		swardHerbageGrowth = 0.0;
+		swardRootDM = 0.0;
+		swardLitterDM = 0.0;
+		swardLitterN = 0.0;
+		swardSenescedRootDM = 0.0;
+		swardSenescedRootN = 0.0;
 
 		for (int s = 0; s < NumSpecies; s++)
 		{
@@ -2104,33 +2172,33 @@ public class AgPasture
 			// update aggregated variables
 			mySpecies[s].UpdateAggregated();
 
-			p_greenDM += mySpecies[s].dmgreen;
-			p_deadDM += mySpecies[s].dmdead;
-			p_rootMass += mySpecies[s].dmroot;
-			p_dHerbage += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
-			p_dLitter += mySpecies[s].dLitter;
-			p_dNLitter += mySpecies[s].dNLitter;
-			p_dRootSen += mySpecies[s].dRootSen;
-			p_dNRootSen += mySpecies[s].dNrootSen;
+			swardGreenDM += mySpecies[s].dmgreen;
+			swardDeadDM += mySpecies[s].dmdead;
+			swardRootDM += mySpecies[s].dmroot;
+			swardHerbageGrowth += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
+			swardLitterDM += mySpecies[s].dLitter;
+			swardLitterN += mySpecies[s].dNLitter;
+			swardSenescedRootDM += mySpecies[s].dRootSen;
+			swardSenescedRootN += mySpecies[s].dNrootSen;
 
 			// update plant parts (LAI, height, root)
 			mySpecies[s].UpdatePlantParts();
 
-			p_greenLAI += mySpecies[s].greenLAI;
-			p_deadLAI += mySpecies[s].deadLAI;
+			swardGreenLAI += mySpecies[s].greenLAI;
+			swardDeadLAI += mySpecies[s].deadLAI;
 
 			// Calc todays digestibility
 			mySpecies[s].calcDigestibility();
 		}
 
-		p_totalLAI = p_greenLAI + p_deadLAI;
-		p_totalDM = p_greenDM + p_deadDM;
+		swardTotalLAI = swardGreenLAI + swardDeadLAI;
+		swardShootDM = swardGreenDM + swardDeadDM;
 
 		// Return litter to surface OM
-		DoSurfaceOMReturn(p_dLitter, p_dNLitter, 1.0);
+		DoSurfaceOMReturn(swardLitterDM, swardLitterN, 1.0);
 
 		// Return senesced root to soil FOM
-		DoIncorpFomEvent(p_dRootSen, p_dNRootSen);
+		DoIncorpFomEvent(swardSenescedRootDM, swardSenescedRootN);
 
 		// RCichota May2014: zero out the stored pS.dmdefoliated (it has been used today)
 		for (int s = 0; s < NumSpecies; s++)
@@ -2160,7 +2228,7 @@ public class AgPasture
 		</type>
 		*/
 
-		p_Live = true;
+		isAlive = true;
 		ResetZero();
 		for (int s = 0; s < NumSpecies; s++)
 			mySpecies[s].SetInGermination();
@@ -2177,14 +2245,14 @@ public class AgPasture
 		//always complete kill for pasture, ignore fraction
 
 		//Above_ground part returns to surface OM comletey (frac = 1.0)
-		DoSurfaceOMReturn(p_totalDM, AboveGroundN, 1.0);    //n_shoot
+		DoSurfaceOMReturn(swardShootDM, AboveGroundN, 1.0);    //n_shoot
 
 		//Incorporate root mass in soil fresh organic matter
-		DoIncorpFomEvent(p_rootMass, BelowGroundN);         //n_root);
+		DoIncorpFomEvent(swardRootDM, BelowGroundN);         //n_root);
 
 		ResetZero();
 
-		p_Live = false;
+		isAlive = false;
 	}
 
 	/// <summary>
@@ -2193,25 +2261,25 @@ public class AgPasture
 	private void ResetZero()
 	{
 		//shoot
-		p_greenLAI = 0;
-		p_deadLAI = 0;
-		p_totalLAI = 0;
-		p_greenDM = 0;
-		p_deadDM = 0;
-		p_totalDM = 0;
-		swardHeight = 0;
+		swardGreenLAI = 0.0;
+		swardDeadLAI = 0.0;
+		swardTotalLAI = 0.0;
+		swardGreenDM = 0.0;
+		swardDeadDM = 0.0;
+		swardShootDM = 0.0;
+		swardHeight = 0.0;
 
 		//root
-		p_rootMass = 0;
-		p_rootFrontier = 0;
+		swardRootDM = 0.0;
+		swardRootDepth = 0.0;
 
 		//daily changes
-		p_dGrowthPot = p_dGrowthW = p_dGrowth = p_dHerbage = 0;   //daily DM increase
-		p_dLitter = p_dNLitter = 0;
-		p_dRootSen = p_dNRootSen = 0;
+		swardPotentialGrowth = swardPGrowthWater = swardActualGrowth = swardHerbageGrowth = 0;   //daily DM increase
+		swardLitterDM = swardLitterN = 0;
+		swardSenescedRootDM = swardSenescedRootN = 0;
 
-		p_waterDemand = p_waterUptake = 0;
-		p_soilNdemand = p_soilNuptake = 0;
+		swardWaterDemand = swardWaterUptake = 0;
+		swardSoilNdemand = swardSoilNuptake = 0;
 
 		//species (ignore fraction)
 		for (int s = 0; s < NumSpecies; s++)
@@ -2403,12 +2471,12 @@ public class AgPasture
 			}
 		}
 
-		p_harvestDM = 0;
-		p_harvestN = 0;
+		swardHarvestedDM = 0;
+		swardHarvestedN = 0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			p_harvestDM += mySpecies[s].dmdefoliated;
-			p_harvestN += mySpecies[s].Ndefoliated;
+			swardHarvestedDM += mySpecies[s].dmdefoliated;
+			swardHarvestedN += mySpecies[s].Ndefoliated;
 			mySpecies[s].UpdateAggregated();
 			mySpecies[s].UpdatePlantParts();
 
@@ -2420,7 +2488,7 @@ public class AgPasture
 		//will be in proportion with exisisting mass of each species.
 		//The digetibility below is an approximation (= that of pasture swards).
 		//It is more reasonable to calculate it organ-by-organ for each species, then put them together.
-		p_harvestDigest = HerbageDigestibility;
+		swardHarvestDigestibility = HerbageDigestibility;
 
 	}
 
@@ -2444,7 +2512,7 @@ public class AgPasture
 	[EventHandler]
 	public void OnGraze(GrazeType GZ)
 	{
-		if ((!p_Live) || p_totalDM == 0)
+		if ((!isAlive) || swardShootDM == 0)
 			return;
 
 		// get the amount that can potentially be removed
@@ -2472,9 +2540,9 @@ public class AgPasture
 		// get the actual amount to remove
 		double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
 
-		p_harvestDM = AmountToRemove;
-		p_harvestN = 0.0;
-		p_harvestDigest = 0.0;
+		swardHarvestedDM = AmountToRemove;
+		swardHarvestedN = 0.0;
+		swardHarvestDigestibility = 0.0;
 
 		// get the amounts to remove by species:
 		double FractionNotRemoved = 0.0;
@@ -2504,10 +2572,10 @@ public class AgPasture
 					FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
 				else
 					FractionToHarvest[s] = 0.0;
-				p_harvestN += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
+				swardHarvestedN += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
 
 				// get digestibility of harvested material
-				p_harvestDigest += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated / AmountToRemove;
+				swardHarvestDigestibility += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated / AmountToRemove;
 			}
 		}
 	}
@@ -2518,73 +2586,33 @@ public class AgPasture
 
 	private double calcPlantAvailableN()
 	{
-		p_soilNavailable = 0;
-		double spDepth = 0;         // depth before next soil layer
-		int sLayer = 0;
-		for (sLayer = 0; sLayer < dlayer.Length; sLayer++)
+		swardSoilNavailable = 0;
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 		{
-			if (spDepth <= p_rootFrontier)
-			{
-				/* an approach for controlling N uptake
-				const float KNO3 = 0.1F;
-				const float KNH4 = 0.1F;
-				double swaf = 1.0;
-				swaf = (sw_dep[sLayer] - ll[sLayer]) / (DUL[sLayer] - ll[sLayer]);
-				swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
-				p_soilNavailable += (no3[sLayer] * KNO3 + nh4[sLayer] * KNH4 ) * swaf;
-				SNSupply[sLayer] = (no3[sLayer] * KNO3 + nh4[sLayer] * KNH4 ) * (float)swaf;
-				*/
-				//original below
-				SNSupply[sLayer] = no3[sLayer] + nh4[sLayer];
-				p_soilNavailable += SNSupply[sLayer];
-			}
-			else
-			{
-				p_bottomRootLayer = sLayer;
-				break;
-			}
-
-			spDepth += (double)dlayer[sLayer];
+			SNSupply[layer] = no3[layer] + nh4[layer];
+			swardSoilNavailable += SNSupply[layer];
 		}
 
-		if (p_bottomRootLayer == 0 && sLayer > 0)
-			p_bottomRootLayer = sLayer - 1;
-
-		return p_soilNavailable;
+		return swardSoilNavailable;
 	}
 
-	private double calcPlantExtractableN()    // not all minN is extractable
+	private double calcPlantExtractableN()
 	{
-		p_soilNavailable = 0;
-		double spDepth = 0;         // depth before next soil layer
-		int sLayer = 0;
-		for (sLayer = 0; sLayer < dlayer.Length; sLayer++)
+		swardSoilNavailable = 0;
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 		{
-			if (spDepth <= p_rootFrontier)
-			{
-				//an approach for controlling N uptake
-				const float KNO3 = 0.1F;
-				const float KNH4 = 0.1F;
-				double swaf = (sw_dep[sLayer] - ll[sLayer]) / (DUL[sLayer] - ll[sLayer]);
-				swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
-				double Navailable = (no3[sLayer] * KNO3) + (nh4[sLayer] * KNH4);
-				Navailable *= Math.Pow(swaf, 0.25);
-				p_soilNavailable += Navailable;
-				SNSupply[sLayer] = (float)Navailable;
-			}
-			else
-			{
-				p_bottomRootLayer = sLayer;
-				break;
-			}
-
-			spDepth += (double)dlayer[sLayer];
+			//another approach for controlling N uptake
+			const float KNO3 = 0.1F;
+			const float KNH4 = 0.1F;
+			double swaf = (sw_dep[layer] - ll[layer]) / (DUL[layer] - ll[layer]);
+			swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
+			double Navailable = (no3[layer] * KNO3) + (nh4[layer] * KNH4);
+			Navailable *= Math.Pow(swaf, 0.25);
+			swardSoilNavailable += Navailable;
+			SNSupply[layer] = Navailable;
 		}
 
-		if (p_bottomRootLayer == 0 && sLayer > 0)
-			p_bottomRootLayer = sLayer - 1;
-
-		return p_soilNavailable;
+		return swardSoilNavailable;
 	}
 
 	/// <summary>
@@ -2604,7 +2632,7 @@ public class AgPasture
 		}
 		else
 		{
-			myRootDepth = p_rootFrontier;
+			myRootDepth = swardRootDepth;
 			s = 0;   // will use parameters from first species
 		}
 
@@ -2720,7 +2748,7 @@ public class AgPasture
 	{
 		if (usingPairWise)
 		{  // as implemented by Frank Li
-			double ht = HeightMassFN.Value(p_greenDM + p_deadDM);
+			double ht = HeightMassFN.Value(swardGreenDM + swardDeadDM);
 			if (ht < 20.0) ht = 20.0;      // minimum = 20mm
 			return ht;
 		}
@@ -2817,6 +2845,19 @@ public class AgPasture
 		}
 	}
 
+	private bool isAlive = true;
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Flag signalling whether plants are alive")]
+	[Units("true/false")]
+	public bool IsAlive
+	{
+		get
+		{
+			return isAlive;
+		}
+	}
+
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant status (dead, alive, etc)")]
@@ -2825,7 +2866,7 @@ public class AgPasture
 	{
 		get
 		{
-			if (p_Live) return "alive";
+			if (isAlive) return "alive";
 			else return "out";
 		}
 	}
@@ -2841,7 +2882,7 @@ public class AgPasture
 		get
 		{
 			int cropStage = 0; //default as "phase out"
-			if (p_Live)
+			if (isAlive)
 			{
 				if (mySpecies[0].phenoStage == 0)
 					cropStage = 1;    //"sowing & germination";
@@ -2861,7 +2902,7 @@ public class AgPasture
 		get
 		{
 			string name = "out";
-			if (p_Live)
+			if (isAlive)
 			{
 				if (mySpecies[0].phenoStage == 0)
 					name = "sowing";    //cropStage = 1 & 2
@@ -2878,7 +2919,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double TotalPlantC
 	{
-		get { return 0.4 * (p_totalDM + p_rootMass); }
+		get { return 0.4 * (swardShootDM + swardRootDM); }
 	}
 
 	/// <summary>An output</summary>
@@ -2911,7 +2952,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double BelowGroundWt
 	{
-		get { return p_rootMass; }
+		get { return swardRootDM; }
 	}
 
 	/// <summary>An output</summary>
@@ -2950,7 +2991,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double AboveGroundDeadWt
 	{
-		get { return p_deadDM; }
+		get { return swardDeadDM; }
 	}
 
 	/// <summary>An output</summary>
@@ -3140,7 +3181,7 @@ public class AgPasture
 		{
 			double result = 0.0;
 			for (int s = 0; s < NumSpecies; s++)
-				result += mySpecies[s].Pgross * 2.5;
+				result += mySpecies[s].Pgross / CarbonFractionDM;
 			return result;
 		}
 	}
@@ -3151,7 +3192,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double PlantPotentialGrowthWt
 	{
-		get { return p_dGrowthPot; }
+		get { return swardPotentialGrowth; }
 	}
 
 	/// <summary>An output</summary>
@@ -3160,7 +3201,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double PlantGrowthNoNLimit
 	{
-		get { return p_dGrowthW; }
+		get { return swardPGrowthWater; }
 	}
 
 	/// <summary>An output</summary>
@@ -3170,7 +3211,7 @@ public class AgPasture
 	public double PlantGrowthWt
 	{
 		//dm_daily_growth, including roots & before littering
-		get { return p_dGrowth; }
+		get { return swardActualGrowth; }
 	}
 
 	/// <summary>An output</summary>
@@ -3179,7 +3220,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double HerbageGrowthWt
 	{
-		get { return p_dHerbage; }
+		get { return swardHerbageGrowth; }
 	}
 
 	/// <summary>An output</summary>
@@ -3188,7 +3229,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double PlantEffectiveGrowthWt
 	{
-		get { return p_dGrowth - p_dLitter - p_dRootSen; }
+		get { return swardActualGrowth - swardLitterDM - swardSenescedRootDM; }
 	}
 
 	/// <summary>An output</summary>
@@ -3197,7 +3238,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double LitterDepositionWt
 	{
-		get { return p_dLitter; }
+		get { return swardLitterDM; }
 	}
 
 	/// <summary>An output</summary>
@@ -3206,7 +3247,7 @@ public class AgPasture
 	[Units("kgDM/ha")]
 	public double RootSenescenceWt
 	{
-		get { return p_dRootSen; }
+		get { return swardSenescedRootDM; }
 	}
 
 	/// <summary>An output</summary>
@@ -3262,7 +3303,7 @@ public class AgPasture
 	[Units("m^2/m^2")]
 	public double LAI_green
 	{
-		get { return p_greenLAI; }
+		get { return swardGreenLAI; }
 	}
 
 	/// <summary>An output</summary>
@@ -3271,7 +3312,7 @@ public class AgPasture
 	[Units("m^2/m^2")]
 	public double LAI_dead
 	{
-		get { return p_deadLAI; }
+		get { return swardDeadLAI; }
 	}
 
 	/// <summary>An output</summary>
@@ -3280,7 +3321,7 @@ public class AgPasture
 	[Units("m^2/m^2")]
 	public double LAI_total
 	{
-		get { return p_totalLAI; }
+		get { return swardTotalLAI; }
 	}
 
 	/// <summary>An output</summary>
@@ -3291,8 +3332,8 @@ public class AgPasture
 	{
 		get
 		{
-			if (p_greenLAI == 0) return 0;
-			return 1.0 - Math.Exp(-p_lightExtCoeff * p_greenLAI);
+			if (swardGreenLAI == 0) return 0;
+			return 1.0 - Math.Exp(-swardLightExtCoeff * swardGreenLAI);
 		}
 	}
 
@@ -3304,8 +3345,8 @@ public class AgPasture
 	{
 		get
 		{
-			if (p_deadLAI == 0) return 0;
-			return 1.0 - Math.Exp(-p_lightExtCoeff * p_deadLAI);
+			if (swardDeadLAI == 0) return 0;
+			return 1.0 - Math.Exp(-swardLightExtCoeff * swardDeadLAI);
 		}
 	}
 
@@ -3317,8 +3358,8 @@ public class AgPasture
 	{
 		get
 		{
-			if (p_totalLAI == 0) return 0;
-			return 1.0 - (Math.Exp(-p_lightExtCoeff * p_totalLAI));
+			if (swardTotalLAI == 0) return 0;
+			return 1.0 - (Math.Exp(-swardLightExtCoeff * swardTotalLAI));
 		}
 	}
 
@@ -3600,7 +3641,7 @@ public class AgPasture
 	{
 		get
 		{
-			if (!p_Live || (StemWt + LeafWt) <= 0)
+			if (!isAlive || (StemWt + LeafWt) <= 0)
 				return 0;
 
 			double result = 0.0;
@@ -3616,7 +3657,7 @@ public class AgPasture
 	[Units("0-1")]
 	public double DefoliatedDigestibility
 	{
-		get { return p_harvestDigest; }
+		get { return swardHarvestDigestibility; }
 	}
 
 	/// <summary>An output</summary>
@@ -3647,7 +3688,7 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double PlantFixedN
 	{
-		get { return p_Nfix; }
+		get { return swardNFixed; }
 	}
 
 	/// <summary>An output</summary>
@@ -3716,7 +3757,7 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double LitterDepositionN
 	{
-		get { return p_dNLitter; }
+		get { return swardLitterN; }
 	}
 
 	/// <summary>An output</summary>
@@ -3725,7 +3766,7 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double RootSenescenceN
 	{
-		get { return p_dNRootSen; }
+		get { return swardSenescedRootN; }
 	}
 
 	/// <summary>An output</summary>
@@ -3806,7 +3847,7 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double NitrogenDemand
 	{
-		get { return p_soilNdemand; }
+		get { return swardSoilNdemand; }
 	}
 
 	/// <summary>An output</summary>
@@ -3815,14 +3856,14 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double NitrogenSupply
 	{
-		get { return p_soilNavailable; }
+		get { return swardSoilNavailable; }
 	}
 
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant available nitrogen in soil layers")]
 	[Units("kgN/ha")]
-	public float[] NitrogenSupplyLayers
+	public double[] NitrogenSupplyLayers
 	{
 		get { return SNSupply; }
 	}
@@ -3833,14 +3874,14 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double NitrogenUptake
 	{
-		get { return p_soilNuptake; }
+		get { return swardSoilNuptake; }
 	}
 
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant nitrogen uptake from soil layers")]
 	[Units("kgN/ha")]
-	public float[] NitrogenUptakeLayers
+	public double[] NitrogenUptakeLayers
 	{
 		get { return SNUptake; }
 	}
@@ -3851,7 +3892,7 @@ public class AgPasture
 	[Units("0-1")]
 	public double GLFn
 	{
-		get { return p_gfn; }
+		get { return swardGLFN; }
 	}
 
 	/// <summary>An output</summary>
@@ -3912,8 +3953,8 @@ public class AgPasture
 		get
 		{
 			double result = 0.0;
-			if (p_dGrowth > 0)
-				result = DMToRoots / p_dGrowth;
+			if (swardActualGrowth > 0)
+				result = DMToRoots / swardActualGrowth;
 			return result;
 		}
 	}
@@ -3930,7 +3971,7 @@ public class AgPasture
 			double[] result = new double[dlayer.Length];
 			//double p_srl = 75;           // specific root length (m root/g DMroot)
 			//Compute the root length, total over the whole profile
-			double Total_Rlength = (p_rootMass * 0.1) * specificRootLength[0];   // m root/m2 soil
+			double Total_Rlength = (swardRootDM * 0.1) * specificRootLength[0];   // m root/m2 soil
 			Total_Rlength *= 0.001;          // convert into mm root/mm2 soil)
 			for (int layer = 0; layer < result.Length; layer++)
 				result[layer] = RootFraction[layer] * Total_Rlength / dlayer[layer];    // mm root/mm3 soil
@@ -3954,7 +3995,7 @@ public class AgPasture
 	[Units("mm")]
 	public double WaterDemand
 	{
-		get { return p_waterDemand; }
+		get { return swardWaterDemand; }
 	}
 
 	/// <summary>An output</summary>
@@ -3963,14 +4004,14 @@ public class AgPasture
 	[Units("mm")]
 	public double WaterSupply
 	{
-		get { return p_waterSupply; }
+		get { return swardWaterSupply; }
 	}
 
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant available water in soil layers")]
 	[Units("mm")]
-	public float[] WaterSupplyLayers
+	public double[] WaterSupplyLayers
 	{
 		get { return SWSupply; }
 	}
@@ -3981,14 +4022,14 @@ public class AgPasture
 	[Units("mm")]
 	public double WaterUptake
 	{
-		get { return p_waterUptake; }
+		get { return swardWaterUptake; }
 	}
 
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Plant water uptake from soil layers")]
 	[Units("mm")]
-	public float[] WaterUptakeLayers
+	public double[] WaterUptakeLayers
 	{
 		get { return SWUptake; }
 	}
@@ -3999,7 +4040,7 @@ public class AgPasture
 	[Units("0-1")]
 	public double GLFwater
 	{
-		get { return p_gfwater; }
+		get { return swardGLFWater; }
 	}
 
 	//**Stress factors
@@ -4009,28 +4050,50 @@ public class AgPasture
 	[Units("0-1")]
 	public double GLFtemp
 	{
-		get { return p_gftemp; }
+		get { return swardGLFTemp; }
 	}
 
 	/// <summary>An output</summary>
 	[Output]
-	[Description("Generic plant growth limiting factor, used for other factors")]
+	[Description("Generic plant growth limiting factor related to soil fertility, user set")]
 	[Units("0-1")]
-	public double GLFrgr
+	public double GLFsfert
 	{
 		get
 		{
-			double p_Frgr = 0; //weighted value
+			double result = 0; //weighted value
 			for (int s = 0; s < NumSpecies; s++)
 			{
 				double prop = 1.0 / NumSpecies;
-				if (p_greenDM != 0.0)
+				if (swardGreenDM > 0.0)
 				{
-					prop = mySpecies[s].dmgreen / AboveGroundLiveWt;
+					prop = mySpecies[s].dmgreen / swardGreenDM;
 				}
-				p_Frgr += mySpecies[s].Frgr * prop;
+				result += mySpecies[s].GLFSFertility * prop;
 			}
-			return p_Frgr;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Generic plant growth limiting factor, user set")]
+	[Units("0-1")]
+	public double GLFgeneric
+	{
+		get
+		{
+			double result = 0; //weighted value
+			for (int s = 0; s < NumSpecies; s++)
+			{
+				double prop = 1.0 / NumSpecies;
+				if (swardGreenDM > 0.0)
+				{
+					prop = mySpecies[s].dmgreen / swardGreenDM;
+				}
+				result += mySpecies[s].GLFGeneric * prop;
+			}
+			return result;
 		}
 	}
 
@@ -5074,7 +5137,7 @@ public class AgPasture
 		{
 			double[] result = new double[NumSpecies];
 			for (int s = 0; s < NumSpecies; s++)
-				result[s] = mySpecies[s].Pgross * 2.5;
+				result[s] = mySpecies[s].Pgross / CarbonFractionDM;
 			return result;
 		}
 	}
@@ -5535,7 +5598,7 @@ public class AgPasture
 			return result;
 		}
 	}
-	
+
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Stress factor on photosynthesis due to temperature, for each species")]

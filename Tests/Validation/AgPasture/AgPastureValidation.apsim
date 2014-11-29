@@ -10,7 +10,6 @@
     <summaryfile />
     <area name="No2DairyNZ">
       <AgPasture name="ryegrass_clover_paspalum">
-        <thisCropName type="text" description="Crop name shown as on the simulation tree">ryegrass_clover_paspalum</thisCropName>
         <speciesToSimulate description="Name of species to simulate">ryegrass whiteclover paspalum</speciesToSimulate>
         <speciesName type="text" description="Species names">ryegrass whiteclover paspalum</speciesName>
         <micrometType type="text" description="crop type for MicroMet">grass grass grass</micrometType>
@@ -57,7 +56,7 @@
         <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600 600</CO2NScale>
         <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7 0.7</CO2NMin>
         <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2 2</CO2NCurvature>
-        <Frgr type="text" description="Relative growth factor">1 1 1</Frgr>
+        <SFertilityGLF type="text" description="Soil related generic growth factor">1 1 1</SFertilityGLF>
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.0 1.0 1.0</rlvp>
       </AgPasture>
       <micromet name="Micromet">
@@ -658,7 +657,7 @@ if (year = 1981) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif             
@@ -682,7 +681,7 @@ elseif (year = 1982) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n () 
   endif            
@@ -723,7 +722,7 @@ elseif (year = 1983) or (year = 1984) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n () 
   endif              
@@ -764,7 +763,7 @@ elseif (year = 1985) or (year = 1986) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif             
@@ -805,7 +804,7 @@ elseif (year = 1987) or (year = 1988) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif                
@@ -846,7 +845,7 @@ elseif (year = 1989) or (year = 1990) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif                
@@ -896,7 +895,7 @@ elseif (year = 1991) or (year = 1992) or (year = 1993) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif              
@@ -946,7 +945,7 @@ endif </text>
           <variable>Crop_Type</variable>
           <variable>GLFn</variable>
           <variable>GLFnConcentration</variable>
-          <variable>GLFrgr</variable>
+          <variable>GLFsfert</variable>
           <variable>GLFtemp</variable>
           <variable>GLFwater</variable>
           <variable>HarvestN</variable>
@@ -1080,7 +1079,6 @@ endif </text>
     <summaryfile />
     <area name="PadDryland">
       <AgPasture name="ryegrass_clover">
-        <thisCropName type="text" description="Crop name shown as on the simulation tree">ryegrass_clover</thisCropName>
         <speciesToSimulate description="Name of species to simulate">ryegrass whiteclover</speciesToSimulate>
         <speciesName type="text" description="Species names">ryegrass whiteclover</speciesName>
         <micrometType type="text" description="crop type for MicroMet">grass grass</micrometType>
@@ -1127,7 +1125,7 @@ endif </text>
         <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600</CO2NScale>
         <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7</CO2NMin>
         <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2</CO2NCurvature>
-        <Frgr type="text" description="Relative growth factor">1 1</Frgr>
+        <SFertilityGLF type="text" description="Soil related generic growth factor">1 1</SFertilityGLF>
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.0 1.0</rlvp>
       </AgPasture>
       <micromet name="Micromet">
@@ -1702,7 +1700,7 @@ if (year = 1966) or (year = 1967) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1735,7 +1733,7 @@ elseif (year = 1968) or (year = 1969) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1768,7 +1766,7 @@ elseif (year = 1970) or (year = 1971) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1801,7 +1799,7 @@ elseif (year = 1972) or (year = 1973) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1834,7 +1832,7 @@ elseif (year = 1974) or (year = 1975) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1866,7 +1864,7 @@ elseif (year = 1976) or (year = 1977) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1896,7 +1894,7 @@ elseif  (year = 1978) or (year = 1979) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1928,7 +1926,7 @@ elseif (year = 1980) or (year = 1981) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1958,7 +1956,7 @@ elseif (year = 1982) or (year = 1983) or (year = 1984) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -1990,7 +1988,7 @@ elseif (year = 1985) or (year = 1986) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2040,7 +2038,7 @@ elseif (year &gt;= 1987) and (year &lt;= 1991) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()             
   endif
@@ -2069,7 +2067,7 @@ elseif (year = 1992) or (year = 1993) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2096,7 +2094,7 @@ elseif (year = 1994) or (year = 1995) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2127,7 +2125,7 @@ elseif (year = 1996) or (year = 1997) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2163,7 +2161,7 @@ elseif (year = 1996) or (year = 1997) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2200,7 +2198,7 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2238,7 +2236,7 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
           <variable array="No" description="Crop type">Crop_Type</variable>
           <variable array="No" description="Plant growth limiting factor due to nitrogen stress">GLFn</variable>
           <variable array="No" description="Plant growth redcution factor due to low N concnetration">GLFnConcentration</variable>
-          <variable array="No" description="Plant growth limiting factor due to other facotrs">GLFrgr</variable>
+          <variable array="No" description="Plant growth limiting factor due to other facotrs">GLFsfert</variable>
           <variable array="No" description="Plant growth limiting factor due to temperature">GLFtemp</variable>
           <variable array="No" description="Plant growth limiting factor due to water deficit">GLFwater</variable>
           <variable array="No" description="Daily plant nitrogen harvest">HarvestN</variable>
@@ -2405,7 +2403,6 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
     <summaryfile />
     <area name="PadIrrigated">
       <AgPasture name="ryegrass_clover">
-        <thisCropName type="text" description="Crop name shown as on the simulation tree">ryegrass_clover</thisCropName>
         <speciesToSimulate description="Name of species to simulate">ryegrass whiteclover</speciesToSimulate>
         <speciesName type="text" description="Species names">ryegrass whiteclover</speciesName>
         <micrometType type="text" description="crop type for MicroMet">grass grass</micrometType>
@@ -2452,7 +2449,7 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
         <CO2NScale type="text" description="CO2 - Scale factor for CO2 effects on plant N concentration">600 600</CO2NScale>
         <CO2NMin type="text" description="CO2 - Minimum fraction that plant N concentration may reduce to uder elevated CO2">0.7 0.7</CO2NMin>
         <CO2NCurvature type="text" description="CO2 - Curvature factor of CO2 effect on plant N concentration">2 2</CO2NCurvature>
-        <Frgr type="text" description="Relative growth factor">1 1</Frgr>
+        <SFertilityGLF type="text" description="Soil related generic growth factor">1 1</SFertilityGLF>
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.0 1.0</rlvp>
       </AgPasture>
       <Soil name="SoilLismoreIrrig">
@@ -2939,7 +2936,7 @@ if (year = 1966) or (year = 1967) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -2972,7 +2969,7 @@ elseif (year = 1968) or (year = 1969) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3005,7 +3002,7 @@ elseif (year = 1970) or (year = 1971) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3038,7 +3035,7 @@ elseif (year = 1972) or (year = 1973) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3071,7 +3068,7 @@ elseif (year = 1974) or (year = 1975) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3103,7 +3100,7 @@ elseif (year = 1976) or (year = 1977) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+              'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3133,7 +3130,7 @@ elseif  (year = 1978) or (year = 1979) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3165,7 +3162,7 @@ elseif (year = 1980) or (year = 1981) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3195,7 +3192,7 @@ elseif (year = 1982) or (year = 1983) or (year = 1984) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3227,7 +3224,7 @@ elseif (year = 1985) or (year = 1986) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3277,7 +3274,7 @@ elseif (year &gt;= 1987) and (year &lt;= 1991) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()             
   endif
@@ -3306,7 +3303,7 @@ elseif (year = 1992) or (year = 1993) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3333,7 +3330,7 @@ elseif (year = 1994) or (year = 1995) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3364,7 +3361,7 @@ elseif (year = 1996) or (year = 1997) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3400,7 +3397,7 @@ elseif (year = 1996) or (year = 1997) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -3437,7 +3434,7 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
               n_urine    = n_returned *  [urine_n_frac]  
               n_urine1 = 0.6 * n_urine
               n_urine2 = 0.4 * n_urine
-               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
+               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 500
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
   endif
@@ -4733,7 +4730,7 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
           <variable array="No" description="Crop type">Crop_Type</variable>
           <variable array="No" description="Plant growth limiting factor due to nitrogen stress">GLFn</variable>
           <variable array="No" description="Plant growth redcution factor due to low N concnetration">GLFnConcentration</variable>
-          <variable array="No" description="Plant growth limiting factor due to other facotrs">GLFrgr</variable>
+          <variable array="No" description="Plant growth limiting factor due to other facotrs">GLFsfert</variable>
           <variable array="No" description="Plant growth limiting factor due to temperature">GLFtemp</variable>
           <variable array="No" description="Plant growth limiting factor due to water deficit">GLFwater</variable>
           <variable array="No" description="Daily plant nitrogen harvest">HarvestN</variable>

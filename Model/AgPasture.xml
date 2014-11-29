@@ -139,7 +139,8 @@
 			<NdilutCoeff description="Coefficient for modifying the effect of N stress on plant growth (0-1)">0.5  1.0  0.5</NdilutCoeff>
 			<waterStressFactor description="coefficient for modifying the effect of water stress on plant growth (0-1)">1.0  1.0  1.0</waterStressFactor>
 			<soilSatFactor description="Coefficient for growth limitations due to soil moisture saturation (0-1)">0.1  0.1  0.1</soilSatFactor>
-			<Frgr description="Generic relative growth limiting factor (0-1)">1.0  1.0  1.0</Frgr>
+			<GenericGLF description="Generic relative growth limiting factor (0-1)">1.0  1.0  1.0</GenericGLF>
+			<SFertilityGLF description="Soil related generic growth limiting factor (0-1)">1.0  1.0  1.0</SFertilityGLF>
 
 			<PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1  1  1</PreferenceForGreenDM>
 			<PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1  1  1</PreferenceForDeadDM>
@@ -154,19 +155,20 @@
 			<MaxPlantHeight description="Maximum average height for each species in a sward (mm)">500  300  500</MaxPlantHeight>
 			<MassForMaxHeight description="Mass above ground when maximum height is reached (kgDM/ha)">7000  6000  7000</MassForMaxHeight>
 			<ExponentHeightFromMass description="Exponent of function describing plant height as function of DM weight (>1.0)">3.0  1.75  2.5</ExponentHeightFromMass>
-      <MinimumHeight description="Minimum plant height, for all species (mm)">20.0</MinimumHeight>
+			<MinimumHeight description="Minimum plant height, for all species (mm)">20.0</MinimumHeight>
 
 			<WaterUptakeSource description="Whether water uptake is calculated by AgPasture (calc) or apsim">calc</WaterUptakeSource>
 			<NUptakeSource description="Whether N uptake is calculated by AgPasture (calc) or apsim">calc</NUptakeSource>
 
-      <UseHeightBySpecies description="Whether plant height is determined for each species, instead of avg sward (yes/no)">no</UseHeightBySpecies>
-      <UseRootBySpecies description="Whether root distribution is determined for each species, instead of avg sward (yes/no)">no</UseRootBySpecies>
+			<UseHeightBySpecies description="Whether plant height is determined for each species, instead of avg sward (yes/no)">no</UseHeightBySpecies>
+			<UseRootBySpecies description="Whether root distribution is determined for each species, instead of avg sward (yes/no)">no</UseRootBySpecies>
+			<UseMicrometBySpecies description="Whether micromet is used by species, for radiation and ET calculations, instead of avg sward (yes/no)">no</UseMicrometBySpecies>
 
-      <!-- Values for each soil layer (read in from interface) -->
+			<!-- Values for each soil layer (read in from interface) -->
 			<ll description="Lower limit moisture for water uptake by this species (cm3/cm3)">0.0</ll>
 			<kl description="Coefficient for water availability for each layer (0-1)">1.0</kl>
 			<xf description="Exploration factor, define how hospitable the soil is for root growth (0-1)">1.0</xf>
-      <rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
+			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
 
 			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the relationship between vapour deficit and relative growth">
 				<XY> 0,1.0</XY>
@@ -174,16 +176,16 @@
 				<XY>50,1.0</XY>
 			</LinearInterpolation>
 
-      <!-- Parametes for testing or being deprecated -->
-      <UsePairWise description="Whether old pair-wise function to compute plant height is to be used (only if UseHeightBySpecies is no)">yes</UsePairWise>
-      <LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
-        <XY>0,0</XY>
-        <XY>1000,25</XY>
-        <XY>2000,75</XY>
-        <XY>3000,150</XY>
-        <XY>4000,250</XY>
-      </LinearInterpolation>
+			<!-- Parametes for testing or being deprecated -->
+			<UsePairWise description="Whether old pair-wise function to compute plant height is to be used (only if UseHeightBySpecies is no)">yes</UsePairWise>
+			<LinearInterpolation name="HeightMassFN" description="Pair-wise description of the relationship between height and DM">
+				<XY>0,0</XY>
+				<XY>1000,25</XY>
+				<XY>2000,75</XY>
+				<XY>3000,150</XY>
+				<XY>4000,250</XY>
+			</LinearInterpolation>
 
-    </AgPasture>
+		</AgPasture>
 	</Model>
 </Type>
