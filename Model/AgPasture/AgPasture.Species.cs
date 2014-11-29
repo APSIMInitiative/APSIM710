@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
-using ModelFramework;
 using System.Xml;
 using System.Xml.Schema;
+using ModelFramework;
 using CSGeneral;
 
 /// <summary>
@@ -13,29 +13,25 @@ using CSGeneral;
 /// </summary>
 public class Species
 {
-
 	#region Static variables, for parameters common for all species  ------------------------------
 
 	/// <summary>Some Description</summary>
-	internal static Clock myClock;
+	internal static Clock Clock;
 
 	/// <summary>Some Description</summary>
-	internal static MetFile MetData;
+	internal static MetFile MetFile;
 
 	/// <summary>Some Description</summary>
 	internal static double CO2 = 380;
 
 	/// <summary>Some Description</summary>
-	internal static double PIntRadn;                          //total Radn intercepted by pasture
+	internal static double swardInterceptedRadn;                          //total Radn intercepted by pasture
 
 	/// <summary>Some Description</summary>
-	internal static double PCoverGreen;
+	internal static double swardCoverGreen;
 
 	/// <summary>Some Description</summary>
-	internal static double PLightExtCoeff;                    //k of mixed pasture
-
-	/// <summary>Some Description</summary>
-	internal static double Pdmshoot;
+	internal static double swardLightExtCoeff;                    //k of mixed pasture
 
 	#endregion
 
@@ -604,13 +600,13 @@ public class Species
 
 	/// <summary>Some Description</summary>
 	internal bool usingSpeciesHeight;
-	
+
 	/// <summary>Some Description</summary>
 	internal double height;
-	
+
 	/// <summary>Some Description</summary>
 	internal double MaxPlantHeight;
-	
+
 	/// <summary>Some Description</summary>
 	internal double MassForMaxHeight;
 
@@ -944,7 +940,7 @@ public class Species
 	internal int Phenology()
 	{
 		const double DDSEmergence = 150;   // to be an input parameter
-		double meanT = 0.5 * (MetData.MaxT + MetData.MinT);
+		double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
 
 		if (bSown && phenoStage == 0)            //  before emergence
 		{
@@ -986,9 +982,9 @@ public class Species
 	/// <returns>true or false</returns>
 	internal bool annualPhenology()
 	{
-		if (myClock.month == monEmerg && myClock.day_of_month == dayEmerg)
+		if (Clock.month == monEmerg && Clock.day_of_month == dayEmerg)
 			phenoStage = 1;         //vegetative stage
-		else if (myClock.month == monAnth && myClock.day_of_month == dayAnth)
+		else if (Clock.month == monAnth && Clock.day_of_month == dayAnth)
 			phenoStage = 2;         //reproductive
 
 		if (phenoStage == 0)        //before emergence
@@ -1076,8 +1072,8 @@ public class Species
 			return dGrowthPot = 0;
 
 		//Add temp effects to Pm
-		double Tmean = (MetData.MaxT + MetData.MinT) / 2;
-		double Tday = Tmean + 0.5 * (MetData.MaxT - Tmean);
+		double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
+		double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
 
 		double glfT = GFTemperature(Tmean);
 		double co2Effect = PCO2Effects();
@@ -1088,8 +1084,8 @@ public class Species
 		glfT = GFTemperature(Tday);
 		double Pm_day = Pm * glfT * co2Effect * NcFactor;
 
-		double tau = 3600 * MetData.day_length;                //conversion of hour to seconds
-		IL1 = 1.33333 * 0.5 * PIntRadn * PLightExtCoeff * 1000000 / tau;
+		double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
+		IL1 = 1.33333 * 0.5 * swardInterceptedRadn * swardLightExtCoeff * 1000000 / tau;
 		double IL2 = IL1 / 2;                      //IL for early & late period of a day
 
 		// Photosynthesis per LAI under full irradiance at the top of the canopy
@@ -1102,7 +1098,7 @@ public class Species
 		double Pl2 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
 
 		// Upscaling from 'per LAI' to 'per ground area'
-		double carbon_m2 = 0.5 * (Pl1 + Pl2) * PCoverGreen * intRadnFrac / lightExtCoeff;
+		double carbon_m2 = 0.5 * (Pl1 + Pl2) * swardCoverGreen * intRadnFrac / lightExtCoeff;
 		carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
 		// tau: from second => day; 
 		// 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
@@ -1143,7 +1139,7 @@ public class Species
 		Cremob = 0;                     // Nremob* C2N_protein;    // No carbon budget here
 		// Nu_remob[elC] := C2N_protein * Nu_remob[elN];
 		// need to substract CRemob from dm rutnover?
-		
+
 		// Net potential growth (C) of the day (excluding growth respiration)
 		dGrowthPot = Pgross + Cremob - Resp_g - Resp_m;
 		dGrowthPot = Math.Max(0.0, dGrowthPot);
@@ -1154,6 +1150,134 @@ public class Species
 		// phenologically related reduction of annual species (from IJ)
 		if (isAnnual)
 			dGrowthPot = annualSpeciesReduction();
+
+		return dGrowthPot;
+	}
+
+	/// <summary>
+	/// Daily potential carbon assimilation
+	/// </summary>
+	internal void DailyPotentialPhotosynthesis()
+	{
+		bool someGrowth = true;
+
+		// annuals phenology
+		if (isAnnual)
+			someGrowth = annualPhenology();
+
+		// skip growth is plant hasn't germinated yet
+		if (phenoStage == 0 || greenLAI == 0)
+			someGrowth = false;
+
+		if (someGrowth)
+		{
+			//Add temp effects to Pm
+			double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
+			double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
+
+			double glfT = GFTemperature(Tmean);
+			double co2Effect = PCO2Effects();
+			NcFactor = PmxNeffect();
+
+			double Pm_mean = Pm * glfT * co2Effect * NcFactor;
+
+			glfT = GFTemperature(Tday);
+			double Pm_day = Pm * glfT * co2Effect * NcFactor;
+
+			double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
+			IL1 = 1.33333 * 0.5 * interceptedRadn * lightExtCoeff * 1000000 / tau;
+			double IL2 = IL1 / 2;                      //IL for early & late period of a day
+
+			// Photosynthesis per LAI under full irradiance at the top of the canopy
+			double photoAux1 = alphaPhoto * IL1 + Pm_day;
+			double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL1 * Pm_day;
+			double Pl1 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
+
+			photoAux1 = alphaPhoto * IL2 + Pm_mean;
+			photoAux2 = 4 * thetaPhoto * alphaPhoto * IL2 * Pm_mean;
+			double Pl2 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
+
+			// Upscaling from 'per LAI' to 'per ground area'
+			double carbon_m2 = 0.5 * (Pl1 + Pl2) * coverGreen;
+			carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
+			// tau: from second => day; 
+			// 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
+			// (12.0 / 44.0): from CO2 to carbohydrate (DM)
+
+			Pgross = 10000 * carbon_m2;                 //10000: 'kg/m^2' =>'kg/ha'
+
+			//Add extreme temperature effects;
+			double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
+			Pgross *= TempStress;
+
+			// Consider generic growth limiting factor
+			Pgross *= GLFGeneric;
+		}
+		else
+		{
+			Pgross = 0.0;
+		}
+	}
+
+	/// <summary>
+	/// Compute plant respiration, growth and maintenance
+	/// </summary>
+	/// <returns>Amount of C lost by respiration</returns>
+	internal void plantRespiration()
+	{
+		double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
+		double Teffect = 0;
+		if (LiveDM > 0.0)
+		{
+			double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
+			if (Tmean > growthTmin)
+			{
+				if (Tmean < growthTopt)
+				{
+					Teffect = GFTemperature(Tmean);
+					//Teffect = Math.Pow(Teffect, 1.5);
+				}
+				else
+				{
+					//Teffect = 1;
+					Teffect = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
+					if (Teffect > 1.25) Teffect = 1.25;
+					Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
+				}   //The extreme high temperatue (heat) effect is added separately
+			}
+		}
+
+		// maintenance respiration
+		Resp_m = maintRespiration * Teffect * NcFactor * LiveDM;
+
+		// growth respiration
+		Resp_g = Pgross * (1 - growthEfficiency);
+	}
+
+	/// <summary>
+	/// Plant net potential growth
+	/// </summary>
+	/// <returns>net potential growth</returns>
+	internal double DailyPotentialGrowth()
+	{
+		// ** C budget is not explicitly done here as in EM
+		Cremob = 0;                     // Nremob* C2N_protein;    // No carbon budget here
+		// Nu_remob[elC] := C2N_protein * Nu_remob[elN];
+		// need to substract CRemob from dm rutnover?
+
+		// Net potential growth (C) of the day (excluding growth respiration)
+		dGrowthPot = Pgross + Cremob - Resp_g - Resp_m;
+		dGrowthPot = Math.Max(0.0, dGrowthPot);
+
+		if (dGrowthPot > 0)
+		{
+			//convert C to DM
+			dGrowthPot /= CarbonFractionDM;
+
+			// phenologically related reduction of annual species (from IJ)
+			if (isAnnual)
+				dGrowthPot = annualSpeciesReduction();
+		}
 
 		return dGrowthPot;
 	}
@@ -1579,7 +1703,7 @@ public class Species
 		return myLAI;
 	}
 
-		/// <summary>
+	/// <summary>
 	/// Compute the LAI value of dead material
 	/// </summary>
 	/// <returns>dead LAI</returns>
@@ -1790,11 +1914,11 @@ public class Species
 		{
 			double fac = 1.0;                   //day-to-day fraction of reduction
 			//double minF = allocationSeasonF;    //default = 0.8;
-			double doy = myClock.day_of_month + (int)((myClock.month - 1) * 30.5);
+			double doy = Clock.day_of_month + (int)((Clock.month - 1) * 30.5);
 			// NOTE: the type for doy has to be double or the divisions below will be rounded (to int) and thus be [slightly] wrong
 
 			double doyC = startHighAllocation;             // Default as in South-hemisphere: 232
-			int doyEoY = 365 + (DateTime.IsLeapYear(myClock.year) ? 1 : 0);
+			int doyEoY = 365 + (DateTime.IsLeapYear(Clock.year) ? 1 : 0);
 			int[] ReproSeasonIntval = new int[3]; // { 35, 60, 30 };
 			double allocationIncrease = allocationSeasonF;
 			ReproSeasonIntval[0] = (int)(durationHighAllocation * shoulderHighAllocation * 1.17);
@@ -1803,20 +1927,20 @@ public class Species
 
 			if (usingLatFunctionFShoot)
 			{
-				int doyWinterSolstice = (MetData.Latitude < 0) ? 171 : 354;
+				int doyWinterSolstice = (MetFile.Latitude < 0) ? 171 : 354;
 				// compute the day to start the period with higher DM allocation to shoot
 				double doyIniPlateau = doyWinterSolstice;
-				if (Math.Abs(MetData.Latitude) > referenceLatitude)
+				if (Math.Abs(MetFile.Latitude) > referenceLatitude)
 					doyIniPlateau += 183;
 				else
 				{
-					double myB = Math.Abs(MetData.Latitude) / referenceLatitude;
+					double myB = Math.Abs(MetFile.Latitude) / referenceLatitude;
 					doyIniPlateau += 183 * (paramALatFunction - paramALatFunction * myB + myB) * Math.Pow(myB, paramALatFunction - 1.0);
 				}
 
 				// compute the duration of the three phases (onset, plateau, and outset)
 				double maxPlateauPeriod = doyEoY - 2 * maxShoulderLatFunction;
-				ReproSeasonIntval[1] = (int)(minPlateauLatFunction + (maxPlateauPeriod - minPlateauLatFunction) * Math.Pow(1 - Math.Abs(MetData.Latitude) / 90, paramBLatFunction));
+				ReproSeasonIntval[1] = (int)(minPlateauLatFunction + (maxPlateauPeriod - minPlateauLatFunction) * Math.Pow(1 - Math.Abs(MetFile.Latitude) / 90, paramBLatFunction));
 				ReproSeasonIntval[0] = (int)Math.Min(maxShoulderLatFunction, ReproSeasonIntval[1] * onsetFacLatFunction);
 				ReproSeasonIntval[2] = (int)Math.Min(maxShoulderLatFunction, ReproSeasonIntval[1] * outsetFacLatFunction);
 				if (ReproSeasonIntval.Sum() > doyEoY)
@@ -1825,9 +1949,9 @@ public class Species
 				doyC = doyIniPlateau - ReproSeasonIntval[0];
 				// compute the factor to augment allocation
 				allocationIncrease = allocationMax;
-				if (Math.Abs(MetData.Latitude) < referenceLatitude)
+				if (Math.Abs(MetFile.Latitude) < referenceLatitude)
 				{
-					double myB = Math.Abs(MetData.Latitude) / referenceLatitude;
+					double myB = Math.Abs(MetFile.Latitude) / referenceLatitude;
 					allocationIncrease *= (paramCLatFunction - paramCLatFunction * myB + myB) * Math.Pow(myB, paramCLatFunction - 1.0);
 				}
 			}
@@ -1977,24 +2101,24 @@ public class Species
 		if (usingHeatStress)
 		{
 			// check heat stress factor
-			if (MetData.MaxT > heatFullT)
+			if (MetFile.MaxT > heatFullT)
 			{
 				heatFactor = 0.0;
 				accumTHeat = 0.0;
 			}
-			else if (MetData.MaxT > heatOnsetT)
+			else if (MetFile.MaxT > heatOnsetT)
 			{
-				heatFactor = highTempStress * (heatFullT - MetData.MaxT) / (heatFullT - heatOnsetT);
+				heatFactor = highTempStress * (heatFullT - MetFile.MaxT) / (heatFullT - heatOnsetT);
 				accumTHeat = 0.0;
 			}
 
 			// check recovery factor
 			double recoveryFactor = 0.0;
-			if (MetData.MaxT < heatOnsetT)
+			if (MetFile.MaxT < heatOnsetT)
 				recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
 
 			// accumulate temperature
-			double meanT = 0.5 * (MetData.MaxT + MetData.MinT);
+			double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
 			accumTHeat += Math.Max(0.0, heatRecoverT - meanT);
 
 			// heat stress
@@ -2015,24 +2139,24 @@ public class Species
 		if (usingColdStress)
 		{
 			// check cold stress factor
-			if (MetData.MinT < coldFullT)
+			if (MetFile.MinT < coldFullT)
 			{
 				coldFactor = 0.0;
 				accumTCold = 0.0;
 			}
-			else if (MetData.MinT < coldOnsetT)
+			else if (MetFile.MinT < coldOnsetT)
 			{
-				coldFactor = lowTempStress * (MetData.MinT - coldFullT) / (coldOnsetT - coldFullT);
+				coldFactor = lowTempStress * (MetFile.MinT - coldFullT) / (coldOnsetT - coldFullT);
 				accumTCold = 0.0;
 			}
 
 			// check recovery factor
 			double recoveryFactor = 0.0;
-			if (MetData.MinT > coldOnsetT)
+			if (MetFile.MinT > coldOnsetT)
 				recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
 
 			// accumulate temperature
-			double meanT = 0.5 * (MetData.MaxT + MetData.MinT);
+			double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
 			accumTCold += Math.Max(0.0, meanT - coldRecoverT);
 
 			// cold stress
@@ -2066,7 +2190,7 @@ public class Species
 	/// <returns>Temp effect</returns>
 	private double GFTempTissue()
 	{
-		double T = (MetData.MaxT + MetData.MinT) / 2;
+		double T = (MetFile.MaxT + MetFile.MinT) / 2;
 
 		double gftt = 0.0;        //default as T < massFluxTmin
 		if (T > massFluxTmin && T <= massFluxTopt)
