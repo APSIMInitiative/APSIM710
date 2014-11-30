@@ -75,22 +75,22 @@ public class AgPasture
 		}
 	}
 
-	private bool usingSpeciesCanopy = false;
+	private bool usingSpeciesPhotosynthesis = false;
 	[Param]
-	[Description("Whether micromet is used by species, for radiation and ET calculations, instead of avg sward")]
+	[Description("Whether photosynthesis is computed by species or average sward")]
 	[Units("yes/no")]
-	private string UseMicrometBySpecies
+	private string UsePhotosynthesisBySpecies
 	{
 		get
 		{
-			if (usingSpeciesCanopy)
+			if (usingSpeciesPhotosynthesis)
 				return "yes";
 			else
 				return "no";
 		}
 		set
 		{
-			usingSpeciesCanopy = value.ToLower() == "yes";
+			usingSpeciesPhotosynthesis = value.ToLower() == "yes";
 		}
 	}
 
@@ -769,21 +769,10 @@ public class AgPasture
 	[Input]
 	private float[] nh4;     //SNH4dep = new float[dlayer.Length];
 
-	[Input]
-	private double day_length = 12;
-	[Input]
-	private double latitude;
-	[Input]
-	private int day_of_month;
-	[Input]
-	private int month;
-	[Input]
-	private int year;
-
 	[Input(IsOptional = true)]
 	[Description("Actual CO2, updated from met and ClimateControl")]
 	[Units("")]
-	private double co2 = 380;
+	public double co2 = 380;
 
 	/// <summary>
 	/// Gets or sets the effective stocking rate, to calculate trampling on pasture (increase senescence)
@@ -801,9 +790,7 @@ public class AgPasture
 	/// <summary>
 	/// The collection of pasture species in the sward
 	/// </summary>
-	//private Species[] mySpecies;
-	[Link]
-	public Species[] mySpecies;
+	private Species[] mySpecies;
 
 	/// <summary>
 	/// Number of species in the sward
@@ -939,8 +926,8 @@ public class AgPasture
 	public void OnInit2()
 	{
 		// Set the links for Clock and MetData for each species
-		Species.Clock = myClock;
-		Species.MetFile = MetData;
+		//Species.Clock = myClock;
+		//Species.MetFile = MetData;
 
 		// Init parameters after reading the data
 		thisCropName = My.Name;
@@ -950,7 +937,7 @@ public class AgPasture
 		SetSpeciesWithSwardData();
 
 		// Tell other modules that I exist
-		DoNewCropEvent();
+		AdvertiseThisCrop();
 
 		// Tell other modules (micromet) about my canopy
 		swardHeight = HeightfromDM();
@@ -1017,21 +1004,33 @@ public class AgPasture
 		}
 
 		//// Create and initialise each species
+
 		mySpecies = new Species[NumSpecies];
+
+		// set links to static members (clock, MetData, dlayer, CO2, etc)
+		Species.Clock = myClock;
+		Species.MetFile = MetData;
+		Species.dlayer = dlayer;
+		Species.CO2 = co2;
+
 		for (int s1 = 0; s1 < NumSpecies; s1++)
+		{
 			for (int s2 = 0; s2 < speciesName.Length; s2++)
 			{
 				if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
 				{
+					// create species and add to array
 					mySpecies[s1] = new Species();
-					mySpecies[s1].dlayer = dlayer;
+
+					// set the parameters and initialise the species
 					SetSpeciesParameters(s1, s2);
 					break;
 				}
 			}
+		}
 
 		//// Initialising the aggregated parameters (whole sward)
-		double sum_lightExtCoeff = 0.0;
+		swardLightExtCoeff = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
 			//accumulate LAI of all species
@@ -1042,7 +1041,7 @@ public class AgPasture
 			swardDeadDM += mySpecies[s].dmdead;
 
 			//accumulate the sum for weighted average
-			sum_lightExtCoeff += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
+			swardLightExtCoeff += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
 
 			//Set the deepest root as sward depth
 			if (mySpecies[s].rootDepth > swardRootDepth)
@@ -1057,13 +1056,13 @@ public class AgPasture
 		swardTotalLAI = swardGreenLAI + swardDeadLAI;
 		swardShootDM = swardGreenDM + swardDeadDM;
 
-		if (swardTotalLAI == 0)
+		if (swardTotalLAI == 0.0)
 		{
-			swardLightExtCoeff = 0.5;
+			swardLightExtCoeff = 1.0;
 		}
 		else
 		{
-			swardLightExtCoeff = sum_lightExtCoeff / swardTotalLAI;
+			swardLightExtCoeff = swardLightExtCoeff / swardTotalLAI;
 		}
 
 		// Check plant height
@@ -1401,27 +1400,25 @@ public class AgPasture
 	}
 
 	/// <summary>
-	/// Event publication - new crop
+	/// Let other module (micromet and SWIM) know about the existence of this crop (sward)
 	/// </summary>
-	private void DoNewCropEvent()
+	/// <remarks>
+	///  Ideally we should advertise each species, other module would do the resource arbitration.
+	///  However, when doing this we have to supply some data each for each module: the events 
+	///  'New_Canopy' and 'NewPotentialGrowth' are used by micromet, but for SWIM outputs are needed
+	///  (RLV and WaterDemand).  Raising events for each species work fine, but to have outputs sepately
+	///  for each species would require changing the status of species (It would need to be a module on
+	///  its own right - SWIM registers each crop module and then will as for the variables as it needs)
+	///  This is possible, but require time and will be left as it is for now. The resource arbitration
+	///  has to be done within AgPasture (RCichota, Nov2014)
+	/// </remarks>
+	private void AdvertiseThisCrop()
 	{
 		NewCropType cropData = new NewCropType();
 
-		if (usingSpeciesCanopy)
-		{ // Let other modules (micromet and SWIM) know about each species
-			for (int s = 0; s < NumSpecies; s++)
-			{
-				cropData.crop_type = mySpecies[s].micrometType;
-				cropData.sender = mySpecies[s].speciesName;
-				NewCrop.Invoke(cropData);
-			}
-		}
-		else
-		{ // Let other modules (micromet and SWIM) know about the sward
-			cropData.crop_type = micrometType[0];
-			cropData.sender = thisCropName;
-			NewCrop.Invoke(cropData);
-		}
+		cropData.crop_type = micrometType[0];
+		cropData.sender = thisCropName;
+		NewCrop.Invoke(cropData);
 	}
 
 	/// <summary>
@@ -1571,17 +1568,16 @@ public class AgPasture
 		swardPotentialGrowth = 0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			//if (usingSpeciesCanopy)
-			//{
-			//    mySpecies[s].DailyPotentialPhotosynthesis();
-			//    mySpecies[s].plantRespiration();
-			//    swardPotentialGrowth += mySpecies[s].DailyPotentialGrowth();
-			//}
-			//else
-			//{
-			//    swardPotentialGrowth += mySpecies[s].DailyGrowthPot();
-			//}
-			swardPotentialGrowth += mySpecies[s].DailyGrowthPot();
+			if (usingSpeciesPhotosynthesis)
+			{
+				mySpecies[s].DailyPotentialPhotosynthesis();
+				mySpecies[s].plantRespiration();
+				swardPotentialGrowth += mySpecies[s].DailyPotentialGrowth();
+			}
+			else
+			{
+				swardPotentialGrowth += mySpecies[s].DailyGrowthPot();
+			}
 		}
 
 		// Get soil N available in the root zone
@@ -1624,115 +1620,76 @@ public class AgPasture
 	/// <summary>
 	/// Send out info about canopy
 	/// </summary>
-	/// <remarks>micromet uses to compute radiation interception and ET</remarks>
+	/// <remarks>
+	///  - micromet uses to compute radiation interception and ET
+	///  Ideally we should pass the values for each species, micromet would then do the resource arbitration.
+	///  However, this is not possible due to comflict with SWIM (see coment on AdvertiseThisCrop())
+	///  </remarks>
 	private void DoNewCanopyEvent()
 	{
 		NewCanopyType canopyData = new NewCanopyType();
 
-		if (usingSpeciesCanopy)
-		{ // send info about the canopy of each species
-			for (int s = 0; s < NumSpecies; s++)
-			{
-				canopyData.sender = mySpecies[s].speciesName;
-				canopyData.lai = (float)mySpecies[s].greenLAI;
-				canopyData.lai_tot = (float)mySpecies[s].totalLAI;
-				canopyData.height = (int)mySpecies[s].height;
-				canopyData.depth = (int)mySpecies[s].height;
-				canopyData.cover = (float)mySpecies[s].coverGreen;
-				canopyData.cover_tot = (float)mySpecies[s].coverTotal;
+		//  Pack and send info about the average sward canopy
+		canopyData.sender = thisCropName;
+		canopyData.lai = (float)swardGreenLAI;
+		canopyData.lai_tot = (float)swardTotalLAI;
+		canopyData.height = (int)swardHeight;
+		canopyData.depth = (int)swardHeight;
+		canopyData.cover = (float)Cover_green;
+		canopyData.cover_tot = (float)Cover_tot;
 
-				New_Canopy.Invoke(canopyData);
-			}
-		}
-		else
-		{ // send info about the average sward canopy
-			canopyData.sender = thisCropName;
-			canopyData.lai = (float)swardGreenLAI;
-			canopyData.lai_tot = (float)swardTotalLAI;
-			canopyData.height = (int)swardHeight;
-			canopyData.depth = (int)swardHeight;
-			canopyData.cover = (float)Cover_green;
-			canopyData.cover_tot = (float)Cover_tot;
-
-			New_Canopy.Invoke(canopyData);
-		}
+		New_Canopy.Invoke(canopyData);
 	}
 
 	/// <summary>
 	/// Send out info about potential limitation to growth
 	/// </summary>
-	/// <remarks>micromet uses to compute radiation interception and ET</remarks>
+	/// <remarks>
+	///  - micromet uses this to compute radiation interception and ET
+	///  Ideally we should pass the values for each species, micromet would then do the resource arbitration.
+	///  However, this is not possible due to comflict with SWIM (see coment on AdvertiseThisCrop())
+	/// </remarks>
 	private void DoNewPotentialGrowthEvent()
 	{
-		NewPotentialGrowthType PGrowthData = new NewPotentialGrowthType();
-		double grFactor = 1.0;
 		double Tday = (0.75 * MetData.MaxT)
 					+ (0.25 * MetData.MinT);
-		swardGLFTemp = 0;     // output value, as weighted average
-		double gft = 1;
-
-		if (usingSpeciesCanopy)
-		{ // send growth info for each species
-			for (int s = 0; s < NumSpecies; s++)
+		swardGLFTemp = 0;     // this will be the glfTemp output, as weighted average
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			double prop = 1.0 / NumSpecies;
+			if (swardGreenDM != 0.0)
 			{
-				double prop = 1.0 / NumSpecies;
-				if (swardGreenDM != 0.0)
-				{
-					prop = mySpecies[s].dmgreen / swardGreenDM;
-				}
-
-				gft = mySpecies[s].GFTemperature(Tday);
-				swardGLFTemp += gft * prop;
-				if (Tday < 20)
-				{
-					gft = Math.Sqrt(gft);
-				}
-
-				grFactor = Math.Min(FVPD, gft);
-				grFactor = Math.Min(grFactor, mySpecies[s].GLFGeneric);
-
-				PGrowthData.sender = mySpecies[s].speciesName;
-				PGrowthData.frgr = (float)grFactor;
-
-				NewPotentialGrowth.Invoke(PGrowthData);
+				prop = mySpecies[s].dmgreen / swardGreenDM;
 			}
+
+			swardGLFTemp += mySpecies[s].GFTemperature(Tday) * prop;
+		}
+
+		double gft = 1;
+		if (Tday < 20)
+		{
+			gft = Math.Sqrt(swardGLFTemp);
 		}
 		else
-		{ // send average growth info for whole sward
-			for (int s = 0; s < NumSpecies; s++)
-			{
-				double prop = 1.0 / NumSpecies;
-				if (swardGreenDM != 0.0)
-				{
-					prop = mySpecies[s].dmgreen / swardGreenDM;   // dm_green;
-				}
-
-				swardGLFTemp += mySpecies[s].GFTemperature(Tday) * prop;
-			}
-
-			if (Tday < 20)
-			{
-				gft = Math.Sqrt(swardGLFTemp);
-			}
-			else
-			{
-				gft = swardGLFTemp;
-			}
-			// Note: p_gftemp is for gross photosysthsis.
-			// This is different from that for net production as used in other APSIM crop models, and is
-			// assumesd in calculation of temperature effect on transpiration (in micromet).
-			// Here we passed it as sqrt - (Doing so by a comparison of p_gftemp and that
-			// used in wheat). Temperature effects on NET produciton of forage species in other models
-			// (e.g., grassgro) are not so significant for T = 10-20 degrees(C)
-
-			grFactor = Math.Min(FVPD, gft);
-			grFactor = Math.Min(grFactor, GLFgeneric);
-
-			PGrowthData.sender = thisCropName;
-			PGrowthData.frgr = (float)grFactor;
-
-			NewPotentialGrowth.Invoke(PGrowthData);
+		{
+			gft = swardGLFTemp;
 		}
+		// Note: swardGLFTemp is for gross photosysthesis.
+		// This is different from that for net production as used in other APSIM crop models, and is
+		// assumed in calculation of temperature effect on transpiration (in micromet).
+		// Here we passed it as sqrt - (Doing so by a comparison of swardGLFTemp and that
+		// used in wheat). Temperature effects on NET production of forage species in other models
+		// (e.g., grassgro) are not so significant for T = 10-20 degrees(C)
+
+		frgr = Math.Min(FVPD, gft);
+		frgr = Math.Min(frgr, GLFgeneric);
+
+		// Pack and send the information
+		NewPotentialGrowthType PGrowthData = new NewPotentialGrowthType();
+		PGrowthData.sender = thisCropName;
+		PGrowthData.frgr = (float)frgr;
+		
+		NewPotentialGrowth.Invoke(PGrowthData);
 	}
 
 	/// <summary>
@@ -1745,23 +1702,10 @@ public class AgPasture
 		swardWaterDemand = 0.0;
 		for (int i = 0; i < waterDemandData.Canopy.Length; i++)
 		{
-			if (usingSpeciesCanopy)
-			{ // water demand for each species
-				for (int s = 0; s < NumSpecies; s++)
-				{
-					if (waterDemandData.Canopy[i].name.ToLower() == mySpecies[s].speciesName.ToLower())
-					{
-						mySpecies[s].soilWdemand = waterDemandData.Canopy[i].PotentialEp;
-						swardWaterDemand += mySpecies[s].soilWdemand;
-					}
-				}
-			}
-			else
-			{ // water demand for whole sward
-				if (waterDemandData.Canopy[i].name.ToUpper() == thisCropName.ToUpper())
-				{
-					swardWaterDemand = waterDemandData.Canopy[i].PotentialEp;
-				}
+			if (waterDemandData.Canopy[i].name.ToUpper() == thisCropName.ToUpper())
+			{
+				swardWaterDemand = waterDemandData.Canopy[i].PotentialEp;
+				// Note: water demand for whole sward, partition done later
 			}
 		}
 	}
@@ -1776,29 +1720,12 @@ public class AgPasture
 		InterceptedRadn = 0.0;
 		for (int i = 0; i < lightInterceptionData.Interception.Length; i++)
 		{
-			if (usingSpeciesCanopy)
-			{ // light interception considered for each species
-				for (int s = 0; s < NumSpecies; s++)
+			if (lightInterceptionData.Interception[i].name.ToUpper() == thisCropName.ToUpper())
+			{
+				for (int j = 0; j < lightInterceptionData.Interception[i].layer.Length; j++)
 				{
-					if (lightInterceptionData.Interception[i].name.ToLower() == mySpecies[s].speciesName.ToLower())
-					{
-						mySpecies[s].interceptedRadn = 0.0;
-						for (int j = 0; j < lightInterceptionData.Interception[i].layer.Length; j++)
-						{
-							mySpecies[s].interceptedRadn += lightInterceptionData.Interception[i].layer[j].amount;
-						}
-						InterceptedRadn += mySpecies[s].interceptedRadn;
-					}
-				}
-			}
-			else
-			{ // light interception considered for whole sward
-				if (lightInterceptionData.Interception[i].name.ToUpper() == thisCropName.ToUpper())
-				{
-					for (int j = 0; j < lightInterceptionData.Interception[i].layer.Length; j++)
-					{
-						InterceptedRadn += lightInterceptionData.Interception[i].layer[j].amount;
-					}
+					InterceptedRadn += lightInterceptionData.Interception[i].layer[j].amount;
+					// light interception considered for whole sward, partition between species done later
 				}
 			}
 		}
@@ -1833,37 +1760,31 @@ public class AgPasture
 	/// </summary>
 	private void SetSpeciesWithSwardData()
 	{
-		// pass CO2 & canopy to species
-		Species.CO2 = co2;
+		//// pass CO2 & canopy to species
 		Species.swardInterceptedRadn = InterceptedRadn;
 		Species.swardCoverGreen = Cover_green;
 		Species.swardLightExtCoeff = swardLightExtCoeff;
 
-		// update available and intercepted fraction of the solar Radn available to each species
-		double sumCover = 0.0;
+		// Intercepted solar Radn was considered for whole sward, compute the available to each species
+		double sumkLAI = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			sumCover += mySpecies[s].coverGreen;
+			//sumkLAI += mySpecies[s].coverGreen;
+			sumkLAI += mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff;
 		}
 
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			if (usingSpeciesCanopy)
-			{ // intercepted light considered for each species
-				mySpecies[s].intRadnFrac = mySpecies[s].interceptedRadn / InterceptedRadn;
+			if (sumkLAI == 0)
+			{
+				mySpecies[s].intRadnFrac = 0;
+				mySpecies[s].interceptedRadn = 0;
 			}
 			else
-			{ // light interception was considered for whole sward
-				if (sumCover == 0)
-				{
-					mySpecies[s].intRadnFrac = 0;
-					mySpecies[s].interceptedRadn = 0;
-				}
-				else
-				{
-					mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumCover;
-					mySpecies[s].interceptedRadn = InterceptedRadn * mySpecies[s].intRadnFrac;
-				}
+			{
+				//mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumkLAI;
+				mySpecies[s].intRadnFrac = mySpecies[s].greenLAI*mySpecies[s].lightExtCoeff / sumkLAI;
+				mySpecies[s].interceptedRadn = InterceptedRadn * mySpecies[s].intRadnFrac;
 			}
 		}
 	}
@@ -2873,9 +2794,9 @@ public class AgPasture
 		{
 			double TodaysHeight = MaxPlantHeight[0];
 
-			if (StandingPlantWt <= MassForMaxHeight[0])
+			if ((swardGreenDM + swardDeadDM) <= MassForMaxHeight[0])
 			{
-				double myX = StandingPlantWt / MassForMaxHeight[0];
+				double myX = (swardGreenDM + swardDeadDM) / MassForMaxHeight[0];
 				double heightF = ExponentHeightFromMass[0]
 							   - (ExponentHeightFromMass[0] * myX)
 							   + myX;
@@ -2920,7 +2841,7 @@ public class AgPasture
 	[Units("")]
 	public string Crop_type
 	{
-		get { return thisCropName; }  // micrometType[0]
+		get { return thisCropName; }
 	}
 
 	/// <summary>An output</summary>
@@ -4208,6 +4129,18 @@ public class AgPasture
 		}
 	}
 
+	private double frgr = 1.0;
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Plant relative growth rate, sent to micromet")]
+	[Units("0-1")]
+	public double Frgr
+	{
+		get
+		{
+			return frgr;
+		}
+	}
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Sward average height")]                 //needed by micromet

@@ -21,6 +21,10 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal static MetFile MetFile;
 
+	//// > Soil layering  >>>
+	/// <summary>Some Description</summary>
+	internal static float[] dlayer;
+
 	/// <summary>Some Description</summary>
 	internal static double CO2 = 380;
 
@@ -795,9 +799,9 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double interceptedRadn;         //Intercepted Radn by this species
 
-	//// > Soil layering  >>>
-	/// <summary>Some Description</summary>
-	internal float[] dlayer;
+	////// > Soil layering  >>>
+	///// <summary>Some Description</summary>
+	//internal float[] dlayer;
 
 	#endregion
 
