@@ -39,30 +39,36 @@ public class Zip
             }
         public static void UnZipFiles(string zipFileName, string DestFolder, string Password)
             {
+                StreamReader s = new StreamReader(zipFileName);
+                UnZipFiles(s.BaseStream, DestFolder, Password);
+            }
+
+        public static void UnZipFiles(Stream s, string DestFolder, string Password)
+        {
             // ----------------------------------------
             // Unzip an archive to the specified folder
             // ----------------------------------------
-            ZipInputStream Zip = new ZipInputStream(File.OpenRead(zipFileName));
+            ZipInputStream Zip = new ZipInputStream(s);
             Zip.Password = Password;
             try
-                {
+            {
                 ZipEntry Entry;
                 while ((Entry = Zip.GetNextEntry()) != null)
-                    {
+                {
                     string DestFileName = Path.Combine(DestFolder, Path.GetFileName(Entry.Name));
                     string DestDir = Path.GetDirectoryName(DestFileName);
                     if (!Directory.Exists(DestDir)) { Directory.CreateDirectory(DestDir); }
                     using (BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.Create)))
-                        {
+                    {
                         byte[] buffer = new byte[32768];
                         int size;
                         while ((size = Zip.Read(buffer, 0, buffer.Length)) > 0)
                             FileOut.Write(buffer, 0, size);
                         FileOut.Close();
-                        }
                     }
                 }
-            finally { Zip.Close(); }
             }
+            finally { Zip.Close(); }
+        }
         }
 

@@ -249,9 +249,11 @@ namespace ApsimFile
         {
             if (SW == null) return null;
             double[] OriginalValues = (double[]) SW.Clone();
+            SWUnitsEnum originalUnits = SWUnits;
             SWUnitsSet(SWUnitsEnum.Volumetric, Soil);
             double[] Values = (double[]) SW.Clone();
             SW = OriginalValues;
+            SWUnits = originalUnits;
             return Values;
         }
 

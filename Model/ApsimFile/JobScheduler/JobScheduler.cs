@@ -103,7 +103,9 @@ public class JobScheduler
         // Deserialise to a proejct.
         string JobFileName = args[0];
         XmlSerializer x = new XmlSerializer(typeof(Project));
-        Project = x.Deserialize(new FileStream(JobFileName, FileMode.Open)) as Project;
+        FileStream s = new FileStream(JobFileName, FileMode.Open);
+        Project = x.Deserialize(s) as Project;
+        s.Close();
 
         DateTime StartTime = DateTime.Now;
 

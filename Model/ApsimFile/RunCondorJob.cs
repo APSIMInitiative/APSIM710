@@ -40,7 +40,7 @@ namespace ApsimFile
 		public int numberSimsPerJob = 5;
 
 		// Where to gather intermediate files.
-		public string WorkingFolder = Path.Combine (Path.GetTempPath (), "CondorApsim");
+        private string WorkingFolder;
 
 		// Where to write the zipfile. 
 		public string DestinationFolder = Directory.GetCurrentDirectory ();
@@ -49,9 +49,11 @@ namespace ApsimFile
 		{
 		}
 
-		public void Go (List<string> FilesToRun, ProgressNotifier Notifier)
+		public string Go (List<string> FilesToRun, ProgressNotifier Notifier)
 		{
 			Notifier (0, "Initialising");
+
+            WorkingFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 			Directory.CreateDirectory (WorkingFolder);
 			foreach (string file in Directory.GetFiles(WorkingFolder, "*.*"))
 				File.Delete (file);
@@ -91,8 +93,9 @@ namespace ApsimFile
 				string status = a.GetField(id, "status");
 				if (status == "error") 
 				   throw new Exception("Error submitting job.\n" + a.GetField(id, "message"));
+                return id;
 			}
-			return;
+			return null;
 		}
 		// Add individual .apsim files to the job
 		private void AddFiles (XmlNode job, List<string> FilesToRun, ProgressNotifier Notifier)
@@ -145,15 +148,25 @@ namespace ApsimFile
 						}
 						
 						foreach (XmlNode node in filenames)
-						if (XmlHelper.Attribute (node, "output") != "yes") {
+						if (XmlHelper.Attribute (node, "output") != "yes" &&
+                            XmlHelper.Attribute(node.ParentNode, "enabled") != "no")
+                        {
 							string src = Configuration.RemoveMacros (node.InnerText);
 							string dest = Path.GetFileName (src);
 							XmlNode input = simulationNode.AppendChild (simulationNode.OwnerDocument.CreateElement ("input"));
+
+                            if (!File.Exists(src))
+                            {
+                                // When this is called by web service then can't assume src is relative to working
+                                // directory. Instead see if the file is relative to where the main file file.
+                                src = Path.Combine(Path.GetDirectoryName(FileName), Path.GetFileName(src));
+                                if (!File.Exists(src))
+                                    throw new Exception("File '" + src + "' doesnt exist - cant send it to the cluster.");
+                            }
+
 							XmlHelper.SetAttribute (input, "source", src); 
 							XmlHelper.SetAttribute (input, "name", dest);
 							node.InnerText = dest;
-							if (!File.Exists (src))
-								throw new Exception("File '" + src + "' doesnt exist - cant send it to the cluster.");
 							if (!File.Exists (Path.Combine (WorkingFolder, dest)))
 								File.Copy (src, Path.Combine (WorkingFolder, dest));
 						} else {
@@ -288,8 +301,8 @@ namespace ApsimFile
 
 		private string zipUp ()
 		{
-			string currentDirectory = Directory.GetCurrentDirectory ();
-			Directory.SetCurrentDirectory (WorkingFolder);
+			//string currentDirectory = Directory.GetCurrentDirectory ();
+			//Directory.SetCurrentDirectory (WorkingFolder);
 			if (File.Exists (SelfExtractingExecutableLocation))
 				File.Copy (SelfExtractingExecutableLocation, Path.GetFileName (SelfExtractingExecutableLocation));
 
@@ -303,7 +316,7 @@ namespace ApsimFile
 			foreach (string file in FilesToZip)
 				File.Delete (file);
 
-			Directory.SetCurrentDirectory (currentDirectory);
+			//Directory.SetCurrentDirectory (currentDirectory);
 
 			Directory.Delete (WorkingFolder);
 			return zipFile;

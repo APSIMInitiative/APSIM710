@@ -92,16 +92,28 @@ namespace CSGeneral
         /// </summary>
         public static string[] UnZipFiles(string ZipFile, string DestFolder, string Password)
         {
+            StreamReader s = new StreamReader(ZipFile);
+            string[] files = UnZipFiles(s.BaseStream, DestFolder, Password);
+            s.Close();
+            return files;
+        }
+
+        /// <summary>
+        /// Unzips the specified zip file into the specified destination folder. Will use the 
+        /// specified password. Returns a list of filenames that were created.
+        /// </summary>
+        public static string[] UnZipFiles(Stream s, string DestFolder, string Password)
+        {
             List<string> FilesCreated = new List<string>();
-            ZipInputStream Zip = new ZipInputStream(File.Open(ZipFile, FileMode.Open, FileAccess.Read));
+            ZipInputStream Zip = new ZipInputStream(s);
             if (Password != "" && Password != null)
                 Zip.Password = Password;
             ZipEntry Entry;
             while ((Entry = Zip.GetNextEntry()) != null)
             {
-				// Convert either '/' or '\' to the local directory separator
-                string DestFileName = DestFolder + Path.DirectorySeparatorChar + 
-					   Entry.Name.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+                // Convert either '/' or '\' to the local directory separator
+                string DestFileName = DestFolder + Path.DirectorySeparatorChar +
+                       Entry.Name.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
                 // Make sure the destination folder exists.
                 Directory.CreateDirectory(Path.GetDirectoryName(DestFileName));
@@ -125,6 +137,7 @@ namespace CSGeneral
             Zip.Close();
             return FilesCreated.ToArray();
         }
+
 
         /// <summary>
         /// Unzips the specified zip to a memory stream. Returns the stream or null if not found.
