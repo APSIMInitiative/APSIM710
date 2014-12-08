@@ -1,0 +1,813 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.7
+Title                  = BaseSimulation
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component              "Operations Fert" = %apsim%\Model\Operations.dll
+   Component             "Operations Crops" = %apsim%\Model\Operations.dll
+   Component             "Operations Urine" = %apsim%\Model\Operations.dll
+   Component             "Operations Irrig" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                         "SWIM" = %apsim%\Model\SWIM3.dll
+   Component             "SoilTemperature2" = %apsim%\Model\SoilTemp2.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component  "Flaxton_IT Block1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                       "Canola" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component           "nh3_volatilisation" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 13/03/2012
+     Simulation end date   = 23/01/2013
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Broadfields(2011-2012).met
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        rain as Rain
+        es as Evaporation
+        sw_uptake() as WaterUptake
+        drain as Drainage
+        sw_dep() as SoilWaterAmount
+        Fertiliser as FertiliserN
+        emission_nh3() as VolatilisedN format 3
+        dnit() as DenitrifiedN format 3
+        n2o_atm() as N2Oemission format 3
+        leach_no3 as NO3Leached format 3
+        canola.n_uptake as NUptakeRape
+        wheat.n_uptake as NUptakeGrass
+        urea() as UreaAmount
+        nh4() as NH4Amount
+        no3() as NO3Amount
+        hum_n() as SoilHumusN
+        biom_n() as SoilBiomassN
+        fom_n() as SoilFOMN
+        surfaceom_n as SurfaceOMN
+        canola.TotalWt as RapeDM
+        wheat.TotalWt as GrassDM
+        canola.TotalN as RapeTotalN
+        wheat.TotalN as GrassTotalN
+        canola.TopsTotalN as RapeTopsN
+        wheat.TopsTotalN as GrassTopsN
+        canola.RootTotalN as RapeRootN
+        wheat.RootTotalN as GrassRootN
+        canola.LAI as RapeLAI
+        wheat.LAI as GrassLAI
+        canola.root_depth as RapeRootDepth
+        wheat.root_depth as GrassRootDepth
+        StageName
+        pond
+        runoff
+        drain
+        sw() as SoilWaterContent
+
+     Output file = BaseSimulation Results.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Operations Fert Initialisation --------------------------------
+     Operations Schedule
+     ===================
+      14/03/2012  Prepare      SurfaceOrganicMatter tillage type = disc
+      20/03/2012  Prepare      Fertiliser apply amount = 50 (kg/ha), depth = 0 (mm), type = NH4_N ()
+      30/04/2012  Prepare      Fertiliser apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N ()
+
+------- paddock.Operations Crops Initialisation -------------------------------
+     Operations Schedule
+     ===================
+      14/03/2012  Prepare      Canola sow plants =129 (plants/m2), sowing_depth = 10 (mm), cultivar = Early, row_spacing = 150 (mm), crop_class = plant
+      04/07/2012  Prepare      Canola harvest height = 60.0 (mm) , remove = 1.00 ()
+      29/08/2012  Prepare      Canola  end_crop
+      25/09/2012  Prepare      Wheat sow plants =1000 (plants/m2), sowing_depth = 10 (mm), cultivar = Richmond, row_spacing = 150 (mm), crop_class = plant
+      12/12/2012  Prepare      Wheat harvest height = 60.0 (mm) , remove = 1.00 ()
+
+------- paddock.Operations Urine Initialisation -------------------------------
+     Operations Schedule
+     ===================
+      18/07/2012  Prepare      Fertiliser apply amount = 135 (kg/ha), depth = 2.5 (mm), type = urea_N ()
+      18/07/2012  Prepare      Fertiliser apply amount = 125 (kg/ha), depth = 10.0 (mm), type = urea_N ()
+      18/07/2012  Prepare      Fertiliser apply amount = 110 (kg/ha), depth = 20.0 (mm), type = urea_N ()
+      18/07/2012  Prepare      Fertiliser apply amount = 95 (kg/ha), depth = 32.5 (mm), type = urea_N ()
+      18/07/2012  Prepare      Fertiliser apply amount = 70 (kg/ha), depth = 50.0 (mm), type = urea_N ()
+      18/07/2012  Prepare      Fertiliser apply amount = 50 (kg/ha), depth = 70.0 (mm), type = urea_N ()
+      18/07/2012  Prepare      Fertiliser apply amount = 15 (kg/ha), depth = 90.0 (mm), type = urea_N ()
+      18/07/2012  Prepare      Irrigation apply amount = 10 (mm)
+
+------- paddock.Operations Irrig Initialisation -------------------------------
+     Operations Schedule
+     ===================
+      13/01/2012  Prepare      Irrigation apply amount = 24 (mm)
+      16/01/2012  Prepare      Irrigation apply amount = 26 (mm)
+      18/01/2012  Prepare      Irrigation apply amount = 25 (mm)
+      13/02/2012  Prepare      Irrigation apply amount = 19 (mm)
+      14/02/2012  Prepare      Irrigation apply amount = 3.2 (mm)
+      15/05/2012  Prepare      Irrigation apply amount = 46.17 (mm)
+      21/05/2012  Prepare      Irrigation apply amount = 33.7 (mm)
+      10/07/2012  Prepare      Irrigation apply amount = 8.7 (mm)
+      16/07/2012  Prepare      Irrigation apply amount = 8.7 (mm)
+      20/11/2012  Prepare      Irrigation apply amount = 2.9 (mm)
+      26/11/2012  Prepare      Irrigation apply amount = 38 (mm)
+      03/12/2012  Prepare      Irrigation apply amount = 17.4 (mm)
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Micromet Initialisation ---------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     disp =     10.00000
+             exceeds upper limit of    5.000000
+     Component name: paddock.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- paddock.SWIM Initialisation -------------------------------------------
+     
+     
+                           APSIM Soil Profile
+                           ------------------
+     
+     ---------------------------------------------------------------
+      x    dlayer   BD   SW     LL15   DUL   SAT      Ks      Psi
+     ---------------------------------------------------------------
+        0.0    5.0  1.05  0.332  0.160  0.356  0.380 999.00   -263.2
+       10.0   10.0  1.05  0.332  0.160  0.356  0.380 999.00   -263.2
+       20.0   10.0  1.05  0.332  0.160  0.356  0.380 999.00   -263.2
+       30.0   15.0  1.05  0.332  0.160  0.356  0.380 999.00   -263.2
+       50.0   20.0  1.05  0.332  0.160  0.356  0.380 999.00   -263.2
+       70.0   20.0  1.10  0.332  0.160  0.356  0.380 999.00   -263.2
+       90.0   20.0  1.24  0.332  0.160  0.356  0.380 999.00   -263.2
+      110.0   25.0  1.24  0.332  0.160  0.356  0.380 999.00   -263.2
+      140.0   25.0  1.24  0.332  0.160  0.356  0.380 999.00   -263.2
+      160.0   30.0  1.46  0.302  0.170  0.320  0.346 389.00   -234.7
+      200.0   35.0  1.46  0.302  0.170  0.320  0.346 389.00   -234.7
+      230.0   35.0  1.46  0.302  0.170  0.320  0.346 389.00   -234.7
+      270.0   40.0  1.34  0.272  0.187  0.284  0.311 320.00   -199.8
+      310.0   45.0  1.34  0.272  0.187  0.284  0.311 320.00   -199.8
+      360.0   50.0  1.34  0.272  0.187  0.284  0.311 320.00   -199.8
+      410.0   55.0  1.58  0.269  0.183  0.281  0.303 101.09   -221.1
+      470.0   60.0  1.67  0.268  0.182  0.280  0.300  19.00   -231.7
+      530.0   50.0  1.67  0.268  0.182  0.280  0.300  19.00   -231.7
+      570.0   50.0  1.67  0.268  0.182  0.280  0.300  19.00   -231.7
+      630.0   50.0  1.67  0.288  0.220  0.297  0.325  24.00   -232.6
+      670.0   50.0  1.67  0.288  0.220  0.297  0.325  24.00   -232.6
+      730.0  100.0  1.67  0.288  0.220  0.297  0.325  24.00   -232.6
+      870.0  100.0  1.59  0.290  0.240  0.297  0.325  24.00   -256.2
+      930.0  100.0  1.59  0.290  0.240  0.297  0.325  24.00   -256.2
+     1070.0  100.0  1.59  0.290  0.240  0.297  0.325  98.00   -256.2
+     1130.0  100.0  1.59  0.290  0.240  0.297  0.325  98.00   -256.2
+     1270.0  100.0  1.59  0.290  0.240  0.297  0.325  98.00   -256.2
+     1330.0  100.0  1.59  0.290  0.240  0.297  0.325  98.00   -256.2
+     1470.0   50.0  1.59  0.290  0.240  0.297  0.325  98.00   -256.2
+     1500.0   50.0  1.59  0.290  0.240  0.297  0.325  98.00   -256.2
+     ---------------------------------------------------------------
+     
+     
+                       Soil Moisture Characteristics
+                       -----------------------------
+     
+     --------------------------------------------------------------------
+                              Soil Water Potential (cm)
+         x       0      10      25    100   1000  15000   10^6   10^7
+     --------------------------------------------------------------------
+        0.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+       10.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+       20.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+       30.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+       50.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+       70.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+       90.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+      110.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+      140.0 | 0.3800 0.3770 0.3718 0.3560 0.2782 0.1600 0.0455 0.0000
+      160.0 | 0.3460 0.3427 0.3371 0.3200 0.2594 0.1700 0.0505 0.0000
+      200.0 | 0.3460 0.3427 0.3371 0.3200 0.2594 0.1700 0.0505 0.0000
+      230.0 | 0.3460 0.3427 0.3371 0.3200 0.2594 0.1700 0.0505 0.0000
+      270.0 | 0.3110 0.3076 0.3018 0.2840 0.2440 0.1870 0.0581 0.0000
+      310.0 | 0.3110 0.3076 0.3018 0.2840 0.2440 0.1870 0.0581 0.0000
+      360.0 | 0.3110 0.3076 0.3018 0.2840 0.2440 0.1870 0.0581 0.0000
+      410.0 | 0.3030 0.3003 0.2955 0.2810 0.2426 0.1830 0.0568 0.0000
+      470.0 | 0.3000 0.2975 0.2932 0.2800 0.2425 0.1820 0.0565 0.0000
+      530.0 | 0.3000 0.2975 0.2932 0.2800 0.2425 0.1820 0.0565 0.0000
+      570.0 | 0.3000 0.2975 0.2932 0.2800 0.2425 0.1820 0.0565 0.0000
+      630.0 | 0.3250 0.3172 0.3103 0.2970 0.2708 0.2200 0.0698 0.0000
+      670.0 | 0.3250 0.3172 0.3103 0.2970 0.2708 0.2200 0.0698 0.0000
+      730.0 | 0.3250 0.3172 0.3103 0.2970 0.2708 0.2200 0.0698 0.0000
+      870.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+      930.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     1070.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     1130.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     1270.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     1330.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     1470.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     1500.0 | 0.3250 0.3160 0.3090 0.2970 0.2808 0.2400 0.0772 0.0000
+     --------------------------------------------------------------------
+     
+     
+                        Soil Hydraulic Conductivity
+                        ---------------------------
+     
+     -----------------------------------------------------------------------
+                              Soil Water Potential (cm)
+         x       0        10       25       100     1000    15000     10^6
+     -----------------------------------------------------------------------
+        0.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+       10.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+       20.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+       30.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+       50.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+       70.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+       90.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+      110.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+      140.0 | 999.     209.     13.9     .250     .537E-02 .999E-06 .332E-14
+      160.0 | 389.     92.4     7.93     .250     .472E-02 .165E-05 .196E-15
+      200.0 | 389.     92.4     7.93     .250     .472E-02 .165E-05 .196E-15
+      230.0 | 389.     92.4     7.93     .250     .472E-02 .165E-05 .196E-15
+      270.0 | 320.     79.4     7.73     .250     .412E-02 .314E-05 .644E-19
+      310.0 | 320.     79.4     7.73     .250     .412E-02 .314E-05 .644E-19
+      360.0 | 320.     79.4     7.73     .250     .412E-02 .314E-05 .644E-19
+      410.0 | 101.     29.0     3.85     .250     .515E-02 .304E-05 .121E-18
+      470.0 | 19.0     7.19     1.74     .250     .564E-02 .302E-05 .135E-18
+      530.0 | 19.0     7.19     1.74     .250     .564E-02 .302E-05 .135E-18
+      570.0 | 19.0     7.19     1.74     .250     .564E-02 .302E-05 .135E-18
+      630.0 | 24.0     4.30     1.41     .250     .864E-02 .447E-05 .321E-23
+      670.0 | 24.0     4.30     1.41     .250     .864E-02 .447E-05 .321E-23
+      730.0 | 24.0     4.30     1.41     .250     .864E-02 .447E-05 .321E-23
+      870.0 | 24.0     5.74     1.84     .250     .150E-01 .581E-05 .128E-29
+      930.0 | 24.0     5.74     1.84     .250     .150E-01 .581E-05 .128E-29
+     1070.0 | 98.0     8.59     2.03     .250     .149E-01 .580E-05 .128E-29
+     1130.0 | 98.0     8.59     2.03     .250     .149E-01 .580E-05 .128E-29
+     1270.0 | 98.0     8.59     2.03     .250     .149E-01 .580E-05 .128E-29
+     1330.0 | 98.0     8.59     2.03     .250     .149E-01 .580E-05 .128E-29
+     1470.0 | 98.0     8.59     2.03     .250     .149E-01 .580E-05 .128E-29
+     1500.0 | 98.0     8.59     2.03     .250     .149E-01 .580E-05 .128E-29
+     -----------------------------------------------------------------------
+     
+     
+          bottom boundary condition = specified gradient (     0.000)
+          vapour conductivity       = on
+          Evaporation Source        = calc
+     
+
+------- SoilTemperature2 Initialisation ---------------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass          500.0   200.0     5.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- paddock.Flaxton_IT Block1  Nitrogen Initialisation --------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     nitrification_pot =     147.0000
+             exceeds upper limit of    100.0000
+     Component name: paddock.Flaxton_IT Block1  Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.40  6.04    2.29    0.41    0.00
+             2     6.40  6.04    4.59    0.81    0.00
+             3     6.40  6.04    4.59    0.81    0.00
+             4     6.40  6.04    6.88    1.22    0.00
+             5     6.40  6.04    9.18    1.63    0.00
+             6     6.30  5.89    9.02    1.33    0.00
+             7     6.00  5.46    8.23    0.23    0.00
+             8     6.00  5.46   10.29    0.29    0.00
+             9     6.00  5.46   10.29    0.29    0.00
+            10     6.00  3.22    6.57    0.65    0.00
+            11     6.00  3.22    7.67    0.76    0.00
+            12     6.00  3.22    7.67    0.76    0.00
+            13     6.00  1.40    3.86    0.32    0.00
+            14     6.00  1.40    4.34    0.36    0.00
+            15     6.00  1.40    4.82    0.40    0.00
+            16     6.00  0.79    4.08    0.52    0.00
+            17     6.00  0.56    3.76    0.60    0.00
+            18     6.00  0.56    3.13    0.50    0.00
+            19     6.00  0.56    3.13    0.50    0.00
+            20     6.00  0.38    1.92    0.27    0.00
+            21     6.00  0.38    1.92    0.27    0.00
+            22     6.00  0.38    3.84    0.53    0.00
+            23     6.00  0.32    2.38    0.94    0.00
+            24     6.00  0.32    2.38    0.94    0.00
+            25     6.00  0.26    0.00    0.00    0.00
+            26     6.00  0.26    0.00    0.00    0.00
+            27     6.00  0.26    0.00    0.00    0.00
+            28     6.00  0.26    0.00    0.00    0.00
+            29     6.00  0.26    0.00    0.00    0.00
+            30     6.00  0.26    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals              126.84   15.31    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       3092.5   286.3    78.5     9.8    27.7     0.7
+             2       6184.9   572.7   157.1    19.6    27.2     0.7
+             3       6184.9   572.7   157.1    19.6    26.6     0.7
+             4       9277.4   859.0   235.6    29.5    25.9     0.6
+             5      12369.8  1145.4   314.2    39.3    24.8     0.6
+             6      12624.8  1169.0   320.7    40.1    23.9     0.6
+             7      13205.4  1222.7   335.4    41.9    22.9     0.6
+             8      16506.7  1528.4   419.3    52.4    21.8     0.5
+             9      16506.7  1528.4   419.3    52.4    20.7     0.5
+            10      13754.2  1273.5   349.4    43.7    19.5     0.5
+            11      16046.6  1485.8   407.6    50.9    18.2     0.5
+            12      16046.6  1485.8   407.6    50.9    17.0     0.4
+            13       7490.1   693.5    13.9     1.7    15.7     0.4
+            14       8426.4   780.2    15.6     2.0    14.3     0.4
+            15       9362.6   866.9    17.4     2.2    13.0     0.3
+            16       6852.4   634.5     4.0     0.5    11.6     0.3
+            17       5609.6   519.4     1.6     0.2    10.3     0.3
+            18       4674.7   432.8     1.3     0.2     9.3     0.2
+            19       4674.7   432.8     1.3     0.2     8.4     0.2
+            20       3172.5   293.8     0.5     0.1     7.6     0.2
+            21       3172.5   293.8     0.5     0.1     6.9     0.2
+            22       6345.1   587.5     0.9     0.1     5.7     0.1
+            23       5087.2   471.0     0.8     0.1     4.6     0.1
+            24       5087.2   471.0     0.8     0.1     3.8     0.1
+            25       4133.4   382.7     0.6     0.1     3.1     0.1
+            26       4133.4   382.7     0.6     0.1     2.5     0.1
+            27       4133.4   382.7     0.6     0.1     2.1     0.1
+            28       4133.4   382.7     0.6     0.1     1.7     0.0
+            29       2066.7   191.4     0.3     0.0     1.5     0.0
+            30       2066.7   191.4     0.3     0.0     1.4     0.0
+          ---------------------------------------------------------
+           Totals  232422.4 21520.6  3663.4   457.9   400.0    10.0
+          ---------------------------------------------------------
+
+------- paddock.Canola Initialisation -----------------------------------------
+     Using SWIM3 for Soil Water Uptake.
+     
+
+------- paddock.wheat Initialisation ------------------------------------------
+     Using SWIM3 for Soil Water Uptake.
+     
+
+------- nh3_volatilisation Initialisation -------------------------------------
+
+Volatilization will be calculated by manager
+   Top 50mm are considered,
+   pH variation is mimicked by dlt_urea_hydrol + dlt_nh4_nitrif
+
+------- Start of simulation  --------------------------------------------------
+14 March 2012(Day of year=74), paddock.Operations Fert: 
+      Sending tillage message to surfaceorganicmatter
+14 March 2012(Day of year=74), paddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using disc
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   200.00
+14 March 2012(Day of year=74), paddock.Operations Crops: 
+      Sending sow message to canola
+14 March 2012(Day of year=74), paddock.Canola: 
+     Crop Sow
+     Using SWIM3 for Soil Water Uptake.
+     
+        ------------------------------------------------
+        cultivar                   = early
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       5 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               =     235       1 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.8    16.3 (h)
+              y_tt_end_of_juvenile       =     395       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     250     250 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     700     700 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      50 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.30       0.30
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+           5.0     0.210          0.160       1.000
+          10.0     0.210          0.160       1.000
+          10.0     0.210          0.160       1.000
+          15.0     0.210          0.160       1.000
+          20.0     0.210          0.160       1.000
+          20.0     0.210          0.160       1.000
+          20.0     0.210          0.160       1.000
+          25.0     0.210          0.160       1.000
+          25.0     0.210          0.160       1.000
+          30.0     0.100          0.170       0.600
+          35.0     0.100          0.170       0.600
+          35.0     0.100          0.170       0.600
+          40.0     0.100          0.187       0.600
+          45.0     0.100          0.187       0.600
+          50.0     0.100          0.187       0.600
+          55.0     0.064          0.183       0.382
+          60.0     0.050          0.182       0.300
+          50.0     0.050          0.182       0.300
+          50.0     0.050          0.182       0.300
+          50.0     0.020          0.220       0.400
+          50.0     0.020          0.220       0.400
+         100.0     0.020          0.220       0.400
+         100.0     0.010          0.240       0.200
+         100.0     0.010          0.240       0.200
+         100.0     0.010          0.240       0.100
+         100.0     0.010          0.240       0.100
+         100.0     0.000          0.240       0.000
+         100.0     0.000          0.240       0.000
+          50.0     0.000          0.240       0.000
+          50.0     0.000          0.240       0.000
+         -----------------------------------------------
+         Extractable SW:   134mm in  1500mm total depth (  9%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+             74   10.0  129.0  150.0   0.0   0.0 early
+         ------------------------------------------------
+     
+15 March 2012(Day of year=75), paddock.Canola: 
+      stage 2.0 germination
+19 March 2012(Day of year=79), paddock.Canola: 
+      stage 3.0 emergence
+                     biomass =           3.87 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   22.43 (mm)
+20 March 2012(Day of year=80), paddock.Operations Fert: 
+      Sending apply message to fertiliser
+20 March 2012(Day of year=80), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as ammonium (nh4_n)
+                                         added at depth    0.00 (layer   1)
+4 April 2012(Day of year=95), paddock.Canola: 
+      stage 4.0 end_of_juvenile
+                     biomass =           3.87 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   40.00 (mm)
+30 April 2012(Day of year=121), paddock.Operations Fert: 
+      Sending apply message to fertiliser
+30 April 2012(Day of year=121), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth    0.00 (layer   1)
+9 May 2012(Day of year=130), paddock.Canola: 
+      stage 5.0 floral_initiation
+                     biomass =           3.87 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   59.31 (mm)
+15 May 2012(Day of year=136), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+21 May 2012(Day of year=142), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+21 May 2012(Day of year=142), paddock.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           0.038 to:           0.019
+6 June 2012(Day of year=158), paddock.Canola: 
+      stage 6.0 flowering
+                     biomass =           3.87 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     6.52 (%)    extractable sw =  120.49 (mm)
+4 July 2012(Day of year=186), paddock.Operations Crops: 
+      Sending harvest message to canola
+4 July 2012(Day of year=186), paddock.Canola: 
+     
+      flowering day          =  158                           stover (kg/ha)         =       38.7
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =    8.5                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      0.013
+      total above ground biomass (kg/ha)    =       38.7
+      live above ground biomass (kg/ha)     =       38.7
+      green above ground biomass (kg/ha)    =       33.5
+      senesced above ground biomass (kg/ha) =        5.2
+      number of leaves       =      0.1
+      DM Root:Shoot ratio    =     3.92                       Harvest Index          =       0.00
+      Stover C:N ratio       =     6.15                       Root C:N ratio         =      35.08
+      grain N percent        =     0.00                       total N content (kg/ha)=       2.52
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.08
+      green N content (kg/ha)=     2.44
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                   5.2                     0.0
+                          N  (kg/ha) =                   0.34                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           3.35 (g/m^2)   lai          =   0.013 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =  103.44 (mm)
+10 July 2012(Day of year=192), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+16 July 2012(Day of year=198), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+18 July 2012(Day of year=200), paddock.Operations Urine: 
+      Sending apply message to fertiliser
+18 July 2012(Day of year=200), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       135.00 of N as urea (urea_n)
+                                         added at depth    2.50 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+       125.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   2)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+       110.00 of N as urea (urea_n)
+                                         added at depth   20.00 (layer   3)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        95.00 of N as urea (urea_n)
+                                         added at depth   32.50 (layer   4)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        70.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   5)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth   70.00 (layer   6)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        15.00 of N as urea (urea_n)
+                                         added at depth   90.00 (layer   7)
+      Sending apply message to irrigation
+17 August 2012(Day of year=230), paddock.Canola: 
+      stage 5.0 floral_initiation
+                     biomass =          16.54 (g/m^2)   lai          =   0.282 (m^2/m^2)
+                     stover N conc =     5.17 (%)    extractable sw =  122.25 (mm)
+29 August 2012(Day of year=242), paddock.Operations Crops: 
+      Sending end_crop message to canola
+29 August 2012(Day of year=242), paddock.Canola: 
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                 431.9                   483.4
+                          N  (kg/ha) =                  20.70                    4.65
+     
+25 September 2012(Day of year=269), paddock.Operations Crops: 
+      Sending sow message to wheat
+25 September 2012(Day of year=269), paddock.wheat: 
+     Crop Sow
+     Using SWIM3 for Soil Water Uptake.
+     
+        ------------------------------------------------
+        cultivar                   = richmond
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       35.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+           5.0     0.211          0.160       1.000
+          10.0     0.211          0.160       1.000
+          10.0     0.211          0.160       1.000
+          15.0     0.211          0.160       1.000
+          20.0     0.211          0.160       1.000
+          20.0     0.211          0.160       1.000
+          20.0     0.210          0.160       1.000
+          25.0     0.210          0.160       1.000
+          25.0     0.210          0.160       1.000
+          30.0     0.100          0.170       0.600
+          35.0     0.100          0.170       0.600
+          35.0     0.100          0.170       0.600
+          40.0     0.100          0.187       0.600
+          45.0     0.100          0.187       0.600
+          50.0     0.100          0.187       0.600
+          55.0     0.064          0.183       0.382
+          60.0     0.050          0.182       0.300
+          50.0     0.050          0.182       0.300
+          50.0     0.050          0.182       0.300
+          50.0     0.020          0.220       0.400
+          50.0     0.020          0.220       0.400
+         100.0     0.020          0.220       0.400
+         100.0     0.010          0.240       0.200
+         100.0     0.010          0.240       0.200
+         100.0     0.010          0.240       0.100
+         100.0     0.010          0.240       0.100
+         100.0     0.000          0.240       0.000
+         100.0     0.000          0.240       0.000
+          50.0     0.000          0.240       0.000
+          50.0     0.000          0.240       0.000
+         -----------------------------------------------
+         Extractable SW:   134mm in  1500mm total depth (  9%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            269   10.0 1000.0  150.0   0.0   0.0 richmond
+         ------------------------------------------------
+     
+26 September 2012(Day of year=270), paddock.wheat: 
+      stage 2.0 germination
+30 September 2012(Day of year=274), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           1.90 (g/m^2)   lai          =   0.008 (m^2/m^2)
+                     stover N conc =     5.21 (%)    extractable sw =   12.71 (mm)
+1 October 2012(Day of year=275), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           1.99 (g/m^2)   lai          =   0.009 (m^2/m^2)
+                     stover N conc =     4.97 (%)    extractable sw =   12.37 (mm)
+20 November 2012(Day of year=325), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+26 November 2012(Day of year=331), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+3 December 2012(Day of year=338), paddock.Operations Irrig: 
+      Sending apply message to irrigation
+12 December 2012(Day of year=347), paddock.Operations Crops: 
+      Sending harvest message to wheat
+12 December 2012(Day of year=347), paddock.wheat: 
+     
+      flowering day          =    0                           stover (kg/ha)         =     7537.8
+      maturity day           =    0                           grain yield (kg/ha)    =        0.0
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=        0.0
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      8.406
+      total above ground biomass (kg/ha)    =     7537.8
+      live above ground biomass (kg/ha)     =     7537.8
+      green above ground biomass (kg/ha)    =     7535.2
+      senesced above ground biomass (kg/ha) =        2.6
+      number of leaves       =      7.1
+      DM Root:Shoot ratio    =     0.87                       Harvest Index          =       0.00
+      Stover C:N ratio       =    15.55                       Root C:N ratio         =      33.68
+      grain N percent        =     0.00                       total N content (kg/ha)=     193.90
+      grain N uptake (kg/ha) =     0.00                       senesced N content (kg/ha)=    0.01
+      green N content (kg/ha)=   193.88
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                     0.0
+                          N  (kg/ha) =                   0.00                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5748.6                     0.0
+                          N  (kg/ha) =                 149.96                    0.00
+     
+23 January 2013(Day of year=23), clock: 
+     Simulation is terminating due to end criteria being met.
+
