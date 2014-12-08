@@ -94,6 +94,59 @@ public class AgPasture
 		}
 	}
 
+	private bool usingAlternativeWUptake = false;
+	[Param]
+	[Description("Whether the alternative N uptake routine is to be used")]
+	[Units("yes/no")]
+	private string UseAlternativeWaterUptake
+	{
+		get
+		{
+			if (usingAlternativeWUptake)
+				return "yes";
+			else
+				return "no";
+		}
+		set
+		{
+			usingAlternativeWUptake = value.ToLower() == "yes";
+		}
+	}
+
+	private bool usingAlternativeNUptake = false;
+	[Param]
+	[Description("Whether the alternative N uptake routine is to be used")]
+	[Units("yes/no")]
+	private string UseAlternativeNUptake
+		{
+		get
+		{
+			if (usingAlternativeNUptake)
+				return "yes";
+			else
+				return "no";
+		}
+		set
+		{
+			usingAlternativeNUptake = value.ToLower() == "yes";
+		}
+	}
+
+	[Param]
+	[Description("Reference root length density for water and N uptake")]
+	[Units("mm/mm3")]
+	private double referenceRLD;
+
+	[Param]
+	[Description("Coefficient for NH4 availability")]
+	[Units("0-1")]
+	private double[] kNH4;
+
+	[Param]
+	[Description("Coefficient for NO3 availability")]
+	[Units("0-1")]
+	private double[] kNO3;
+
 	private bool usingPairWise;
 	[Param]
 	[Description("Whether old pair-wise function to compute plant height is to be used")]
@@ -112,11 +165,6 @@ public class AgPasture
 			usingPairWise = value.ToLower() == "yes";
 		}
 	}
-
-	//[Param]
-	[Description("Whether the alternative N uptake routine is to be used")]
-	[Units("yes/no")]
-	private string alt_N_uptake = "no";
 
 	////  >> Initial values >>>
 	//  (to be input from interface, will overwrite the values of dmshoot, dmroot, rootdepth, and root dist. params)
@@ -840,27 +888,36 @@ public class AgPasture
 	/// <summary>Soil layer at bottom of root zone</summary>
 	private double swardBottomLayerRoots;
 
-	/// <summary>Plant N demand from soil (kgN/ha)</summary>
-	private double swardSoilNdemand;
 	/// <summary>Plant available N in soil )kgN/ha)</summary>
 	private double swardSoilNavailable;
+	/// <summary>Plant N demand from soil (kgN/ha)</summary>
+	private double swardSoilNdemand;
 	/// <summary>Amount of N taken up from soil (kgN/ha)</summary>
 	private double swardSoilNuptake;
 	/// <summary>Plant available N for each soil layer (kgN/ha)</summary>
-	private double[] SNSupply;
+	private double[] soilNAvail;
 	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
-	private double[] SNUptake;
+	private double[] soilNUptake;
 
-	/// <summary>Daily soil water demand (mm)</summary>
-	private double swardWaterDemand;
-	/// <summary>Daily soil water uptake (mm)</summary>
-	private double swardWaterUptake;
+	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+	private double[] soilNH4Available;
+	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+	private double[] soilNO3Available;
+	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+	private double[] soilNH4Uptake;
+	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+	private double[] soilNO3Uptake;
+
 	/// <summary>Plant extractable soil water (mm)</summary>
-	private double swardWaterSupply;
+	private double swardWaterAvailable;
+	/// <summary>Daily total soil water demand (mm)</summary>
+	private double swardWaterDemand;
+	/// <summary>Daily total soil water uptake (mm)</summary>
+	private double swardWaterUptake;
 	/// <summary>Plant extractable water for each layer (mm)</summary>
-	private double[] SWSupply;
+	private double[] soilWavailable;
 	/// <summary>Soil water taken up from each layer (mm)</summary>
-	private double[] SWUptake;
+	private double[] soilWUptake;
 
 	/// <summary>Amount of N fixed by legumes</summary>
 	private double swardNFixed = 0.0;
@@ -1003,6 +1060,25 @@ public class AgPasture
 				ExpoLinearCurveParam = iniRootCurveParam;
 		}
 
+		// Number of layers
+		int nLayers = dlayer.Length;
+
+		// check whether valkues for kNO3 and kNH4 were given for all layers
+		if (kNH4.Length == 1)
+		{ // if only one value was given, assume homogeneous over the profile
+			Array.Resize(ref kNH4, nLayers);
+			for (int layer = 1; layer < nLayers; layer++)
+				kNH4[layer] = kNH4[0];
+		}
+		if (kNO3.Length == 1)
+		{// if only one value was given, assume homogeneous over the profile
+			Array.Resize(ref kNO3, nLayers);
+			for (int layer = 1; layer < nLayers; layer++)
+				kNO3[layer] = kNO3[0];
+		}
+		Array.Resize(ref kNH4, nLayers);
+		Array.Resize(ref kNO3, nLayers);
+
 		//// Create and initialise each species
 
 		mySpecies = new Species[NumSpecies];
@@ -1010,7 +1086,6 @@ public class AgPasture
 		// set links to static members (clock, MetData, dlayer, CO2, etc)
 		Species.Clock = myClock;
 		Species.MetFile = MetData;
-		Species.dlayer = dlayer;
 		Species.CO2 = co2;
 
 		for (int s1 = 0; s1 < NumSpecies; s1++)
@@ -1021,6 +1096,9 @@ public class AgPasture
 				{
 					// create species and add to array
 					mySpecies[s1] = new Species();
+
+					// pass on values for dlayer
+					mySpecies[s1].dlayer = dlayer;
 
 					// set the parameters and initialise the species
 					SetSpeciesParameters(s1, s2);
@@ -1087,8 +1165,6 @@ public class AgPasture
 		// Check root distribution
 		if (usingSpeciesRoot)
 		{ // each species has its own distribution
-
-			int nLayers = dlayer.Length;
 			RootFraction = new double[nLayers];
 			for (int layer = 0; layer < nLayers; layer++)
 			{
@@ -1251,10 +1327,20 @@ public class AgPasture
 			myRootDepth[s2] = iniRootDepth[s1];
 		}
 
-		mySpecies[s1].rootDepth = myRootDepth[s2];
-		mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
-		mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[s2];
-		mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[s2];
+		if (usingSpeciesRoot)
+		{ // root specified for each species
+			mySpecies[s1].rootDepth = myRootDepth[s2];
+			mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
+			mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[s2];
+			mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[s2];
+		}
+		else
+		{ // root specified for whole sward (use first species as data entry)
+			mySpecies[s1].rootDepth = myRootDepth[0];
+			mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
+			mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[0];
+			mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[0];
+		}
 
 		////  >> Plant height  >>>
 		mySpecies[s1].usingSpeciesHeight = usingSpeciesHeight;
@@ -1393,10 +1479,15 @@ public class AgPasture
 		//// Additional initialisation bits ..............................
 		mySpecies[s1].fShoot = 1;            // actual fraction of dGrowth allocated to shoot
 
-		SWSupply = new double[dlayer.Length];
-		SWUptake = new double[dlayer.Length];
-		SNSupply = new double[dlayer.Length];
-		SNUptake = new double[dlayer.Length];
+		int nLayers = dlayer.Length;
+		soilWavailable = new double[nLayers];
+		soilWUptake = new double[nLayers];
+		soilNAvail = new double[nLayers];
+		soilNUptake = new double[nLayers];
+		soilNH4Available = new double[nLayers];
+		soilNH4Uptake = new double[nLayers];
+		soilNO3Available = new double[nLayers];
+		soilNO3Uptake = new double[nLayers];
 	}
 
 	/// <summary>
@@ -1557,6 +1648,9 @@ public class AgPasture
 		// Pass on some parameters to different species
 		SetSpeciesWithSwardData();
 
+		// Allocate resources for each species
+		PartitionAboveGroundResources();
+
 		// Phenology, for annuals
 		int anyEmerged = 0;
 		for (int s = 0; s < NumSpecies; s++)
@@ -1581,7 +1675,7 @@ public class AgPasture
 		}
 
 		// Get soil N available in the root zone
-		swardSoilNavailable = calcPlantAvailableN();
+		swardSoilNavailable = PlantAvailableN();
 
 		// Get the water supply & uptake
 		if (WaterUptakeSource == "calc")
@@ -1748,7 +1842,7 @@ public class AgPasture
 				int length = SoilWater.Uptakes[i_Crop].Amount.Length;
 				for (int layer = 0; layer < length; layer++)
 				{
-					SWUptake[layer] = (float)SoilWater.Uptakes[i_Crop].Amount[layer];
+					soilWUptake[layer] = (float)SoilWater.Uptakes[i_Crop].Amount[layer];
 					swardWaterUptake += SoilWater.Uptakes[i_Crop].Amount[layer];
 				}
 			}
@@ -1765,26 +1859,38 @@ public class AgPasture
 		Species.swardCoverGreen = Cover_green;
 		Species.swardLightExtCoeff = swardLightExtCoeff;
 
-		// Intercepted solar Radn was considered for whole sward, compute the available to each species
+		// pass on values for dlayer
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			mySpecies[s].dlayer = dlayer;
+		}
+	}
+
+	/// <summary>
+	/// Estimate the allocation of intercepted radiation and ET for each species
+	/// </summary>
+	private void PartitionAboveGroundResources()
+	{
+		// Intercepted solar Radn and ET were considered for whole sward, partition between species based on LAI and lightExtCoeff
 		double sumkLAI = 0.0;
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			//sumkLAI += mySpecies[s].coverGreen;
 			sumkLAI += mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff;
 		}
 
 		for (int s = 0; s < NumSpecies; s++)
 		{
-			if (sumkLAI == 0)
+			if (sumkLAI == 0.0)
 			{
-				mySpecies[s].intRadnFrac = 0;
-				mySpecies[s].interceptedRadn = 0;
+				mySpecies[s].intRadnFrac = 0.0;
+				mySpecies[s].interceptedRadn = 0.0;
 			}
 			else
 			{
-				//mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumkLAI;
-				mySpecies[s].intRadnFrac = mySpecies[s].greenLAI*mySpecies[s].lightExtCoeff / sumkLAI;
+				mySpecies[s].intRadnFrac = mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff / sumkLAI;
 				mySpecies[s].interceptedRadn = InterceptedRadn * mySpecies[s].intRadnFrac;
+
+				mySpecies[s].soilWdemand = swardWaterDemand * mySpecies[s].intRadnFrac;
 			}
 		}
 	}
@@ -1798,32 +1904,101 @@ public class AgPasture
 	/// <returns>Water uptake</returns>
 	private double SWUptakeProcess()
 	{
+		// Get the amount of plant available water
+		if (usingAlternativeWUptake)
+		{
+			soilWavailable = PlantAvailableSoilWater();
+		}
+		else
+		{
+			soilWavailable = PlantAvailableWater();
+		}
+
+		swardWaterAvailable = soilWavailable.Sum();
+
+		// do the actual uptake
+		double actualUptake = UptakeSoilWater();
+
+		return actualUptake;
+	}
+
+	/// <summary>
+	/// Get the amount of plant available water (consider whole sward only)
+	/// </summary>
+	/// <returns>Available water</returns>
+	private double[] PlantAvailableWater()
+	{
 		// zero out the variables
-		swardWaterSupply = 0;
-		Array.Clear(SWSupply, 0, SWSupply.Length);
+		double[] PAW = new double[dlayer.Length];
 
-		// initialise water uptake data type
-		WaterChangedType WaterUptake = new WaterChangedType();
-		WaterUptake.DeltaWater = new double[dlayer.Length];
-
-		// find out soil available water
+		// find out plant soil available water
 		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 		{
 			double layerFrac = LayerFractionForRoots(layer, swardRootDepth);
 			double waterAmount = sw_dep[layer] - (ll[layer] * dlayer[layer]);
 			double waterSuply = Math.Max(0.0, kl[layer] * waterAmount) * layerFrac;
-			SWSupply[layer] = waterSuply;
-			swardWaterSupply += waterSuply;
+			PAW[layer] = waterSuply;
 		}
 
+		return PAW;
+	}
+
+	/// <summary>
+	/// Get the amount of water available to plants (alternative - consider various species)
+	/// </summary>
+	/// <returns>Water available</returns>
+	private double[] PlantAvailableSoilWater()
+	{
+		// zero out the variables
+		int nLayers = dlayer.Length;
+		double[] PAW = new double[nLayers];
+		double layerFrac = 0.0;
+		double PotAvailableWater = 0.0;
+		double xFac = 1.0;
+
+		// find out soil available water (as if each species was alone)
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			Array.Clear(mySpecies[s].soilAvailableW, 0, nLayers);
+			for (int layer = 0; layer <= mySpecies[s].RootZoneLayer(); layer++)
+			{
+				layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+				PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
+				PotAvailableWater = Math.Max(0.0, PotAvailableWater * layerFrac);
+				if (referenceRLD > 0.0)
+				{
+					xFac = kl[layer] * Math.Min(1.0, (mySpecies[s].RLD[layer] / referenceRLD));
+				}
+				else
+				{
+					xFac = kl[layer];
+				}
+				mySpecies[s].soilAvailableW[layer] = PotAvailableWater*xFac;
+				PAW[layer] += mySpecies[s].soilAvailableW[layer];
+			}
+		}
+
+		return PAW;
+	}
+
+	/// <summary>
+	/// Perform the actual water uptake (send changes to soil module)
+	/// </summary>
+	/// <returns>amount of water taken up</returns>
+	private double UptakeSoilWater()
+	{
+		// initialise water uptake data type
+		WaterChangedType WaterUptake = new WaterChangedType();
+		WaterUptake.DeltaWater = new double[dlayer.Length];
+
 		// proportion to uptake
-		double Fraction = Math.Min(1.0, swardWaterDemand / swardWaterSupply);
+		double Fraction = Math.Min(1.0, swardWaterDemand / swardWaterAvailable);
 		double actualUptake = 0.0;
 		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
 		{   // water is taken up only from the layers that roots can reach.
-			SWUptake[layer] = SWSupply[layer] * Fraction;
-			actualUptake += SWUptake[layer];
-			WaterUptake.DeltaWater[layer] = -SWUptake[layer];
+			soilWUptake[layer] = soilWavailable[layer] * Fraction;
+			actualUptake += soilWUptake[layer];
+			WaterUptake.DeltaWater[layer] = -soilWUptake[layer];
 		}
 
 		if (WaterChanged != null)
@@ -2013,110 +2188,247 @@ public class AgPasture
 		NUptake.DeltaNO3 = new double[dlayer.Length];
 		NUptake.DeltaNH4 = new double[dlayer.Length];
 
-		float Fraction = 0;
-		if (swardSoilNavailable > 0)
-		{
-			Fraction = (float)Math.Min(1.0, swardSoilNuptake / swardSoilNavailable);
-		}
-
 		double n_uptake = 0;
 
-		if (alt_N_uptake == "yes")
+		if (usingAlternativeNUptake)
 		{
-			double
-			uptake_multiplier = double.MaxValue,
-			totSWUptake = SWUptake.Sum();
+			// get the amount taken up of each N form for each species
+			SpeciesNUptake();
 
-			double[]
-			availableNH4_bylayer = new double[dlayer.Length],
-			availableNO3_bylayer = new double[dlayer.Length],
-			diffNH4_bylayer = new double[dlayer.Length],
-			diffNO3_bylayer = new double[dlayer.Length];
-
-			for (int sLayer = 0; sLayer < dlayer.Length; sLayer++)
-			{
-				double
-				totN = nh4[sLayer] + no3[sLayer],
-				fracH2O = SWUptake[sLayer] / totSWUptake;
-
-				if (totN > 0)
-				{
-					availableNH4_bylayer[sLayer] = fracH2O * nh4[sLayer] / totN;
-					availableNO3_bylayer[sLayer] = fracH2O * no3[sLayer] / totN;
-
-					//if we have no3 and nh4 in this layer then calculate our uptake multiplier, otherwise set it to 0
-					//the idea behind the multiplier is that it allows us to calculate the max amount of N we can extract
-					//without forcing any of the layers below 0 AND STILL MAINTAINING THE RATIO as calculated with fracH2O
-					//NOTE: it doesn't matter whether we use nh4 or no3 for this calculation, we will get the same answer regardless
-					uptake_multiplier = nh4[sLayer] * no3[sLayer] > 0 ? Math.Min(uptake_multiplier, nh4[sLayer] / availableNH4_bylayer[sLayer]) : 0;
-				}
-				else
-				{
-					availableNH4_bylayer[sLayer] = 0;
-					availableNO3_bylayer[sLayer] = 0;
-				}
-			}
-
-			//adjust availability values with the multiplier we just calculated
-			availableNH4_bylayer = availableNH4_bylayer.Select(x => x * uptake_multiplier).ToArray();
-			availableNO3_bylayer = availableNO3_bylayer.Select(x => x * uptake_multiplier).ToArray();
-
-			//calculate how much no3/nh4 will be left in the soil layers (diff_nxx[layer] = nxx[layer] - availableNH4_bylayer[layer])
-			diffNH4_bylayer = nh4.Select((x, sLayer) => Math.Max(0, x - availableNH4_bylayer[sLayer])).ToArray();
-			diffNO3_bylayer = no3.Select((x, sLayer) => Math.Max(0, x - availableNO3_bylayer[sLayer])).ToArray();
-
-			//adjust this by the sum of all leftover so we get a ratio we can use later
-			double sum_diff = diffNH4_bylayer.Sum() + diffNO3_bylayer.Sum();
-			diffNH4_bylayer = diffNH4_bylayer.Select(x => x / sum_diff).ToArray();
-			diffNO3_bylayer = diffNO3_bylayer.Select(x => x / sum_diff).ToArray();
-
-			double avail_withwater = availableNH4_bylayer.Sum() + availableNO3_bylayer.Sum();
-			double shortfall_withwater = swardSoilNuptake - avail_withwater;
-
-			if (shortfall_withwater > 0)
-			{
-				//this cap should not be needed because shortfall is already capped via the math.min in the scaled_demand calcs (leave it here though)
-				double scaled_diff = Math.Min(shortfall_withwater / avail_withwater, 1);
-
-				availableNH4_bylayer = availableNH4_bylayer.Select((x, sLayer) => x + (shortfall_withwater * diffNH4_bylayer[sLayer])).ToArray();
-				availableNO3_bylayer = availableNO3_bylayer.Select((x, sLayer) => x + (shortfall_withwater * diffNO3_bylayer[sLayer])).ToArray();
-			}
-
-			NUptake.DeltaNH4 = availableNH4_bylayer.Select(x => x * -1).ToArray();
-			NUptake.DeltaNO3 = availableNO3_bylayer.Select(x => x * -1).ToArray();
-
-			for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
-				n_uptake += SNUptake[layer] = (float)(NUptake.DeltaNH4[layer] + NUptake.DeltaNO3[layer]) * -1;
-
-			double[] diffs = NUptake.DeltaNO3.Select((x, i) => Math.Max(no3[i] + x + 0.00000001, 0)).ToArray();
-			if (diffs.Any(x => x == 0))
-				throw new Exception();
+			// could use Val's method ....
 		}
-
-		/*if (ValsMode == "withwater")
-		{
-		NUptake.DeltaNO3 = SP[0].availableNO3_bylayer.Select(x => x * -1).ToArray();
-		NUptake.DeltaNH4 = SP[0].availableNH4_bylayer.Select(x => x * -1).ToArray();
-
-		for (int layer = 0; layer < p_bottomRootLayer; layer++)
-		SNUptake[layer] = (float)(SP[0].availableNO3_bylayer[layer] + SP[0].availableNH4_bylayer[layer]);
-		n_uptake = SNUptake.Sum();
-		}*/
 		else
 		{
-			for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
-			{   //N are taken up only in top layers that root can reach (including buffer Zone).
-				n_uptake += (no3[layer] + nh4[layer]) * Fraction;
-				SNUptake[layer] = (no3[layer] + nh4[layer]) * Fraction;
+			// get the amount taken up of each N form for all plants 
+			PlantNUptake();
+		}
 
-				NUptake.DeltaNO3[layer] = -no3[layer] * Fraction;
-				NUptake.DeltaNH4[layer] = -nh4[layer] * Fraction;
-			}
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{
+			NUptake.DeltaNO3[layer] = -soilNO3Uptake[layer];
+			NUptake.DeltaNH4[layer] = -soilNH4Uptake[layer];
+			n_uptake += soilNH4Uptake[layer] + soilNO3Uptake[layer];
 		}
 
 		if (NitrogenChanged != null)
 			NitrogenChanged.Invoke(NUptake);
 		return n_uptake;
+	}
+
+	/// <summary>
+	/// Get the actual amount of N taken up by the plants (whole sward)
+	/// </summary>
+	private void PlantNUptake()
+	{
+		// clear arrays
+		Array.Clear(soilNH4Uptake, 0, dlayer.Length);
+		Array.Clear(soilNO3Uptake, 0, dlayer.Length);
+
+		// simple uptake, fraction of what is available
+		double fraction = 0.0;
+		if (swardSoilNavailable > 0.0)
+			fraction = Math.Min(1.0, swardSoilNuptake / swardSoilNavailable);
+
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{
+			soilNO3Uptake[layer] = no3[layer] * fraction;
+			soilNH4Uptake[layer] = nh4[layer] * fraction;
+			soilNUptake[layer] = soilNH4Uptake[layer] + soilNO3Uptake[layer];
+		}
+	}
+
+	/// <summary>
+	/// Gets the amount of N available to plants (whole sward - simple method)
+	/// </summary>
+	/// <returns>N available</returns>
+	private double PlantAvailableN()
+	{
+		swardSoilNavailable = 0;
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{
+			soilNAvail[layer] = no3[layer] + nh4[layer];  // all n is available
+			swardSoilNavailable += soilNAvail[layer];
+		}
+
+		return swardSoilNavailable;
+	}
+
+	private double calcPlantExtractableN()
+	{
+		swardSoilNavailable = 0;
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{
+			//another approach for controlling N uptake
+			const float KNO3 = 0.1F;
+			const float KNH4 = 0.1F;
+			double swaf = (sw_dep[layer] - ll[layer]) / (DUL[layer] - ll[layer]);
+			swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
+			double Navailable = (no3[layer] * KNO3) + (nh4[layer] * KNH4);
+			Navailable *= Math.Pow(swaf, 0.25);
+			swardSoilNavailable += Navailable;
+			soilNAvail[layer] = Navailable;
+		}
+
+		return swardSoilNavailable;
+	}
+
+	/// <summary>
+	/// Get the amount of available to plants (each species)
+	/// </summary>
+	private void PlantAvailableSoilN()
+	{
+		// zero out the variables
+		int nLayers = dlayer.Length;
+		double layerFrac = 0.0;
+		double PotAvailableNH4 = 0.0;
+		double PotAvailableNO3 = 0.0;
+		double xFac = 1.0;
+
+		// find out soil available water (as if each species was alone)
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			Array.Clear(mySpecies[s].soilAvailableW, 0, nLayers);
+			for (int layer = 0; layer <= mySpecies[s].RootZoneLayer(); layer++)
+			{
+				layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+				PotAvailableNH4 = Math.Max(0.0, nh4[layer] * kNH4[layer] * layerFrac);
+				PotAvailableNO3 = Math.Max(0.0, no3[layer] * kNO3[layer] * layerFrac);
+				if (referenceRLD > 0.0)
+				{
+					xFac = Math.Min(1.0, (mySpecies[s].RLD[layer] / referenceRLD));
+				}
+				mySpecies[s].soilAvailableNH4[layer] = xFac * PotAvailableNH4;
+				mySpecies[s].soilAvailableNO3[layer] = xFac * PotAvailableNO3;
+				soilNH4Uptake[layer] *= mySpecies[s].soilAvailableNH4[layer];
+				soilNO3Uptake[layer] += mySpecies[s].soilAvailableNO3[layer];
+				soilNUptake[layer] = mySpecies[s].soilAvailableNH4[layer] + mySpecies[s].soilAvailableNO3[layer];
+			}
+		}
+	}			
+	
+	/// <summary>
+	/// Get the actual amount of N taken up by the plants (each species)
+	/// </summary>
+	private void SpeciesNUptake()
+	{
+		double[] rld = new double[NumSpecies];
+		double[] NH4avail = new double[NumSpecies];
+		double[] NO3avail = new double[NumSpecies];
+
+		double TotalNH4 = 0.0;
+		double TotalNO3 = 0.0;
+		double TotalFacNH4 = 0.0;
+		double TotalFacNO3 = 0.0;
+
+		int[] rootDepths = new int[NumSpecies];
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			rootDepths[s] = mySpecies[s].RootZoneLayer();
+		}
+		Array.Sort(rootDepths);
+
+		int z = 0;
+		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
+		{
+			for (int s = 0; s < NumSpecies; s++)
+			{
+				rld[s] = mySpecies[s].dmroot * mySpecies[s].rootFraction[layer] * mySpecies[s].specificRootLength;
+				NH4avail[s] += mySpecies[s].soilAvailableNH4[layer];
+				NO3avail[s] += mySpecies[s].soilAvailableNO3[layer];
+				TotalNH4 +=mySpecies[s].soilAvailableNH4[layer];
+				TotalNO3 +=mySpecies[s].soilAvailableNO3[layer];
+
+				TotalFacNH4 +=mySpecies[s].soilAvailableNH4[layer]*mySpecies[s].soilNdemand;
+				TotalFacNO3 +=mySpecies[s].soilAvailableNO3[layer]*mySpecies[s].soilNdemand;
+			}
+			if (layer == rootDepths[z])
+			{ // we reach the bottom of first root zone
+				for (int s = 0; s < NumSpecies; s++)
+				{
+					mySpecies[s].soilNH4Uptake += TotalNH4 * NH4avail[s] * mySpecies[s].soilNdemand / TotalFacNH4;
+					mySpecies[s].soilNO3Uptake += TotalNO3 * NO3avail[s] * mySpecies[s].soilNdemand / TotalFacNO3;
+					NH4avail[s] = 0.0;
+					NO3avail[s] = 0.0;
+				}
+				TotalNH4 = 0.0;
+				TotalNO3 = 0.0;
+				TotalFacNH4 = 0.0;
+				TotalFacNO3 = 0.0;
+				z += 1;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Val's method for N uptake
+	/// </summary>
+	private void ValMethod()
+	{
+		double
+			uptake_multiplier = double.MaxValue,
+			totSWUptake = soilWUptake.Sum();
+
+		double[]
+		availableNH4_bylayer = new double[dlayer.Length],
+		availableNO3_bylayer = new double[dlayer.Length],
+		diffNH4_bylayer = new double[dlayer.Length],
+		diffNO3_bylayer = new double[dlayer.Length];
+
+		for (int sLayer = 0; sLayer < dlayer.Length; sLayer++)
+		{
+			double
+			totN = nh4[sLayer] + no3[sLayer],
+			fracH2O = soilWUptake[sLayer] / totSWUptake;
+
+			if (totN > 0)
+			{
+				availableNH4_bylayer[sLayer] = fracH2O * nh4[sLayer] / totN;
+				availableNO3_bylayer[sLayer] = fracH2O * no3[sLayer] / totN;
+
+				//if we have no3 and nh4 in this layer then calculate our uptake multiplier, otherwise set it to 0
+				//the idea behind the multiplier is that it allows us to calculate the max amount of N we can extract
+				//without forcing any of the layers below 0 AND STILL MAINTAINING THE RATIO as calculated with fracH2O
+				//NOTE: it doesn't matter whether we use nh4 or no3 for this calculation, we will get the same answer regardless
+				uptake_multiplier = nh4[sLayer] * no3[sLayer] > 0 ? Math.Min(uptake_multiplier, nh4[sLayer] / availableNH4_bylayer[sLayer]) : 0;
+			}
+			else
+			{
+				availableNH4_bylayer[sLayer] = 0;
+				availableNO3_bylayer[sLayer] = 0;
+			}
+		}
+
+		//adjust availability values with the multiplier we just calculated
+		availableNH4_bylayer = availableNH4_bylayer.Select(x => x * uptake_multiplier).ToArray();
+		availableNO3_bylayer = availableNO3_bylayer.Select(x => x * uptake_multiplier).ToArray();
+
+		//calculate how much no3/nh4 will be left in the soil layers (diff_nxx[layer] = nxx[layer] - availableNH4_bylayer[layer])
+		diffNH4_bylayer = nh4.Select((x, sLayer) => Math.Max(0, x - availableNH4_bylayer[sLayer])).ToArray();
+		diffNO3_bylayer = no3.Select((x, sLayer) => Math.Max(0, x - availableNO3_bylayer[sLayer])).ToArray();
+
+		//adjust this by the sum of all leftover so we get a ratio we can use later
+		double sum_diff = diffNH4_bylayer.Sum() + diffNO3_bylayer.Sum();
+		diffNH4_bylayer = diffNH4_bylayer.Select(x => x / sum_diff).ToArray();
+		diffNO3_bylayer = diffNO3_bylayer.Select(x => x / sum_diff).ToArray();
+
+		double avail_withwater = availableNH4_bylayer.Sum() + availableNO3_bylayer.Sum();
+		double shortfall_withwater = swardSoilNuptake - avail_withwater;
+
+		if (shortfall_withwater > 0)
+		{
+			//this cap should not be needed because shortfall is already capped via the math.min in the scaled_demand calcs (leave it here though)
+			double scaled_diff = Math.Min(shortfall_withwater / avail_withwater, 1);
+
+			availableNH4_bylayer = availableNH4_bylayer.Select((x, sLayer) => x + (shortfall_withwater * diffNH4_bylayer[sLayer])).ToArray();
+			availableNO3_bylayer = availableNO3_bylayer.Select((x, sLayer) => x + (shortfall_withwater * diffNO3_bylayer[sLayer])).ToArray();
+		}
+
+		soilNH4Uptake = availableNH4_bylayer.Select(x => x * 1).ToArray();
+		soilNO3Uptake = availableNO3_bylayer.Select(x => x * 1).ToArray();
+
+		double[] diffs = soilNO3Uptake.Select((x, i) => Math.Max(no3[i] + x + 0.00000001, 0)).ToArray();
+		if (diffs.Any(x => x == 0))
+			throw new Exception();
 	}
 
 	/// <summary>
@@ -2621,37 +2933,6 @@ public class AgPasture
 	#endregion  -----------------------------------------------------------------------------------
 
 	#region Functions  ----------------------------------------------------------------------------
-
-	private double calcPlantAvailableN()
-	{
-		swardSoilNavailable = 0;
-		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
-		{
-			SNSupply[layer] = no3[layer] + nh4[layer];
-			swardSoilNavailable += SNSupply[layer];
-		}
-
-		return swardSoilNavailable;
-	}
-
-	private double calcPlantExtractableN()
-	{
-		swardSoilNavailable = 0;
-		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
-		{
-			//another approach for controlling N uptake
-			const float KNO3 = 0.1F;
-			const float KNH4 = 0.1F;
-			double swaf = (sw_dep[layer] - ll[layer]) / (DUL[layer] - ll[layer]);
-			swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
-			double Navailable = (no3[layer] * KNO3) + (nh4[layer] * KNH4);
-			Navailable *= Math.Pow(swaf, 0.25);
-			swardSoilNavailable += Navailable;
-			SNSupply[layer] = Navailable;
-		}
-
-		return swardSoilNavailable;
-	}
 
 	/// <summary>
 	/// Compute the distribution of roots in the soil profile (sum is equal to one)
@@ -3359,7 +3640,7 @@ public class AgPasture
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of soil covered by green leaves")]
-	[Units("%")]
+	[Units("0-1")]
 	public double Cover_green
 	{
 		get
@@ -3372,7 +3653,7 @@ public class AgPasture
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of soil covered by dead leaves")]
-	[Units("%")]
+	[Units("0-1")]
 	public double Cover_dead
 	{
 		get
@@ -3385,7 +3666,7 @@ public class AgPasture
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Fraction of soil covered by plants")]
-	[Units("%")]
+	[Units("0-1")]
 	public double Cover_tot
 	{
 		get
@@ -3897,7 +4178,7 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double[] NitrogenSupplyLayers
 	{
-		get { return SNSupply; }
+		get { return soilNAvail; }
 	}
 
 	/// <summary>An output</summary>
@@ -3915,7 +4196,7 @@ public class AgPasture
 	[Units("kgN/ha")]
 	public double[] NitrogenUptakeLayers
 	{
-		get { return SNUptake; }
+		get { return soilNUptake; }
 	}
 
 	/// <summary>An output</summary>
@@ -4000,13 +4281,18 @@ public class AgPasture
 	{
 		get
 		{
-			double[] result = new double[dlayer.Length];
-			//double p_srl = 75;           // specific root length (m root/g DMroot)
 			//Compute the root length, total over the whole profile
-			double Total_Rlength = (swardRootDM * 0.1) * specificRootLength[0];   // m root/m2 soil
+			double[] result = new double[dlayer.Length];
+			double Total_Rlength = 0.0;
+			for (int s = 0; s < NumSpecies; s++)
+			{  // average root length (m root/m2 soil)
+				Total_Rlength += (mySpecies[s].dmroot * 0.1) * mySpecies[s].specificRootLength;
+			}
 			Total_Rlength *= 0.001;          // convert into mm root/mm2 soil)
 			for (int layer = 0; layer < result.Length; layer++)
+			{
 				result[layer] = RootFraction[layer] * Total_Rlength / dlayer[layer];    // mm root/mm3 soil
+			}
 			return result;
 		}
 	}
@@ -4036,7 +4322,7 @@ public class AgPasture
 	[Units("mm")]
 	public double WaterSupply
 	{
-		get { return swardWaterSupply; }
+		get { return swardWaterAvailable; }
 	}
 
 	/// <summary>An output</summary>
@@ -4045,7 +4331,7 @@ public class AgPasture
 	[Units("mm")]
 	public double[] WaterSupplyLayers
 	{
-		get { return SWSupply; }
+		get { return soilWavailable; }
 	}
 
 	/// <summary>An output</summary>
@@ -4063,7 +4349,7 @@ public class AgPasture
 	[Units("mm")]
 	public double[] WaterUptakeLayers
 	{
-		get { return SWUptake; }
+		get { return soilWUptake; }
 	}
 
 	/// <summary>An output</summary>
@@ -4338,6 +4624,51 @@ public class AgPasture
 			double[] result = new double[mySpecies.Length];
 			for (int s = 0; s < NumSpecies; s++)
 				result[s] = mySpecies[s].totalLAI;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Fraction of soil covered by green leaves, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesGreenCover
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].coverGreen;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Fraction of soil covered by dead leaves, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesDeadCover
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].coverDead;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Fraction of soil covered by plant, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesTotalCover
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].coverTotal;
 			return result;
 		}
 	}
@@ -5712,15 +6043,15 @@ public class AgPasture
 
 	/// <summary>An output</summary>
 	[Output]
-	[Description("Irradiance on the top of canopy")]
-	[Units("W.m^2/m^2")]
+	[Description("Irradiance per leaf area on the top of canopy")]
+	[Units("W/m^2 leaf")]
 	public double[] SpeciesIrradianceTopCanopy
 	{
 		get
 		{
 			double[] result = new double[mySpecies.Length];
 			for (int s = 0; s < NumSpecies; s++)
-				result[s] = mySpecies[s].IL1;
+				result[s] = mySpecies[s].IL;
 			return result;
 		}
 	}

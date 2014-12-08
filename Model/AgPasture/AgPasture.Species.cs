@@ -21,10 +21,6 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal static MetFile MetFile;
 
-	//// > Soil layering  >>>
-	/// <summary>Some Description</summary>
-	internal static float[] dlayer;
-
 	/// <summary>Some Description</summary>
 	internal static double CO2 = 380;
 
@@ -600,6 +596,21 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double[] rootFraction;
 
+	internal double[] RLD
+	{
+		get
+		{
+			double[] Result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; layer++)
+			{
+				Result[layer] = dmroot * rootFraction[layer]
+							  * specificRootLength / dlayer[layer];
+			}
+
+			return Result;
+		}
+	}
+
 	////  >> Plant height  >>>
 
 	/// <summary>Some Description</summary>
@@ -684,10 +695,19 @@ public class Species
 	//// > Water and N uptake  >>>
 
 	/// <summary>Some Description</summary>
+	internal double soilWAvail = 0.0;
+
+	/// <summary>Some Description</summary>
 	internal double soilWdemand = 0.0;
 
 	/// <summary>Some Description</summary>
 	internal double soilWuptake = 0.0;
+
+	/// <summary>Some Description</summary>
+	internal double[] soilAvailableW;
+
+	/// <summary>Some Description</summary>
+	internal double[] SWuptake;
 
 	/// <summary>Some Description</summary>
 	internal double waterStressFactor;
@@ -706,6 +726,15 @@ public class Species
 
 	/// <summary>Some Description</summary>
 	internal double soilNuptake = 0.0;  //N uptake of the day
+
+	/// <summary>Some Description</summary>
+	internal double[] soilAvailableNH4;
+	/// <summary>Some Description</summary>
+	internal double[] soilAvailableNO3;
+	/// <summary>Some Description</summary>
+	internal double soilNH4Uptake;
+	/// <summary>Some Description</summary>
+	internal double soilNO3Uptake;
 
 	/// <summary>Some Description</summary>
 	internal double NdilutCoeff;
@@ -760,7 +789,7 @@ public class Species
 	internal double dNrootSen = 0.0;     //N in dRootSen
 
 	/// <summary>Some Description</summary>
-	internal double IL1;
+	internal double IL;
 
 	/// <summary>Some Description</summary>
 	internal double Pgross;
@@ -797,11 +826,11 @@ public class Species
 	internal double intRadnFrac;     //fraction of Radn intercepted by this species = intRadn/Radn
 
 	/// <summary>Some Description</summary>
-	internal double interceptedRadn;         //Intercepted Radn by this species
+	internal double interceptedRadn;         //Intercepted Radn by this species (MJ/day)
 
-	////// > Soil layering  >>>
-	///// <summary>Some Description</summary>
-	//internal float[] dlayer;
+	//// > Soil layering  >>>
+	/// <summary>Some Description</summary>
+	internal float[] dlayer;
 
 	#endregion
 
@@ -1089,12 +1118,12 @@ public class Species
 		double Pm_day = Pm * glfT * co2Effect * NcFactor;
 
 		double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
-		IL1 = 1.33333 * 0.5 * swardInterceptedRadn * swardLightExtCoeff * 1000000 / tau;
-		double IL2 = IL1 / 2;                      //IL for early & late period of a day
+		IL = 1.33333 * 0.5 * swardInterceptedRadn * swardLightExtCoeff * 1000000 / tau;
+		double IL2 = IL / 2;                      //IL for early & late period of a day
 
 		// Photosynthesis per LAI under full irradiance at the top of the canopy
-		double photoAux1 = alphaPhoto * IL1 + Pm_day;
-		double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL1 * Pm_day;
+		double photoAux1 = alphaPhoto * IL + Pm_day;
+		double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pm_day;
 		double Pl1 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
 
 		photoAux1 = alphaPhoto * IL2 + Pm_mean;
@@ -1177,38 +1206,40 @@ public class Species
 		{
 			//Add temp effects to Pm
 			double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
-			double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
+			double Tday = (0.25 * Tmean) + (0.75 * MetFile.MaxT);
 
-			double glfT = GFTemperature(Tmean);
 			double co2Effect = PCO2Effects();
 			NcFactor = PmxNeffect();
+			double glfT = GFTemperature(Tmean);
 
-			double Pm_mean = Pm * glfT * co2Effect * NcFactor;
-
+			double Pm_1 = Pm * glfT * co2Effect * NcFactor;
+			
 			glfT = GFTemperature(Tday);
-			double Pm_day = Pm * glfT * co2Effect * NcFactor;
+			double Pm_2 = Pm * glfT * co2Effect * NcFactor;
 
 			double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
-			IL1 = 1.33333 * 0.5 * interceptedRadn * lightExtCoeff * 1000000 / tau;
-			double IL2 = IL1 / 2;                      //IL for early & late period of a day
+			//IL1 = 1.33333 * 0.5 * interceptedRadn * lightExtCoeff * 1000000 / tau;
+			//double IL2 = IL1 / 2;                      //IL for early & late period of a day
 
-			// Photosynthesis per LAI under full irradiance at the top of the canopy
-			double photoAux1 = alphaPhoto * IL1 + Pm_day;
-			double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL1 * Pm_day;
-			double Pl1 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
+			// radiation  - include dusk/dawn effect
+			double iRadn = interceptedRadn * (4.0 / 3.0);  // MJ/m2.day
+			iRadn *= 1000000;                              // J/m2.day
+			iRadn /= tau;								   // J/m2.s
 
-			photoAux1 = alphaPhoto * IL2 + Pm_mean;
-			photoAux2 = 4 * thetaPhoto * alphaPhoto * IL2 * Pm_mean;
-			double Pl2 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
+			// Intercepted radiation (J/m2 leaf/s)
+			IL = iRadn * lightExtCoeff * Math.Exp(-lightExtCoeff * greenLAI);
+
+			// Photosynthesis per leaf area under full irradiance at the top of the canopy
+			double Pl1 = SingleLeafPhotosynthesis(iRadn, Pm_1);  // main part of the day
+			double Pl2 = SingleLeafPhotosynthesis(iRadn, Pm_2);  // early and late parts of the day
 
 			// Upscaling from 'per LAI' to 'per ground area'
-			double carbon_m2 = 0.5 * (Pl1 + Pl2) * coverGreen;
-			carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
-			// tau: from second => day; 
-			// 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
-			// (12.0 / 44.0): from CO2 to carbohydrate (DM)
-
-			Pgross = 10000 * carbon_m2;                 //10000: 'kg/m^2' =>'kg/ha'
+			double carbon_m2 = 0.5  * (Pl1 + Pl2);    // mgCO2/m2 leaf/s
+			carbon_m2 *= coverGreen / lightExtCoeff;  // mgCO2/m2.s - land area
+			carbon_m2 *= 0.000001;                    // kgCO2/m2.s 
+			carbon_m2 *= tau;                         // kgCO2/m2.day
+			carbon_m2 *= 12.0 / 44.0;                 // kgDM/m2.day
+			Pgross = 10000 * carbon_m2;               // kgDM/ha.day
 
 			//Add extreme temperature effects;
 			double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
@@ -1221,6 +1252,20 @@ public class Species
 		{
 			Pgross = 0.0;
 		}
+	}
+
+	/// <summary>
+	/// Compute the photosynthetic rate for a single leaf
+	/// </summary>
+	/// <param name="IL">Istantaneous intercepted radiation (depend on time of day)</param>
+	/// <param name="Pmc">Max photosyntehsis rate, given T, CO2 and N concentration</param>
+	/// <returns></returns>
+	private double SingleLeafPhotosynthesis(double IL, double Pmc)
+	{
+		double photoAux1 = alphaPhoto * IL + Pmc;
+		double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pmc;
+		double Pl = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
+		return Pl;
 	}
 
 	/// <summary>
@@ -2025,7 +2070,7 @@ public class Species
 	/// <summary>
 	/// Gets the dead cover
 	/// </summary>
-	private double coverDead
+	internal double coverDead
 	{
 		get { return (1.0 - Math.Exp(-lightExtCoeff * deadLAI)); }
 	}

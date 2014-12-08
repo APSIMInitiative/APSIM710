@@ -164,11 +164,21 @@
 			<UseRootBySpecies description="Whether root distribution is determined for each species, instead of avg sward (yes/no)">no</UseRootBySpecies>
 			<UsePhotosynthesisBySpecies description="Whether photosynthesis is computed by species or average sward (yes/no)">no</UsePhotosynthesisBySpecies>
 
+			<referenceRLD description="Reference root length density for water and N uptake (mm/mm3)">0.20</referenceRLD>
+			<UseAlternativeWaterUptake description="Whether alternative method for determining plant available water and uptake is used">no</UseAlternativeWaterUptake>
+			<UseAlternativeNUptake description="Whether alternative method for determining plant available water and uptake is used">no</UseAlternativeNUptake>
+			<!-- Standard method determined water or N availability considering the whole sward, the amount taken up is mostly ignores species.
+			       The alternative method takes into account variations in root distribution as well as demand to define uptake for each species-->
+			
 			<!-- Values for each soil layer (read in from interface) -->
 			<ll description="Lower limit moisture for water uptake by this species (cm3/cm3)">0.0</ll>
 			<kl description="Coefficient for water availability for each layer (0-1)">1.0</kl>
 			<xf description="Exploration factor, define how hospitable the soil is for root growth (0-1)">1.0</xf>
 			<rlvp description="Root length density proportion, relative (to be deprecated)">1.0</rlvp>
+
+			<kNH4 description="Coefficient for NH4 availability for each layer (0-1)">1.0</kNH4>
+			<kNO3 description="Coefficient for NO3 availability for each layer (0-1)">1.0</kNO3>
+			<!-- If only one value is supplied, it will be used for the whole profile (this is also true for kl if using SWIM2)  -->
 
 			<LinearInterpolation name="FVPDFunction" description="Pair-wise description of the relationship between vapour deficit and relative growth">
 				<XY> 0,1.0</XY>
