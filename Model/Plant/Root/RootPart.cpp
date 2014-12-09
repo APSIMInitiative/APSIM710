@@ -391,6 +391,8 @@ void RootPart::plant_root_depth (void)
    if (MaxRootDepth > 0)
       {
       root_depth_max = min(root_depth_max, MaxRootDepth);
+      if (root_depth > root_depth_max)
+         root_depth = root_depth_max;
       }
    
    dltRootDepth = u_bound ( dltRootDepth, root_depth_max - root_depth);
