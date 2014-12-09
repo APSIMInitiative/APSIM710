@@ -80,14 +80,14 @@ namespace BobWeb
                     if (!Convert.IsDBNull(Row["RevisionNumber"]))
                     {
                        string rev = Convert.ToString(Row["RevisionNumber"]);
-                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.6-r" + rev + ".binaries.WINDOWS.INTEL.exe"))
-                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.6-r" + rev + ".binaries.WINDOWS.INTEL.exe\">Win32 SFX</a><br>";
-                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.6-r" + rev + ".binaries.WINDOWS.X86_64.exe")) 
-                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.6-r" + rev + ".binaries.WINDOWS.X86_64.exe\">Win64 SFX</a><br>";
-                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.6-r" + rev + ".binaries.LINUX.INTEL.exe"))
-                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.6-r" + rev + ".binaries.LINUX.INTEL.exe\">Linux 32 SFX</a><br>";
-                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.6-r" + rev + ".binaries.LINUX.X86_64.exe")) 
-                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.6-r" + rev + ".binaries.LINUX.X86_64.exe\">Linux 64 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.7-r" + rev + ".binaries.WINDOWS.INTEL.exe"))
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.7-r" + rev + ".binaries.WINDOWS.INTEL.exe\">Win32 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.7-r" + rev + ".binaries.WINDOWS.X86_64.exe")) 
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.7-r" + rev + ".binaries.WINDOWS.X86_64.exe\">Win64 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.7-r" + rev + ".binaries.LINUX.INTEL.exe"))
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.7-r" + rev + ".binaries.LINUX.INTEL.exe\">Linux 32 SFX</a><br>";
+                       if (File.Exists("c:/inetpub/wwwroot/files/Apsim7.7-r" + rev + ".binaries.LINUX.X86_64.exe")) 
+                         Links += " <a href=\"http://bob.apsim.info/files/Apsim7.7-r" + rev + ".binaries.LINUX.X86_64.exe\">Linux 64 SFX</a><br>";
                     }
                 }
                 Data.Columns["DetailsFileName"].MaxLength = 2000;
