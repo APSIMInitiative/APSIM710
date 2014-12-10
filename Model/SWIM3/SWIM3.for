@@ -359,7 +359,7 @@
       contains
 
 * ====================================================================
-       subroutine apswim_Reset ()
+       subroutine apswim_Init ()
 * ====================================================================
 
       implicit none
@@ -404,6 +404,51 @@
       return
       end subroutine
 
+* ====================================================================
+       subroutine apswim_Reset ()
+* ====================================================================
+
+      implicit none
+
+*+  Purpose
+*      Initialise apswim module
+
+*+  Local Variables
+       character Event_string*40       ! String to output
+       integer   iost                  ! IOSTAT variable
+
+*- Implementation Section ----------------------------------
+
+      !call apswim_zero_variables ()
+
+      !call apswim_get_other_variables ()
+
+      ! set swim defaults - params that are not to be set by user
+      !call apswim_init_defaults ()
+      
+      ! Get all constants from constants file
+      !call apswim_read_constants ()
+     
+      ! Get all parameters from parameter file
+      call apswim_read_param ()
+
+      !call apswim_read_solute_params()
+
+      !call apswim_register_solute_outputs()
+      
+      ! calculate anything swim needs from input parameters      
+      call apswim_init_calc ()
+
+      ! check all inputs for errors
+      !call apswim_check_inputs()
+
+      ! initialise solute information
+      !call apswim_init_solute()
+
+      !call apswim_New_Profile_Event()
+
+      return
+      end subroutine
 
 
 * ====================================================================
@@ -8090,12 +8135,12 @@ c     :                          ,'runoff')
 
       else if (Action.eq.ACTION_Init) then
          !call apswim_zero_module_links()
-         call apswim_reset ()
+         call apswim_Init ()
          call apswim_sum_report ()
 
       else if ((Action.eq.ACTION_reset)
      :         .or.(Action.eq.ACTION_init)) then
-         call apswim_reset ()
+         call apswim_Reset ()
 
       else if (action.eq.ACTION_sum_report) then
          call apswim_sum_report ()
