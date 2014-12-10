@@ -135,7 +135,7 @@ public class AgPasture
 	[Param]
 	[Description("Reference root length density for water and N uptake")]
 	[Units("mm/mm3")]
-	private double referenceRLD;
+	private double[] referenceRLD;
 
 	[Param]
 	[Description("Coefficient for NH4 availability")]
@@ -982,10 +982,6 @@ public class AgPasture
 	[EventHandler]
 	public void OnInit2()
 	{
-		// Set the links for Clock and MetData for each species
-		//Species.Clock = myClock;
-		//Species.MetFile = MetData;
-
 		// Init parameters after reading the data
 		thisCropName = My.Name;
 		InitParameters();
@@ -995,13 +991,6 @@ public class AgPasture
 
 		// Tell other modules that I exist
 		AdvertiseThisCrop();
-
-		// Tell other modules (micromet) about my canopy
-		swardHeight = HeightfromDM();
-		DoNewCanopyEvent();
-
-		// Tell other modules about my current growth status
-		DoNewPotentialGrowthEvent();
 
 		// write some basic initialisation info
 		writeSummary();
@@ -1018,7 +1007,7 @@ public class AgPasture
 		// get the number of species to be simulated
 		NumSpecies = speciesToSimulate.Length;
 
-		// check number of species - no more than those we have parameters for
+		// check number of species - no more than those we have parameters for (given here by speciesName)
 		if (NumSpecies > speciesName.Length)
 			throw new Exception("Number of species to simulate is greater than the number of species for which parameters were given");
 
@@ -1026,13 +1015,18 @@ public class AgPasture
 		for (int s1 = 0; s1 < NumSpecies; s1++)
 		{
 			for (int s2 = s1 + 1; s2 < NumSpecies; s2++)
+			{
 				if (speciesToSimulate[s2].ToLower() == speciesToSimulate[s1].ToLower())
 					throw new Exception("The name \"" + speciesToSimulate[s1] + "\" was given more than once. Only one is allowed");
+			}
 
 			int myCount = 0;
 			for (int s2 = 0; s2 < speciesName.Length; s2++)
-				if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
+			{
+				if (speciesToSimulate[s1].ToLower() == speciesName[s2].ToLower())
 					myCount += 1;
+			}
+
 			if (myCount < 1)
 				throw new Exception("The name \"" + speciesToSimulate[s1] + "\" does not correspond to any parameterised species, check spelling");
 		}
@@ -1058,6 +1052,19 @@ public class AgPasture
 				throw new Exception("Number of values for paramater \"iniRootCurveParam\" was smaller than number of species");
 			else
 				ExpoLinearCurveParam = iniRootCurveParam;
+		}
+
+		// check whether initial values were given and should replace the default (DM and depth)
+		for (int s = 0; s < NumSpecies; s++)
+		{
+			if (iniShootDM[s] > 0.0)
+				dmshoot[s] = iniShootDM[s];
+			if (iniRootDM[s] > 0.0)
+				dmroot[s] = iniRootDM[s];
+			if (iniRootDepth[s] > 0.0)
+				myRootDepth[s] = iniRootDepth[s];
+			else
+				iniRootDepth[s] = myRootDepth[s];   // need this to determine the max root deth of species being simulated
 		}
 
 		// Number of layers
@@ -1322,11 +1329,6 @@ public class AgPasture
 
 		////  >> Root depth and distribution  >>>
 		mySpecies[s1].usingSpeciesRoot = usingSpeciesRoot;
-		if (iniRootDepth[s1] > 0.0)
-		{
-			myRootDepth[s2] = iniRootDepth[s1];
-		}
-
 		if (usingSpeciesRoot)
 		{ // root specified for each species
 			mySpecies[s1].rootDepth = myRootDepth[s2];
@@ -1336,7 +1338,7 @@ public class AgPasture
 		}
 		else
 		{ // root specified for whole sward (use first species as data entry)
-			mySpecies[s1].rootDepth = myRootDepth[0];
+			mySpecies[s1].rootDepth = iniRootDepth.Max(); // keep using the max to avoid confusion
 			mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
 			mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[0];
 			mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[0];
@@ -1352,8 +1354,6 @@ public class AgPasture
 		//// = Initialising the species  ==========================================================
 
 		//// Shoot DM ....................................................
-		if (iniShootDM[s1] > 0.0)
-			dmshoot[s2] = iniShootDM[s1];
 		mySpecies[s1].dmshoot = dmshoot[s2];
 
 		if (mySpecies[s1].dmshoot == 0.0)
@@ -1388,11 +1388,6 @@ public class AgPasture
 		mySpecies[s1].dmstol3 = mySpecies[s1].dmshoot * DMFraction[10];
 
 		//// Root DM  ....................................................
-		if (iniRootDM[s1] > 0.0)
-		{
-			dmroot[s2] = iniRootDM[s1];
-		}
-
 		if (dmroot[s2] >= 0.0)
 		{
 			mySpecies[s1].dmroot = dmroot[s2];
@@ -1965,9 +1960,9 @@ public class AgPasture
 				layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
 				PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
 				PotAvailableWater = Math.Max(0.0, PotAvailableWater * layerFrac);
-				if (referenceRLD > 0.0)
+				if (referenceRLD[0] > 0.0)
 				{
-					xFac = kl[layer] * Math.Min(1.0, (mySpecies[s].RLD[layer] / referenceRLD));
+					xFac = kl[layer] * Math.Min(1.0, (mySpecies[s].RLD[layer] / referenceRLD[0]));
 				}
 				else
 				{
@@ -2244,9 +2239,12 @@ public class AgPasture
 	private double PlantAvailableN()
 	{
 		swardSoilNavailable = 0;
+		double fracLayer = 1.0;
 		for (int layer = 0; layer <= swardBottomLayerRoots; layer++)
-		{
-			soilNAvail[layer] = no3[layer] + nh4[layer];  // all n is available
+		{  // all N in root zone is available
+			fracLayer = LayerFractionForRoots(layer, swardRootDepth);
+			soilNAvail[layer] = no3[layer] + nh4[layer];
+			soilNAvail[layer] *= fracLayer;
 			swardSoilNavailable += soilNAvail[layer];
 		}
 
@@ -2293,9 +2291,9 @@ public class AgPasture
 				layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
 				PotAvailableNH4 = Math.Max(0.0, nh4[layer] * kNH4[layer] * layerFrac);
 				PotAvailableNO3 = Math.Max(0.0, no3[layer] * kNO3[layer] * layerFrac);
-				if (referenceRLD > 0.0)
+				if (referenceRLD[0] > 0.0)
 				{
-					xFac = Math.Min(1.0, (mySpecies[s].RLD[layer] / referenceRLD));
+					xFac = Math.Min(1.0, (mySpecies[s].RLD[layer] / referenceRLD[0]));
 				}
 				mySpecies[s].soilAvailableNH4[layer] = xFac * PotAvailableNH4;
 				mySpecies[s].soilAvailableNO3[layer] = xFac * PotAvailableNO3;
