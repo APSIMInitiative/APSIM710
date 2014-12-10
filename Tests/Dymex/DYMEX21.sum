@@ -1,0 +1,325 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.7
+Title                  = DYMEX21
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component            "Sowing fertiliser" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                         "calc" = %apsim%\Model\Manager.dll
+   Component                   "CPIManager" = %ausfarm%\manager.dll
+   Component "Red Sodosol (Wagga Wagga No550-YP) Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component "Red Sodosol (Wagga Wagga No550-YP) Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                     "dymexOut" = %apsim%\Model\Textoutput.dll
+   Component             "Dymex_StripeRust" = %apsim%\Tests\Dymex\DxSimComp.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1985
+     Simulation end date   = 31/12/1985
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: waggawagga.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        StageName
+        biomass
+        yield
+        lai
+        dymex_Spore:_Total_Number
+        dymex_Infective_Stage:_Total_Number
+        dymex_Lesion_Total_Number
+        dymex_Lesion_Total_lesa
+        dymex_Spore:_Total_Stage_Mortality
+        dymex_Infective_Stage:_Total_Stage_Mortality
+        dymex_Lesion:_Total_Stage_Mortality
+        dymex_Rls
+        dymex_PpnLeafDis
+        dymex_Rm format 4
+        dymex_LE
+        dymex_RlsMod
+        dymex_Lesion:_Average_LesionLimiter
+        dymex_CropDen
+        dymex_PlantLA
+        dymex_lesionLifeTime
+        dymex_Lesion_Average_Physiological_Age
+
+     Output file = DYMEX21.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Sowing rule Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'wheat')) then
+              if (date_within('9-may, 9-may') = 1) then
+     if (rain[7] >= 25 and esw >= 100) or
+         ('yes' = 'yes' and today = date('9-may'))) then
+        choosenextcrop = 'yes'
+        wheat sow plants =100, sowing_depth = 30, cultivar = janz, row_spacing = 250, crop_class = plant
+     endif
+     if today = date('9-may') then
+        choosenextcrop = 'yes'
+     endif
+              endif
+           endif
+     
+     SECTION:- init
+     nextcrop = 0
+     fallowin = 0
+     END of rules
+     
+     Manager creating a new local real variable : nextcrop = 0.00000
+     Manager creating a new local real variable : fallowin = 0.00000
+
+------- paddock.Sowing fertiliser Initialisation ------------------------------
+     Manager rules:
+     
+     SECTION:- wheat.sowing
+             fertiliser apply amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       wheat  harvest
+       wheat  end_crop
+                endif
+     END of rules
+     
+
+------- paddock.calc Initialisation -------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     green_stover = greenwt * 10
+     leaf = green_biomass - yield
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- paddock.Red Sodosol (Wagga Wagga No550-YP) Water Initialisation -------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.120  0.240  0.380  0.240  1.550  0.613  0.600
+          100.-  200.  0.080  0.100  0.220  0.390  0.220  1.550  0.243  0.500
+          200.-  400.  0.120  0.120  0.240  0.400  0.240  1.500  0.135  0.500
+          400.-  600.  0.120  0.120  0.340  0.400  0.340  1.500  0.009  0.400
+          600.-  900.  0.120  0.120  0.340  0.400  0.123  1.550  0.000  0.300
+          900.- 1200.  0.120  0.120  0.340  0.400  0.120  1.550  0.000  0.300
+         1200.- 1500.  0.120  0.120  0.340  0.400  0.120  1.550  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      12.00      12.00      12.00      14.00
+          100.-  200.      10.00      12.00      12.00      17.00
+          200.-  400.      24.00      24.00      24.00      32.00
+          400.-  600.      24.00      44.00      44.00      12.00
+          600.-  900.      36.00       0.90      66.00      18.00
+          900.- 1200.      36.00       0.00      66.00      18.00
+         1200.- 1500.      36.00       0.00      66.00      18.00
+          ---------------------------------------------------------
+               Totals     178.00      92.90     290.00     129.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              78.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- paddock.surface organic matter Initialisation -------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- paddock.Red Sodosol (Wagga Wagga No550-YP) Nitrogen Initialisation ----
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type ?
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.60  1.60   11.92    1.70    0.00
+             2     5.30  0.80   11.92    1.70    0.00
+             3     6.00  0.40   23.08    3.30    0.00
+             4     6.60  0.20   23.08    3.30    0.00
+             5     9.00  0.10    0.05    0.05    0.00
+             6     9.00  0.10    0.05    0.05    0.00
+             7     9.00  0.10    0.05    0.05    0.00
+          ------------------------------------------------
+           Totals               70.14   10.14    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24366.6  1949.3   433.4    54.2   193.0     4.3
+             2      12278.4   982.3   121.6    15.2   158.0     3.5
+             3      11929.4   954.4    70.6     8.8   105.9     2.4
+             4       5988.1   479.0    11.9     1.5    71.0     1.6
+             5       4645.4   371.6     4.6     0.6    39.0     0.9
+             6       4650.0   372.0     0.0     0.0    21.4     0.5
+             7       4650.0   372.0     0.0     0.0    11.7     0.3
+          ---------------------------------------------------------
+           Totals   68508.0  5480.6   642.0    80.3   600.0    13.3
+          ---------------------------------------------------------
+
+------- paddock.Cl Initialisation ---------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : green_stover = 0.00000
+     Manager creating a new local real variable : leaf = 0.00000
+1 January 1985(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     [paddock.Dymex_StripeRust]
+     ================================================================================
+     Dymex Error Report
+     Model : C:\Apsim\Tests\Dymex\StripeRustJW3.gmd
+     [([x1]*100^2)/[x2]]Operation: Error updating Variables
+     Error: Error encountered in evaluation of equation.
+     ([x1]*100^2)/[x2]
+     [([x1]*100^2)/[x2]]Operation: Error updating Variables
+     Error: Error encountered in evaluation of equation.
+     ([x1]*100^2)/[x2]
+     [plantLA]Operation: Attempting to run model
+     Error: Simulation Run terminated prematurely.  Error while updating module.
+     plantLA
+     ================================================================================
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     [paddock.Dymex_StripeRust] doEvent(): fatal
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+

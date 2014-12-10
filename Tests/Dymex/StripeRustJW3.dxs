@@ -1,0 +1,142 @@
+[Model]
+FileName=.\StripeRustJW3.gmd
+ParameterFile=DxSimComp.ini
+
+[Previous Run]
+lat/=-25
+MetData=C:\Dymex_climex\component\wheatwithdymex\waggawagga.met
+Timer=1,1,1984,366,2,10,3,8,0
+Lifecycle1/CVRangeWarning=On
+Lifecycle1/ParameterFile=,\rust_apsim\wheatwithdymex2
+Lifecycle1/Coh/Spore=0.01,0.1,0
+Lifecycle1/Coh/Infective Stage=0.01,0.1,0
+Lifecycle1/Coh/Lesion=0.01,0.1,0
+Lifecycle1/Dummy=0
+Lifecycle1/Wait=0
+Lifecycle1/DisableInjectors=0
+ParameterFile=.\StripeRustJW3.gmp
+constants/=5,0.000004,12,1000000,-20
+dxStage/ParameterFile=,\rust_apsim\wheatwithdymex2
+dxLAI/ParameterFile=,\rust_apsim\wheatwithdymex2
+dxSLAI/ParameterFile=,\rust_apsim\wheatwithdymex2
+Disease Resistance Converted to Mortality (Rm)/ParameterFile=,\rust_apsim\wheatwithdymex2
+Weather1/ParameterFile=,\rust_apsim\wheatwithdymex2
+Proportion of Leaf that is Diseased/ParameterFile=,\rust_apsim\wheatwithdymex2
+RLS Modifier/ParameterFile=,\rust_apsim\wheatwithdymex2
+lesion Expansion Rate (Rls)/ParameterFile=,\rust_apsim\wheatwithdymex2
+new lai/ParameterFile=,\rust_apsim\wheatwithdymex2
+SporeImmigrat/ParameterFile=,\rust_apsim\wheatwithdymex2
+
+[C:\Dymex_climex\component\wheatwithdymex\Tipton_Bridge2011.met]
+Layout=0
+Date=(none),1,1,0
+HeaderLines=21
+StartDate=1,1,1900
+Minimum Temperature=23,6,0,0,*,5,0,0,0
+Maximum Temperature=17,6,0,0,*,5,0,0,0
+Rainfall=28,7,0,0,*,4,0,0,0
+VP=41,5,0,0,*,1,0,0,0
+
+[Injectors/Lifecycle1/Spore/0]
+Number=1
+Injector0=At Start,Default,10000,enabled,Injector0,singleCohort
+
+[General Options]
+DisplayFormats=
+IntroductoryBmp=
+ModelHelpFile=
+StdOutputDevice=
+LongitudeMarker=longitude
+LatitudeMarker=latitude
+EquatorialZone=0
+Parameters=UseFile,Tree
+ModelDisplay=ShowFixed,ShowExpression,HideDescrip,-1
+OutputResolution=Model
+DiscardOutputTo=0
+RunDescription=Model <Model>
+SaveNetCDF=No
+
+[Tables]
+Number=2
+Table1=out,Single,Step,high
+Table2=progeny,Single,Step,high
+
+[C:\Dymex_climex\component\wheatwithdymex\waggawagga.met]
+Layout=0
+Date=(none),1,1,0
+HeaderLines=21
+StartDate=1,1,1900
+Minimum Temperature=23,6,0,0,*,5,0,0,0
+Maximum Temperature=17,6,0,0,*,5,0,0,0
+Rainfall=28,7,0,0,*,4,0,0,0
+VP=41,5,0,0,*,1,0,0,0
+
+[Table1]
+Title=Model StripeRustJW3
+Font=16
+Layout=Delimited
+Output File Name=
+RowLabelDefs=0
+Columns=14
+Column1=Simulation Date,0,-1,0
+Column2=Spore: Total Number,0,2,0
+Column3=Spore: Total Graduates,0,0,0
+Column4=Spore: Recruitment via Stage Transfer,0,0,0
+Column5=Infective Stage: Graduates to Lesion,0,0,0
+Column6=Infective Stage: Total Number,0,2,0
+Column7=Lesion: Total Number,0,2,0
+Column8=Lesion: Total lesa,0,2,0
+Column9=Lesion: Progeny Production,0,2,0
+Column10=Lesion: Total Graduates,0,0,0
+Column11=lai,0,2,0
+Column12=New_LAI,0,2,0
+Column13=Lesion: Total LesionLimiter,0,2,0
+Column14=immi_spores,0,2,0
+
+[Charts]
+Number=1
+Chart1=lesions,Single,Step,high
+Version=1.1000000238
+
+[Chart1]
+Title=,false
+Export=chart.bmp,400,255,255,255
+FontScaleOverridden=false
+FontScale=1
+ShowLegend=true
+ShowAnnotation=true
+Width=1200
+ChartNum=1
+Chart0/Title=
+Chart0/XVariable=Day Of Year
+Chart0/XAxis=,Box,auto,0,396,10,1,2,show years,show months,365,WholeRun,,,default length,1000,5,clipped,visible
+Chart0/PanelNum=3
+Chart0/Panel0/Color=212,255,212
+Chart0/Panel0/LeftAxis=,Tick,auto,0,0.02,4,1,5,,,365,WholeRun,,,default length,200,5,clipped,visible
+Chart0/Panel0/SeriesNum=1
+Chart0/Panel0/Series0=Lesion: Total lesa,left,Line,255,0,0,,true,1
+Chart0/Panel1/Color=212,255,212
+Chart0/Panel1/LeftAxis=,Tick,auto,0,0.003,6,1,5,,,365,WholeRun,,,default length,200,5,clipped,visible
+Chart0/Panel1/SeriesNum=1
+Chart0/Panel1/Series0=PpnLeafDis,left,Line,255,0,0,,true,1
+Chart0/Panel2/Color=212,255,212
+Chart0/Panel2/LeftAxis=,Tick,auto,4,6,4,1,5,show years,,365,WholeRun,,,default length,200,5,clipped,visible
+Chart0/Panel2/SeriesNum=1
+Chart0/Panel2/Series0=lai,left,Line,0,128,0,,true,1
+
+[Table2]
+Title=Model StripeRustJW3
+Font=16
+Layout=Delimited
+Output File Name=
+RowLabelDefs=0
+Columns=8
+Column1=Simulation Date,0,-1,0
+Column2=Spore: Total Number,0,2,0
+Column3=Spore: Total Graduates,0,0,0
+Column4=Infective Stage: Total Number,0,2,0
+Column5=Infective Stage: Graduates to Lesion,0,0,0
+Column6=Lesion: Total Number,0,2,0
+Column7=Lesion: Total lesa,8,5,0
+Column8=PpnLeafDis,8,5,0
+
