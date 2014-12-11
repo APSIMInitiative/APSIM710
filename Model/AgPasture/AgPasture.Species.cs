@@ -383,8 +383,6 @@ public class Species
 	internal double dmstol3;    //stolon 3 (kg/ha)
 
 	/// <summary>Some Description</summary>
-
-	/// <summary>Some Description</summary>
 	internal double dmroot;    //root (kg/ha)
 
 	/// <summary>Some Description</summary>
@@ -594,6 +592,12 @@ public class Species
 	internal double expoLinearCurveParam = 3.2;
 
 	/// <summary>Some Description</summary>
+	internal double referenceRLD = 0.2;
+
+	/// <summary>Some Description</summary>
+	internal double NextraSWF = 0.25;
+
+	/// <summary>Some Description</summary>
 	internal double[] rootFraction;
 
 	internal double[] RLD
@@ -694,20 +698,14 @@ public class Species
 
 	//// > Water and N uptake  >>>
 
-	/// <summary>Some Description</summary>
-	internal double soilWAvail = 0.0;
+	/// <summary>Plant soil available water</summary>
+	internal double[] soilAvailableWater;
 
-	/// <summary>Some Description</summary>
-	internal double soilWdemand = 0.0;
+	/// <summary>Plant water demand</summary>
+	internal double WaterDemand = 0.0;
 
-	/// <summary>Some Description</summary>
-	internal double soilWuptake = 0.0;
-
-	/// <summary>Some Description</summary>
-	internal double[] soilAvailableW;
-
-	/// <summary>Some Description</summary>
-	internal double[] SWuptake;
+	/// <summary>Amount of soil water taken up</summary>
+	internal double soilWaterUptake = 0.0;
 
 	/// <summary>Some Description</summary>
 	internal double waterStressFactor;
@@ -715,22 +713,18 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double soilSatFactor;
 
-	/// <summary>Some Description</summary>
-	internal double soilNAvail = 0.0;   //N available to this species
-
-	/// <summary>Some Description</summary>
-	internal double soilNdemand = 0.0;  //N demand from soil (=Ndemand-Nremob-Nfixed)
-
-	/// <summary>Some Description</summary>
-	internal double soilNdemandMax = 0.0;   //N demand for luxury uptake
-
-	/// <summary>Some Description</summary>
-	internal double soilNuptake = 0.0;  //N uptake of the day
-
-	/// <summary>Some Description</summary>
+	/// <summary>Amount of NH4 available for uptake</summary>
 	internal double[] soilAvailableNH4;
-	/// <summary>Some Description</summary>
+
+	/// <summary>Amount of NO3 available for uptake</summary>
 	internal double[] soilAvailableNO3;
+
+	/// <summary>N demand from soil</summary>
+	internal double soilNdemand = 0.0;
+
+	/// <summary>Amount of N taken up</summary>
+	internal double soilNuptake = 0.0;
+
 	/// <summary>Some Description</summary>
 	internal double soilNH4Uptake;
 	/// <summary>Some Description</summary>
@@ -1171,7 +1165,7 @@ public class Species
 		// ** C budget is not explicitly done here as in EM
 		Cremob = 0;                     // Nremob* C2N_protein;    // No carbon budget here
 		// Nu_remob[elC] := C2N_protein * Nu_remob[elN];
-		// need to substract CRemob from dm rutnover?
+		// need to substract CRemob from dm turnover?
 
 		// Net potential growth (C) of the day (excluding growth respiration)
 		dGrowthPot = Pgross + Cremob - Resp_g - Resp_m;
@@ -1213,7 +1207,7 @@ public class Species
 			double glfT = GFTemperature(Tmean);
 
 			double Pm_1 = Pm * glfT * co2Effect * NcFactor;
-			
+
 			glfT = GFTemperature(Tday);
 			double Pm_2 = Pm * glfT * co2Effect * NcFactor;
 
@@ -1234,7 +1228,7 @@ public class Species
 			double Pl2 = SingleLeafPhotosynthesis(iRadn, Pm_2);  // early and late parts of the day
 
 			// Upscaling from 'per LAI' to 'per ground area'
-			double carbon_m2 = 0.5  * (Pl1 + Pl2);    // mgCO2/m2 leaf/s
+			double carbon_m2 = 0.5 * (Pl1 + Pl2);    // mgCO2/m2 leaf/s
 			carbon_m2 *= coverGreen / lightExtCoeff;  // mgCO2/m2.s - land area
 			carbon_m2 *= 0.000001;                    // kgCO2/m2.s 
 			carbon_m2 *= tau;                         // kgCO2/m2.day
@@ -1272,7 +1266,7 @@ public class Species
 	/// Compute plant respiration, growth and maintenance
 	/// </summary>
 	/// <returns>Amount of C lost by respiration</returns>
-	internal void plantRespiration()
+	internal void DailyPlantRespiration()
 	{
 		double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
 		double Teffect = 0;
@@ -2396,7 +2390,7 @@ public class Species
 	/// Find the layer at the bottom of the root zone
 	/// </summary>
 	/// <returns>layer at bottom of root zone</returns>
-	internal int RootZoneLayer()
+	internal int RootZoneBottomLayer()
 	{
 		double depthFromSurface = 0.0;
 		int result = dlayer.Length;
@@ -2404,7 +2398,7 @@ public class Species
 		{
 			if (depthFromSurface >= rootDepth)
 			{
-				result = layer;
+				result = layer - 1;
 				layer = dlayer.Length;
 			}
 			else
@@ -2424,7 +2418,6 @@ public class Species
 	{
 		int nLayers = dlayer.Length;
 		double[] result = new double[nLayers];
-		double sumProportion = 0.0;
 		for (int layer = 0; layer < nLayers; layer++)
 		{
 			result[layer] = rootFraction[layer];
