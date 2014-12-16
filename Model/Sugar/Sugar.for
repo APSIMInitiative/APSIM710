@@ -3080,7 +3080,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
       integer    Option                ! (INPUT) option number
 
 *+  Purpose
-*       Plant water supply
+*       Plant water supply (KL Approach)
 
 *+  Mission Statement
 *     Plant water supply
@@ -3145,6 +3145,172 @@ c+!!!!!!!!! check order dependency of deltas
       end subroutine
 
 
+      
+ 
+ ! ====================================================================
+       subroutine cproc_sw_supply2(          
+     :                     C_sw_lb          
+     :                     ,G_dlayer          
+     :                     ,P_ll_dep          
+     :                     ,G_dul_dep          
+     :                     ,G_sw_dep          
+     :                     ,max_layer          
+     :                     ,g_root_depth                    
+     :                     ,p_kl               
+     :                     ,g_root_length     
+     :                     ,c_sw_supply_per_root_length                            
+     :                     ,g_sw_avail          
+     :                     ,g_sw_avail_pot          
+     :                     ,g_sw_supply          
+     :                     )
+! ====================================================================
+
+!      dll_export cproc_sw_supply2
+      implicit none
+
+!+  Sub-Program Arguments
+      real    C_sw_lb            ! (INPUT)
+      real    G_dlayer (*)       ! (INPUT)
+      real    P_ll_dep (*)       ! (INPUT)
+      real    G_dul_dep (*)      ! (INPUT)
+      real    G_sw_dep (*)       ! (INPUT)
+      integer max_layer          ! (INPUT)
+      real    g_root_depth       ! (INPUT)
+      real    p_kl (*)           ! (INPUT)
+      real    g_root_length(*)   ! (INPUT)      
+      real    c_sw_supply_per_root_length  ! (INPUT)  
+      real    g_sw_avail (*)     ! (OUTPUT)
+      real    g_sw_avail_pot (*) ! (OUTPUT)
+      real    g_sw_supply (*)    ! (OUTPUT)
+
+!+  Purpose
+!     Calculate the crop water supply based on (Per Unit Root Length) approach
+
+!+  Mission Statement
+!   Calculate today's soil water supply
+
+!+  Changes
+!     17-04-1998 - neilh - Programmed and Specified
+
+!+  Calls
+
+
+!+  Constant Values
+      character*(*) myname               ! name of current procedure
+      parameter (myname = 'cproc_sw_supply2')
+
+!    local variables
+      integer deepest_layer
+      integer layer
+      
+!- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+        !sv- sw_avail_pot is total capacity of the soil layers that have roots in them (dul - ll)
+        !    sw_avail is the current amount of water in layers that have roots in them (sw - ll)    
+        
+         call crop_check_sw(C_sw_lb, G_dlayer, G_dul_dep, max_layer,
+     :   G_sw_dep, P_ll_dep)
+         call crop_sw_avail_pot(max_layer, G_dlayer, G_dul_dep,          &
+     :   G_root_depth, P_ll_dep, g_sw_avail_pot) ! potential extractable sw
+         call crop_sw_avail(max_layer, G_dlayer, G_root_depth, G_sw_dep,          &
+     :   P_ll_dep, g_sw_avail)       ! actual extractable sw (sw-ll)
+       
+        !sv- per unit root length approach.
+        
+        call crop_sw_supply2(max_layer,G_dlayer,G_root_depth,G_sw_dep,          &
+     :  P_kl, g_root_length, c_sw_supply_per_root_length, 
+     :  P_ll_dep, g_sw_supply)
+
+      call pop_routine (myname)
+      return
+      end subroutine      
+      
+      
+!     ===========================================================
+      subroutine crop_sw_supply2(num_layer, dlayer, root_depth, sw_dep,          
+     :                       kl, root_length, sw_supply_per_root_length,            
+     :                       ll_dep, sw_supply)
+!     ===========================================================
+
+!      dll_export crop_sw_supply
+      implicit none
+
+!+  Sub-Program Arguments
+      INTEGER    num_layer       ! (INPUT)  number of layers in profile
+      REAL       dlayer(*)       ! (INPUT)  thickness of soil layer I (mm)
+      REAL       root_depth      ! (INPUT)  depth of roots (mm)
+      REAL       sw_dep(*)       ! (INPUT)  soil water content of layer L (mm)
+      REAL       kl(*)           ! (INPUT)  root length density factor for water
+      real       root_length(*)     ! (INPUT)
+      real       sw_supply_per_root_length
+      REAL       ll_dep(*)       ! (INPUT)  lower limit of plant-extractable soi
+      real       sw_supply(*)    ! (OUTPUT) potential crop water uptake
+                                 ! from each layer (mm) (supply to roots)
+
+!+  Purpose
+!       Return potential water uptake from each layer of the soil profile
+!       by the crop (mm water). This represents the maximum amount in each
+!       layer regardless of lateral root distribution but takes account of
+!       root depth in bottom layer.
+
+!sv- this is the per unit root length approach which is different to the pure KL approach.
+
+!+  Mission Statement
+!   Calculate today's soil water supply
+
+!+  Notes
+!      This code still allows water above dul to be taken - cnh
+
+!+  Changes
+!       010994 jngh specified and programmed - adapted from barley
+!       970216 slw generalised to avoid common blocks, added num_layer
+
+!+  Constant Values
+      character  my_name*(*)     ! name of procedure
+      parameter (my_name = 'crop_sw_supply2')
+
+!+  Local Variables
+      integer    deepest_layer   ! deepest layer in which the roots are growing
+      integer    layer           ! soil profile layer number
+      real       sw_avail        ! water available (mm)
+      real       rlv             ! Root Length Volume. (Length of roots per volume of soil)
+
+!- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+            ! get potential uptake
+
+      call fill_real_array (sw_supply, 0.0, num_layer)
+      deepest_layer = find_layer_no (root_depth, dlayer, num_layer)
+      
+      
+      do 1000 layer = 1, deepest_layer
+      
+         rlv = divide (root_length(layer)
+     :                          ,g%dlayer(layer)
+     :                          ,0.0)
+     :                 * sugar_afps_fac(layer)
+      
+         sw_avail = (sw_dep(layer) - ll_dep(layer))
+         
+         sw_supply(layer) = rlv * 100 * kl(layer) * sw_avail 
+     :                      * sw_supply_per_root_length    !sv- this is left in as a calibration factor.
+         sw_supply(layer) = l_bound (sw_supply(layer), 0.0)
+
+1000  continue
+
+            ! now adjust bottom layer for depth of root
+      sw_supply(deepest_layer) = sw_supply(deepest_layer)          
+     :            * root_proportion(deepest_layer, dlayer, root_depth)
+
+      call pop_routine (my_name)
+      return
+      end subroutine      
+      
+      
+      
 
 *     ===========================================================
       subroutine sugar_water_uptake (Option)
@@ -3204,6 +3370,235 @@ c+!!!!!!!!! check order dependency of deltas
       end subroutine
 
 
+      
+!     ===========================================================
+      subroutine cproc_sw_uptake1_hourly( num_layer, dlayer, root_depth, 
+     :                        sw_demand, sw_supply, dlt_sw_dep )
+!     ===========================================================
+
+!      dll_export cproc_sw_uptake1
+      implicit none
+
+!+  Sub-Program Arguments
+      INTEGER    num_layer       ! (INPUT)  number of layers in profile
+      REAL       dlayer(*)       ! (INPUT)  thickness of soil layer I (mm)
+      REAL       root_depth      ! (INPUT)  depth of roots (mm)
+      REAL       sw_demand       ! (INPUT)  total crop demand for water (mm)
+      REAL       sw_supply(*)    ! (INPUT)  potential water to take up (supply)
+      real       dlt_sw_dep (*)  ! (OUTPUT) root water uptake (mm)
+
+!+  Purpose
+!       Returns actual water uptake from each layer of the soil
+!       profile by the crop (mm).
+
+!+  Mission Statement
+!   Calculate the crop uptake of soil water
+
+!+  Changes
+!       200498 nih created from crop_sw_uptake0
+
+!+  Constant Values
+      character  my_name*(*)     ! name of procedure
+      parameter (my_name = 'cproc_sw_uptake1')
+
+!+  Local Variables
+      integer    deepest_layer   ! deepest layer in which the roots are growing
+      integer    layer           ! layer number of profile ()
+      real       sw_supply_sum   ! total potential over profile (mm)
+      integer    h, i, j, k
+      real       average
+      real       ep_hourly_total
+      real       diff
+      real       num_of_inside_hrs
+      real       make_equal_amount
+      integer    peak_hr1
+      integer    peak_hr2
+      real       peak_demand1
+      real       peak_demand2
+      integer    flatten_hr1
+      integer    flatten_hr2
+      integer    night_hr1  !hour before sunrise   
+      integer    night_hr2  !hour after sunset
+      integer    num_flat_top_hrs
+
+
+!- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+            ! find total root water potential uptake as sum of all layers
+
+      deepest_layer = find_layer_no (root_depth, dlayer, num_layer)
+      sw_supply_sum = sum_real_array (sw_supply, deepest_layer)
+      if (sw_supply_sum.le.0.0 .or. sw_demand.le.0.0) then
+            ! we have no uptake - there is no demand or potential
+
+         call fill_real_array (dlt_sw_dep, 0.0, num_layer)
+
+      else
+               ! get actual uptake
+
+         call fill_real_array (dlt_sw_dep, 0.0, num_layer)
+         if (sw_demand.lt.sw_supply_sum) then
+
+               ! demand is less than what roots could take up.
+               ! water is non-limiting.
+               ! distribute demand proportionately in all layers.
+               
+            g%ep_hourly = g%sw_demand_hourly   
+
+            do 1000 layer = 1, deepest_layer
+               dlt_sw_dep(layer) = - divide (sw_supply(layer)
+     :                              , sw_supply_sum, 0.0)         
+     :                              * sw_demand
+
+1000        continue
+
+         else
+                ! water is limiting - not enough to meet demand so take
+                ! what is available (potential) (the armount that the soil "can" supply)
+
+            g%ep_hourly = g%sw_demand_hourly
+     
+     
+            !sw_demand_hourly() sine curve most often does not have its peak at exactly 12pm (Noon)
+            !This is because solar noon is not the same as chronological noon in all areas.
+            !Also the sw_demand is a function of not just Radiation but also temperature which bulds in the afternoon.
+            !Mostly the peak of the sw_demand_hourly curve is at about 1pm-2pm. 
+            !So we are going to just loop through the hourly demand curve to find which 2 hours are closest to the peak of the curve.
+            peak_hr1 = 0 
+            peak_hr2 = 0
+            peak_demand1 = 0.0 
+            peak_demand2 = 0.0
+            night_hr1 = 0
+            night_hr2 = 0
+            num_flat_top_hrs = 0
+            
+            do 10 h = 1, 24
+            
+               !find hour before sunrise
+               if ( (.not. reals_are_equal(g%sw_demand_hourly(h), 0.0))
+     :              .and. (night_hr1 .eq. 0) ) then
+                       night_hr1 = h-1    
+                endif
+                
+               !find hour after sunset
+               if ((night_hr1 .gt. 0) .and. (night_hr2 .eq. 0)
+     :          .and. reals_are_equal(g%sw_demand_hourly(h), 0.0)) then
+                      night_hr2 = h       
+               endif            
+            
+            
+               !Find Peak Hours
+               
+               !make greater than "or equal to" rather than just greater than because if
+               !either hour each side of the peak is equal, 
+               !we wat to favour the sunset side of the peak in this case.    
+              
+               if (g%sw_demand_hourly(h) .ge. peak_demand1) then
+                     peak_hr1 = peak_hr2
+                     peak_demand1 = peak_demand2
+              
+                     peak_demand2 = g%sw_demand_hourly(h)
+                     peak_hr2 = h                      
+               endif
+              
+              
+               !If the user specifies sw_demand_hourly_max in the ini file 
+               !then this sw_demand_hourly curve will have a flattened top to it. 
+               !So the if statement above (with it's .ge.) will not find the actual peak hours 
+               !instead it will find the edge of this flattened top (on the sunset side of the peak). 
+               !-> So count the flat top hours, we will correct the peak hours later
+               
+               if ( (c%sw_demand_hourly_max_numvals.gt.0) 
+     :           .and. ((night_hr1 .gt. 0) .and. (night_hr2 .eq.0))
+     :           .and. (peak_demand1 .eq. peak_demand2) ) then
+                   num_flat_top_hrs = num_flat_top_hrs + 1
+               endif     
+              
+
+10          continue
+
+
+
+            !Correct the peak hours if the user set sw_demand_hourly_max in the ini file
+            !Move the peak hours from the edge of the flat top (on sunset side), to the middle of the flat top.
+            if (c%sw_demand_hourly_max_numvals.gt.0) then
+                peak_hr1 = peak_hr1 - floor(real(num_flat_top_hrs/2))
+                peak_hr2 = peak_hr2 - floor(real(num_flat_top_hrs/2))
+            endif
+            
+            
+            
+            
+     
+     
+            !Flatten the center of the houly sw_demand curve
+            !starting from hour peak_hr1 and peak_hr2 (usually 12 and 13 (mid day) 
+            !which is when sw_demand is at its highest.
+            !Only stop when sw_demand for the day equals sw_supply for the day.
+            do 100 i = 1, 11
+     
+               !Each iteration, move out 1 hour in both directions from the peak of the curve.
+               flatten_hr1 = peak_hr1-i
+               flatten_hr2 = peak_hr2+i
+               
+               !Restrict flattening to daylight hours
+               !cannot flatten/buildup before sunrise (no water demand at night)
+                if (flatten_hr1 .lt. night_hr1) then 
+                    flatten_hr1 = night_hr1
+                endif
+                !cannot flatten/buildup after sunset (no water demand at night)
+                if (flatten_hr2 .gt. night_hr2) then 
+                    flatten_hr2 = night_hr2
+                endif
+            
+               !get average sw_demand of the two outside hours 
+               average = (  g%sw_demand_hourly(flatten_hr1) 
+     :                    + g%sw_demand_hourly(flatten_hr2) ) / 2  
+              
+               !Flatten the peak of the curve using the average sw_demand of these new outside hours. 
+              do 110 j= flatten_hr1, flatten_hr2
+                   g%ep_hourly(j) = average
+110            continue
+                   
+              !If the new ep_hourly (summed over the day) is less than the supply then we have flattened too much. 
+              !We need to build it back up again so they are equal.
+              ep_hourly_total = sum_real_array(g%ep_hourly, 24)     
+              if (ep_hourly_total.lt.sw_supply_sum) then
+                    diff = sw_supply_sum - ep_hourly_total !amount we need to build back up
+                    num_of_inside_hrs = (flatten_hr2-flatten_hr1)-1 !don't build up the outside hours
+                    make_equal_amount = diff / num_of_inside_hrs  !divide by num of inside hours
+                    do 120 k = (flatten_hr1+1), (flatten_hr2-1)     !build up the inside hours
+                        g%ep_hourly(k) = g%ep_hourly(k) 
+     :                                  + make_equal_amount
+120                 continue                    
+              endif
+             
+             !When we have ep_hourly (summed over the day) exactly equal to what the soil can supply then stop iterating.
+             ep_hourly_total = sum_real_array(g%ep_hourly, 24)   
+             if (reals_are_equal(ep_hourly_total, sw_supply_sum)) then
+                 exit
+             endif
+              
+100        continue
+     
+                     
+            do 1100 layer = 1, deepest_layer
+               dlt_sw_dep(layer) = - sw_supply(layer)
+
+1100        continue
+
+         endif
+      endif
+
+      call pop_routine (my_name)
+      return
+      end subroutine    
+      
+      
+      
+      
 
 *     ===========================================================
       subroutine sugar_water_demand (Option)
@@ -3258,6 +3653,94 @@ c+!!!!!!!!! check order dependency of deltas
       return
       end subroutine
 
+      
+*     ===========================================================
+      subroutine sugar_water_demand_hourly ()
+*     ===========================================================
+
+
+      implicit none
+
+*+  Sub-Program Arguments
+      !integer    Option                ! (INPUT) option number
+
+*+  Purpose
+*       Plant water demand
+
+*+  Mission Statement
+*     Calculate the plant water demand
+
+*+  Changes
+*      250894 jngh specified and programmed
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'sugar_water_demand')
+*+  Local Variables
+      real      cover_green
+      integer   current_phase
+      real      rue
+      integer   h     ! hour
+      real      sw_demand_hourly_max
+      
+      
+*- Implementation Section ----------------------------------
+c+!!!!!!!!! check order dependency of deltas
+      call push_routine (my_name)
+
+ 
+      cover_green = 1.0 - exp (-c%extinction_coef * g%lai)
+         
+      current_phase = int (g%current_stage)
+      rue = c%rue(current_phase)         
+         
+      call fill_real_array (g%sw_demand_hourly, 0.0, 24)
+            
+      if (c%sw_demand_hourly_max_numvals.gt.0) then
+      
+            sw_demand_hourly_max = linear_interp_real (g%swdef_photo
+     :                             , c%x_swdef_photo2
+     :                             , c%y_sw_demand_hourly_max
+     :                             , c%sw_demand_hourly_max_numvals)  
+
+      endif     
+    
+              
+      do 10 h = 1, 24
+      
+            !sw_demand (mm) = biomass accumulation (g carbo) / transp_eff (g carbo/mm of water)
+            
+            !nb. transp_eff (g/mm) = kPa * transp_eff_cf (kg kPa/kg) * 1000
+            !multiple by 1000 to convert from kg to grams (transp_eff_cf is in kg, see ini file)
+            !denominator needs no conversion because 1 mm of water/meter = 1 kg of water/meter 
+            
+            ! transp_eff = (transp_eff_cf / vpd) * 1000     
+            ! 1/transp_eff = vpd /(transp_eff_cf  * 1000)
+            !(multiply by 1/transp_eff rather than divide by transp_eff to prevent a divide by zero if VPDHourly is 0)
+            
+            g%sw_demand_hourly(h) =  g%dlt_dm_pot_rue_hourly(h)
+     :                 * (g%VPDHourly(h)/ (g%transp_eff_cf * 1000))
+    
+     
+            !if the user has specified a sw_demand_hourly_max in the ini file then use it
+            
+            if ((c%sw_demand_hourly_max_numvals.gt.0) .and. 
+     :         (g%sw_demand_hourly(h) .gt. sw_demand_hourly_max)) then
+                     g%sw_demand_hourly(h) = sw_demand_hourly_max
+            endif 
+            
+10     continue
+
+      !Daily values from the Hourly values
+      g%sw_demand_te = sum_real_array (g%sw_demand_hourly, 24)      !this is only needed for send_my_variables as an output variable.
+      g%sw_demand    = sum_real_array (g%sw_demand_hourly, 24)      !hourly value is unbounded by eo, unlike the daily value (via cproc_sw_demand_bound() )
+      
+
+      call pop_routine (my_name)
+      return
+      end subroutine      
+      
+      
 
 
 *     ===========================================================
@@ -3418,7 +3901,8 @@ c+!!!!!!!!! check order dependency of deltas
       call push_routine (my_name)
 
       current_phase = int (g_current_stage)
-      rue = c_rue(current_phase)
+      rue = c_rue(current_phase) 
+     :    * g%rue_co2_fact * g%rue_leaf_no_fact
      :    * sugar_rue_reduction
      :               (
      :                G_nfact_photo
@@ -3426,7 +3910,7 @@ c+!!!!!!!!! check order dependency of deltas
      :              , G_oxdef_photo
      :              , G_lodge_redn_photo
      :               )
-
+      
          ! potential dry matter production with temperature
          ! and N content stresses is calculated.
          ! This is g of dry biomass produced per MJ of intercepted
@@ -3485,7 +3969,7 @@ cnh      call sugar_radn_int (radn_int)
       call push_routine (my_name)
 
       current_phase = int (g_current_stage)
-      rue = c_rue(current_phase)
+      rue = c_rue(current_phase) * g%rue_co2_fact * g%rue_leaf_no_fact
 
          ! potential dry matter production with temperature
          ! and N content stresses is calculated.
@@ -3501,6 +3985,182 @@ cnh      call sugar_radn_int (radn_int)
 
 
 
+*     ===========================================================
+      subroutine sugar_dm_pot_rue_hourly
+     :               (
+     :                C_rue
+     :              , G_current_stage
+     :              , G_radn_int
+     :              , G_nfact_photo
+     :              , G_temp_stress_photo
+     :              , G_oxdef_photo
+     :              , G_lodge_redn_photo
+     :              , dlt_dm_pot
+     :               )
+*     ===========================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+      REAL       C_rue(*)              ! (INPUT)  radiation use efficiency (g dm
+      REAL       G_current_stage       ! (INPUT)  current phenological stage
+      REAL       G_radn_int            ! (INPUT)
+      REAL       G_nfact_photo         ! (INPUT)
+      REAL       G_temp_stress_photo   ! (INPUT)
+      REAL       G_oxdef_photo         ! (INPUT)
+      REAL       G_lodge_redn_photo    ! (INPUT)
+      real       dlt_dm_pot            ! (OUTPUT) potential dry matter
+                                       ! (carbohydrate) production (g/m^2)
+
+*+  Purpose
+*       This routine calculates the potential biomass (carbohydrate)
+*       production for conditions where soil supply is non-limiting.
+*
+
+*+  Mission Statement
+*     Get the potential biomass production - non limiting
+
+*+  Changes
+*       060495 nih taken from template
+*       170700 nih added lodgine factor
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'sugar_dm_pot_rue_hourly')
+
+*+  Local Variables
+      integer    current_phase         ! current phase number
+      real       rue                   ! radiation use efficiency under
+                                       ! no stress (g biomass/mj)
+      real       cover_green                                 
+      integer    h
+
+*- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+      !sv- NB. The only difference between this function and dm_pot_rue_pot is
+      !        you multiple this value by sugar_rue_reduction.
+      !        SHOULD GET RID OF THIS FUNCTION AND JUST MULTIPLE THE RESULT OF
+      !        dm_pot_rue_pot by sugar_rue_reduction back in the sugar_process event.
+      
+      current_phase = int (g_current_stage)
+      rue = c_rue(current_phase) 
+     :    * g%rue_co2_fact * g%rue_leaf_no_fact
+     :    * sugar_rue_reduction
+     :               (
+     :                G_nfact_photo
+     :              , G_temp_stress_photo
+     :              , G_oxdef_photo
+     :              , G_lodge_redn_photo
+     :               )
+
+         ! potential dry matter production with temperature
+         ! and N content stresses is calculated.
+         ! This is g of dry biomass produced per MJ of intercepted
+         ! radiation under stressed conditions.
+
+cnh      call sugar_radn_int (radn_int)
+              
+      cover_green = 1.0 - exp (-c%extinction_coef * g%lai)
+      
+      call fill_real_array (g%dlt_dm_pot_rue_hourly, 0.0, 24)
+      dlt_dm_pot = 0.0
+      
+      do 10 h = 1, 24
+            !sv- used in sugar_water_demand_hourly() subroutine 
+            g%dlt_dm_pot_rue_hourly(h) = g%RadnHourly(h)*cover_green*rue
+     
+            dlt_dm_pot = dlt_dm_pot + g%dlt_dm_pot_rue_hourly(h)
+10     continue
+      
+      
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+
+
+
+*     ===========================================================
+      subroutine sugar_dm_pot_rue_pot_hourly
+     :               (
+     :                C_rue
+     :              , G_current_stage
+     :              , G_radn_int
+     :              , dlt_dm_pot
+     :               )
+*     ===========================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+      REAL       C_rue(*)              ! (INPUT)  radiation use efficiency (g dm/mj)
+      REAL       G_current_stage       ! (INPUT)  current phenological stage
+      REAL       G_radn_int            ! (INPUT)
+      real       dlt_dm_pot            ! (OUTPUT) potential dry matter
+                                       ! (carbohydrate) production (g/m^2)
+
+*+  Purpose
+*       This routine calculates the potential biomass (carbohydrate)
+*       production for conditions where soil supply is non-limiting.
+*
+
+*+  Mission Statement
+*     Get the potential biomass production - non limiting
+
+*+  Changes
+*       060495 nih taken from template
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'sugar_dm_pot_rue_pot_hourly')
+
+*+  Local Variables
+      integer    current_phase         ! current phase number
+      real       rue                   ! radiation use efficiency under
+                                       ! no stress (g biomass/mj)
+      real       cover_green
+      integer    h                     !hour
+
+*- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+      current_phase = int (g_current_stage)
+      rue = c_rue(current_phase) * g%rue_co2_fact * g%rue_leaf_no_fact
+
+         ! potential dry matter production with temperature
+         ! and N content stresses is calculated.
+         ! This is g of dry biomass produced per MJ of intercepted
+         ! radiation under stressed conditions.
+
+cnh      call sugar_radn_int (radn_int)
+
+      cover_green = 1.0 - exp (-c%extinction_coef * g%lai)
+      
+      call fill_real_array (g%dlt_dm_pot_rue_pot_hourly, 0.0, 24)
+      dlt_dm_pot = 0.0
+      
+      do 10 h = 1, 24
+            g%dlt_dm_pot_rue_pot_hourly(h) 
+     :                         = g%RadnHourly(h)*cover_green*rue
+     
+            dlt_dm_pot = dlt_dm_pot + g%dlt_dm_pot_rue_pot_hourly(h)
+10     continue
+
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+      
+      
+      
+      
+      
+      
+      
+      
 *     ===========================================================
       subroutine sugar_transpiration_eff (Option)
 *     ===========================================================
@@ -3526,12 +4186,15 @@ cnh      call sugar_radn_int (radn_int)
       character  my_name*(*)           ! name of procedure
       parameter (my_name = 'sugar_transpiration_efficiency')
 
+*+  Local Variables 
+      
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
+      
       if (Option .eq. 1) then
-
-         call cproc_transp_eff1(c%svp_fract, c%transp_eff_cf,
+      
+         call cproc_transp_eff2(c%svp_fract, c%transp_eff_cf,
      :            g%current_stage,g%maxt, g%mint, g%transp_eff)
 
       else
@@ -3542,7 +4205,254 @@ cnh      call sugar_radn_int (radn_int)
       return
       end subroutine
 
+      
+      
+!     ===========================================================
+      subroutine cproc_transp_eff2(svp_fract, transp_eff_cf,          
+     :             current_stage,maxt, mint, transp_eff)
+!     ===========================================================
 
+!sv-   This is copied from cproc_transp_eff1() subroutine in crp_watr.f90 file in "CropTemplate" module
+!      The reason I copied it here was I needed to modify transp_eff_cf to respond to CO2
+
+!      dll_export cproc_transp_eff1
+      !use convertmodule  ! g2mm, mb2kpa   !sv- have my own definition for these.
+      implicit none
+
+!+  Sub-Program Arguments
+      REAL       svp_fract     ! (INPUT)  fraction of distance between svp at mi
+      REAL       transp_eff_cf(*) ! (INPUT)  transpiration efficiency coefficien
+      REAL       current_stage ! (INPUT)
+      REAL       maxt          ! (INPUT)  maximum air temperature (oC)
+      REAL       mint          ! (INPUT)  minimum air temperature (oC)
+      REAL       transp_eff    ! (OUTPUT)
+
+!+  Purpose
+!       Calculate today's transpiration efficiency from the transpiration
+!       efficiency coefficient and vapour pressure deficit, which is calculated
+!       from min and max temperatures.
+
+!+  Mission Statement
+!   Calculate today's transpiration efficiency from VPD
+
+!+  Assumptions
+!       the temperatures are > -237.3 oC for the svp function.
+
+!+  Notes
+!       Average saturation vapour pressure for ambient temperature
+!       during transpiration is calculated as part-way between that
+!       for minimum temperature and that for the maximum temperature.
+!       Tanner & Sinclair (1983) used .75 and .67 of the distance as
+!       representative of the positive net radiation (rn).  Daily SVP
+!       should be integrated from about 0900 hours to evening when Radn
+!       becomes negative.
+
+!+  Changes
+!       140198 nih developed from crop_transp_eff1
+!       070199 igh added l_bound to vpd to stop vpd = 0
+
+!+  Constant Values
+      character  my_name*(*)   ! name of procedure
+      parameter (my_name = 'cproc_transp_eff2')
+
+!+  Local Variables
+      real       svp           ! function to get saturation vapour
+                               ! pressure for a given temperature in oC (kpa)
+      real       temp_arg      ! dummy temperature for function (oC)
+      real       vpd           ! vapour pressure deficit (kpa)
+      integer    current_phase
+      real       l_transp_eff_cf
+!
+      svp(temp_arg) = 6.1078          
+     :          * exp (17.269*temp_arg/ (237.3 + temp_arg))          
+     :          * mb2kpa
+
+!- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+      current_phase = int(current_stage)
+
+            ! get vapour pressure deficit when net radiation is positive.
+
+      vpd = svp_fract* (svp (maxt) - svp (mint))
+
+      vpd = l_bound (vpd, 0.01)
+
+      !sv- add the effect of co2 on transp_eff_cf
+      l_transp_eff_cf=transp_eff_cf(current_phase)*g%transp_eff_cf_fact
+    
+
+    !sv-     
+    !// "transp_eff" units are (g/m^2/mm) or (g carbo per m^2 / mm water)
+    !//  because all other dm weights are in (g/m^2)
+
+    !//! "transp_eff_cf" ("cf" stands for coefficient) is used to convert vpd to transpiration efficiency. 
+    !//! Although the units are sometimes soley expressed as a pressure (kPa) it is really in the form: 
+    !//                 = kPa * kg carbo (per m^2) / kg water (per m^2)   
+    !//                 = kPa * (kg carbo)/(kg water) (see ini file for these units)    
+    !//               since, (1 Kg of water per m^2 is equal to 1 mm per m^2)
+    !//                 = kPa * kg carbo / mm of water
+    !
+    !//hence, 
+    !//     transp_eff (in kg carbo/mm of water) = transp_eff_cf / VPD
+    !//     transp_eff (in g carbo/mm of water)  = (transp_eff_cf / VPD)  * 1000
+    !//                                          = (transp_eff_cf / VPD) / g2mm
+    !//
+    !//     divide by g2mm (which is 0.001) (so really multiplying by 1000) to convert kg carbo to g of carbo
+    
+    
+      transp_eff = divide (l_transp_eff_cf, vpd, 0.0) * 1000
+      
+!      transp_eff = l_bound (transp_eff, 0.0)
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+      
+      
+      
+      
+      
+*     ===========================================================
+      subroutine sugar_transpiration_eff_based_on_stress ()
+*     ===========================================================
+      implicit none
+
+*+  Sub-Program Arguments
+        
+*+  Purpose
+*       This cane from Geoff Inman-Bamber on 22 Aug 2013
+
+*+  Mission Statement
+*     Re Calculate transpiration efficiency using Array values from ini file and water stress
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'sugar_transpiration_eff_based_on_stress')
+
+*+  Local Variables      
+      real       l_vpd
+      
+*- Implementation Section ----------------------------------
+      call push_routine (my_name)     
+            
+              
+       !get te_cf for stress -> from array in ini file
+      g%transp_eff_cf = linear_interp_real (g%swdef_photo
+     :                             , c%x_swdef_photo
+     :                             , c%y_transp_eff_cf
+     :                             , c%te_by_stress_numvals)
+
+      !sv- add the effect of co2 on transp_eff_cf
+      !sv- If Stress or CO2 is present then correct the Traspiration Efficiency Coefficient.
+      g%transp_eff_cf = g%transp_eff_cf * g%transp_eff_cf_fact     
+     
+     
+      !get vapour pressure deficit 
+      l_vpd = vapour_pressure_deficit()            
+           
+           
+      
+      
+      !transp_eff units are grams/mm where as transp_eff_cf units are kg kPa/kg (see ini file)
+      !   1kg per sq meter of water is 1 mm so just need to convert Kg of carbo to g by multiplying by 1000. 
+      
+      g%transp_eff = divide(g%transp_eff_cf, l_vpd, 0.0) * 1000 
+
+
+     
+      call pop_routine (my_name)
+      return
+      end subroutine
+      
+      
+*     ===========================================================
+      real function vapour_pressure_deficit()
+*     ===========================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+
+*+  Purpose
+
+*+  Local Variables
+      real l_vpd
+      
+!+  Notes
+!       Average saturation vapour pressure for ambient temperature
+!       during transpiration is calculated as part-way between that
+!       for minimum temperature and that for the maximum temperature.
+!       Tanner & Sinclair (1983) used .75 and .67 of the distance as
+!       representative of the positive net radiation (rn).  Daily SVP
+!       should be integrated from about 0900 hours to evening when Radn
+!       becomes negative.      
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'vapour_pressure_deficit')
+
+*- Implementation Section ----------------------------------
+      call push_routine (my_name)
+
+           !get vapour pressure deficit when net radiation is positive.
+        l_vpd = c%svp_fract * (svp(g%maxt) - svp(g%mint));
+        l_vpd = l_bound(l_vpd, 0.01);        
+
+        vapour_pressure_deficit = l_vpd
+
+      call pop_routine (my_name)
+      return
+      end function    
+
+      
+*     ===========================================================
+      real function svp(temp_arg)
+*     ===========================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+      real temp_arg
+      
+*+  Purpose
+*       Saturated Vapour Pressure.
+! function to get saturation vapour pressure for a given temperature in oC (kpa)
+! sv- This function was extracted from inside the  cproc_transp_eff1() function below (see svp local variable)
+
+!+  Assumptions
+!       the temperatures are > -237.3 oC for the svp function.
+
+*+  Local Variables
+      real l_svp
+      real mb2kpa
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'svp')
+
+*- Implementation Section ----------------------------------
+      call push_routine (my_name)
+      
+        ! convert pressure mbar to kpa  //sv- taken from FortranInfrastructure module, ConvertModule.f90
+        mb2kpa = 100.0 / 1000.0;     ! 1000 mbar = 100 kpa 
+        
+        svp = 6.1078 * exp(17.269 * temp_arg / (237.3 + temp_arg)) 
+     :                                                * mb2kpa        
+
+      call pop_routine (my_name)
+      return
+      end function         
+      
+      
+      
+      
+
+      
+      
+      
+      
 
 * ====================================================================
        subroutine sugar_temperature_stress
@@ -3934,6 +4844,55 @@ cnh      call sugar_radn_int (radn_int)
       end subroutine
 
 
+*     ===========================================================
+      subroutine sugar_respiration ()
+*     ===========================================================
+
+
+      implicit none
+
+*+  Sub-Program Arguments
+
+
+*+  Purpose
+*       Simulate crop biomass processes.
+
+*+  Mission Statement
+*     Calculate crop biomass processes
+
+*+  Changes
+*      250894 jngh specified and programmed
+
+*+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'sugar_respiration')
+
+*+  Local Values      
+      real sucrose_wt      !sucrose weight
+      real tmean           !mean daily temperature
+      real suc_resp_fr     !sucrose respiration fraction
+      
+*- Implementation Section ----------------------------------
+      call push_routine (my_name)
+
+      sucrose_wt = g%dm_green(sucrose) + g%dm_dead(sucrose) ! Add dead pool to allow for lodged stalks
+
+      tmean = (g%mint + g%maxt)/2
+      suc_resp_fr = linear_interp_real (tmean
+     :                                  ,c%x_tmean
+     :                                  ,c%y_suc_resp_fr
+     :                                  ,c%suc_resp_fr_numvals)
+
+      g%sucrose_respiration = sucrose_wt * suc_resp_fr
+      
+      g%dlt_dm = g%dlt_dm - g%sucrose_respiration
+
+
+      call pop_routine (my_name)
+      return
+      end subroutine      
+      
+      
 
 *     ===========================================================
       subroutine sugar_bio_partition (Option)
@@ -6970,10 +7929,10 @@ cnh for rlv at initialisation.
       integer    Option                ! (INPUT) option number
 
 *+  Purpose
-*       bio transpiration efficiency
+!   Calculate the potential biomass production based upon today's water supply.
 
 *+  Mission Statement
-*     Calcuate biomass transpiration efficiency
+!   Calculate the potential biomass production based upon today's water supply.
 
 *+  Changes
 *      5/9/96 dph
@@ -6998,7 +7957,74 @@ cnh for rlv at initialisation.
       return
       end subroutine
 
+      
+      
+!     ===========================================================
+      subroutine cproc_bio_water1_hourly(dlt_dm_pot_te)
+!     ===========================================================
 
+!      dll_export cproc_bio_water1
+      implicit none
+
+!+  Sub-Program Arguments
+      real       dlt_dm_pot_te   !(OUTPUT) potential dry matter production
+                                 ! by transpiration (g/m^2)
+
+!+  Purpose
+!   Calculate the potential biomass production based upon today's water supply.
+
+!+  Mission Statement
+!   Calculate the potential biomass production based upon today's water supply.
+
+!+  Changes
+!       090994 jngh specified and programmed
+!       160297 slw generalised to avoid common blocks , added num_layer paramete
+
+!+  Constant Values
+      character  my_name*(*)     ! name of procedure
+      parameter (my_name = 'cproc_bio_water1_hourly')
+
+!+  Local Variables
+      integer    deepest_layer   ! deepest layer in which the roots are growing
+      real       sw_supply_sum   ! Water available to roots (mm)
+      integer    h  !hour
+
+!- Implementation Section ----------------------------------
+      call push_routine (my_name)
+
+         ! potential (supply) by transpiration
+         
+      !transpiration efficiency is grams of carbo / mm of water
+
+      !when water stress occurs the plant is not able to get all the water it needs.
+      !it can only get what is available (ie. sw_supply)
+      !So based on the water that the plant was able to get, 
+      !we need to work out how much biomass it could grow. 
+      !biomass able to be grown(g) = transp_eff(g/mm) * supply(mm)  
+
+      !nb. Since this is hourly water stress case, we need an hourly supply,
+      !    we can't use the daily g%sw_supply, instead we use ep_hourly
+      !    because the hourly evaporation is restricted to what the soil can supply in water stressed case.
+      !    The ep_hourly and sw_supply hourly are the same thing when water stress occurs.      
+      !    ep_hourly with water stress was worked out in cproc_sw_uptake1_hourly()
+      
+      !nb. transp_eff (g/mm) = (transp_eff_cf (kg kPa/kg) / vpd (kPa)) * 1000     
+      !    denominator needs no conversion because 1 mm of water/meter = 1 kg of water/meter      
+      
+      dlt_dm_pot_te = 0.0
+      do 10 h = 1, 24
+            dlt_dm_pot_te = dlt_dm_pot_te + 
+     :  ( g%ep_hourly(h) * (g%transp_eff_cf/g%VPDHourly(h)) * 1000 )
+     
+10     continue
+      
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+      
+      
+      
 
 * ====================================================================
        subroutine sugar_leaf_area_sen (Option)
@@ -7613,7 +8639,7 @@ cnh conc for CANE.
 
             ! Plant leaf development
       if (Option .eq. 1) then
-
+ 
          call cproc_leaf_no_pot1
      :               (
      :                c%x_node_no_app

@@ -232,11 +232,36 @@
 !     ================================================================
       Type SugarGlobals
       Sequence
-
+      
+      
       !sv- CO2 changes the RUE & Transpiration Efficiency      
-      real    co2
-      integer    co2_exists    !if "get" returns a value for co2, 
+      real       co2
+      integer    co2_exists    !if "get" returns a value for co2
+      real       rue_co2_fact         !multiplier for rue due to co2
+      real       transp_eff_cf_fact   !multiplier for transp_eff_cf due to co2
 
+      !sv- RUE change with leaf number
+      real       rue_leaf_no_fact
+      
+      !sv- Respiration
+      real       sucrose_respiration 
+      
+      !sv- Hourly Variables
+      !********************
+      
+      !sv- Hourly Met values
+      real       HourlyMetExists
+      real       RadnHourly(24)
+      real       TempHourly(24)
+      real       VPDHourly(24)
+
+      !sv- Hourly Transpiration
+      real      sw_demand_hourly(24) !potential uptake  
+      real      ep_hourly(24)        !actual uptake 
+      real      dlt_dm_pot_rue_hourly(24)
+      real      dlt_dm_pot_rue_pot_hourly(24)
+      
+      
       character  crop_status*5       ! status of crop
       character  crop_cultivar*20    ! cultivar name
       logical    plant_status_out_today
@@ -304,8 +329,8 @@
       real       initial_plant_density !sowing density (plants/m^2)
       real       dlt_root_depth      ! increase in root depth (mm)
       real       root_depth          ! depth of roots (mm)
-      logical lodge_flag
-      real rue
+      logical   lodge_flag
+      real      rue
       real       uptake_water(max_layer) ! sw uptake as provided by another
                                            ! module in APSIM (mm)
       integer    num_uptake_water      ! number of layers in uptake_water()
@@ -385,6 +410,7 @@
       real       dlt_dm_pot_rue_pot
       real       radn_int
       real       transp_eff
+      real       transp_eff_cf       !sv- added 9 July 2014 Transpiration Efficiency Coeffecient based on Stresss
       real       min_sstem_sucrose
       real       dlt_min_sstem_sucrose
       real       slai                ! area of leaf that senesces from plant
@@ -738,6 +764,40 @@
       real       NH4_lb              ! lower limit of soil NO3 (kg/ha)
       real       NH4_min_ub          ! upper limit of minimum soil NO3 (kg/ha)
       real       NH4_min_lb          ! lower limit of minimum soil NO3 (kg/ha)
+      
+      real       x_swdef_photo(100)  !sv- 21 Aug 2013 - added for geoff
+      real       y_transp_eff_cf(100) !sv- 21 Aug 2013 - added for geoff 
+      !sv- 21 Aug 2013 - number of values read into the optional transpiration eff stress array.
+      integer    te_by_stress_numvals     
+      
+      real       x_swdef_photo2(100)        !sv- 29 Jan 2014
+      real       y_sw_demand_hourly_max(100)
+      integer    sw_demand_hourly_max_numvals  
+      
+      !sv- sw supply by root length instead of kl 
+      real       sw_supply_per_root_length  
+      
+      !sv- co2 response for transp_eff_cf
+      real       x_co2(100)
+      real       y_transp_eff_cf_fact(100)
+      integer    transp_eff_cf_fact_numvals
+      
+      !sv- co2 response for RUE
+      real       x2_co2(100)
+      real       y_rue_co2_fact(100)
+      integer    rue_co2_fact_numvals
+    
+      !sv- RUE change with leaf number
+      real       x_leaf_no(100)
+      real       y_rue_leaf_no_fact(100)
+      integer    rue_leaf_no_fact_numvals     
+    
+      !sv- respiration
+      real       x_tmean(100)
+      real       y_suc_resp_fr(100)
+      integer    suc_resp_fr_numvals
+      
+      
       real       leaf_no_min         ! lower limit of leaf number ()
       real       leaf_no_max         ! upper limit of leaf number ()
       real    latitude_ub            ! upper limit of latitude for model (oL)
@@ -856,13 +916,31 @@
 
       call sugar_root_depth(1)
       call sugar_root_Depth_init(1) ! after because it sets the delta
-      call sugar_water_supply(1)
-      call sugar_water_uptake (1)
+      
+     
+      if (c%sw_supply_per_root_length .eq. 0) then
+            call sugar_water_supply(1)
+      else
+            call cproc_sw_supply2 (c%sw_dep_lb,g%dlayer,p%ll_dep
+     :                 ,g%dul_dep,g%sw_dep,max_layer,g%root_depth
+     :                 ,p%kl, g%root_length, c%sw_supply_per_root_length
+     :                 ,g%sw_avail,g%sw_avail_pot,g%sw_supply)
+      endif
+      
+      !Uptake
+      if (g%HourlyMetExists .eq. 0) then
+       call sugar_water_uptake (1)
+      else 
+       call cproc_sw_uptake1_hourly(g%num_layers,g%dlayer,g%root_depth, 
+     :                        g%sw_demand, g%sw_supply, g%dlt_sw_dep)
+      endif
+      
       call sugar_water_stress_expansion (1)
       call sugar_water_stress_stalk (1)
       call sugar_water_stress_pheno (1)
       call sugar_water_stress_photo (1)
 
+      
       if (g%crop_status.eq.crop_alive) then
          call sugar_min_sstem_sucrose(1)
          call sugar_phenology_init (1)
@@ -874,10 +952,31 @@
          call sugar_leaf_area_init (1)
          call sugar_leaf_area_potential (1)
 
-         call sugar_bio_water (1)
+         !biomass gain restricted by water stress
+         if (g%HourlyMetExists .eq. 0) then
+             call sugar_bio_water (1)  
+         else
+             call cproc_bio_water1_hourly(g%dlt_dm_pot_te)
+         endif
+         
          call sugar_water_log (1)
-         call sugar_bio_RUE(1)
-         call sugar_bio_actual (1)
+         
+         !biomass gain with no water stress but with every other stress
+         if (g%HourlyMetExists .eq. 0) then
+             call sugar_bio_RUE(1)
+         else
+             call sugar_dm_pot_rue_hourly(c%rue, g%current_stage, 
+     :                    g%radn_int, g%nfact_photo,g%temp_stress_photo,  
+     :                    g%oxdef_photo, g%lodge_redn_photo, 
+     :                    g%dlt_dm_pot_rue)
+
+             call sugar_dm_pot_rue_pot_hourly(c%rue, g%current_stage, 
+     :                    g%radn_int, 
+     :                    g%dlt_dm_pot_rue_pot)
+         endif
+         
+         call sugar_bio_actual (1) !choose between water stress and non water stressed
+         call sugar_respiration ()
          call sugar_leaf_area_stressed (1)
          call sugar_bio_partition (1)
          call sugar_bio_retrans (1)
@@ -1250,6 +1349,8 @@
 
       call push_routine (my_name)
 
+      
+  
       g%crop_status           = blank
       g%crop_cultivar         = blank
       g%plant_status_out_today = .false.
@@ -1736,7 +1837,7 @@
       g%temp_stress_stalk = 0.0
       g%swdef_expansion = 0.0
       g%swdef_stalk = 0.0
-      g%swdef_photo = 0.0
+      ! g%swdef_photo = 0.0   !sv- 27 Aug 2013 - comment this out so that it can persist to next day so sugar_transpiration_eff_based_on_stress() can use it.
       g%swdef_pheno = 0.0
       g%swdef_fixation = 0.0
       g%nfact_expansion = 0.0
@@ -2486,8 +2587,50 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
         call get_real_var_optional (unknown_module, 'co2', '(ppm)'
      :                                  , g%co2, g%co2_exists
      :                                  , 0.0, 10000.0)
-      
 
+      !if  co2 manager is plugged into the simulation and there is no co2 response specified in the ini file
+      if  ((g%co2_exists.ne.0)
+     :     .and. (c%transp_eff_cf_fact_numvals.eq.0)) then
+           call fatal_error (ERR_USER, 
+     : 'co2 detected -> add x_co2 and y_trans_eff_cf_fact to ini file')
+      endif     
+      if  ((g%co2_exists.ne.0)
+     :     .and. (c%rue_co2_fact_numvals.eq.0)) then
+           call fatal_error (ERR_USER, 
+     : 'co2 detected -> add x2_co2 and y_rue_co2_fact to ini file')
+      endif      
+
+      
+      !sv- Hourly Met values from "C# Manager" module (if it exists)
+      !    ------------------------------------------
+      
+      call get_real_var_optional (unknown_module
+     :                                  , 'HourlyMetExists', '(0/1)'
+     :                                  , g%HourlyMetExists, numvals
+     :                                  , 0.0, 1.0)
+ 
+ 
+       call get_real_array_optional (unknown_module 
+     :                                    , 'RadnHourly', 24
+     :                                    , '(Mj/m^2)'
+     :                                    , g%RadnHourly, numvals
+     :                                    , 0.0, c%radn_ub)  !bounds are hourly. At night, 0 radiation.
+     
+      call get_real_array_optional (unknown_module
+     :                                    , 'TempHourly', 24
+     :                                    , '(oC)'
+     :                                    , g%TempHourly, numvals
+     :                                    , c%mint_lb, c%maxt_ub)
+ 
+       call get_real_array_optional (unknown_module
+     :                                    , 'VPDHourly', 24
+     :                                    ,  '(hPa)'
+     :                                    , g%VPDHourly, numvals
+     :                                    , 0.0, 10000.0)   !just guessing these values
+     
+      
+  
+      
       ! INPUT module
       ! ------------
       call get_real_var (unknown_module, 'latitude', '(oL)'
@@ -3581,7 +3724,52 @@ c      call sugar_nit_stress_expansion (1)
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , temp)
+     
+       !sv- 23 Aug 2013 - added to see effect of stress based transpiration efficiency
+      elseif (variable_name .eq. 'transp_eff') then
+         call respond2get_real_var (variable_name
+     :                             , '(g/m^2/mm)'
+     :                             , g%transp_eff)
 
+      elseif (variable_name .eq. 'sw_demand_hourly') then
+         call respond2get_real_array (variable_name
+     :                               , '(mm)'
+     :                               , g%sw_demand_hourly
+     :                               , 24)
+     
+      elseif (variable_name .eq. 'ep_hourly') then
+         call respond2get_real_array (variable_name
+     :                               , '(mm)'
+     :                               , g%ep_hourly
+     :                               , 24)
+     
+      elseif (variable_name .eq. 'dlt_dm_pot_rue_hourly') then
+         call respond2get_real_array (variable_name
+     :                               , '(g/m^2)'
+     :                               , g%dlt_dm_pot_rue_hourly
+     :                               , 24)     
+     
+      elseif (variable_name .eq. 'dlt_dm_pot_rue_pot_hourly') then
+         call respond2get_real_array (variable_name
+     :                               , '(g/m^2)'
+     :                               , g%dlt_dm_pot_rue_pot_hourly
+     :                               , 24)    
+   
+   
+      elseif (variable_name .eq. 'sucrose_respiration') then
+         call respond2get_real_var (variable_name
+     :                             , '(g/m^2)'
+     :                             , g%sucrose_respiration)   
+   
+    
+      elseif (variable_name .eq. 'sw_supply') then
+         num_layers = count_of_real_vals (g%dlayer, max_layer)
+         call respond2get_real_array (variable_name
+     :                               , '(mm)'
+     :                               , g%sw_supply
+     :                               , num_layers)
+   
+   
       else
          ! not my variable
          call message_unused ()
@@ -3918,6 +4106,108 @@ c      call sugar_nit_stress_expansion (1)
      :                    , c%NH4_min_lb, numvals
      :                    , 0.0, 100000.0)
 
+     
+      
+          !sv- 20 Aug 2013 - added for Geoff Inman Bamber
+          !sv- transpriation efficiency based on stress rather then stage code.
+
+      call read_real_array_optional (section_name
+     :                     , 'x_swdef_photo', 100, '()'
+     :                     , c%x_swdef_photo, c%te_by_stress_numvals
+     :                     , 0.0, 1.0)  
+          
+      call read_real_array_optional (section_name
+     :                     , 'y_transp_eff_cf', 100, '()'
+     :                     , c%y_transp_eff_cf, c%te_by_stress_numvals
+     :                     , 0.0, 1000.0)      
+     
+
+          !sv- 29 Jan 2014 - added for Geoff Inman Bamber
+          !sv- set max ep_hourly based on stress. Simulate stomata closing due to stress.     
+          !sv- Easiest way to set max ep_hourly is to set max sw_demand_hourly
+      call read_real_array_optional(section_name
+     :                    , 'x_swdef_photo2', 100, '()' !sv- should make this x2_swdef_photo just like I did x2_co2
+     :                    , c%x_swdef_photo2
+     :                    , c%sw_demand_hourly_max_numvals
+     :                    , 0.0, 1.0)     
+     
+      call read_real_array_optional(section_name
+     :                    , 'y_sw_demand_hourly_max', 100, '(mm)'
+     :                    , c%y_sw_demand_hourly_max 
+     :                    , c%sw_demand_hourly_max_numvals
+     :                    , 0.0, 1000.0)     
+      
+      
+      
+      
+      !sv-  SW Supply using root length method rather than KL method
+      call read_real_var_optional (section_name
+     :                    , 'sw_supply_per_root_length', ''
+     :                    , c%sw_supply_per_root_length, numvals
+     :                    , 0.0, 100.0)  
+      if (numvals .eq. 0) then
+         c%sw_supply_per_root_length = 0.0
+      endif
+      
+      
+      
+      !sv- CO2 response
+        !transp_eff_cf
+      call read_real_array_optional(section_name
+     :                    , 'x_co2', 100, '(ppm)'
+     :                    , c%x_co2
+     :                    , c%transp_eff_cf_fact_numvals
+     :                    , 0.0, 100000.0)     
+     
+      call read_real_array_optional(section_name
+     :                    , 'y_transp_eff_cf_fact', 100, '()'
+     :                    , c%y_transp_eff_cf_fact
+     :                    , c%transp_eff_cf_fact_numvals
+     :                    , 0.0, 1000.0)       
+        !RUE
+      call read_real_array_optional(section_name
+     :                    , 'x2_co2', 100, '(ppm)'
+     :                    , c%x2_co2
+     :                    , c%rue_co2_fact_numvals
+     :                    , 0.0, 100000.0)     
+     
+      call read_real_array_optional(section_name
+     :                    , 'y_rue_co2_fact', 100, '()'
+     :                    , c%y_rue_co2_fact
+     :                    , c%rue_co2_fact_numvals
+     :                    , 0.0, 1000.0)  
+     
+     
+      !sv- RUE change with leaf number
+      call read_real_array_optional(section_name
+     :                    , 'x_leaf_no', 100, ''
+     :                    , c%x_leaf_no
+     :                    , c%rue_leaf_no_fact_numvals
+     :                    , 0.0, 100000.0)     
+     
+      call read_real_array_optional(section_name
+     :                    , 'y_rue_leaf_no_fact', 100, '()'
+     :                    , c%y_rue_leaf_no_fact
+     :                    , c%rue_leaf_no_fact_numvals
+     :                    , 0.0, 1000.0)
+     
+     
+     
+      !sv- Respiration
+      call read_real_array_optional(section_name
+     :                    , 'x_tmean', 100, '(oC)'
+     :                    , c%x_tmean
+     :                    , c%suc_resp_fr_numvals
+     :                    , c%mint_lb, c%maxt_ub) 
+     
+      call read_real_array_optional(section_name
+     :                    , 'y_suc_resp_fr', 100, '(0-1)'
+     :                    , c%y_suc_resp_fr
+     :                    , c%suc_resp_fr_numvals
+     :                    , 0.0, 1.0)      
+     
+     
+     
       call pop_routine (my_name)
       return
       end subroutine
@@ -4002,7 +4292,7 @@ cnh      g%initial_plant_density = 0.0
       g%min_sstem_sucrose = 0.0
       g%lodge_redn_sucrose = 0.0
       g%lodge_redn_green_leaf = 0.0
-
+      
       call pop_routine (my_name)
       return
       end subroutine
@@ -4093,9 +4383,55 @@ cnh      c%crop_type = ' '
 
          call sugar_light_supply(1)
          call sugar_water_log (1)
+         
+        !is there a CO2 manager plugged in.
+         if (g%co2_exists.eq.0) then
+              g%rue_co2_fact = 1.0
+              g%transp_eff_cf_fact = 1.0
+         else
+              g%rue_co2_fact = linear_interp_real (g%co2
+     :                             , c%x2_co2
+     :                             , c%y_rue_co2_fact
+     :                             , c%rue_co2_fact_numvals)
+     
+              !   CO2 changes the Transpiration Efficiency
+              g%transp_eff_cf_fact = linear_interp_real (g%co2
+     :                             , c%x_co2
+     :                             , c%y_transp_eff_cf_fact
+     :                             , c%transp_eff_cf_fact_numvals)
+         endif
+         
+        !is there an RUE response to leaf number in the ini file
+         if (c%rue_leaf_no_fact_numvals.eq.0) then
+              g%rue_leaf_no_fact = 1.0
+         else
+              g%rue_leaf_no_fact = linear_interp_real 
+     :                             ( sum_between(emerg, now, g%leaf_no) !current leaf number
+     :                             , c%x_leaf_no
+     :                             , c%y_rue_leaf_no_fact
+     :                             , c%rue_leaf_no_fact_numvals)
+     
+         endif         
+         
+         
          call sugar_bio_RUE(1)
-         call sugar_transpiration_eff(1)
-         call sugar_water_demand (1)
+         
+         !is transp_eff_cf based on stress instead of stage (ie. there a y_transp_eff_cf array in the ini file)
+         if (c%te_by_stress_numvals .eq. 0) then
+            call sugar_transpiration_eff(1)
+         else
+            call sugar_transpiration_eff_based_on_stress()   !sv- added 23 Aug 2013
+         endif
+       
+         
+         !is there hourly met data 
+         if (g%HourlyMetExists .eq. 0) then
+            call sugar_water_demand (1)
+         else
+            call sugar_water_demand_hourly()
+         endif 
+         
+         
          call sugar_nit_demand_est (1)
 
       else
@@ -4103,6 +4439,13 @@ cnh      c%crop_type = ' '
 
       endif
 
+      g%swdef_photo = 0.0     !sv- since not being zeroed in sugar_zero_daily_variables() anymore, then zero it here,
+                              !    The reason you don't zero at the start of each day anymore is that you need it
+                              !    for the next days prepare event because you might have to work out the
+                              !    transp_eff and sw_demand_hourly_max based on stress (swdef_photo)
+                              !    swdef_photo is calculated in the process event each day (after the uptake is done). 
+                              !    After you have calculated the root supply so you can do the demand/supply to get swdef_photo 
+                              !    So demand is done in prepare event, supply in process event, then uptake and then stress is calculated
       call pop_routine (myname)
       return
       end subroutine
@@ -4719,34 +5062,7 @@ cnh      c%crop_type = ' '
      :                   , 'lodge_redn_green_leaf', '()'
      :                   , c%lodge_redn_green_leaf, numvals
      :                   , 0.0, 1.0)
-
-     
-     
-      !sv- CO2 changes the RUE & Transpiration Efficiency
-      if (g%co2_exists.ne.0) then
-      write (*,*)  'co2: ', g%co2
-      write (*,*) 
-      write (*,*)  'From ini file:'
-      write (*,*)  '(for each growth stage)'
-      write (*,*)  'rue: ', c%rue
-      write (*,*)  'transp_eff_cf: ', c%transp_eff_cf      
-        do 100 stage = 1, max_stage
-
-            c%rue(stage) = c%rue(stage) 
-     :                          * (0.000142* g%co2 + 0.94995)
-            
-            c%transp_eff_cf(stage) = c%transp_eff_cf(stage)  
-     :                           * (0.0008 * g%co2 + (1-0.0008*350.0))
-
-  100 continue
-       write (*,*) 
-       write (*,*)  'After correction for co2:'
-       write (*,*)  '(for each growth stage)'
-       write (*,*)  'rue: ', c%rue          
-       write (*,*)  'transp_eff_cf: ', 
-     :                             c%transp_eff_cf
-       write (*,*) 
-       endif       
+ 
      
      
      

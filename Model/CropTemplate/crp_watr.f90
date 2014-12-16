@@ -928,6 +928,11 @@
 
       vpd = l_bound (vpd, 0.01)
 
+      !sv- transp_eff units are grams/mm where as transp_eff_cf units are kg kPa/kg (see ini file)
+      !   1kg per sq meter of water is 1 mm so just need to convert Kg of carbo to g by multiplying by 1000. 
+      !   g2mm = 0.001 so dividing by g2mm is the same as multiplying by 1000. 
+      !   I don't know why whoever wrote this did not just multiply by 1000
+
       transp_eff = divide (transp_eff_cf(current_phase), vpd, 0.0) /g2mm
 !      transp_eff = l_bound (transp_eff, 0.0)
 
@@ -974,6 +979,14 @@
       call push_routine (my_name)
 
          ! potential (supply) by transpiration
+         
+      !transpiration efficiency is grams of carbo / mm of water
+
+      !when water stress occurs the plant is not able to get all the water it needs.
+      !it can only get what is available (ie. sw_supply)
+      !So based on the water that the plant was able to get, 
+      !we need to work out how much biomass it could grow. 
+      !biomass able to be grown(g) = transp_eff(g/mm) * supply(mm)   
 
       deepest_layer = find_layer_no (root_depth, dlayer, num_layer)
       sw_supply_sum = sum_real_array (sw_supply, deepest_layer)
