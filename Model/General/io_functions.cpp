@@ -44,8 +44,9 @@ bool DirectoryExists (const std::string &d) {
 //---------------------------------------------------------------------------
 void RemovePathAndExtension(std::string& fileName)
    {
-   boost::filesystem::path p(fileName);
-   fileName = p.stem().string();
+   boost::filesystem::path f(fileName);
+   boost::filesystem::path p = f.stem();
+   fileName = p.string();
    }
 //---------------------------------------------------------------------------
 // Return the temporary directory.

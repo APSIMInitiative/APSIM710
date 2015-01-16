@@ -7,9 +7,8 @@
 #include <stdexcept>
 #include <iomanip>
 
-#include "StdPlant.h"
-#include <ComponentInterface/DataTypes.h>
 #include <General/string_functions.h>
+#include <ComponentInterface/DataTypes.h>
 #include <ComponentInterface/ScienceAPI.h>
 #include "../Utility/InterpolationFunction.h"
 

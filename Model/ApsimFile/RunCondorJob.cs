@@ -208,7 +208,7 @@ namespace ApsimFile
 			ExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX.INTEL.bat"));
 			ExeWriter.NewLine = "\n";
 			ExeWriter.WriteLine ("#!/bin/bash");
-			ExeWriter.WriteLine ("for i in $@; do if [ ! -f $i ]; then wget -nd -q -t 5 $i; i=`basename $i`; fi ; chmod +x $i; ./$i; rm -f $i; done");
+			ExeWriter.WriteLine ("for i in $@; do if [ ! -f $i ]; then wget -nd -q $i; if [ \"$?\" != \"0\" ]; then exit $?; fi; i=`basename $i`; fi ; chmod +x $i; ./$i; rm -f $i; done");
 			ExeWriter.WriteLine ("if [ -d Temp ]; then rm -rf Temp; fi");
 			ExeWriter.Close ();
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.LINUX.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.LINUX.X86_64.bat"));
@@ -218,7 +218,10 @@ namespace ApsimFile
 			ExeWriter.WriteLine (":top");
 			ExeWriter.WriteLine ("IF (%1) == () GOTO END");
 			ExeWriter.WriteLine ("IF not exist %1 (");
-			ExeWriter.WriteLine ("wget -nd -q -t 5 %1");
+			ExeWriter.WriteLine (" wget -nd -q %1");
+			ExeWriter.WriteLine ("  IF not ERRORLEVEL 0 (");
+			ExeWriter.WriteLine ("  goto end");
+			ExeWriter.WriteLine ("  )");
 			ExeWriter.WriteLine (")");
 			
 			ExeWriter.WriteLine ("set DirPath=%1");
