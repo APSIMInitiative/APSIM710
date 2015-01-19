@@ -10,6 +10,8 @@ export APSIM=`dirname "$APSIMMODEL"`
 
 export LD_LIBRARY_PATH=$APSIM/Model
 export LANG=en_AU.UTF-8
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export SHELL=/bin/bash
 
 export MONO_XMLSERIALIZER_THS=no
 

@@ -16,9 +16,9 @@ fi
 
 export MONO_XMLSERIALIZER_THS=no
 
-$APSIM/Model/cscs.exe $APSIM/Model/Build/VersionStamper.cs Directory=$APSIM 
+mono $APSIM/Model/cscs.exe $APSIM/Model/Build/VersionStamper.cs Directory=$APSIM 
 
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler clean
 $APSIM/Model/Build/RunMake.sh $APSIM/Model/JobScheduler
 
-$APSIM/Model/JobScheduler.exe $APSIM/Model/Build/BuildAll.xml  Target=BuildAll
+mono $APSIM/Model/JobScheduler.exe $APSIM/Model/Build/BuildAll.xml  Target=BuildAll

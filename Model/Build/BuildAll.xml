@@ -13,6 +13,7 @@
       <Job name="Clean model directory">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/cscs.exe RemoveUnwantedFiles.cs Directory=%APSIM%/Model</CommandLine>
+         <CommandLineUnix>mono %APSIM%/Model/cscs.exe RemoveUnwantedFiles.cs Directory=%APSIM%/Model</CommandLineUnix>
       </Job>
       <Job name="Remove the %APPDATA%\APSIM">
          <WorkingDirectory>%APSIM%</WorkingDirectory>
@@ -23,6 +24,7 @@
          <DependsOn>Clean model directory</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
+         <CommandLineUnix>mono %APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLineUnix>
       </Job>
    </Target>
 
@@ -812,7 +814,7 @@
          <DependsOn>Delete old .NET proxy classes</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>UpdateDotNetProxies.exe</CommandLine>
-         <CommandLineUnix>UpdateDotNetProxies.exe</CommandLineUnix>
+         <CommandLineUnix>mono UpdateDotNetProxies.exe</CommandLineUnix>
       </Job>
    </Target>
 
@@ -982,6 +984,4 @@
    <Target name="Tests">
       <DependsOn>Post-Compile</DependsOn>
    </Target>
-
-
 </Project>
