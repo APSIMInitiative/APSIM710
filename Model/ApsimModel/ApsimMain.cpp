@@ -41,6 +41,10 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
    if (CommandLine.find_first_of(' ') != string::npos)
 	   CommandLine = "\"" + CommandLine + "\"";
 
+#ifndef __WIN32__
+   CommandLine = "mono " + CommandLine; // Ensure mono is explicitly called for systems without binfmt_misc registration
+#endif
+
    if (apsimPath.find_first_of(' ') != string::npos)
 	   CommandLine += " \"" + apsimPath + "\"";
    else    
