@@ -72,7 +72,6 @@
       </Job>
       <Job name="Compile DataTypes">
          <DependsOn>Compile General</DependsOn>
-         <DependsOn>Compile ApsimUI</DependsOn>
          <WorkingDirectory>%APSIM%/Model/DataTypes</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
@@ -97,7 +96,6 @@
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile CSDotNetComponentInterface">
-         <DependsOn>Compile ApsimUI</DependsOn>
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
          <DependsOn>Compile DataTypes</DependsOn>
@@ -273,7 +271,6 @@
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile Manager2">
-         <DependsOn>Compile ApsimUI</DependsOn>
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
@@ -652,7 +649,7 @@
       </Job>
       <Job name="Compile ApsimToSim">
          <DependsOn>Compile CSGeneral</DependsOn>
-         <DependsOn>Compile ApsimUI</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ApsimToSim</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
@@ -680,13 +677,13 @@
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile RunMacro">
-         <DependsOn>Compile ApsimUI</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
          <WorkingDirectory>%APSIM%/Model/RunMacro</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile UpdateDotNetProxies">
          <DependsOn>Compile CSGeneral</DependsOn>
-         <DependsOn>Compile ApsimUI</DependsOn>
+         <DependsOn>Compile ApsimFile</DependsOn>
          <WorkingDirectory>%APSIM%/Model/UpdateDotNetProxies</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
@@ -748,6 +745,7 @@
          <CommandLine>make</CommandLine>
       </Job>
       <Job name="Compile ApsimUI">
+         <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
          <DependsOn>Compile ConToApsim</DependsOn>
          <DependsOn>Compile ApsimFile</DependsOn>
