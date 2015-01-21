@@ -4922,7 +4922,9 @@ public class AgPasture
 			double result = 0.0;
 			for (int s = 0; s < NumSpecies; s++)
 				result += mySpecies[s].NcFactor * mySpecies[s].dmshoot;
-			return result / AboveGroundWt;
+			if (AboveGroundWt > 0)
+				result /= AboveGroundWt;
+			return result;
 		}
 	}
 
