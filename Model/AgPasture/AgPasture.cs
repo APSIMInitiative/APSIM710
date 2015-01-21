@@ -1066,6 +1066,9 @@ public class AgPasture
 		// Tell other modules that I exist
 		AdvertiseThisCrop();
 
+		// Send info about canopy - needed here to proper initialise micromet
+		DoNewCanopyEvent();
+
 		// write some basic initialisation info
 		writeSummary();
 	}
@@ -1237,9 +1240,10 @@ public class AgPasture
 		}
 		else
 		{ // only sward height is considered
+			swardHeight = HeightfromDM();
 			for (int s = 0; s < NumSpecies; s++)
 			{
-				mySpecies[s].height = HeightfromDM();
+				mySpecies[s].height = swardHeight;
 			}
 		}
 
@@ -1691,7 +1695,6 @@ public class AgPasture
 			}
 		}
 		//else  root distribution does not change 
-
 
 		// Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
 		DoNewCanopyEvent();
@@ -4959,6 +4962,21 @@ public class AgPasture
 
 	/// <summary>An output</summary>
 	[Output]
+	[Description("Fraction of growth allocated above ground (fshoot)")]
+	[Units("0-1")]
+	public double FractionGrowthToShoot
+	{
+		get
+		{
+			double result = 0.0;
+			if (swardActualGrowth > 0)
+				result = DMToShoot / swardActualGrowth;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
 	[Description("Fraction of growth allocated to roots")]
 	[Units("0-1")]
 	public double FractionGrowthToRoot
@@ -6195,21 +6213,6 @@ public class AgPasture
 
 	/// <summary>An output</summary>
 	[Output]
-	[Description("Potential growth, after water stress, for each species")]
-	[Units("kgDM/ha")]
-	public double[] SpeciesPotGrowthW
-	{
-		get
-		{
-			double[] result = new double[NumSpecies];
-			for (int s = 0; s < NumSpecies; s++)
-				result[s] = mySpecies[s].dGrowthW;
-			return result;
-		}
-	}
-
-	/// <summary>An output</summary>
-	[Output]
 	[Description("Gross potential growth for each species")]
 	[Units("kgDM/ha")]
 	public double[] SpeciesPotGrowthGross
@@ -6234,6 +6237,21 @@ public class AgPasture
 			double[] result = new double[NumSpecies];
 			for (int s = 0; s < NumSpecies; s++)
 				result[s] = mySpecies[s].dGrowthPot;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Potential growth, after water stress, for each species")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesPotGrowthW
+	{
+		get
+		{
+			double[] result = new double[NumSpecies];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].dGrowthW;
 			return result;
 		}
 	}
@@ -6857,6 +6875,21 @@ public class AgPasture
 			double[] result = new double[NumSpecies];
 			for (int s = 0; s < NumSpecies; s++)
 				result[s] = mySpecies[s].fShoot;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Fraction of shoot DM allocated to leaves")]
+	[Units("0-1")]
+	public double[] speciesFLeaf
+	{
+		get
+		{
+			double[] result = new double[NumSpecies];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].fLeaf;
 			return result;
 		}
 	}

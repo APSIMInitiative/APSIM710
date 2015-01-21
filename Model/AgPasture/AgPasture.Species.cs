@@ -154,13 +154,13 @@ public class Species
 	internal double heatRecoverT;
 
 	/// <summary>Some Description</summary>
-	internal double highTempStress = 1;  //fraction of growth rate due to high temp. effect
+	internal double highTempStress = 1.0;  //fraction of growth rate due to high temp. effect
 
 	/// <summary>Some Description</summary>
 	private double accumTHeat = 0;          //accumulated temperature from previous heat strike = sum of '25-MeanT'(>0)
 
 	/// <summary>Some Description</summary>
-	private double heatFactor = 0;
+	private double heatFactor = 1.0;
 
 	/// <summary>Some Description</summary>
 	internal bool usingColdStress = false;
@@ -181,13 +181,13 @@ public class Species
 	internal double coldRecoverT;
 
 	/// <summary>Some Description</summary>
-	internal double lowTempStress = 1;   //fraction of growth rate due to low temp. effect
+	internal double lowTempStress = 1.0;   //fraction of growth rate due to low temp. effect
 
 	/// <summary>Some Description</summary>
 	private double accumTCold = 0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
 
 	/// <summary>Some Description</summary>
-	private double coldFactor = 0;
+	private double coldFactor = 1.0;
 
 	/// <summary>Some Description</summary>
 	internal double referenceCO2 = 380;                  //ambient CO2 concentration
@@ -1995,7 +1995,7 @@ public class Species
 				if (Math.Abs(MetFile.Latitude) < referenceLatitude)
 				{
 					double myB = Math.Abs(MetFile.Latitude) / referenceLatitude;
-					allocationIncrease *= (paramCLatFunction - paramCLatFunction * myB + myB) * Math.Pow(myB, paramCLatFunction - 1.0);
+					allocationIncrease *= (paramCLatFunction - (paramCLatFunction * myB) + myB) * Math.Pow(myB, paramCLatFunction - 1.0);
 				}
 			}
 
@@ -2047,7 +2047,7 @@ public class Species
 		}
 
 		// check for maximum root allocation (kept here mostly for backward compatibility)
-		if (1 - fShoot > maxRootFraction)
+		if ((1 - fShoot) > maxRootFraction)
 			fShoot = 1 - maxRootFraction;
 
 		return fShoot;
@@ -2157,7 +2157,7 @@ public class Species
 
 			// check recovery factor
 			double recoveryFactor = 0.0;
-			if (MetFile.MaxT < heatOnsetT)
+			if (MetFile.MaxT <= heatOnsetT)
 				recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
 
 			// accumulate temperature
@@ -2195,7 +2195,7 @@ public class Species
 
 			// check recovery factor
 			double recoveryFactor = 0.0;
-			if (MetFile.MinT > coldOnsetT)
+			if (MetFile.MinT >= coldOnsetT)
 				recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
 
 			// accumulate temperature

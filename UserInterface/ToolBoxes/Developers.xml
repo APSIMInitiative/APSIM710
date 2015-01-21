@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.6-r3589" name="Developers">
+<folder version="36" creator="Apsim 7.7-r3615" name="Developers">
   <Plant2>
     <ini />
   </Plant2>
@@ -84,13 +84,13 @@
       <growthTopt type="text" description="  Optimum temperature for growth (oC):">20.0    22.0    35.0</growthTopt>
       <growthTref type="text" description="  Reference temperature for growth (oC):">20.0    20.0    20.0</growthTref>
       <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5    1.5    1.2</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">yes    yes    yes</useHeatStress>
+      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no      no     no</useHeatStress>
       <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0    30.0    35.0</heatOnsetT>
       <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">31.0    35.0    40.0</heatFullT>
       <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0    20.0    50.0</heatSumT>
       <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0    1.0    1.0</heatTq>
       <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">25.0    25.0    25.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">yes    yes    yes</useColdStress>
+      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no      no     no</useColdStress>
       <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">1.0    0.0    8.0</coldOnsetT>
       <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-3.0    -2.0    3.0</coldFullT>
       <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">30.0    30.0    50.0</coldSumT>
@@ -101,7 +101,7 @@
       <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600    600    600</CO2NScale>
       <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7    0.7    0.7</CO2NMin>
       <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0    2.0    2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">1.0    1.0    1.0</maxRootFraction>
+      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25  0.25  0.25</maxRootFraction>
       <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0    4.0    4.0</targetSRratio>
       <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25    0.25    0.25</allocationSeasonF>
       <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232    232    232</StartHighAllocation>
@@ -165,8 +165,12 @@
       <PreferenceForDeadDM type="text" description="  Weight factor defining the preference level for dead DM (on removal):">1    1    1</PreferenceForDeadDM>
       <PreferenceForLeaves type="text" description="  Weight factor defining the preference level for leaves over stems (on removal):">1    1    1</PreferenceForLeaves>
       <rootDepth type="text" description="  Default rooting depth (mm):">750    350    850</rootDepth>
-      <ExpoLinearDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12    0.12    0.12</ExpoLinearDepthParam>
-      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2    3.2    3.2</ExpoLinearCurveParam>
+      <ExpoLinearDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12   0.20    0.11</ExpoLinearDepthParam>
+      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2     2.5      3.2</ExpoLinearCurveParam>
+      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">500    300     500</MaxPlantHeight>
+      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">8000  6000   7000</MassForMaxHeight>
+      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">3.00   1.75    2.50</ExponentHeightFromMass>
+      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):">20</MinimumHeight>
       <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
       <initialDMFractions_grass type="text" description="  Fractions of initial dmshoot for each biomass pool, for grasses:">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
       <initialDMFractions_legume type="text" description="  Fractions of initial dmshoot for each biomass pool, for legumes:">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
@@ -194,13 +198,13 @@
       <growthTopt type="text" description="  Optimum temperature for growth (oC):">20.0</growthTopt>
       <growthTref type="text" description="  Reference temperature for growth (oC):">20.0</growthTref>
       <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">yes</useHeatStress>
+      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no</useHeatStress>
       <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0</heatOnsetT>
       <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">31.0</heatFullT>
       <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0</heatSumT>
       <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0</heatTq>
       <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">25.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">yes</useColdStress>
+      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no</useColdStress>
       <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">1.0</coldOnsetT>
       <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-3.0</coldFullT>
       <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">30.0</coldSumT>
@@ -211,7 +215,7 @@
       <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600</CO2NScale>
       <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7</CO2NMin>
       <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">1.0</maxRootFraction>
+      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25</maxRootFraction>
       <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0</targetSRratio>
       <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25</allocationSeasonF>
       <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232</StartHighAllocation>
@@ -277,6 +281,10 @@
       <rootDepth type="text" description="  Default rooting depth (mm):">750</rootDepth>
       <ExpoLinearDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12</ExpoLinearDepthParam>
       <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2</ExpoLinearCurveParam>
+      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">500</MaxPlantHeight>
+      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">8000</MassForMaxHeight>
+      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">3.00</ExponentHeightFromMass>
+      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):">20</MinimumHeight>
       <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
       <initialDMFractions_grass type="text" description="  Fractions of initial dmshoot for each biomass pool, for grasses:">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
     </AgPasture>
@@ -303,13 +311,13 @@
       <growthTopt type="text" description="  Optimum temperature for growth (oC):">22.0</growthTopt>
       <growthTref type="text" description="  Reference temperature for growth (oC):">20.0</growthTref>
       <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">yes</useHeatStress>
+      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no</useHeatStress>
       <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">30.0</heatOnsetT>
       <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">35.0</heatFullT>
       <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">20.0</heatSumT>
       <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0</heatTq>
       <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">25.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">yes</useColdStress>
+      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no</useColdStress>
       <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">0.0</coldOnsetT>
       <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-2.0</coldFullT>
       <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">30.0</coldSumT>
@@ -320,7 +328,7 @@
       <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600</CO2NScale>
       <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7</CO2NMin>
       <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">1.0</maxRootFraction>
+      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25</maxRootFraction>
       <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0</targetSRratio>
       <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25</allocationSeasonF>
       <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232</StartHighAllocation>
@@ -386,6 +394,10 @@
       <rootDepth type="text" description="  Default rooting depth (mm):">350</rootDepth>
       <ExpoLinearDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12</ExpoLinearDepthParam>
       <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2</ExpoLinearCurveParam>
+      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">300</MaxPlantHeight>
+      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">6000</MassForMaxHeight>
+      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">1.75</ExponentHeightFromMass>
+      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):">20</MinimumHeight>
       <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
       <initialDMFractions_legume type="text" description="  Fractions of initial dmshoot for each biomass pool, for legumes:">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
     </AgPasture>
@@ -395,8 +407,8 @@
       <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
       <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
       <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
-      <iniRootDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12    0.12</iniRootDepthParam>
-      <iniRootCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2        3.2</iniRootCurveParam>
+      <iniRootDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12    0.20</iniRootDepthParam>
+      <iniRootCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2       2.5</iniRootCurveParam>
       <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
     </AgPasture>
     <AgPasture name="AgPastureNewSpecies">
@@ -422,13 +434,13 @@
       <growthTopt type="text" description="  Optimum temperature for growth (oC):">20.0  22.0  35.0  21.0  35.0  20.0  25.0  20.0  20.0  20.0  23.0</growthTopt>
       <growthTref type="text" description="  Reference temperature for growth (oC):">20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0</growthTref>
       <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5  1.5  1.2  1.2  1.2  1.5  1.5  1.5  1.5  1.5  1.5</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">yes  yes  yes  yes  yes  yes  yes  yes  yes  yes  yes</useHeatStress>
+      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no  no  no  no  no  no  no  no  no  no  no</useHeatStress>
       <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0  30.0  35.0  38.0  35.0  30.0  30.0  28.0  26.0  26.0  30.0</heatOnsetT>
       <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">31.0  35.0  40.0  48.0  40.0  35.0  35.0  35.0  31.0  31.0  35.0</heatFullT>
       <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0  20.0  50.0  10.0  50.0  50.0  25.0  20.0  30.0  30.0  20.0</heatSumT>
       <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</heatTq>
       <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">25.0  25.0  25.0  25.0  25.0  25.0  25.0  25.0  25.0  25.0  25.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">yes  yes  yes  yes  yes  yes  yes  yes  yes  yes  yes</useColdStress>
+      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no  no  no  no  no  no  no  no  no  no  no</useColdStress>
       <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">1.0  0.0  8.0  6.0  8.0  3.0  6.0  2.0  1.0  1.0  0.0</coldOnsetT>
       <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-3.0  -2.0  3.0  2.0  3.0  -2.0  2.0  0.0  -3.0  -3.0  -2.0</coldFullT>
       <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">30.0  30.0  50.0  25.0  50.0  200.0  200.0  50.0  30.0  30.0  30.0</coldSumT>
@@ -503,8 +515,12 @@
       <PreferenceForDeadDM type="text" description="  Weight factor defining the preference level for dead DM (on removal):">1  1  1  1  1  1  1  1  1  1  1</PreferenceForDeadDM>
       <PreferenceForLeaves type="text" description="  Weight factor defining the preference level for leaves over stems (on removal):">1  1  1  1  1  1  1  1  1  1  1</PreferenceForLeaves>
       <rootDepth type="text" description="  Default rooting depth (mm):">750  350  850  2000  1000  1500  2000  1200  750  750  350</rootDepth>
-      <ExpoLinearDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12  0.12  0.12  0.12  0.12  0.12  0.12  0.12  0.12  0.12  0.12</ExpoLinearDepthParam>
-      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2  3.2  3.2  3.2  3.2  3.2  3.2  3.2  3.2  3.2  3.2</ExpoLinearCurveParam>
+      <ExpoLinearDepthParam type="text" description="  Fraction of rooting depth where the proportion of roots starts to decrease (0-1):">0.12  0.20  0.11  0.12  0.12  0.12  0.12  0.12  0.12  0.12  0.20</ExpoLinearDepthParam>
+      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2  2.5  3.2  3.2  3.2  3.2  3.2  3.2  3.2  3.2  2.5</ExpoLinearCurveParam>
+      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">500  300  500  500  500  500  500  500  500  500  300</MaxPlantHeight>
+      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">8000  6000  7000  8000  8000  8000  8000  8000  8000  8000  6000</MassForMaxHeight>
+      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">3.00  1.75  2.50  3.00  3.00  3.00  3.00  3.00  3.00  3.00  1.75</ExponentHeightFromMass>
+      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):">20</MinimumHeight>
       <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
       <initialDMFractions_grass type="text" description="  Fractions of initial dmshoot for each biomass pool, for grasses:">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
       <initialDMFractions_legume type="text" description="  Fractions of initial dmshoot for each biomass pool, for legumes:">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
