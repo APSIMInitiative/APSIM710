@@ -614,7 +614,8 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                             item.Parameters = unique_pars.OrderBy(a => a).ToList<string>();
                             if ((from f in factorItems where f.getDesc() == item.getDesc() select f).Count() == 0)
                             {
-                                item.NextItem = factorItems[0];
+                                if (factorItems.Count > 0)
+                                    item.NextItem = factorItems[0];
                                 factorItems.Insert(0, item);
                             }
                         }
