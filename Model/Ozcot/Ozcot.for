@@ -1733,6 +1733,8 @@
       real    cover
       real       dm_crop(max_part)           ! dry matter of crop (kg/ha)
       real       dm_N(max_part)              ! N content of dry matter (kg/ha)
+      real       dlt_sw_dep(g%nlayr)  !sv- needed for ozcot_rwu output variable
+      integer     Layer                   !sv- needed for ozcot_rwu output variable
 
 *- Implementation Section ----------------------------------
       call push_routine(myname)
@@ -1949,6 +1951,28 @@
       else if (variable_name .eq. 'ep') then
          call respond2get_real_var (variable_name
      :        , '(mm)', g%ep*cm2mm)
+     
+     
+       !sv- ozcot root water uptake. I added this to test if ep actually is the same as
+       !    what the ozcot delta's the soilwater module by using dlt_sw_dep each day.
+       !    Code below was copied from ozcot_set_other_variables()     
+      else if (variable_name .eq. 'ozcot_rwu') then
+           do 10 Layer = 1, g%nlayr
+        dlt_sw_dep(Layer) = (g%swlayr(Layer)- g%sw_start(layer))
+     :                       * g%dlayr_cm(layer)*10.0
+     :
+        dlt_sw_dep(Layer) = min(0.0, dlt_sw_dep(Layer))
+         call bound_check_real_var (dlt_sw_dep(Layer)
+     :                           , -g%sw_start(layer)
+     :                              * g%dlayr_cm(layer)*10.0
+     :                           , 0.0
+     :                           , 'ozcot_rwu(Layer)')
+
+10    continue
+     
+         call respond2get_real_array (variable_name
+     :        , '(mm)', dlt_sw_dep, g%nlayr)
+     
 
       else if (variable_name .eq. 'ozcot_crop_in') then
          call respond2get_logical_var (variable_name
@@ -4939,6 +4963,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
         IF(g%alai_row.GT.3.) THEN
             g%ep=g%eo-g%es
+            ! sv- this line below should be less than 1.6 not greater than 1.6. Ask Perry Poulton.
         ELSE IF(g%alai_row.GT.1.6)THEN
             g%ep=(0.08+0.3066*g%alai_row)*g%eo     ! L.Mateos 1987, ABH 1988
         ELSE
@@ -7548,6 +7573,8 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       id%IncorpFOM = add_registration(eventReg, 'IncorpFOM',
      :                                FOMLayerTypeDDML, '')
 
+      dummy = add_registration_with_units(getVariableReg, 'ozcot_rwu',
+     :                                    floatarrayTypeDDML, 'mm')
       dummy = add_registration_with_units(getVariableReg, 'dlayer',
      :                                    floatarrayTypeDDML, 'mm')
       dummy = add_registration_with_units(getVariableReg, 'bd',
