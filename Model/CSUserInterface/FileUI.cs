@@ -131,7 +131,7 @@ namespace CSUserInterface
 
 		public override void OnSave()
 		{
-			if ((!FileContentsBox.ReadOnly) && System.IO.File.Exists(FullFileName)) {
+			if ((!FileContentsBox.ReadOnly) && FileContentsBox.Modified && System.IO.File.Exists(FullFileName)) {
 				FileContentsBox.SaveFile(FullFileName, RichTextBoxStreamType.PlainText);
 			}
 		}
