@@ -1,0 +1,1204 @@
+<Type name="sugar">
+  <MetaData>
+    <UItype>CSUserInterface.EmptyUI</UItype>
+    <IsCrop>Yes</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\sugar.jpg</Image>
+    <Documentation>%apsim%\Documentation\4 Module Reference\Sugar.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\sugar32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\sugar16.png</SmallIcon>
+    <dll>%apsim%/Model/Sugar.%dllext%</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[Sugar.name]" executable="[dll]" class="Sugar">
+        <executable name="[dll]" version="1.0" />
+        <initdata>
+               [Model]
+               <uptake_source>calc</uptake_source><rlv>0.04  0.02  0.01  .005  0.00  0.00 0.00</rlv><ll>[soil.[InstanceName] ll]</ll><kl>[soil.[InstanceName] kl]</kl><xf>[soil.[InstanceName] xf]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <crop_type>sugar</crop_type>
+    <tt_emerg_to_begcane_ub description="upper limit">2000.0</tt_emerg_to_begcane_ub>
+    <tt_begcane_to_flowering_ub description="upper limit">10000.0</tt_begcane_to_flowering_ub>
+    <tt_flowering_to_crop_end_ub description="upper limit">5000.0</tt_flowering_to_crop_end_ub>
+    <n_uptake_option description="1=standard model, 2=no3+nh4 uptake">1  </n_uptake_option>
+    <kno3>0.05</kno3>
+    <no3ppm_min>0.0</no3ppm_min>
+    <knh4>0.05</knh4>
+    <nh4ppm_min>0.0</nh4ppm_min>
+    <total_n_uptake_max units="g/m2">0.6</total_n_uptake_max>
+    <no3_diffn_const units="days" description="time constant for uptake by">2</no3_diffn_const>
+    <!--  diffusion (days). H van Keulen &
+      NG Seligman. Purdoe 1987. This is the
+      time it would take to take up, by
+      diffusion, the current amount of N if
+      it wasn't depleted between time steps
+      -->
+    <n_supply_preference>active</n_supply_preference>
+    <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
+    <kl_ub units="???" description="upper limit of water uptake factor">1.0</kl_ub>
+    <minsw description="lowest acceptable value for ll">0.00001</minsw>
+    <latitude_ub units="oL">90</latitude_ub>
+    <latitude_lb units="oL">-90</latitude_lb>
+    <maxt_ub units="oC">55</maxt_ub>
+    <maxt_lb units="oC">0</maxt_lb>
+    <mint_ub units="oC">40</mint_ub>
+    <mint_lb units="oC">-10</mint_lb>
+    <radn_ub units="MJ/m^2">50</radn_ub>
+    <radn_lb units="MJ/m^2">1</radn_lb>
+    <dlayer_ub units="mm">1000</dlayer_ub>
+    <dlayer_lb units="mm">0</dlayer_lb>
+    <dul_dep_ub units="mm">1000</dul_dep_ub>
+    <dul_dep_lb units="mm">0</dul_dep_lb>
+    <sw_dep_ub units="mm">1000</sw_dep_ub>
+    <sw_dep_lb units="mm">0</sw_dep_lb>
+    <no3_ub units="kg/ha">10000</no3_ub>
+    <no3_lb units="kg/ha">0</no3_lb>
+    <no3_min_ub units="kg/ha">10000</no3_min_ub>
+    <no3_min_lb units="kg/ha">0</no3_min_lb>
+    <nh4_ub units="kg/ha">10000</nh4_ub>
+    <nh4_lb units="kg/ha">0</nh4_lb>
+    <nh4_min_ub units="kg/ha">10000</nh4_min_ub>
+    <nh4_min_lb units="kg/ha">0</nh4_min_lb>
+    <x_swdef_photo> 0         0.2           0.8           1</x_swdef_photo>
+    <y_transp_eff_cf units="kg kPa/kg">0.004     0.0150        0.0087        0.0087</y_transp_eff_cf>  
+    <x_co2 units="ppm">375 720</x_co2>
+    <y_transp_eff_cf_fact>1.0 1.25</y_transp_eff_cf_fact>  
+    <x2_co2 units="ppm">375 720</x2_co2>  <!--sv- have to add rue_co2fact but turn it off by setting to 1.0-->
+    <y_rue_co2_fact>1.0 1.0</y_rue_co2_fact>      
+    <plant_crop>
+      <stage_names>sowing sprouting emergence begin_cane flowering end_crop</stage_names>
+      <stage_code>1        2         3          4         5        6</stage_code>
+      <rue>0        0        1.8        1.8        1.8      0.0</rue>
+      <root_depth_rate>0        0        10.        15.       15.      15.</root_depth_rate>
+      <!-- ratio_root_shoot =   0        0        0.30       0.20       0.20     0.0
+         -->
+      <ratio_root_shoot>0        0        0.20       0.15       0.10     0.0</ratio_root_shoot>
+      <transp_eff_cf units="kg kPa/kg">0.0087  0.0087       0.0087      0.0087      0.0087    0.0087</transp_eff_cf>
+            <!-- transp_eff_cf is from Inman-Bamber, NG. and McGlinchey, MG. (2003) -->
+      <n_fix_rate>0        0         0          0           0       0</n_fix_rate>
+      <extinction_coef>0.38</extinction_coef>
+      <extinction_coef_dead>0.01</extinction_coef_dead>
+      <!--     crop failure
+         nih - turned this off - 12-5-95
+         -->
+      <leaf_no_crit description="critical number of leaves, below">99.0</leaf_no_crit>
+      <!--    which portion of the crop may
+         die due to water stress
+         -->
+      <tt_emerg_limit units="oC" description="maximum degree days allowed for">800.0</tt_emerg_limit>
+      <!--    emergence to take place (deg day)
+         -->
+      <days_germ_limit units="days" description="maximum days allowed after sowing">40.0</days_germ_limit>
+      <!--   for germination to take place (days)
+         -->
+      <swdf_pheno_limit description="critical cumulative phenology">500.0</swdf_pheno_limit>
+      <!-- swdf_pheno_limit = 25.0 ()             ! critical cumulative phenology
+         water stress, above which the crop
+         fails (unitless)
+         -->
+      <swdf_photo_limit description="critical cumulative photosynthesis">500</swdf_photo_limit>
+      <!-- swdf_photo_limit = 100 ()              ! critical cumulative photosynthesis
+         water stress, above which the crop
+         partly fails (unitless)
+         reduction in plant stand with water stress
+         -->
+      <swdf_photo_rate description="0.044 ()        ! rate of plant reduction with">0.0 </swdf_photo_rate>
+      <!--  photosynthesis water stress
+         crop_root_depth
+         -->
+      <initial_root_depth units="mm" description="initial depth of roots (mm)">150</initial_root_depth>
+      <specific_root_length units="mm/g" description="specific root length">18000</specific_root_length>
+      <x_plant_rld>0 0.1</x_plant_rld>
+      <y_rel_root_rate>1 1</y_rel_root_rate>
+      <root_die_back_fr units="0-1" description="fraction of roots that die back">0.17</root_die_back_fr>
+      <!--  at harvest
+         (17% - Plant & Soil 142, p.297-305)
+         crop_leaf_area_init
+         cnh from 500
+         -->
+      <initial_tpla units="mm^2" description="initial total plant leaf area">1000</initial_tpla>
+      <!--      crop_leaf_area_devel
+         -->
+      <sla_lfno>6     25</sla_lfno>
+      <!--  nih/bak
+         sla_max  = 10500 9000 (mm^2/g)
+         sla_min  =  9000 8500 (mm^2/g)
+         -->
+      <sla_max units="mm^2/g">11500 11500</sla_max>
+      <sla_min units="mm^2/g">9000 8500</sla_min>
+      <!--      crop_leaf_area_devel_plant
+         crop_height
+         height_max = 6000.0 (mm)               ! maximum canopy height
+         height_stem_slope = 300.0 (mm/g/stem)  ! rate of height growth (mm/g/stem)
+         7 mm/g/stem???
+         -->
+      <x_stem_wt>0 200</x_stem_wt>
+      <y_height>0 6000</y_height>
+      <!--      crop_transp_eff
+         -->
+      <svp_fract description="fraction of distance between svp at">0.75</svp_fract>
+      <!--  min temp and svp at max temp where
+         average svp during transpiration
+         lies. (0-1)
+         Default crop factor for use in capping daily crop water demand
+         maximum crop water use is bound to eo_crop_factor * eo * cover_green.
+         -->
+      <eo_crop_factor_default>100.0</eo_crop_factor_default>
+      <!--      crop_germination
+         -->
+      <pesw_germ units="mm/mm" description="plant extractable soil water in">0.05</pesw_germ>
+      <!--    seedling layer inadequate for
+         germination (mm/mm)
+         -->
+      <fasw_emerg>.0 .7</fasw_emerg>
+      <rel_emerg_rate>.3  1</rel_emerg_rate>
+      <!--      crop_leaf_appearance
+         -->
+      <leaf_no_at_emerg description="leaf number at emergence ()">1.0</leaf_no_at_emerg>
+      <!--      crop_phenology_init
+         cnh was 200 then 350 then
+         -->
+      <shoot_lag units="oC" description="time lag before linear coleoptile">250.</shoot_lag>
+      <!--  growth starts (deg days)
+         -->
+      <shoot_rate units="oC/mm" description="growing deg day increase with depth">0.80</shoot_rate>
+      <!--    for coleoptile (deg day/mm depth)
+         leaf_app_rate      = 80  130  130 (oC)
+         leaf_app_rate_lfno =  1  15   40  ()
+         leaf_app_rate      = 80  105  125  150 (oC)
+         leaf_app_rate_lfno =  1  20   30   40  ()
+         -->
+      <x_node_no_app>1  20   30   40</x_node_no_app>
+      <y_node_app_rate units="oC">80  105  125  150</y_node_app_rate>
+      <x_node_no_leaf>1 20 30 40</x_node_no_leaf>
+      <y_leaves_per_node>1 1   1  1</y_leaves_per_node>
+      <!--      crop_dm_init
+         -->
+      <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.2</dm_leaf_init>
+      <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.2</dm_root_init>
+      <dm_sstem_init units="g/plant" description="stem weight at emergence (g/plant)">0.01</dm_sstem_init>
+      <dm_cabbage_init units="g/plant" description="cabbage '    '   '         '">0.143</dm_cabbage_init>
+      <dm_sucrose_init units="g/plant" description="sucrose '    '   '         '">0.0</dm_sucrose_init>
+      <leaf_cabbage_ratio>1.7</leaf_cabbage_ratio>
+      <cabbage_sheath_fr>0.2</cabbage_sheath_fr>
+      <!--      crop_dm_senescence
+         -->
+      <dm_root_sen_frac description="fraction of root dry matter">0.002</dm_root_sen_frac>
+      <!--  senesced each day
+         crop_dm_dead_detachment
+         root leaf sstem cabbage sucrose
+         -->
+      <dead_detach_frac>0.1  0.1   0.05  0.1     0</dead_detach_frac>
+      <sen_detach_frac>1.0  0.01  0.0   0.01    0</sen_detach_frac>
+      <!--      crop_leaf_area_devel
+         -->
+      <leaf_no_correction description="corrects for other growing leaves">1.6</leaf_no_correction>
+      <!--      crop_leaf_area_sen_light
+         -->
+      <lai_sen_light description="induced senescence occurs (m^2/m^2)">4.99</lai_sen_light>
+      <sen_light_slope description="sensitivity of leaf area senescence to">0.001</sen_light_slope>
+      <!--  shading
+         crop_leaf_area_sen_frost
+         NIH
+         frost_temp = -5.0 0.0  2.0 (oC)
+         frost_fraction =  1.0 0.1  0.0 (0-1)
+         -->
+      <frost_temp units="oC">-5.0 0.0  2.0</frost_temp>
+      <frost_fraction units="0-1">1.0 0.1  0.0</frost_fraction>
+      <!--      crop_leaf_area_sen_water
+         -->
+      <sen_rate_water description="slope in linear eqn">0.01</sen_rate_water>
+      <!--  relating soil water
+         stress during photosynthesis
+         to leaf senesense rate
+         crop_phenology_init
+         -->
+      <twilight units="o" description="Twilight is defined as the interval">-6.0</twilight>
+      <!--  between sunrise or sunset and the
+         time when the true centre of the sun
+         is 2.2 degrees below the horizon.
+         Sunrise or sunset is defined as when
+         the true centre of the sun is 50'
+         below the horizon.
+         crop_N_conc_limits
+         critical and minimum N concentrations
+         -->
+      <x_stage_code>1       2       3       4      5</x_stage_code>
+      <y_n_conc_crit_leaf>0.0250  0.0250  0.0150  0.0150  0.0050</y_n_conc_crit_leaf>
+      <y_n_conc_min_leaf>0.0150  0.0150  0.0050  0.0050  0.0040</y_n_conc_min_leaf>
+      <!--  nih
+         y_n_conc_crit_cane    = 0.0090  0.0090  0.0090  0.0060  0.0025 ()
+         -->
+      <y_n_conc_crit_cane>0.0090  0.0090  0.0090  0.0060  0.0035</y_n_conc_crit_cane>
+      <y_n_conc_min_cane>0.0020  0.0020  0.0005  0.0005  0.0005</y_n_conc_min_cane>
+      <y_n_conc_crit_cabbage>0.0190  0.0190  0.0060  0.0060  0.0010</y_n_conc_crit_cabbage>
+      <y_n_conc_min_cabbage>0.0100  0.0100  0.0030  0.0030  0.0008</y_n_conc_min_cabbage>
+      <n_conc_crit_root>0.0100</n_conc_crit_root>
+      <n_conc_min_root>0.0050</n_conc_min_root>
+      <!--      crop_N_init
+         -->
+      <n_leaf_init_conc>0.03</n_leaf_init_conc>
+      <n_root_init_conc>0.01</n_root_init_conc>
+      <n_sstem_init_conc>0.007</n_sstem_init_conc>
+      <n_cabbage_init_conc>0.02</n_cabbage_init_conc>
+      <!--      crop_N_senescence
+         -->
+      <n_leaf_sen_conc>0.004</n_leaf_sen_conc>
+      <n_root_sen_conc>0.005</n_root_sen_conc>
+      <n_cabbage_sen_conc>0.0008</n_cabbage_sen_conc>
+      <x_ave_temp_stalk units="oC">0 50</x_ave_temp_stalk>
+      <y_stress_stalk>1  1</y_stress_stalk>
+      <!--      crop_rue_reduction
+         cnh base was 8
+         cnh opt1 was 20
+         -->
+      <x_ave_temp units="oC">0 5  15 35 50</x_ave_temp>
+      <y_stress_photo>0 0   1  1  0</y_stress_photo>
+      <!--      crop_tt
+         Thermal time accumulation
+         cnh base was 8
+         -->
+      <x_temp units="oC">9  32  45</x_temp>
+      <y_tt units="oC">0  23   0</y_tt>
+      <!--      crop_swdef
+         -->
+      <x_sw_demand_ratio description="water availability">0.1 0.6</x_sw_demand_ratio>
+      <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+      <x_demand_ratio_stalk description="water availability">0.3  1.5</x_demand_ratio_stalk>
+      <y_swdef_stalk description="stress indices">0   1</y_swdef_stalk>
+      <x_sw_avail_ratio description="water availability">0 0.16</x_sw_avail_ratio>
+      <y_swdef_pheno description="stress indices">1 1</y_swdef_pheno>
+      <x_sw_ratio description="water availability">0  0.25</x_sw_ratio>
+      <y_sw_fac_root description="stress indices">0  1</y_sw_fac_root>
+      <k_nfact_photo>1.5</k_nfact_photo>
+      <k_nfact_expansion>1.25</k_nfact_expansion>
+      <k_nfact_stalk>1</k_nfact_stalk>
+      <k_nfact_pheno>100</k_nfact_pheno>
+      <oxdef_photo_rtfr>0.5 0.8</oxdef_photo_rtfr>
+      <oxdef_photo>1.0 1.0</oxdef_photo>
+      <x_afps description="Air filled pore space (mm3 air/mm3 soil volume)">0.03 .05         </x_afps>
+      <y_afps_fac description="Modifier for root function">1     1          </y_afps_fac>
+      <cane_dmf_max>0.11 .17 0.23</cane_dmf_max>
+      <cane_dmf_min>0.09 .13 0.2</cane_dmf_min>
+      <cane_dmf_tt>0.0  500 4500</cane_dmf_tt>
+      <cane_dmf_rate>0</cane_dmf_rate>
+      <stress_lodge>0   1</stress_lodge>
+      <death_fr_lodge>.002 .001</death_fr_lodge>
+      <lodge_redn_photo description="Lodging reduction factor for photosynthesis (0 = no growth, 1 = no effect)">0.92  </lodge_redn_photo>
+      <lodge_redn_sucrose>0.77</lodge_redn_sucrose>
+      <lodge_redn_green_leaf>0.85</lodge_redn_green_leaf>
+    </plant_crop>
+    <ratoon_crop>
+      <!-- ______________________________
+         -->
+      <stage_names>sowing sprouting emergence begin_cane flowering end_crop</stage_names>
+      <stage_code>1        2         3          4         5        6</stage_code>
+      <rue>0        0        1.65       1.65      1.65      0.0</rue>
+      <root_depth_rate>0        0        10.        15.       15.      15.</root_depth_rate>
+      <!-- ratio_root_shoot =   0        0        0.30       0.20      0.20     0.0
+         -->
+      <ratio_root_shoot>0        0        0.20       0.15       0.10     0.0</ratio_root_shoot>
+      <transp_eff_cf units="kg kPa/kg">0.0087  0.0087       0.0087      0.0087      0.0087    0.0087</transp_eff_cf>
+            <!-- transp_eff_cf is from Inman-Bamber, NG. and McGlinchey, MG. (2003) -->
+      <n_fix_rate>0        0         0          0           0       0</n_fix_rate>
+      <extinction_coef>0.38</extinction_coef>
+      <extinction_coef_dead>0.01</extinction_coef_dead>
+      <!--     crop failure
+         nih - turned this off - 12-5-95
+         -->
+      <leaf_no_crit description="critical number of leaves, below">99.0</leaf_no_crit>
+      <!--    which portion of the crop may
+         die due to water stress
+         cnh was 300
+         -->
+      <tt_emerg_limit units="oC" description="maximum degree days allowed for">800.0</tt_emerg_limit>
+      <!--    emergence to take place (deg day)
+         -->
+      <days_germ_limit units="days" description="maximum days allowed after sowing">40.0</days_germ_limit>
+      <!--   for germination to take place (days)
+         -->
+      <swdf_pheno_limit description="critical cumulative phenology">500.0</swdf_pheno_limit>
+      <!-- swdf_pheno_limit = 25.0 ()             ! critical cumulative phenology
+         water stress, above which the crop
+         fails (unitless)
+         -->
+      <swdf_photo_limit description="critical cumulative photosynthesis">500</swdf_photo_limit>
+      <!-- swdf_photo_limit = 100 ()              ! critical cumulative photosynthesis
+         water stress, above which the crop
+         partly fails (unitless)
+         reduction in plant stand with water stress
+         -->
+      <swdf_photo_rate description="0.044 ()             ! rate of plant reduction with">0.0 </swdf_photo_rate>
+      <!--  photosynthesis water stress
+         crop_root_depth
+         -->
+      <initial_root_depth units="mm" description="initial depth of roots (mm)">150</initial_root_depth>
+      <specific_root_length units="mm/g" description="specific root length">18000</specific_root_length>
+      <x_plant_rld>0 0.1</x_plant_rld>
+      <y_rel_root_rate>1 1</y_rel_root_rate>
+      <root_die_back_fr units="0-1" description="fraction of roots that die back">0.17</root_die_back_fr>
+      <!--  at harvest
+         (17% - Plant & Soil 142, p.297-305)
+         crop_leaf_area_init
+         cnh from 500
+         -->
+      <initial_tpla units="mm^2" description="initial total plant leaf area">1000</initial_tpla>
+      <!--      crop_leaf_area_devel
+         -->
+      <sla_lfno>6     25</sla_lfno>
+      <!--  nih/bak
+         sla_max  = 10500 9000 (mm^2/g)
+         sla_min  =  9000 8500 (mm^2/g)
+         -->
+      <sla_max units="mm^2/g">11500 11500</sla_max>
+      <sla_min units="mm^2/g">9000 8500</sla_min>
+      <!--      crop_leaf_area_devel_plant
+         crop_height
+         height_max = 6000.0 (mm)               ! maximum canopy height
+         height_stem_slope = 300.0 (mm/g/stem)  ! rate of height growth (mm/g/stem)
+         7 mm/g/stem???
+         -->
+      <x_stem_wt>0 200</x_stem_wt>
+      <y_height>0 6000</y_height>
+      <!--      crop_transp_eff
+         -->
+      <svp_fract description="fraction of distance between svp at">0.75</svp_fract>
+      <!--  min temp and svp at max temp where
+         average svp during transpiration
+         lies. (0-1)
+         Default crop factor for use in capping daily crop water demand
+         maximum crop water use is bound to eo_crop_factor * eo * cover_green.
+         -->
+      <eo_crop_factor_default>100.0</eo_crop_factor_default>
+      <!--      crop_germination
+         -->
+      <pesw_germ units="mm/mm" description="plant extractable soil water in">0.03</pesw_germ>
+      <!--    seedling layer inadequate for
+         germination (mm/mm)
+         -->
+      <fasw_emerg>.0 .7</fasw_emerg>
+      <rel_emerg_rate>.3  1</rel_emerg_rate>
+      <!--  crop_leaf_appearance
+         -->
+      <leaf_no_at_emerg description="leaf number at emergence ()">1.0</leaf_no_at_emerg>
+      <!--      crop_phenology_init
+         -->
+      <shoot_lag units="oC" description="time lag before linear coleoptile">100.</shoot_lag>
+      <!--  growth starts (deg days)
+         -->
+      <shoot_rate units="oC/mm" description="growing deg day increase with depth">0.80</shoot_rate>
+      <!--    for coleoptile (deg day/mm depth)
+         leaf_app_rate      = 60  130  130 (oC)
+         leaf_app_rate_lfno =  1  15   40  ()
+         leaf_app_rate      = 80  105  125  150 (oC)
+         leaf_app_rate_lfno =  1  20   30   40  ()
+         -->
+      <x_node_no_app>1  20   30   40</x_node_no_app>
+      <y_node_app_rate units="oC">80  105  125  150</y_node_app_rate>
+      <x_node_no_leaf>1 20 30 40</x_node_no_leaf>
+      <y_leaves_per_node>1 1  1  1</y_leaves_per_node>
+      <!--      crop_dm_init
+         -->
+      <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.2</dm_leaf_init>
+      <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.2</dm_root_init>
+      <dm_sstem_init units="g/plant" description="stem weight at emergence (g/plant)">0.01</dm_sstem_init>
+      <dm_cabbage_init units="g/plant" description="cabbage '    '   '         '">0.143</dm_cabbage_init>
+      <dm_sucrose_init units="g/plant" description="sucrose '    '   '         '">0.0</dm_sucrose_init>
+      <leaf_cabbage_ratio>1.7</leaf_cabbage_ratio>
+      <cabbage_sheath_fr>0.2</cabbage_sheath_fr>
+      <!--      crop_dm_senescence
+         -->
+      <dm_root_sen_frac description="fraction of root dry matter">0.002</dm_root_sen_frac>
+      <!--  senesced each day
+         crop_dm_dead_detachment
+         root leaf sstem cabbage sucrose
+         -->
+      <dead_detach_frac>0.1  0.1   0.05  0.1     0</dead_detach_frac>
+      <sen_detach_frac>1.0  0.01  0.0   0.01    0</sen_detach_frac>
+      <!--      crop_leaf_area_devel
+         -->
+      <leaf_no_correction description="corrects for other growing leaves">1.6</leaf_no_correction>
+      <!--      crop_leaf_area_sen_light
+         -->
+      <lai_sen_light description="induced senescence occurs (m^2/m^2)">4.99</lai_sen_light>
+      <sen_light_slope description="sensitivity of leaf area senescence to">0.001</sen_light_slope>
+      <!--  shading
+         NIH
+         frost_temp = -5.0 0.0  2.0 (oC)
+         frost_fraction =  1.0 0.1  0.0 (0-1)
+         -->
+      <frost_temp units="oC">-5.0 0.0  2.0</frost_temp>
+      <frost_fraction units="0-1">1.0 0.1  0.0</frost_fraction>
+      <!--      crop_leaf_area_sen_water
+         -->
+      <sen_rate_water description="slope in linear eqn">0.01</sen_rate_water>
+      <!--  relating soil water
+         stress during photosynthesis
+         to leaf senesense rate
+         crop_phenology_init
+         -->
+      <twilight units="o" description="Twilight is defined as the interval">-6.0</twilight>
+      <!--  between sunrise or sunset and the
+         time when the true centre of the sun
+         is 2.2 degrees below the horizon.
+         Sunrise or sunset is defined as when
+         the true centre of the sun is 50'
+         below the horizon.
+         crop_N_conc_limits
+         critical and minimum N concentrations
+         -->
+      <x_stage_code>1       2       3       4      5</x_stage_code>
+      <y_n_conc_crit_leaf>0.0250  0.0250  0.0150  0.0150  0.0050</y_n_conc_crit_leaf>
+      <y_n_conc_min_leaf>0.0150  0.0150  0.0050  0.0050  0.0040</y_n_conc_min_leaf>
+      <!--  nih
+         y_n_conc_crit_cane    = 0.0090  0.0090  0.0090  0.0060  0.0025 ()
+         -->
+      <y_n_conc_crit_cane>0.0090  0.0090  0.0090  0.0060  0.0035</y_n_conc_crit_cane>
+      <y_n_conc_min_cane>0.0020  0.0020  0.0005  0.0005  0.0005</y_n_conc_min_cane>
+      <y_n_conc_crit_cabbage>0.0190  0.0190  0.0060  0.0060  0.0010</y_n_conc_crit_cabbage>
+      <y_n_conc_min_cabbage>0.0100  0.0100  0.0030  0.0030  0.0008</y_n_conc_min_cabbage>
+      <n_conc_crit_root>0.0100</n_conc_crit_root>
+      <n_conc_min_root>0.0050</n_conc_min_root>
+      <!--      crop_N_init
+         -->
+      <n_leaf_init_conc>0.03</n_leaf_init_conc>
+      <n_root_init_conc>0.01</n_root_init_conc>
+      <n_sstem_init_conc>0.007</n_sstem_init_conc>
+      <n_cabbage_init_conc>0.02</n_cabbage_init_conc>
+      <!--      crop_N_senescence
+         -->
+      <n_leaf_sen_conc>0.004</n_leaf_sen_conc>
+      <n_root_sen_conc>0.005</n_root_sen_conc>
+      <n_cabbage_sen_conc>0.0008</n_cabbage_sen_conc>
+      <!--      crop_rue_reduction
+         cnh base was 8
+         cnh opt1 was 20
+         -->
+      <x_ave_temp units="oC">0 5  15 35 50</x_ave_temp>
+      <y_stress_photo>0 0   1  1  0</y_stress_photo>
+      <x_ave_temp_stalk units="oC">0 50</x_ave_temp_stalk>
+      <y_stress_stalk>1  1</y_stress_stalk>
+      <!--  Thermal time accumulation
+         cnh base was 8
+         -->
+      <x_temp units="oC">9  32  45</x_temp>
+      <y_tt units="oC">0  23   0</y_tt>
+      <!--      crop_swdef
+         -->
+      <x_sw_demand_ratio description="water availability">0.1 0.6</x_sw_demand_ratio>
+      <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+      <x_demand_ratio_stalk description="water availability">0.3  1.5</x_demand_ratio_stalk>
+      <y_swdef_stalk description="stress indices">0   1</y_swdef_stalk>
+      <x_sw_avail_ratio description="water availability">0 0.16</x_sw_avail_ratio>
+      <y_swdef_pheno description="stress indices">1 1</y_swdef_pheno>
+      <x_sw_ratio description="water availability">0  0.25</x_sw_ratio>
+      <y_sw_fac_root description="stress indices">0  1</y_sw_fac_root>
+      <k_nfact_photo>1.5</k_nfact_photo>
+      <k_nfact_expansion>1.25</k_nfact_expansion>
+      <k_nfact_stalk>1</k_nfact_stalk>
+      <k_nfact_pheno>100</k_nfact_pheno>
+      <oxdef_photo_rtfr>0.5 0.8</oxdef_photo_rtfr>
+      <oxdef_photo>1.0 1.0</oxdef_photo>
+      <x_afps description="Air filled pore space (mm3 air/mm3 soil volume)">0.03 .05         </x_afps>
+      <y_afps_fac description="Modifier for root function">1     1          </y_afps_fac>
+      <cane_dmf_max>0.11 .17 0.23</cane_dmf_max>
+      <cane_dmf_min>0.09 .13 0.2</cane_dmf_min>
+      <cane_dmf_tt>0.0  500 4500</cane_dmf_tt>
+      <cane_dmf_rate>0</cane_dmf_rate>
+      <stress_lodge>0   1</stress_lodge>
+      <death_fr_lodge>.002 .001</death_fr_lodge>
+      <lodge_redn_photo description="Lodging reduction factor for photosynthesis (0 = no growth, 1 = no effect)">0.92  </lodge_redn_photo>
+      <lodge_redn_sucrose>0.77</lodge_redn_sucrose>
+      <lodge_redn_green_leaf>0.85</lodge_redn_green_leaf>
+    </ratoon_crop>
+    <!--  *******************************
+      sections for cultivar constants
+      *******************************
+      cultivars currently in 16-6-96:
+      Q117, Q96, Q138, Q141, H73, TS65-28, NCo376, N12, N14, CP51, R570, M1356
+      M55560, Q124
+      -->
+    <q117 cultivar="yes">
+      <!-- ______________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1   1.5  1.5 1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   6    10  12  26</tillerf_leaf_size_no>
+    </q117>
+    <q117_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  12  26</tillerf_leaf_size_no>
+    </q117_ratoon>
+    <q117_fum cultivar="yes">
+      <!-- ______________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5 3.0  2.5 1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   4    10  12  26</tillerf_leaf_size_no>
+    </q117_fum>
+    <q117_fum_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>2.0  3.0  2.0 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  12  26</tillerf_leaf_size_no>
+    </q117_fum_ratoon>
+    <q96 cultivar="yes">
+      <!-- ______________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>900.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5  1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+    </q96>
+    <q96_ratoon cultivar="yes">
+      <!-- ____________________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>900.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5 1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   4    10  16  26</tillerf_leaf_size_no>
+    </q96_ratoon>
+    <q96_fum cultivar="yes">
+      <!-- ______________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>900.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5  1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+    </q96_fum>
+    <q96_fum_ratoon cultivar="yes">
+      <!-- ____________________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>900.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </q96_fum_ratoon>
+    <q138 cultivar="yes">
+      <!-- ______________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>600.</sucrose_delay>
+      <min_sstem_sucrose>1500.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </q138>
+    <q138_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>1500.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </q138_ratoon>
+    <q138_fum cultivar="yes">
+      <!-- ______________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>600.</sucrose_delay>
+      <min_sstem_sucrose>1500.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5  1 1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+    </q138_fum>
+    <q138_fum_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.61</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>1500.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5  1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10   16 26</tillerf_leaf_size_no>
+    </q138_fum_ratoon>
+    <ts65-28 cultivar="yes">
+      <!-- __________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5  1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+    </ts65-28>
+    <ts65-28_ratoon cultivar="yes">
+      <!-- ________________________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </ts65-28_ratoon>
+    <ts65-28_fum cultivar="yes">
+      <!-- __________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </ts65-28_fum>
+    <ts65-28_fum_ratoon cultivar="yes">
+      <!-- ________________________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </ts65-28_fum_ratoon>
+    <h73 cultivar="yes">
+      <!-- ______________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <!-- sucrose_fraction_stalk = 1.0 0.50
+         -->
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <!-- min_sstem_sucrose = 100
+         -->
+      <min_sstem_sucrose>800</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </h73>
+    <h73_ratoon cultivar="yes">
+      <!-- ____________________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.50</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>800</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5  1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10   16  26</tillerf_leaf_size_no>
+    </h73_ratoon>
+    <q141 cultivar="yes">
+      <!-- ______________________-
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.64</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <!-- needs checking
+         -->
+      <min_sstem_sucrose>1200.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </q141>
+    <q141_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.64</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <!-- needs checking
+         -->
+      <min_sstem_sucrose>1200.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </q141_ratoon>
+    <nco376 cultivar="yes">
+      <!-- ________________________-
+         from Inman-Bamber 1991 SAJPAS
+         -->
+      <leaf_size>3000 7000  12000  28000  28000</leaf_size>
+      <leaf_size_no>1    4     6       14      20</leaf_size_no>
+      <cane_fraction>0.65</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1800</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>10.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </nco376>
+    <nco376_ratoon cultivar="yes">
+      <!-- ________________________________
+         from Inman-Bamber 1991 SAJPAS
+         -->
+      <leaf_size>3000 7000  12000 28000  28000</leaf_size>
+      <leaf_size_no>1    4     6      14      20</leaf_size_no>
+      <cane_fraction>0.65</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1800</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>10.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </nco376_ratoon>
+    <n12 cultivar="yes">
+      <!-- ______________________
+         -->
+      <leaf_size>3000 7000  12000  30000  30000</leaf_size>
+      <leaf_size_no>1    4     6       14      20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </n12>
+    <n12_ratoon cultivar="yes">
+      <!-- ____________________________-
+         -->
+      <leaf_size>3000  7000 12000  30000  30000</leaf_size>
+      <leaf_size_no>1    4     6       14      20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </n12_ratoon>
+    <n14 cultivar="yes">
+      <!-- ______________________
+         from Inman_Bamber 1989 SASTA
+         -->
+      <leaf_size>3000 8000 13000  45000 45000</leaf_size>
+      <leaf_size_no>1    4     6      14    20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1.5 1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10   16 26</tillerf_leaf_size_no>
+    </n14>
+    <n14_ratoon cultivar="yes">
+      <!-- ____________________________-
+         from Inman_Bamber 1989 SASTA
+         -->
+      <leaf_size>3000 8000  13000   45000 45000</leaf_size>
+      <leaf_size_no>1    4      6       14    20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10  16  26</tillerf_leaf_size_no>
+    </n14_ratoon>
+    <CP51 cultivar="yes">
+      <!-- ________________________-
+         -->
+      <leaf_size>3000 7000  15000  35000  35000</leaf_size>
+      <leaf_size_no>1    4     7       15      20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1350</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1  1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10 16   26</tillerf_leaf_size_no>
+    </CP51>
+    <CP51_ratoon cultivar="yes">
+      <!-- ________________________________
+         -->
+      <leaf_size>3000 7000  15000  35000  35000</leaf_size>
+      <leaf_size_no>1    4     7       15      20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0</sucrose_delay>
+      <min_sstem_sucrose>450.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1350</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1  1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10 16  26</tillerf_leaf_size_no>
+    </CP51_ratoon>
+    <R570 cultivar="yes">
+      <!-- ______________________-
+         -->
+      <leaf_size>3000 7000 10000  45000  60000   60000</leaf_size>
+      <leaf_size_no>1    4     6      10    14       20</leaf_size_no>
+      <!-- cane_fraction = 0.75 ()
+         -->
+      <cane_fraction>0.68</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.58</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>693.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1500</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>6   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+    </R570>
+    <R570_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>3000 7000 10000  45000  60000    60000</leaf_size>
+      <leaf_size_no>1    4     6      10    14       20</leaf_size_no>
+      <!-- cane_fraction = 0.75 ()
+         -->
+      <cane_fraction>0.68</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.58</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>693.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1500</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>10   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+    </R570_ratoon>
+    <M1356 cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>3000 7000 10000  25000  40000  40000</leaf_size>
+      <leaf_size_no>1    4     6      10    14       20</leaf_size_no>
+      <!-- cane_fraction = 0.86 ()
+         -->
+      <cane_fraction>0.78</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.57</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>521.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1200</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>6   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+    </M1356>
+    <M1356_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>3000 7000 10000  25000   40000  40000</leaf_size>
+      <leaf_size_no>1    4     6      10     14       20</leaf_size_no>
+      <!-- cane_fraction = 0.86 ()
+         -->
+      <cane_fraction>0.78</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.57</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>521.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1200</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>10   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+    </M1356_ratoon>
+    <M55560 cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>3000 7000 10000  35000   50000  50000</leaf_size>
+      <leaf_size_no>1    4     6      10     14       20</leaf_size_no>
+      <!-- cane_fraction = 0.78 ()
+         -->
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.62</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>775</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1300</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>6   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+    </M55560>
+    <M55560_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>3000 7000 10000  35000  50000  50000</leaf_size>
+      <leaf_size_no>1    4     6      10     14      20</leaf_size_no>
+      <!-- cane_fraction = 0.78 ()
+         -->
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.62</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>775</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1300</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>10   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1   12</tillerf_leaf_size_no>
+    </M55560_ratoon>
+    <q124 cultivar="yes">
+      <!-- ______________________-
+         based on q117 pending field data
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1  1  1.5 1  1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1  4  10  16  26</tillerf_leaf_size_no>
+    </q124>
+    <q124_ratoon cultivar="yes">
+      <!-- ______________________________
+         -->
+      <leaf_size>1500 55000  55000</leaf_size>
+      <leaf_size_no>1    14       20</leaf_size_no>
+      <cane_fraction>0.70</cane_fraction>
+      <sucrose_fraction_stalk>1.0 0.55</sucrose_fraction_stalk>
+      <stress_factor_stalk>0.2 1.0</stress_factor_stalk>
+      <sucrose_delay>0.</sucrose_delay>
+      <min_sstem_sucrose>800.</min_sstem_sucrose>
+      <min_sstem_sucrose_redn>10</min_sstem_sucrose_redn>
+      <tt_emerg_to_begcane>1900</tt_emerg_to_begcane>
+      <tt_begcane_to_flowering>6000</tt_begcane_to_flowering>
+      <tt_flowering_to_crop_end>2000</tt_flowering_to_crop_end>
+      <green_leaf_no>13.0</green_leaf_no>
+      <tillerf_leaf_size>1.5  1.5  1.5  1   1</tillerf_leaf_size>
+      <tillerf_leaf_size_no>1    4    10   16  26</tillerf_leaf_size_no>
+    </q124_ratoon>
+  </Model>
+  
+</Type>

@@ -1,0 +1,1149 @@
+<folder version="36" creator="Apsim 7.7-r3618" name="simulations">
+  <simulation name="Sugar (NEW)">
+    <manager2 name="Script(C#)">
+      <ui>
+        <MethodToUse type="list" listvalues="Kimball_Bellamy_1986" description="Method to use for calculating hourly values">Kimball_Bellamy_1986</MethodToUse>
+      </ui>
+      <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Param] string MethodToUse;         // The value for this will come from the Properties page.
+   [Input] DateTime Today;             // Equates to the value of the current simulation date - value comes from CLOCK
+   [Input] double Latitude;
+   [Output] [Units("0/1")] int HourlyMetExists;
+   [Output] [Units("hrs")] double DayLength;
+   [Output] [Units("MJ/m^2")] double[] RadnHourly = new double[24];        
+   [Output] [Units("oC")] double[] TempHourly = new double[24];
+   [Output] [Units("hPa")] double[] VPDHourly= new double[24];
+
+  
+   //Local Variables (they get assigned from NewMet Argument in the EventHandler)
+
+   double Radn;
+   double MaxT;
+   double MinT;
+   double vp = -99999.9;       //vp is optional in the met file so, do this assignment of a non valid number to test if vp was read in from met file.
+
+
+  
+   // The following event handler will be called each day just after Met variables are retrieved.
+   [EventHandler] public void OnpreNewmet(NewMetType NewMet)
+   {
+      Radn = NewMet.radn;
+      MaxT = NewMet.maxt;
+      MinT = NewMet.mint;
+      vp = NewMet.vp;
+      
+      if (MethodToUse == "Kimball_Bellamy_1986")
+      {
+         Kimball_Bellamy_1986();
+      }
+
+   }
+   
+   
+   private void Kimball_Bellamy_1986()
+   {
+      //Generation of diurnal solar radiation, temperature, and humidity patterns
+      //B.A.Kimball, L.A. Bellamy
+      //U.S. Water Conservation Laboratory, 4331 East Broadway, Phoenix, AZ 85040 U.S.A.
+      //(Accepted 20 February 1986) 
+      
+      //Energy in Agriculture, 5 (1986) 185--197 185 
+      //Elsevier Sciences Publishers B.V., Amsterdam-- Printed in The Netherlands
+      
+      HourlyMetExists = 1;   //set a variable to tell other modules Hourly Met Values exist.
+      DayLength = DayLengthCalc(Today.DayOfYear, Latitude, 0);
+      
+      for (int hour = 0; hour &lt; 24; hour++)
+      {   
+         RadnHourly[hour] = HourlyR((double) hour, DayLength, Radn);
+         TempHourly[hour] = HourlyT((double) hour, DayLength, MaxT, MinT);
+         VPDHourly[hour] = HourlyVPD(TempHourly[hour], vp, MinT);
+      }
+      
+   }
+   
+   
+   
+   
+   private double DayLengthCalc(int day, double lat, double sun_angle)
+   {
+      double DEC = 0;
+      double DECr = 0;
+      double LATr = 0;
+      double HS = 0;
+      double sun_alt = 0;
+      double coshra = 0;
+      double slsd = 0;
+      double clcd = 0;
+      double altmn = 0;
+      double altmx = 0;
+      double alt = 0;
+      const double pi = 3.14159265359;
+
+      sun_alt = sun_angle * 2.0 * pi / 365.25;
+
+      DEC = 23.45 * Math.Sin(2.0 * pi / 365.25 * (day - 82.25));
+      DECr = DEC * 2.0 * pi / 360.0;
+      LATr = lat * 2.0 * pi / 360.0;
+
+      if (lat == 90) 
+      {
+         coshra = Math.Sign(-DEC) * Math.Sign(lat);
+      } 
+      else 
+      {
+         slsd = Math.Sin(LATr) * Math.Sin(DECr);
+         clcd = Math.Cos(LATr) * Math.Cos(DECr);
+
+         altmn = Math.Asin(bound(slsd - clcd, -1.0, 1.0));
+         altmx = Math.Asin(bound(slsd + clcd, -1.0, 1.0));
+         alt = bound(sun_alt, altmn, altmx);
+
+         // get cos of the hour angle
+
+         coshra = (Math.Sin(alt) - slsd) / clcd;
+         coshra = bound(coshra, -1.0, 1.0);
+      }
+
+      HS = Math.Acos(coshra);
+
+
+      return HS * 2.0 * 24.0 / (2.0 * pi);
+
+   }
+   
+   private double bound(double Value, double Lower, double Upper)
+   {
+      Value = Math.Min(Value, Upper);
+      Value = Math.Max(Value, Lower);
+      return Value;
+   }
+   
+   
+   
+   
+   
+   
+   private double HourlyR(double SolarTime, double DayLength, double Radn)
+   {
+      //SolarTime (is t)
+      //DayLength (is D)
+      // Radn is daily radiation. (ie. radn from met file) (is Sd)
+      
+      double S_noon;
+      double S_i;
+      double tb, te;     //Solar time begining of the hour, and end of the hour
+      double tr, ts;     //Solar time of SunRise, and SunSet
+      const double pi = 3.14159265359;
+
+      
+      
+      S_noon = ((Radn * pi) / (2 * DayLength)) * (1000000.0 / 3600.0); 
+      
+      
+      tb = SolarTime;            
+      te = SolarTime + 1.0;     //solar time is in hours, so we add 1 hour.
+      tr = 12 - (DayLength / 2);   //sunrise
+      ts = 12 + (DayLength / 2);   //sunset
+      
+      //if this hour is the hour when sunrise happens, 
+      if ((tb &lt; tr) &amp;&amp; (te &gt; tr))
+      {
+         tb = tr;  //set start time for the hour to sunrise.
+      }
+      //if this hour is the hour when sunset happens, 
+      if ((tb &lt; ts) &amp;&amp; (te &gt; ts))
+      {
+         te = ts;  //set end time for the hour to sunset.
+      }
+       
+      if ((tb &lt; ts) &amp;&amp; (te &gt; tr))
+      {
+         //Do the integration over this hour
+         S_i = S_noon * (3600.0 / 1000000.0) * (DayLength / pi) * 
+            ( Math.Sin(pi * ((te - 12) / DayLength)) - Math.Sin(pi * ((tb - 12) / DayLength)));   
+      }
+      else
+      {
+         //it is night time so there is no radiation.
+         S_i = 0.0;    
+      }
+      
+      
+      return S_i;
+   }
+   
+   
+   
+   
+   
+   private double HourlyT(double t, double Da, double tmax, double tmin)
+   {
+      //t is solar time in hours not temperature.
+      //Da is DayLength (D)
+      
+      double returnValue = 0.0;
+
+      double TimeMin = 0;
+      double TimeRise = 0;
+      double TimeSet = 0;
+      double d = 0;
+      double Tset = 0;
+
+      const double a = 1.86;
+      const double b = 2.2;
+      const double c = 0.17;
+
+      //Da = DayLength(day, lat, 0);
+      TimeRise = (12 - Da / 2);
+      TimeSet = (12 + Da / 2);
+      TimeMin = TimeRise - c;
+      Tset = tmin + (tmax - tmin) * Math.Sin(3.14159 * (TimeSet - TimeMin) / (Da + 2 * a));
+      d = (Tset - tmin) / (Math.Exp(b) - 1);
+
+      if (t &gt;= TimeRise &amp; t &lt;= TimeSet) {
+         returnValue = tmin + (tmax - tmin) * Math.Sin(3.14159 * (t - TimeMin) / (Da + 2 * a));
+      } else if (t &lt; TimeRise) {
+         returnValue = (tmin - d) + (Tset - (tmin - d)) * Math.Exp(-b * (t + 24 - TimeSet) / (24 - Da - c));
+      } else {
+         returnValue = (tmin - d) + (Tset - (tmin - d)) * Math.Exp(-b * (t - TimeSet) / (24 - Da - c));
+      }
+      return returnValue;
+
+   }
+
+   
+   
+   
+   
+   
+   private double HourlyVPD(double Temp_hour, double VP, double Temp_min)
+   {
+      
+      double vpd_hour;  //nb. the units are in hPa
+      
+      //was vp read in from the met file
+      if (VP != -99999.9)
+      {
+         //assume the VP (vapour pressue) was constant throughout the day 
+         //(ie. vp at every hour in the day was the same)
+         vpd_hour = svp(Temp_hour) - VP;
+      }
+      else
+      {
+         //Since we don't have VP from met file we need to approximate one. 
+         //Once again we make the assumption VP is constant throughout the day.
+         //We know that when dew forms VP and SVP are equal.
+         //Also we know that dew usually forms when the temperature is at it's minimum temp during the day. 
+         //therefore the constant VP for the entire day should be the same as the SVP at Tmin.
+         //(nb. this assumtion can break down in summer when Dew does not form at the coldest temperature in the day) 
+         
+         vpd_hour = svp(Temp_hour) - svp(Temp_min);
+      }
+      
+      vpd_hour = Math.Max(vpd_hour, 0.010);  //restrict how small the deficit can be.
+      
+      return vpd_hour;
+   }
+      
+   private double svp(double Temp)
+   {
+     //   ! sv- This function was extracted from inside the  cproc_transp_eff1() function 
+
+      //   *+  Purpose
+      //   *       Saturated Vapour Pressure.
+      //   ! function to get saturation vapour pressure for a given temperature in oC (kpa)
+      //
+      //   !+  Assumptions
+      //   !       the temperatures are &gt; -237.3 oC for the svp function.
+
+      double l_svp;
+      double mb2kpa;
+      double kpa2hpa = 10;  //kpa = 1000pa , hpa = 100pa
+      
+      //! convert pressure mbar to kpa  
+      mb2kpa = 100.0 / 1000.0;     //! 1000 mbar = 100 kpa 
+        
+      l_svp = 6.1078 * Math.Exp(17.269 * Temp / (237.3 + Temp)) * mb2kpa;       
+
+      return l_svp * kpa2hpa;  //changed to return units in hpa instead of kpa.
+   }       
+   
+   
+   
+}
+       </text>
+    </manager2>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Ingham.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1990</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <Soil>
+        <RecordNumber>0</RecordNumber>
+        <SoilType>Black Vertosol</SoilType>
+        <LocalName>Waco</LocalName>
+        <Site>Jimbour</Site>
+        <NearestTown>Jimbour, Q 4352</NearestTown>
+        <Region>South East Queensland</Region>
+        <NaturalVegetation>Grassland, mainly Qld bluegrass</NaturalVegetation>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <InitialWater name="Initial water">
+          <FractionFull>0.5004617</FractionFull>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
+        <Water>
+          <SoilCrop name="Barley">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.32</double>
+              <double>0.38</double>
+              <double>0.39</double>
+              <double>0.39</double>
+              <double>0.41</double>
+              <double>0.48</double>
+              <double>0.47</double>
+              <double>0.46</double>
+              <double>0.44</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Chickpea">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.36</double>
+              <double>0.43</double>
+              <double>0.51</double>
+              <double>0.5</double>
+              <double>0.5</double>
+              <double>0.48</double>
+              <double>0.47</double>
+              <double>0.46</double>
+              <double>0.44</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Lucerne">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.3</double>
+              <double>0.31</double>
+              <double>0.32</double>
+              <double>0.33</double>
+              <double>0.34</double>
+              <double>0.35</double>
+              <double>0.36</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.09</double>
+              <double>0.09</double>
+              <double>0.09</double>
+              <double>0.09</double>
+              <double>0.09</double>
+              <double>0.09</double>
+              <double>0.09</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Maize">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.34</double>
+              <double>0.34</double>
+              <double>0.37</double>
+              <double>0.4</double>
+              <double>0.42</double>
+              <double>0.48</double>
+              <double>0.47</double>
+              <double>0.46</double>
+              <double>0.44</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Perennial Grass">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.39</double>
+              <double>0.41</double>
+              <double>0.4</double>
+              <double>0.4</double>
+              <double>0.41</double>
+              <double>0.41</double>
+              <double>0.4</double>
+              <double>0.4</double>
+              <double>0.42</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.09</double>
+              <double>0.07</double>
+              <double>0.05</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Sorghum">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.35</double>
+              <double>0.38</double>
+              <double>0.4</double>
+              <double>0.4</double>
+              <double>0.4</double>
+              <double>0.48</double>
+              <double>0.47</double>
+              <double>0.46</double>
+              <double>0.44</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Wheat">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.32</double>
+              <double>0.32</double>
+              <double>0.35</double>
+              <double>0.38</double>
+              <double>0.41</double>
+              <double>0.48</double>
+              <double>0.47</double>
+              <double>0.46</double>
+              <double>0.44</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="Sugar">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.29</double>
+              <double>0.29</double>
+              <double>0.32</double>
+              <double>0.32</double>
+              <double>0.35</double>
+              <double>0.38</double>
+              <double>0.41</double>
+              <double>0.48</double>
+              <double>0.47</double>
+              <double>0.46</double>
+              <double>0.44</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0.01</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.02</double>
+            <double>1.03</double>
+            <double>1.02</double>
+            <double>1.02</double>
+            <double>1.06</double>
+            <double>1.11</double>
+            <double>1.12</double>
+            <double>1.15</double>
+            <double>1.18</double>
+            <double>1.2</double>
+            <double>1.25</double>
+          </BD>
+          <AirDry>
+            <double>0.14</double>
+            <double>0.26</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </AirDry>
+          <LL15>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.29</double>
+            <double>0.3</double>
+            <double>0.31</double>
+            <double>0.32</double>
+            <double>0.33</double>
+            <double>0.34</double>
+            <double>0.35</double>
+            <double>0.36</double>
+          </LL15>
+          <DUL>
+            <double>0.54</double>
+            <double>0.53</double>
+            <double>0.54</double>
+            <double>0.54</double>
+            <double>0.52</double>
+            <double>0.5</double>
+            <double>0.5</double>
+            <double>0.48</double>
+            <double>0.47</double>
+            <double>0.46</double>
+            <double>0.44</double>
+          </DUL>
+          <SAT>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.57</double>
+            <double>0.55</double>
+            <double>0.55</double>
+            <double>0.53</double>
+            <double>0.52</double>
+            <double>0.51</double>
+            <double>0.49</double>
+          </SAT>
+        </Water>
+        <SoilWater>
+          <SummerCona>3.5</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>3.5</WinterCona>
+          <WinterU>6</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>200</RootWt>
+          <SoilCN>12.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>1.04</double>
+            <double>0.89</double>
+            <double>0.89</double>
+            <double>0.89</double>
+            <double>0.77</double>
+            <double>0.45</double>
+            <double>0.27</double>
+            <double>0.22</double>
+            <double>0.16</double>
+            <double>0.13</double>
+            <double>0.12</double>
+          </OC>
+          <FBiom>
+            <double>0.025</double>
+            <double>0.02</double>
+            <double>0.015</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.4</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>0.9</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+            <double>0.95</double>
+          </FInert>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <EC>
+            <double>0.2</double>
+            <double>0.25</double>
+            <double>0.31</double>
+            <double>0.4</double>
+            <double>0.59</double>
+            <double>0.84</double>
+            <double>0.93</double>
+            <double>1.01</double>
+            <double>1.06</double>
+            <double>1.05</double>
+            <double>1.01</double>
+          </EC>
+          <PH>
+            <double>8.4</double>
+            <double>8.8</double>
+            <double>9</double>
+            <double>9.2</double>
+            <double>9.2</double>
+            <double>9.1</double>
+            <double>9</double>
+            <double>9</double>
+            <double>8.9</double>
+            <double>8.9</double>
+            <double>8.9</double>
+          </PH>
+        </Analysis>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>6.500</double>
+            <double>2.100</double>
+            <double>2.100</double>
+            <double>1.700</double>
+            <double>1.700</double>
+            <double>1.700</double>
+            <double>1.700</double>
+            <double>1.700</double>
+            <double>1.700</double>
+            <double>1.700</double>
+            <double>1.700</double>
+          </NO3>
+          <NH4>
+            <double>0.600</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+          </NH4>
+        </Sample>
+      </Soil>
+      <fertiliser />
+      <sugar>
+        <ini>
+          <filename input="yes">SugarNEW.xml</filename>
+        </ini>
+      </sugar>
+      <folder name="Manager folder">
+        <manager name="SUGAR management">
+          <ui>
+            <category description="Sugar plant crop management parameters" type="category" />
+            <crop type="crop" description="Enter name of crop to sow : ">sugar</crop>
+            <planting_day type="ddmmmdate" description="Enter planting date (dd-mmm) : ">1-apr</planting_day>
+            <plantlen type="text" description="Duration of a plant crop (days) (30 days/month * 15 months) : ">450</plantlen>
+            <plant_stalks type="text" description="Stalk density of plant crop (/m2) :">10</plant_stalks>
+            <variety type="list" listvalues="q117,q96,q138,ts65-28,h73,q141,nco376,n12,n14,cp51,r570,m1356,m55560,q124" description="Planting variety :">q117</variety>
+            <sowing_depth type="text" description="Planting depth mm) :">150</sowing_depth>
+            <category description="Ratoon management parameters" type="category" />
+            <NoRatoons type="text" description="Number of ratoons (max = 5): ">4</NoRatoons>
+            <ratoonlen type="text" description="Duration of a ratoon crop (days) (30 days/month * 13 months) : ">390</ratoonlen>
+            <ratoon_stalks type="text" description="Stalk density of ratoon crop (/m2) :">10</ratoon_stalks>
+          </ui>
+          <script>
+            <text>
+            ! -----------------------------------------------------------------
+            ! Book keeping to round days to integer values
+            plantlen = nearest_int(plantlen)
+            ratoonlen = nearest_int(ratoonlen)
+
+            ! Initialise and set a time counter for entire run
+            dah = 0
+
+            if (sugar.crop_status = 'alive') then
+               dah = 0
+
+               ! Set harvest dates for each crop phase
+               if (sugar.DaysAfterSowing = [plantlen] and ratoon_no = 0) or
+                  (sugar.DaysAfterSowing = [ratoonlen] and ratoon_no &gt; 0) then
+
+                  sugar harvest
+
+                  if (ratoon_no = [NoRatoons] + 1) then
+                     ! plough the crop out
+                     sugar kill_crop
+                     sugar end_crop
+
+                  else
+                     ! Set stalk density
+                     sugar.plants = [ratoon_stalks]
+                  endif
+               else
+                  ! We have not reached the harvest date for this ratoon.
+               endif
+
+            elseif (sugar.crop_status = 'dead') then
+               sugar harvest
+               sugar end_crop
+
+            elseif (sugar.crop_status = 'out') and (today = date('[planting_day]') then
+               sugar sow plants = 10 (), cultivar = [variety], sowing_depth = [sowing_depth]
+               sugar.plants = [plant_stalks]
+               dah = 0
+
+            else
+               dah = dah + 1
+            endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+            nextcrop = 0
+            fallowin = 0
+            plantlen = 0
+            ratoonlen = 0
+            </text>
+            <event>init</event>
+          </script>
+        </manager>
+        <manager name="Fertilise on fixed date">
+          <ui>
+            <category description="When should fertiliser be applied" type="category" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">01-sep</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" type="category" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">200</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script name="start_of_day">
+            <text><![CDATA[
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil < [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif ]]></text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <outputfile>
+        <filename output="yes">Sugar (NEW).out</filename>
+        <title>Sugar (NEW)</title>
+        <variables name="Variables">
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>day_of_year</variable>
+          <variable>sw_demand</variable>
+          <variable>sw_demand_hourly()</variable>
+          <variable>ep_hourly()</variable>
+          <variable>sw_uptake()</variable>
+          <variable>latitude</variable>
+          <variable>radn</variable>
+          <variable>rain</variable>
+          <variable>maxt</variable>
+          <variable>mint</variable>
+          <variable>vp</variable>
+          <variable>DayLength</variable>
+          <variable>RadnHourly</variable>
+          <variable>TempHourly</variable>
+          <variable>VPDHourly</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>post</event>
+        </events>
+      </outputfile>
+      <outputfile name="sw_demand_hourly">
+        <filename output="yes">Sugar (NEW) sw_demand_hourly.out</filename>
+        <title>Sugar (NEW) sw_demand_hourly</title>
+        <variables name="Variables">
+          <variable>dd_mm_yyyy</variable>
+          <variable>sw_demand_hourly</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+      </outputfile>
+      <outputfile name="ep_hourly">
+        <filename output="yes">Sugar (NEW) ep_hourly.out</filename>
+        <title>Sugar (NEW) ep_hourly</title>
+        <variables name="Variables">
+          <variable>dd_mm_yyyy</variable>
+          <variable>ep_hourly</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>end_day</event>
+        </events>
+      </outputfile>
+    </area>
+  </simulation>
+</folder>
