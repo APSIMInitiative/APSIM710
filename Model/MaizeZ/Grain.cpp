@@ -87,6 +87,12 @@ void Grain::readParams (void)
    scienceAPI.read("GNk", "", 0, GNk);
    scienceAPI.read("potKernelWt", "", 0, potKernelWt);
 
+
+   scienceAPI.read("GNmaxCoef", "", 0, GNmaxCoef);
+	
+   GNmax = (int)(GNmaxCoef  / potKernelWt * 1000);
+
+
 	   // heat effects on grain number
    scienceAPI.read("GrainTempWindow","", 0, grainTempWindow);
    scienceAPI.read("GrainTempOrdinals","", 0, grainTempOrdinals);

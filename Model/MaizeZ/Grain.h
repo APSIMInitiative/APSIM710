@@ -31,6 +31,7 @@ namespace Maize {
 
          // parameters for grain number 
          double PGRt0, PGRt1;              // period before and after anthesis to calculate PGR
+			double    GNmaxCoef;                        // maximum grain number coef
          int    GNmax;                        // maximum grain number
          double PGRbase;                   // base PGR
          double GNk;                       // k in the eqn Andrade et al. 1999
