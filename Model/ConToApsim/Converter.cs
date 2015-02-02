@@ -74,8 +74,15 @@ namespace ConToApsim
       private static void ConvertConToSims(string ConFileName)
          {
          string Exe = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe"));
-         Process ConToSim = Utility.RunProcess(Exe, Path.GetFileName(ConFileName), Path.GetDirectoryName(ConFileName));
-         Utility.CheckProcessExitedProperly(ConToSim);
+         Process PlugInProcess = new Process();
+         PlugInProcess.StartInfo.FileName = Exe;
+         PlugInProcess.StartInfo.Arguments = Path.GetFileName(ConFileName);
+         // Determine whether or not the file is an executable; execute from the shell if it's not
+         PlugInProcess.StartInfo.UseShellExecute = false;
+         PlugInProcess.StartInfo.CreateNoWindow = true;
+         PlugInProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(ConFileName);
+         PlugInProcess.Start();
+         PlugInProcess.WaitForExit();
          }
 
       /// <summary>
@@ -98,7 +105,7 @@ namespace ConToApsim
             string ModuleName = Path.GetFileNameWithoutExtension(XmlHelper.Attribute(Child, "executable")).ToLower();
 
             if (Child.Name.ToLower() == "title")
-               XmlHelper.SetName(NewSimNode, Child.InnerText);
+               XmlHelper.SetName(NewSimNode, Child.InnerText.Replace("/", "-").Replace(".", "_"));
 
             if (ModuleName == "clock")
                {
