@@ -33,8 +33,11 @@ namespace Maize {
          double PGRt0, PGRt1;              // period before and after anthesis to calculate PGR
 			double    GNmaxCoef;                        // maximum grain number coef
          int    GNmax;                        // maximum grain number
+         int    GNmaxProlific;
          double PGRbase;                   // base PGR
+         double PGRprolific;               // base PGR to use when "prolific"
          double GNk;                       // k in the eqn Andrade et al. 1999
+         double GNkProlific;                       // k in the eqn Andrade et al. 1999
          double plantDMt0, plantDMt1;      // plant dm at PGRt1 and t2
          int nDays;
 
@@ -53,7 +56,7 @@ namespace Maize {
          void   initialize(void);
          double calcGrainNumber(void);
          void   calcBiomassDemand(void);
-			double Grain::calcTempFactor(void);
+         double calcTempFactor(void);
    
 
          // public Methods -------------------------------------------------------

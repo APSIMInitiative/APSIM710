@@ -495,7 +495,7 @@ void HourlyTemperature(double maxT, double minT, vector<double> TempParam, int d
    for(int hr=1; hr <= 24; hr++)
       {
       double bt = hr;
-      double bbd;
+      double bbd = 0.0;
       double temperature;
       if(bt >= bb && bt < be)         //day
          {

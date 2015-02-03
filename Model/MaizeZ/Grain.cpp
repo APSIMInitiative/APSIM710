@@ -83,10 +83,12 @@ void Grain::readParams (void)
    scienceAPI.read("PGRt0", "", 0, PGRt0);
    scienceAPI.read("PGRt1", "", 0, PGRt1);
    scienceAPI.read("GNmax", "", 0, GNmax);
+   GNmaxProlific = -1.0; scienceAPI.read("GNmaxProlific", "", 1, GNmaxProlific);
    scienceAPI.read("PGRbase", "", 0, PGRbase);
+   PGRprolific = -1.0; scienceAPI.read("PGRprolific", "", 1, PGRprolific);
    scienceAPI.read("GNk", "", 0, GNk);
+   GNkProlific =  -1.0; scienceAPI.read("GNkProlific", "", 1, GNkProlific);
    scienceAPI.read("potKernelWt", "", 0, potKernelWt);
-
 
    scienceAPI.read("GNmaxCoef", "", 0, GNmaxCoef);
 	
@@ -147,7 +149,7 @@ void Grain::process(void)
    double ttFlowering = plant->phenology->sumTTtarget(sowing,flowering);
    double ttNow = plant->phenology->sumTTtotal(sowing,maturity);
    if(ttNow > ttFlowering - PGRt0 && ttNow < ttFlowering + PGRt1)
-		calcGrainNumber();
+	finalGrainNo = calcGrainNumber();
 
 	   // calculate high temperature effects on grain number
    if(stage >= fi && stage <= flowering)
@@ -166,20 +168,24 @@ void Grain::process(void)
 double Grain::calcGrainNumber(void)
    {
    // calculate PGR in g/plant/day between flowering -  PGRt0 and flowering + PGRt1
-	finalGrainNo = 0.0;
+   double fgn = 0.0;
    nDays++;
-   if(plantDMt0 <  1.0)				// occurs on day 1
+   if(plantDMt0 <  1.0)				// occurs on first day in window
       plantDMt0 = plant->biomass->getAboveGroundBiomass() / 10.0;
    plantDMt1 = plant->biomass->getAboveGroundBiomass() / 10.0;		// todays dm
 
 	double PGR = (plantDMt1 - plantDMt0) / nDays / plant->getPlantDensity();	// growth rate per plant per day
          
-	if(PGR > 0.1 && PGR > PGRbase)
-		finalGrainNo = GNmax * (1.0 - exp(-GNk * (PGR - PGRbase)));
+	if(PGR > 0.1 && PGRprolific > 0.0 ) 
+		fgn = max(max(GNmaxProlific * (1.0 - (exp(-GNkProlific * (PGR - PGRprolific)))),
+		              GNmax * (1.0 - exp(-GNk * (PGR - PGRbase)))),
+		          0.0);
+	else if(PGR > 0.1 && PGR > PGRbase)
+		fgn = GNmax * (1.0 - exp(-GNk * (PGR - PGRbase)));
          
-	finalGrainNo *= plant->getPlantDensity();		// per m2
+	fgn *= plant->getPlantDensity();		// per m2
 
- 	return finalGrainNo;
+ 	return fgn;
    }
 //------------------------------------------------------------------------------------------------
 double Grain::calcTempFactor(void)

@@ -89,6 +89,7 @@ namespace Maize {
 
       public:
          PlantPart(ScienceAPI2 &api) ;
+         virtual ~PlantPart() {};
          void initialize(void);
          virtual void  phenologyEvent(int) = 0;
          virtual double calcNDemand(void) = 0;
@@ -145,6 +146,7 @@ namespace Maize {
 
       public:
          PlantProcess(ScienceAPI2 &api) : PlantComponent(api) {};
+         virtual ~PlantProcess() {};
          virtual void  phenologyEvent(int) = 0;
 
          // variables
