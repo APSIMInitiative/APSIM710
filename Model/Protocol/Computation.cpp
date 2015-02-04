@@ -350,6 +350,9 @@ void Computation::InitNETFrameworks()
        const char* domain_name = "mono_apsim";
        // domain = mono_jit_init (domain_name);
        domain = mono_jit_init_version (domain_name, "v4.0.30319");
+#ifdef MONO3
+       mono_domain_set_config(domain, getApsimDirectory().c_str(), "mono_apsim.config");
+#endif       
 	}
 	return;
 #else
@@ -454,7 +457,8 @@ void Computation::CreateManagedInstance(const std::string& filename,
 	{
 		MonoImageOpenStatus status;
 
-		MonoAssembly* assembly = mono_assembly_open (filename.c_str(), &status);
+		//MonoAssembly* assembly = mono_assembly_open (filename.c_str(), &status);
+		MonoAssembly* assembly = mono_domain_assembly_open (domain, filename.c_str());
 		if (!assembly)
 			printf("Error\n");
 		else
