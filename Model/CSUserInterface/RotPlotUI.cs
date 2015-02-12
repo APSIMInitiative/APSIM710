@@ -166,20 +166,11 @@ namespace CSUserInterface
             {
                 string rName = arc.Name;
                 sRule += "ruleAction " + rName + " = new ruleAction();\n";
-                if (arc.Rules.Count > 0)
-                {
-                    sRule += rName + ".testCondition = ";
-                    foreach (string rule in arc.Rules)
-                        sRule += "\"" + rule + "\"";
-                    sRule += ";\n";
-                }
-                if (arc.Actions.Count > 0)
-                {
-                    sRule += rName + ".action = ";
-                    foreach (string action in arc.Actions)
-                        sRule += "\"" + action + "\"";
-                    sRule += ";\n";
-                }
+                foreach (string rule in arc.Rules)
+					sRule += rName + ".testCondition.Add(\"" + rule + "\");\n";
+                
+                foreach (string action in arc.Actions)
+                    sRule += rName + ".action.Add(\"" + action + "\");\n";
                 sRule += "g.AddDirectedEdge(\"" + arc.SourceNode.Name + "\",\"" + arc.TargetNode.Name + "\"," + rName + ");\n";
             }
 			foreach (var c in pnlFlowLayout.Controls) {
@@ -202,23 +193,25 @@ namespace CSUserInterface
             sRule += "      more = false;\n";
             sRule += "      Node s = g.FindNode(currentState);\n";
             sRule += "      //Console.WriteLine(\" state=\" + s.Name);\n";
-            sRule += "      int bestScore = -1; string bestArc = \"\";\n";
+            sRule += "      double bestScore = -1.0; string bestArc = \"\";\n";
             sRule += "      foreach (string _arc in s.arcs.Keys) {\n";
-            sRule += "         int score = -1;\n";
-            sRule += "         if (s.arcs[_arc].testCondition == null)\n";
-            sRule += "            score = 1;\n";
-            sRule += "         else\n";
-            sRule += "            MyPaddock.Get(s.arcs[_arc].testCondition, out score);\n";
-            sRule += "         //Console.WriteLine(\" a=\" + _arc + \" score=\" + score);\n";
+            sRule += "         double score = 1;\n";
+			sRule += "         foreach (string testCondition in s.arcs[_arc].testCondition){\n";
+			sRule += "            double c = 0.0;\n";
+            sRule += "            if (MyPaddock.Get(testCondition, out c))\n";
+            sRule += "               score *= c;\n";
+            sRule += "            else\n";
+            sRule += "               throw new Exception(\"Nothing returned from expression '\" + testCondition + \"'\");\n";
+            sRule += "         } //Console.WriteLine(\" a=\" + _arc + \" score=\" + score);\n";
             sRule += "         if (score > bestScore) {\n";
             sRule += "            bestScore = score;\n";
             sRule += "            bestArc = _arc;\n";
             sRule += "         }\n";
             sRule += "      }\n";
-            sRule += "      if (bestScore > 0) {\n";
+            sRule += "      if (bestScore > 0.0) {\n";
             sRule += "          //Console.WriteLine(\" best=\" + bestTarget + \" action=\" + s.arcs[bestTarget].action);\n";
-            sRule += "          if (s.arcs[bestArc].action != null)\n";
-            sRule += "             MyPaddock.Publish(s.arcs[bestArc].action);\n";
+            sRule += "          foreach (string action in s.arcs[bestArc].action )\n";
+            sRule += "             MyPaddock.Publish(action);\n";
             sRule += "          currentState = g.FindArcTarget(bestArc);\n";
             sRule += "          more = true;\n";
             sRule += "      }\n";
@@ -228,8 +221,8 @@ namespace CSUserInterface
             sRule += "  public class ruleAction\n";
             sRule += "  {\n";
             sRule += "     public string Target;\n";
-            sRule += "     public string testCondition;\n";
-            sRule += "     public string action;\n";
+            sRule += "     public List<string> testCondition = new List<string>();\n";
+            sRule += "     public List<string> action = new List<string>();\n";
             sRule += "  }\n";
 
             sRule += "   public class Node : IEquatable<Node>\n";
