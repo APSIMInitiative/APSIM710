@@ -143,8 +143,21 @@ namespace ApsimFile
 						if (factorialNode != null)
 						{
 							// Send all input files to each job
-							XmlNodeList g = factorialNode.SelectNodes(".//filename");
-							filenames = filenames.Cast<XmlNode>().Concat(g.Cast<XmlNode>()).ToList();
+                            foreach (XmlNode n in factorialNode.SelectNodes(".//filename"))
+                            {
+                                if (n.InnerText.IndexOf(",") > 0)
+                                {
+                                    XmlNode d = n;
+                                    foreach (string f in n.InnerText.Split(','))
+                                    {
+                                        d.InnerText = f;
+                                        filenames.Add(d);
+                                    }
+                                }
+
+                                else 
+                                    filenames.Add(n);
+                            }
 						}
 						
 						foreach (XmlNode node in filenames)
