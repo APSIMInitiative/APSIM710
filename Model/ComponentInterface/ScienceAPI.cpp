@@ -855,8 +855,8 @@ void ScienceAPI::publish(const std::string& name)
    string regName;
    ApsimRegistry::getApsimRegistry().unCrackPath(component->getId(), name, destID, regName);
    unsigned id = component->addRegistration(::event, destID, regName, ddml);
-   int dummy;
-   component->publish(id, dummy);
+   //int dummy;
+   component->publishNull(id);
    }
 void ScienceAPI::publish(const std::string& name, protocol::ExternalMassFlowType& value)
    {

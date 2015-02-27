@@ -88,8 +88,8 @@ void PlantComponent::doInit1(const protocol::Init1Data& initData)
    if (plant) plant->onInit1();
 
    // Cruft for registering events in getComponentDescription -
-   addRegistration(::event, 0, "sowing", "<null/>");
-   addRegistration(::event, 0, "harvesting", "<null/>");
+   addRegistration(::event, 0, "sowing", "<type/>");
+   addRegistration(::event, 0, "harvesting", "<type/>");
    }
 
 void PlantComponent::doInit2(void)
