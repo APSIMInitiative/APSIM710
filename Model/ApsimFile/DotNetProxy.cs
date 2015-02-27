@@ -455,7 +455,7 @@ class DLLProber
             int PosStartClass = Contents.IndexOf("public class " + ClassName + " ");
             if (PosStartClass != -1)
             {
-                int PosStartAttribute = Contents.IndexOf("[ComponentType", PosStartClass - 35);
+                int PosStartAttribute = Contents.LastIndexOf("[ComponentType", PosStartClass);
                 int PosOpenBracket = Contents.IndexOf("{", PosStartClass);
                 int PosEndClass = StringManip.FindMatchingClosingBracket(Contents, PosStartClass, '{', '}');
                 if (PosEndClass != -1)
