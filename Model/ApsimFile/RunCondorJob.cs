@@ -147,9 +147,9 @@ namespace ApsimFile
                             {
                                 if (n.InnerText.IndexOf(",") > 0)
                                 {
-                                    XmlNode d = n;
                                     foreach (string f in n.InnerText.Split(','))
                                     {
+                                        XmlNode d = n.CloneNode(false);
                                         d.InnerText = f;
                                         filenames.Add(d);
                                     }

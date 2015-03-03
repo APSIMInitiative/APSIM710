@@ -396,7 +396,7 @@ namespace CSGeneral
             // -----------------------------------------------------------------
             // Return the specified attribute or "" if not found
             // -----------------------------------------------------------------
-            if (Node.Attributes != null)
+            if (Node != null && Node.Attributes != null)
             {
                 foreach (XmlAttribute A in Node.Attributes)
                 {
