@@ -603,7 +603,7 @@ namespace ApsimFile
 
             if (ComponentName == "")
                 throw new Exception("Cannot call FindRecursively with a blank name");
-            if (ComponentName.ToLower() == Name.ToLower() &&
+            if ((ComponentName.ToLower() == Name.ToLower() || ComponentName.ToLower() == FullPath.ToLower()) &&
                 (ComponentType == "" || ComponentType.ToLower() == Type.ToLower()))
                 return this;
 
