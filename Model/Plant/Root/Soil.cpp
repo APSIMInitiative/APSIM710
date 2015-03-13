@@ -563,9 +563,11 @@ void Soil::doWaterUptakeExternal (string uptake_source, string crop_type)
     int   layer;                                  // layer number of profile ()
     float ext_sw_supply[max_layer];
     
+    fill_real_array (ext_sw_supply , 0.0, max_layer);
+
     // If uptake source is swim3 then use standard get from apsim
     // otherwise use value of uptake source as it is.
-    string source = uptake_source;
+    string source = ToLower(uptake_source);
     if (uptake_source =="swim3") source = "apsim";
     	
      plant_get_ext_uptakes(source.c_str()
@@ -604,12 +606,14 @@ void Soil::plant_get_ext_uptakes (const char *uptake_source,        //(INPUT) up
 *     08-05-1997 - huth - Programmed and Specified
 *     20/5/2003 ad converted to BC++
 */
-   {
+{
    char uptake_name[80];             // Uptake variable name
    unsigned layer;
    std::vector<float> values;   // Scratch area
 
-   if (strcmp(uptake_source, "apsim") == 0 && *crop_type != '\0')
+   if (strcmp(uptake_source, "apsim") == 0)
+   {
+      if (*crop_type != '\0')
       {
       // NB - if crop type is blank then swim will know nothing
       // about this crop (eg if not initialised yet)
@@ -621,6 +625,13 @@ void Soil::plant_get_ext_uptakes (const char *uptake_source,        //(INPUT) up
          uptake_array[layer] = values[layer] * unit_conversion_factor;
       }
    }
+   else
+   {
+      std::string err_msg = "Unknown water uptake source: ";
+      err_msg += uptake_source;
+      scienceAPI.warning(err_msg);
+   }
+}
 
 void Soil::write()
 //=======================================================================================
