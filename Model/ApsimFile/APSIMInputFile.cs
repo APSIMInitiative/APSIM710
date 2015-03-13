@@ -341,7 +341,7 @@ namespace ApsimFile
                         DateTime Value = DateTime.ParseExact(Words[w], DateFormat, null);
                         Values[w] = Value;
                     }
-                    else if (ColumnTypes[w] == typeof(float))
+                    else if (ColumnTypes[w] == typeof(System.Double))
                     {
                         double Value;
                         if (double.TryParse(Words[w], out Value))
