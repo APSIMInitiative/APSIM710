@@ -230,12 +230,11 @@ namespace CMPServices
                     //now build the correct xml for the context file
                     buf.Append("<component name=\"" + compName.Trim() + "\" executable=\"" + compDll + "\"" + " class=\"" + compClass + "\">");
                     buf.Append("  <initdata>\r\n");
+                    buf.Append(model);
                     if (compClass.ToLower().StartsWith("plant."))
                         buf.Append("    <uptake_source>apsim</uptake_source>" + CR);
                     for (i = 0; i < FInitList.Count - 1; i++)
                         buf.Append("    <" + FInitList[i] + "></" + FInitList[i] + ">\r\n");
-                    buf.Append(CR + "    <!-- ==== Standard constants below this point ==== -->" + CR);
-                    buf.Append(model);
                     buf.Append("  </initdata>");
                     buf.Append("</component>");
                     strContext = buf.ToString();

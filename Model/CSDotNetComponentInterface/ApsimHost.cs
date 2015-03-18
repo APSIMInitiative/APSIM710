@@ -417,6 +417,58 @@ public class TAPSIMHost : TBaseComp
     {
         Comp.deleteInstance();
     }
+
+    /// <summary>
+    /// Get the standard properties for the component description
+    /// </summary>
+    /// <returns>The Standard properties XML</returns>
+    public string stdProperties()
+    {
+        StringBuilder sBuf = new StringBuilder();
+        // all std properties
+        //write the properties
+        TPropertyInfo property;
+        int it = 0;
+        while (it < propertyList.Count)
+        {
+            property = propertyList[it];
+            if (property != null)
+            {
+                sBuf.Append("<property name=\"");
+                sBuf.Append(property.Name);
+                sBuf.Append("\" descr=\"");
+                sBuf.Append(property.sDescr);
+                sBuf.Append("\" access=\"");
+                if ((property.bWrite) && (property.bRead))
+                {
+                    sBuf.Append("both");
+                }
+                else
+                {
+                    if (property.bWrite)
+                        sBuf.Append("write");
+                    else if (property.bRead)
+                        sBuf.Append("read");          //default is "read"
+                }
+                sBuf.Append("\" init=\"");
+                if (property.bInit)
+                    sBuf.Append("T\">");
+                else
+                    sBuf.Append("F\">");
+
+                //now write the type info
+                sBuf.Append(writeTypeInfo(property));
+                if (property.sDescription.Length > 0)
+                    sBuf.Append("<description>" + property.sDescription + "</description>");
+                else
+                    sBuf.Append("<description/>");
+                sBuf.Append("</property>");
+            }
+            it++;
+        }
+        return sBuf.ToString();
+    }
+
     //=========================================================================
     /// <summary>
     /// 

@@ -1134,6 +1134,8 @@ namespace ModelFramework
                 Fact.Create(ModelDescription.OuterXml, modelAssembly, this);
                 ModelInstance = (Instance)(Fact.Root);
 
+                Desc.Append(Host.stdProperties());
+
                 // get description for all properties.
                 for (int i = 0; i != Fact.Properties.Count; i++)
                 {
