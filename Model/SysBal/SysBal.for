@@ -2163,6 +2163,7 @@
 
       call unpack_BiomassRemoved(variant, BiomassRemoved)
 
+      numvals = BiomassRemoved%num_dm_type
       do  counter = 1, numvals
          if (BiomassRemoved%dm_type(counter)(1:4) .eq. 'root') then
             root_num = counter
@@ -2173,7 +2174,6 @@
       end do
 
       ! Find the amount of surfom to be removed today
-      numvals = BiomassRemoved%num_dm_type
       fraction_removed(:numvals) = 1.0 -
      :      BiomassRemoved%fraction_to_Residue(:numvals)
 

@@ -205,6 +205,108 @@
       end subroutine
 
 ! ====================================================================
+      subroutine Send_BiomassRemoved_Event (event_ID                 &
+                                            , crop_type              &
+                                            , dm_type                &
+                                            , dlt_crop_dm            &
+                                            , dlt_dm_n               &
+                                            , fraction_to_Residue    &
+                                            , max_part)
+! ====================================================================
+      implicit none
+
+!+  Sub-Program Arguments
+      integer event_ID                      ! (INPUT) event id
+      character  crop_type*(*)              ! (INPUT) crop type
+      character  dm_type(*)*(*)             ! (INPUT) residue type
+      real  dlt_crop_dm(*)                  ! (INPUT) residue weight (kg/ha)
+      real  dlt_dm_n(*)                     ! (INPUT) residue N weight (kg/ha)
+      real  fraction_to_Residue(*)          ! (INPUT) residue fraction to residue (0-1)
+      integer max_part                      ! (INPUT) number of residue types
+	  
+!+  Purpose
+!     Notify other modules of crop chopped.
+
+!+  Mission Statement
+!     Notify other modules of crop chopped.
+
+!+  Changes
+!   281103 nih - Copied from plant module
+
+!+  Local variables
+      type(BiomassRemovedType) :: chopped
+
+!- Implementation Section ----------------------------------
+
+      chopped%crop_type = crop_type
+      chopped%dm_type(1:max_part) = dm_type(1:max_part)
+      chopped%num_dm_type = max_part
+      chopped%dlt_crop_dm(1:max_part) = dlt_crop_dm(1:max_part)
+      chopped%num_dlt_crop_dm = max_part
+      chopped%dlt_dm_n(1:max_part) = dlt_dm_n(1:max_part)
+      chopped%num_dlt_dm_n = max_part
+      chopped%dlt_dm_p(1:max_array_size) = 0.0
+      chopped%num_dlt_dm_p = max_part
+      chopped%fraction_to_residue(1:max_part) = fraction_to_Residue(1:max_part)
+      chopped%num_fraction_to_residue = max_part
+      call publish_BiomassRemoved(event_ID, chopped)
+
+      return
+      end subroutine
+	  
+! ====================================================================
+      subroutine Send_BiomassRemoved_Event_N_P (event_ID             &
+                                            , crop_type              &
+                                            , dm_type                &
+                                            , dlt_crop_dm            &
+                                            , dlt_dm_n               &
+                                            , dlt_dm_p               &
+                                            , fraction_to_Residue    &
+                                            , max_part)      
+! ====================================================================
+      implicit none
+
+!+  Sub-Program Arguments
+      integer event_ID                      ! (INPUT) event id
+      character  crop_type*(*)              ! (INPUT) crop type
+      character  dm_type(*)*(*)             ! (INPUT) residue type
+      real  dlt_crop_dm(*)                  ! (INPUT) residue weight (kg/ha)
+      real  dlt_dm_n(*)                     ! (INPUT) residue N weight (kg/ha)
+      real  dlt_dm_p(*)                     ! (INPUT) residue P weight (kg/ha)
+      real  fraction_to_Residue(*)          ! (INPUT) residue fraction to residue (0-1)
+      integer max_part                      ! (INPUT) number of residue types
+	  
+!+  Purpose
+!     Notify other modules of crop chopped.
+
+!+  Mission Statement
+!     Notify other modules of crop chopped.
+
+!+  Changes
+!   281103 nih - Copied from plant module
+
+!+  Local variables
+      type(BiomassRemovedType) :: chopped
+
+!- Implementation Section ----------------------------------
+
+      chopped%crop_type = crop_type
+      chopped%dm_type(1:max_part) = dm_type(1:max_part)
+      chopped%num_dm_type = max_part
+      chopped%dlt_crop_dm(1:max_part) = dlt_crop_dm(1:max_part)
+      chopped%num_dlt_crop_dm = max_part
+      chopped%dlt_dm_n(1:max_part) = dlt_dm_n(1:max_part)
+      chopped%num_dlt_dm_n = max_part
+      chopped%dlt_dm_p(1:max_array_size) = dlt_dm_p(1:max_part)
+      chopped%num_dlt_dm_p = max_part
+      chopped%fraction_to_residue(1:max_part) = fraction_to_Residue(1:max_part)
+      chopped%num_fraction_to_residue = max_part
+      call publish_BiomassRemoved(event_ID, chopped)
+
+      return
+      end subroutine
+	  
+! ====================================================================
       subroutine Send_Crop_Chopped_Event (crop_type                    &
                                                 , dm_type              &
                                                 , dlt_crop_dm          &

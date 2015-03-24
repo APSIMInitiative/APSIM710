@@ -577,7 +577,7 @@
 ! ====================================================================
       type IDsType
          sequence
-         integer :: crop_chopped
+         integer :: BiomassRemoved
          integer :: sowing
          integer :: harvesting
          integer :: create
@@ -6993,8 +6993,9 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !     call crop_top_residue (c%crop_type, dm_residue, N_residue)
 
       if (sum(dlt_dm_crop) .gt. 0.0) then
-         call Send_Crop_Chopped_Event
-     :             (c%crop_type
+         call Send_BiomassRemoved_Event
+     :             (id%BiomassRemoved
+     :            , c%crop_type
      :            , part_name
      :            , dlt_dm_crop
      :            , dlt_dm_N
@@ -7106,8 +7107,9 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !     call crop_top_residue (c%crop_type, dm_residue, N_residue)
 
       if (sum(dlt_dm_crop) .gt. 0.0) then
-         call Send_Crop_Chopped_Event
-     :             (c%crop_type
+         call Send_BiomassRemoved_Event
+     :             (id%BiomassRemoved
+     :            , c%crop_type
      :            , part_name
      :            , dlt_dm_crop
      :            , dlt_dm_N
@@ -7539,8 +7541,8 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !STDCALL(doInit1)
       integer dummy
 
-      id%crop_chopped = add_registration(eventReg, 'crop_chopped',
-     :                                   ApsimVariantTypeDDML, '')
+      id%BiomassRemoved = add_registration(eventReg, 'BiomassRemoved',
+     :                                   BiomassRemovedTypeDDML, '')
       id%sowing = add_registration(eventReg, 'sowing',
      :                             nullTypeDDML, '')
       id%harvesting = add_registration(eventReg, 'harvesting',

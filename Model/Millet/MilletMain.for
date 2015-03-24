@@ -1001,7 +1001,7 @@ c+!!!!!!!!! check order dependency of deltas
 
          if (sum(dlt_dm_crop(leaf:)) .gt. 0.0) then
 
-            call Send_Crop_Chopped_Event
+            call millet_Send_Crop_Chopped_Event
      :                (c%crop_type
      :               , part_name
      :               , dlt_dm_crop
@@ -3059,7 +3059,7 @@ c+!!!! perhaps we should get number of layers at init and keep it
       end subroutine
 * ====================================================================
       Recursive
-     :subroutine millet_Send_Crop_Chopped_Event (crop_type
+     :subroutine Millet_Send_Crop_Chopped_Event (crop_type
      :                                           , dm_type
      :                                           , dlt_crop_dm
      :                                           , dlt_dm_n
@@ -3075,6 +3075,7 @@ c+!!!! perhaps we should get number of layers at init and keep it
       real  dlt_dm_n(*)                     ! (INPUT) residue N weight (kg/ha)
       real  fraction_to_Residue(*)          ! (INPUT) residue fraction to residue (0-1)
       integer max_part                      ! (INPUT) number of residue types
+	  
 *+  Purpose
 *     Notify other modules of crop chopped.
 
@@ -3082,59 +3083,31 @@ c+!!!! perhaps we should get number of layers at init and keep it
 *     Notify other modules of crop chopped.
 
 *+  Changes
-*   070999 jngh - Programmed and Specified
-*   110700 jngh - Changed dm_tyoe to array.
+*   281103 nih - Copied from plant module
+
+*+  Local variables
+      type(BiomassRemovedType) :: chopped
 
 *+  Constant Values
       character*(*) myname               ! name of current procedure
-      parameter (myname = 'millet_Send_Crop_Chopped_Event')
+      parameter (myname = 'growth_Send_Crop_Chopped_Event')
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
-      call new_postbox ()
+      chopped%crop_type = crop_type
+      chopped%dm_type(1:max_part) = dm_type(1:max_part)
+      chopped%num_dm_type = max_part
+      chopped%dlt_crop_dm(1:max_part) = dlt_crop_dm(1:max_part)
+      chopped%num_dlt_crop_dm = max_part
+      chopped%dlt_dm_n(1:max_part) = dlt_dm_n(1:max_part)
+      chopped%num_dlt_dm_n = max_part
+      chopped%dlt_dm_p(1:max_array_size) = 0.0
+      chopped%num_dlt_dm_p = max_part
+      chopped%fraction_to_residue(1:max_part) = 
+     : fraction_to_Residue(1:max_part)
+      chopped%num_fraction_to_residue = max_part
+      call publish_BiomassRemoved(id%biomass_removed, chopped)
 
-         ! send message regardless of fatal error - will stop anyway
-
-
-!cjh      write(*,*) 'millet: '//EVENT_Crop_Chopped
-!cjh      write(*,*) 'millet: '//DATA_crop_type
-!cjh     :               , ' '//crop_type
-!cjh      write(*,*) 'millet: '//DATA_dm_type
-!cjh     :               , ' '//dm_type
-!cjh      write(*,*) 'millet: '//DATA_dlt_crop_dm
-!cjh     :               , dlt_crop_dm
-!cjh      write(*,*) 'millet: '//DATA_dlt_dm_n
-!cjh     :               , dlt_dm_n
-!cjh      write(*,*) 'millet: '//DATA_fraction_to_Residue
-!cjh     :               , fraction_to_Residue
-
-      call post_char_var   (DATA_crop_type
-     :                        ,'()'
-     :                        , crop_type)
-      call post_char_array (DATA_dm_type
-     :                        ,'()'
-     :                        , dm_type
-     :                        , max_part)
-      call post_real_array (DATA_dlt_crop_dm
-     :                        ,'(kg/ha)'
-     :                        , dlt_crop_dm
-     :                        , max_part)
-      call post_real_array (DATA_dlt_dm_n
-     :                        ,'(kg/ha)'
-     :                        , dlt_dm_n
-     :                        , max_part)
-      call post_real_array (DATA_fraction_to_Residue
-     :                        ,'()'
-     :                        , fraction_to_Residue
-     :                        , max_part)
-
-      call event_send (unknown_module, EVENT_Crop_Chopped)
-
-      call delete_postbox ()
-
-
-      call pop_routine (myname)
       return
       end subroutine
 

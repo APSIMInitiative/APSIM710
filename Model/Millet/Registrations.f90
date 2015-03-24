@@ -4,7 +4,7 @@ module Registrations
    type IDsType
       sequence
       integer :: incorp_fom
-      integer :: crop_chopped
+      integer :: biomass_removed
       integer :: sowing
       integer :: harvesting
       integer :: externalmassflow
@@ -29,7 +29,7 @@ module Registrations
          type(IDsType) :: id
 
          id%incorp_fom = add_registration(eventReg, 'incorpfom', FomLayerTypeDDML, '')
-         id%crop_chopped = add_registration(eventReg, 'crop_chopped', ApsimVariantTypeDDML, '')
+         id%biomass_removed = add_registration(eventReg, 'BiomassRemoved', BiomassRemovedTypeDDML, '')
          id%sowing = add_registration(eventReg, 'sowing', nullTypeDDML, '')
          id%harvesting = add_registration(eventReg, 'harvesting', nullTypeDDML, '')
          id%externalmassflow = add_registration(eventReg, 'externalmassflow', ExternalMassFlowTypeDDML, '')
