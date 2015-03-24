@@ -6,7 +6,7 @@ module Registrations
       integer :: new_canopy
       integer :: newcrop
       integer :: incorp_fom
-      integer :: crop_chopped
+      integer :: biomass_removed
       integer :: killing
       integer :: thinning
       integer :: cutting
@@ -38,7 +38,7 @@ module Registrations
          id%new_canopy = add_registration(eventReg, 'new_canopy', nullTypeDDML, '')
          id%newcrop = add_registration(eventReg, 'newcrop', NewCropTypeDDML, '')
          id%incorp_fom = add_registration(eventReg, 'IncorpFOM', FOMLayerTypeDDML, '')
-         id%crop_chopped = add_registration(eventReg, 'crop_chopped', ApsimVariantTypeDDML, '')
+         id%biomass_removed = add_registration(eventReg, 'BiomassRemoved', BiomassRemovedTypeDDML, '')
          id%killing = add_registration(eventReg, 'killing', nullTypeDDML, '')
          id%thinning = add_registration(eventReg, 'thinning', nullTypeDDML, '')
          id%cutting = add_registration(eventReg, 'cutting', nullTypeDDML, '')

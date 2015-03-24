@@ -7162,6 +7162,7 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       real  dlt_dm_n(*)                     ! (INPUT) residue N weight (kg/ha)
       real  fraction_to_Residue(*)          ! (INPUT) residue fraction to residue (0-1)
       integer max_part                      ! (INPUT) number of residue types
+	  
 *+  Purpose
 *     Notify other modules of crop chopped.
 
@@ -7171,44 +7172,29 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
 *+  Changes
 *   281103 nih - Copied from plant module
 
+*+  Local variables
+      type(BiomassRemovedType) :: chopped
 
 *+  Constant Values
       character*(*) myname               ! name of current procedure
       parameter (myname = 'growth_Send_Crop_Chopped_Event')
 
 *- Implementation Section ----------------------------------
-      call push_routine (myname)
 
-      call new_postbox ()
+      chopped%crop_type = crop_type
+      chopped%dm_type(1:max_part) = dm_type(1:max_part)
+      chopped%num_dm_type = max_part
+      chopped%dlt_crop_dm(1:max_part) = dlt_crop_dm(1:max_part)
+      chopped%num_dlt_crop_dm = max_part
+      chopped%dlt_dm_n(1:max_part) = dlt_dm_n(1:max_part)
+      chopped%num_dlt_dm_n = max_part
+      chopped%dlt_dm_p(1:max_array_size) = 0.0
+      chopped%num_dlt_dm_p = max_part
+      chopped%fraction_to_residue(1:max_part) = 
+     : fraction_to_Residue(1:max_part)
+      chopped%num_fraction_to_residue = max_part
+      call publish_BiomassRemoved(id%biomass_removed, chopped)
 
-      call post_char_var   (DATA_crop_type
-     :                        ,'()'
-     :                        , crop_type)
-      call post_char_array (DATA_dm_type
-     :                        ,'()'
-     :                        , dm_type
-     :                        , max_part)
-
-
-      call post_real_array (DATA_dlt_crop_dm
-     :                        ,'(kg/ha)'
-     :                        , dlt_crop_dm
-     :                        , max_part)
-      call post_real_array (DATA_dlt_dm_n
-     :                        ,'(kg/ha)'
-     :                        , dlt_dm_n
-     :                        , max_part)
-      call post_real_array (DATA_fraction_to_Residue
-     :                        ,'()'
-     :                        , fraction_to_Residue
-     :                        , max_part)
-
-      call event_send (unknown_module,EVENT_Crop_Chopped)
-
-      call delete_postbox ()
-
-
-      call pop_routine (myname)
       return
       end subroutine
 
