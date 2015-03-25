@@ -5,8 +5,7 @@
 
 #include <stdexcept>
 #include <iostream>
-
-#include <boost/regex.hpp>
+#include <regex>
 
 #include "ApsimRegistrationType.h"
 #include "ApsimRegistration.h"
@@ -586,10 +585,10 @@ void ApsimRegistry::unCrackPath(int fromID,                 // IN: id of module 
       {
 //cout << "Testing RE: variable=\""<<name<<"\", re=\"" << componentName << "\"\n";
          // It's an RE. Test against all the component names we know about.
-         //boost::regex e(componentName);
+         //std::regex e(componentName);
 		 //
          //for (unsigned int i = 0; i < components.size(); i++)
-         //  if (regex_match(components[i].Name,e)) 
+         //  if (std::regex_match(components[i].Name,e)) 
          //    ids.push_back(components[i].ID);
          ids.push_back(0);
       }

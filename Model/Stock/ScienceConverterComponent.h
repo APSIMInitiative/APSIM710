@@ -8,7 +8,6 @@
 #include <strstream>
 #include <vector>
 
-#include <boost/function.hpp>
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
 #include <ApsimShared/FStringExt.h>

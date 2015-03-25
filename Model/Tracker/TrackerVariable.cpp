@@ -6,14 +6,12 @@
 #include <ComponentInterface/Component.h>
 #include <ComponentInterface/TypeConverter.h>
 #include <ApsimShared/ApsimRegistry.h>
-#include <boost/date_time/gregorian/gregorian.hpp>
 #include <float.h>
 #include <math.h>
 
 #include "TrackerVariable.h"
 
 using namespace std;
-using namespace boost::gregorian;
 
 //---------------------------------------------------------------------------
 // constructor
