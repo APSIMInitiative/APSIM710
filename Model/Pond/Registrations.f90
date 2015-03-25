@@ -10,6 +10,7 @@ module Registrations
       integer :: tick
       integer :: newmet
       integer :: potentialresiduedecompositioncalculated
+      integer :: biomassremoved
 
    end type IDsType
 
@@ -27,6 +28,7 @@ module Registrations
          id%tick = add_registration(respondToEventReg, 'tick', TimeTypeDDML, '')
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
          id%potentialresiduedecompositioncalculated = add_registration(respondToEventReg, 'potentialresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
+         id%biomassremoved = add_registration(eventReg, 'BiomassRemoved', BiomassRemovedTypeDDML, '')
       end subroutine
 end module Registrations
 

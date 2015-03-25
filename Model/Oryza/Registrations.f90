@@ -2,7 +2,7 @@ module Registrations
    use DataTypes
    type IDsType
       sequence
-      integer :: crop_chopped
+      integer :: biomass_removed
       integer :: incorp_fom
       integer :: sowing
       integer :: harvesting
@@ -27,7 +27,7 @@ module Registrations
          type(IDsType) :: id
          integer dummy
 
-         id%crop_chopped = add_registration(eventReg, 'crop_chopped', ApsimVariantTypeDDML, '')
+         id%biomass_removed = add_registration(eventReg, 'BiomassRemoved', BiomassRemovedTypeDDML, '')
          id%incorp_fom = add_registration(eventReg, 'incorpfom', FomLayerTypeDDML, '')
          id%sowing = add_registration(eventReg, 'sowing', nullTypeDDML, '')
          id%harvesting = add_registration(eventReg, 'harvesting', nullTypeDDML, '')

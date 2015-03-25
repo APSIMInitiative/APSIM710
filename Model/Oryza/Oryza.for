@@ -670,6 +670,7 @@
       data       dm_type/'stem','leaf','grain'/
       type (FOMLayerType) :: IncorpFOM
       integer layer
+      type(BiomassRemovedType) :: chopped
 
 *- Implementation Section ----------------------------------
 
@@ -714,26 +715,19 @@
 
          fraction_to_residue(:) = 1.0
 
-         call new_postbox ()
-         call post_char_var   (DATA_crop_type
-     :                           ,'()'
-     :                           , p%crop_type)
-         call post_char_array (DATA_dm_type
-     :                           ,'()'
-     :                           , dm_type, 3)
-         call post_real_array (DATA_dlt_crop_dm
-     :                           ,'(kg/ha)'
-     :                           , dlt_dm_crop, 3)
-         call post_real_array (DATA_dlt_dm_n
-     :                           ,'(kg/ha)'
-     :                           , dlt_dm_n, 3)
-         call post_real_array (DATA_fraction_to_Residue
-     :                           ,'()'
-     :                           , fraction_to_Residue, 3)
-
-         call event_send (unknown_module, EVENT_Crop_Chopped)
-         call delete_postbox ()
-
+         chopped%crop_type = p%crop_type
+         chopped%dm_type(1:3) = dm_type(1:3)
+         chopped%num_dm_type = 3
+         chopped%dlt_crop_dm(1:3) = dlt_dm_crop(1:3)
+         chopped%num_dlt_crop_dm = 3
+         chopped%dlt_dm_n(1:3) = dlt_dm_n(1:3)
+         chopped%num_dlt_dm_n = 3
+         chopped%dlt_dm_p(1:3) = 0.0
+         chopped%num_dlt_dm_p = 3
+         chopped%fraction_to_residue(1:3) = fraction_to_Residue(1:3)
+         chopped%num_fraction_to_residue = 3
+         call publish_BiomassRemoved(id%biomass_removed, chopped)
+		 
          N_residue = sum(dlt_dm_N)
          dm_residue = sum(dlt_dm_crop)
          write (string, '(22x, a, f7.1, a, 3(a, 22x, a, f7.1, a))')

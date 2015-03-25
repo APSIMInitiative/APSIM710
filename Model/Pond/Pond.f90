@@ -2421,6 +2421,7 @@ subroutine Pond_send_cropchopped_event (amount)
       real dlt_dm_n(max_part)            ! algae N added to residue pool (kg/ha)
       real fraction_to_residue(max_part) ! fraction of total going to residue pool (0-1.0)
       character dm_type(max_part)*10     ! type of material
+      type(BiomassRemovedType) :: chopped
 
 !+  Initial Data Values
 
@@ -2441,20 +2442,19 @@ subroutine Pond_send_cropchopped_event (amount)
       dlt_dm_n(2) = divide((amount * 0.4),8.0,0.0)  ! assuming algae is 40% C, with C:N of 8.0 (Roger 1996)
       fraction_to_residue(2) = 1.0
       
-      
-      call new_postbox ()
-
-      call post_char_var   (DATA_crop_type,'()', 'algae')
-      call post_char_array (DATA_dm_type,'()', dm_type, max_part)
-      call post_real_array (DATA_dlt_crop_dm,'(kg/ha)', dlt_crop_dm, max_part)
-      call post_real_array (DATA_dlt_dm_n,'(kg/ha)', dlt_dm_n, max_part)
-      call post_real_array (DATA_fraction_to_Residue,'()', fraction_to_residue, max_part)
-
-      call event_send (unknown_module, EVENT_Crop_Chopped)
-
-      call delete_postbox ()
-
-   
+      chopped%crop_type = 'algae'
+      chopped%dm_type(1:max_part) = dm_type
+      chopped%num_dm_type = max_part
+      chopped%dlt_crop_dm(1:max_part) = dlt_crop_dm
+      chopped%num_dlt_crop_dm = max_part
+      chopped%dlt_dm_n(1:max_part) = dlt_dm_n
+      chopped%num_dlt_dm_n = max_part
+      chopped%dlt_dm_p(1:max_array_size) = 0.0
+      chopped%num_dlt_dm_p = max_part
+      chopped%fraction_to_residue(1:max_part) = fraction_to_residue
+      chopped%num_fraction_to_residue = max_part
+      call publish_BiomassRemoved(id%biomassremoved, chopped)
+         
    call pop_routine (my_name)
    return
 end subroutine
@@ -2533,11 +2533,11 @@ end subroutine
 
 ! use the temperature factor suggested by Godwin & Singh 1998
 !
-!            1 |            /\
-!              |           / .\    
-!              |          /  . \   
-!              |         /   .  \  
-!              |        /    .   \
+!            1 |            /\               |
+!              |           / .\              |
+!              |          /  . \             |
+!              |         /   .  \            | 
+!              |        /    .   \           | 
 !            0 ------------------------------ temp
 !              0       15    30   45   
 
