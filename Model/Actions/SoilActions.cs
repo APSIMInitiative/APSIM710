@@ -46,13 +46,23 @@ namespace Actions
 		}
 		public static void AddSoil(BaseController Controller)
 		{
-            throw new NotImplementedException();
-            //XmlNode NewSoil = Soil.Create("Soil");
-            //Controller.Selection.Add(NewSoil.OuterXml);
+            //throw new NotImplementedException();
+            Soil NewSoil = Soil.Create(@"<Soil>
+                                          <Water>
+                                           <Thickness/>
+                                            <BD/>
+                                            </Water>
+                                          <SoilWater/>
+                                          <SoilOrganicMatter>
+                                            <Thickness/>
+                                            <OC/>
+                                            <FBiom/>
+                                            <FInert/>
+                                          </SoilOrganicMatter>
+                                          <Analysis/>
+                                        </Soil>");
+            Controller.Selection.Add(NewSoil.ToXml(), true);
 		}
-
-
-
 
 		#region "Import methods"
 		public static void ImportFromSoils(BaseController Controller)

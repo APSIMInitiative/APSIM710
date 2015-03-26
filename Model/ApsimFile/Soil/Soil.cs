@@ -1326,7 +1326,10 @@ namespace ApsimFile
         /// </summary>
         internal double[] BDMapped(double[] ToThickness)
         {
-            return Map(Water.BD, Water.Thickness, ToThickness, MapType.Concentration, Water.BD.Last());
+            if (Water.BD == null || Water.BD.Length == 0)
+                return null;
+            else
+                return Map(Water.BD, Water.Thickness, ToThickness, MapType.Concentration, Water.BD.Last());
         }
 
         /// <summary>

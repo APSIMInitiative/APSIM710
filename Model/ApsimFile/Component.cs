@@ -320,11 +320,11 @@ namespace ApsimFile
         {
             get { return MyChildNodes; }
         }
-        public Component Add(string Xml)
+        public Component Add(string Xml, bool forApsoil = false)
         {
-            return Add(Xml, true);
+            return Add(Xml, true, forApsoil);
         }
-        public Component Add(string Xml, bool AddInitWaterIfNecessary)
+        public Component Add(string Xml, bool AddInitWaterIfNecessary, bool forApsoil)
         {
             // ---------------------------------------------------------------------
             // Add the specified xml as children. The xml might be multiple children
@@ -349,7 +349,7 @@ namespace ApsimFile
                     XmlNode InitWaterNode = XmlHelper.FindByType(SoilNode, "InitWater");
                     XmlNode InitNitrogenNode = XmlHelper.FindByType(SoilNode, "InitNitrogen");
                     XmlNode SoilSampleNode = XmlHelper.FindByType(SoilNode, "Sample");
-                    if (InitWaterNode == null && InitNitrogenNode == null && SoilSampleNode == null)
+                    if (InitWaterNode == null && InitNitrogenNode == null && SoilSampleNode == null && !forApsoil)
                     {
                         // Default to a full profile
                         InitWaterNode = SoilNode.AppendChild(SoilNode.OwnerDocument.CreateElement("InitialWater"));

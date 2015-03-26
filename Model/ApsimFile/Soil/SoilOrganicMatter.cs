@@ -73,6 +73,8 @@ namespace ApsimFile
         public double[] InertC(Soil Soil)
         {
             double[] BD = Soil.BDMapped(Thickness);
+            if (BD == null)
+                return null;
 
             double[] InertC = new double[Thickness.Length];
 
@@ -99,6 +101,8 @@ namespace ApsimFile
         public double[] BiomC(Soil Soil)
         {
             double[] BD = Soil.BDMapped(Thickness);
+            if (BD == null)
+                return null;
             double[] InertC = this.InertC(Soil);
 
             double[] BiomC = new double[Thickness.Length];
@@ -126,6 +130,8 @@ namespace ApsimFile
         public double[] HumC(Soil Soil)
         {
             double[] BD = Soil.BDMapped(Thickness);
+            if (BD == null)
+                return null;
             double[] InertC = this.InertC(Soil);
             double[] BiomC = this.BiomC(Soil);
 
