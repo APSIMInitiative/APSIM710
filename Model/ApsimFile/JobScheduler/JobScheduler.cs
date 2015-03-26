@@ -81,6 +81,7 @@ public class JobScheduler
 
     /// Data items
     private bool CancelWorkerThread;
+    private bool abortRuns = false;
     private Thread SocketListener = null;
     private Dictionary<string, string> Macros = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
     private Project Project;
@@ -265,6 +266,11 @@ public class JobScheduler
     /// </summary>
     public void Stop()
     {
+        abortRuns = true;
+        // Allow enough time for the JobRunner to contact us again,
+        // so we can tell it that it needs to shut down all jobs.
+        Thread.Sleep(550);
+
         // Wait until the socket listener has exited.
         CancelWorkerThread = true;
         while (SocketListener != null)
@@ -573,6 +579,8 @@ public class JobScheduler
                 int TotalJobsSoFar = Convert.ToInt32(CommandBits[2]);
                 _PercentComplete = Convert.ToInt32(PercentSoFar / 100.0 * TotalJobsSoFar / Project.Targets[0].Jobs.Count * 100.0);
             }
+            if (abortRuns)
+                return "ABORT";
         }
 
         else if (Data != "")

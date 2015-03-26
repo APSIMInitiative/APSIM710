@@ -58,7 +58,9 @@ public class JobRunner
                 try
                 {
                     // Send back a percent complete
-                    SendPercentComplete(Macros, Jobs, NumFinishedJobs);
+                    string response = SendPercentComplete(Macros, Jobs, NumFinishedJobs);
+                    if (response == "ABORT")
+                        break; // Exit our loop
 
                     // See if any jobs have finished.
                     NumFinishedJobs += SendBackFinishedJobs(Macros, Jobs);
@@ -131,7 +133,7 @@ public class JobRunner
 
         }
 
-        public void SendPercentComplete(Dictionary<string, string> Macros, List<Job> Jobs, int NumFinishedJobs)
+        public string SendPercentComplete(Dictionary<string, string> Macros, List<Job> Jobs, int NumFinishedJobs)
         {
             int TotalNumJobs = Jobs.Count + NumFinishedJobs;
 
@@ -146,10 +148,12 @@ public class JobRunner
                 }
                 x += NumFinishedJobs;
                 double PercentComplete = (int)Math.Max(0, Math.Min(100, 100.0 * (x / TotalNumJobs)));
-                Utility.SocketSend(Macros["Server"],
+                return Utility.SocketSend(Macros["Server"],
                                     Convert.ToInt32(Macros["Port"]),
                                     "PercentComplete~" + PercentComplete.ToString("f0") + "~" + TotalNumJobs);
             }
+            else
+                return "NOJOBS";
         }
 
 
