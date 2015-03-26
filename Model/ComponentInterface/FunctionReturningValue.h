@@ -5,7 +5,6 @@
 #include <General/platform.h>
 #include <string>
 #include <ComponentInterface/Interfaces.h>
-#include <boost/function.hpp>
 #include <ComponentInterface/Variable.h>
 
 namespace protocol {
@@ -19,7 +18,7 @@ class EXPORT FunctionReturningValue : public INamedData
    {
    public:
 
-      typedef boost::function1<Variable, const std::string&> Function;
+      typedef std::function<Variable(const std::string&)> Function;
       FunctionReturningValue(Function  f)
          {
          F = f;

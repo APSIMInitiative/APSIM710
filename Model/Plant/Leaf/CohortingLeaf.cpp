@@ -512,7 +512,7 @@ void CohortingLeaf::leaf_no_pot (float stressFactor, float dlt_tt)
     if (tillering)
        {
        float node_app_rate = cNodeAppRate[gNodeNo];
-       dltNodeNo = divide (dlt_tt, node_app_rate, 0.0);
+       dltNodeNo = (float)divide (dlt_tt, node_app_rate, 0.0);
        }
     else
        dltNodeNo = 0.0;
@@ -530,7 +530,7 @@ void CohortingLeaf::leaf_no_pot (float stressFactor, float dlt_tt)
         if (gDltLeavesPerNode > 0.0)
            gDltLeavesPerNode =  gDltLeavesPerNode * stressFactor;
 
-        gDltLeavesPerNode = max(1.0 - gLeavesPerNode, gDltLeavesPerNode);  //cannot reduce LPN to below 1
+        gDltLeavesPerNode = (float)max(1.0 - gLeavesPerNode, gDltLeavesPerNode);  //cannot reduce LPN to below 1
 
         dltLeafNoPot = dltNodeNo * (gLeavesPerNode + gDltLeavesPerNode);
         }
@@ -648,7 +648,7 @@ void CohortingLeaf::update(void)
    for (unsigned int cohort = 0; cohort != gLeafArea.size(); cohort++)
       gLeafAge[cohort] += dltTT;
 
-   float dltLeafArea = divide (dltLAI, plant->population().Density(), 0.0) * sm2smm;
+   float dltLeafArea = (float)(divide (dltLAI, plant->population().Density(), 0.0) * sm2smm);
 
     // Partition new LAI to cohorts
 
@@ -721,10 +721,10 @@ void CohortingLeaf::update(void)
        float areaTotSen = sum(gLeafAreaSen);
        for (cohort = 0; cohort != gLeafArea.size(); cohort++)
           {
-          float area = dltLeafArea * divide(gLeafArea[cohort], areaTot, 0.0);
+          float area = (float)(dltLeafArea * divide(gLeafArea[cohort], areaTot, 0.0));
           gLeafArea[cohort] = l_bound(gLeafArea[cohort] - area, 0.0);
 
-          area = dltLeafAreaSen * divide(gLeafAreaSen[cohort], areaTotSen, 0.0);
+          area = dltLeafAreaSen * (float)divide(gLeafAreaSen[cohort], areaTotSen, 0.0);
           gLeafAreaSen[cohort] = l_bound(gLeafAreaSen[cohort] - area, 0.0);
           }
        }
@@ -780,6 +780,6 @@ float CohortingLeaf::senFract (void)
                                dltSLAI_water),
                                dltSLAI_frost);
 
-   return(divide (dltSLAI, getLAI() + dltLAI, 0.0));             // fraction of canopy senescing
+   return((float)divide (dltSLAI, getLAI() + dltLAI, 0.0));             // fraction of canopy senescing
    }
 

@@ -10,6 +10,8 @@
 
 using namespace std;
 
+
+
 Leaf::Leaf(ScienceAPI& scienceAPI, plantInterface *p, const string &name)
    : SimplePart(scienceAPI, p, name)
    {
@@ -108,7 +110,7 @@ void Leaf::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop water dem
 
       float SWDemandMax = SWDemandMaxFactor * coverGreen() ;
       sw_demand = u_bound(sw_demand_te, SWDemandMax);
-      transpEff = transpEff * divide(sw_demand_te, sw_demand, 1.0);
+      transpEff = transpEff * (float)divide(sw_demand_te, sw_demand, 1.0);
       }
    Debug("Leaf.sw_demand=%f", sw_demand);
    Debug("Leaf.transpEff=%f", transpEff);

@@ -19,6 +19,10 @@ typedef Tcl_Interp *(*CREATEINTERPFN)();
 
 #include "TclComponent.h"
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 using namespace std;
 int apsimGetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
 int apsimGetOptionalProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);

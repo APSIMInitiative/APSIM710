@@ -24,6 +24,10 @@
 
 using namespace std;
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 RComponent *currentRComponent = NULL;
 static bool hasStartedR = false;
 

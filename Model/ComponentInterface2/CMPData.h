@@ -5,7 +5,6 @@
 #include <vector>
 #include <stdexcept>
 #include <typeinfo>
-#include <boost/function.hpp>
 #include <ComponentInterface2/BuiltIns.h>
 #include <ComponentInterface2/Interfaces.h>
 #include <ComponentInterface2/DataTypes.h>
@@ -339,10 +338,10 @@ class DualMethod : public Packable
 class NullMethod : public Packable
    {
    private:
-      boost::function0<void> fn;
+      std::function<void()> fn;
       Null null;
    public:
-      NullMethod(boost::function0<void>& fn)
+      NullMethod(std::function<void()>& fn)
          {
          this->fn = fn;
          }
@@ -368,10 +367,10 @@ class NamedNullMethod : public Packable
    {
    private:
       std::string apsimName;
-      boost::function1<void, const std::string &> fn;
+      std::function<void(const std::string &)> fn;
       Null null;
    public:
-      NamedNullMethod(const std::string &name, boost::function1<void, const std::string &>& fn)
+      NamedNullMethod(const std::string &name, std::function<void(const std::string &)>& fn)
          {
          this->fn = fn;
          apsimName = name;

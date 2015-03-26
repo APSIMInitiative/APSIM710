@@ -13,6 +13,10 @@
 using namespace std;
 using namespace boost::unit_test_framework;
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 CMPComponentInterface* componentInterface;
 ScienceAPI2* scienceAPI;
 unsigned messageArg = 123;

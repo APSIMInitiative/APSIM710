@@ -141,8 +141,7 @@ ScienceAPI2::~ScienceAPI2() {} ;
 #include <string>
 #include <vector>
 #include <map>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <functional>
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/Variant.h>
 
@@ -191,16 +190,16 @@ class EXPORT ScienceAPI2
       virtual bool readScripts(std::map<std::string, std::string> &scripts) = 0;
 
       // null
-      #define nullFunction(address) boost::function0<void>(boost::bind(address, this))
-      #define namedNullFunction(name, address) boost::function1<void, const std::string &>(boost::bind(address, this, _1))
-      virtual void subscribe(const std::string& name, boost::function0<void> handler) = 0;
-      virtual void subscribe(const std::string& name, boost::function1<void, const std::string &> handler) = 0;
+      #define nullFunction(address) std::function<void()>(std::bind(address, this))
+      #define namedNullFunction(name, address) std::function<void(const std::string &)>(std::bind(address, this, _1))
+      virtual void subscribe(const std::string& name, std::function<void()> handler) = 0;
+      virtual void subscribe(const std::string& name, std::function<void(const std::string &)> handler) = 0;
       virtual void publish(const std::string& name) = 0;
 
       [foreach types.builtin]
       // [builtin.cpptype]
-      #define [builtin.name]Function(address) boost::function1<void, [builtin.cpptype]& >(boost::bind(address, this, _1))
-      #define [builtin.name]Function2(name, address) boost::function2<void, const std::string &, [builtin.cpptype]& >(boost::bind(address, this, _1, _2))
+      #define [builtin.name]Function(address) std::function<void([builtin.cpptype]&) >(std::bind(address, this, _1))
+      #define [builtin.name]Function2(name, address) std::function<void(const std::string &, [builtin.cpptype]&) >(std::bind(address, this, _1, _2))
 [if [builtin.boundable] = T]
       virtual bool read(const std::string& name, const std::string& units, bool optional, [builtin.cpptype]& data) = 0;
 [endif]
@@ -211,16 +210,16 @@ class EXPORT ScienceAPI2
       virtual bool get(const std::string& name, const std::string& units, bool optional, [builtin.cpptype]& data[if [builtin.boundable] = T], [builtin.ctype] lower, [builtin.ctype] upper[endif]) = 0;
       virtual void set(const std::string& name, const std::string& units, [builtin.cpptype]& data) = 0;
       virtual void expose(const std::string& name, const std::string& units, const std::string& description, bool writable, [builtin.cpptype]& variable) = 0;
-      virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> fn) = 0;
-      virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> getter,
-                                  boost::function1<void, [builtin.cpptype]&> setter) = 0;
+      virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<void([builtin.cpptype]&)> fn) = 0;
+      virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<void([builtin.cpptype]&)> getter,
+                                  std::function<void([builtin.cpptype]&)> setter) = 0;
       virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                  boost::function2<void, const std::string &, [builtin.cpptype]&> fn) = 0;
+                                  std::function<void(const std::string &, [builtin.cpptype]&)> fn) = 0;
       virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                  boost::function2<void, const std::string &, [builtin.cpptype]&> getter,
-                                  boost::function2<void, const std::string &, [builtin.cpptype]&> setter) = 0;
+                                  std::function<void(const std::string &, [builtin.cpptype]&)> getter,
+                                  std::function<void(const std::string &, [builtin.cpptype]&)> setter) = 0;
 
-      virtual void subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler) = 0;
+      virtual void subscribe(const std::string& name, std::function<void([builtin.cpptype]&)> handler) = 0;
       virtual void publish(const std::string& name, [builtin.cpptype]& data) = 0;
 
       [endfor]
@@ -229,18 +228,18 @@ class EXPORT ScienceAPI2
       virtual bool get(const std::string& name, bool optional, [type.name]Type& data) = 0;
       virtual void set(const std::string& name, [type.name]Type& data) = 0;
       virtual void expose(const std::string& name, const std::string &description, bool writeable, [type.name]Type& data) = 0;
-      #define [type.name]Function(address) boost::function1<void, [type.name]Type& >(boost::bind(address, this, _1))
-      virtual void expose(const std::string& name, const std::string &description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter) = 0;
-      virtual void subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler) = 0;
+      #define [type.name]Function(address) std::function<void([type.name]Type&) >(std::bind(address, this, _1))
+      virtual void expose(const std::string& name, const std::string &description, std::function<void([type.name]Type&)> getter, std::function<void([type.name]Type&)> setter) = 0;
+      virtual void subscribe(const std::string& name, std::function<void([type.name]Type&)> handler) = 0;
       virtual void publish(const std::string& name, [type.name]Type& data) = 0;
 
       [endfor]
 
-      #define VariantFunction(address) boost::function1<void, Variant& >(boost::bind(address, this, _1))
-      virtual void subscribe(const std::string& name, boost::function1<void, Variant&> handler) = 0;
+      #define VariantFunction(address) std::function<void(Variant&) >(std::bind(address, this, _1))
+      virtual void subscribe(const std::string& name, std::function<void(Variant&)> handler) = 0;
 
-      #define VariantFunction2(name, address) boost::function2<void, const std::string &, Variant& >(boost::bind(address, this, _1, _2))
-      virtual void subscribe(const std::string& name, boost::function2<void, const std::string &, Variant&> handler) = 0;
+      #define VariantFunction2(name, address) std::function<void(const std::string &, Variant&) >(std::bind(address, this, _1, _2))
+      virtual void subscribe(const std::string& name, std::function<void(const std::string &, Variant&)> handler) = 0;
 
       virtual void publish(const std::string& name, Variant& data) = 0;
    };
@@ -289,8 +288,8 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual void notifyFutureEvent(const std::string& name);
 
       // null
-      virtual void subscribe(const std::string& name, boost::function0<void> handler);
-      virtual void subscribe(const std::string& name, boost::function1<void, const std::string &> handler);
+      virtual void subscribe(const std::string& name, std::function<void()> handler);
+      virtual void subscribe(const std::string& name, std::function<void(const std::string &)> handler);
       virtual void publish(const std::string& name);
 
       [foreach types.builtin]
@@ -305,16 +304,16 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual bool get(const std::string& name, const std::string& units, bool optional, [builtin.cpptype]& data[if [builtin.boundable] = T], [builtin.ctype] lower, [builtin.ctype] upper[endif]);
       virtual void set(const std::string& name, const std::string& units, [builtin.cpptype]& data);
       virtual void expose(const std::string& name, const std::string& units, const std::string& description, bool writable, [builtin.cpptype]& variable);
-      virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> method);
+      virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<void([builtin.cpptype]&)> method);
       virtual void exposeFunction(const std::string& name, const std::string& units, const std::string& description,
-                                  boost::function1<void, [builtin.cpptype]&> getter,
-                                  boost::function1<void, [builtin.cpptype]&> setter);
+                                  std::function<void([builtin.cpptype]&)> getter,
+                                  std::function<void([builtin.cpptype]&)> setter);
       virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                   boost::function2<void, const std::string&, [builtin.cpptype]&> method);
+                                   std::function<void(const std::string&, [builtin.cpptype]&)> method);
       virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                   boost::function2<void, const std::string&, [builtin.cpptype]&> getter,
-                                   boost::function2<void, const std::string&, [builtin.cpptype]&> setter);
-      virtual void subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler);
+                                   std::function<void(const std::string&, [builtin.cpptype]&)> getter,
+                                   std::function<void(const std::string&, [builtin.cpptype]&)> setter);
+      virtual void subscribe(const std::string& name, std::function<void([builtin.cpptype]&)> handler);
       virtual void publish(const std::string& name, [builtin.cpptype]& data);
 
       [endfor]
@@ -322,13 +321,13 @@ class EXPORT ScienceAPI2Impl : public ScienceAPI2
       virtual bool get(const std::string& name,  bool optional, [type.name]Type& data);
       virtual void set(const std::string& name, [type.name]Type& data);
       virtual void expose(const std::string& name, const std::string &description, bool writeable, [type.name]Type& data);
-      virtual void expose(const std::string& name, const std::string &description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter);
-      virtual void subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler);
+      virtual void expose(const std::string& name, const std::string &description, std::function<void([type.name]Type&)> getter, std::function<void([type.name]Type&)> setter);
+      virtual void subscribe(const std::string& name, std::function<void([type.name]Type&)> handler);
       virtual void publish(const std::string& name, [type.name]Type& data);
 
       [endfor]
-      void subscribe(const std::string& name, boost::function1<void, Variant&> handler);
-      void subscribe(const std::string& name, boost::function2<void, const std::string &, Variant&> handler);
+      void subscribe(const std::string& name, std::function<void(Variant&)> handler);
+      void subscribe(const std::string& name, std::function<void(const std::string &, Variant&)> handler);
       void publish(const std::string& name, Variant& data);
    };
 #endif
@@ -391,9 +390,9 @@ void ScienceAPI2Impl::notifyFutureEvent(const std::string& name)
    }
 
 // null
-void ScienceAPI2Impl::subscribe(const std::string& name, boost::function0<void> handler)
+void ScienceAPI2Impl::subscribe(const std::string& name, std::function<void()> handler)
    {componentInterface.subscribe(name, new NullMethod(handler));}
-void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, const std::string &> handler)
+void ScienceAPI2Impl::subscribe(const std::string& name, std::function<void(const std::string &)> handler)
    {componentInterface.subscribe(name, new NamedNullMethod(name, handler));}
 void ScienceAPI2Impl::publish(const std::string& name)
    {
@@ -443,31 +442,31 @@ void ScienceAPI2Impl::set(const std::string& name, const std::string& units, [bu
    {componentInterface.set(name, units, new CMPBuiltIn<[builtin.cpptype]& >(data));}
 void ScienceAPI2Impl::expose(const std::string& name, const std::string& units, const std::string& description, bool writable, [builtin.cpptype]& variable)
    {componentInterface.expose(name, units, description, writable, new CMPBuiltIn<[builtin.cpptype]& >(variable));}
-void ScienceAPI2Impl::exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, [builtin.cpptype]&> fn)
-   {componentInterface.expose(name, units, description, false, new Method<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] >(fn));}
+void ScienceAPI2Impl::exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<void([builtin.cpptype]&)> fn)
+   {componentInterface.expose(name, units, description, false, new Method<std::function<void([builtin.cpptype]&)>, [builtin.cpptype] >(fn));}
 void ScienceAPI2Impl::exposeFunction(const std::string& name, const std::string& units, const std::string& description,
-                                   boost::function1<void, [builtin.cpptype]&> getter,
-                                   boost::function1<void, [builtin.cpptype]&> setter)
+                                   std::function<void([builtin.cpptype]&)> getter,
+                                   std::function<void([builtin.cpptype]&)> setter)
    {
    componentInterface.expose(name, units, description, true,
-                             new DualMethod<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] > (getter, setter));
+                             new DualMethod<std::function<void([builtin.cpptype]&)>, [builtin.cpptype] > (getter, setter));
    }
 void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                     boost::function2<void, const std::string &, [builtin.cpptype]&> fn)
+                                     std::function<void(const std::string &, [builtin.cpptype]&)> fn)
    {
    componentInterface.expose(name, units, description, false,
-                             new NamedMethod<boost::function2<void, const std::string &, [builtin.cpptype]&>, [builtin.cpptype] >(name, fn));
+                             new NamedMethod<std::function<void(const std::string &, [builtin.cpptype]&)>, [builtin.cpptype] >(name, fn));
    }
 void ScienceAPI2Impl::exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                     boost::function2<void, const std::string&, [builtin.cpptype]&> getter,
-                                     boost::function2<void, const std::string&, [builtin.cpptype]&> setter)
+                                     std::function<void(const std::string&, [builtin.cpptype]&)> getter,
+                                     std::function<void(const std::string&, [builtin.cpptype]&)> setter)
    {
    componentInterface.expose(name, units, description, true,
-                             new NamedDualMethod<boost::function2<void, const std::string&, [builtin.cpptype]&>, [builtin.cpptype] > (name, getter, setter));
+                             new NamedDualMethod<std::function<void(const std::string&, [builtin.cpptype]&)>, [builtin.cpptype] > (name, getter, setter));
    }
 
-void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [builtin.cpptype]&> handler)
-   {componentInterface.subscribe(name, new Method<boost::function1<void, [builtin.cpptype]&>, [builtin.cpptype] > (handler));}
+void ScienceAPI2Impl::subscribe(const std::string& name, std::function<void([builtin.cpptype]&)> handler)
+   {componentInterface.subscribe(name, new Method<std::function<void([builtin.cpptype]&)>, [builtin.cpptype] > (handler));}
 void ScienceAPI2Impl::publish(const std::string& name, [builtin.cpptype]& data)
    {componentInterface.publish(name, new CMPBuiltIn<[builtin.cpptype]& >(data));}
 
@@ -479,20 +478,20 @@ void ScienceAPI2Impl::set(const std::string& name, [type.name]Type& data)
    {std::string units = ""; componentInterface.set(name, units, new PackableWrapper<[type.name]Type& >(data));}
 void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, bool writable, [type.name]Type & variable)
    {componentInterface.expose(name, "", description, writable, new PackableWrapper<[type.name]Type& >(variable));}
-void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, boost::function1<void, [type.name]Type&> getter, boost::function1<void, [type.name]Type&> setter)
+void ScienceAPI2Impl::expose(const std::string& name, const std::string& description, std::function<void([type.name]Type&)> getter, std::function<void([type.name]Type&)> setter)
    {componentInterface.expose(name, "", description, 1,
-                              new DualMethod<boost::function1<void, [type.name]Type&>, [type.name]Type > (getter, setter));}
-void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler)
-     {componentInterface.subscribe(name, new MethodWithStructureConverter<boost::function1<void, [type.name]Type&>, [type.name]Type > (handler));}
+                              new DualMethod<std::function<void([type.name]Type&)>, [type.name]Type > (getter, setter));}
+void ScienceAPI2Impl::subscribe(const std::string& name, std::function<void([type.name]Type&)> handler)
+     {componentInterface.subscribe(name, new MethodWithStructureConverter<std::function<void([type.name]Type&)>, [type.name]Type > (handler));}
 void ScienceAPI2Impl::publish(const std::string& name, [type.name]Type& data)
      {componentInterface.publish(name, new PackableWrapper< [type.name]Type& >(data));}
 
 [endfor]
 
-void ScienceAPI2Impl::subscribe(const string& name, boost::function1<void, Variant&> handler)
-     {componentInterface.subscribe(name, new Method<boost::function1<void, Variant&>, Variant > (handler));}
-void ScienceAPI2Impl::subscribe(const string& name, boost::function2<void, const std::string&, Variant&> handler)
-     {componentInterface.subscribe(name, new NamedMethod<boost::function2<void, const std::string &, Variant&>, Variant > (name, handler));}
+void ScienceAPI2Impl::subscribe(const string& name, std::function<void(Variant&)> handler)
+     {componentInterface.subscribe(name, new Method<std::function<void(Variant&)>, Variant > (handler));}
+void ScienceAPI2Impl::subscribe(const string& name, std::function<void(const std::string&, Variant&)> handler)
+     {componentInterface.subscribe(name, new NamedMethod<std::function<void(const std::string &, Variant&)>, Variant > (name, handler));}
 void ScienceAPI2Impl::publish(const string& name, Variant& data)
      {componentInterface.publish(name, new PackableWrapper< Variant& >(data));}
 [endfile]
@@ -645,7 +644,6 @@ std::string EXPORT DDML(const F[type.name]Type& value)
 // ------------------------------------------------------------------
 
 #include <General/platform.h>
-#include <boost/function.hpp>
 #include <FortranComponentInterface2/DataTypes.h>
 #include <FortranComponentInterface2/FortranComponentWrapper.h>
 #include <ComponentInterface2/FortranString.h>

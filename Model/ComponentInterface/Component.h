@@ -4,9 +4,7 @@
 
 #include <map>
 #include <vector>
-
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <functional>
 #include <boost/lexical_cast.hpp>
 
 #include <General/stl_functions.h>
@@ -134,11 +132,11 @@ class EXPORT stringInfo : public baseInfo {
 // Same as above, but stores pointers to function calls, not memory regions.
 class EXPORT fnInfo : public baseInfo {
   private:
-    boost::function2<void, Component *, QueryValueData &> myFn;
+    std::function<void(Component *, QueryValueData &)> myFn; 
   public:
     fnInfo(const char *name,
            protocol::DataTypeCode type, bool isArray,
-           boost::function2<void, Component *, QueryValueData &> fn,
+           std::function<void(Component *, QueryValueData &)> fn,
            const char *units, const char *desc) {
       myFn = fn;
       myName = name;
@@ -155,11 +153,11 @@ class EXPORT fnInfo : public baseInfo {
 // Same as above, but stores pointers to function calls, not memory regions.
 class EXPORT fnSetInfo : public baseInfo {
   private:
-    boost::function2<bool, Component *, QuerySetValueData &> myFn;
+    std::function<bool(Component *, QuerySetValueData &)> myFn;
   public:
     fnSetInfo(const char *name,
            protocol::DataTypeCode type, bool isArray,
-           boost::function2<bool, Component *, QuerySetValueData &> fn,
+           std::function<bool(Component *, QuerySetValueData &)> fn,
            const char *units, const char *desc) {
       myFn = fn;
       myName = name;
@@ -176,7 +174,7 @@ class EXPORT fnSetInfo : public baseInfo {
 typedef std::map<unsigned, baseInfo*>   UInt2InfoMap;
 typedef std::map<unsigned, fnSetInfo*>   UInt2SetInfoMap;
 typedef std::map<std::string, unsigned> NameToUIntMap;
-typedef boost::function3<void, unsigned &, unsigned &, protocol::Variant &> pfcall;
+typedef std::function<void(unsigned &, unsigned &, protocol::Variant &)> pfcall;
 typedef std::multimap<unsigned, pfcall, std::less<unsigned> >   UInt2EventMap;
 
 // ------------------------------------------------------------------
@@ -855,7 +853,7 @@ class EXPORT Component
       void addGettableVar(const char *systemName,
                           DataTypeCode type,
                           bool isArray,
-                          boost::function2<void, Component *, QueryValueData &> ptr,
+                          std::function<void(Component *, QueryValueData &)> ptr,
                           const char *units,
                           const char *desc)
           {
@@ -868,7 +866,7 @@ class EXPORT Component
      // Function with DDML
      void addGettableVar(const char *systemName,
                           std::string &ddml,
-                          boost::function2<void, Component *, QueryValueData &> ptr,
+                          std::function<void(Component *, QueryValueData &)> ptr,
                           const char *units,
                           const char *desc)
           {
@@ -933,7 +931,7 @@ class EXPORT Component
       void addSettableVar(const char *systemName,
                           DataTypeCode type,
                           const char * ddml,
-                          boost::function2<bool, Component *, QuerySetValueData &> ptr,
+                          std::function<bool(Component *, QuerySetValueData &)> ptr,
                           const char *units,
                           const char *desc)
           {
@@ -945,7 +943,7 @@ class EXPORT Component
       // Read-write vector
       void addRWVectorVar(const char *systemName,
                           const std::vector<float> &value,
-                          boost::function2<bool, Component *, QuerySetValueData &> ptr,
+                          std::function<bool(Component *, QuerySetValueData &)> ptr,
                           const char *units,
                           const char *desc)
            {
@@ -976,7 +974,7 @@ class EXPORT Component
 
       // Add a procedure to be called when events occur
       unsigned int addEvent(const char *systemName,
-                            boost::function3<void, unsigned &, unsigned &, protocol::Variant &> ptr,
+                            std::function<void(unsigned &, unsigned &, protocol::Variant &)> ptr,
                             const char* DDML);
 
    }; // end class Component

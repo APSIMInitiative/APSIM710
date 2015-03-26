@@ -84,6 +84,10 @@ extern "C" void DLLEXPORT STDCALL apsimFree(void *a);
 #include "RComponent.h"
 #include "RDataTypes.h"
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 extern void *RDLLHandle;
 extern RComponent * currentRComponent; 
 
@@ -118,13 +122,13 @@ void RComponent::subscribe(const std::string &eventName, const std::string &type
 {
    if (boost::iequals(type, "Null")) {
      //apsimAPI.subscribe(eventName, namedNullFunction(handler, &RComponent::myApsimNullEvent));
-     apsimAPI.subscribe(eventName, boost::function0< void >(
-                               boost::bind(&RComponent::myApsimNullEvent, this, handler)));
+     apsimAPI.subscribe(eventName, std::function< void() >(
+                               std::bind(&RComponent::myApsimNullEvent, this, handler)));
      return;
    }
 [foreach types.type]  if (boost::iequals(type, "[type.name]")) {
-     apsimAPI.subscribe(eventName, boost::function1<void, [type.name]Type& >(
-                               boost::bind(&RComponent::myApsim[type.name]Event, this, handler, _1)));
+     apsimAPI.subscribe(eventName, std::function<void([type.name]Type&) >(
+                               std::bind(&RComponent::myApsim[type.name]Event, this, handler, _1)));
      return;
    }
 [endfor]
@@ -212,8 +216,8 @@ extern "C" void DLLEXPORT STDCALL apsimExpose[builtin.cpptype](const char *name,
                                 f1,f2);
 }
       virtual void exposeFunction2(const std::string& name, const std::string& units, const std::string& description,
-                                  boost::function2<void, const std::string &, [builtin.cpptype]&> getter,
-                                  boost::function2<void, const std::string &, [builtin.cpptype]&> setter) = 0;
+                                  std::function<void(const std::string &, [builtin.cpptype]&)> getter,
+                                  std::function<void(const std::string &, [builtin.cpptype]&)> setter) = 0;
 [endfor]
 #endif
 

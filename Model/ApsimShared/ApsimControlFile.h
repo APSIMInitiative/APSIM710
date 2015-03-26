@@ -5,8 +5,15 @@
 #include <stdexcept>
 #include <vector>
 #include <string>
-#include <boost/function.hpp>
+#include <functional>
 #include <General/platform.h>
+
+using namespace std;
+
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 class IniFile;
 // ------------------------------------------------------------------
 // This class encapsulates an apsim control file.  It provides several
@@ -191,11 +198,11 @@ class EXPORT ApsimControlFile
       void enumerateParameters(const std::string& section,
                                const std::string& moduleName,
                                bool includeConstants,
-                               boost::function2<void, IniFile*, const std::string&> callback);
+                               std::function<void(IniFile*, const std::string&)> callback);
       void enumerateParametersForInstance(const std::string& section,
                                           const std::string& instanceName,
                                           bool constantsOnly,
-                                          boost::function2<void, IniFile*, const std::string&> callback);
+                                          std::function<void(IniFile*, const std::string&)> callback);
       // ------------------------------------------------------------------
       // Add a parameter file reference to all instances of the
       // specified module. Return true if the con file was modified.
@@ -251,7 +258,7 @@ class EXPORT ApsimControlFile
       //typedef void (__closure *ManagerActionCallback)(ManagerActionParameters& parameters, bool& modified);
       bool enumerateManagerActionLines(const std::string& section,
                                        const std::string& managerAction,
-                                       boost::function2<void, ManagerActionParameters& , bool& > callback);
+                                       std::function<void(ManagerActionParameters& , bool&) > callback);
 
       // -----------------------------------------------------------------
       // Return a list of all sections within par files for a given module

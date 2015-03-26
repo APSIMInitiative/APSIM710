@@ -11,6 +11,12 @@
 
 using namespace boost::unit_test_framework;
 
+using namespace std;
+
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 extern CMPComponentInterface* componentInterface;
 extern ScienceAPI2* scienceAPI;
 extern unsigned messageArg;

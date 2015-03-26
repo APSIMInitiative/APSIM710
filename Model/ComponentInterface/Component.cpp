@@ -8,7 +8,6 @@
 #include <iostream>
 #include <iomanip>
 #include <boost/lexical_cast.hpp>
-
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimRegistry.h>
 #include <ApsimShared/FApsimComponentData.h>
@@ -492,9 +491,9 @@ bool Component::respondToSet(unsigned int& /*fromID*/, QuerySetValueData& setVal
 
 void Component::respondToEvent(unsigned int& fromID, unsigned int& eventID, Variant& variant)
   {
-  boost::function3<void, unsigned &, unsigned &, protocol::Variant &> pf;
+  std::function<void(unsigned &, unsigned &, protocol::Variant &)> pf;
   UInt2EventMap::iterator ipf, ipf1, ipf2;
-  vector<boost::function3<void, unsigned &, unsigned &, protocol::Variant &> > pfs;
+  vector<std::function<void(unsigned &, unsigned &, protocol::Variant &)> > pfs;
 
   ipf1 = eventMap.lower_bound(eventID);
   ipf2 = eventMap.upper_bound(eventID);
@@ -798,7 +797,7 @@ void Component::writeString(const char *st)
    }
 void Component::writeStdErr(const std::string& st)
    {
-   cerr << st.c_str() << endl;
+   cerr << st.c_str() << "\n";//endl;
    }
 
 void Component::writeStringToStream(const std::string& lines, ostream& out,
@@ -810,14 +809,14 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
          {
          if (componentName != "")
             {
-            out << endl;
+            out << "\n";//endl;
             out << "------- " << componentName << " Initialisation ";
 			//stop width going negative and report as being about 2 trillion long...
 			if (componentName.length() < (79-24))
 				{
 					out.width(79-24-componentName.length());
 				out.fill('-');
-				out << '-' << endl;
+				out << '-' << "\n";//endl;
 				out.fill(' ');
 				}
 		    }
@@ -831,7 +830,7 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
          out << "(Day of year=" << Today.Get_day_of_year() << ")";
          if (componentName != "")
             out << ", " << componentName;
-         out << ": " << endl;
+         out << ": " << "\n";//endl;
          }
       haveWrittenToStdOutToday = true;
       }
@@ -854,7 +853,7 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
          else
             posEndText++;
          }
-      out << "     " << lines.substr(posStart, posEndText-posStart) << endl;
+      out << "     " << lines.substr(posStart, posEndText-posStart) << "\n";//endl;
       posStart = posCR + 1;
       }
    while (posCR != string::npos);
@@ -1050,7 +1049,7 @@ void varVectorFloatInfo::sendVariable(Component *systemInterface, QueryValueData
    }
 
 unsigned int Component::addEvent(const char *systemName,
-								 boost::function3<void, unsigned &, unsigned &, protocol::Variant &> ptr,
+								 std::function<void(unsigned &, unsigned &, protocol::Variant &)> ptr, 
                                  const char* DDML)
    {
    unsigned int id = addRegistration(::respondToEvent, 0, string(systemName), DDML);

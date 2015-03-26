@@ -11,6 +11,7 @@
 #include <math.h>
 using namespace std;
 
+
 string IncorpFOMType = protocol::DDML(protocol::IncorpFomType());
 string floatArrayType = protocol::DDML(vector<float>());
 

@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef PlantIfaceH
 #define PlantIfaceH
-
+#include <functional>
 // Maximum size_of of tables
 #define max_table 30
 
@@ -121,8 +121,8 @@ class plantThing {
 
 
 #define setupGetFunction(s,name,type,length,address,units,desc) {\
-   boost::function2<void, protocol::Component *, protocol::QueryValueData &> fn;\
-   fn = boost::bind(address, this, _1, _2); \
+   std::function<void(protocol::Component *, protocol::QueryValueData &)> fn;\
+   fn = std::bind(address, this, _1, _2); \
    s->addGettableVar(name, type, length, fn, units, desc);\
    }
 

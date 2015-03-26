@@ -25,7 +25,7 @@ inline MessageData& operator<<(MessageData& messageData, const std::string& valu
    }
 inline unsigned int memorySize(const std::string& value)
    {
-   return value.length() + sizeof(int);
+   return value.length() + (unsigned)sizeof(int);
    }
 
 // VECTOR type

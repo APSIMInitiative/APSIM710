@@ -4,7 +4,7 @@
 
 #include <string>
 #include <ComponentInterface/Interfaces.h>
-#include <boost/function.hpp>
+//#include <boost/function.hpp>
 #include <ComponentInterface/Variable.h>
 #include "DataTypes.h"
 
@@ -17,7 +17,7 @@ class EXPORT FunctionTakingValue : public INamedData
    // --------------------------------------------------------------
    {
    public:
-      typedef boost::function2<void, const std::string&, const T &> Function;
+      typedef std::function<void(const std::string&, const T &)> Function;
       FunctionTakingValue<T>(Function  f)
          : F(f) { }
       virtual FunctionTakingValue<T>* Clone() const

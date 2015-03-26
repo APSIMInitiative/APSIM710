@@ -6,6 +6,7 @@
 #include "../Phenology/Phenology.h"
 using namespace std;
 
+
 RUEModel::RUEModel(ScienceAPI& scienceAPI, plantInterface& p)
    : PhotosynthesisModel(scienceAPI, p)
    {

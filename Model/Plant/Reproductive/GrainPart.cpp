@@ -5,6 +5,11 @@
 #include "../Phenology/Phenology.h"
 using namespace std;
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
+
 inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 
 //  initialise data members.
@@ -235,7 +240,7 @@ void fruitGrainPart::display(ostream &os)
    //   os << "Green meal: " << green.meal << endl;
    //   os << "Senesced meal: " << senesced.meal << endl;
    //   os << "Dead meal: " << dead.meal << endl << endl;
-   os << endl;
+   os << "\n";
 }
 
 

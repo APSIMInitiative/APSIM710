@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <boost/regex.hpp>
-
+#include <functional>
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
 #include <General/io_functions.h>
@@ -17,7 +17,6 @@
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>
 
-#include <boost/bind.hpp>
 #include "ApsimDirectories.h"
 #include "ApsimDataTypesFile.h"
 
@@ -916,7 +915,7 @@ bool ApsimControlFile::renameParameter(const std::string& sectionName,
    {
    bool modified = false;
    RenameParameter rename(oldParameterName, newParameterName, modified);
-   enumerateParameters(sectionName, moduleName, false, boost::bind(&RenameParameter::callback, &rename, _1, _2));
+   enumerateParameters(sectionName, moduleName, false, std::bind(&RenameParameter::callback, &rename, _1, _2));
    return modified;
    }
 // ------------------------------------------------------------------
@@ -944,7 +943,7 @@ bool ApsimControlFile::deleteParameter(const std::string& sectionName,
    {
    vector<string> values;
    DeleteParameter deleteParam(parameterName, values);
-   enumerateParameters(sectionName, moduleName, false, boost::bind(&DeleteParameter::callback, &deleteParam, _1, _2));
+   enumerateParameters(sectionName, moduleName, false, std::bind(&DeleteParameter::callback, &deleteParam, _1, _2));
    return (values.size() > 0);
    }
 // ------------------------------------------------------------------
@@ -966,7 +965,7 @@ bool ApsimControlFile::moveParameter(const std::string& sectionName,
       {
       vector<string> values;
       DeleteParameter deleteParam(parameterName, values);
-      enumerateParameters(sectionName, moduleName, false, boost::bind(&DeleteParameter::callback, &deleteParam, _1, _2));
+      enumerateParameters(sectionName, moduleName, false, std::bind(&DeleteParameter::callback, &deleteParam, _1, _2));
       if (values.size() > 0)
          {
          if (destModuleName == "")
@@ -1089,7 +1088,7 @@ bool ApsimControlFile::moveParametersOutOfCon(const std::string& section,
 void ApsimControlFile::enumerateParameters(const std::string& section,
                                            const std::string& moduleName,
                                            bool includeConstants,
-                                           boost::function2<void, IniFile*, const std::string&> callback)
+                                           std::function<void(IniFile*, const std::string&)> callback)
    {
    vector<ParamFile> paramFiles;
    getParameterFilesForModule(ini, section, moduleName, paramFiles, includeConstants);
@@ -1114,7 +1113,7 @@ void ApsimControlFile::enumerateParameters(const std::string& section,
 void ApsimControlFile::enumerateParametersForInstance(const std::string& section,
                                                       const std::string& instanceName,
                                                       bool constantsOnly,
-                                                      boost::function2<void, IniFile*, const std::string&> callback)
+                                                      std::function<void(IniFile*, const std::string&)> callback)
    {
    vector<ParamFile> paramFiles;
    getParameterFilesForInstance(ini, section, instanceName, paramFiles, constantsOnly);
@@ -1420,7 +1419,7 @@ bool ApsimControlFile::searchReplaceCon(const std::vector<std::string>& stringsT
 bool ApsimControlFile::enumerateManagerActionLines
                                 (const std::string& section,
                                  const std::string& managerAction,
-                                 boost::function2<void, ManagerActionParameters& , bool& > callback)
+                                 std::function<void(ManagerActionParameters& , bool&) > callback)
    {
    bool someWereModified = false;
 

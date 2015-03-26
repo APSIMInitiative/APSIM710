@@ -20,6 +20,10 @@
 #include "Water.h"
 #include "Biomass.h"
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 namespace Maize {
    //------------------------------------------------------------------------------------------------
 

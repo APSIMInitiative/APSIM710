@@ -7,6 +7,7 @@
 #include "../Root/RootBase.h"
 using namespace std;
 
+
 inline bool floatsAreEqual(float A, float B, float C) {return(fabs(A-B)<C);}
 
 //  initialise data members.
@@ -26,7 +27,7 @@ ostream &operator<<(ostream &output, const fruitGrainPartGN /*&pool*/)
    //   output << "   Green meal:    " << pool.green.meal << endl;
    //   output << "   Senesced meal: " << pool.senesced.meal << endl;
    //   output << "   Dead meal:     " << pool.dead.meal << endl << endl;
-   output << endl;
+   output << "\n";
    return output;
 }
 
@@ -116,10 +117,10 @@ void fruitGrainPartGN::writeCultivarInfo (protocol::Component *system)
      ostringstream msg;
      msg.flags ( ios::right | ios::fixed);
      msg.precision(1);
-     msg << "   grains_per_gram_stem           = " << setw(10) << pGrains_per_gram_stem << " (/g)" << endl;
+     msg << "   grains_per_gram_stem           = " << setw(10) << pGrains_per_gram_stem << " (/g)" << "\n";
      msg.precision(4);
-     msg << "   potential_grain_filling_rate   = " << setw(10) << pPotential_grain_filling_rate << " (g/grain/day)" << endl;
-     msg << "   potential_grain_growth_rate    = " << setw(10) << pPotential_grain_growth_rate << " (g/grain/day)" << endl;
+     msg << "   potential_grain_filling_rate   = " << setw(10) << pPotential_grain_filling_rate << " (g/grain/day)" << "\n";
+     msg << "   potential_grain_growth_rate    = " << setw(10) << pPotential_grain_growth_rate << " (g/grain/day)" << "\n";
      msg << "   max_grain_size                 = " << setw(10) << pMaxGrainSize << " (g)" << ends;
      system->writeString (msg.str().c_str());
 

@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include <fstream>
-#include <boost/bind.hpp>
+#include <functional>
 #include "SimplePart.h"
 
 #ifdef __GNUC__
@@ -13,7 +13,9 @@
 #define isinf _isinf
 #endif
 
-
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
 
 // Debugging trace function
 void XTrace(const char* lpszFormat, ...);

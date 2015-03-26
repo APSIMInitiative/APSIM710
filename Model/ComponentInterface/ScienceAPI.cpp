@@ -4,6 +4,11 @@
 #include <ApsimShared/ApsimRegistry.h>
 #include "Component.h"
 #include "ScienceAPI.h"
+#include <functional>
+
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
 
 
 template <class T>
@@ -420,31 +425,31 @@ void ScienceAPI::expose(const std::string& name, const std::string& units, const
    {
    component->addGettableVar(name.c_str(), variable, units.c_str(), description.c_str());
    }
-void ScienceAPI::exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function0<int> handler)
+void ScienceAPI::exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<int()> handler)
    {
    typedef CMPGetter<IntGetterType, int> WrapperType;
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
-   boost::function2<void, protocol::Component*, protocol::QueryValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<void(protocol::Component*, protocol::QueryValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
    component->addGettableVar(name.c_str(), protocol::DTint4, false, fn, units.c_str(), description.c_str());
    }
-void ScienceAPI::exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function0<float> handler)
+void ScienceAPI::exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<float()> handler)
    {
    typedef CMPGetter<FloatGetterType, float> WrapperType;
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
-   boost::function2<void, protocol::Component*, protocol::QueryValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<void(protocol::Component*, protocol::QueryValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
    component->addGettableVar(name.c_str(), protocol::DTsingle, false, fn, units.c_str(), description.c_str());
    }
-void ScienceAPI::exposeFunction(const std::string& name, const std::string& units, const std::string& description, boost::function0<std::string> handler)
+void ScienceAPI::exposeFunction(const std::string& name, const std::string& units, const std::string& description, std::function<std::string()> handler)
    {
    typedef CMPGetter<StringGetterType, std::string> WrapperType;
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
-   boost::function2<void, protocol::Component*, protocol::QueryValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<void(protocol::Component*, protocol::QueryValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
    component->addGettableVar(name.c_str(), protocol::DTstring, false, fn, units.c_str(), description.c_str());
    }
 
@@ -507,13 +512,13 @@ class CMPSetter : public DeletableThing
    };
 
 void ScienceAPI::exposeRWArray(const std::string& name, const std::string& units, const std::string& description, const std::vector<float>& variable,
-                               boost::function1<void, std::vector<float> > handler)
+                               std::function<void(std::vector<float>) > handler)
 {
-   typedef CMPSetter<boost::function1<void, std::vector<float> >, std::vector<float> > WrapperType;
+   typedef CMPSetter<std::function<void(std::vector<float>) >, std::vector<float> > WrapperType;
    WrapperType* wrapper = new WrapperType (handler, name, protocol::DTsingle);
    stuffToDelete.push_back(wrapper);
-   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<bool(protocol::Component*, protocol::QuerySetValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
 
    component->addRWVectorVar(name.c_str(), variable, fn, units.c_str(), description.c_str());
 }
@@ -521,43 +526,43 @@ void ScienceAPI::exposeRWArray(const std::string& name, const std::string& units
 // -------------------------------------------------------------
 // Exposing a SETtable variable
 // -------------------------------------------------------------
-void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, int> handler)
+void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, std::function<void(int)> handler)
    {
-   typedef CMPSetter<boost::function1<void, int>, int> WrapperType;
+   typedef CMPSetter<std::function<void(int)>, int> WrapperType;
    WrapperType* wrapper = new WrapperType (handler, name, protocol::DTint4);
    stuffToDelete.push_back(wrapper);
-   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<bool(protocol::Component*, protocol::QuerySetValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
 
    component->addSettableVar(name.c_str(), protocol::DTint4, wrapper->DDML(), fn, units.c_str(), description.c_str());
    }
-void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, float> handler)
+void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, std::function<void(float)> handler)
    {
-   typedef CMPSetter<boost::function1<void, float>, float> WrapperType;
+   typedef CMPSetter<std::function<void(float)>, float> WrapperType;
    WrapperType* wrapper = new WrapperType (handler, name, protocol::DTsingle);
    stuffToDelete.push_back(wrapper);
-   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<bool(protocol::Component*, protocol::QuerySetValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
 
    component->addSettableVar(name.c_str(), protocol::DTsingle, wrapper->DDML(), fn, units.c_str(), description.c_str());
    }
-void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, const std::string&> handler)
+void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, std::function<void(const std::string&)> handler)
    {
-   typedef CMPSetter<boost::function1<void, const std::string&>, string> WrapperType;
+   typedef CMPSetter<std::function<void(const std::string&)>, string> WrapperType;
    WrapperType* wrapper = new WrapperType (handler, name, protocol::DTstring);
    stuffToDelete.push_back(wrapper);
-   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<bool(protocol::Component*, protocol::QuerySetValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
 
    component->addSettableVar(name.c_str(), protocol::DTstring, wrapper->DDML(), fn, units.c_str(), description.c_str());
    }
-void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, const protocol::RemovedByAnimalType&> handler)
+void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, std::function<void(const protocol::RemovedByAnimalType&)> handler)
    {
-   typedef CMPSetter<boost::function1<void, const protocol::RemovedByAnimalType&>, protocol::RemovedByAnimalType> WrapperType;
+   typedef CMPSetter<std::function<void(const protocol::RemovedByAnimalType&)>, protocol::RemovedByAnimalType> WrapperType;
    WrapperType* wrapper = new WrapperType (handler, name, protocol::DTunknown);
    stuffToDelete.push_back(wrapper);
-   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
-   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+   std::function<bool(protocol::Component*, protocol::QuerySetValueData &)> fn;
+   fn = std::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
 
    component->addSettableVar(name.c_str(), protocol::DTunknown, wrapper->DDML(), fn, units.c_str(), description.c_str());
    }
@@ -702,8 +707,8 @@ void ScienceAPI::subscribe(const std::string& name, NullFunctionType handler)
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -713,8 +718,8 @@ void ScienceAPI::subscribe(const std::string& name, NullFunctionWithNameType han
    WrapperType* wrapper = new WrapperType (handler, name);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -724,8 +729,8 @@ void ScienceAPI::subscribe(const std::string& name, FloatFunctionType handler)
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -735,8 +740,8 @@ void ScienceAPI::subscribe(const std::string& name, SowFunctionType handler)
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -746,8 +751,8 @@ void ScienceAPI::subscribe(const std::string& name, HarvestFunctionType handler)
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -757,8 +762,8 @@ void ScienceAPI::subscribe(const std::string& name, KillStemFunctionType handler
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -768,8 +773,8 @@ void ScienceAPI::subscribe(const std::string& name, TimeFunctionType handler)
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -780,8 +785,8 @@ void ScienceAPI::subscribe(const std::string& name, NewMetFunctionType handler)
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -792,8 +797,8 @@ void ScienceAPI::subscribe(const std::string& name, KillCropFunctionType handler
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -804,8 +809,8 @@ void ScienceAPI::subscribe(const std::string& name, NewProfileFunctionType handl
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -816,8 +821,8 @@ void ScienceAPI::subscribe(const std::string& name, CanopyWaterBalanceFunctionTy
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
@@ -827,8 +832,8 @@ void ScienceAPI::subscribe(const std::string& name, RemoveCropBiomassFunctionTyp
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(), fn, wrapper->DDML());
    }
 void ScienceAPI::subscribe(const std::string& name, ApsimVariantFunctionType handler)
@@ -836,8 +841,8 @@ void ScienceAPI::subscribe(const std::string& name, ApsimVariantFunctionType han
    ApsimVariantWrapper* wrapper = new ApsimVariantWrapper(handler, component);
    stuffToDelete.push_back(wrapper);
 
-   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
-   fn = boost::bind(&ApsimVariantWrapper::invoke, wrapper, _1, _2, _3);
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&ApsimVariantWrapper::invoke, wrapper, _1, _2, _3);
    protocol::ApsimVariantType dummy;
    string ddml = protocol::DDML(dummy);
    component->addEvent(name.c_str(),

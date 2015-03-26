@@ -2,8 +2,8 @@
 #include "Soil.h"
 #include <numeric>
 #include "../Phenology/Phenology.h"
+#include <functional>
 using namespace std;
-
 
 Soil::Soil(ScienceAPI& s, plantInterface& p)
    : scienceAPI(s), plant(p)
@@ -37,7 +37,7 @@ void Soil::onInit1(protocol::Component *)
 
    scienceAPI.subscribe("new_profile", NewProfileFunction(&Soil::onNewProfile));
 
-   #define FloatVectorSetter(address) boost::function1<void, std::vector<float> >(boost::bind(address, this, _1))
+   #define FloatVectorSetter(address) std::function<void(std::vector<float>) >(std::bind(address, this, _1))
    scienceAPI.exposeRWArray("xf", "", "Root exploration factor", xf, FloatVectorSetter(&Soil::xf_setter));
    scienceAPI.exposeRWArray("kl", "", "Root water uptake parameter", kl, FloatVectorSetter(&Soil::kl_setter));
    scienceAPI.exposeRWArray("ll_dep", "mm", "Plant Lower Limit", ll_dep, FloatVectorSetter(&Soil::ll_dep_setter));
@@ -637,12 +637,12 @@ void Soil::write()
 //=======================================================================================
 // Write all parameters as a summary to stdout.
    {
-   cout << "                        Root Profile" << endl;
-   cout << "         -----------------------------------------------" << endl;
-   cout << "          Layer       Kl           Lower    Exploration" << endl;
-   cout << "          Depth     Factor         Limit      Factor" << endl;
-   cout << "          (mm)         ()        (mm/mm)       (0-1)" << endl;
-   cout << "         -----------------------------------------------" << endl;
+   cout << "                        Root Profile\n";//" << endl;
+   cout << "         -----------------------------------------------\n";//" << endl;
+   cout << "          Layer       Kl           Lower    Exploration\n";//" << endl;
+   cout << "          Depth     Factor         Limit      Factor\n";//" << endl;
+   cout << "          (mm)         ()        (mm/mm)       (0-1)\n";//" << endl;
+   cout << "         -----------------------------------------------\n";//" << endl;
 
     float dep_tot, esw_tot;                      // total depth of soil & ll
     char  msg[200];
@@ -655,11 +655,11 @@ void Soil::write()
           , getModifiedKL(layer)
           , divide(ll_dep[layer],dlayer[layer],0.0)
           , xf[layer]);
-       cout << msg << endl;
+       cout << msg << "\n";
        dep_tot += dlayer[layer];
        esw_tot += dul_dep[layer] - ll_dep[layer];
        }
-    cout << "         -----------------------------------------------" << endl;
+    cout << "         -----------------------------------------------\n";//" << endl;
     if (HaveModifiedKLValues)
        cout << "         **** KL's have been modified using either CL, EC or ESP values.\n";
     

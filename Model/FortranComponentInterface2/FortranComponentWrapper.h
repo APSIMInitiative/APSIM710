@@ -2,6 +2,7 @@
 #define FortranComponentWrapper2H
 #include <General/platform.h>
 #include <stack>
+#include <functional>
 
 class ScienceAPI2;
 class CMPComponentInterface;

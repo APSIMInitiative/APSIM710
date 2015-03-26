@@ -4,6 +4,7 @@
    #include <windows.h>  // for LoadLibrary and mutex
 #endif
 #include <iostream>
+#include <functional>
 #include <General/dll.h>
 #include "DataTypes.h"
 #include <ComponentInterface2/BuiltIns.h>
@@ -554,8 +555,8 @@ extern "C" void EXPORT STDCALL ExposeRealFunction(const char *name,
    string myName = FortranString(name, nameLength).toString();
    string myUnits = FortranString(units, unitsLength).toString();
    string myDesc = FortranString(description, descriptionLength).toString();
-   FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float > *m =
-      new FortranNamedDualMethod<boost::function3<void, const char *, float *, unsigned>, float >
+   FortranNamedDualMethod<std::function<void(const char *, float *, unsigned)>, float > *m =
+      new FortranNamedDualMethod<std::function<void(const char *, float *, unsigned)>, float >
           (currentWrapper, myName, initialValue, getter, setter);
    currentWrapper->componentInterface().expose(myName,
                                                myUnits,

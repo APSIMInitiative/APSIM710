@@ -17,8 +17,13 @@
 #include "Arbitrators/Arbitrator.h"
 #include "Fixation.h"
 #include "Parts.h"
+#include <functional>
 
 using namespace std;
+
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
 
 Plant *currentInstance = NULL;
 
@@ -266,10 +271,10 @@ void Plant::onInit1(void)
 #undef setupGetVar
 #undef setupGetFunction
 #define setupGetFunction2(s,name,ddml,address,units,desc) {\
-   boost::function2<void, protocol::Component *, protocol::QueryValueData &> fn;\
-   fn = boost::bind(address, this, _1, _2); \
-   s->addGettableVar(name, ddml, fn, units, desc);\
+    std::function<void(protocol::Component *, protocol::QueryValueData &)> fn = std::bind(address, this, _1, _2);\
+    s->addGettableVar(name, ddml, fn, units, desc);\
    }
+
    std::string tmpDDML = DDML(protocol::AvailableToAnimalType());
    setupGetFunction2(parent, "AvailableToAnimal", tmpDDML,
                      &Plant::get_AvailableToAnimal, "", "Plant material available to animal");
@@ -574,18 +579,18 @@ void Plant::onRemoveCropBiomass(protocol::RemoveCropBiomassType& dmRemoved)
    if (c.remove_biomass_report)
       {
       ostringstream msg;
-      msg << "Remove Crop Biomass:-" << endl;
+      msg << "Remove Crop Biomass:-\n";//" << endl;
       float dmTotal = 0.0;
 
       for (unsigned int pool=0; pool < dmRemoved.dm.size(); pool++)
          {
          for (unsigned int part = 0; part < dmRemoved.dm[pool].part.size(); part++)
             {
-            msg << "   dm " << dmRemoved.dm[pool].pool << " " << dmRemoved.dm[pool].part[part] << " = " << dmRemoved.dm[pool].dlt[part] << " (g/m2)" << endl;
+            msg << "   dm " << dmRemoved.dm[pool].pool << " " << dmRemoved.dm[pool].part[part] << " = " << dmRemoved.dm[pool].dlt[part] << " (g/m2)\n";//" << endl;
             dmTotal +=  (float)dmRemoved.dm[pool].dlt[part];
             }
          }
-      msg << endl << "   dm total = " << dmTotal << " (g/m2)" << endl << ends;
+      msg << "\n" << "   dm total = " << dmTotal << " (g/m2)" << "\n" << ends;
       scienceAPI.write(msg.str());
       }
 
@@ -631,18 +636,18 @@ void Plant::onDetachCropBiomass(float detachRate)
    if (c.remove_biomass_report)
       {
       ostringstream msg;
-      msg << "Detach Crop Biomass:-" << endl;
+      msg << "Detach Crop Biomass:-\n";//" << endl;
       float dmTotal = 0.0;
 
       for (unsigned int pool=0; pool < dmRemoved.dm.size(); pool++)
          {
          for (unsigned int part = 0; part < dmRemoved.dm[pool].part.size(); part++)
             {
-            msg << "   dm " << dmRemoved.dm[pool].pool << " " << dmRemoved.dm[pool].part[part] << " = " << dmRemoved.dm[pool].dlt[part] << " (g/m2)" << endl;
+            msg << "   dm " << dmRemoved.dm[pool].pool << " " << dmRemoved.dm[pool].part[part] << " = " << dmRemoved.dm[pool].dlt[part] << " (g/m2)\n";//" << endl;
             dmTotal += (float)dmRemoved.dm[pool].dlt[part];
             }
           }
-      msg << endl << "   dm total = " << dmTotal << " (g/m2)" << endl << ends;
+      msg << "\n" << "   dm total = " << dmTotal << " (g/m2)" << "\n" << ends;
 
       parent->writeString (msg.str().c_str());
       }
@@ -1275,16 +1280,16 @@ void Plant::plant_start_crop(protocol::SowType& Sow)
          else
          {
             ostringstream msg;
-            msg << g.module_name << " was taken out today by \"end_crop\" action -" << endl;
-            msg << " Unable to accept \"sow\" action until the next day." << endl << ends;
+            msg << g.module_name << " was taken out today by \"end_crop\" action -\n";//" << endl;
+            msg << " Unable to accept \"sow\" action until the next day." << "\n" << ends;
             throw std::runtime_error (msg.str());
          }
     }
     else
     {
          ostringstream msg;
-         msg << g.module_name << " is still in the ground -" << endl;
-         msg << " Unable to sow until it is taken out by \"end_crop\" action." << endl << ends;
+         msg << g.module_name << " is still in the ground -\n";//" << endl;
+         msg << " Unable to sow until it is taken out by \"end_crop\" action." << "\n" << ends;
          throw std::runtime_error (msg.str().c_str());
     }
 
