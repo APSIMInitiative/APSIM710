@@ -131,6 +131,7 @@
       character err_string*200
       integer    moduleID
       logical    ok
+      real       saved_efficiency
 *- Implementation Section ----------------------------------
 
       
@@ -145,7 +146,12 @@
       g%will_runoff = irrigation%will_runoff  !sv- added 29 Nov 2012. Allow irrigation to run off just like rain does.
 	  
 	  g%depth = irrigation%Depth		!sv- added on 21 Nov 2012. Needed for subsurface irrigation.
-
+      
+      saved_efficiency = p%irrigation_efficiency ! save efficiency so that we can restore it at bottom of routine.
+      
+      if (irrigation%Efficiency .gt. 0) then
+         p%irrigation_efficiency = irrigation%Efficiency
+      endif
 	  
       g%duration = irrigation%Duration
       if (g%duration .eq. 0) then
@@ -215,6 +221,8 @@
 
 
       call irrigate_sendirrigated()
+      
+      p%irrigation_efficiency = saved_efficiency
       endif
 
       return
