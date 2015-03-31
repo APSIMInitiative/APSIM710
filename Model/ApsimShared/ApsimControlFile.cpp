@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <boost/regex.hpp>
+#include <regex>
 #include <functional>
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
@@ -1367,8 +1367,8 @@ bool ApsimControlFile::searchReplace(const std::string& section,
 
          ostringstream out;
          ostream_iterator<char, char> outI(out);
-         boost::regex e(stringToFind);
-         boost::regex_replace(outI, contents.begin(), contents.end(), e, replacementString, boost::regex_constants::match_any);
+         std::regex e(stringToFind);
+         std::regex_replace(outI, contents.begin(), contents.end(), e, replacementString, std::regex_constants::match_any);
          if (out.str() != contents)
             {
             par->writeSection(paramFileSections[s], out.str());
@@ -1395,8 +1395,8 @@ bool ApsimControlFile::searchReplaceCon(const std::vector<std::string>& stringsT
    string outContents = contents;
    for (unsigned i = 0; i != stringsToFind.size(); i++)
       {
-      boost::regex e(stringsToFind[i]);
-      outContents = boost::regex_replace(outContents, e, replacementStrings[i], boost::regex_constants::match_any | boost::format_all);
+      std::regex e(stringsToFind[i]);
+      outContents = std::regex_replace(outContents, e, replacementStrings[i], std::regex_constants::match_any);
       }
 
    if (outContents != contents)
@@ -1449,12 +1449,12 @@ bool ApsimControlFile::enumerateManagerActionLines
          To_lower(actionValues[1]);
 
          // go find all occurrances of action lines and call callback for each.
-         boost::regex e(actionValues[0] + "[[:space:]]+" + actionValues[1]);
-         boost::match_results<std::string::const_iterator> what;
+         std::regex e(actionValues[0] + "[[:space:]]+" + actionValues[1]);
+         std::match_results<std::string::const_iterator> what;
 
          std::string::const_iterator startPos = lowerContents.begin();
          std::string::const_iterator endPos = lowerContents.end();
-         while(boost::regex_search(startPos, endPos, what, e))
+         while(std::regex_search(startPos, endPos, what, e))
             {
             unsigned start = what[0].second - lowerContents.begin();
             unsigned i = start;

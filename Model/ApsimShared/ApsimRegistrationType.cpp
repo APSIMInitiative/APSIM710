@@ -8,9 +8,9 @@
 // When using the pre-compiled headers from General, MS C++ thinks "get" is ambiguous
 // We can avoid that problem by qualifying "get" with its enumeration, but that's a
 // nonstandard extension. Hence we only do this for Windows
-#ifdef __WIN32__
+//#ifdef __WIN32__
 #define get EventTypeCode::get
-#endif
+//#endif
 
 //---------------------------------------------------------------------------
 EventTypeCode stringToTypeCode(const std::string& st)

@@ -493,10 +493,18 @@ void IniFile::doBackup()
    if (!haveDoneBackup)
       {
       std::string backupFileName = fileName + ".old";
-      if (boost::filesystem::exists(backupFileName))
-         boost::filesystem::remove(backupFileName);
-         	
-      boost::filesystem::copy_file(fileName, backupFileName);
+
+      std::ifstream infile(backupFileName);
+      if (infile.good())
+      {
+         infile.close();
+         remove(backupFileName.c_str());
+      }
+
+      ifstream f1(fileName, fstream::binary);
+      ofstream f2(backupFileName, fstream::trunc|fstream::binary);
+      f2 << f1.rdbuf();
+
       haveDoneBackup = true;
       }
    }
