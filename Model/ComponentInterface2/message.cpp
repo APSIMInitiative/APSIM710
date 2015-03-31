@@ -12,11 +12,11 @@ static const unsigned MAX_MESSAGE_SIZE = 15000;
 #ifdef _MSC_VER
   __declspec(thread) int runningMessageID = 0;
   __declspec(thread) unsigned int nextFreeMessageID = 0;
-  __declspec(thread) Message** messages = NULL;
+  __declspec(thread) Message** messageBuffers = NULL;
 #else
   thread_local int runningMessageID = 0;
   thread_local unsigned int nextFreeMessageID = 0;
-  thread_local Message** messages = NULL;
+  thread_local Message** messageBuffers = NULL;
 #endif
           
 void EXPORT initMessageFactory(void)
@@ -24,10 +24,10 @@ void EXPORT initMessageFactory(void)
    // Initialise the message factory.
    // ------------------------------------------------------------------
    {
-	   if (messages == NULL) {
-		   messages = new Message*[MAX_NUM_MESSAGES];
+	   if (messageBuffers == NULL) {
+		   messageBuffers = new Message*[MAX_NUM_MESSAGES];
            for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
-             messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
+             messageBuffers[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
 		   runningMessageID = 0;
 		   nextFreeMessageID = 0;
 	   }
@@ -39,16 +39,16 @@ void EXPORT shutDownMessageFactory(void)
    // ------------------------------------------------------------------
    {
    nextFreeMessageID = 0;
-   if (messages != NULL && messages[0] != NULL)
+   if (messageBuffers != NULL && messageBuffers[0] != NULL)
       {
       for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
          {
-         delete [] messages[messageI];
-         messages[messageI] = NULL;
+         delete [] messageBuffers[messageI];
+         messageBuffers[messageI] = NULL;
          }
       }
-   delete[] messages;
-   messages = NULL; 
+   delete[] messageBuffers;
+   messageBuffers = NULL; 
    }
 
 
@@ -71,7 +71,7 @@ Message EXPORT &constructMessage(Message::Type messageType,
 
    else
       {
-      message = messages[nextFreeMessageID];
+      message = messageBuffers[nextFreeMessageID];
       nextFreeMessageID++;
       }
 
@@ -123,3 +123,4 @@ void EXPORT deleteClonedMessage(Message* msg)
    delete [] (char*) msg;
    }
    
+
