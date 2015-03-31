@@ -13,15 +13,19 @@
 
 using namespace std;
 
-boost::thread_specific_ptr<ApsimRegistry> ApsimRegistry::GlobalApsimRegistry;
+#ifdef _MSC_VER
+  __declspec(thread) ApsimRegistry* GlobalApsimRegistry = NULL;
+#else
+  thread_local ApsimRegistry* GlobalApsimRegistry = NULL;
+#endif
 
 ApsimRegistry& ApsimRegistry::getApsimRegistry(void)
 // ------------------------------------------------------------------
 // Return the singleton global ApsimRegistry.
 // ------------------------------------------------------------------
    {
-	   if (GlobalApsimRegistry.get() == 0) {
-		   GlobalApsimRegistry.reset(new ApsimRegistry);
+	   if (GlobalApsimRegistry == NULL) {
+		   GlobalApsimRegistry = new ApsimRegistry;
 	   }
 	 return *GlobalApsimRegistry;
    }

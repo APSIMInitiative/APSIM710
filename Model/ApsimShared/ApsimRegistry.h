@@ -6,7 +6,6 @@
 #include <vector>
 #include <map>
 #include <set>
-#include <boost/thread/tss.hpp>
 
 #include <ApsimShared/ApsimRegistrationType.h>
 #include <ApsimShared/ApsimRegistration.h>
@@ -99,7 +98,6 @@ class EXPORT ApsimRegistry
 
 	  bool hasChildren(int componentID);
    private:
-      static boost::thread_specific_ptr<ApsimRegistry> GlobalApsimRegistry;
 
 	  // Registration information gets retrieved frequently, so we need to be
 	  // able to do lookups quickly. STL multimap works well for this purose.

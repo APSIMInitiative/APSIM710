@@ -1,7 +1,6 @@
 #include <string.h>
 #include <stdexcept>
 #include <General/platform.h>
-#include <boost/thread/tss.hpp>
 
 using namespace std;
 
@@ -10,23 +9,27 @@ using namespace std;
 static const unsigned MAX_NUM_MESSAGES = 20;
 static const unsigned MAX_MESSAGE_SIZE = 15000;
 
-void freeMsgPtr(Message** aMsgPtr) {delete [] aMsgPtr;} // Requires use of array delete
-boost::thread_specific_ptr<int> runningMessageIDPtr;
-boost::thread_specific_ptr<unsigned> nextFreeMessagePtr;
-boost::thread_specific_ptr<Message*> msgPtr(freeMsgPtr);
+#ifdef _MSC_VER
+  __declspec(thread) int runningMessageID = 0;
+  __declspec(thread) unsigned int nextFreeMessageID = 0;
+  __declspec(thread) Message** messages = NULL;
+#else
+  thread_local int runningMessageID = 0;
+  thread_local unsigned int nextFreeMessageID = 0;
+  thread_local Message** messages = NULL;
+#endif
           
 void EXPORT initMessageFactory(void)
    // ------------------------------------------------------------------
    // Initialise the message factory.
    // ------------------------------------------------------------------
    {
-	   if (msgPtr.get() == 0) {
-		   msgPtr.reset(new Message*[MAX_NUM_MESSAGES]);
-		   Message** messages = msgPtr.get();
+	   if (messages == NULL) {
+		   messages = new Message*[MAX_NUM_MESSAGES];
            for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
              messages[messageI] = (Message*) new char[MAX_MESSAGE_SIZE];
-		   runningMessageIDPtr.reset(new int(0));
-		   nextFreeMessagePtr.reset(new unsigned(0));
+		   runningMessageID = 0;
+		   nextFreeMessageID = 0;
 	   }
    }
 
@@ -35,8 +38,7 @@ void EXPORT shutDownMessageFactory(void)
    // Shutdown the message system.
    // ------------------------------------------------------------------
    {
-   Message** messages = msgPtr.get();
-   *nextFreeMessagePtr = 0;
+   nextFreeMessageID = 0;
    if (messages != NULL && messages[0] != NULL)
       {
       for (unsigned messageI = 0; messageI < MAX_NUM_MESSAGES; messageI++)
@@ -45,7 +47,8 @@ void EXPORT shutDownMessageFactory(void)
          messages[messageI] = NULL;
          }
       }
-   msgPtr.reset(NULL); 
+   delete[] messages;
+   messages = NULL; 
    }
 
 
@@ -59,10 +62,7 @@ Message EXPORT &constructMessage(Message::Type messageType,
    // ------------------------------------------------------------------
    {
    Message* message;
-   Message** messages = msgPtr.get();
-   unsigned & nextFreeMessage = *nextFreeMessagePtr;
-   int & runningMessageID = *runningMessageIDPtr;
-   if (nextFreeMessage >= MAX_NUM_MESSAGES)
+   if (nextFreeMessageID >= MAX_NUM_MESSAGES)
       {
       throw runtime_error("Internal error: Too many messages sent from component.");
       }
@@ -71,8 +71,8 @@ Message EXPORT &constructMessage(Message::Type messageType,
 
    else
       {
-      message = messages[nextFreeMessage];
-      nextFreeMessage++;
+      message = messages[nextFreeMessageID];
+      nextFreeMessageID++;
       }
 
    message->version       = 256;
@@ -95,11 +95,10 @@ void EXPORT deleteMessage(Message& message)
    // Delete the specified message that was created by constructMessage
    // ------------------------------------------------------------------
    {
-   unsigned & nextFreeMessage = *nextFreeMessagePtr;
    if (message.nDataBytes > (int) (MAX_MESSAGE_SIZE - sizeof(Message)))
       delete [] &message;
    else
-      nextFreeMessage--;
+      nextFreeMessageID--;
    }
 
 // ------------------------------------------------------------------
