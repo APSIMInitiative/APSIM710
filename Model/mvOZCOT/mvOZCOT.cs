@@ -281,7 +281,9 @@ namespace ManagedComponent.MvOZCOT
         private const int PROP_n_senesced = PROP_START_INDEX + 175;
 
         private const int PROP_dm = PROP_START_INDEX + 176;
-        private const int PROP_daysAfterSowing = PROP_START_INDEX + 177;  
+        private const int PROP_daysAfterSowing = PROP_START_INDEX + 177;
+
+        private const int PROP_ozcot_rwu = PROP_START_INDEX + 178;  //sv- 2015_04_01 needed because ep does not equal root water uptake summed over profile. THIS NEEDS TO BE FIXED
 
 
         // end of owned properties list
@@ -1408,7 +1410,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("yield_bales", PROP_lint_bales, true, false, false, "bales/ha", false, "double", "lint yield bales/ha", "lint yield bales/ha");
             addProperty("yield_kg", PROP_lint_kg, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
 
-
+            addProperty("ozcot_rwu", PROP_ozcot_rwu, true, false, false, "mm", true, "double", "root water uptake", "root water uptake");  //sv- 2015_04_01 needed because ep does not equal root water uptake summed over profile. THIS NEEDS TO BE FIXED
 
 
             //addDriver (sName, driverIDList, MinConn, MaxConn, sUnit, bIsArray, sType, sourceID)
@@ -3059,8 +3061,34 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_height: aValue.setValue(height);  
                     break;
 
-               
-               
+                case PROP_ozcot_rwu: 
+                     //sv- 2015_04_01 needed because ep does not equal root water uptake summed over profile. THIS NEEDS TO BE FIXED
+
+                   //!sv- ozcot root water uptake. I added this to test if ep actually is the same as
+                   //!    what the ozcot delta's the soilwater module by using dlt_sw_dep each day.
+                    //!    Code below was copied from ozcot_set_other_module_vars()
+
+                    double[] dlt_sw_dep = new double[nlayr + 1];  // soil water uptake in layer mm
+                    // 
+                    // SOIL WATER
+                    // ==========
+                    //  convert water from plant available  (cm/cm)
+
+                    for (int layer = 1; layer <= nlayr; layer++)
+                        {
+                        dlt_sw_dep[layer] = (swlayr[layer] - sw_start[layer]) * dlayr_cm[layer] * 10.0;
+                        dlt_sw_dep[layer] = Math.Min(0.0, dlt_sw_dep[layer]);
+                        // bound_check_real_var(dlt_sw_dep[layer], -sw_start[layer] * dlayr_cm[layer] * 10.0, 0.0, "dlt_sw_dep(layer)");
+                        // TODO: dbj check if bound check is really needed and code if it is
+                        }
+
+                    aValue.setElementCount((uint)dlt_sw_dep.Length - 1);
+                    for (i = 1; i < dlt_sw_dep.Length; i++)
+                        {
+                        aValue.item(i).setValue(dlt_sw_dep[i]);
+                        }
+
+                    break;
 
 
                 
@@ -5330,9 +5358,11 @@ namespace ManagedComponent.MvOZCOT
 
 			//----- increase root depth ----------------------------------------------------
 
-			rtdep = sdepth + ((20.0 - sdepth) / 36.0) * (double)iday;
+	
+            rtdep = sdepth + ((20.0 - sdepth) / 36.0) * (double)iday;   
 			// g da r from 82/83 expt
-			rtdep2 = rtdepm * (1.0 - 2.65 * Math.Exp(-0.03 * (double)iday ));
+            rtdep2 = rtdepm * (1.0 - 2.65 * Math.Exp(-0.03 * (double)iday));
+            //rtdep2 = rtdepm * (1.0 - 2.65 * Math.Exp(-0.03 * (double)(iday + 35))); //plp - 30 May 2013 - turned off to deal with root development in sandy soils.
 			// rtdepm replaced 122.38 12/5/95
 			if (rtdep2 > rtdep) rtdep = rtdep2; 
 			// added 12/5/95
@@ -7742,6 +7772,7 @@ namespace ManagedComponent.MvOZCOT
 				ep = eo - es;
 			}
             else 
+                //TODO: THIS IS WRONG the greater than should be a less than. Ask Perry Poulton. 
                 if (alai_row > 1.6)
                 {
 				    ep = (0.08 + 0.3066 * alai_row) * eo;	// l.mateos 1987, abh 1988
