@@ -1281,57 +1281,63 @@ void PlantHerbage::readHerbageModuleParameters ( void )
       msg << " - reading  herbage parameters for module '" << cHerbageModuleName << "'" << endl << ends;
       system->writeString (msg.str().c_str());
 
-    system->readParameter (cHerbageModuleName, "specific_detach_rate", c.specificDetachRate, 0.0, 1.0);
+      std::string unqualifiedModuleName = cHerbageModuleName;
+      int lastDot = unqualifiedModuleName.find_last_of('.');
+      if (lastDot != std::string::npos)
+      {
+          unqualifiedModuleName = unqualifiedModuleName.substr(lastDot+1);
+      }
+    system->readParameter (unqualifiedModuleName, "specific_detach_rate", c.specificDetachRate, 0.0, 1.0);
 
-    system->readParameter (cHerbageModuleName, "p_conc_green_leaf_default", c.pConcGreenLeafDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_green_stem_default", c.pConcGreenStemDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_green_pod_default", c.pConcGreenPodDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_green_meal_default", c.pConcGreenMealDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_green_oil_default", c.pConcGreenOilDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_senesced_leaf_default", c.pConcSenescedLeafDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_senesced_stem_default", c.pConcSenescedStemDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_senesced_pod_default", c.pConcSenescedPodDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_senesced_meal_default", c.pConcSenescedMealDefault, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "p_conc_senesced_oil_default", c.pConcSenescedOilDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_green_leaf_default", c.pConcGreenLeafDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_green_stem_default", c.pConcGreenStemDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_green_pod_default", c.pConcGreenPodDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_green_meal_default", c.pConcGreenMealDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_green_oil_default", c.pConcGreenOilDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_senesced_leaf_default", c.pConcSenescedLeafDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_senesced_stem_default", c.pConcSenescedStemDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_senesced_pod_default", c.pConcSenescedPodDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_senesced_meal_default", c.pConcSenescedMealDefault, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "p_conc_senesced_oil_default", c.pConcSenescedOilDefault, 0.0, 1.0);
 
-    system->readParameter (cHerbageModuleName, "ash_alk_green_leaf_default", c.AshAlkGreenLeafDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_green_stem_default", c.AshAlkGreenStemDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_green_pod_default", c.AshAlkGreenPodDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_green_meal_default", c.AshAlkGreenMealDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_green_oil_default", c.AshAlkGreenOilDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_senesced_leaf_default", c.AshAlkSenescedLeafDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_senesced_stem_default", c.AshAlkSenescedStemDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_senesced_pod_default", c.AshAlkSenescedPodDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_senesced_meal_default", c.AshAlkSenescedMealDefault, 0.0, 500.0);
-    system->readParameter (cHerbageModuleName, "ash_alk_senesced_oil_default", c.AshAlkSenescedOilDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_green_leaf_default", c.AshAlkGreenLeafDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_green_stem_default", c.AshAlkGreenStemDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_green_pod_default", c.AshAlkGreenPodDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_green_meal_default", c.AshAlkGreenMealDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_green_oil_default", c.AshAlkGreenOilDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_senesced_leaf_default", c.AshAlkSenescedLeafDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_senesced_stem_default", c.AshAlkSenescedStemDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_senesced_pod_default", c.AshAlkSenescedPodDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_senesced_meal_default", c.AshAlkSenescedMealDefault, 0.0, 500.0);
+    system->readParameter (unqualifiedModuleName, "ash_alk_senesced_oil_default", c.AshAlkSenescedOilDefault, 0.0, 500.0);
 
-    system->readParameter (cHerbageModuleName, "ns_ratio_green_leaf_default", c.NSRatioGreenLeafDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_green_stem_default", c.NSRatioGreenStemDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_green_pod_default", c.NSRatioGreenPodDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_green_meal_default", c.NSRatioGreenMealDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_green_oil_default", c.NSRatioGreenOilDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_senesced_leaf_default", c.NSRatioSenescedLeafDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_senesced_stem_default", c.NSRatioSenescedStemDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_senesced_pod_default", c.NSRatioSenescedPodDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_senesced_meal_default", c.NSRatioSenescedMealDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "ns_ratio_senesced_oil_default", c.NSRatioSenescedOilDefault, 0.0, 30.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_green_leaf_default", c.NPRatioGreenLeafDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_green_stem_default", c.NPRatioGreenStemDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_green_pod_default", c.NPRatioGreenPodDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_green_meal_default", c.NPRatioGreenMealDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_green_oil_default", c.NPRatioGreenOilDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_senesced_leaf_default", c.NPRatioSenescedLeafDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_senesced_stem_default", c.NPRatioSenescedStemDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_senesced_pod_default", c.NPRatioSenescedPodDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_senesced_meal_default", c.NPRatioSenescedMealDefault, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "np_ratio_senesced_oil_default", c.NPRatioSenescedOilDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_green_leaf_default", c.NSRatioGreenLeafDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_green_stem_default", c.NSRatioGreenStemDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_green_pod_default", c.NSRatioGreenPodDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_green_meal_default", c.NSRatioGreenMealDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_green_oil_default", c.NSRatioGreenOilDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_senesced_leaf_default", c.NSRatioSenescedLeafDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_senesced_stem_default", c.NSRatioSenescedStemDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_senesced_pod_default", c.NSRatioSenescedPodDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_senesced_meal_default", c.NSRatioSenescedMealDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "ns_ratio_senesced_oil_default", c.NSRatioSenescedOilDefault, 0.0, 30.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_green_leaf_default", c.NPRatioGreenLeafDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_green_stem_default", c.NPRatioGreenStemDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_green_pod_default", c.NPRatioGreenPodDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_green_meal_default", c.NPRatioGreenMealDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_green_oil_default", c.NPRatioGreenOilDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_senesced_leaf_default", c.NPRatioSenescedLeafDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_senesced_stem_default", c.NPRatioSenescedStemDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_senesced_pod_default", c.NPRatioSenescedPodDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_senesced_meal_default", c.NPRatioSenescedMealDefault, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "np_ratio_senesced_oil_default", c.NPRatioSenescedOilDefault, 0.0, 10.0);
 
 
     int numSeedClasses = 0;
-    system->readParameter (cHerbageModuleName, "dmd_seed", cDmdValueSeed, numSeedClasses, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "cp_n_ratio", c.cpNRatio, 0.0, 10.0);
-    system->readParameter (cHerbageModuleName, "proportion_legume", c.proportionLegume, 0.0, 1.0);
-    system->readParameter (cHerbageModuleName, "seed_class", c.seedClass, cNumDmdPoolsSeed, 0.0, 6.0);
+    system->readParameter (unqualifiedModuleName, "dmd_seed", cDmdValueSeed, numSeedClasses, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "cp_n_ratio", c.cpNRatio, 0.0, 10.0);
+    system->readParameter (unqualifiedModuleName, "proportion_legume", c.proportionLegume, 0.0, 1.0);
+    system->readParameter (unqualifiedModuleName, "seed_class", c.seedClass, cNumDmdPoolsSeed, 0.0, 6.0);
 //   calcDmdClass(dmdClassMaxVeg, dmdClassMinVeg);
 }
 
