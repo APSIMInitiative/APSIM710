@@ -10,8 +10,6 @@
 #include <General/stl_functions.h>
 #include <General/path.h>
 
-#include <boost/filesystem/operations.hpp>
-
 #include "IniFile.h"
 
 using namespace std;

@@ -4,7 +4,6 @@
 
 #include <string>
 #include <ComponentInterface/Interfaces.h>
-//#include <boost/function.hpp>
 #include <ComponentInterface/Variable.h>
 #include "DataTypes.h"
 

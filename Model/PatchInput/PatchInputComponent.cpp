@@ -4,7 +4,6 @@
 
 #include <math.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <General/stristr.h>
 #include <General/string_functions.h>

@@ -5,7 +5,6 @@
 
 #include <stdexcept>
 
-#include <boost/filesystem/operations.hpp>
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>
 
