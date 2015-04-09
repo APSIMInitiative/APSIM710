@@ -6,11 +6,9 @@
 #include "Registrations.h"
 #include <General/stl_functions.h>
 #include <General/string_functions.h>
-#include <boost/lexical_cast.hpp>
 
 #pragma package(smart_init)
 using namespace std;
-using namespace boost;
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -177,7 +175,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get registration " + lexical_cast<string>(regId));
+            throw runtime_error("Cannot get registration " + std::to_string((_ULonglong)regId));
 
          return reg->details;
          }
@@ -191,7 +189,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&isAMatch, _1, componentId, regName, 0));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get registration " + lexical_cast<string>(regName));
+            throw runtime_error("Cannot get registration " + regName);
 
          return reg->details;
          }
@@ -206,7 +204,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot erase registration " + lexical_cast<string>(regId));
+            throw runtime_error("Cannot erase registration " + std::to_string((_ULonglong)regId));
 
          registrations.erase(reg);
          }
@@ -222,9 +220,9 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get subscriptions for registration " + lexical_cast<string>(regId));
+            throw runtime_error("Cannot get subscriptions for registration " + std::to_string((_ULonglong)regId));
          if (reg->details.type.isPassive())
-            throw runtime_error("Cannot get subscriptions for a passive registration. RegId = " + lexical_cast<string>(regId));
+            throw runtime_error("Cannot get subscriptions for a passive registration. RegId = " + std::to_string((_ULonglong)regId));
 
          beginResolving = true;
          if (!reg->resolved)
@@ -255,7 +253,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get registration " + lexical_cast<string>(regId));
+            throw runtime_error("Cannot get registration " + std::to_string((_ULonglong)regId));
          return reg->resolved;
          }
       //---------------------------------------------------------------------------
@@ -268,7 +266,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot find registration " + lexical_cast<string>(regId));
+            throw runtime_error("Cannot find registration " + std::to_string((_ULonglong)regId));
 
          return reg->destinationId;
          }

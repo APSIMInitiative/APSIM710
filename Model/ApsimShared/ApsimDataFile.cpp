@@ -9,7 +9,6 @@
 #include <General/path.h>
 #include <General/IniFile.h>
 #include <General/platform.h>
-#include <boost/lexical_cast.hpp>
 #include <boost/date_time/period.hpp>
 #include <boost/date_time/date_parsing.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -172,7 +171,7 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
                   newValue = true;
                else
                   { 
-                  unsigned arrayIndex = lexical_cast<unsigned>(arrayIndexString);
+                  unsigned arrayIndex = stoi(arrayIndexString);
                   if (arrayIndex <= 0 || (arrayIndex > 1 && arrayIndex != previousArrayIndex+1))
                      throw runtime_error("Invalid array index: " + arrayIndexString
                                          + " for column: " + fieldNames[i]);
@@ -343,16 +342,16 @@ gregorian::date ApsimDataFile::getDate(void)
       }
    else
       {
-      int year = lexical_cast<int>(yearI->values[0]);
+      int year = stoi(yearI->values[0]);
       if (dayI != temporalData.end())
          {
-         int day  = lexical_cast<int>(dayI->values[0]);
+         int day  = stoi(dayI->values[0]);
          return date(year, 1, 1) + date_duration(day-1);
          }
       else if (monthI != temporalData.end() && domI != temporalData.end())
          {
-         int month  = lexical_cast<int>(monthI->values[0]);
-         int dom    = lexical_cast<int>(domI->values[0]);
+         int month  = stoi(monthI->values[0]);
+         int dom    = stoi(domI->values[0]);
          return date(year, month, dom);
          }
       return date(pos_infin);

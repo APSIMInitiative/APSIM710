@@ -12,7 +12,7 @@ void InitComplete(CompleteType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ackID"));
 
-   data.ackID = boost::lexical_cast<int> (childI->getValue());
+   data.ackID = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const CompleteType& value)
@@ -37,7 +37,7 @@ void InitApsimGetQuery(ApsimGetQueryType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("name"));
 
-   data.name = boost::lexical_cast<std::string> (childI->getValue());
+   data.name = childI->getValue();
    }
 
 std::string EXPORT DDML(const ApsimGetQueryType& value)
@@ -62,22 +62,22 @@ void InitApsimSetQuery(ApsimSetQueryType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("name"));
 
-   data.name = boost::lexical_cast<std::string> (childI->getValue());
+   data.name = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("replyToID"));
 
-   data.replyToID = boost::lexical_cast<int> (childI->getValue());
+   data.replyToID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("replyID"));
 
-   data.replyID = boost::lexical_cast<int> (childI->getValue());
+   data.replyID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("variant"));
 
-   data.variant = boost::lexical_cast<int> (childI->getValue());
+   data.variant = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const ApsimSetQueryType& value)
@@ -108,12 +108,12 @@ void InitError(ErrorType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("isFatal"));
 
-   data.isFatal = boost::lexical_cast<bool> (childI->getValue());
+   data.isFatal = strto_type<bool> (childI->getValue(), data.isFatal);
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("msg"));
 
-   data.msg = boost::lexical_cast<std::string> (childI->getValue());
+   data.msg = childI->getValue();
    }
 
 std::string EXPORT DDML(const ErrorType& value)
@@ -140,17 +140,17 @@ void InitEvent(EventType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("publishedBy"));
 
-   data.publishedBy = boost::lexical_cast<int> (childI->getValue());
+   data.publishedBy = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const EventType& value)
@@ -179,7 +179,7 @@ void InitGetValue(GetValueType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const GetValueType& value)
@@ -204,17 +204,17 @@ void InitInit1(Init1Type& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("sdml"));
 
-   data.sdml = boost::lexical_cast<std::string> (childI->getValue());
+   data.sdml = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("fqn"));
 
-   data.fqn = boost::lexical_cast<std::string> (childI->getValue());
+   data.fqn = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("inStartup"));
 
-   data.inStartup = boost::lexical_cast<bool> (childI->getValue());
+   data.inStartup = strto_type<bool> (childI->getValue(), data.inStartup);
    }
 
 std::string EXPORT DDML(const Init1Type& value)
@@ -243,12 +243,12 @@ void InitNotifySetValueSuccess(NotifySetValueSuccessType& data, const std::strin
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("success"));
 
-   data.success = boost::lexical_cast<bool> (childI->getValue());
+   data.success = strto_type<bool> (childI->getValue(), data.success);
    }
 
 std::string EXPORT DDML(const NotifySetValueSuccessType& value)
@@ -275,12 +275,12 @@ void InitPublishEvent(PublishEventType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const PublishEventType& value)
@@ -307,12 +307,12 @@ void InitQueryInfo(QueryInfoType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("name"));
 
-   data.name = boost::lexical_cast<std::string> (childI->getValue());
+   data.name = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("kind"));
 
-   data.kind = boost::lexical_cast<int> (childI->getValue());
+   data.kind = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const QueryInfoType& value)
@@ -339,27 +339,27 @@ void InitRegister(RegisterType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("kind"));
 
-   data.kind = boost::lexical_cast<int> (childI->getValue());
+   data.kind = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("destID"));
 
-   data.destID = boost::lexical_cast<int> (childI->getValue());
+   data.destID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("name"));
 
-   data.name = boost::lexical_cast<std::string> (childI->getValue());
+   data.name = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const RegisterType& value)
@@ -392,12 +392,12 @@ void InitDeRegister(DeRegisterType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("kind"));
 
-   data.kind = boost::lexical_cast<int> (childI->getValue());
+   data.kind = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const DeRegisterType& value)
@@ -424,12 +424,12 @@ void InitReplyValue(ReplyValueType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("queryID"));
 
-   data.queryID = boost::lexical_cast<int> (childI->getValue());
+   data.queryID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const ReplyValueType& value)
@@ -456,12 +456,12 @@ void InitRequestComponentID(RequestComponentIDType& data, const std::string& xml
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("replytoID"));
 
-   data.replytoID = boost::lexical_cast<int> (childI->getValue());
+   data.replytoID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("name"));
 
-   data.name = boost::lexical_cast<std::string> (childI->getValue());
+   data.name = childI->getValue();
    }
 
 std::string EXPORT DDML(const RequestComponentIDType& value)
@@ -488,12 +488,12 @@ void InitReturnComponentID(ReturnComponentIDType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("fqdn"));
 
-   data.fqdn = boost::lexical_cast<std::string> (childI->getValue());
+   data.fqdn = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const ReturnComponentIDType& value)
@@ -520,12 +520,12 @@ void InitRequestSetValue(RequestSetValueType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const RequestSetValueType& value)
@@ -552,32 +552,32 @@ void InitReturnInfo(ReturnInfoType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("queryID"));
 
-   data.queryID = boost::lexical_cast<int> (childI->getValue());
+   data.queryID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("compID"));
 
-   data.compID = boost::lexical_cast<int> (childI->getValue());
+   data.compID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("name"));
 
-   data.name = boost::lexical_cast<std::string> (childI->getValue());
+   data.name = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("type"));
 
-   data.type = boost::lexical_cast<std::string> (childI->getValue());
+   data.type = childI->getValue();
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("kind"));
 
-   data.kind = boost::lexical_cast<int> (childI->getValue());
+   data.kind = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const ReturnInfoType& value)
@@ -612,17 +612,17 @@ void InitReturnValue(ReturnValueType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("compID"));
 
-   data.compID = boost::lexical_cast<int> (childI->getValue());
+   data.compID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const ReturnValueType& value)
@@ -651,12 +651,12 @@ void InitQueryValue(QueryValueType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("requestedByID"));
 
-   data.requestedByID = boost::lexical_cast<int> (childI->getValue());
+   data.requestedByID = stoi(childI->getValue());
    }
 
 std::string EXPORT DDML(const QueryValueType& value)
@@ -683,12 +683,12 @@ void InitQuerySetValue(QuerySetValueType& data, const std::string& xml)
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ID"));
 
-   data.ID = boost::lexical_cast<int> (childI->getValue());
+   data.ID = stoi(childI->getValue());
    childI = std::find_if(doc.documentElement().begin(),
                          doc.documentElement().end(),
                          EqualToName<XMLNode>("ddml"));
 
-   data.ddml = boost::lexical_cast<std::string> (childI->getValue());
+   data.ddml = childI->getValue();
    }
 
 std::string EXPORT DDML(const QuerySetValueType& value)

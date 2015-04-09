@@ -6,10 +6,8 @@
 #include <functional>
 #include <General/string_functions.h>
 #include <General/stristr.h>
-#include <boost/lexical_cast.hpp>
 
 using namespace std;
-
 
 // ------------------------------------------------------------------
 //  Short description:
@@ -655,6 +653,53 @@ struct MapSecondIterator
 
    };
 
+
+// overload a conversion function for use in StringToContainer()
+template <class T> int strto_type(const std::string &a, int &b)
+{
+    return stoi(a);
+}
+
+template <class T> double strto_type(const std::string &a, double &b)
+{
+    try
+    {
+        return stod(a);
+    }
+    catch (const std::exception &e)
+    {
+        if (Str_i_Cmp(a, "nan") == 0)
+            return std::numeric_limits<T>::quiet_NaN();
+        else
+            throw std::runtime_error(e.what());
+    }
+}
+
+template <class T> float strto_type(const std::string &a, float &b)
+{
+    try
+    {
+        return stof(a);
+    }
+    catch (const std::exception &e)
+    {
+        if (Str_i_Cmp(a, "nan") == 0)
+            return std::numeric_limits<T>::quiet_NaN();
+        else
+            throw std::runtime_error(e.what());
+    }
+}
+
+template <class T> bool strto_type(const std::string &a, bool &b)
+{
+    return (a == "1") || (tolower(a.c_str()[0]) == 't');
+}
+
+template <class T> string strto_type(const std::string &a, string &b)
+{
+    return a;
+}
+
 template < class container_type, class T>
 void StringToContainer (const string& Numbers,
                         container_type& container)
@@ -668,7 +713,7 @@ void StringToContainer (const string& Numbers,
         st++)
       {
       T val;
-      val = boost::lexical_cast<T> (*st);
+      val = strto_type<T> (*st, val);
       container.push_back(val);
       }
    }

@@ -12,15 +12,12 @@
 #include <General/IniFile.h>
 #include <General/stristr.h>
 
-#include <boost/lexical_cast.hpp>
-
 #include <ApsimShared/ApsimControlFile.h>
 #include <ApsimShared/ApsimDirectories.h>
 #include <ApsimShared/ApsimSettings.h>
 
 #include "ControlFileConverter.h"
 using namespace std;
-using namespace boost;
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -38,8 +35,8 @@ string evaluateExpression(const string& value1, const string& value2, const stri
    else
       {
       double value;
-      double number1 = lexical_cast<double>(value1); 
-      double number2 = lexical_cast<double>(value2);
+      double number1 = stod(value1); 
+      double number2 = stod(value2);
 
       if (oper == "+")
          value = number1 + number2;

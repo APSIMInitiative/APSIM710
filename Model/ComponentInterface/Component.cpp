@@ -7,7 +7,6 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-#include <boost/lexical_cast.hpp>
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimRegistry.h>
 #include <ApsimShared/FApsimComponentData.h>

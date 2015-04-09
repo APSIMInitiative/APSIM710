@@ -24,7 +24,6 @@
 
 #include "Phi_functions.h"
 using namespace std;
-using namespace boost;
 
 struct ParamFile
    {

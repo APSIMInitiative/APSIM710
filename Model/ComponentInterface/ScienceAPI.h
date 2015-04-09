@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <General/platform.h>
+#include <General/string_functions.h>
 #include <functional>
 #include "DataTypes.h"
 #include <ComponentInterface/ApsimVariant.h>

@@ -5,7 +5,6 @@
 #include <vector>
 #include <sstream>
 
-#include <boost/lexical_cast.hpp>
 #include <General/IniFile.h>
 #include <General/path.h>
 #include <General/platform.h>
@@ -22,7 +21,6 @@
 #endif
 
 using namespace std;
-using namespace boost;
 
 // ------------------------------------------------------------------
 //	constructor
@@ -121,7 +119,7 @@ void ApsimSettings::read(const string& key, int& value) const
    {
    string stringValue;
    read(key, stringValue);
-   value = lexical_cast<int> (stringValue);
+   value = strto_type<int>(stringValue, value);
    }
 // ------------------------------------------------------------------
 // read in a string value for the specified key.
@@ -141,7 +139,7 @@ void ApsimSettings::read(const string& key, double& value) const
    {
    string stringValue;
    read(key, stringValue);
-   value = lexical_cast<double> (stringValue);
+   value = strto_type<double> (stringValue, value);
    }
 // ------------------------------------------------------------------
 // Read and return a list of values for the specified key.
@@ -183,7 +181,7 @@ void ApsimSettings::write(const string& key, const string& value)
 // ------------------------------------------------------------------
 void ApsimSettings::write(const string& key, int value)
    {
-   write(key, lexical_cast<string>(value));
+   write(key, std::to_string((_ULonglong)value));
    }
 // ------------------------------------------------------------------
 //	Write a key to ini file
@@ -200,7 +198,7 @@ void ApsimSettings::write(const string& key, bool value)
 // ------------------------------------------------------------------
 void ApsimSettings::write(const string& key, double value)
    {
-   write(key, lexical_cast<string>(value));
+   write(key, std::to_string((long double)value));
    }
 // ------------------------------------------------------------------
 //	Write a key to ini file

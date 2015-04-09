@@ -5,13 +5,13 @@
 #include <map>
 #include <vector>
 #include <functional>
-#include <boost/lexical_cast.hpp>
 
 #include <General/stl_functions.h>
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>
 #include <General/path.h>
 #include <General/platform.h>
+#include <General/string_functions.h>
 
 #include <ApsimShared/ApsimComponentData.h>
 #include <ApsimShared/ApsimRegistry.h>
@@ -561,7 +561,7 @@ class EXPORT Component
                string msg = string("Bound check warning while getting variable.\n"
                                    "Variable  : ") + regItem->getName() + string("\n"
                                    "Condition : ") + ftoa(lower, 2) + string(" <= ") +
-                                    boost::lexical_cast<std::string>(value) + string(" <= ") + ftoa(upper, 2);
+                                    typeto_str(value) + string(" <= ") + ftoa(upper, 2);
                error(msg, false);
                }
             }
@@ -611,7 +611,7 @@ class EXPORT Component
                    string msg = string("Bound check warning while getting variable.\n"
                                        "Variable  : ") + regItem->getName() + string("(") + itoa(i+1) +  string(")\n"
                                        "Condition : ") + ftoa(lower, 2) + string(" <= ") +
-                                boost::lexical_cast<string>(values[i]) + string(" <= ") + ftoa(upper, 2);
+                                typeto_str(values[i]) + string(" <= ") + ftoa(upper, 2);
                    error(msg, false);
                    }
                }
@@ -677,8 +677,8 @@ class EXPORT Component
          }
 
       // 2. Convert it
-      try { value = boost::lexical_cast<T> (datastring); }
-      catch(boost::bad_lexical_cast &)
+      try { value = strto_type<T> (datastring, value); }
+      catch(...)
          {
          string msg = string("Problem converting variable to ") +
                              string(typeid(T).name()) + string(" type.\n"
@@ -732,8 +732,8 @@ class EXPORT Component
       for (int i=0; i!=value_strings.size();i++)
         {
         T value;
-        try { value = boost::lexical_cast<T> (value_strings[i]); }
-        catch(boost::bad_lexical_cast &)
+        try { value = strto_type<T>(value_strings[i], value); }
+        catch(...)
            {
            string msg = string("Problem converting variable to ") +
                                string(typeid(T).name()) + string(" type.\n"
