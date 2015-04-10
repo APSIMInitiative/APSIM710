@@ -469,7 +469,7 @@ std::string doubleQuoted(const std::string& st)
 
 std::string typeto_str(const int &value)
 {
-    return std::to_string((_Longlong)value);
+    return std::to_string((long long)value);
 }
 
 std::string typeto_str(const float &value)

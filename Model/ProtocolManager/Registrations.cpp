@@ -175,7 +175,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get registration " + std::to_string((_ULonglong)regId));
+            throw runtime_error("Cannot get registration " + std::to_string((unsigned long long)regId));
 
          return reg->details;
          }
@@ -204,7 +204,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot erase registration " + std::to_string((_ULonglong)regId));
+            throw runtime_error("Cannot erase registration " + std::to_string((unsigned long long)regId));
 
          registrations.erase(reg);
          }
@@ -220,9 +220,9 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get subscriptions for registration " + std::to_string((_ULonglong)regId));
+            throw runtime_error("Cannot get subscriptions for registration " + std::to_string((unsigned long long)regId));
          if (reg->details.type.isPassive())
-            throw runtime_error("Cannot get subscriptions for a passive registration. RegId = " + std::to_string((_ULonglong)regId));
+            throw runtime_error("Cannot get subscriptions for a passive registration. RegId = " + std::to_string((unsigned long long)regId));
 
          beginResolving = true;
          if (!reg->resolved)
@@ -253,7 +253,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot get registration " + std::to_string((_ULonglong)regId));
+            throw runtime_error("Cannot get registration " + std::to_string((unsigned long long)regId));
          return reg->resolved;
          }
       //---------------------------------------------------------------------------
@@ -266,7 +266,7 @@ class RegistrationsInternal
                                       registrations.end(),
                                       std::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
-            throw runtime_error("Cannot find registration " + std::to_string((_ULonglong)regId));
+            throw runtime_error("Cannot find registration " + std::to_string((unsigned long long)regId));
 
          return reg->destinationId;
          }

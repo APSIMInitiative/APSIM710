@@ -181,7 +181,7 @@ void ApsimSettings::write(const string& key, const string& value)
 // ------------------------------------------------------------------
 void ApsimSettings::write(const string& key, int value)
    {
-   write(key, std::to_string((_ULonglong)value));
+   write(key, std::to_string((unsigned long long)value));
    }
 // ------------------------------------------------------------------
 //	Write a key to ini file

@@ -18,8 +18,6 @@
 
 //#include "HerbagePool.h"
 
-#define min(A,B) ((A)<(B)?(A):(B))
-#define max(A,B) ((A)>(B)?(A):(B))
 // Maximum number of layers in soil
 
 std::string ftoa(double Float);

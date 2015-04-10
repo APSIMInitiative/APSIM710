@@ -4,6 +4,9 @@
 #include <fstream>
 #include <stdexcept>
 #include <iostream>
+#ifdef __GNUC__
+  #include <string.h>
+#endif
 
 #include <General/StringTokenizer.h>
 #include <General/string_functions.h>

@@ -19,7 +19,10 @@
 
 #include "Simulation.h"
 #ifdef __WIN32__
-#include <windows.h>
+  #include <windows.h>
+#elif defined(__unix__)
+  #include <unistd.h>
+  #include <limits.h>
 #endif
 
 using namespace std;

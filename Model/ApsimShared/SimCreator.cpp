@@ -14,6 +14,8 @@
 #include "ApsimVersion.h"
 #ifdef __WIN32__
    #include <direct.h>
+#elif defined(__unix__)
+   #include <unistd.h>
 #endif
 #pragma package(smart_init)
 

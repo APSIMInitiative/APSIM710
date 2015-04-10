@@ -3,8 +3,6 @@
 #define NonHerbageConverterH
 #include "ConverterBase.h"
 
-#define min(A,B) ((A)<(B)?(A):(B))
-#define max(A,B) ((A)>(B)?(A):(B))
 // Maximum number of layers in soil
 #define max_layer 100
 
