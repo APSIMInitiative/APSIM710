@@ -36,6 +36,7 @@ class EXPORT StringVariant
       float asFloat(void);
       float asInteger(void);
       std::string getName(void);
+      std::string getUnits(void);
       void setTemporalValue(Value* value);
 
    private:

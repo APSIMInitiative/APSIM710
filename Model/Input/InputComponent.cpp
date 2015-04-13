@@ -416,7 +416,12 @@ float InputComponent::getVariableValue(const string& name)
    {
    Variables::iterator i = findVariable(name);
    if (i != variables.end())
-      return i->second.asFloat();
+   {
+      if ((name == "vp") && (i->second.getUnits() == "kPa"))
+        return i->second.asFloat() * 10.0;   // Special case - if vp is in kPa, convert to hPa
+      else 
+        return i->second.asFloat();
+   }
    else
       return 0.0;
    }

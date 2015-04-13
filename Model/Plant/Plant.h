@@ -231,6 +231,7 @@ public:
    void get_n_conc_root(protocol::Component *, protocol::QueryValueData &);
    void get_n_conc_crit(protocol::Component *, protocol::QueryValueData &);
    void get_n_conc_min(protocol::Component *, protocol::QueryValueData &);
+   void get_vpd_est(protocol::Component *, protocol::QueryValueData &);
 
    void get_n_uptake_stover(protocol::Component *, protocol::QueryValueData &);
    void get_no3_tot(protocol::Component *, protocol::QueryValueData &);

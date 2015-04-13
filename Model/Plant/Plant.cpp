@@ -151,6 +151,8 @@ void Plant::onInit1(void)
    setupGetFunction(parent, "cover_tot", protocol::DTsingle, false,
                      &Plant::get_cover_tot, "", "Total cover");
 
+   setupGetFunction(parent, "vpd_est", protocol::DTsingle, false,
+                     &Plant::get_vpd_est, "kPa", "estimated vapour pressure deficit");
 
    setupGetFunction(parent, "effective_rue", protocol::DTsingle, false,
                     &Plant::get_effective_rue, "g/m2/MJ", "EffectiveRUE");
@@ -1741,6 +1743,11 @@ float Plant::getFaswSeed(void)
 float Plant::getLeafNo(void)
 {
    return leaf().getLeafNo();
+}
+
+void Plant::get_vpd_est(protocol::Component *system, protocol::QueryValueData &qd)
+{
+    system->sendVariable(qd, _environment->vpdEstimate());
 }
 
 void Plant::get_height(protocol::Component *system, protocol::QueryValueData &qd)

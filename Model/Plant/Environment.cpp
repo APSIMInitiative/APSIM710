@@ -18,6 +18,7 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
    NewMet.maxt = 0.0;
    NewMet.radn = 0.0;
    NewMet.rain = 0.0;
+   NewMet.vp = 0.0;
 
    scienceAPI.read("svp_fract", svp_fract, 0.0f, 1.0f);
    scienceAPI.read("co2_default", co2_default, 0.0f, 1000.0f);

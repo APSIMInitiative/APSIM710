@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <boost/date_time/gregorian/gregorian.hpp>
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
 #include <General/math_functions.h>
@@ -147,7 +146,10 @@ void StringVariant::determineType(void)
       }
    string units = splitOffBracketedValue(value->units, '(', ')');
    if (units.length() > 0)
+   {
+      value->units = units;
       typeString += " unit=\"" + units + "\"";
+   }
    typeString += "/>";
    }
 // ------------------------------------------------------------------
@@ -188,4 +190,9 @@ void StringVariant::setTemporalValue(Value* v)
 std::string StringVariant::getName(void)
    {
    return value->name;
+   }
+
+std::string StringVariant::getUnits(void)
+   {
+   return value->units;
    }
