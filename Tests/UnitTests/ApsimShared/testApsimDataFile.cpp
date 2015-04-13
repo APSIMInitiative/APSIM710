@@ -5,7 +5,6 @@
 #include <General/stl_functions.h>
 using namespace std;
 using namespace boost::unit_test_framework;
-using namespace boost::gregorian;
 
 ApsimDataFile* dataFile;
 //---------------------------------------------------------------------------
@@ -95,7 +94,7 @@ void testTemporalEnumeration(void)
    {
    setUpApsimDataFile();
 
-   BOOST_CHECK(dataFile->getDate() == date(1988, 1, 1));
+   BOOST_CHECK(dataFile->getDate() == GDate(1, 1, 1988));
 
    ApsimDataFile::iterator i = dataFile->fieldsBegin();
    BOOST_CHECK(i->name == "site");

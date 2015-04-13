@@ -52,7 +52,6 @@ struct Regr_stats
 // ------------------------------------------------------------------
 void EXPORT calcRegressionStats (const std::vector<double>& x, const std::vector<double>& y,
                           Regr_stats& stats);
-#include <boost/lexical_cast.hpp>
 
 // ------------------------------------------------------------------
 //  Short description:
@@ -497,22 +496,6 @@ void IntegerContainerToStringContainer (const container1& IntegerContainer,
 //typedef std::vector<double> OptimParams;
 //typedef double __fastcall (__closure *TOptimEvent)(const OptimParams& params);
 
-//---------------------------------------------------------------------------
-// Return true if value is missing.
-//---------------------------------------------------------------------------
-template <class T>
-T missingValue()
-   {
-   return boost::lexical_cast<T>(999999);
-   }
-//---------------------------------------------------------------------------
-// Return true if value is missing.
-//---------------------------------------------------------------------------
-template <class T>
-bool isMissingValue(const T& value)
-   {
-   return (boost::lexical_cast<T>(value) == missingValue<T>());
-   }
 
 // ------------------------------------------------------------------
 //  Short description:
