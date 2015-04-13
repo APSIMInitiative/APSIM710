@@ -17,6 +17,9 @@
 //    dph 6/8/97 changed the write formatting system to a more general one.
 
 // ------------------------------------------------------------------
+
+static const unsigned int infin = UINT_MAX;
+
 class EXPORT GDate
    {
    protected :
@@ -33,6 +36,7 @@ class EXPORT GDate
 
    public:
       GDate(void);                     // constructor
+      GDate(unsigned jd);
       GDate(unsigned int Days, unsigned int Months, unsigned int Years);
                                        // constructor
       void Set(unsigned int D, unsigned int M, unsigned int Y);
@@ -52,10 +56,12 @@ class EXPORT GDate
       
       void Write(std::string &Str);           // Write the date to string.
       void Write(std::ostream& Out_stream); // Write the date to the output stream
+      std::string ToString();               // Write the date to string.
       void Set_write_format(const char* Format)
          {Format_string = Format;};
                                        // Set the format of the next print.
-      bool Is_valid(void)  {return (Julian_day != 0);};
+      bool is_infinity(void) {return (Julian_day == infin);};
+      bool Is_valid(void)  {return ( (Julian_day != 0) && !is_infinity());};
                                        // Return TRUE if date is valid.
       bool Is_leap_year(int Year = -1);// Return TRUE if year is a leap year
       unsigned int Get_day(void);      // Return day

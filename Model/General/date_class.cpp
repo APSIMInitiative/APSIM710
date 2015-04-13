@@ -45,6 +45,14 @@ GDate::GDate(void)  {
    Julian_day = 0;
    }
 
+GDate::GDate(unsigned jd)
+{
+   Format_string = "D/M/YYYY";
+   Must_have_year = false;
+   Julian_day = jd;
+}
+
+
 // *******************************************************************
 GDate::GDate(unsigned int Day, unsigned int Month, unsigned int Year)  {
 // *******************************************************************
@@ -216,6 +224,13 @@ void GDate::Read(const string& Str, const string& Format)
    Write(Out_stream);
    Str = Out_stream.str();
    }
+
+std::string GDate::ToString()
+{
+   ostringstream Out_stream;
+   Write(Out_stream);
+   return Out_stream.str();
+}
 
 // *******************************************************************
        void GDate::Write(ostream& Out_stream)  {

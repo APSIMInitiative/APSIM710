@@ -2,7 +2,6 @@
 #include <stdexcept>
 
 #include <math.h>
-#include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <General/string_functions.h>
 #include <General/date_class.h>
@@ -20,7 +19,6 @@
 
 
 using namespace std;
-using namespace boost::gregorian;
 
 static const char* dayLengthType =
    "<type kind=\"double\" unit=\"h\"/>";
@@ -94,8 +92,8 @@ protocol::Component* createComponent(void)
 // constructor
 // ------------------------------------------------------------------
 InputComponent::InputComponent(void)
-   : todaysDate(pos_infin), fileDate(pos_infin),
-     startDate(pos_infin), endDate(pos_infin)
+   : gTodaysDate(infin), gFileDate(infin),
+     gStartDate(infin), gEndDate(infin)
    {
    }
 
@@ -248,14 +246,14 @@ void InputComponent::checkForSparseData(void)
 // Advance the file to todays date. Returns the date the file is
 // positioned at.
 // ------------------------------------------------------------------
-date InputComponent::advanceToTodaysData(void)
+GDate InputComponent::advanceToTodaysData(void)
    {
    try
       {
-      while (!data.eof() && data.getDate() < todaysDate)
+      while (!data.eof() && data.getDate() < gTodaysDate)
          data.next();
       if (data.eof())
-         return date(pos_infin);
+         return GDate(0);
       else
          return data.getDate();
       }
@@ -264,7 +262,7 @@ date InputComponent::advanceToTodaysData(void)
       string msg = err.what();
       msg +=". This error occurred while trying to read from input file " + fileName;
       error(msg, true);
-      return date(pos_infin);
+      return GDate(0);
       }
    }
 // ------------------------------------------------------------------
@@ -284,20 +282,20 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
    else if (queryData.ID == startDateID)
       {
       getStartEndDate();
-      sendVariable(queryData, (int) startDate.julian_day());
+      sendVariable(queryData, (int) gStartDate.Get_jday());
       }
 
    else if (queryData.ID == endDateID)
       {
       getStartEndDate();
-      sendVariable(queryData, (int) endDate.julian_day());
+      sendVariable(queryData, (int) gEndDate.Get_jday());
       }
 
    else if (queryData.ID == startDateStringID)
       {
       getStartEndDate();
       ostringstream out;
-      out << startDate.day() << '/' << startDate.month() << '/' << startDate.year();
+      out << gStartDate.Get_day() << '/' << gStartDate.Get_month() << '/' << gStartDate.Get_year();
       string st = out.str();
       sendVariable(queryData, st);
       }
@@ -306,18 +304,18 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
       {
       getStartEndDate();
       ostringstream out;
-      out << endDate.day() << '/' << endDate.month() << '/' << endDate.year();
+      out << gEndDate.Get_day() << '/' << gEndDate.Get_month() << '/' << gEndDate.Get_year();
       string st = out.str();
       sendVariable(queryData, st);
       }
 
    else if (queryData.ID == hasDataTodayID)
       {
-      sendVariable(queryData, (todaysDate == fileDate));
+      sendVariable(queryData, (gTodaysDate == gFileDate));
       }
    else if (iAmMet && queryData.ID == metDataID)
       {
-      MetData.today = todaysDate.julian_day();
+      MetData.today = gTodaysDate.Get_jday();
       MetData.maxt = getVariableValue("maxt");
       MetData.mint = getVariableValue("mint");
       MetData.radn = getVariableValue("radn");
@@ -330,7 +328,7 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
    else
       {
 	  if (variables.find(queryData.ID) != variables.end())
-         variables[queryData.ID].sendVariable(queryData, (todaysDate == fileDate));
+         variables[queryData.ID].sendVariable(queryData, (gTodaysDate == gFileDate));
 	  else
          protocol::Component::respondToGet(fromID, queryData);
       }
@@ -352,14 +350,15 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
       {
       protocol::TimeType tick;
       variant.unpack(tick);
-      todaysDate = date(tick.startday);
-      fileDate = advanceToTodaysData();
+      gTodaysDate = GDate(tick.startday);
+      gFileDate = advanceToTodaysData();
       int dummy = 0;
       publish(haveReadTodaysDataID, dummy);
-      if (fileDate != todaysDate && !allowSparseData)
+      if (gFileDate != gTodaysDate && !allowSparseData)
          {
          string msg = "Cannot find data in INPUT file for date ";
-         msg += to_simple_string(todaysDate).c_str();
+         gTodaysDate.Set_write_format("YYYY-MMM-DD");
+         msg += gTodaysDate.ToString();
          error(msg, true);
          }
       else
@@ -374,13 +373,14 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
       variant.unpack(dataDates);
       for (unsigned i = 0; i != dataDates.size(); i++)
          {
-         date dataDate(from_string(dataDates[i]));
+         GDate gDataDate;
+         gDataDate.Read(dataDates[i], "yyyy/m/d");
          try
             {
-            data.gotoDate(dataDate);
+            data.gotoDate(gDataDate);
 
             protocol::NewMetType newmet;
-            newmet.today = dataDate.julian_day();
+            newmet.today = gDataDate.Get_jday();
             newmet.maxt = getVariableValue("maxt");
             newmet.mint = getVariableValue("mint");
             newmet.radn = getVariableValue("radn");
@@ -391,7 +391,8 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
          catch (const std::exception&)
             {
             string msg = "Cannot find patch data in INPUT file for date ";
-            msg += to_simple_string(dataDate).c_str();
+            gTodaysDate.Set_write_format("YYYY-MMM-DD");
+            msg += gDataDate.ToString(); 
             error(msg, false);
             }
          }
@@ -405,7 +406,7 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
 
       // reposition the data file to todays date.
       data.first();
-      data.gotoDate(todaysDate);
+      data.gotoDate(gTodaysDate);
       }
    }
 // ------------------------------------------------------------------
@@ -453,7 +454,7 @@ double InputComponent::calcDayLength(void)
       // Sunrise or sunset is defined as when the true centre of the sun is 50'
       // below the horizon.
       double twligt = -6.0;
-      int dayOfYear = date_duration(todaysDate - date(todaysDate.year(), 1, 1)).days()+1;
+      int dayOfYear = gTodaysDate.Get_day_of_year();
       return dayLength(dayOfYear, latitude, twligt);
       }
    else
@@ -476,7 +477,7 @@ void InputComponent::publishNewMetEvent(void)
       {
       // send out a preNewMet Event.
       protocol::NewMetType newmet;
-      newmet.today = todaysDate.julian_day();
+      newmet.today = gTodaysDate.Get_jday();
       newmet.maxt = getVariableValue("maxt");
       newmet.mint = getVariableValue("mint");
       newmet.radn = getVariableValue("radn");
@@ -486,7 +487,7 @@ void InputComponent::publishNewMetEvent(void)
          newmet.vp = (float)calcVP(newmet.mint);
       publish(preNewmetID, newmet);
 
-      newmet.today = todaysDate.julian_day();
+      newmet.today = gTodaysDate.Get_jday();
       newmet.maxt = getVariableValue("maxt");
       newmet.mint = getVariableValue("mint");
       newmet.radn = getVariableValue("radn");
@@ -615,11 +616,11 @@ double InputComponent::dayLength(int dyoyr, double lat, double sun_angle)
 // ------------------------------------------------------------------
 void InputComponent::getStartEndDate(void)
    {
-   if (startDate.is_infinity())
+   if (gStartDate.is_infinity())
       {
       data.last();
-      endDate = data.getDate();
+      gEndDate = data.getDate();
       data.first();
-      startDate = data.getDate();
+      gStartDate = data.getDate();
       }
    }

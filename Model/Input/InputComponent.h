@@ -38,17 +38,17 @@ class EXPORT InputComponent : public protocol::Component
       unsigned metDataID;
       protocol::NewMetType MetData;
       
-      boost::gregorian::date todaysDate;
-      boost::gregorian::date fileDate;
-      boost::gregorian::date startDate;
-      boost::gregorian::date endDate;
+      GDate gTodaysDate;
+      GDate gFileDate;
+      GDate gStartDate;
+      GDate gEndDate;
 
       virtual void openInputFile(void);
 
       void addVariable(Value& value, bool asDefault);
       void registerAllVariables(void);
       void checkForSparseData(void);
-      boost::gregorian::date advanceToTodaysData(void);
+      GDate advanceToTodaysData(void);
       float getVariableValue(const std::string& name);
       Variables::iterator findVariable(const std::string& name);
       void publishNewMetEvent(void);

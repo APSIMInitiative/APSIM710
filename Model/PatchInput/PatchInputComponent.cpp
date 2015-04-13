@@ -3,7 +3,6 @@
 #include <stdexcept>
 
 #include <math.h>
-#include <boost/date_time/gregorian/gregorian.hpp>
 
 #include <General/stristr.h>
 #include <General/string_functions.h>
@@ -20,7 +19,6 @@
 #include "PatchInputComponent.h"
 
 using namespace std;
-using namespace boost::gregorian;
 
 // ------------------------------------------------------------------
 // Return a blank string when requested to indicate that we don't need a wrapper DLL.
@@ -62,7 +60,7 @@ protocol::Component* createComponent(void)
 // constructor
 // ------------------------------------------------------------------
 PatchInputComponent::PatchInputComponent(void)
-   : patchDate(1800, 1, 1)
+   : gPatchDate(1, 1, 1800)
    {
    }
 
@@ -108,16 +106,19 @@ void PatchInputComponent::readPatchDates(void)
          {
          ApsimDataFile::iterator i = find(data.constantsBegin(), data.constantsEnd(), "start_patching_from");
          if (i != data.constantsEnd())
-            patchDate = date(from_string(i->values[0]));
+         {
+            GDate gPatchDate;
+            gPatchDate.Read(i->values[0], "yyyy/m/d");
+         }
 
          currentRecord = 1;
-         minYear = data.getDate().year();
+         minYear = data.getDate().Get_year();
          maxYear = minYear;
          while (!data.eof())
             {
-            patchDates.insert(make_pair(data.getDate().julian_day(), currentRecord));
+                patchDates.insert(make_pair(data.getDate().Get_jday(), currentRecord));
             currentRecord++;
-            unsigned int year = data.getDate().year();
+            unsigned int year = data.getDate().Get_year();
             if (year > maxYear) {maxYear = year;}
             data.next();
             }
@@ -166,8 +167,9 @@ void PatchInputComponent::getDataFromInput(unsigned int fromID)
             
          if (validPatchDate)
             {
-            date d(i->first);
-            dataDates.push_back(to_iso_extended_string(d));
+            GDate d(i->first);
+            d.Set_write_format("YYYY-MM-DD");
+            dataDates.push_back(d.ToString());
             }
          }
       getDataMethodID = addRegistration(::event,
@@ -184,7 +186,7 @@ void PatchInputComponent::getDataFromInput(unsigned int fromID)
 //     summer crop - need to handle this situation.
 // Returns the date the file is positioned at.
 // ------------------------------------------------------------------
-date PatchInputComponent::advanceToTodaysPatchData(unsigned int fromID)
+GDate PatchInputComponent::advanceToTodaysPatchData(unsigned int fromID)
    {
    if (!haveReadPatchData)
       {
@@ -195,13 +197,13 @@ date PatchInputComponent::advanceToTodaysPatchData(unsigned int fromID)
       {
       try
          {
-         PatchDates::iterator i = patchDates.find(todaysDate.julian_day());
+             PatchDates::iterator i = patchDates.find(gTodaysDate.Get_jday());
          if (i == patchDates.end() && patchAllYears)
             {
             for (unsigned tryYear = minYear;
                           tryYear <= maxYear && i == patchDates.end();
                           tryYear++)
-               i = patchDates.find(date(tryYear, todaysDate.month(), todaysDate.day()).julian_day());
+                          i = patchDates.find(GDate(gTodaysDate.Get_day(), gTodaysDate.Get_month(), tryYear).Get_jday());
             }
          if (i != patchDates.end())
             {
@@ -217,16 +219,16 @@ date PatchInputComponent::advanceToTodaysPatchData(unsigned int fromID)
                currentRecord++;
                data.next();
                }
-            return todaysDate;
+            return gTodaysDate;
             }
          else
-            return date(pos_infin);
+            return GDate(infin);
          }
       catch (const std::exception& err) // probably caused by a leap year exception. ?? WELL WHY NOT TEST FOR IT ??
          {
          }
       }
-   return date(pos_infin);
+   return GDate(infin);
    }
 
 // ------------------------------------------------------------------
@@ -257,10 +259,10 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
       unsigned int year, month, day; 
       d.Set(newmet.today);
       d.Get_dmy(day, month, year);
-      todaysDate = date(year, month, day);
+      gTodaysDate = GDate(day, month, year);
 
-      fileDate = advanceToTodaysPatchData(fromID);
-      if (todaysDate == fileDate && todaysDate >= patchDate)
+      gFileDate = advanceToTodaysPatchData(fromID);
+      if (gTodaysDate == gFileDate && gTodaysDate >= gPatchDate)
          {
          for (Variables::iterator v = variables.begin();
                                   v != variables.end();
@@ -298,9 +300,9 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
       variant.unpack(data);
       for (unsigned i = 0; i != data.size(); i++)
          {
-         date d(data[i].today);
-         unsigned dayNumber = day_of_year(d);
-         if (gregorian_calendar::is_leap_year(d.year()))
+         GDate d(data[i].today);
+         unsigned dayNumber = d.Get_day_of_year();
+         if (d.Is_leap_year())
             dayNumber--;
 
          patchDataByDayNumber.insert(make_pair(dayNumber, data[i]));
@@ -317,8 +319,8 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
 // ------------------------------------------------------------------
 void PatchInputComponent::setPatchData()
    {
-   unsigned dayNumber = day_of_year(todaysDate);
-   if (gregorian_calendar::is_leap_year(todaysDate.year()) && dayNumber >= 61)
+   unsigned dayNumber = gTodaysDate.Get_day_of_year();
+   if (gTodaysDate.Is_leap_year() && dayNumber >= 61)
       dayNumber--;
    PatchData::iterator i;
    bool found;
@@ -329,14 +331,15 @@ void PatchInputComponent::setPatchData()
       }
    else
       {
-      i = patchDataByDate.find(todaysDate.julian_day());
+      i = patchDataByDate.find(gTodaysDate.Get_jday());
       found = (i != patchDataByDate.end());
       }
         
    if (!found)
       {
       string msg = "No patching of data occurred on date: ";
-      msg += to_iso_extended_string(todaysDate);
+      gTodaysDate.Set_write_format("YYYY-MM-DD");
+      msg += gTodaysDate.ToString();
       writeString(msg.c_str());
       }
    else

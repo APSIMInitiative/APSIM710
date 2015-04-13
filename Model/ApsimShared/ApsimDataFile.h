@@ -4,7 +4,7 @@
 #include <vector>
 #include <General/platform.h>
 #include <General/string_functions.h>
-#include <boost/date_time/gregorian/gregorian.hpp>
+#include <General/date_class.h>
 #include <fstream>
 //---------------------------------------------------------------------------
 // This class a single 'value' whether it be a constant or a value for
@@ -90,12 +90,12 @@ class EXPORT ApsimDataFile
       //---------------------------------------------------------------------------
       // return the date on the current record.
       //---------------------------------------------------------------------------
-      boost::gregorian::date getDate(void) ;
+      GDate getDate(void) ;
 
       //---------------------------------------------------------------------------
       // advance the met file to a specified date. Throws is can't find date.
       //---------------------------------------------------------------------------
-      void gotoDate(boost::gregorian::date dateToFind);
+      void gotoDate(GDate dateToFind);
 
       // position at first record.
       bool first(void);

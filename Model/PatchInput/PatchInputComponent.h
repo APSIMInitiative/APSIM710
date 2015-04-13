@@ -36,13 +36,13 @@ class PatchInputComponent : public InputComponent
       PatchData patchDataByDate;
 
       bool haveReadPatchData;
-      boost::gregorian::date patchDate;
+      GDate gPatchDate;
       unsigned unpatchedMaxTID;
       unsigned unpatchedMinTID;
       unsigned unpatchedRadnID;
       unsigned unpatchedRainID;
 
-      boost::gregorian::date advanceToTodaysPatchData(unsigned int fromID);
+      GDate advanceToTodaysPatchData(unsigned int fromID);
 
       // ------------------------------------------------------------------
       // Read all patch dates.

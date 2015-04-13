@@ -9,17 +9,12 @@
 #include <General/path.h>
 #include <General/IniFile.h>
 #include <General/platform.h>
-#include <boost/date_time/period.hpp>
-#include <boost/date_time/date_parsing.hpp>
-#include <boost/date_time/gregorian/gregorian.hpp>
 
 #include "FString.h"
 #include "ApsimDataFile.h"
 
 
 using namespace std;
-using namespace boost;
-using namespace boost::gregorian;
 
 //---------------------------------------------------------------------------
 // read in the contents of the specified file into this TSEGTable.
@@ -310,7 +305,7 @@ void ApsimDataFile::lookForDateField(void)
 // ------------------------------------------------------------------
 // return the date on the current record.
 // ------------------------------------------------------------------
-gregorian::date ApsimDataFile::getDate(void)
+GDate ApsimDataFile::getDate(void)
    {
    if (!haveFoundDate)
       lookForDateField();
@@ -328,15 +323,14 @@ gregorian::date ApsimDataFile::getDate(void)
       replaceAll(dateFormat, "(", "");
       replaceAll(dateFormat, ")", "");
 
-      GDate d;
+      GDate d, inf(infin);
       d.Read(dateI->values[0], dateFormat);
       if (d.Is_valid())
          {
-         date gregDate(d.Get_year(), d.Get_month(), d.Get_day());
-         return gregDate;
+         return d;
          }
       else
-         return date(pos_infin);
+         return inf; 
 
       //return date(from_string(dateI->values[0]));
       }
@@ -346,27 +340,32 @@ gregorian::date ApsimDataFile::getDate(void)
       if (dayI != temporalData.end())
          {
          int day  = stoi(dayI->values[0]);
-         return date(year, 1, 1) + date_duration(day-1);
+         GDate a(1, 1, year);
+         return a  + (day-1); 
          }
       else if (monthI != temporalData.end() && domI != temporalData.end())
          {
          int month  = stoi(monthI->values[0]);
          int dom    = stoi(domI->values[0]);
-         return date(year, month, dom);
+         GDate b(dom, month, year);
+         return b;
          }
-      return date(pos_infin);
+      GDate inf(infin);
+      return inf;
       }
    }
 //---------------------------------------------------------------------------
 // advance the met file to a specified date. Throws is can't find date.
 //---------------------------------------------------------------------------
-void ApsimDataFile::gotoDate(date dateToFind)
+void ApsimDataFile::gotoDate(GDate dateToFind)
    {
    while (!eof() && getDate() != dateToFind)
       next();
    if (eof() || getDate() != dateToFind)
-      throw runtime_error("Cannot find date " + to_simple_string(dateToFind)
+   {
+      throw runtime_error("Cannot find date " + dateToFind.ToString()
                           + " in file " + fileName);
+   }
    }
 //---------------------------------------------------------------------------
 // return true if at end of file.
