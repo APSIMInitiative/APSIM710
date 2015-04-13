@@ -74,7 +74,7 @@ float Environment::vpd(float svp_fract, float maxt, float mint) const
    {
    float vpd;
    if (vpSource == "apsim" && NewMet.vp > 0.0)
-     vpd = max(0.0, svp_fract * svp(maxt) + (1.0 - svp_fract) * svp(mint) - NewMet.vp);
+     vpd = max(0.0, svp_fract * svp(maxt) + (1.0 - svp_fract) * svp(mint) - NewMet.vp * mb2kpa);
    else
      vpd = svp_fract * (svp(maxt) - svp(mint));
    return vpd;

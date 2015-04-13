@@ -352,7 +352,7 @@ double Plant::transpEfficiency(void)
    // get vapour pressure deficit when net radiation is positive.
 
    if (vpSource == "apsim" && today.vp > 0.0)
-     vpd = std::max(0.01, svpFract * svp(today.maxT) + (1.0 - svpFract) * svp(today.minT) - today.vp);
+     vpd = std::max(0.01, svpFract * svp(today.maxT) + (1.0 - svpFract) * svp(today.minT) - today.vp * mb2kpa);
    else
      vpd = std::max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
 
