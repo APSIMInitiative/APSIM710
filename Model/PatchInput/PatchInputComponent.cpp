@@ -7,7 +7,7 @@
 #include <General/stristr.h>
 #include <General/string_functions.h>
 #include <General/date_class.h>
-#include <General/date_functions.h>
+//#include <General/date_functions.h>
 
 #include <ApsimShared/FStringExt.h>
 #include <ApsimShared/ApsimDataFile.h>
@@ -168,8 +168,7 @@ void PatchInputComponent::getDataFromInput(unsigned int fromID)
          if (validPatchDate)
             {
             GDate d(i->first);
-            d.Set_write_format("YYYY-MM-DD");
-            dataDates.push_back(d.ToString());
+            dataDates.push_back(d.ToString("YYYY-MM-DD"));
             }
          }
       getDataMethodID = addRegistration(::event,
@@ -338,8 +337,7 @@ void PatchInputComponent::setPatchData()
    if (!found)
       {
       string msg = "No patching of data occurred on date: ";
-      gTodaysDate.Set_write_format("YYYY-MM-DD");
-      msg += gTodaysDate.ToString();
+      msg += gTodaysDate.ToString("YYYY-MM-DD");
       writeString(msg.c_str());
       }
    else

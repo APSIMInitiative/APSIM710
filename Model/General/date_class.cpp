@@ -1,4 +1,4 @@
-#include <../General/pch.h>
+#include <..\General\pch.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -225,10 +225,17 @@ void GDate::Read(const string& Str, const string& Format)
    Str = Out_stream.str();
    }
 
-std::string GDate::ToString()
+std::string GDate::ToString(std::string format)
 {
+   std::string current = Format_string;
    ostringstream Out_stream;
+   if (format.length() > 0)
+   {
+	   Format_string = format;
+   }
    Write(Out_stream);
+   Format_string = current;
+
    return Out_stream.str();
 }
 

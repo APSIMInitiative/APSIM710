@@ -357,8 +357,7 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
       if (gFileDate != gTodaysDate && !allowSparseData)
          {
          string msg = "Cannot find data in INPUT file for date ";
-         gTodaysDate.Set_write_format("YYYY-MMM-DD");
-         msg += gTodaysDate.ToString();
+         msg += gTodaysDate.ToString("YYYY-MMM-DD");
          error(msg, true);
          }
       else
@@ -391,8 +390,7 @@ void InputComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID,
          catch (const std::exception&)
             {
             string msg = "Cannot find patch data in INPUT file for date ";
-            gTodaysDate.Set_write_format("YYYY-MMM-DD");
-            msg += gDataDate.ToString(); 
+            msg += gDataDate.ToString("YYYY-MMM-DD"); 
             error(msg, false);
             }
          }

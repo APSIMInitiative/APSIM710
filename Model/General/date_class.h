@@ -56,7 +56,7 @@ class EXPORT GDate
       
       void Write(std::string &Str);           // Write the date to string.
       void Write(std::ostream& Out_stream); // Write the date to the output stream
-      std::string ToString();               // Write the date to string.
+      std::string ToString(std::string format = "");               // Write the date to string.
       void Set_write_format(const char* Format)
          {Format_string = Format;};
                                        // Set the format of the next print.
