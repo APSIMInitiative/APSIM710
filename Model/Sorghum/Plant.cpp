@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <General/date_class.h>
+#include <General/string_functions.h>
 #include <ComponentInterface2/ScienceAPI2.h>
 
 #include "Plant.h"
@@ -58,6 +59,10 @@ void Plant::readParams(void)
 
    // CO2 stuff
    co2_te_modifier.read(scienceAPI, "x_co2_te_modifier", "y_co2_te_modifier");
+
+   if (!scienceAPI.read("vp_source", "", true, vpSource))
+       vpSource = "internal";
+   To_lower(vpSource);
 
    }
 
@@ -423,7 +428,11 @@ double Plant::radnInt(void)
 double Plant::transpEfficiency(void)
    {
    // get vapour pressure deficit when net radiation is positive.
-   vpd = Max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
+
+   if (vpSource == "apsim" && today.vp > 0.0)
+     vpd = std::max(0.01, svpFract * svp(today.maxT) + (1.0 - svpFract) * svp(today.minT) - today.vp);
+   else
+     vpd = std::max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
 
    return divide (transpEffCf[int (stage)], vpd, 0.0) / g2mm;
    }

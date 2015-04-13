@@ -104,6 +104,7 @@ class Plant
 //  Variables  -----------------------------------------------------
    Status plantStatus;               // plant status - out, dead, alive
    string statusString;
+   string vpSource;                  // if "apsim", use external vp value to calculate vpd 
 //   int das;
    double dltPlants;
    double frIntcRadn;

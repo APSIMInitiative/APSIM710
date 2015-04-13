@@ -41,6 +41,7 @@ class Environment : public plantThing
                                                         // min temp and svp at max temp where
                                                         // average svp during transpiration
                                                         // lies. (0-1)
+      string vpSource;                                  // if "apsim", use external vp value to calculate vpd 
       float _co2;
       float co2_default;
       float twilight; 					 // (PFR)

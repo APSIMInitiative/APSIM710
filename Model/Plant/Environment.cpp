@@ -11,6 +11,7 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
    day_of_year = 0;
    latitude = 0.0;
    twilight = 0.0; 								// originally was in RUEModel (PFR)
+   vpSource = "internal";
    _rootActivityTemperature = 0.0;
 
    NewMet.mint = 0.0;
@@ -21,6 +22,8 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
    scienceAPI.read("svp_fract", svp_fract, 0.0f, 1.0f);
    scienceAPI.read("co2_default", co2_default, 0.0f, 1000.0f);
    scienceAPI.read("twilight", twilight, -90.0f, 90.0f);  			// originally was in RUEModel(PFR)
+   scienceAPI.readOptional("vp_source", vpSource);
+   To_lower(vpSource);
    ReadDiffuseLightFactorTable(); 						// originally was in RUEModel(PFR)
 
    scienceAPI.subscribe ("newmet", NewMetFunction(&Environment::OnNewMet));
@@ -69,7 +72,11 @@ float Environment::co2() const
 float Environment::vpd(float svp_fract, float maxt, float mint) const
 //==========================================================================
    {
-   float vpd = svp_fract * (svp(maxt) - svp(mint));
+   float vpd;
+   if (vpSource == "apsim" && NewMet.vp > 0.0)
+     vpd = max(0.0, svp_fract * svp(maxt) + (1.0 - svp_fract) * svp(mint) - NewMet.vp);
+   else
+     vpd = svp_fract * (svp(maxt) - svp(mint));
    return vpd;
    }
 

@@ -103,6 +103,7 @@ namespace Maize {
          //  Variables  -----------------------------------------------------
          Status plantStatus;               // plant status - out, dead, alive
          string statusString;
+         string vpSource;                  // if "apsim", use external vp value to calculate vpd 
 			bool initialized;
          //   int das;
          double dltPlants;
