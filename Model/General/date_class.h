@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <General/platform.h>
+#include <limits.h>
 
 // ------------------------------------------------------------------
 //  Short description:
