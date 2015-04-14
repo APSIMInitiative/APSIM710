@@ -15,7 +15,8 @@
 #include <General/stristr.h>
 #include <General/path.h>
 #include <General/dll.h>
-#include <General/io_functions.h>
+//#include <General/io_functions.h>
+#include <General/path.h>
 
 #include <ComponentInterface2/ScienceAPI2.h>
 

@@ -160,5 +160,11 @@ std::string EXPORT getCurrentDirectory(void);
 // Change working directory
 void EXPORT setCurrentDirectory(const std::string & dir);
 
-#endif
+std::string EXPORT ExpandFileName(const char *s);
+bool EXPORT DirectoryExists (const std::string &d);
+// Remove the path and extension from the specified file.
+void EXPORT RemovePathAndExtension(std::string& fileName);
 
+
+
+#endif

@@ -8,7 +8,8 @@
 #include <functional>
 #include <General/string_functions.h>
 #include <General/stl_functions.h>
-#include <General/io_functions.h>
+//#include <General/io_functions.h>
+#include <General/path.h>
 #include <General/stristr.h>
 #include <General/IniFile.h>
 #include <General/path.h>
@@ -58,8 +59,8 @@ struct ParamFile
 		   dllFileName = "%apsim%/Model/" + moduleName + ".so";
 		   // For Linux native modules, we use the .so extension, but .NET modules will have
 		   // the .dll extension. 
-		   if (!FileExists(getApsimDirectory() + "/Model/" + moduleName + ".so") &&
-			   FileExists(getApsimDirectory() + "/Model/" + moduleName + ".dll"))
+		   if (!fileExists(getApsimDirectory() + "/Model/" + moduleName + ".so") &&
+			   fileExists(getApsimDirectory() + "/Model/" + moduleName + ".dll"))
 			   dllFileName = "%apsim%/Model/" + moduleName + ".dll";
 #endif
 	   }

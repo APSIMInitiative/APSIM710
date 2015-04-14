@@ -6,7 +6,6 @@
 #include <fstream>
 #include <string>
 #include <general/path.h>
-#include <general/io_functions.h>
 #include "TestIoFunctions.h"
 #include <wchar.h>
 #include <direct.h>
@@ -28,12 +27,12 @@ void TestExpandFileName (void)
 void TestFileExists(void)
    {
    unlink("test.dat");
-   BOOST_CHECK (FileExists("test.dat") == 0);
+   BOOST_CHECK (fileExists("test.dat") == 0);
    ofstream out("test.dat");
    out.close();
-   BOOST_CHECK (FileExists("test.dat") != 0);
+   BOOST_CHECK (fileExists("test.dat") != 0);
    unlink("test.dat");
-   BOOST_CHECK (FileExists("test.dat") == 0);
+   BOOST_CHECK (fileExists("test.dat") == 0);
    }
 
 void TestDirectoryExists(void)

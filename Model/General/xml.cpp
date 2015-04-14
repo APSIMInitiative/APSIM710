@@ -9,7 +9,7 @@
 
 #include <General/stl_functions.h>
 #include <General/string_functions.h>
-#include <General/io_functions.h>
+//#include <General/io_functions.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #ifdef __WIN32__

@@ -11,6 +11,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <limits.h>
+#endif
+
+#ifndef S_ISDIR
+#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
 #endif
 
 #include "path.h"
@@ -578,6 +583,138 @@ std::string fileDirName(const std::string &filename)
    if (pos >= 0)
       return filename.substr(0,pos);
    return "";
+   }
+
+
+#ifndef __WIN32__
+static void appendCwd(const char *path, char *dst) 
+{
+	    if (path[0]=='/') 
+        {
+	        strcpy(dst, path);
+	    } 
+        else 
+        {
+	        getcwd(dst, PATH_MAX);
+	        strcat(dst, "/");
+	        strcat(dst, path);
+	    }
+	}
+
+static void removeJunk(char *begin, char *end) 
+{
+    while(*end!=0) 
+    { 
+        *begin++ = *end++; 
+    }
+	*begin = 0;
+}
+	 
+static char *manualPathFold(char *path) 
+{
+	char *s, *priorSlash;
+	while ((s=strstr(path, "/../"))!=NULL) 
+    {
+	    *s = 0;
+	    if ((priorSlash = strrchr(path, '/')) == NULL) 
+        { 
+            /* oops */ *s = '/'; break; 
+        }
+	    removeJunk(priorSlash, s+3);
+	}
+	while ((s=strstr(path, "/./"))!=NULL) 
+    { 
+        removeJunk(s, s+2); 
+    }
+	while ((s=strstr(path, "//"))!=NULL) 
+    { 
+        removeJunk(s, s+1); 
+    }
+	s = path + (strlen(path)-1);
+	if (s!=path && *s=='/') 
+    { 
+        *s=0; 
+    }
+	return path;
+}
+#endif 
+	 
+//---------------------------------------------------------------------------
+// converts the relative file name into a fully qualified path name.
+std::string ExpandFileName(const char *s)
+{
+#ifdef __WIN32__
+    DWORD  retval=0;
+    TCHAR  buffer[4096]=TEXT(""); 
+    TCHAR  buf[4096]=TEXT(""); 
+    TCHAR** lppPart={NULL};
+
+    retval = GetFullPathName(s, 4096, buffer, lppPart);
+
+    if (retval == 0) 
+    {
+        // Handle an error condition.
+        return std::string(s);
+    }
+    else 
+    {
+        return std::string(buffer);
+    }
+#else
+    char resolved_name[PATH_MAX+1];
+    char buff[PATH_MAX+1];
+	wordexp_t p;
+	if (wordexp(file_name, &p, 0)==0) 
+    {
+	    appendCwd(p.we_wordv[0], buff);
+	    wordfree(&p);
+	} 
+    else 
+    {
+	    appendCwd(file_name, buff);
+	}
+	if (realpath(buff, resolved_name) == NULL) 
+    { 
+        strcpy(resolved_name, manualPathFold(buff)); 
+    }
+	return std::string(resolved_name);
+#endif
+}
+
+bool DirectoryExists (const std::string &d) 
+{
+#ifdef _WINDOWS_
+  DWORD attribs = ::GetFileAttributesA(d.c_str());
+  if (attribs == INVALID_FILE_ATTRIBUTES) {
+    return false;
+  }
+  return (attribs & FILE_ATTRIBUTE_DIRECTORY);
+#else
+    //directory test
+    struct stat statbuf;
+    int isDir = 0;
+
+    if (stat(d.c_str(), &statbuf) != -1)
+    {
+        if (S_ISDIR(statbuf.st_mode))
+        {
+            isDir = 1;
+        }
+    }
+    return isDir == 1;
+#endif
+}
+
+//---------------------------------------------------------------------------
+// Remove the path and extension from the specified file.
+//---------------------------------------------------------------------------
+void RemovePathAndExtension(std::string& fileName)
+   {
+      string rawname = fileName;
+      int lastindex = fileName.find_last_of("."); 
+      if (lastindex >= 0)
+         rawname = fileName.substr(0, lastindex); 
+      fileName = fileTail(rawname);
    }
 
 bool fileExists(const std::string &filename)

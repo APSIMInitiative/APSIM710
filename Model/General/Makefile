@@ -10,7 +10,6 @@ SRC =   pch.cpp 		\
 	StringTokenizer.cpp	\
 	stristr.cpp		\
 	macro.cpp		\
-	io_functions.cpp	\
 	xml.cpp			\
 	path.cpp		\
 	IniFile.cpp 		\
