@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <limits.h>
+#include <wordexp.h>
 #endif
 
 #ifndef S_ISDIR
@@ -664,14 +665,14 @@ std::string ExpandFileName(const char *s)
     char resolved_name[PATH_MAX+1];
     char buff[PATH_MAX+1];
 	wordexp_t p;
-	if (wordexp(file_name, &p, 0)==0) 
+	if (wordexp(s, &p, 0)==0) 
     {
 	    appendCwd(p.we_wordv[0], buff);
 	    wordfree(&p);
 	} 
     else 
     {
-	    appendCwd(file_name, buff);
+	    appendCwd(s, buff);
 	}
 	if (realpath(buff, resolved_name) == NULL) 
     { 
