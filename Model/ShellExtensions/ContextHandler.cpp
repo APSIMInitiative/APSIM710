@@ -2,7 +2,7 @@
 #pragma hdrstop
 
 #include "ContextHandler.h"
-#include <boost/algorithm/string/join.hpp>
+#include <General/string_functions.h>
 #include <fstream>
 #include "ApsimCommands.h"
 
@@ -133,7 +133,7 @@ STDMETHODIMP CContextMenuHandler::InvokeCommand(LPCMINVOKECOMMANDINFO lpici)
       {
       // code here for executing actions when menus are clicked
       unsigned idCmd = (unsigned) lpici->lpVerb;
-      string files =  boost::algorithm::join(fileNames, ",");
+      string files = buildString(fileNames, ",");
       menus[idCmd].handler(files.c_str());
       }
 

@@ -5,9 +5,8 @@
 #include <sstream>
 #include <fstream>
 #include <windows.h>
-#include <General\platform.h>
-
-#include <boost/algorithm/string.hpp>
+#include <General/platform.h>
+#include <General/string_functions.h>
 
 #include "ApsimCommands.h"
 
@@ -64,7 +63,7 @@ void Convert_2_CSV(istream& In_stream, ostream& Out_stream)
 extern "C" void EXPORT STDCALL excelFiles(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    for (unsigned int file = 0; file != fileNames.size(); file++)
       {
@@ -103,7 +102,7 @@ extern "C" void EXPORT STDCALL excelFiles(const char* csvFiles)
 extern "C" void EXPORT STDCALL apsimuigraph(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    // write response file.
    char TempFolder[1024];
@@ -135,7 +134,7 @@ extern "C" void EXPORT STDCALL runapsimgraph(const char* csvFiles)
 extern "C" void EXPORT STDCALL runFiles(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    for (unsigned int file = 0; file != fileNames.size(); file++)
       {
@@ -151,7 +150,7 @@ extern "C" void EXPORT STDCALL runFiles(const char* csvFiles)
 extern "C" void EXPORT STDCALL createSimFiles(const char* files)
    {
    vector<string> fileNames;
-   boost::split(fileNames, files, boost::is_any_of(","));
+   split(files, ",", fileNames);
 
    for (unsigned int file = 0; file != fileNames.size(); file++)
       {
@@ -172,7 +171,7 @@ extern "C" void EXPORT STDCALL createSimFiles(const char* files)
 extern "C" void EXPORT STDCALL viewFiles(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    for (unsigned f = 0; f != fileNames.size(); f++)
       {
@@ -191,7 +190,7 @@ extern "C" void EXPORT STDCALL viewFiles(const char* csvFiles)
 extern "C" void EXPORT STDCALL interfaceFiles(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    for (unsigned f = 0; f != fileNames.size(); f++)
       {
@@ -206,7 +205,7 @@ extern "C" void EXPORT STDCALL interfaceFiles(const char* csvFiles)
 extern "C" void EXPORT STDCALL apsimFiles(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    for (unsigned f = 0; f != fileNames.size(); f++)
       {
@@ -221,7 +220,7 @@ extern "C" void EXPORT STDCALL apsimFiles(const char* csvFiles)
 extern "C" void EXPORT STDCALL probeFile(const char* csvFiles)
    {
    vector<string> fileNames;
-   boost::split(fileNames, csvFiles, boost::is_any_of(","));
+   split(csvFiles, ",", fileNames);
 
    for (unsigned f = 0; f != fileNames.size(); f++)
       {
