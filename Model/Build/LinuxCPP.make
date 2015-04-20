@@ -8,11 +8,7 @@ XML2_LIBDIR= -L/usr/lib
 
 MONO_INCLUDEDIR=-I$(MONO_PREFIX)/include/mono-2.0
 MONO_LIBDIR= -L$(MONO_PREFIX)/lib
-MONO_DEFINE= -DMONO
-
-# If you have mono 3.8+ installed and get stung by "Configuration system failed" runtime errors, compile with this:
-# (relies on https://github.com/mono/mono/commit/57f5187ad29a7913f083a659ea77d90eb8bad4d4)
-#MONO_DEFINE= -DMONO -DMONO3
+MONO_DEFINE= -DMONO 
 
 ifdef USE_MONO
 EXTRALIBS:= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)
