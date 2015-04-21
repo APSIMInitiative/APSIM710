@@ -1,0 +1,63 @@
+# Makefile for R component
+
+# There are 2 dlls produced - one loaded by apsim; another (which is linked against R.so)
+# once the location of the R installation is known.
+
+include $(APSIM)/Model/Build/Platform.make
+
+PROJECT = RLink
+PROJECTTYPE = dll
+
+R_HOME = /usr
+RINSTALLED:=$(shell PATH=$(PATH); $(R_HOME)/bin/R --version)
+
+OBJEXT = o
+DLLEXT = so
+
+ifneq ($(RINSTALLED),)
+  PREBUILD = ../REmbed.$(DLLEXT)
+  RCPPFLAGS := 		$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config --cppflags)
+  RCPPFLAGS := 	$(RCPPFLAGS) $(shell PATH=$(PATH); echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RLDFLAGS := 	$(RLDFLAGS)	$(shell PATH=$(PATH); echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RCPPFLAGS := 	$(RCPPFLAGS)	$(shell PATH=$(PATH); echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RLDFLAGS := 	$(RLDFLAGS)	$(shell PATH=$(PATH); echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
+  RCXX := 	$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
+  RLD := 	$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
+  RCPPFLAGS := 	$(RCPPFLAGS)	-Wall -Wno-attributes
+  RCXXFLAGS := 	$(RCPPFLAGS) -I$(APSIM)/Model
+endif
+
+LIBS = General ApsimShared ComponentInterface2
+OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.$(OBJEXT)
+SRC = RComponent.cpp RDataTypes.cpp
+
+include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
+
+CFLAGS := $(CFLAGS) -Wno-attributes
+
+RComponent.$(OBJEXT): RComponent.cpp RComponent.h RDataTypes.h
+
+RDataTypes.$(OBJEXT): RDataTypes.cpp RDataTypes.h
+
+RComponent.h RDataTypes.cpp RDataTypes.h REmbed.cpp REmbed.h RLink.def: ../DataTypes/Datatypes.xml RDataTypes.macro
+	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml RDataTypes.macro
+
+REmbed.o: REmbed.cpp REmbed.h RDataTypes.h 
+	$(RCXX) -fPIC -c $(RCXXFLAGS) REmbed.cpp 
+
+dllProcAddressWrapper.o: dllProcAddressWrapper.cpp
+	$(RCXX) -fPIC -c $(CXXFLAGS) dllProcAddressWrapper.cpp
+
+../REmbed.so: REmbed.o
+	$(RLD) -shared -s -o $@ REmbed.o $(RLDFLAGS)
+
+#RSimulation.o: RSimulation.cpp  RSimulation.h
+#	$(RCXX) -fpermissive -Wno-attributes -std=c++11  -c $(RCXXFLAGS) RSimulation.cpp 
+#../RSimulation.so: RSimulation.o 
+#	$(RLD) $(RLDFLAGS) -shared -o $@ RSimulation.o  $(RLDLIBS) -lApsimShared -lGeneral -lProtocol -lComponentInterface $(LIBS)
+
+libRLink.a: RLink.def
+	dlltool -d RLink.def -l libRLink.a
+
+clean:
+	rm -f RComponent.h RDataTypes.cpp RDataTypes.h RDataTypesEmbedded.cpp RDataTypesEmbedded.h RLink.def ../REmbed.so *.o 

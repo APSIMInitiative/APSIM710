@@ -109,7 +109,7 @@ void RGetVector(const char *s, std::vector<std::string> &result)
    result.clear();
 
    char *buffer = new char [2048 * numWidth];
-   memset(buffer, 0, sizeof(buffer));
+   memset(buffer, 0, 2048 * numWidth * sizeof(char));
    unsigned int numReturned = 0;
    if (R_GetVecFn != NULL) R_GetVecFn (s, buffer, 2048 * numWidth, numWidth, &numReturned);
    result.resize(numReturned);
