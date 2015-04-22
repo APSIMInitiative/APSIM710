@@ -501,7 +501,15 @@ void Plant::onSow(protocol::SowType& Sow)
    //=======================================================================================
    // Event Handler for Sowing Event
    plant_get_other_variables (); // request and receive variables from owner-modules
-   plant_start_crop(Sow);    // start crop and do  more initialisations
+   try
+   {
+        plant_start_crop(Sow);    // start crop and do  more initialisations
+   }
+   catch (const exception& error)
+   {
+       std::string errorMsg = "Cannot sow " + g.crop_class + " - " + g.cultivar + ": " + error.what();
+       throw std::runtime_error(errorMsg.c_str());
+   }
    }
 
 void Plant::onHarvest(protocol::HarvestType &Harvest)
