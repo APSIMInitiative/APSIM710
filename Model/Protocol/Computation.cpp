@@ -350,7 +350,7 @@ void Computation::InitNETFrameworks()
        const char* domain_name = "mono_apsim";
        // domain = mono_jit_init (domain_name);
        domain = mono_jit_init_version (domain_name, "v4.0.30319");
-#if ! MONO_MAJOR == 3 & MONO_MINOR <= 8
+#if ! (MONO_MAJOR == 2 || (MONO_MAJOR == 3 & MONO_MINOR <= 8))
        mono_domain_set_config(domain, getApsimDirectory().c_str(), "mono_apsim.config");
 #endif
 	}

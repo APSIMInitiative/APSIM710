@@ -5,7 +5,7 @@ PROJECT = Protocol
 SRC = Protocol.cpp Transport.cpp Computation.cpp
 
 ifeq ($(PLATFORM),Linux)
-  CPPFLAGS := -DMONO_MAJOR=$(shell mono --version | head -1 | cut -c 27- | cut -c -1) -DMONO_MINOR=$(shell mono --version | head -1 | cut -c 29- | cut -c -2)
+  CPPFLAGS := -DMONO_MAJOR=$(shell mono --version | head -1 | cut -c 27- | cut -c -1) -DMONO_MINOR=$(shell mono --version | head -1 | cut -c 29- | cut -f 1 -d".")
 endif
 
 LIBS = General ApsimShared
