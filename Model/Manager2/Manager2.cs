@@ -132,23 +132,15 @@ public class Manager2
                 string[] source = new string[1];
                 source[0] = Text;
 #if __MonoCS__
-        if (VB) {
-           System.Diagnostics.Process P = Utility.RunProcess("/bin/ln", "-sf /usr/bin/vbnc vbnc", ".");
-           Utility.CheckProcessExitedProperly(P);
-        } else {
-           System.Diagnostics.Process P = Utility.RunProcess("/bin/ln", "-sf /usr/bin/dmcs dmcs", ".");
-           Utility.CheckProcessExitedProperly(P);
-        }
+                System.Diagnostics.Process P = Utility.RunProcess("/bin/ln", "-sf /usr/bin/mcs mcs", ".");
+                Utility.CheckProcessExitedProperly(P);
 #endif
                 CompilerResults results = Provider.CompileAssemblyFromSource(Params, source);
 #if __MonoCS__
-        if (VB) {
-           System.Diagnostics.Process P = Utility.RunProcess("/bin/rm", "-f vbnc", ".");
-           Utility.CheckProcessExitedProperly(P);
-        } else {
-           System.Diagnostics.Process P = Utility.RunProcess("/bin/rm", "-f dmcs", ".");
-           Utility.CheckProcessExitedProperly(P);
-        }
+                // Ugh. This will break if there are several instances of ApsimModel.exe running,
+                // which is quite feasible if Apsim.exe has fired up parallell runs. FIXME
+                System.Diagnostics.Process P = Utility.RunProcess("/bin/rm", "-f mcs", ".");
+                Utility.CheckProcessExitedProperly(P);
 #endif
                 string Errors = "";
                 foreach (CompilerError err in results.Errors)
