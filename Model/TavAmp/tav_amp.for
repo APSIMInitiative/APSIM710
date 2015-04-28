@@ -269,13 +269,22 @@
 
             ! zero incomplete years
 
-!         do k = lbound(monthlyd, dim=2), ubound(monthlyd, dim=2)
-!            if (sum(monthlyd(:,k), dim = 1) < 365) then
-!               monthlyd(:,k) = 0
-!            else
-!            endif
-!         enddo
+         do k = lbound(monthlyd, dim=2), ubound(monthlyd, dim=2)
+            if (sum(monthlyd(:,k), dim = 1) < 365) then
+               monthlyd(:,k) = 0
+            else
+            endif
+         enddo
+         if (sum(monthlyd(:,:)) .eq. 0) then
+            print*, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            print*, 'ERROR: Not enough years of data '
+            print*, '       to calculate tav/amp'
+            print*, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            print*, ' Pause... Press Enter to exit'
+            read*
+            stop
 
+         end if
             ! calculate average monthly temperatures for each year
 
          where (monthlyd > 0)
