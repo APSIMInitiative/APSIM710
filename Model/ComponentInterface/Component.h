@@ -636,7 +636,7 @@ class EXPORT Component
          valueString = valueString.substr(0,posBracket);
 
        // And any whitespace...
-       stripLeadingTrailing(valueString, " \t");
+       stripLeadingTrailing(valueString, " \t\n\r");
        return valueString;
        };
 
