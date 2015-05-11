@@ -153,15 +153,29 @@ namespace CSUserInterface
             sRule += "[Link()]  public Paddock MyPaddock;\n";
 
             sRule += "private Graph g = new Graph();\n";
-            sRule += "[Output()] public string currentState;\n";
+            sRule += "private string _currentState = \"\";\n";
+            sRule += "[Output()] public string currentState {\n";
+            sRule += "  get {return _currentState;} \n";
+            sRule += "  set {\n";
+            sRule += "    if (_currentState!= \"\") MyPaddock.Publish(\"transition_from_\" + _currentState);\n";
+            sRule += "    _currentState = value;\n";
+            sRule += "    MyPaddock.Publish(\"transition_to_\" + _currentState);\n \n";
+            sRule += "  }\n";
+            sRule += "}\n";
+
+            sRule += "[Output()] public string [] states = new string[0]; \n";
 
             sRule += "[EventHandler] public void OnInitialised()\n";
             sRule += "{\n";
             sRule += "g = new Graph();\n";
 
+            sRule += "states = new string[" + GraphDisplay.Nodes.Count.ToString() + "];\n";
+            sRule += "int i = 0;\n";
             foreach (GDNode node in GraphDisplay.Nodes)
+            {
                 sRule += "g.AddNode(\"" + node.Name + "\");\n";
-
+                sRule += "states[i++] = \"" + node.Name + "\";\n";
+            }
             foreach (GDArc arc in GraphDisplay.Arcs)
             {
                 string rName = arc.Name;
@@ -173,12 +187,17 @@ namespace CSUserInterface
                     sRule += rName + ".action.Add(\"" + action + "\");\n";
                 sRule += "g.AddDirectedEdge(\"" + arc.SourceNode.Name + "\",\"" + arc.TargetNode.Name + "\"," + rName + ");\n";
             }
-			foreach (var c in pnlFlowLayout.Controls) {
+            sRule += "}\n";
+            sRule += "[EventHandler] public void OnStart_Simulation()\n";
+            sRule += "{\n";
+            foreach (var c in pnlFlowLayout.Controls) {
 				if (c is PaddockState) {
 				   PaddockState p = (PaddockState) c;
 				   if (p.chkPaddock.Text == "<self>") {
-                      sRule += "currentState = \"" + p.cboState.Text + "\";\n"; 
-				   } else {
+                      sRule += "currentState = \"" + p.cboState.Text + "\";\n";
+                   }
+                   else
+                   {
                     /*sRule += "set config(" + paddock.Name + ",initialState) \"" + p.cboState.Text + "\"\n"*/; //FIXME				}
 				   }
 				}
@@ -210,9 +229,9 @@ namespace CSUserInterface
             sRule += "      }\n";
             sRule += "      if (bestScore > 0.0) {\n";
             sRule += "          //Console.WriteLine(\" best=\" + bestTarget + \" action=\" + s.arcs[bestTarget].action);\n";
+            sRule += "          currentState = g.FindArcTarget(bestArc);\n";
             sRule += "          foreach (string action in s.arcs[bestArc].action )\n";
             sRule += "             MyPaddock.Publish(action);\n";
-            sRule += "          currentState = g.FindArcTarget(bestArc);\n";
             sRule += "          more = true;\n";
             sRule += "      }\n";
             sRule += "   }\n";
