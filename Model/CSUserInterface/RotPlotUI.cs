@@ -158,8 +158,9 @@ namespace CSUserInterface
             sRule += "  get {return _currentState;} \n";
             sRule += "  set {\n";
             sRule += "    if (_currentState!= \"\") MyPaddock.Publish(\"transition_from_\" + _currentState);\n";
+            sRule += "    MyPaddock.Publish(\"transition\");\n";
             sRule += "    _currentState = value;\n";
-            sRule += "    MyPaddock.Publish(\"transition_to_\" + _currentState);\n \n";
+            sRule += "    MyPaddock.Publish(\"transition_to_\" + _currentState);\n";
             sRule += "  }\n";
             sRule += "}\n";
 
