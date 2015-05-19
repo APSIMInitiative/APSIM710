@@ -347,10 +347,7 @@ class Factory
                     {
                         // Ignore memo fields.
                     }
-                    else if (!Child.HasChildNodes && (Child.InnerText == ""))
-                    {
-                    }
-                    else if (Child.HasChildNodes)
+                    else 
                     {
                         FactoryProperty Parameter = FindProperty(Child);
                         if (Parameter != null)

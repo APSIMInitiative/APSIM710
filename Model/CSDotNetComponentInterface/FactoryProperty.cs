@@ -87,13 +87,12 @@ public abstract class ReflectedType : NamedItem
             else if (Typ.Name == "DateTime")
                 SetObject(DateTime.Parse(Value));
             else
-                throw new Exception("Cannot set value of property: " + Name +
-                                        ". Cannot convert: " + Value.ToString() + " to: " + Typ.Name);
+                throw new Exception("Cannot set property. Unknown conversion target " + Typ.Name);
 
         }
         catch (Exception err)
         {
-            String Msg = err.Message + "\nParameter: " + Name + "\nValue: " + Value;
+            String Msg = "Error converting string to " + Typ.Name + ".\n" + err.Message + "\nParameter: " + Name + "\nValue: " + Value;
             throw new Exception(Msg);
         }
     }
