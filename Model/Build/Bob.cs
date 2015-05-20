@@ -40,7 +40,7 @@ class Bob
 
       string  pwfile = "C:\\dbConnect.txt";
       if (!File.Exists(pwfile)) {pwfile = "/etc/dbConnect.txt";}
-      string ConnectionString = File.ReadAllText(pwfile);
+      string ConnectionString = File.ReadAllText(pwfile).TrimEnd(new char [] {'\r', '\n'});
       SqlConnection Connection = new SqlConnection(ConnectionString);
 
       try

@@ -23,7 +23,7 @@ namespace CSGeneral
         {
 		string  pwfile = "C:\\dbConnect.txt";
 	    if (!File.Exists(pwfile)) {pwfile = "/etc/dbConnect.txt";}
-        string ConnectionString = File.ReadAllText(pwfile);
+        string ConnectionString = File.ReadAllText(pwfile).TrimEnd(new char [] {'\r', '\n'});
 
             // There are often network intermittent issues so try 5 times to make a connection.
             for (int i = 0; i < 5; i++)
