@@ -984,7 +984,7 @@ public partial class SoilNitrogen
 		// check whether there are significant values, if so pass them to appropriate dlt
 		if (hasSignificantValues(NitrogenChanges.DeltaUrea, epsilon))
 		{
-			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
+			if ((Patch.Count > 1) && ((module == "WaterModule".ToLower()) || (module == "Plant".ToLower())))
 			{
 				// the values come from a module that requires partition
 				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", PatchNPartitionApproach.ToLower());
@@ -1002,7 +1002,7 @@ public partial class SoilNitrogen
 
 		if (hasSignificantValues(NitrogenChanges.DeltaNH4, epsilon))
 		{
-			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
+			if ((Patch.Count > 1) && ((module == "WaterModule".ToLower()) || (module == "Plant".ToLower())))
 			{
 				// the values come from a module that requires partition
 				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", PatchNPartitionApproach.ToLower());
@@ -1020,7 +1020,7 @@ public partial class SoilNitrogen
 
 		if (hasSignificantValues(NitrogenChanges.DeltaNO3, epsilon))
 		{
-			if ((Patch.Count > 1) && (module == "WaterModule".ToLower()) || (module == "Plant".ToLower()))
+			if ((Patch.Count > 1) && ((module == "WaterModule".ToLower()) || (module == "Plant".ToLower())))
 			{
 				// the values come from a module that requires partition
 				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", PatchNPartitionApproach.ToLower());
@@ -1419,23 +1419,25 @@ public partial class SoilNitrogen
 		if (TheValue < FatalNegativeThreshold)
 		{
 			// Deviation is too large, stop the calculations
+			string myMessage = " - " + MethodName + ", attempt to change " + VariableName + "["
+							 + (layer + 1).ToString() + "] to a value(" + TheValue.ToString()
+							 + ") below the fatal threshold (" + FatalNegativeThreshold.ToString() +")\n";
 			TheValue = 0.0;
-			throw new Exception(" - " + MethodName + ", attempt to change " + VariableName + "[" + (layer + 1).ToString() +
-				"] to a value below the fatal threshold, " +
-				FatalNegativeThreshold.ToString());
+			throw new Exception(myMessage);
 		}
 		else if (TheValue < WarningNegativeThreshold)
 		{
 			// Deviation is small, but warrants a notice to user
+			string myMessage = " - " + MethodName + ", attempt to change " + VariableName + "["
+							 + (layer + 1).ToString() + "] to a value(" + TheValue.ToString()
+							 + ") below the warning threshold (" + WarningNegativeThreshold.ToString()
+							 + ". Value will be reset to zero.";
 			TheValue = 0.0;
-			string myMessage = " - " + MethodName + ", attempt to change " + VariableName + "[" +
-				(layer + 1).ToString() + "] to a value below the warning threshold, " +
-				WarningNegativeThreshold.ToString() + ". Value will be reset to zero";
 			writeMessage(myMessage);
 		}
 		else if (TheValue < 0.0)
 		{
-			// Realy small value, likely a numeric issue, don't bother to report
+			// Realy small value, likely a minor numeric issue, don't bother to report
 			TheValue = 0.0;
 		}
 		//else { } // Value is positive

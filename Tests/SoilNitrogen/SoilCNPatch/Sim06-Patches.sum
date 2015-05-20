@@ -1,0 +1,1027 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.7
+Title                  = Sim06-Patches
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                      "AddFert" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                 "CutAgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component          "Med-LightSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-LightSoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+   Component            "SetPatchParameter" = %apsim%\Model\Manager2.dll
+   Component               "AddSoilCNPatch" = %apsim%\Model\Manager2.dll
+   Component             "MergeSoilCNPatch" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                      "Results" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                      "AddFert" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                 "CutAgPasture" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component          "Med-HeavySoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Med-HeavySoil Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                  "Aux-Outputs" = %apsim%\Model\Manager2.dll
+   Component            "SetPatchParameter" = %apsim%\Model\Manager2.dll
+   Component               "AddSoilCNPatch" = %apsim%\Model\Manager2.dll
+   Component             "MergeSoilCNPatch" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2000
+     Simulation end date   = 31/12/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\MildTemperate.met
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        dlayer format 5
+        urea format 5
+        nh4 format 5
+        no3 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st format 7
+        sw_dep format 5
+        SoilName
+        PatchCount as NumPatches
+
+     Output file = Sim06-Patches Paddock1-LightSoil Results.out
+     Format = normal
+
+------- Paddock1-LightSoil.accum Initialisation -------------------------------
+     Initialising
+
+------- Paddock1-LightSoil.AddFert Initialisation -----------------------------
+     Operations Schedule
+     ===================
+          15-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          15-Apr  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          15-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- Paddock1-LightSoil.CutAgPasture Initialisation ------------------------
+     Manager rules:
+     
+     SECTION:- init
+     days_after_cut = 21 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     harvested_dm =0
+     harvested_n = 0
+     removed_dm = 0.0
+     removed_n = 0.0
+     return_dm = 0.0
+     return_n = 0.0
+     growthratecalc = 0
+     n_conc_total = 0
+     
+     SECTION:- start_of_day
+     if today >= date('01/01/1900') and today <= date('31/12/2100') then
+        preharvest_dm = agpasture.stemwt + agpasture.leafwt
+        preharvest_n = agpasture.stemn + agpasture.leafn
+        harvested_dm = 0.0
+        harvested_n = 0.0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0.0
+        n_conc_removed = 0.0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 21 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2000 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1500 then
+           agpasture graze type = 'setresidueamount', amount = 1500
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           days_after_cut = 0
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0.0
+              n_on_urine = return_n - n_on_dung
+              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : days_after_cut = 20.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+
+------- Paddock1-LightSoil.Micromet Initialisation ----------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Paddock1-LightSoil.Med-LightSoil Water Initialisation -----------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     7500.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     8000.000
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     10000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1-LightSoil.Med-LightSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.075  0.120  0.340  0.520  0.340  1.100  0.762  0.500*******
+          150.-  300.  0.150  0.150  0.350  0.500  0.350  1.050  0.190  0.450*******
+          300.-  600.  0.160  0.160  0.345  0.490  0.345  1.100  0.048  0.400*******
+          600.-  900.  0.150  0.150  0.330  0.480  0.330  1.150  0.000  0.400*******
+          900.- 1200.  0.140  0.140  0.315  0.460  0.315  1.220  0.000  0.400*******
+         1200.- 1500.  0.130  0.130  0.300  0.450  0.300  1.300  0.000  0.400*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      18.00      33.00      33.00      27.00
+          150.-  300.      22.50      30.00      30.00      22.50
+          300.-  600.      48.00      55.50      55.50      43.50
+          600.-  900.      45.00      54.00      54.00      45.00
+          900.- 1200.      42.00      52.50      52.50      43.50
+         1200.- 1500.      39.00      51.00      51.00      45.00
+          ---------------------------------------------------------
+               Totals     214.50     276.00     276.00     226.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Paddock1-LightSoil.SurfaceOrganicMatter Initialisation ----------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-LightSoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56578.3  4526.3  1171.7   146.5   156.2     5.2
+             2      23365.7  1869.3   259.3    32.4   115.7     3.9
+             3      16442.7  1315.4    57.3     7.2    63.5     2.1
+             4       8616.5   689.3     8.5     1.1    34.9     1.2
+             5       3658.2   292.7     1.8     0.2    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112561.1  9004.9  1498.9   187.4   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1950.0   1500.0   450.0  2.10   780.0     56.9       750.0
+          whiteclover      650.0    500.0   150.0  0.72   260.0     21.4       750.0
+         -----------------------------------------------------------------------------
+          Totals          2600.0   2000.0   600.0  2.82  1040.0     78.2       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-150      0.574
+            1     150-300      0.299
+            2     300-600      0.126
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+         -----------------------------
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+------- SetPatchParameter Initialisation --------------------------------------
+
+     Setting NPartitionApproach to: BasedOnConcentrationAndDelta
+
+------- AddSoilCNPatch Initialisation -----------------------------------------
+
+     Addition of CNPatches initialised
+
+------- MergeSoilCNPatch Initialisation ---------------------------------------
+
+     Merging of CNPatches initialised
+
+------- Results Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        day as DoY
+        urea() as UreaTotal format 5
+        nh4() as NH4Total format 5
+        no3() as NO3Total format 5
+        surfaceom_n as SurfaceOM_N format 5
+        fom_n() as FOM_N format 5
+        biom_n() as Biom_N format 5
+        hum_n() as Hum_N format 5
+        PlantTotalN as PlantTotalN format 5
+        fertiliser as FertiliserN format 5
+        dlt_urea_hydrol() as HydrolisedN format 5
+        nitrification() as NitrifiedN format 5
+        dnit() as DenitrifiedN format 5
+        leach_no3 as LeachedNO3 format 5
+        dlt_n_min_res() as NetMineralisedResidue format 5
+        dlt_n_min_tot() as NetMineralisedHumus format 5
+        n2o_atm() as N2Oemissions format 5
+        dlt_n_loss_in_sed as dltN_sediments format 5
+        surfaceom_c as SurfaceOM_C format 5
+        fom_c() as FOM_C format 5
+        biom_c() as Biom_C format 5
+        hum_c() as Hum_C format 5
+        oc() as OCTotal format 5
+        PlantTotalC format 5
+        dlt_res_c_atm as CO2fromResidues format 5
+        dlt_fom_c_atm() as CO2fromFOM format 5
+        dlt_biom_c_atm() as CO2fromMBiomass format 5
+        dlt_hum_c_atm() as CO2fromHumus format 5
+        dlt_c_loss_in_sed as dltC_sediments format 5
+        es as Evaporation format 5
+        PlantTranspiration as PlantTranspiration format 5
+        drain as Drain format 5
+        Runoff format 5
+        dlayer format 5
+        urea format 5
+        nh4 format 5
+        no3 format 5
+        fom_n format 5
+        biom_n format 5
+        hum_n format 5
+        fom_c format 5
+        biom_c format 5
+        hum_c format 5
+        st format 7
+        sw_dep format 5
+        SoilName
+        PatchCount as NumPatches
+
+     Output file = Sim06-Patches Paddock2-HeavySoil Results.out
+     Format = normal
+
+------- Paddock2-HeavySoil.accum Initialisation -------------------------------
+     Initialising
+
+------- Paddock2-HeavySoil.AddFert Initialisation -----------------------------
+     Operations Schedule
+     ===================
+          15-Jan  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          15-Apr  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+          15-Sep  Prepare      Fertiliser apply amount=50 (kg/ha), depth=100 (mm), type=urea_n
+
+------- Paddock2-HeavySoil.CutAgPasture Initialisation ------------------------
+     Manager rules:
+     
+     SECTION:- init
+     days_after_cut = 21 - 1
+     do_cut = 'false'
+     has_cut = 'false'
+     harvested_dm =0
+     harvested_n = 0
+     removed_dm = 0.0
+     removed_n = 0.0
+     return_dm = 0.0
+     return_n = 0.0
+     growthratecalc = 0
+     n_conc_total = 0
+     
+     SECTION:- start_of_day
+     if today >= date('01/01/1900') and today <= date('31/12/2100') then
+        preharvest_dm = agpasture.stemwt + agpasture.leafwt
+        preharvest_n = agpasture.stemn + agpasture.leafn
+        harvested_dm = 0.0
+        harvested_n = 0.0
+        removed_dm = 0.0
+        removed_n = 0.0
+        return_dm = 0.0
+        return_n = 0.0
+        growthratecalc = 0.0
+        n_conc_removed = 0.0
+        days_after_cut = days_after_cut + 1
+        has_cut = 'false'
+        if 'fixed intervals' = 'fixed intervals' then
+           if days_after_cut = 21 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        elseif 'fixed intervals' = 'target mass' then
+           if preharvest_dm >= 2000 then
+              do_cut = 'true'
+           else
+              do_cut = 'false'
+           endif
+        endif
+     endif
+     if do_cut = 'true' then
+        if preharvest_dm > 1500 then
+           agpasture graze type = 'setresidueamount', amount = 1500
+           has_cut = 'true'
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
+           growthratecalc = harvested_dm/days_after_cut
+           if harvested_dm > 0 then
+              n_conc_removed = harvested_n*100/harvested_dm
+           endif
+           days_after_cut = 0
+           removed_dm =  harvested_dm* 0.98
+           removed_n = harvested_n* 0.98
+           return_dm = harvested_dm - removed_dm
+           return_n = harvested_n - removed_n
+           if 'return as residue' = 'return as residue' and 0.98 < 1 then
+              'surfaceorganicmatter' add_surfaceom name = grass, type = grass, mass =  return_dm (kg/ha), n = return_n (kg/ha), cpr = 0
+           elseif 'return as residue' = 'return as dung & urine' then
+              n_on_dung = return_n * 0.0
+              n_on_urine = return_n - n_on_dung
+              'surfaceorganicmatter' add_surfaceom name = dung, type = ruminantdung_pasturefed, mass =  return_dm (kg/ha), n = n_on_dung (kg/ha), cpr = 0
+              if n_on_urine > 0 then
+     fertiliser apply amount = n_on_urine (kg/ha), depth = 10 (mm), type = urea_n ()
+              endif
+           endif
+        endif
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : days_after_cut = 20.00000
+     Manager creating a new local string variable : do_cut = false
+     Manager creating a new local string variable : has_cut = false
+     Manager creating a new local real variable : harvested_dm = 0.00000
+     Manager creating a new local real variable : harvested_n = 0.00000
+     Manager creating a new local real variable : removed_dm = 0.00000
+     Manager creating a new local real variable : removed_n = 0.00000
+     Manager creating a new local real variable : return_dm = 0.00000
+     Manager creating a new local real variable : return_n = 0.00000
+     Manager creating a new local real variable : growthratecalc = 0.00000
+     Manager creating a new local real variable : n_conc_total = 0.00000
+
+------- Paddock2-HeavySoil.Micromet Initialisation ----------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Paddock2-HeavySoil.Med-HeavySoil Water Initialisation -----------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.180  0.230  0.410  0.520  0.410  1.100  0.762  0.300 75.000
+          150.-  300.  0.250  0.250  0.440  0.510  0.440  1.050  0.190  0.250 75.000
+          300.-  600.  0.280  0.280  0.460  0.503  0.460  1.100  0.048  0.200 50.000
+          600.-  900.  0.290  0.290  0.460  0.495  0.460  1.150  0.000  0.190 25.000
+          900.- 1200.  0.295  0.295  0.450  0.483  0.450  1.220  0.000  0.180 25.000
+         1200.- 1500.  0.300  0.300  0.440  0.470  0.440  1.300  0.000  0.200 50.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50      27.00      27.00      16.50
+          150.-  300.      37.50      28.50      28.50      10.50
+          300.-  600.      84.00      54.00      54.00      12.90
+          600.-  900.      87.00      51.00      51.00      10.50
+          900.- 1200.      88.50      46.50      46.50       9.90
+         1200.- 1500.      90.00      42.00      42.00       9.00
+          ---------------------------------------------------------
+               Totals     421.50     249.00     249.00      69.30
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            5.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- Paddock2-HeavySoil.SurfaceOrganicMatter Initialisation ----------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Residue1  grass         1000.0   400.0    20.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Med-HeavySoil Nitrogen Initialisation ---------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature calculated internally
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  3.50    5.00    5.00    0.00
+             2     6.50  1.50    5.00    5.00    0.00
+             3     6.50  0.50    5.00    5.00    0.00
+             4     6.50  0.25    5.00    5.00    0.00
+             5     6.50  0.10    5.00    5.00    0.00
+             6     6.50  0.10    5.00    5.00    0.00
+          ------------------------------------------------
+           Totals               30.00   30.00    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      56773.6  4541.9   976.4   122.1   156.2     5.2
+             2      23423.3  1873.9   201.7    25.2   115.7     3.9
+             3      16459.8  1316.8    40.2     5.0    63.5     2.1
+             4       8619.9   689.6     5.1     0.6    34.9     1.2
+             5       3658.9   292.7     1.1     0.1    19.1     0.6
+             6       3899.8   312.0     0.2     0.0    10.5     0.4
+          ---------------------------------------------------------
+           Totals  112835.3  9026.8  1224.7   153.1   400.0    13.3
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1950.0   1500.0   450.0  2.10   780.0     56.9       750.0
+          whiteclover      650.0    500.0   150.0  0.72   260.0     21.4       750.0
+         -----------------------------------------------------------------------------
+          Totals          2600.0   2000.0   600.0  2.82  1040.0     78.2       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-150      0.574
+            1     150-300      0.299
+            2     300-600      0.126
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+         -----------------------------
+
+------- Aux-Outputs Initialisation --------------------------------------------
+
+------- SetPatchParameter Initialisation --------------------------------------
+
+     Setting NPartitionApproach to: BasedOnConcentrationAndDelta
+
+------- AddSoilCNPatch Initialisation -----------------------------------------
+
+     Addition of CNPatches initialised
+
+------- MergeSoilCNPatch Initialisation ---------------------------------------
+
+     Merging of CNPatches initialised
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 63.58750
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.26580 (kg/ha), cpr = 0
+     Manager creating a new local real variable : preharvest_dm = 1900.00000
+     Manager creating a new local real variable : preharvest_n = 63.58750
+     Manager creating a new local real variable : n_conc_removed = 0.00000
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 8.00000 (kg/ha), n = 0.26580 (kg/ha), cpr = 0
+15 January 2000(Day of year=15), Paddock1-LightSoil.AddFert: 
+      Sending apply message to fertiliser
+15 January 2000(Day of year=15), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 January 2000(Day of year=15), Paddock2-HeavySoil.AddFert: 
+      Sending apply message to fertiliser
+15 January 2000(Day of year=15), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+22 January 2000(Day of year=22), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 38.42249 (kg/ha), n = 1.35100 (kg/ha), cpr = 0
+22 January 2000(Day of year=22), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 37.92041 (kg/ha), n = 1.33153 (kg/ha), cpr = 0
+01 February 2000 (Day of year=32), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 1.00, new area = 0.975
+01 February 2000 (Day of year=32), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 1.00, new area = 0.975
+02 February 2000 (Day of year=33), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.975, new area = 0.95
+02 February 2000 (Day of year=33), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.975, new area = 0.95
+03 February 2000 (Day of year=34), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.95, new area = 0.925
+03 February 2000 (Day of year=34), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.95, new area = 0.925
+04 February 2000 (Day of year=35), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.925, new area = 0.90
+04 February 2000 (Day of year=35), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.925, new area = 0.90
+05 February 2000 (Day of year=36), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.90, new area = 0.875
+05 February 2000 (Day of year=36), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.90, new area = 0.875
+06 February 2000 (Day of year=37), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.875, new area = 0.85
+06 February 2000 (Day of year=37), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.875, new area = 0.85
+07 February 2000 (Day of year=38), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.85, new area = 0.825
+07 February 2000 (Day of year=38), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.85, new area = 0.825
+08 February 2000 (Day of year=39), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.825, new area = 0.80
+08 February 2000 (Day of year=39), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.825, new area = 0.80
+09 February 2000 (Day of year=40), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.80, new area = 0.775
+09 February 2000 (Day of year=40), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.80, new area = 0.775
+10 February 2000 (Day of year=41), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.775, new area = 0.75
+10 February 2000 (Day of year=41), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.775, new area = 0.75
+11 February 2000 (Day of year=42), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.75, new area = 0.725
+11 February 2000 (Day of year=42), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.75, new area = 0.725
+12 February 2000(Day of year=43), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 34.24414 (kg/ha), n = 1.23920 (kg/ha), cpr = 0
+12 February 2000 (Day of year=43), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.725, new area = 0.70
+12 February 2000(Day of year=43), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 33.90577 (kg/ha), n = 1.22218 (kg/ha), cpr = 0
+12 February 2000 (Day of year=43), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.725, new area = 0.70
+13 February 2000 (Day of year=44), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.70, new area = 0.675
+13 February 2000 (Day of year=44), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.70, new area = 0.675
+14 February 2000 (Day of year=45), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.675, new area = 0.65
+14 February 2000 (Day of year=45), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.675, new area = 0.65
+15 February 2000 (Day of year=46), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.65, new area = 0.625
+15 February 2000 (Day of year=46), SoilNitrogen:
+	 create new patch, with area = 0.025, based on existing patch(0) - Old area = 0.65, new area = 0.625
+4 March 2000(Day of year=64), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 35.55212 (kg/ha), n = 1.37132 (kg/ha), cpr = 0
+4 March 2000(Day of year=64), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 35.40014 (kg/ha), n = 1.36406 (kg/ha), cpr = 0
+13 March 2000 (Day of year=73), SoilNitrogen:
+	 merging patch(6) into patch(5). New patch area = 0.05
+13 March 2000 (Day of year=73), SoilNitrogen:
+	 merging patch(8) into patch(7). New patch area = 0.05
+13 March 2000 (Day of year=73), SoilNitrogen:
+	 merging patch(10) into patch(9). New patch area = 0.05
+13 March 2000 (Day of year=73), SoilNitrogen:
+	 merging patch(12) into patch(11). New patch area = 0.05
+13 March 2000 (Day of year=73), SoilNitrogen:
+	 merging patch(14) into patch(13). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(4) into patch(3). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(6) into patch(5). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(8) into patch(7). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(10) into patch(9). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(12) into patch(11). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(14) into patch(13). New patch area = 0.05
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 0.65
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(2) into patch(0). New patch area = 0.675
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(3) into patch(0). New patch area = 0.70
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(4) into patch(0). New patch area = 0.725
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(5) into patch(0). New patch area = 0.775
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(6) into patch(0). New patch area = 0.825
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(7) into patch(0). New patch area = 0.875
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(8) into patch(0). New patch area = 0.925
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(9) into patch(0). New patch area = 0.975
+14 March 2000 (Day of year=74), SoilNitrogen:
+	 merging patch(10) into patch(0). New patch area = 1.00
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 0.65
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(3) into patch(2). New patch area = 0.075
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(4) into patch(2). New patch area = 0.125
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(5) into patch(2). New patch area = 0.175
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(6) into patch(2). New patch area = 0.225
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(7) into patch(2). New patch area = 0.275
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(8) into patch(2). New patch area = 0.325
+15 March 2000 (Day of year=75), SoilNitrogen:
+	 merging patch(9) into patch(2). New patch area = 0.35
+16 March 2000 (Day of year=76), SoilNitrogen:
+	 merging patch(1) into patch(0). New patch area = 1.00
+25 March 2000(Day of year=85), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 25.57874 (kg/ha), n = 0.91248 (kg/ha), cpr = 0
+25 March 2000(Day of year=85), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 24.42163 (kg/ha), n = 0.85783 (kg/ha), cpr = 0
+15 April 2000(Day of year=106), Paddock1-LightSoil.AddFert: 
+      Sending apply message to fertiliser
+15 April 2000(Day of year=106), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 April 2000(Day of year=106), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 12.82800 (kg/ha), n = 0.38582 (kg/ha), cpr = 0
+15 April 2000(Day of year=106), Paddock2-HeavySoil.AddFert: 
+      Sending apply message to fertiliser
+15 April 2000(Day of year=106), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 April 2000(Day of year=106), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 11.90845 (kg/ha), n = 0.35375 (kg/ha), cpr = 0
+6 May 2000(Day of year=127), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 16.04712 (kg/ha), n = 0.55679 (kg/ha), cpr = 0
+6 May 2000(Day of year=127), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.48559 (kg/ha), n = 0.53388 (kg/ha), cpr = 0
+27 May 2000(Day of year=148), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 10.66998 (kg/ha), n = 0.36133 (kg/ha), cpr = 0
+27 May 2000(Day of year=148), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 10.17697 (kg/ha), n = 0.34193 (kg/ha), cpr = 0
+17 June 2000(Day of year=169), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 6.47397 (kg/ha), n = 0.20058 (kg/ha), cpr = 0
+17 June 2000(Day of year=169), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 6.07022 (kg/ha), n = 0.18733 (kg/ha), cpr = 0
+8 July 2000(Day of year=190), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 5.46799 (kg/ha), n = 0.15903 (kg/ha), cpr = 0
+8 July 2000(Day of year=190), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 5.02995 (kg/ha), n = 0.14615 (kg/ha), cpr = 0
+29 July 2000(Day of year=211), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 5.05595 (kg/ha), n = 0.14096 (kg/ha), cpr = 0
+29 July 2000(Day of year=211), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 4.72544 (kg/ha), n = 0.13180 (kg/ha), cpr = 0
+19 August 2000(Day of year=232), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 5.39441 (kg/ha), n = 0.14640 (kg/ha), cpr = 0
+19 August 2000(Day of year=232), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 5.17291 (kg/ha), n = 0.14028 (kg/ha), cpr = 0
+9 September 2000(Day of year=253), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 6.60401 (kg/ha), n = 0.17747 (kg/ha), cpr = 0
+9 September 2000(Day of year=253), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 6.24600 (kg/ha), n = 0.16787 (kg/ha), cpr = 0
+15 September 2000(Day of year=259), Paddock1-LightSoil.AddFert: 
+      Sending apply message to fertiliser
+15 September 2000(Day of year=259), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+15 September 2000(Day of year=259), Paddock2-HeavySoil.AddFert: 
+      Sending apply message to fertiliser
+15 September 2000(Day of year=259), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth  100.00 (layer   1)
+30 September 2000(Day of year=274), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 16.77588 (kg/ha), n = 0.55030 (kg/ha), cpr = 0
+30 September 2000(Day of year=274), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.92847 (kg/ha), n = 0.52078 (kg/ha), cpr = 0
+21 October 2000(Day of year=295), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 16.03132 (kg/ha), n = 0.51328 (kg/ha), cpr = 0
+21 October 2000(Day of year=295), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.83545 (kg/ha), n = 0.50811 (kg/ha), cpr = 0
+11 November 2000(Day of year=316), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 16.43732 (kg/ha), n = 0.49218 (kg/ha), cpr = 0
+11 November 2000(Day of year=316), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 15.87292 (kg/ha), n = 0.47797 (kg/ha), cpr = 0
+2 December 2000(Day of year=337), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 17.79273 (kg/ha), n = 0.52270 (kg/ha), cpr = 0
+2 December 2000(Day of year=337), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 17.30761 (kg/ha), n = 0.51245 (kg/ha), cpr = 0
+23 December 2000(Day of year=358), Paddock1-LightSoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 17.44971 (kg/ha), n = 0.51776 (kg/ha), cpr = 0
+23 December 2000(Day of year=358), Paddock2-HeavySoil.CutAgPasture: 
+     Manager sending message :- surfaceorganicmatter add_surfaceom  name = grass, type = grass, mass = 16.92798 (kg/ha), n = 0.50680 (kg/ha), cpr = 0
+31 December 2000(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+

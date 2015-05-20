@@ -200,41 +200,43 @@ public partial class SoilNitrogen
 				MergingPatches.Add(new List<int>());
 
 			// A3. go through all patches and check whether they are similar enough to any other
+			List<int> SelectedPatches = new List<int>();  // list of patches selected for deletion
 			for (int k = 0; k < nPatches - 1; k++)	 //  this will go to all but the last patch, as it has no other patch to be compared with
 			{
-				if (ExistingPatches.Contains(Patch[k].PatchName))  // skip already selected patches
+				if (!SelectedPatches.Contains(k))   // skip patches already selected for deletion
 				{
 					for (int j = k + 1; j < nPatches; j++)  // compare to all other subsequent patches
-						if (PatchesAreEqual(k, j))
+					{
+						if (!SelectedPatches.Contains(j))   // skip patches already selected for deletion
 						{
-							MergingPatches[k].Add(j);		// add patch j to the list being merged into patch k
-							ExistingPatches.RemoveAt(j);	// remove name of patch j from the reference list
+							if (PatchesAreEqual(k, j))
+							{
+								MergingPatches[k].Add(j);		// add patch j to the list being merged into patch k
+								SelectedPatches.Add(j);
+							}
 						}
+					}
 				}
 				// else {} go to next patch
 			}
 
-			int nPatchesDeleted = Patch.Count - ExistingPatches.Count;
-
 			// A4. do the actual merging (copy values from and deleted merging patches)
-			if (nPatchesDeleted > 0)
+			if (SelectedPatches.Count > 0)
 			{
 				List<int> PatchesToDelete = new List<int>();
 				// A4.1. Copy values between patches
 				for (int k = 0; k < Patch.Count - 1; k++)
 				{
-					if (MergingPatches[k].Count > 0)
-						for (int i = 0; i < MergingPatches[k].Count; i++)
-						{
-							int j = MergingPatches[k][i];
-							MergeCNValues(k, j);
-							PatchesToDelete.Add(j);
-							writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
-						}
+					for (int i = 0; i < MergingPatches[k].Count; i++)
+					{
+						int j = MergingPatches[k][i];
+						MergeCNValues(k, j);
+						PatchesToDelete.Add(j);
+						writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+					}
 				}
 				// A4.2. Delete merged patches
 				DeletePatches(PatchesToDelete);
-				PatchesToDelete.Clear();
 			}
 		}
 		else if (PatchAmalgamationApproach.ToLower() == "CompareBase".ToLower())
@@ -333,6 +335,8 @@ public partial class SoilNitrogen
 	/// <param name="PatchesToDelete">List of patches to delete</param>
 	private void DeletePatches(List<int> PatchesToDelete)
 	{
+		// sort the list
+		PatchesToDelete.Sort();
 		// go backwards so that the id of patches to delete do not change after each deletion
 		for (int i = PatchesToDelete.Count - 1; i >= 0; i--)
 		{
@@ -655,28 +659,29 @@ public partial class SoilNitrogen
 	private double[][] partitionDelta(double[] incomingDelta, string SoluteName, string PartitionType)
 	{
 		int nLayers = dlayer.Length;
+		int nPatches = Patch.Count;
 
 		// 1. initialise the result array
-		double[][] Result = new double[Patch.Count][];
-		for (int k = 0; k < Patch.Count; k++)
+		double[][] Result = new double[nPatches][];
+		for (int k = 0; k < nPatches; k++)
 			Result[k] = new double[nLayers];
 
 		try
 		{
 			// 2- gather how much solute is already in the soil
-			double[][] alreadyThere = new double[Patch.Count][];
-			for (int k = 0; k < Patch.Count; k++)
+			double[][] existingSoluteAmount = new double[nPatches][];
+			for (int k = 0; k < nPatches; k++)
 			{
 				switch (SoluteName)
 				{
 					case "Urea":
-						alreadyThere[k] = Patch[k].urea;
+						existingSoluteAmount[k] = Patch[k].urea;
 						break;
 					case "NH4":
-						alreadyThere[k] = Patch[k].nh4;
+						existingSoluteAmount[k] = Patch[k].nh4;
 						break;
 					case "NO3":
-						alreadyThere[k] = Patch[k].no3;
+						existingSoluteAmount[k] = Patch[k].no3;
 						break;
 					default:
 						throw new Exception(" The solute " + SoluteName
@@ -684,108 +689,93 @@ public partial class SoilNitrogen
 				}
 			}
 
-			// 3- calculations are done for each layer 
+			// 3- calculate weighting factors, done for each layer
+			double[] baseWeight;			// the weighting factor for partitioning delta, based on existing solute amount
+			double[] partitionWeight;       // the actual weighting factor for partitioning delta
+			double thisLayersTotalSolute;
+			double[] thisLayerPatchSolute;
 			for (int layer = 0; layer < (nLayers); layer++)
 			{
-				double totalSolute = 0.0;
-				double[] patchSolute = new double[Patch.Count];
+				// 3.1- zero and initialise the variables
+				double[] maxWeight = new double[nPatches];
+				baseWeight = new double[nPatches];
+				partitionWeight = new double[nPatches];
+				thisLayerPatchSolute = new double[nPatches];
+				thisLayersTotalSolute = 0.0;
 
-				// these are only needed if using BasedOnSoilConcentration and delta is negative -----------------------------------------
-				//   (need to veryfy that the N removed will not result in negative content)
-				double totalSoluteLr = 0.0;
-				double[] patchSoluteLr = new double[Patch.Count];
-				// -----------------------------------------------------------------------------------------------------------------------
-
-				// 3.1- get the solute amounts, total and each patch
-				if ((PartitionType == "BasedOnLayerConcentration".ToLower()) ||
-					(PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] <= 0.0))
+				if (Math.Abs(incomingDelta[layer]) > epsilon)
 				{
-					for (int k = 0; k < Patch.Count; k++)
-						patchSolute[k] = alreadyThere[k][layer]* Patch[k].RelativeArea;
-					totalSolute = SumDoubleArray(patchSolute);
-				}
-				else if ((PartitionType == "BasedOnSoilConcentration".ToLower()) ||
-						 (PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] > 0.0))
-				{
-					for (int k = 0; k < Patch.Count; k++)
+					// 3.2- get the solute amounts, total and for each patch
+					if ((PartitionType == "BasedOnLayerConcentration".ToLower()) ||
+						(PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] < epsilon))
 					{
-						double layerUsed = 0.0;
-						for (int z = layer; z >= 0; z--)		// goes backwards till soil surface
+						for (int k = 0; k < nPatches; k++)
 						{
-							patchSolute[k] += alreadyThere[k][z] * Patch[k].RelativeArea;
-							layerUsed += dlayer[z];
-							if ((LayerNPartition > epsilon) && (layerUsed >= LayerNPartition))	// stop if thickness reaches a defined value
-								z = 0;
+							thisLayerPatchSolute[k] = existingSoluteAmount[k][layer] * Patch[k].RelativeArea;
 						}
-						totalSolute += patchSolute[k] * Patch[k].RelativeArea;
-
-						// this is only needed when using BasedOnSoilConcentration and delta is negative   -------------------------------
-						if ((incomingDelta[layer] < 0.0) && (PartitionType == "BasedOnSoilConcentration".ToLower()))
-							patchSoluteLr[k] = alreadyThere[k][layer] * Patch[k].RelativeArea;
-						// ----------------------------------------------------------------------------------------------------------------
-
+						thisLayersTotalSolute = SumDoubleArray(thisLayerPatchSolute);
 					}
-					totalSolute = SumDoubleArray(patchSolute);
-					totalSoluteLr = SumDoubleArray(patchSoluteLr);	// only needed when using BasedOnSoilConcentration and delta is negative   ----
-				}
-
-				// 3.2 - Compute the partition weights for each patch
-				
-				double[] weight = new double[Patch.Count];
-				for (int k = 0; k < Patch.Count; k++)
-				{ // weights for the nomimal NPartitionApproach
-					weight[k] = 1.0;
-					if (totalSolute > 0)
-						weight[k] = MathUtility.Divide(patchSolute[k], totalSolute, 0.0);
-				}
-
-				// this is only needed when using BasedOnSoilConcentration and delta is negative -----------------------------------------
-				bool test = true;
-				if (PartitionType == "BasedOnSoilConcentration".ToLower() && test)
-				{
-					//3.2.1. partial weights
-					double[] weight1 = new double[Patch.Count];
-					double[] weight2 = new double[Patch.Count];
-					for (int k = 0; k < Patch.Count; k++)
+					else if ((PartitionType == "BasedOnSoilConcentration".ToLower()) ||
+						(PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] >= epsilon))
 					{
-						// weights for the nomimal NPartitionApproach
-						weight1[k] = 1.0;
-						if (totalSolute > 0)
-							weight1[k] = MathUtility.Divide(patchSolute[k], totalSolute, 0.0);
-						// weights for LayerConcentration approach
-						weight2[k] = 1.0;
-						if (totalSoluteLr > 0)
-							weight2[k] = MathUtility.Divide(patchSoluteLr[k], totalSoluteLr, 0.0);
+						for (int k = 0; k < nPatches; k++)
+						{
+							double layerUsed = 0.0;
+							for (int z = layer; z >= 0; z--)		// goes backwards till soil surface (but may stop before that)
+							{
+								thisLayerPatchSolute[k] += existingSoluteAmount[k][z] * Patch[k].RelativeArea;
+								layerUsed += dlayer[z];
+								if ((LayerNPartition > epsilon) && (layerUsed >= LayerNPartition))	// stop if thickness reaches a defined value
+									z = 0;
+							}
+						}
+						thisLayersTotalSolute = SumDoubleArray(thisLayerPatchSolute);
 					}
 
-					// 3.2.2. get the minimun of the weights
-					double TotalWeight1 = weight1.Sum();
-					double TotalWeight2 = weight2.Sum();
-					for (int k = 0; k < Patch.Count; k++)
-						weight[k] = Math.Min(weight1[k], weight2[k]);
-
-					// 3.2.3. finally calculate the actual weights
-					double TotalWeight = weight.Sum();
-					for (int k = 0; k < Patch.Count; k++)
+					// 3.3- Compute the base partition weights for each patch
+					for (int k = 0; k < nPatches; k++)
 					{
-						if (TotalWeight > 0)
+						baseWeight[k] = 1.0;
+						if (thisLayersTotalSolute >= epsilon)
+							baseWeight[k] = MathUtility.Divide(thisLayerPatchSolute[k], thisLayersTotalSolute, 0.0);
 
-							weight[k] = MathUtility.Divide(weight[k], TotalWeight, 0.0);
+						if (incomingDelta[layer] <= -epsilon)
+						{ // compute the maximum weight for each patch
+							maxWeight[k] = 0.0;
+							if (thisLayerPatchSolute[k] >= epsilon)
+								maxWeight[k] = MathUtility.Divide(thisLayerPatchSolute[k], Math.Abs(incomingDelta[layer]), 0.0);
+							baseWeight[k] = Math.Min(maxWeight[k], baseWeight[k]);
+						}
+					}
+
+					// 3.4- calculate the actual partitioning weights
+					double TotalWeight = baseWeight.Sum();
+					for (int k = 0; k < nPatches; k++)
+					{
+						if (TotalWeight >= epsilon)
+							partitionWeight[k] = MathUtility.Divide(baseWeight[k], TotalWeight, 0.0);
 						else
-							weight[k] = 1.0;
+							throw new Exception(" could not resolve the partitioning");
 					}
-				}    // ------------------------------------------------------------------------------------------------------------------
-
-
-				// 3.3- Compute the partitioned  values for each patch
-				for (int k = 0; k < Patch.Count; k++)
-					Result[k][layer] = (incomingDelta[layer] * weight[k]) / Patch[k].RelativeArea;
-
+					
+					// 4- Compute the partitioned values for each patch
+					for (int k = 0; k < nPatches; k++)
+					{
+						Result[k][layer] = (incomingDelta[layer] * partitionWeight[k]) / Patch[k].RelativeArea;
+					}
+				}
+				else
+				{ // there is no incoming solute for this layer
+					for (int k = 0; k < nPatches; k++)
+					{
+						Result[k][layer] = 0.0;
+					}
+				}
 			}
 		}
 		catch (Exception e)
 		{
-			throw new Exception(" problems with partitioning " + SoluteName + "- " + e.ToString());
+			throw new Exception(" problems with partitioning " + SoluteName + " - " + e.ToString());
 		}
 
 		return Result;
