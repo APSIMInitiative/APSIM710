@@ -192,15 +192,64 @@ inline void pack(MessageData& messageData, const std::string& value)
 inline std::string DDML(const std::string& value)
    {return "<type kind=\"string\"/>";}
 inline void Convert(bool source, std::string& dest)  {if (source) dest = "1"; else dest = "0"; }
-inline void Convert(int source, std::string& dest)   {dest = typeto_str(source);}
+inline void Convert(int source, std::string& dest)   {dest = std::to_string((long long)source);}
 inline void Convert(const std::string& source, std::string& dest) {dest = source;}
+
+#if __cplusplus <= 199711L
+#include <stdarg.h>
+// Scrap this when we move from VS2010
+#define snprintf c99_snprintf
+
+
+inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+{
+    int count = -1;
+
+    if (size != 0)
+        count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
+    if (count == -1)
+        count = _vscprintf(format, ap);
+
+    return count;
+}
+
+inline int c99_snprintf(char* str, size_t size, const char* format, ...)
+{
+    int count;
+    va_list ap;
+
+    va_start(ap, format);
+    count = c99_vsnprintf(str, size, format, ap);
+    va_end(ap);
+
+    return count;
+}
+
+#endif // _MSC_VER
+
 inline void Convert(float source, std::string& dest)
    {
-   dest = typeto_str(source);
+#if __cplusplus <= 199711L
+   // Scrap this when we move from VS2010
+   char st[64];
+   snprintf(st, 63, "%f", source);
+   st[63] = '\0';
+   dest = st;
+#else
+   dest = std::to_string(source);
+#endif
    }
 inline void Convert(double source, std::string& dest)
    {
-   dest = typeto_str(source);
+#if __cplusplus <= 199711L
+   // Scrap this when we move from VS2010
+   char st[64];
+   snprintf(st, 63, "%lf", source);
+   st[63] = '\0';
+   dest = st;
+#else
+   dest = std::to_string(source);
+#endif
    }
 
 // ------ std::vector ------

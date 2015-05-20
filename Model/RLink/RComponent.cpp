@@ -519,13 +519,13 @@ void RComponent::respondToSetDoubleArray(const std::string &variableName, std::v
       for (std::vector<double>::iterator p = value.begin(); p != value.end(); p++)
 	      {
 	      if (p != value.begin()) cmd += ",";
-        cmd += typeto_str(*p);
+        cmd += std::to_string((long double)*p);
 	      }
       cmd += ")";
       }
    else
       {
-	    cmd += typeto_str(value[0]);
+	    cmd += std::to_string((long double)value[0]);
       }
    REvalQ(cmd.c_str());
    currentRComponent = old;
@@ -549,7 +549,7 @@ void RComponent::respondToSetDouble(const std::string &variableName, double &val
    RComponent *old = currentRComponent; currentRComponent = this;
    string cmd = variableName;
    cmd += "<-";
-   cmd += typeto_str(value);
+   cmd += std::to_string((long double)value);
    REvalQ(cmd.c_str());
    currentRComponent = old;
    }

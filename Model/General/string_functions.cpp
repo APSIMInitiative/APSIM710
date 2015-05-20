@@ -466,35 +466,3 @@ std::string doubleQuoted(const std::string& st)
    {
    return "\"" + st + "\"";
    }
-
-std::string typeto_str(const int &value)
-{
-    return std::to_string((long long)value);
-}
-
-std::string typeto_str(const float &value)
-{
-    char buf[64];
-    sprintf(buf, "%.*g", 118, value);
-    return string(buf);
-}
-
-std::string typeto_str(const double &value)
-{
-    char buf[64];
-    sprintf(buf, "%.*g", 118, value);
-    return string(buf);
-}
-
-std::string typeto_str(const bool &value)
-{
-    if (value)
-        return "1";
-    else
-        return "0";
-}
-
-std::string typeto_str(const std::string &value)
-{
-    return value;
-}

@@ -561,7 +561,7 @@ class EXPORT Component
                string msg = string("Bound check warning while getting variable.\n"
                                    "Variable  : ") + regItem->getName() + string("\n"
                                    "Condition : ") + ftoa(lower, 2) + string(" <= ") +
-                                    typeto_str(value) + string(" <= ") + ftoa(upper, 2);
+                                    ftoa((float)value,2) + string(" <= ") + ftoa(upper, 2);
                error(msg, false);
                }
             }
@@ -611,7 +611,7 @@ class EXPORT Component
                    string msg = string("Bound check warning while getting variable.\n"
                                        "Variable  : ") + regItem->getName() + string("(") + itoa(i+1) +  string(")\n"
                                        "Condition : ") + ftoa(lower, 2) + string(" <= ") +
-                                typeto_str(values[i]) + string(" <= ") + ftoa(upper, 2);
+                                       ftoa((float)values[i],2) + string(" <= ") + ftoa(upper, 2);
                    error(msg, false);
                    }
                }

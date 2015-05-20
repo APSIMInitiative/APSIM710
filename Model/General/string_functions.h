@@ -11,12 +11,6 @@
 
 #include <iterator>
 
-std::string EXPORT typeto_str(const int &value);
-std::string EXPORT typeto_str(const float &value);
-std::string EXPORT typeto_str(const double &value);
-std::string EXPORT typeto_str(const bool &value);
-std::string EXPORT typeto_str(const std::string &value);
-
 // ------------------------------------------------------------------
 //  Short description:
 //    splits a string into words.
