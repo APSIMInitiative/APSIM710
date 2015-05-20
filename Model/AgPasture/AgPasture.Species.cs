@@ -753,6 +753,9 @@ public class Species
 	/// <summary>Some Description</summary>
 	internal double GLFGeneric;
 
+	/// <summary>Some Description</summary>
+	internal double ExtremeTempStress;
+
 	//// > Growth deltas  >>>
 
 	/// <summary>Some Description</summary>
@@ -784,6 +787,9 @@ public class Species
 
 	/// <summary>Some Description</summary>
 	internal double IL;
+
+	/// <summary>Some Description</summary>
+	internal double PotPhoto;
 
 	/// <summary>Some Description</summary>
 	internal double Pgross;
@@ -824,7 +830,7 @@ public class Species
 
 	//// > Soil layering  >>>
 	/// <summary>Some Description</summary>
-	internal float[] dlayer;
+	internal double[] dlayer;
 
 	#endregion
 
@@ -1134,8 +1140,8 @@ public class Species
 		Pgross = 10000 * carbon_m2;                 //10000: 'kg/m^2' =>'kg/ha'
 
 		//Add extreme temperature effects;
-		double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
-		Pgross *= TempStress;
+		ExtremeTempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
+		Pgross *= ExtremeTempStress;
 
 		// Consider generic growth limiting factor
 		Pgross *= GLFGeneric;
@@ -1233,13 +1239,13 @@ public class Species
 			carbon_m2 *= 0.000001;                    // kgCO2/m2.s 
 			carbon_m2 *= tau;                         // kgCO2/m2.day
 			carbon_m2 *= 12.0 / 44.0;                 // kgDM/m2.day
-			Pgross = 10000 * carbon_m2;               // kgDM/ha.day
+			PotPhoto = 10000 * carbon_m2;               // kgDM/ha.day
 
 			//Add extreme temperature effects;
 			double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
-			Pgross *= TempStress;
+			Pgross = PotPhoto * TempStress;
 
-			// Consider generic growth limiting factor
+			// Consider a generic growth limiting factor
 			Pgross *= GLFGeneric;
 		}
 		else
@@ -1871,7 +1877,7 @@ public class Species
 
 		//even with sufficient soil N available
 		if (isLegume)
-			Nfix = MinFix * NdemandLux;
+			Nfix = MinFix * NdemandLux; // It should be NdemandOpt;
 		else
 			Nfix = 0.0;
 
@@ -2163,6 +2169,7 @@ public class Species
 			// accumulate temperature
 			double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
 			accumTHeat += Math.Max(0.0, heatRecoverT - meanT);
+			//// TODO: move this to the beginning, so todays temperature is taken into account (faster recovery)
 
 			// heat stress
 			highTempStress = Math.Min(1.0, heatFactor + recoveryFactor);

@@ -883,19 +883,19 @@ public class AgPasture
 	private MetFile MetData;
 
 	[Input]
-	private float[] dlayer;   //Soil Layer Thickness (mm)
+	private double[] dlayer;   //Soil Layer Thickness (mm)
 	[Input]
-	private float[] sw_dep;  //soil water by layer
+	private double[] sw_dep;  //soil water by layer
 	[Input]
-	private float[] sw;      //soil water content by layer
+	private double[] sw;      //soil water content by layer
 	[Input]
-	private float[] SAT;     //saturation point
+	private double[] SAT;     //saturation point
 	[Input]
-	private float[] DUL;     //drainage upper limit (field capacity);
+	private double[] DUL;     //drainage upper limit (field capacity);
 	[Input]
-	private float[] no3;     //SNO3dep = new float[dlayer.Length];
+	private double[] no3;     //SNO3dep = new float[dlayer.Length];
 	[Input]
-	private float[] nh4;     //SNH4dep = new float[dlayer.Length];
+	private double[] nh4;     //SNH4dep = new float[dlayer.Length];
 
 	/// <summary>CO2 in atmosphere</summary>
 	[Input(IsOptional = true)]
@@ -2735,7 +2735,7 @@ public class AgPasture
 			{
 				double newNfix = mySpecies[s].MaxFix;
 				newNfix -= (mySpecies[s].MaxFix - mySpecies[s].MinFix) * Nstress;
-				newNfix *= mySpecies[s].NdemandLux;
+				newNfix *= mySpecies[s].NdemandLux;  // it should be NdemandOpt;
 				double moreNfix = Math.Max(0.0, newNfix - mySpecies[s].Nfix);
 				mySpecies[s].Nfix = newNfix;
 				swardNFixed += moreNfix;
@@ -4162,6 +4162,21 @@ public class AgPasture
 
 	/// <summary>An output</summary>
 	[Output]
+	[Description("Plant base potential photosyntetic rate")]
+	[Units("kgC/ha")]
+	public double PlantPotentialPhotosynthesis
+	{
+		get
+		{
+			double result = 0.0;
+			for (int s = 0; s < NumSpecies; s++)
+				result += mySpecies[s].PotPhoto;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
 	[Description("Plant carbon loss by respiration")]
 	[Units("kgC/ha")]
 	public double PlantCarbonLossRespiration
@@ -5130,6 +5145,26 @@ public class AgPasture
 					prop = mySpecies[s].dmgreen / swardGreenDM;
 				}
 				result += mySpecies[s].GLFGeneric * prop;
+			}
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Plant growth limiting factor due to extreme temperatures")]
+	[Units("0-1")]
+	public double GLFxtemp
+	{
+		get
+		{
+			double result = 1.0;
+			if (PlantPotentialPhotosynthesis > 0)
+			{
+				result = 0.0;
+				for (int s = 0; s < NumSpecies; s++)
+					result += mySpecies[s].Pgross * mySpecies[s].ExtremeTempStress;
+				result /= PlantPotentialPhotosynthesis;
 			}
 			return result;
 		}
@@ -6275,6 +6310,21 @@ public class AgPasture
 
 	/// <summary>An output</summary>
 	[Output]
+	[Description("Actual above-ground growth for each species")]
+	[Units("kgDM/ha")]
+	public double[] SpeciesHerbageGrowth
+	{
+		get
+		{
+			double[] result = new double[NumSpecies];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
+			return result;
+		}
+	}
+
+	/// <summary>An output</summary>
+	[Output]
 	[Description("Litter amount deposited onto soil surface, for each species")]
 	[Units("kgDM/ha")]
 	public double[] SpeciesLitterWt
@@ -6715,6 +6765,34 @@ public class AgPasture
 		}
 	}
 
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Stress factor on photosynthesis due to high temperatures, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesHighTstress
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].highTempStress;
+			return result;
+		}
+	}
+	/// <summary>An output</summary>
+	[Output]
+	[Description("Stress factor on photosynthesis due to low temperatures, for each species")]
+	[Units("0-1")]
+	public double[] SpeciesLowTstress
+	{
+		get
+		{
+			double[] result = new double[mySpecies.Length];
+			for (int s = 0; s < NumSpecies; s++)
+				result[s] = mySpecies[s].lowTempStress;
+			return result;
+		}
+	}
 	/// <summary>An output</summary>
 	[Output]
 	[Description("Growth limiting factor due to nitrogen, for each species")]
