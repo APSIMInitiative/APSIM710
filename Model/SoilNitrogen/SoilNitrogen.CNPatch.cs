@@ -140,6 +140,16 @@ public partial class SoilNitrogen
 					// update variable and check its value
 					urea[layer] += value[layer];
 					g.CheckNegativeValues(ref urea[layer], layer, "urea", "Patch[" + this.PatchName + "].deltaUrea");
+
+					// record these values to use as outputs
+					if (g.senderModule == "WaterModule".ToLower())
+						urea_flow[layer] += value[layer];
+					else if (g.senderModule == "Plant".ToLower())
+						urea_uptake[layer] += value[layer];
+					else if (g.senderModule == "Fertiliser".ToLower())
+						urea_fertiliser[layer] += value[layer];
+					else
+						urea_ChangedOther[layer] += value[layer];
 				}
 			}
 		}
@@ -163,6 +173,16 @@ public partial class SoilNitrogen
 					// update variable and check its value
 					nh4[layer] += value[layer];
 					g.CheckNegativeValues(ref nh4[layer], layer, "nh4", "Patch[" + this.PatchName + "].deltaNH4");
+
+					// record these values to use as outputs
+					if (g.senderModule == "WaterModule".ToLower())
+						nh4_flow[layer] += value[layer];
+					else if (g.senderModule == "Plant".ToLower())
+						nh4_uptake[layer] += value[layer];
+					else if (g.senderModule == "Fertiliser".ToLower())
+						nh4_fertiliser[layer] += value[layer];
+					else
+						nh4_ChangedOther[layer] += value[layer];
 				}
 			}
 		}
@@ -186,6 +206,16 @@ public partial class SoilNitrogen
 					// update variable and check its value
 					no3[layer] += value[layer];
 					g.CheckNegativeValues(ref no3[layer], layer, "no3", "Patch[" + this.PatchName + "].deltaNO3");
+
+					// record these values to use as outputs
+					if (g.senderModule == "WaterModule".ToLower())
+						no3_flow[layer] += value[layer];
+					else if (g.senderModule == "Plant".ToLower())
+						no3_uptake[layer] += value[layer];
+					else if (g.senderModule == "Fertiliser".ToLower())
+						no3_fertiliser[layer] += value[layer];
+					else
+						no3_ChangedOther[layer] += value[layer];
 				}
 			}
 		}
@@ -334,6 +364,68 @@ public partial class SoilNitrogen
 		/// </summary>
 		public double[] nh4_deficit_immob;
 
+		// -- New outputs, estimated partiton among patches of changes made by other modules --------------------------
+
+		/// <summary>
+		/// Amount of urea changed by the soil water module
+		/// </summary>
+		public double[] urea_flow;
+
+		/// <summary>
+		/// Amount of NH4 changed by the soil water module
+		/// </summary>
+		public double[] nh4_flow;
+
+		/// <summary>
+		/// Amount of NO3 changed by the soil water module
+		/// </summary>
+		public double[] no3_flow;
+
+		/// <summary>
+		/// Amount of urea taken by any plant module
+		/// </summary>
+		public double[] urea_uptake;
+
+		/// <summary>
+		/// Amount of NH4 taken by any plant module
+		/// </summary>
+		public double[] nh4_uptake;
+
+		/// <summary>
+		/// Amount of NO3 taken by any plant module
+		/// </summary>
+		public double[] no3_uptake;
+
+		/// <summary>
+		/// Amount of urea added by the fertiliser module
+		/// </summary>
+		public double[] urea_fertiliser;
+
+		/// <summary>
+		/// Amount of NH4 added by the fertiliser module
+		/// </summary>
+		public double[] nh4_fertiliser;
+
+		/// <summary>
+		/// Amount of NO3 added by the fertiliser module
+		/// </summary>
+		public double[] no3_fertiliser;
+
+		/// <summary>
+		/// Amount of urea changed by any other module
+		/// </summary>
+		public double[] urea_ChangedOther;
+
+		/// <summary>
+		/// Amount of NH4 changed by any other module
+		/// </summary>
+		public double[] nh4_ChangedOther;
+
+		/// <summary>
+		/// Amount of NO3 changed by any other module
+		/// </summary>
+		public double[] no3_ChangedOther;
+		
 		#endregion
 
 		#region Outputs for Carbon
@@ -551,6 +643,20 @@ public partial class SoilNitrogen
 			Array.Resize(ref dlt_c_biom_to_atm, nLayers);
 			Array.Resize(ref dlt_c_hum_to_biom, nLayers);
 			Array.Resize(ref dlt_c_hum_to_atm, nLayers);
+
+			// additional variables
+			Array.Resize(ref urea_flow, nLayers);
+			Array.Resize(ref nh4_flow, nLayers);
+			Array.Resize(ref no3_flow, nLayers);
+			Array.Resize(ref urea_uptake, nLayers);
+			Array.Resize(ref nh4_uptake, nLayers);
+			Array.Resize(ref no3_uptake, nLayers);
+			Array.Resize(ref urea_fertiliser, nLayers);
+			Array.Resize(ref nh4_fertiliser, nLayers);
+			Array.Resize(ref no3_fertiliser, nLayers);
+			Array.Resize(ref urea_ChangedOther, nLayers);
+			Array.Resize(ref nh4_ChangedOther, nLayers);
+			Array.Resize(ref no3_ChangedOther, nLayers);
 		}
 
 		/// <summary>
@@ -565,6 +671,21 @@ public partial class SoilNitrogen
 			Array.Clear(g.InhibitionFactor_Nitrification, 0, g.InhibitionFactor_Nitrification.Length);
 			dlt_n_loss_in_sed = 0.0;
 			dlt_c_loss_in_sed = 0.0;
+
+			// variables to report changes by other modules after partitioning amongst patches
+			int nLayers = g.dlayer.Length;
+			Array.Clear(urea_flow, 0, nLayers);
+			Array.Clear(nh4_flow, 0, nLayers);
+			Array.Clear(no3_flow, 0, nLayers);
+			Array.Clear(urea_uptake, 0, nLayers);
+			Array.Clear(nh4_uptake, 0, nLayers);
+			Array.Clear(no3_uptake, 0, nLayers);
+			Array.Clear(urea_fertiliser, 0, nLayers);
+			Array.Clear(nh4_fertiliser, 0, nLayers);
+			Array.Clear(no3_fertiliser, 0, nLayers);
+			Array.Clear(urea_ChangedOther, 0, nLayers);
+			Array.Clear(nh4_ChangedOther, 0, nLayers);
+			Array.Clear(no3_ChangedOther, 0, nLayers);
 		}
 
 		/// <summary>

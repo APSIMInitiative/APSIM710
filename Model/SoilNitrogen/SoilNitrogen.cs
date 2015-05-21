@@ -982,12 +982,12 @@ public partial class SoilNitrogen
 	public void OnNitrogenChanged(NitrogenChangedType NitrogenChanges)
 	{
 		// get the type of module sending this change
-		string module = NitrogenChanges.SenderType.ToLower();
+		senderModule = NitrogenChanges.SenderType.ToLower();
 
 		// check whether there are significant values, if so pass them to appropriate dlt
 		if (hasSignificantValues(NitrogenChanges.DeltaUrea, epsilon))
 		{
-			if ((Patch.Count > 1) && ((module == "WaterModule".ToLower()) || (module == "Plant".ToLower())))
+			if ((Patch.Count > 1) && ((senderModule == "WaterModule".ToLower()) || (senderModule == "Plant".ToLower())))
 			{
 				// the values come from a module that requires partition
 				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", PatchNPartitionApproach.ToLower());
@@ -1005,7 +1005,7 @@ public partial class SoilNitrogen
 
 		if (hasSignificantValues(NitrogenChanges.DeltaNH4, epsilon))
 		{
-			if ((Patch.Count > 1) && ((module == "WaterModule".ToLower()) || (module == "Plant".ToLower())))
+			if ((Patch.Count > 1) && ((senderModule == "WaterModule".ToLower()) || (senderModule == "Plant".ToLower())))
 			{
 				// the values come from a module that requires partition
 				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", PatchNPartitionApproach.ToLower());
@@ -1023,7 +1023,7 @@ public partial class SoilNitrogen
 
 		if (hasSignificantValues(NitrogenChanges.DeltaNO3, epsilon))
 		{
-			if ((Patch.Count > 1) && ((module == "WaterModule".ToLower()) || (module == "Plant".ToLower())))
+			if ((Patch.Count > 1) && ((senderModule == "WaterModule".ToLower()) || (senderModule == "Plant".ToLower())))
 			{
 				// the values come from a module that requires partition
 				double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", PatchNPartitionApproach.ToLower());

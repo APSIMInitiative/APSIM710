@@ -3284,6 +3284,312 @@ public partial class SoilNitrogen
 		}
 	}
 
+	// ---------------------------------------------------------------------------------------------------------------------
+	// Variables that are owned by other modules but which are related to SoilNitrogen.
+	// here the estimated values partitioned amongst internal patches are published
+
+	/// <summary>
+	/// Amount of urea changed by the soil water module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of urea changed by the soil water module, for each patch")]
+	private CNPatchVariableType Patch_UreaFlow
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].urea_flow[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NH4 changed by the soil water module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NH4 changed by the soil water module, for each patch")]
+	private CNPatchVariableType Patch_NH4Flow
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].nh4_flow[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NO3 changed by the soil water module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NO3 changed by the soil water module, for each patch")]
+	private CNPatchVariableType Patch_NO3Flow
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].no3_flow[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of urea taken up by any plant module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of urea taken up by any plant module, for each patch")]
+	private CNPatchVariableType Patch_UreaUptake
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].urea_uptake[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NH4 taken up by any plant module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NH4 taken up by any plant module, for each patch")]
+	private CNPatchVariableType Patch_NH4Uptake
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].nh4_uptake[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NO3 taken up by any plant module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NO3 taken up by any plant module, for each patch")]
+	private CNPatchVariableType Patch_NO3Uptake
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].no3_uptake[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of urea added by the fertiliser module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of urea added by the fertiliser module, for each patch")]
+	private CNPatchVariableType Patch_UreaFertiliser
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].urea_fertiliser[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NH4 added by the fertiliser module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NH4 added by the fertiliser module, for each patch")]
+	private CNPatchVariableType Patch_NH4Fertiliser
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].nh4_fertiliser[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NO3 added by the fertiliser module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NO3 added by the fertiliser module, for each patch")]
+	private CNPatchVariableType Patch_NO3Fertiliser
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].no3_fertiliser[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of urea changed by the any other module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of urea changed by the any other module, for each patch")]
+	private CNPatchVariableType Patch_UreaChangedOther
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].urea_ChangedOther[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NH4 changed by the any other module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NH4 changed by the any other module, for each patch")]
+	private CNPatchVariableType Patch_NH4ChangedOther
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].nh4_ChangedOther[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of NO3 changed by the any other module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of NO3 changed by the any other module, for each patch")]
+	private CNPatchVariableType Patch_NO3ChangedOther
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].no3_ChangedOther[layer];
+			}
+			return Result;
+		}
+	}
+
+	// --------
+
 	#endregion deltas
 
 	#region Amounts in solute forms
@@ -4371,6 +4677,11 @@ public partial class SoilNitrogen
 	/// Layer down to which test for diffs are made (upon auto amalgamation)
 	/// </summary>
 	private int LayerDepthToTestDiffs;
+
+	/// <summary>
+	/// A description of the module sending a change in soil nitrogen (used for partitioning)
+	/// </summary>
+	private string senderModule;
 
 	#endregion
 

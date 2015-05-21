@@ -114,9 +114,10 @@ public partial class SoilNitrogen
 					// create new patch based on old one - the original one will be deleted later
 					ClonePatch(idPatchesAffected[i]);
 					int k = Patch.Count - 1;
+					Patch[k].RelativeArea = NewPatch_NewArea;
 					if (PatchtoAdd.AreaNewPatch > 0)
 					{  // a name was supplied
-						Patch[k].PatchName = PatchtoAdd.AreaNewPatch + "_" + i.ToString();
+						Patch[k].PatchName = PatchtoAdd.PatchName + "_" + i.ToString();
 					}
 					else
 					{  // use default naming
@@ -134,7 +135,7 @@ public partial class SoilNitrogen
 					Patch[k].RelativeArea = NewPatch_NewArea;
 					if (PatchtoAdd.PatchName.Length > 0)
 					{  // a name was supplied
-						Patch[k].PatchName = PatchtoAdd.AreaNewPatch + "_" + i.ToString();
+						Patch[k].PatchName = PatchtoAdd.PatchName + "_" + i.ToString();
 					}
 					else
 					{  // use default naming
