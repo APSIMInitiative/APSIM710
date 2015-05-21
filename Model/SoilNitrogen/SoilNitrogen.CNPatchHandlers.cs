@@ -122,6 +122,7 @@ public partial class SoilNitrogen
 					{  // use default naming
 						Patch[k].PatchName = "patch" + k.ToString();
 					}
+					Patch[k].CreationDate = Clock.Today;
 					idPatchesJustAdded.Add(k);
 				}
 				else
@@ -139,6 +140,7 @@ public partial class SoilNitrogen
 					{  // use default naming
 						Patch[k].PatchName = "patch" + k.ToString();
 					}
+					Patch[k].CreationDate = Clock.Today;
 					idPatchesJustAdded.Add(k);
 					writeMessage("create new patch, with area = " + NewPatch_NewArea.ToString("#0.00#") + ", based on existing patch("
 						+ idPatchesAffected[i].ToString() + ") - Old area = " + OldPatch_OldArea.ToString("#0.00#") + ", new area = "
@@ -470,13 +472,22 @@ public partial class SoilNitrogen
 	/// <returns>TRUE if patches are similar enough, FALSE otherwise</returns>
 	private bool PatchesAreEqual(int k, int j)
 	{
-		double deltaValue = 0.0;
-		double TotalValueBase = 0.0;
-		int TestedCount = 0;
-		int AgreedCount = 0;
-		bool Result = false;
+		double deltaValue = 0.0;		// difference in a variable between two patches
+		double TotalValueBase = 0.0;	// value of the variable in the 'base' patch (gives the order of magnitude)
+		int TestedCount = 0;			// number of tests made
+		int AgreedCount = 0;			// number of tests with positive result
+		bool Result = false;			// result is affirmative only if all tests are positive
 
-		double AdjustFactor = (k == 0 ? 1.0 : DiffAdjustFactor);   // an adjust factor is applied, if patch is base the diffs can be a bit less stringent
+		// Adjust factor for diffs
+		//  it is used to differentiate whether the patch is the 'base'. The diffs can then be a bit less stringent
+		double AdjustFactor = 1.0;
+		if (PatchbasePatchApproach == "IDBased")
+			if (k == 1)
+				AdjustFactor = DiffAdjustFactor;
+		if (PatchbasePatchApproach == "AreaBased")
+			if (Patch[k].RelativeArea == Patch.Max(x => x.RelativeArea))
+				AdjustFactor = DiffAdjustFactor;
+		//else {}  // do not use a different adjustFactor for the base patch
 
 		// go through a series of criteria to evaluate whether the two patches can be considered equal
 
@@ -548,14 +559,24 @@ public partial class SoilNitrogen
 		return Result;
 	}
 
+	/// <summary>
+	/// Check whether a delta value can be considered 'non-significant'
+	/// </summary>
+	/// <param name="deltaValue">the value to be tested</param>
+	/// <param name="TotalValueBase">the magnitude of the value being tested</param>
+	/// <param name="relativeDiffFactor">the value of the maximum relative delta</param>
+	/// <param name="absoluteDiffFactor">the value of the maximum absolute delta</param>
+	/// <param name="AdjustFactor">a factor to adjust the DiffFactors</param>
+	/// <returns>an integer, 1 if the the deltaValue is non-significant or 0 otherwise</returns>
 	private int TestDelta(double deltaValue, double TotalValueBase, double relativeDiffFactor, double absoluteDiffFactor, double AdjustFactor)
 	{
-		int Result = 0;
-		if (deltaValue <= absoluteDiffFactor * AdjustFactor)
-			Result = 1;
-		if ((TotalValueBase > 0) && (Result < 1))
-			if (deltaValue / TotalValueBase <= relativeDiffFactor * AdjustFactor)
-				Result = 1;
+		int Result = 1;
+		if (absoluteDiffFactor >= 0.0)
+			if (deltaValue > absoluteDiffFactor * AdjustFactor)
+				Result = 0;
+		if ((relativeDiffFactor > 0.0) && (TotalValueBase > epsilon))
+			if (deltaValue / TotalValueBase > relativeDiffFactor * AdjustFactor)
+				Result = 0;
 
 		return Result;
 	}

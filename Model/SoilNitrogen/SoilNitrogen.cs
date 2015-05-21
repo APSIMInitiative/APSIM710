@@ -57,6 +57,9 @@ public partial class SoilNitrogen
 	[EventHandler]
 	public void OnInitialised()
 	{
+		// set the creation date
+		Patch[0].CreationDate = Clock.Today;
+
 		// set the size of arrays
 		ResizeLayeredVariables(dlayer.Length);
 

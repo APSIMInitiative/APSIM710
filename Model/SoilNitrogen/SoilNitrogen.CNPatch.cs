@@ -37,6 +37,11 @@ public partial class SoilNitrogen
 		public double RelativeArea = 1.0;
 
 		/// <summary>
+		/// Date at which this patch was created
+		/// </summary>
+		public DateTime CreationDate;
+
+		/// <summary>
 		/// Reference to main SoilNitrogen Class - for accessing the parameters and input variables
 		/// </summary>
 		private SoilNitrogen g;

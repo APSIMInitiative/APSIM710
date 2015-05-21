@@ -1078,6 +1078,24 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
+	/// Approach to use when defining the base patch
+	/// </summary>
+	/// <remarks>
+	/// This is used to define the patch considered the 'base'. It is only used when comparing patches during
+	/// potential auto-amalgamation (comparison against base are more lax)
+	/// Options:
+	///  - IDBased: the patch with lowest ID (=0) is used as the base
+	///  - AreaBased: The [first] patch with the biggest area is used as base
+	/// </remarks>
+	[Param]
+	[Output]
+	public string basePatchApproach
+	{
+		get { return PatchbasePatchApproach; }
+		set { PatchbasePatchApproach = value.Trim(); }
+	}
+
+	/// <summary>
 	/// Relative difference in total organic carbon (0-1)
 	/// </summary>
 	[Param]
@@ -2841,7 +2859,8 @@ public partial class SoilNitrogen
 	/// Relative area of each internal patch
 	/// </summary>
 	[Output]
-	[Description("Relative area of each internal patches")]
+	[Description("Relative area of each internal patch")]
+	[Units("0-1")]
 	private double[] PatchArea
 	{
 		get
@@ -2857,7 +2876,8 @@ public partial class SoilNitrogen
 	/// Name of each internal patch
 	/// </summary>
 	[Output]
-	[Description("Relative area of each internal patches")]
+	[Description("Name of each internal patch")]
+	[Units("")]
 	private string[] PatchName
 	{
 		get
@@ -2865,6 +2885,23 @@ public partial class SoilNitrogen
 			string[] Result = new string[Patch.Count];
 			for (int k = 0; k < Patch.Count; k++)
 				Result[k] = Patch[k].PatchName;
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Age of each existing internal patch
+	/// </summary>
+	[Output]
+	[Description("Age of each existing internal patch")]
+	[Units("days")]
+	private double[] PatchAge
+	{
+		get
+		{
+			double[] Result = new double[Patch.Count];
+			for (int k = 0; k < Patch.Count; k++)
+				Result[k] = (Clock.Today - Patch[k].CreationDate).TotalDays + 1;
 			return Result;
 		}
 	}
@@ -4324,6 +4361,11 @@ public partial class SoilNitrogen
 	/// Approach used in auto amalgamation of patches
 	/// </summary>
 	private string PatchAmalgamationApproach = "CompareAll";
+
+	/// <summary>
+	/// Approach used to define 'base' patch
+	/// </summary>
+	private string PatchbasePatchApproach = "AreaBased";
 
 	/// <summary>
 	/// Layer down to which test for diffs are made (upon auto amalgamation)
