@@ -959,7 +959,6 @@
       </Job>
    </Target>
    <Target name="RunAll">
-      <DependsOn>FindTests</DependsOn>
       <DependsOn>Tests</DependsOn>
       <Job name="Unit tests">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
@@ -976,5 +975,6 @@
   <!-- ############### All test simulations will go here ############### -->
    <Target name="Tests">
       <DependsOn>Post-Compile</DependsOn>
+      <DependsOn>FindTests</DependsOn>
    </Target>
 </Project>
