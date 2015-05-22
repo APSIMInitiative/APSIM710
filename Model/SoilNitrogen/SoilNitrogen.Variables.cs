@@ -2912,6 +2912,8 @@ public partial class SoilNitrogen
 
 	#region Changes for today - deltas
 
+	#region Totals (whole profile)
+
 	/// <summary>
 	/// N carried out for each patch in sediment via runoff/erosion
 	/// </summary>
@@ -2929,6 +2931,485 @@ public partial class SoilNitrogen
 			return Result;
 		}
 	}
+
+	// - These are summed up over the whole profile  ----------------------------------------------
+
+	/// <summary>
+	/// Total net N mineralisation from residue decomposition, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total net N mineralisation from residue decomposition, for each patch")]
+	private double[] PatchTotalNMineralisedFromResidues
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_res_no3_min[layer] + Patch[k].dlt_res_nh4_min[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total net FOM N mineralised, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total net FOM N mineralised, for each patch")]
+	private double[] PatchTotalNMineralisedFromFOM
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_n_fom_to_min[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total net humic N mineralised, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total net humic N mineralised, for each patch")]
+	private double[] PatchTotalNMineralisedFromHumus
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_n_hum_to_min[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total net biomass N mineralised, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total net biomass N mineralised, for each patch")]
+	private double[] PatchTotalNMineralisedFromMBiomass
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_n_biom_to_min[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total nitrogen coverted by hydrolysis, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total nitrogen coverted by hydrolysis, for each patch")]
+	private double[] PatchTotalUreaHydrolysis
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_urea_hydrolysis[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total nitrogen coverted by nitrification, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total nitrogen coverted by nitrification, for each patch")]
+	private double[] PatchTotalNitrification
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_nitrification[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total effective amount of NH4-N coverted into NO3 by nitrification, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total effective amount of NH4-N coverted into NO3 by nitrification, for each patch")]
+	private double[] PatchTotalEffectiveNitrification
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_nitrification[layer] - Patch[k].dlt_n2o_nitrif[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total N2O N produced during nitrification, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total N2O N produced during nitrification, for each patch")]
+	private double[] PatchTotalN2O_Nitrification
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_n2o_nitrif[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total NO3 N denitrified, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total NO3 N denitrified, for each patch")]
+	private double[] PatchTotalNO3_Denitrification
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_no3_dnit[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total N2O N produced during denitrification, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total N2O N produced during denitrification, for each patch")]
+	private double[] PatchTotalN2O_Denitrification
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_n2o_dnit[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of N2O N produced, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of N2O N produced, for each patch")]
+	private double[] PatchTotalN2OLostToAtmosphere
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_n2o_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of N2 produced, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of N2 produced, for each patch")]
+	private double[] PatchTotalN2LostToAtmosphere
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_no3_dnit[layer] - Patch[k].dlt_n2o_dnit[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total N converted by denitrification (all forms), for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total N converted by denitrification (all forms), for each patch")]
+	private double[] PatchTotalDenitrification
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of urea changed by the soil water module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of urea changed by the soil water module, for each patch")]
+	private double[] PatchTotalUreaLeached
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				Result[k] += Patch[k].urea_flow[dlayer.Length - 1];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NH4 changed by the soil water module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NH4 changed by the soil water module, for each patch")]
+	private double[] PatchTotalNH4Leached
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				Result[k] += Patch[k].nh4_flow[dlayer.Length - 1];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NO3 changed by the soil water module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NO3 changed by the soil water module, for each patch")]
+	private double[] PatchTotalNO3Leached
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				Result[k] += Patch[k].no3_flow[dlayer.Length - 1];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of urea taken up by any plant module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of urea taken up by any plant module, for each patch")]
+	private double[] PatchTotalUreaUptake
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].urea_uptake[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NH4 taken up by any plant module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NH4 taken up by any plant module, for each patch")]
+	private double[] PatchTotalNH4Uptake
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].nh4_uptake[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NO3 taken up by any plant module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NO3 taken up by any plant module, for each patch")]
+	private double[] PatchTotalNO3Uptake
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].no3_uptake[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of urea added by the fertiliser module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of urea added by the fertiliser module, for each patch")]
+	private double[] PatchTotalUreaFertiliser
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].urea_fertiliser[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NH4 added by the fertiliser module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NH4 added by the fertiliser module, for each patch")]
+	private double[] PatchTotalNH4Fertiliser
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].nh4_fertiliser[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NO3 added by the fertiliser module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NO3 added by the fertiliser module, for each patch")]
+	private double[] PatchTotalNO3Fertiliser
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].no3_fertiliser[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of urea changed by the any other module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of urea changed by the any other module, for each patch")]
+	private double[] PatchTotalUreaChangedOther
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].urea_ChangedOther[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NH4 changed by the any other module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NH4 changed by the any other module, for each patch")]
+	private double[] PatchTotalNH4ChangedOther
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].nh4_ChangedOther[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of NO3 changed by the any other module, for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of NO3 changed by the any other module, for each patch")]
+	private double[] PatchTotalNO3ChangedOther
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].no3_ChangedOther[layer];
+			return Result;
+		}
+	}
+
+	// --------------------------------------------------------------------------------------------
+	#endregion
+
+	#region Values for each soil layer
 
 	/// <summary>
 	/// Net N mineralisation from residue decomposition for each patch
@@ -3089,7 +3570,7 @@ public partial class SoilNitrogen
 	/// </summary>
 	[Output]
 	[Units("kg/ha")]
-	[Description("Total Nitrogen coverted by nitrification (into either NO3 or N2O) for each patch")]
+	[Description("Nitrogen coverted by nitrification (into either NO3 or N2O) for each patch")]
 	private CNPatchVariableType PatchDltNitrification
 	{
 		get
@@ -3114,7 +3595,7 @@ public partial class SoilNitrogen
 	/// </summary>
 	[Output]
 	[Units("kg/ha")]
-	[Description("effective amount of NH4-N coverted into NO3 by nitrification for each patch")]
+	[Description("Effective amount of NH4-N coverted into NO3 by nitrification for each patch")]
 	private CNPatchVariableType PatchEffectiveDltNitrification
 	{
 		get
@@ -3260,12 +3741,37 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
-	/// N converted by all forms of denitrification for each patch
+	/// N converted by all forms of denitrification for each patch (to be deleted?)
 	/// </summary>
 	[Output]
 	[Units("kg/ha")]
 	[Description("N converted by denitrification (all forms) for each patch")]
 	private CNPatchVariableType Patch_dnit
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// N converted by all forms of denitrification for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("N converted by denitrification (all forms) for each patch")]
+	private CNPatchVariableType PatchDltDenitrification
 	{
 		get
 		{
@@ -3588,88 +4094,13 @@ public partial class SoilNitrogen
 		}
 	}
 
-	// --------
+	// ----------------------------------------------------------------------------------------------------------------
+
+	#endregion
 
 	#endregion deltas
 
 	#region Amounts in solute forms
-
-	/// <summary>
-	/// Amount of NH4 N in each internal patch
-	/// </summary>
-	[Output]
-	[Units("kg/ha")]
-	[Description("Amount of N as NH4 in each patch")]
-	private CNPatchVariableType PatchNH4
-	{
-		get
-		{
-			int nPatches = (Patch != null) ? Patch.Count : 1;
-			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
-			for (int k = 0; k < nPatches; k++)
-			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
-				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nh4[layer];
-			}
-			return Result;
-		}
-	}
-
-	[Output]
-	[Units("kg/ha")]
-	[Description("Amount of N as NH4 in each patch")]
-	private CNPatchVariable_arrayType[] PatchNH4_Array
-	{
-		get
-		{
-			int nPatches = (Patch != null) ? Patch.Count : 1;
-			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariable_arrayType[] Result = new CNPatchVariable_arrayType[nPatches];
-			for (int k = 0; k < nPatches; k++)
-			{
-				Result[k] = new CNPatchVariable_arrayType();
-				Result[k].LayerValue = new double[dlayer.Length];
-				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k].LayerValue[layer] = Patch[k].nh4[layer];
-
-				Result[k].Pool = new CNPatchVariable_arrayPoolType[3];
-				for (int pool = 0; pool < 3; pool++)
-				{
-					Result[k].Pool[pool] = new CNPatchVariable_arrayPoolType();
-					Result[k].Pool[pool].LayerValue = new double[nLayers];
-				}
-			}
-			return Result;
-		}
-	}
-
-	[Output]
-	[Units("kg/ha")]
-	[Description("Amount of N as NH4 in each patch")]
-	private CNPatchVariable_arrayType PatchZeroNH4
-	{
-		get
-		{
-			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariable_arrayType Result = new CNPatchVariable_arrayType();
-			Result.LayerValue = new double[nLayers];
-			for (int layer = 0; layer < nLayers; layer++)
-				Result.LayerValue[layer] = Patch[0].nh4[layer];
-
-			Result.Pool = new CNPatchVariable_arrayPoolType[3];
-			for (int pool = 0; pool < 3; pool++)
-			{
-				Result.Pool[pool] = new CNPatchVariable_arrayPoolType();
-				Result.Pool[pool].LayerValue = new double[nLayers];
-			}
-
-			return Result;
-		}
-	}
 
 	/// <summary>
 	/// Amount of urea N in each internal patch
@@ -3701,6 +4132,31 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
+	/// Amount of NH4 N in each internal patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of N as NH4 in each patch")]
+	private CNPatchVariableType PatchNH4
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType Result = new CNPatchVariableType();
+			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				Result.Patch[k] = new CNPatchVariablePatchType();
+				Result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					Result.Patch[k].Value[layer] = Patch[k].nh4[layer];
+			}
+			return Result;
+		}
+	}
+
+	/// <summary>
 	/// Amount of NO3 N in each internal patch
 	/// </summary>
 	[Output]
@@ -3721,6 +4177,63 @@ public partial class SoilNitrogen
 				for (int layer = 0; layer < nLayers; layer++)
 					Result.Patch[k].Value[layer] = Patch[k].no3[layer];
 			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total urea N in each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total urea N in each patch")]
+	private double[] PatchTotalUrea
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].urea[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total NH4 N in each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total NH4 N in each patch")]
+	private double[] PatchTotalNH4
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].nh4[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total NO3 N in each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total NO3 N in each patch")]
+	private double[] PatchTotalNO3
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].no3[layer];
 			return Result;
 		}
 	}
@@ -3809,6 +4322,7 @@ public partial class SoilNitrogen
 			return Result;
 		}
 	}
+	
 	/// <summary>
 	/// Soil biomass nitrogen for each patch
 	/// </summary>
@@ -3834,7 +4348,6 @@ public partial class SoilNitrogen
 		}
 	}
 
-
 	/// <summary>
 	/// Total N in soil for each patch
 	/// </summary>
@@ -3856,6 +4369,141 @@ public partial class SoilNitrogen
 				for (int layer = 0; layer < nLayers; layer++)
 					Result.Patch[k].Value[layer] = Patch[k].nit_tot[layer];
 			}
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total FOM N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total FOM N in the whole profile for each patch")]
+	private double[] PatchTotalFOM_N
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].fom_n[0][layer] + Patch[k].fom_n[1][layer] + Patch[k].fom_n[2][layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total Humic N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total humic N in the whole profile for each patch")]
+	private double[] PatchTotalHum_N
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].hum_n[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total inert N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total inert N in the whole profile for each patch")]
+	private double[] PatchTotalInert_N
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].inert_n[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total biomass N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total biomass N in the whole profile for each patch")]
+	private double[] PatchTotalBiom_N
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].biom_n[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total mineral N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total mineral N in the whole profile for each patch")]
+	private double[] PatchTotalSoilMineralN
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].urea[layer] + Patch[k].nh4[layer] + Patch[k].no3[layer];
+
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total organic N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total organic N in the whole profile for each patch")]
+	private double[] PatchTotalSoilOrganicN
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].fom_n[0][layer] + Patch[k].fom_n[1][layer] + Patch[k].fom_n[2][layer] +
+								 Patch[k].hum_n[layer] + Patch[k].biom_n[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total N in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total N in the whole profile for each patch")]
+	private double[] PatchTotalSoilN
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].nit_tot[layer];
 			return Result;
 		}
 	}
@@ -4328,6 +4976,101 @@ public partial class SoilNitrogen
 		}
 	}
 
+	/// <summary>
+	/// Total FOM C in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total FOM C in the whole profile for each patch")]
+	private double[] PatchTotalFOM_C
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].fom_c[0][layer] + Patch[k].fom_c[1][layer] + Patch[k].fom_c[2][layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total Humic C in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total humic C in the whole profile for each patch")]
+	private double[] PatchTotalHum_C
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].hum_c[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total inert C in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total inert C in the whole profile for each patch")]
+	private double[] PatchTotalInert_C
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].inert_c[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total biomass C in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total biomass C in the whole profile for each patch")]
+	private double[] PatchTotalBiom_C
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].biom_c[layer];
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total C in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total C in the whole profile for each patch")]
+	private double[] PatchTotalSoilC
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Patch[k].carbon_tot[layer];
+			return Result;
+		}
+	}
+
 	#endregion
 
 	#region Carbon Balance
@@ -4368,7 +5111,7 @@ public partial class SoilNitrogen
 
 	#endregion outputs from patches      * * * * * * * * * * * * * * * * * * 
 
-	#endregion  outputs
+	#endregion outputs
 
 	#region Useful constants
 
