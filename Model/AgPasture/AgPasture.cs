@@ -206,6 +206,16 @@ public class AgPasture
 	}
 
 	[Param]
+	[Description("Maximum NH4 uptake rate for each species")]
+	[Units("ppm/day")]
+	private double[] MaximumUptakeRateNH4;
+
+	[Param]
+	[Description("Maximum NO3 uptake rate for each species")]
+	[Units("ppm/day")]
+	private double[] MaximumUptakeRateNO3;
+
+	[Param]
 	[Description("Reference root length density for water and N uptake")]
 	[Units("mm/mm3")]
 	private double[] referenceRLD;
@@ -893,9 +903,27 @@ public class AgPasture
 	[Input]
 	private double[] DUL;     //drainage upper limit (field capacity);
 	[Input]
+	private double[] nh4;     //SNH4dep = new float[dlayer.Length];
+	[Input]
 	private double[] no3;     //SNO3dep = new float[dlayer.Length];
 	[Input]
-	private double[] nh4;     //SNH4dep = new float[dlayer.Length];
+	private double[] bd;	// soil bulk density
+
+	// - Making AgPasture patch-aware  ---------------------------------------------
+	[Input(IsOptional = true)]
+	private double[] nh4_PlantAvailable;
+	[Input(IsOptional = true)]
+	private double[] no3_PlantAvailable;
+
+	[Input(IsOptional = true)]
+	private double[] PatchArea;
+
+	[Input(IsOptional = true)]
+	private CNPatchVariableType PatchNH4;
+	[Input(IsOptional = true)]
+	private CNPatchVariableType PatchNO3;
+
+	// -----------------------------------------------------------------------------
 
 	/// <summary>CO2 in atmosphere</summary>
 	[Input(IsOptional = true)]
@@ -979,6 +1007,12 @@ public class AgPasture
 	/// <summary>Soil water uptake as given by an external module (mm)</summary>
 	private double[] swardWaterUptakeByAPSIM;
 
+
+	/// <summary>Soil NH4_N uptake as given by an external module (kgN/ha)</summary>
+	private double[] swardNH4UptakeByAPSIM;
+	/// <summary>Soil NO3_N uptake as given by an external module (kgN/ha)</summary>
+	private double[] swardNO3UptakeByAPSIM;
+	
 	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
 	private double[] soilNH4Available;
 	/// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
@@ -1045,6 +1079,10 @@ public class AgPasture
 	/// <summary>NitrogenChanged event</summary>
 	[Event]
 	public event NitrogenChangedDelegate NitrogenChanged;
+
+	/// <summary>NitrogenChanged event</summary>
+	[Event]
+	public event AddSoilCNPatchDelegate AddSoilCNPatch;
 
 	#endregion  -----------------------------------------------------------------------------------
 
@@ -1413,6 +1451,8 @@ public class AgPasture
 			mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
 			mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[s2];
 			mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[s2];
+			mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[s2];
+			mySpecies[s1].MaximumUptakeRateNO3 = MaximumUptakeRateNO3[s2];
 			mySpecies[s1].referenceRLD = referenceRLD[s2];
 			mySpecies[s1].NextraSWF = NextraSWF[s2];
 		}
@@ -1422,6 +1462,8 @@ public class AgPasture
 			mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
 			mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[0];
 			mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[0];
+			mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[0];
+			mySpecies[s1].MaximumUptakeRateNO3 = MaximumUptakeRateNO3[0];
 			mySpecies[s1].referenceRLD = referenceRLD[0];
 			mySpecies[s1].NextraSWF = NextraSWF[0];
 		}
@@ -1623,7 +1665,7 @@ public class AgPasture
 		Console.WriteLine("         -----------------------------------------------------------------------------");
 
 		Console.WriteLine();
-		Console.WriteLine("          - N uptake controlled by AgPasture");
+		Console.WriteLine("          - N uptake controlled by " + ((NUptakeSource == "calc") ? "AgPasture" : "an external module"));
 		Console.WriteLine("          - Water uptake controlled by " + ((WaterUptakeSource == "calc") ? "AgPasture" : "an external module"));
 		Console.WriteLine();
 
@@ -1931,6 +1973,29 @@ public class AgPasture
 	}
 
 	/// <summary>
+	/// Respond to a NUptakesCalculated event
+	/// </summary>
+	/// <param name="SoilNData">NUptakesCalculated data</param>
+	[EventHandler]
+	public void OnNUptakesCalculated(NUptakesCalculatedType SoilNData)
+	{
+		// Gets the water uptake for each layer as calculated by an external module (SWIM)
+		for (int i_Crop = 0; i_Crop != SoilNData.Uptakes.Length; i_Crop++)
+		{
+			string MyName = SoilNData.Uptakes[i_Crop].Name;
+			if (MyName == thisCropName)
+			{
+				swardNH4UptakeByAPSIM = new double[dlayer.Length];
+				swardNO3UptakeByAPSIM = new double[dlayer.Length];
+				for (int layer = 0; layer < SoilNData.Uptakes[i_Crop].NH4Amount.Length; layer++)
+					swardNH4UptakeByAPSIM[layer] = SoilNData.Uptakes[i_Crop].NH4Amount[layer];
+				for (int layer = 0; layer < SoilNData.Uptakes[i_Crop].NO3Amount.Length; layer++)
+					swardNO3UptakeByAPSIM[layer] = SoilNData.Uptakes[i_Crop].NO3Amount[layer];
+			}
+		}
+	}
+
+	/// <summary>
 	/// Let species know the value of some sward variables
 	/// </summary>
 	private void SetSpeciesWithSwardData()
@@ -2153,7 +2218,7 @@ public class AgPasture
 		double[] PAW = new double[dlayer.Length];
 		double wFrac = 0.0;                  // availability faction for each species
 
-		// check taht we have an input from apsim
+		// check that we have an input from apsim
 		if (swardWaterUptakeByAPSIM == null)
 			throw new Exception("No module provided an estimate for water uptake, check water module or set WaterUptakeSource to \"calc\"");
 
@@ -2351,6 +2416,10 @@ public class AgPasture
 			{
 				return PlantExtractableSoilN_M3();
 			}
+			if (NExtractabilityMethod == 4)
+			{
+				return PlantExtractableSoilN_M4();
+			}
 			else // default method = 0
 			{
 				return PlantExtractableNClassic();
@@ -2358,8 +2427,10 @@ public class AgPasture
 		}
 		else
 		{
+			return PlantExtractableSoilNApsim();
+
 			// N uptake calculated by other modules (e.g., SWIM) - not implemented
-			throw new Exception("External N uptake is not implemented in AgPasture. Please specify N uptake source as \"calc\".");
+			//throw new Exception("External N uptake is not implemented in AgPasture. Please specify N uptake source as \"calc\".");
 		}
 	}
 
@@ -2367,6 +2438,10 @@ public class AgPasture
 	/// Gets the amount of soil N that plants can extract
 	/// This is the 'classic' method, all N in the root zone is available
 	/// </summary>
+	/// <remarks>
+	/// The method has been modified to consider limits to available N (as defined in SoilNitrogen)
+	/// This is used when dealing with SoilCNPatches, limiting plants access to patches with very high N content
+	/// </remarks>
 	/// <returns>Amount of N available to plants</returns>
 	private double PlantExtractableNClassic()
 	{
@@ -2381,8 +2456,16 @@ public class AgPasture
 				for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
 				{
 					layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-					mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac;
-					mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac;
+					if (nh4_PlantAvailable == null)
+					{
+						mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac;
+						mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac;
+					}
+					else
+					{
+						mySpecies[s].soilAvailableNH4[layer] = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+						mySpecies[s].soilAvailableNO3[layer] = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+					}
 					soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
 					soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
 				}
@@ -2396,8 +2479,6 @@ public class AgPasture
 				maxAvailable = (nh4[layer] + no3[layer]) * layerFrac;
 				// adjust amounts for each species
 				nFrac = MathUtility.Divide(maxAvailable, soilNH4Available[layer] + soilNO3Available[layer], 0.0);
-				soilNH4Available[layer] = 0.0;
-				soilNO3Available[layer] = 0.0;
 				for (int s = 0; s < NumSpecies; s++)
 				{
 					mySpecies[s].soilAvailableNH4[layer] *= nFrac;
@@ -2414,8 +2495,16 @@ public class AgPasture
 			for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
 			{
 				layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-				soilNH4Available[layer] = nh4[layer] * layerFrac;
-				soilNO3Available[layer] = no3[layer] * layerFrac;
+				if (nh4_PlantAvailable == null)
+				{
+					soilNH4Available[layer] = nh4[layer] * layerFrac;
+					soilNO3Available[layer] = no3[layer] * layerFrac;
+				}
+				else
+				{
+					soilNH4Available[layer] = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+					soilNO3Available[layer] = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+				}
 
 				// partition amount to each species (simple approach, values not realy used)
 				for (int s = 0; s < NumSpecies; s++)
@@ -2705,6 +2794,175 @@ public class AgPasture
 	}
 
 	/// <summary>
+	/// Gets the amount of soil N that plants can extract (method 4)
+	/// This approach considers a maximum uptake rate for each N form 
+	/// </summary>
+	/// <remarks>
+	/// The method has been modified to use when dealing with SoilCNPatches (defined in SoilNitrogen)
+	/// </remarks>
+	/// <returns>Amount of N available to plants</returns>
+	private double PlantExtractableSoilN_M4()
+	{
+		double totalAvailable = 0.0;
+		double layerFrac = 1.0;         // fraction of each layer explored by roots
+		double maxAvailable = 0.0;      // maximum N amount available in each layer
+		double MaxUptakeNH4 = 0.0;      // maximum NH4 amount that can be taken up, in each layer
+		double MaxUptakeNO3 = 0.0;      // maximum NO3 amount that can be taken up, in each layer
+		double nFrac = 0.0;             // fraction available for each species
+
+		if (usingNAvailableBySpecies)
+		{ // considering each species
+			for (int s = 0; s < NumSpecies; s++)
+			{
+				if (PatchArea == null)
+				{ // there are no patches, so use 'classic' approach
+					//amount as if each species was alone
+					for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
+					{
+						layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+						mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac;
+						mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac;
+						soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+						soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+					}
+				}
+				else
+				{  // go over each patch and get amount available as if each species was alone
+					int nPatches = PatchNH4.Patch.Length;
+					for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
+					{
+						MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
+						MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
+						layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+						for (int k = 0; k < 1; k++)
+						{
+							mySpecies[s].soilAvailableNH4[layer] = Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
+							mySpecies[s].soilAvailableNO3[layer] = Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNO3) * PatchArea[k] * layerFrac;
+						}
+
+						soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+						soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+					}
+				}
+			}
+
+			// Adjust the values so that total available N is equal or less than maximum
+			for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+			{
+				// maximum N available for this layer
+				layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+				if (PatchArea == null)
+				{ // there are no patches, so use 'classic' approach
+					maxAvailable = (nh4[layer] + no3[layer]) * layerFrac;
+				}
+				else
+				{  // go over each patch
+					MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
+					MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
+					for (int k = 0; k < 1; k++)
+					{
+						maxAvailable = Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac
+									 + Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
+					}
+				}
+				// adjust amounts for each species
+				nFrac = MathUtility.Divide(maxAvailable, soilNH4Available[layer] + soilNO3Available[layer], 0.0);
+				for (int s = 0; s < NumSpecies; s++)
+				{
+					mySpecies[s].soilAvailableNH4[layer] *= nFrac;
+					mySpecies[s].soilAvailableNO3[layer] *= nFrac;
+					soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+					soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+				}
+
+				totalAvailable += soilNH4Available[layer] + soilNO3Available[layer];
+			}
+		}
+		else
+		{ // consider whole sward
+			if (PatchArea == null)
+			{ // there are no patches, so use 'classic' approach
+				for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+				{
+					layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+					soilNH4Available[layer] += nh4[layer] * layerFrac;
+					soilNO3Available[layer] += no3[layer] * layerFrac;
+				}
+			}
+			else
+			{ // go over each patch and get the available N
+				int nPatches = PatchNH4.Patch.Length;
+				for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+				{
+					MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
+					MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
+					layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+					for (int k = 0; k < nPatches; k++)
+					{
+						double teste = nh4[layer] * 1;
+						soilNH4Available[layer] += Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
+						soilNO3Available[layer] += Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNO3) * PatchArea[k] * layerFrac;
+					}
+				}
+			}
+
+			for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+			{
+				// partition amount to each species (simple approach, values not realy used)
+				for (int s = 0; s < NumSpecies; s++)
+				{ // based on root DM
+					nFrac = MathUtility.Divide(mySpecies[s].dmroot, RootWt, 0.0);
+					mySpecies[s].soilAvailableNH4[layer] = soilNH4Available[layer] * nFrac;
+					mySpecies[s].soilAvailableNO3[layer] = soilNO3Available[layer] * nFrac;
+				}
+
+				totalAvailable += soilNH4Available[layer] + soilNO3Available[layer];
+			}
+		}
+
+		return totalAvailable;
+	}
+
+	/// <summary>
+	/// Gets the amount of soil N that plants can extract, or have extracted
+	/// This approach does not actually computes extractable N, only collects the values
+	/// it has been computed somewhere else (SoilNitrogen) for each N form
+	/// </summary>
+	/// <returns>Amount of N available to plants</returns>
+	private double PlantExtractableSoilNApsim()
+	{
+		// check that we have an input from apsim
+		if (swardWaterUptakeByAPSIM == null)
+			throw new Exception("No module provided an estimate for N uptake, check SoilN module or set NUptakeSource to \"calc\"");
+
+		if (usingNAvailableBySpecies)
+		{ // consider each species  -  Not implemented
+			throw new Exception("Procedure not implemented");
+		}
+		else
+		{ // consider whole sward
+			double totalAvailable = 0.0;
+			double nFrac = 0.0;
+			for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+			{
+				soilNH4Available[layer] = swardNH4UptakeByAPSIM[layer];
+				soilNO3Available[layer] = swardNO3UptakeByAPSIM[layer];
+
+				// partition amount to each species (simple approach, values not realy used)
+				for (int s = 0; s < NumSpecies; s++)
+				{ // based on root DM
+					nFrac = MathUtility.Divide(mySpecies[s].dmroot, RootWt, 0.0);
+					mySpecies[s].soilAvailableNH4[layer] = soilNH4Available[layer] * nFrac;
+					mySpecies[s].soilAvailableNO3[layer] = soilNO3Available[layer] * nFrac;
+				}
+
+				totalAvailable += soilNH4Available[layer] + soilNO3Available[layer];
+			}
+			return totalAvailable;
+		}
+	}
+
+	/// <summary>
 	/// Evaluate N budget and uptake processes
 	/// </summary>
 	/// <remarks>
@@ -2843,7 +3101,7 @@ public class AgPasture
 	}
 
 	/// <summary>
-	/// Evaluate the amount of taken up from each layer for each N form
+	/// Evaluate the amount of N taken up from each layer, for each N form
 	/// </summary>
 	private void PartitionNUptake()
 	{
@@ -2852,7 +3110,7 @@ public class AgPasture
 		Array.Clear(soilNO3Uptake, 0, dlayer.Length);
 
 		if (usingAlternativeNUptake)
-		{ // consider parition of uptake for each species
+		{ // consider partition of uptake for each species
 			double fraction = 0.0;
 			double totNAvail = 0.0;
 			for (int s = 0; s < NumSpecies; s++)
@@ -2887,8 +3145,7 @@ public class AgPasture
 
 			if (totalNuptake > 0.0)
 			{
-				// partiton uptake amongst layers
-
+				// partition uptake amongst layers
 				double fraction = Math.Min(1.0, totalNuptake / swardSoilNavailable);
 				for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
 				{
@@ -2897,7 +3154,7 @@ public class AgPasture
 				}
 
 				// partition uptake between N form for each species
-				fraction = soilNH4Available.Sum() / totalNuptake;
+				fraction = soilNH4Uptake.Sum() / totalNuptake;
 				for (int s = 0; s < NumSpecies; s++)
 				{
 					mySpecies[s].soilNH4Uptake = mySpecies[s].soilNuptake * fraction;
@@ -2936,7 +3193,51 @@ public class AgPasture
 
 		// do actual N uptake
 		if (soilNH4Uptake.Sum() + soilNO3Uptake.Sum() > 0.0)
-			SendNitrogenChanges(soilNH4Uptake, soilNO3Uptake);
+			if ((NExtractabilityMethod == 4) && (PatchArea != null))
+			{ // uptake should be 'patch-aware' (to use when dealing with SoilCNPatches)
+				int nPatches = PatchNH4.Patch.Length;
+				double layerFrac = 0.0;
+				double patchFrac = 0.0;
+				double MaxNUptakeLayer = 0.0;
+				double AvailableNLayer = 0.0;
+				double[] patchUptakeNH4 = new double[dlayer.Length];
+				double[] patchUptakeNO3 = new double[dlayer.Length];
+				double TotalUptake=0.0;
+				for (int k = 0; k < nPatches; k++)
+				{ // partition for each patch
+					for (int layer = 0; layer < dlayer.Length; layer++)
+					{
+					    layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+						patchUptakeNH4[layer] = 0.0;
+						patchUptakeNO3[layer] = 0.0;
+						if (soilNH4Available[layer] > 0.0)
+						{
+							MaxNUptakeLayer = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
+							AvailableNLayer = Math.Min(PatchNH4.Patch[k].Value[layer], MaxNUptakeLayer) * PatchArea[k] * layerFrac;
+							patchFrac = AvailableNLayer / soilNH4Available[layer];
+							patchUptakeNH4[layer] = -(soilNH4Uptake[layer] * patchFrac) / PatchArea[k];
+						}
+						if (soilNO3Available[layer] > 0.0)
+						{
+							MaxNUptakeLayer = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
+							AvailableNLayer = Math.Min(PatchNO3.Patch[k].Value[layer], MaxNUptakeLayer) * PatchArea[k] * layerFrac;
+							patchFrac = AvailableNLayer / soilNO3Available[layer];
+							patchUptakeNO3[layer] = -(soilNO3Uptake[layer] * patchFrac) / PatchArea[k];
+						}
+					}
+					// send the N changes
+					SendNitrogenChangesByPatch(k, patchUptakeNH4, patchUptakeNO3);
+					TotalUptake += (patchUptakeNH4.Sum() + patchUptakeNO3.Sum()) * PatchArea[k];
+				}
+
+				// check that mass balance was kept
+				if (Math.Abs(soilNH4Uptake.Sum() + soilNO3Uptake.Sum() + TotalUptake) > 0.000001)
+					throw new Exception("Loss of mass balance - partition between SoilCNPatches");
+			}
+			else
+			{
+				SendNitrogenChanges(soilNH4Uptake, soilNO3Uptake);
+			}
 	}
 
 	/// <summary>
@@ -2956,7 +3257,6 @@ public class AgPasture
 		if (WaterChanged != null)
 			WaterChanged.Invoke(WaterUptake);
 	}
-
 
 	/// <summary>
 	/// Send info about N changes to soil module
@@ -2983,6 +3283,26 @@ public class AgPasture
 			NitrogenChanged.Invoke(NUptake);
 	}
 
+	/// <summary>
+	/// Send info about N changes to soil module (consider SoilCNPatches)
+	/// </summary>
+	/// <param name="PatchToAddTo">Patch that will get this change</param>
+	/// <param name="NH4Amount">Amount of NH4 change, for each layer</param>
+	/// <param name="NO3Amount">Amount of NO3 change, for each layer</param>
+	private void SendNitrogenChangesByPatch(int PatchToAddTo, double[] NH4Amount, double[] NO3Amount)
+	{
+		AddSoilCNPatchType PatchData = new AddSoilCNPatchType();
+		PatchData.Sender = "AgPasture";
+		PatchData.DepositionType = "ToSpecificPatch";
+		PatchData.AreaFraction = 1.0;
+		PatchData.AffectedPatches_id = new int[] { PatchToAddTo };
+		PatchData.NH4 = NH4Amount;
+		PatchData.NO3 = NO3Amount;
+
+		if (AddSoilCNPatch != null)
+			AddSoilCNPatch.Invoke(PatchData);
+	}
+ 
 	/// <summary>
 	/// Val's method for N uptake (not fully implemented)
 	/// </summary>

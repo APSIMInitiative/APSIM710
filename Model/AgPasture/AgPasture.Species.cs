@@ -592,6 +592,12 @@ public class Species
 	internal double expoLinearCurveParam = 3.2;
 
 	/// <summary>Some Description</summary>
+	internal double MaximumUptakeRateNH4 = 1.0;
+
+	/// <summary>Some Description</summary>
+	internal double MaximumUptakeRateNO3 = 1.0;
+
+	/// <summary>Some Description</summary>
 	internal double referenceRLD = 0.2;
 
 	/// <summary>Some Description</summary>
