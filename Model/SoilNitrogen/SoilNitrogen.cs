@@ -325,6 +325,10 @@ public partial class SoilNitrogen
 			Patch[k].fom_n[0][layer] = MathUtility.Divide(fomPool[0], fomPoolsCNratio[0], 0.0);
 			Patch[k].fom_n[1][layer] = MathUtility.Divide(fomPool[1], fomPoolsCNratio[1], 0.0);
 			Patch[k].fom_n[2][layer] = MathUtility.Divide(fomPool[2], fomPoolsCNratio[2], 0.0);
+		
+			// set maximum uptake rates for N forms (only really used for AgPasture when patches exist)
+			MaximumNH4UptakeRate[layer] = reset_MaximumNH4Uptake / convFactor[layer];
+			MaximumNO3UptakeRate[layer] = reset_MaximumNO3Uptake / convFactor[layer];
 		}
 
 		initDone = true;
@@ -391,6 +395,9 @@ public partial class SoilNitrogen
 		//Array.Resize(ref dlt_hum_c_atm, nLayers);
 
 		Array.Resize(ref InhibitionFactor_Nitrification, nLayers);
+
+		Array.Resize(ref MaximumNH4UptakeRate, nLayers);
+		Array.Resize(ref MaximumNO3UptakeRate, nLayers);
 
 		for (int k = 0; k < Patch.Count; k++)
 			Patch[k].ResizeLayeredVariables(nLayers);
@@ -833,9 +840,6 @@ public partial class SoilNitrogen
 			{
 				for (int pool = 0; pool < 3; pool++)
 				{
-					int teste1 = inFOMPoolData.Layer.Rank;
-					int teste2 = inFOMPoolData.Layer.Length;
-					int teste3 = inFOMPoolData.Layer.GetLength(0);
 					if (inFOMPoolData.Layer[layer].Pool[pool].C >= epsilon)
 					{   // we have both C and N, can add
 						totalCAmount += inFOMPoolData.Layer[layer].Pool[pool].C;

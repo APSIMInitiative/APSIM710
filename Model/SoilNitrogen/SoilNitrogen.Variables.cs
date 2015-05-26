@@ -1045,6 +1045,32 @@ public partial class SoilNitrogen
 		set { MinimumPatchArea = value; }
 	}
 
+	/// <summary>
+	/// Maximum NH4 uptake rate for plants (ppm/day)
+	/// </summary>
+	[Param(MinVal = 0.0, MaxVal = 10000.0)]
+	[Output]
+	[Units("kg/ha/day")]
+	[Description("Maximum NH4 uptake rate for plants")]
+	public double MaximumUptakeRateNH4
+	{
+		get { return reset_MaximumNH4Uptake; }
+		set { reset_MaximumNH4Uptake = value; }
+	}
+
+	/// <summary>
+	/// Maximum NO3 uptake rate for plants (ppm/day)
+	/// </summary>
+	[Param(MinVal = 0.0, MaxVal = 10000.0)]
+	[Output]
+	[Units("kg/ha/day")]
+	[Description("Maximum NO3 uptake rate for plants")]
+	public double MaximumUptakeRateNO3
+	{
+		get { return reset_MaximumNO3Uptake; }
+		set { reset_MaximumNO3Uptake = value; }
+	}
+
 	#region Parameter for amalgamating patches
 
 	/// <summary>
@@ -1552,7 +1578,7 @@ public partial class SoilNitrogen
 
 	#endregion params that may change
 
-	#endregion
+	#endregion params and inputs
 
 	#region Outputs we make available to other components
 
@@ -2060,6 +2086,42 @@ public partial class SoilNitrogen
 			for (int layer = 0; layer < dlayer.Length; layer++)
 				for (int k = 0; k < Patch.Count; k++)
 					result[layer] += Patch[k].no3[layer] * Patch[k].RelativeArea;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Soil ammonium nitrogen amount available to plants, limited per patch (kgN/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Soil ammonium nitrogen amount available to plants, limited per patch")]
+	public double[] nh4_PlantAvailable
+	{
+		get
+		{
+			double[] result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; layer++)
+				for (int k = 0; k < Patch.Count; k++)
+					result[layer] += Math.Min(Patch[k].nh4[layer], MaximumNH4UptakeRate[layer]) * Patch[k].RelativeArea;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Soil nitrate nitrogen amount available to plants, limited per patch (kgN/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Soil nitrate nitrogen amount available to plants, limited per patch")]
+	public double[] no3_PlantAvailable
+	{
+		get
+		{
+			double[] result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; layer++)
+				for (int k = 0; k < Patch.Count; k++)
+					result[layer] += Math.Min(Patch[k].no3[layer], MaximumNO3UptakeRate[layer]) * Patch[k].RelativeArea;
 			return result;
 		}
 	}
@@ -4238,6 +4300,44 @@ public partial class SoilNitrogen
 		}
 	}
 
+	/// <summary>
+	/// Total NH4 N available to plants in each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total NH4 N available to plants in each patch")]
+	private double[] PatchTotalNH4_PlantAvailable
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Math.Min(Patch[k].nh4[layer], MaximumNH4UptakeRate[layer]);
+			return Result;
+		}
+	}
+
+	/// <summary>
+	/// Total NO3 N available to plants in each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total NO3 N available to plants in each patch")]
+	private double[] PatchTotalNO3_PlantAvailable
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] Result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					Result[k] += Math.Min(Patch[k].no3[layer], MaximumNO3UptakeRate[layer]);
+			return Result;
+		}
+	}
+
 	#endregion
 
 	#region Amounts in various pools
@@ -5130,7 +5230,7 @@ public partial class SoilNitrogen
 	/// <summary>
 	/// List of all existing patches (internal instances of C and N processes)
 	/// </summary>
-	List<soilCNPatch> Patch;
+	public List<soilCNPatch> Patch;
 
 	/// <summary>
 	/// The SoilN internal soil temperature module - to be avoided (deprecated)
@@ -5426,6 +5526,26 @@ public partial class SoilNitrogen
 	/// </summary>
 	private string senderModule;
 
+	/// <summary>
+	/// Maximum NH4 uptake rate for plants (ppm/day) (only used when dealing with patches)
+	/// </summary>
+	private double reset_MaximumNH4Uptake;
+
+	/// <summary>
+	/// Maximum NO3 uptake rate for plants (ppm/day) (only used when dealing with patches)
+	/// </summary>
+	private double reset_MaximumNO3Uptake;
+
+	/// <summary>
+	/// Maximum NH4 uptake rate for plants (only used when dealing with patches)
+	/// </summary>
+	private double[] MaximumNH4UptakeRate;
+
+	/// <summary>
+	/// Maximum NO3 uptake rate for plants (only used when dealing with patches)
+	/// </summary>
+	private double[] MaximumNO3UptakeRate;
+	
 	#endregion
 
 	#endregion internal variables

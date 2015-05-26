@@ -14,7 +14,7 @@ public partial class SoilNitrogen
 	/// <remarks>
 	/// This partial class contains most of the soil processes of SoilNitrogen
 	/// </remarks>
-	partial class soilCNPatch
+	public partial class soilCNPatch
 	{
 
 		#region >>  The soil C and N processes

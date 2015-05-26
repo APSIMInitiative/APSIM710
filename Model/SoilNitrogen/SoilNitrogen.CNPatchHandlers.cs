@@ -432,11 +432,11 @@ public partial class SoilNitrogen
 
 		for (int i = PatchesToAdd.Count - 1; i >= 0; i--)
 		{
-			if ((StuffToAdd.Urea != null) && SumDoubleArray(StuffToAdd.Urea) > epsilon)
+			if ((StuffToAdd.Urea != null) && Math.Abs(SumDoubleArray(StuffToAdd.Urea)) > epsilon)
 				Patch[PatchesToAdd[i]].dlt_urea = StuffToAdd.Urea;
-			if ((StuffToAdd.NH4 != null) && SumDoubleArray(StuffToAdd.NH4) > epsilon)
+			if ((StuffToAdd.NH4 != null) && Math.Abs(SumDoubleArray(StuffToAdd.NH4)) > epsilon)
 				Patch[PatchesToAdd[i]].dlt_nh4 = StuffToAdd.NH4;
-			if ((StuffToAdd.NO3 != null) && SumDoubleArray(StuffToAdd.NO3) > epsilon)
+			if ((StuffToAdd.NO3 != null) && Math.Abs(SumDoubleArray(StuffToAdd.NO3)) > epsilon)
 				Patch[PatchesToAdd[i]].dlt_no3 = StuffToAdd.NO3;
 			if ((StuffToAdd.FOM != null) && (StuffToAdd.FOM.Pool != null))
 			{
@@ -445,12 +445,12 @@ public partial class SoilNitrogen
 				double[][] NValues = new double[3][];
 				for (int pool = 0; pool < StuffToAdd.FOM.Pool.Length; pool++)
 				{
-					if ((StuffToAdd.FOM.Pool[pool].C != null) && (SumDoubleArray(StuffToAdd.FOM.Pool[pool].C) > epsilon))
+					if ((StuffToAdd.FOM.Pool[pool].C != null) && Math.Abs(SumDoubleArray(StuffToAdd.FOM.Pool[pool].C)) > epsilon)
 					{
 						CValues[pool] = StuffToAdd.FOM.Pool[pool].C;
 						SomethingAdded = true;
 					}
-					if ((StuffToAdd.FOM.Pool[pool].N != null) && (SumDoubleArray(StuffToAdd.FOM.Pool[pool].N) > epsilon))
+					if ((StuffToAdd.FOM.Pool[pool].N != null) && Math.Abs(SumDoubleArray(StuffToAdd.FOM.Pool[pool].N)) > epsilon)
 					{
 						NValues[pool] = StuffToAdd.FOM.Pool[pool].N;
 						SomethingAdded = true;
@@ -692,6 +692,7 @@ public partial class SoilNitrogen
 		{
 			// 2- gather how much solute is already in the soil
 			double[][] existingSoluteAmount = new double[nPatches][];
+			double[] SoluteLimit = null;
 			for (int k = 0; k < nPatches; k++)
 			{
 				switch (SoluteName)
@@ -701,9 +702,11 @@ public partial class SoilNitrogen
 						break;
 					case "NH4":
 						existingSoluteAmount[k] = Patch[k].nh4;
+						SoluteLimit = MaximumNH4UptakeRate;
 						break;
 					case "NO3":
 						existingSoluteAmount[k] = Patch[k].no3;
+						SoluteLimit = MaximumNO3UptakeRate;
 						break;
 					default:
 						throw new Exception(" The solute " + SoluteName
@@ -733,7 +736,14 @@ public partial class SoilNitrogen
 					{
 						for (int k = 0; k < nPatches; k++)
 						{
-							thisLayerPatchSolute[k] = existingSoluteAmount[k][layer] * Patch[k].RelativeArea;
+							if (senderModule == "Plant".ToLower() && SoluteLimit != null)
+							{ // plant is a speciall case, uptake might be limited, use that value then
+								thisLayerPatchSolute[k] = Math.Min(existingSoluteAmount[k][layer], SoluteLimit[layer]) * Patch[k].RelativeArea;
+							}
+							else
+							{
+								thisLayerPatchSolute[k] = existingSoluteAmount[k][layer] * Patch[k].RelativeArea;
+							}
 						}
 						thisLayersTotalSolute = SumDoubleArray(thisLayerPatchSolute);
 					}
@@ -745,7 +755,14 @@ public partial class SoilNitrogen
 							double layerUsed = 0.0;
 							for (int z = layer; z >= 0; z--)		// goes backwards till soil surface (but may stop before that)
 							{
-								thisLayerPatchSolute[k] += existingSoluteAmount[k][z] * Patch[k].RelativeArea;
+								if (senderModule == "Plant".ToLower() && SoluteLimit != null)
+								{ // plant is a speciall case, uptake might be limited, use that value then
+									thisLayerPatchSolute[k] += Math.Min(existingSoluteAmount[k][z], SoluteLimit[z]) * Patch[k].RelativeArea;
+								}
+								else
+								{
+									thisLayerPatchSolute[k] += existingSoluteAmount[k][z] * Patch[k].RelativeArea;
+								}
 								layerUsed += dlayer[z];
 								if ((LayerNPartition > epsilon) && (layerUsed >= LayerNPartition))	// stop if thickness reaches a defined value
 									z = 0;

@@ -57,7 +57,7 @@
       <defaultCarbonInFOM description="Carbon weight fraction in FOM (0-1)"> 0.40 </defaultCarbonInFOM>
       <defaultInitialpH description="Default initial ph, used case no pH is initialised in model"> 6.0 </defaultInitialpH>
       <WarningNegativeThreshold description="Threshold for raising a warning due to small negative values"> -0.0000000001 </WarningNegativeThreshold>
-      <FatalNegativeThreshold description="Threshold for a fatal error due to negative values (loss of mass balance)"> -0.0000001 </FatalNegativeThreshold>
+      <FatalNegativeThreshold description="Threshold for a fatal error due to negative values (loss of mass balance)"> -0.000001 </FatalNegativeThreshold>
 
       <!--  -  Parameters for setting/handling SoilCN patches  ................................................................................... -->
       <MininumRelativeAreaCNPatch description="Minimum allowable relative area for a CNpatch (0-1)"> 0.000001 </MininumRelativeAreaCNPatch>
@@ -93,7 +93,13 @@
       <DepthToTestByLayer description="Depth to consider when testing diffs by layer, if -ve soil depth is used (mm)"> -99 </DepthToTestByLayer>
       <DiffAdjustFactor description="Factor to adjust the tests between patches other than base (0-1)"> 0.5 </DiffAdjustFactor>
       <!-- Note: DiffAdjustFactor will correct all the thresholds given above, as a multiplier (1.0 equals no change) -->
-      
+      <MaximumUptakeRateNH4 description="Maximum NH4 uptake rate for plants (ppm/day)">9999.9</MaximumUptakeRateNH4>
+      <MaximumUptakeRateNO3 description="Maximum NO3 uptake rate for plants (ppm/day)">9999.9</MaximumUptakeRateNO3>
+      <!-- Note: Maximum uptake rates are used to publish the amount of NH4 and NO3 potentially available to plants, however there is no action
+                 to limit the actual uptake by SoilNitrogen, the plant module should consider whether to use these values or not. 
+                 Beware: these values are used during partition amongst patches of any delta N sent by plants, so set a high threshold for the
+                 limits here to avoid crashes caused by loss of mass balance when using plant models that are not patch-aware  -->
+
       <!--  -  Parameters for setting soil organic matter  ....................................................................................... -->
       <MBiomassCNr description="C:N ratio of microbes"> 8.0 </MBiomassCNr>
       <HumusCNr description="C:N ratio of soil humus"> 12.5 </HumusCNr>

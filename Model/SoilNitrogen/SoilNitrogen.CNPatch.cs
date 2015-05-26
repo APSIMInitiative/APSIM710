@@ -19,7 +19,7 @@ public partial class SoilNitrogen
 	/// <remarks>
 	/// This can instanciated many times, used for describing soil variability
 	/// </remarks>
-	partial class soilCNPatch
+	public partial class soilCNPatch
 	{
 		public soilCNPatch(SoilNitrogen MainSoilNitrogen)
 		{ g = MainSoilNitrogen; }
