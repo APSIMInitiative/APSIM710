@@ -1690,6 +1690,17 @@ public class AgPasture
 	# region Main daily processes  ----------------------------------------------------------------
 
 	/// <summary>
+	/// EventHandler - get new met data (not really used)
+	/// </summary>
+	/// <param name="NewMetData"></param>
+	[EventHandler]
+	public void OnNewMet(NewMetType NewMetData)
+	{
+		for (int s = 0; s < NumSpecies; s++)
+			mySpecies[s].DailyRefresh();
+	}
+
+	/// <summary>
 	/// EventHandler - preparation before the main process
 	/// </summary>
 	[EventHandler]
@@ -1697,8 +1708,8 @@ public class AgPasture
 	{
 		// RCichota May2014, moved here from onProcess (really ought to be onNewMet but have issues at initialisation)
 		//**Zero out some variables
-		for (int s = 0; s < NumSpecies; s++)
-			mySpecies[s].DailyRefresh();
+		//for (int s = 0; s < NumSpecies; s++)
+		//    mySpecies[s].DailyRefresh();
 
 		// Clear FractionHarvest array
 		Array.Clear(FractionToHarvest, 0, FractionToHarvest.Length);
