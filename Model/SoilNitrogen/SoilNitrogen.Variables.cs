@@ -1050,12 +1050,23 @@ public partial class SoilNitrogen
 	/// </summary>
 	[Param(MinVal = 0.0, MaxVal = 10000.0)]
 	[Output]
-	[Units("kg/ha/day")]
+	[Units("ppm/day")]
 	[Description("Maximum NH4 uptake rate for plants")]
 	public double MaximumUptakeRateNH4
 	{
 		get { return reset_MaximumNH4Uptake; }
-		set { reset_MaximumNH4Uptake = value; }
+		set
+		{
+			reset_MaximumNH4Uptake = value;
+			if (initDone)
+			{ // after initialisation done, the setting has to be here
+				for (int layer = 0; layer < dlayer.Length; layer++)
+				{
+					// set maximum uptake rates for N forms (only really used for AgPasture when patches exist)
+					MaximumNH4UptakeRate[layer] = reset_MaximumNH4Uptake / convFactor[layer];
+				}
+			}
+		}
 	}
 
 	/// <summary>
@@ -1063,13 +1074,23 @@ public partial class SoilNitrogen
 	/// </summary>
 	[Param(MinVal = 0.0, MaxVal = 10000.0)]
 	[Output]
-	[Units("kg/ha/day")]
+	[Units("ppm/day")]
 	[Description("Maximum NO3 uptake rate for plants")]
 	public double MaximumUptakeRateNO3
 	{
 		get { return reset_MaximumNO3Uptake; }
-		set { reset_MaximumNO3Uptake = value; }
-	}
+		set { 
+			reset_MaximumNO3Uptake = value; 
+			if (initDone)
+			{ // after initialisation done, the setting has to be here
+				for (int layer = 0; layer < dlayer.Length; layer++)
+				{
+					// set maximum uptake rates for N forms (only really used for AgPasture when patches exist)
+					MaximumNO3UptakeRate[layer] = reset_MaximumNO3Uptake / convFactor[layer];
+				}
+			}
+		}
+		}
 
 	#region Parameter for amalgamating patches
 
