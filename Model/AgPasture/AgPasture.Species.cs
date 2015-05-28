@@ -1879,11 +1879,11 @@ public class Species
 
 		//N demand for new growth assuming luxury uptake (maximum [N])
 		NdemandLux = toRoot * NcrootMax + toStol * NcstolMax + toLeaf * NcleafMax + toStem * NcstemMax;
-		//Ndemand *= NCO2Effects();       //luxary uptake not reduce
+		//Ndemand *= NCO2Effects();       //luxury uptake not reduced
 
 		//even with sufficient soil N available
 		if (isLegume)
-			Nfix = MinFix * NdemandLux; // It should be NdemandOpt;
+			Nfix = MinFix * NdemandOpt;
 		else
 			Nfix = 0.0;
 

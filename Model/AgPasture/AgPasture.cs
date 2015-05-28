@@ -3004,7 +3004,7 @@ public class AgPasture
 			{
 				double newNfix = mySpecies[s].MaxFix;
 				newNfix -= (mySpecies[s].MaxFix - mySpecies[s].MinFix) * Nstress;
-				newNfix *= mySpecies[s].NdemandLux;  // it should be NdemandOpt;
+				newNfix *= mySpecies[s].NdemandOpt;
 				double moreNfix = Math.Max(0.0, newNfix - mySpecies[s].Nfix);
 				mySpecies[s].Nfix = newNfix;
 				swardNFixed += moreNfix;
