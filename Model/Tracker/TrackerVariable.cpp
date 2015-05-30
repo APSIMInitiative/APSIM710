@@ -2,7 +2,7 @@
 #include <numeric>
 #include <General/StringTokenizer.h>
 #include <General/string_functions.h>
-#include <General/date_functions.h>
+//#include <General/date_functions.h>
 #include <ComponentInterface/Component.h>
 #include <ComponentInterface/TypeConverter.h>
 #include <ApsimShared/ApsimRegistry.h>
@@ -375,7 +375,7 @@ void TrackerVariable::getCurrentValues(vector<float>& currentValues)
 {
 	currentValues.erase(currentValues.begin(), currentValues.end());
 	if (stat == countStat)
-		currentValues.push_back(count);
+		currentValues.push_back((float)count);
 	else if (values.size() > 0)
 	{
 		for (unsigned i = 0; i < values[0].size(); ++i)

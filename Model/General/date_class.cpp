@@ -1,4 +1,4 @@
-#include <../General/pch.h>
+#include <..\General\pch.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -187,10 +187,41 @@ int Month_string_2_integer (string& Month_string)
       Julian_day = 0;
    }
 
+// Identify one of these delimiters in a string
+char FindDelimiter(const char *str)
+{
+	const char sep_char[] = {',','-','.',' ','/'};
+	const char* sep = NULL;
+	int i = 0;
+	while ((sep == NULL) && (i < 5))
+	{
+		sep = strchr(str, sep_char[i]);
+		if (sep)
+			return *sep;
+		i++;
+	}
+	return 0;
+}
+
 void GDate::Read(const string& Str, const string& Format)
    {
-   // Need to create a sanitised format string i.e. from dd/mm/yyyy to %d/%m/%Y
-   string Fmt = Format;
+	string Fmt = Format;
+
+	// if the delimiters in the date and format don't match
+	// then do a substution
+	char formatSep = FindDelimiter(Format.c_str());
+	char inputSep =  FindDelimiter(Str.c_str());
+	if (formatSep && inputSep)
+	{
+		if (inputSep != formatSep)
+		{
+			std::string f(&formatSep, 1);
+			std::string s(&inputSep, 1);
+			replaceAll(Fmt, f, s);
+		}
+	}
+   
+	// Need to create a sanitised format string i.e. from dd/mm/yyyy to %d/%m/%Y
    replaceAll(Fmt, "dd", "d");
    replaceAll(Fmt, "d", "%d");
    replaceAll(Fmt, "mm", "m");
