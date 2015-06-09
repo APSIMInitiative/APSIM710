@@ -48,6 +48,7 @@ public partial class SoilNitrogen
 	/// Used to determine which node of xml file will be used to overwrite some [Param]'s
 	/// </remarks>
 	[Param(IsOptional = true)]
+	[Units("")]
 	[Description("Soil parameterisation set to use")]
 	public string SoilNParameterSet= "standard";
 
@@ -59,6 +60,7 @@ public partial class SoilNitrogen
 	/// If 'no', a value for soil temperature must be supplied or an fatal error will occur.
 	/// </remarks>
 	[Param]
+	[Units("yes/no")]
 	[Description("Indicates whether simpleSoilTemp is allowed")]
 	public string allowSimpleSoilTemp
 	{
@@ -70,11 +72,12 @@ public partial class SoilNitrogen
 	/// Indicates whether soil profile reduction is allowed ('on')
 	/// </summary>
 	[Param]
+	[Units("yes/no")]
 	[Description("Indicates whether soil profile reduction is allowed")]
 	public string allowProfileReduction
 	{
 		get { return (ProfileReductionAllowed) ? "yes" : "no"; }
-		set { ProfileReductionAllowed = value.ToLower().StartsWith("on"); }
+		set { ProfileReductionAllowed = value.ToLower().Contains("yes"); }
 	}
 
 	/// <summary>
@@ -84,11 +87,12 @@ public partial class SoilNitrogen
 	/// It should always be false, as organic solutes are not implemented yet
 	/// </remarks>
 	[Param(IsOptional = true)]
+	[Units("yes/no")]
 	[Description("Indicates whether organic solutes are to be simulated")]
 	public string allowOrganicSolutes
 	{
 		get { return (OrganicSolutesAllowed) ? "yes" : "no"; }
-		set { OrganicSolutesAllowed = value.ToLower().StartsWith("on"); }
+		set { OrganicSolutesAllowed = value.ToLower().Contains("yes"); }
 	}
 
 	/// <summary>
@@ -234,6 +238,7 @@ public partial class SoilNitrogen
 	/// </remarks>
 	private int FOMtypeID_reset = 0;
 	[Param(IsOptional = true)]
+	[Units("")]
 	[Description("FOM type to be used on initialisation")]
 	public string InitialFOMType
 	{
@@ -866,7 +871,39 @@ public partial class SoilNitrogen
 	#region Limiting factors
 
 	/// <summary>
-	/// Parameter A to compute active carbon (for denitrification)
+	/// Flag whether water soluble carbon is computed using newly defined pools
+	/// </summary>
+	/// <remarks>
+	/// Classic definition uses all humus and all FOM
+	/// New definition uses active humus, biomass and pool1 of FOM (carbohydrate)
+	/// </remarks>
+	[Param]
+	[Units("")]
+	[Description("")]
+	public string allowNewPools
+	{
+		get { return (usingNewPools) ? "yes" : "no"; }
+		set { usingNewPools = value.ToLower().Contains("yes"); }
+	}
+
+	/// <summary>
+	/// Flag whether an exponential function is used to compute water soluble C
+	/// </summary>
+	/// <remarks>
+	/// Classic approach is a linear function (soluble carbon is not zero when total C is zero)
+	/// New exponential function is quite similar, but ensures zero soluble C
+	/// </remarks>
+	[Param]
+	[Units("")]
+	[Description("")]
+	public string allowExpFunction
+	{
+		get { return (usingExpFunction) ? "yes" : "no"; }
+		set { usingExpFunction = value.ToLower().Contains("yes"); }
+	}
+
+	/// <summary>
+	/// Parameter A of linear function to compute soluble carbon (for denitrification)
 	/// </summary>
 	[Param]
 	[Units("")]
@@ -874,12 +911,28 @@ public partial class SoilNitrogen
 	public double actC_parmA;
 
 	/// <summary>
-	/// Parameter B to compute active carbon (for denitrification)
+	/// Parameter B of linear function to compute soluble carbon (for denitrification)
 	/// </summary>
 	[Param]
 	[Units("")]
 	[Description("")]
 	public double actC_parmB;
+
+	/// <summary>
+	/// Parameter A of exponential function to compute soluble carbon (for denitrification)
+	/// </summary>
+	[Param]
+	[Units("")]
+	[Description("")]
+	public double actCExp_parmA;
+
+	/// <summary>
+	/// Parameter B of exponential function to compute soluble carbon (for denitrification)
+	/// </summary>
+	[Param]
+	[Units("")]
+	[Description("")]
+	public double actCExp_parmB;
 
 	/// <summary>
 	/// Parameters to calculate the temperature effect on denitrification
@@ -1104,7 +1157,7 @@ public partial class SoilNitrogen
 	public string allowPatchAmalgamation
 	{
 		get { return (PatchAmalgamationAllowed) ? "yes" : "no"; }
-		set { PatchAmalgamationAllowed = value.ToLower().StartsWith("yes"); }
+		set { PatchAmalgamationAllowed = value.ToLower().Contains("yes"); }
 	}
 
 	/// <summary>
@@ -1118,6 +1171,7 @@ public partial class SoilNitrogen
 	/// </remarks>
 	[Param]
 	[Output]
+	[Units("")]
 	public string AutoAmalgamationApproach
 	{
 		get { return PatchAmalgamationApproach; }
@@ -1136,6 +1190,7 @@ public partial class SoilNitrogen
 	/// </remarks>
 	[Param]
 	[Output]
+	[Units("")]
 	public string basePatchApproach
 	{
 		get { return PatchbasePatchApproach; }
@@ -1512,6 +1567,7 @@ public partial class SoilNitrogen
 	/// 
 	/// </summary>
 	[Output]
+	[Units("on/off")]
 	[Description("Define whether soil profile reduction is on")]
 	private string n_reduction
 	{ set { ProfileReductionAllowed = value.StartsWith("on"); } }
@@ -1536,6 +1592,7 @@ public partial class SoilNitrogen
 	/// </remarks>
 	private bool isPondActive = false;
 	[Input(IsOptional = true)]
+	[Units("yes/no")]
 	[Description("Indicates whether pond is active or not")]
 	private string pond_active
 	{ set { isPondActive = (value == "yes"); } }
@@ -2063,7 +2120,7 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("kg/ha")]
 	[Description("Soil urea nitrogen amount")]
-	public double[] urea
+	private double[] urea
 	{
 		get
 		{
@@ -2081,7 +2138,7 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("kg/ha")]
 	[Description("Soil ammonium nitrogen amount")]
-	public double[] nh4
+	private double[] nh4
 	{
 		get
 		{
@@ -2099,7 +2156,7 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("kg/ha")]
 	[Description("Soil nitrate nitrogen amount")]
-	public double[] no3
+	private double[] no3
 	{
 		get
 		{
@@ -2117,7 +2174,7 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("kg/ha")]
 	[Description("Soil ammonium nitrogen amount available to plants, limited per patch")]
-	public double[] nh4_PlantAvailable
+	private double[] nh4_PlantAvailable
 	{
 		get
 		{
@@ -2135,7 +2192,7 @@ public partial class SoilNitrogen
 	[Output]
 	[Units("kg/ha")]
 	[Description("Soil nitrate nitrogen amount available to plants, limited per patch")]
-	public double[] no3_PlantAvailable
+	private double[] no3_PlantAvailable
 	{
 		get
 		{
@@ -2277,7 +2334,43 @@ public partial class SoilNitrogen
 		}
 	}
 
-
+	/// <summary>
+	/// Soil mineral nitrogen
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Soil mineral nitrogen")]
+	private double[] mineral_n
+	{
+		get
+		{
+			double[] result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; layer++)
+				for (int k = 0; k < Patch.Count; k++)
+					result[layer] += (Patch[k].urea[layer] + Patch[k].nh4[layer] + Patch[k].no3[layer]) * Patch[k].RelativeArea;
+			return result;
+		}
+	}	/// <summary>
+	/// Soil organic nitrogen
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Soil organic nitrogen")]
+	private double[] organic_n
+	{
+		get
+		{
+			double[] result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; layer++)
+				for (int k = 0; k < Patch.Count; k++)
+					result[layer] += (Patch[k].fom_n[0][layer] 
+						           + Patch[k].fom_n[1][layer] 
+								   + Patch[k].fom_n[2][layer] 
+								   + Patch[k].hum_n[layer] 
+								   + Patch[k].biom_n[layer]) * Patch[k].RelativeArea;
+			return result;
+		}
+	}
 	/// <summary>
 	/// Total N in soil
 	/// </summary>
@@ -2831,6 +2924,24 @@ public partial class SoilNitrogen
 	}
 
 	/// <summary>
+	/// Amount of water soluble C
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Soil water soluble C")]
+	private double[] waterSoluble_c
+	{
+		get
+		{
+			double[] result = new double[dlayer.Length];
+			for (int layer = 0; layer < dlayer.Length; layer++)
+				for (int k = 0; k < Patch.Count; k++)
+					result[layer] += Patch[k].waterSoluble_c[layer] * Patch[k].RelativeArea;
+			return result;
+		}
+	}
+
+	/// <summary>
 	/// Total carbon amount in the soil
 	/// </summary>
 	[Output]
@@ -2934,6 +3045,7 @@ public partial class SoilNitrogen
 	/// Number of internal patches
 	/// </summary>
 	[Output]
+	[Units("")]
 	[Description("Number of internal patches")]
 	private int PatchCount
 	{ get { return Patch.Count; } }
@@ -2942,16 +3054,16 @@ public partial class SoilNitrogen
 	/// Relative area of each internal patch
 	/// </summary>
 	[Output]
-	[Description("Relative area of each internal patch")]
 	[Units("0-1")]
+	[Description("Relative area of each internal patch")]
 	private double[] PatchArea
 	{
 		get
 		{
-			double[] Result = new double[Patch.Count];
+			double[] result = new double[Patch.Count];
 			for (int k = 0; k < Patch.Count; k++)
-				Result[k] = Patch[k].RelativeArea;
-			return Result;
+				result[k] = Patch[k].RelativeArea;
+			return result;
 		}
 	}
 
@@ -2959,16 +3071,16 @@ public partial class SoilNitrogen
 	/// Name of each internal patch
 	/// </summary>
 	[Output]
-	[Description("Name of each internal patch")]
 	[Units("")]
+	[Description("Name of each internal patch")]
 	private string[] PatchName
 	{
 		get
 		{
-			string[] Result = new string[Patch.Count];
+			string[] result = new string[Patch.Count];
 			for (int k = 0; k < Patch.Count; k++)
-				Result[k] = Patch[k].PatchName;
-			return Result;
+				result[k] = Patch[k].PatchName;
+			return result;
 		}
 	}
 
@@ -2976,16 +3088,16 @@ public partial class SoilNitrogen
 	/// Age of each existing internal patch
 	/// </summary>
 	[Output]
-	[Description("Age of each existing internal patch")]
 	[Units("days")]
+	[Description("Age of each existing internal patch")]
 	private double[] PatchAge
 	{
 		get
 		{
-			double[] Result = new double[Patch.Count];
+			double[] result = new double[Patch.Count];
 			for (int k = 0; k < Patch.Count; k++)
-				Result[k] = (Clock.Today - Patch[k].CreationDate).TotalDays + 1;
-			return Result;
+				result[k] = (Clock.Today - Patch[k].CreationDate).TotalDays + 1;
+			return result;
 		}
 	}
 
@@ -3008,10 +3120,10 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
-				Result[k] = Patch[k].dlt_n_loss_in_sed;
-			return Result;
+				result[k] = Patch[k].dlt_n_loss_in_sed;
+			return result;
 		}
 	}
 
@@ -3028,11 +3140,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_res_no3_min[layer] + Patch[k].dlt_res_nh4_min[layer];
-			return Result;
+					result[k] += Patch[k].dlt_res_no3_min[layer] + Patch[k].dlt_res_nh4_min[layer];
+			return result;
 		}
 	}
 
@@ -3047,11 +3159,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_n_fom_to_min[layer];
-			return Result;
+					result[k] += Patch[k].dlt_n_fom_to_min[layer];
+			return result;
 		}
 	}
 
@@ -3066,11 +3178,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_n_hum_to_min[layer];
-			return Result;
+					result[k] += Patch[k].dlt_n_hum_to_min[layer];
+			return result;
 		}
 	}
 
@@ -3085,11 +3197,30 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_n_biom_to_min[layer];
-			return Result;
+					result[k] += Patch[k].dlt_n_biom_to_min[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total net N mineralised, for each patch (residues plus soil OM)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total net N mineralised, for each patch")]
+	private double[] PatchTotalNMineralised
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_n_biom_to_min[layer];
+			return result;
 		}
 	}
 
@@ -3104,11 +3235,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_urea_hydrolysis[layer];
-			return Result;
+					result[k] += Patch[k].dlt_urea_hydrolysis[layer];
+			return result;
 		}
 	}
 
@@ -3123,11 +3254,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_nitrification[layer];
-			return Result;
+					result[k] += Patch[k].dlt_nitrification[layer];
+			return result;
 		}
 	}
 
@@ -3142,11 +3273,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_nitrification[layer] - Patch[k].dlt_n2o_nitrif[layer];
-			return Result;
+					result[k] += Patch[k].dlt_nitrification[layer] - Patch[k].dlt_n2o_nitrif[layer];
+			return result;
 		}
 	}
 
@@ -3161,11 +3292,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_n2o_nitrif[layer];
-			return Result;
+					result[k] += Patch[k].dlt_n2o_nitrif[layer];
+			return result;
 		}
 	}
 
@@ -3180,11 +3311,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_no3_dnit[layer];
-			return Result;
+					result[k] += Patch[k].dlt_no3_dnit[layer];
+			return result;
 		}
 	}
 
@@ -3199,11 +3330,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_n2o_dnit[layer];
-			return Result;
+					result[k] += Patch[k].dlt_n2o_dnit[layer];
+			return result;
 		}
 	}
 
@@ -3218,11 +3349,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_n2o_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
-			return Result;
+					result[k] += Patch[k].dlt_n2o_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+			return result;
 		}
 	}
 
@@ -3237,11 +3368,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_no3_dnit[layer] - Patch[k].dlt_n2o_dnit[layer];
-			return Result;
+					result[k] += Patch[k].dlt_no3_dnit[layer] - Patch[k].dlt_n2o_dnit[layer];
+			return result;
 		}
 	}
 
@@ -3256,11 +3387,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
-			return Result;
+					result[k] += Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+			return result;
 		}
 	}
 
@@ -3275,10 +3406,10 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
-				Result[k] += Patch[k].urea_flow[dlayer.Length - 1];
-			return Result;
+				result[k] += Patch[k].urea_flow[dlayer.Length - 1];
+			return result;
 		}
 	}
 
@@ -3293,10 +3424,10 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
-				Result[k] += Patch[k].nh4_flow[dlayer.Length - 1];
-			return Result;
+				result[k] += Patch[k].nh4_flow[dlayer.Length - 1];
+			return result;
 		}
 	}
 
@@ -3311,10 +3442,10 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
-				Result[k] += Patch[k].no3_flow[dlayer.Length - 1];
-			return Result;
+				result[k] += Patch[k].no3_flow[dlayer.Length - 1];
+			return result;
 		}
 	}
 
@@ -3329,11 +3460,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].urea_uptake[layer];
-			return Result;
+					result[k] += Patch[k].urea_uptake[layer];
+			return result;
 		}
 	}
 
@@ -3348,11 +3479,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].nh4_uptake[layer];
-			return Result;
+					result[k] += Patch[k].nh4_uptake[layer];
+			return result;
 		}
 	}
 
@@ -3367,11 +3498,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].no3_uptake[layer];
-			return Result;
+					result[k] += Patch[k].no3_uptake[layer];
+			return result;
 		}
 	}
 
@@ -3386,11 +3517,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].urea_fertiliser[layer];
-			return Result;
+					result[k] += Patch[k].urea_fertiliser[layer];
+			return result;
 		}
 	}
 
@@ -3405,11 +3536,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].nh4_fertiliser[layer];
-			return Result;
+					result[k] += Patch[k].nh4_fertiliser[layer];
+			return result;
 		}
 	}
 
@@ -3424,11 +3555,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].no3_fertiliser[layer];
-			return Result;
+					result[k] += Patch[k].no3_fertiliser[layer];
+			return result;
 		}
 	}
 
@@ -3443,11 +3574,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].urea_ChangedOther[layer];
-			return Result;
+					result[k] += Patch[k].urea_ChangedOther[layer];
+			return result;
 		}
 	}
 
@@ -3462,11 +3593,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].nh4_ChangedOther[layer];
-			return Result;
+					result[k] += Patch[k].nh4_ChangedOther[layer];
+			return result;
 		}
 	}
 
@@ -3481,11 +3612,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].no3_ChangedOther[layer];
-			return Result;
+					result[k] += Patch[k].no3_ChangedOther[layer];
+			return result;
 		}
 	}
 
@@ -3506,16 +3637,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_res_no3_min[layer] + Patch[k].dlt_res_nh4_min[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_res_no3_min[layer] + Patch[k].dlt_res_nh4_min[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3531,16 +3662,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] =  Patch[k].dlt_n_fom_to_min[layer];
+					result.Patch[k].Value[layer] =  Patch[k].dlt_n_fom_to_min[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3556,16 +3687,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_n_hum_to_min[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_n_hum_to_min[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3581,45 +3712,45 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_n_biom_to_min[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_n_biom_to_min[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
 	/// <summary>
-	/// Total net N mineralised for each patch (residues plus soil OM)
+	/// Net total N mineralised for each patch (residues plus soil OM)
 	/// </summary>
 	[Output]
 	[Units("kg/ha")]
-	[Description("Total net N mineralised for each patch (soil OM plus residues)")]
-	private CNPatchVariableType PatchTotalNMineralised
+	[Description("Net total N mineralised for each patch (soil OM plus residues)")]
+	private CNPatchVariableType PatchNMineralisedTotal
 	{
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_n_hum_to_min[layer] +
+					result.Patch[k].Value[layer] = Patch[k].dlt_n_hum_to_min[layer] +
 												   Patch[k].dlt_n_biom_to_min[layer] +
 												   Patch[k].dlt_n_fom_to_min[layer] +
 												   Patch[k].dlt_res_no3_min[layer] +
 												   Patch[k].dlt_res_nh4_min[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3635,16 +3766,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_urea_hydrolysis[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_urea_hydrolysis[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3660,16 +3791,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_nitrification[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_nitrification[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3685,16 +3816,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_nitrification[layer] - Patch[k].dlt_n2o_nitrif[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_nitrification[layer] - Patch[k].dlt_n2o_nitrif[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3710,16 +3841,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_n2o_nitrif[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_n2o_nitrif[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3735,16 +3866,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3760,16 +3891,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_n2o_dnit[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_n2o_dnit[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3785,16 +3916,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_n2o_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_n2o_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3810,16 +3941,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] - Patch[k].dlt_n2o_dnit[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] - Patch[k].dlt_n2o_dnit[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3835,16 +3966,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3860,16 +3991,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_no3_dnit[layer] + Patch[k].dlt_n2o_nitrif[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3889,16 +4020,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].urea_flow[layer];
+					result.Patch[k].Value[layer] = Patch[k].urea_flow[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3914,16 +4045,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nh4_flow[layer];
+					result.Patch[k].Value[layer] = Patch[k].nh4_flow[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3939,16 +4070,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].no3_flow[layer];
+					result.Patch[k].Value[layer] = Patch[k].no3_flow[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3964,16 +4095,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].urea_uptake[layer];
+					result.Patch[k].Value[layer] = Patch[k].urea_uptake[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -3989,16 +4120,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nh4_uptake[layer];
+					result.Patch[k].Value[layer] = Patch[k].nh4_uptake[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4014,16 +4145,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].no3_uptake[layer];
+					result.Patch[k].Value[layer] = Patch[k].no3_uptake[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4039,16 +4170,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].urea_fertiliser[layer];
+					result.Patch[k].Value[layer] = Patch[k].urea_fertiliser[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4064,16 +4195,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nh4_fertiliser[layer];
+					result.Patch[k].Value[layer] = Patch[k].nh4_fertiliser[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4089,16 +4220,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].no3_fertiliser[layer];
+					result.Patch[k].Value[layer] = Patch[k].no3_fertiliser[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4114,16 +4245,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].urea_ChangedOther[layer];
+					result.Patch[k].Value[layer] = Patch[k].urea_ChangedOther[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4139,16 +4270,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nh4_ChangedOther[layer];
+					result.Patch[k].Value[layer] = Patch[k].nh4_ChangedOther[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4164,16 +4295,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].no3_ChangedOther[layer];
+					result.Patch[k].Value[layer] = Patch[k].no3_ChangedOther[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4197,20 +4328,20 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].urea[layer];
+					result.Patch[k].Value[layer] = Patch[k].urea[layer];
 			}
 
 			if (Patch.Count > 1)
 				nLayers += 0;
 
-			return Result;
+			return result;
 		}
 	}
 
@@ -4226,16 +4357,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nh4[layer];
+					result.Patch[k].Value[layer] = Patch[k].nh4[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4251,16 +4382,66 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].no3[layer];
+					result.Patch[k].Value[layer] = Patch[k].no3[layer];
 			}
-			return Result;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of N as NH4 available to plants, in each internal patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of N as NH4 available to plants, in each patch")]
+	private CNPatchVariableType PatchPlantAvailableNH4
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					result.Patch[k].Value[layer] = Math.Min(Patch[k].nh4[layer], MaximumNH4UptakeRate[layer]);
+			}
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of N as NO3 available to plants, in each internal patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of N as NO3 available to plants, in each patch")]
+	private CNPatchVariableType PatchPlantAvailableNO3
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					result.Patch[k].Value[layer] = Math.Min(Patch[k].no3[layer], MaximumNO3UptakeRate[layer]);
+			}
+			return result;
 		}
 	}
 
@@ -4275,11 +4456,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].urea[layer];
-			return Result;
+					result[k] += Patch[k].urea[layer];
+			return result;
 		}
 	}
 
@@ -4294,11 +4475,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].nh4[layer];
-			return Result;
+					result[k] += Patch[k].nh4[layer];
+			return result;
 		}
 	}
 
@@ -4313,11 +4494,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].no3[layer];
-			return Result;
+					result[k] += Patch[k].no3[layer];
+			return result;
 		}
 	}
 
@@ -4332,11 +4513,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Math.Min(Patch[k].nh4[layer], MaximumNH4UptakeRate[layer]);
-			return Result;
+					result[k] += Math.Min(Patch[k].nh4[layer], MaximumNH4UptakeRate[layer]);
+			return result;
 		}
 	}
 
@@ -4351,11 +4532,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Math.Min(Patch[k].no3[layer], MaximumNO3UptakeRate[layer]);
-			return Result;
+					result[k] += Math.Min(Patch[k].no3[layer], MaximumNO3UptakeRate[layer]);
+			return result;
 		}
 	}
 
@@ -4376,21 +4557,21 @@ public partial class SoilNitrogen
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nPools = 3;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchPoolVariableType Result = new CNPatchPoolVariableType();
-			Result.Patch = new CNPatchPoolVariablePatchType[nPatches];
+			CNPatchPoolVariableType result = new CNPatchPoolVariableType();
+			result.Patch = new CNPatchPoolVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchPoolVariablePatchType();
-				Result.Patch[k].Pool = new CNPatchPoolVariablePatchPoolType[nPools];
+				result.Patch[k] = new CNPatchPoolVariablePatchType();
+				result.Patch[k].Pool = new CNPatchPoolVariablePatchPoolType[nPools];
 				for (int pool = 0; pool < nPools; pool++)
 				{
-					Result.Patch[k].Pool[pool] = new CNPatchPoolVariablePatchPoolType();
-					Result.Patch[k].Pool[pool].Value = new double[nLayers];
+					result.Patch[k].Pool[pool] = new CNPatchPoolVariablePatchPoolType();
+					result.Patch[k].Pool[pool].Value = new double[nLayers];
 					for (int layer = 0; layer < nLayers; layer++)
-						Result.Patch[k].Pool[pool].Value[layer] = Patch[k].fom_n[pool][layer];
+						result.Patch[k].Pool[pool].Value[layer] = Patch[k].fom_n[pool][layer];
 				}
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4406,16 +4587,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].hum_n[layer];
+					result.Patch[k].Value[layer] = Patch[k].hum_n[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4431,16 +4612,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].inert_n[layer];
+					result.Patch[k].Value[layer] = Patch[k].inert_n[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 	
@@ -4456,16 +4637,70 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].biom_n[layer];
+					result.Patch[k].Value[layer] = Patch[k].biom_n[layer];
 			}
-			return Result;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total mineral N in soil for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total mineral N in soil for each patch")]
+	private CNPatchVariableType PatchSoilMineralN
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					result.Patch[k].Value[layer] = Patch[k].urea[layer] + Patch[k].nh4[layer] + Patch[k].no3[layer];
+			}
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total organic N in soil for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total organic N in soil for each patch")]
+	private CNPatchVariableType PatchSoilOrganicN
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					result.Patch[k].Value[layer] = Patch[k].fom_n[0][layer]
+												 + Patch[k].fom_n[1][layer] 
+												 + Patch[k].fom_n[2][layer]
+												 + Patch[k].hum_n[layer] 
+												 + Patch[k].biom_n[layer];
+			}
+			return result;
 		}
 	}
 
@@ -4481,16 +4716,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].nit_tot[layer];
+					result.Patch[k].Value[layer] = Patch[k].nit_tot[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4505,11 +4740,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].fom_n[0][layer] + Patch[k].fom_n[1][layer] + Patch[k].fom_n[2][layer];
-			return Result;
+					result[k] += Patch[k].fom_n[0][layer] + Patch[k].fom_n[1][layer] + Patch[k].fom_n[2][layer];
+			return result;
 		}
 	}
 
@@ -4524,11 +4759,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].hum_n[layer];
-			return Result;
+					result[k] += Patch[k].hum_n[layer];
+			return result;
 		}
 	}
 
@@ -4543,11 +4778,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].inert_n[layer];
-			return Result;
+					result[k] += Patch[k].inert_n[layer];
+			return result;
 		}
 	}
 
@@ -4562,11 +4797,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].biom_n[layer];
-			return Result;
+					result[k] += Patch[k].biom_n[layer];
+			return result;
 		}
 	}
 
@@ -4581,12 +4816,12 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].urea[layer] + Patch[k].nh4[layer] + Patch[k].no3[layer];
+					result[k] += Patch[k].urea[layer] + Patch[k].nh4[layer] + Patch[k].no3[layer];
 
-			return Result;
+			return result;
 		}
 	}
 
@@ -4601,12 +4836,12 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].fom_n[0][layer] + Patch[k].fom_n[1][layer] + Patch[k].fom_n[2][layer] +
+					result[k] += Patch[k].fom_n[0][layer] + Patch[k].fom_n[1][layer] + Patch[k].fom_n[2][layer] +
 								 Patch[k].hum_n[layer] + Patch[k].biom_n[layer];
-			return Result;
+			return result;
 		}
 	}
 
@@ -4621,11 +4856,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].nit_tot[layer];
-			return Result;
+					result[k] += Patch[k].nit_tot[layer];
+			return result;
 		}
 	}
 
@@ -4645,16 +4880,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			double[] Result = new double[nLayers];
+			double[] result = new double[nLayers];
 			for (int k = 0; k < Patch.Count; k++)
 			{
 				double Nlosses = 0.0;
 				for (int layer = 0; layer < dlayer.Length; layer++)
 					Nlosses += (Patch[k].dlt_n2o_nitrif[layer] + Patch[k].dlt_no3_dnit[layer]);
 				double deltaN = SumDoubleArray(nit_tot) - TodaysInitialN;
-				Result[k] = -(Nlosses + deltaN);
+				result[k] = -(Nlosses + deltaN);
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4677,10 +4912,10 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
-				Result[k] = Patch[k].dlt_c_loss_in_sed;
-			return Result;
+				result[k] = Patch[k].dlt_c_loss_in_sed;
+			return result;
 		}
 	}
 
@@ -4696,17 +4931,17 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
 					for (int pool = 0; pool < 3; pool++)
-						Result.Patch[k].Value[layer] = Patch[k].dlt_c_fom_to_hum[pool][layer];
+						result.Patch[k].Value[layer] = Patch[k].dlt_c_fom_to_hum[pool][layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4722,17 +4957,17 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
 					for (int pool = 0; pool < 3; pool++)
-						Result.Patch[k].Value[layer] = Patch[k].dlt_c_fom_to_biom[pool][layer];
+						result.Patch[k].Value[layer] = Patch[k].dlt_c_fom_to_biom[pool][layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4748,17 +4983,17 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
 					for (int pool = 0; pool < 3; pool++)
-						Result.Patch[k].Value[layer] = Patch[k].dlt_c_fom_to_atm[pool][layer];
+						result.Patch[k].Value[layer] = Patch[k].dlt_c_fom_to_atm[pool][layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4774,16 +5009,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_hum_to_biom[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_hum_to_biom[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4799,16 +5034,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_hum_to_atm[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_hum_to_atm[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4824,16 +5059,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_biom_to_hum[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_biom_to_hum[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4849,16 +5084,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_biom_to_atm[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_biom_to_atm[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4874,16 +5109,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_res_to_biom[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_res_to_biom[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4899,16 +5134,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_res_to_hum[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_res_to_hum[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -4924,21 +5159,21 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].dlt_c_res_to_atm[layer];
+					result.Patch[k].Value[layer] = Patch[k].dlt_c_res_to_atm[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
 	/// <summary>
-	/// Total CO2 amount produced  for each patch
+	/// Total CO2 amount produced in the soil for each patch
 	/// </summary>
 	[Output]
 	[Units("kg/ha")]
@@ -4949,16 +5184,228 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].co2_atm[layer];
+					result.Patch[k].Value[layer] = Patch[k].co2_atm[layer];
 			}
-			return Result;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of C converted from FOM to humic for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of C converted from FOM to humic for each patch")]
+	private double[] PatchTotalDltCFromFOMToHumus
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					for (int pool = 0; pool < 3; pool++)
+						result[k] += Patch[k].dlt_c_fom_to_hum[pool][layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of C converted from FOM to m. biomass for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of C converted from FOM to m. biomass for each patch")]
+	private double[] PatchTotalDltCFromFOMToMBiomass
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					for (int pool = 0; pool < 3; pool++)
+						result[k] += Patch[k].dlt_c_fom_to_biom[pool][layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of FOM C lost to atmosphere for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of FOM C lost to atmosphere for each patch")]
+	private double[] PatchTotalDltCFromFOMToAtmosphere
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					for (int pool = 0; pool < 3; pool++)
+						result[k] += Patch[k].dlt_c_fom_to_atm[pool][layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of humic C converted to m. biomass for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of humic C converted to m. biomass for each patch")]
+	private double[] PatchTotalDltCFromHumusToMBiomass
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_hum_to_biom[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of humic C lost to atmosphere for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of humic C lost to atmosphere for each patch")]
+	private double[] PatchTotalDltCFromHumusToAtmosphere
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_hum_to_atm[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of biomass C converted to humus for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of biomass C converted to humus for each patch")]
+	private double[] PatchTotalDltCFromMBiomassToHumus
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_biom_to_hum[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of biomass C lost to atmosphere for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of biomass C lost to atmosphere for each patch")]
+	private double[] PatchTotalDltCFromMBiomassToAtmosphere
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_biom_to_atm[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of C from residues converted to m. biomass for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of C from residues converted to m. biomass for each patch")]
+	private double[] PatchTotalDltCFromResiduesToMBiomass
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_res_to_biom[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of C from residues converted to humus for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of C from residues converted to humus for each patch")]
+	private double[] PatchTotalDltCFromResiduesToHumus
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_res_to_hum[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total amount of C from residues lost to atmosphere for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total amount of C from residues lost to atmosphere for each patch")]
+	private double[] PatchTotalDltCFromResiduesToAtmosphere
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].dlt_c_res_to_atm[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total CO2 amount produced in the soil for each patch (kg/ha)
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total CO2 amount produced in the soil for each patch")]
+	private double[] PatchTotalCO2Produced
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].co2_atm[layer];
+			return result;
 		}
 	}
 
@@ -4979,21 +5426,21 @@ public partial class SoilNitrogen
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nPools = 3;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchPoolVariableType Result = new CNPatchPoolVariableType();
-			Result.Patch = new CNPatchPoolVariablePatchType[nPatches];
+			CNPatchPoolVariableType result = new CNPatchPoolVariableType();
+			result.Patch = new CNPatchPoolVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchPoolVariablePatchType();
-				Result.Patch[k].Pool = new CNPatchPoolVariablePatchPoolType[nPools];
+				result.Patch[k] = new CNPatchPoolVariablePatchType();
+				result.Patch[k].Pool = new CNPatchPoolVariablePatchPoolType[nPools];
 				for (int pool = 0; pool < nPools; pool++)
 				{
-					Result.Patch[k].Pool[pool] = new CNPatchPoolVariablePatchPoolType();
-					Result.Patch[k].Pool[pool].Value = new double[nLayers];
+					result.Patch[k].Pool[pool] = new CNPatchPoolVariablePatchPoolType();
+					result.Patch[k].Pool[pool].Value = new double[nLayers];
 					for (int layer = 0; layer < nLayers; layer++)
-						Result.Patch[k].Pool[pool].Value[layer] = Patch[k].fom_c[pool][layer];
+						result.Patch[k].Pool[pool].Value[layer] = Patch[k].fom_c[pool][layer];
 				}
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -5009,16 +5456,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].hum_c[layer];
+					result.Patch[k].Value[layer] = Patch[k].hum_c[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -5034,16 +5481,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].inert_c[layer];
+					result.Patch[k].Value[layer] = Patch[k].inert_c[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -5059,16 +5506,41 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].biom_c[layer];
+					result.Patch[k].Value[layer] = Patch[k].biom_c[layer];
 			}
-			return Result;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Amount of water soluble C for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Amount of water soluble C for each patch")]
+	private CNPatchVariableType PatchWaterSolubleC
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			int nLayers = (dlayer != null) ? dlayer.Length : 0;
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
+			for (int k = 0; k < nPatches; k++)
+			{
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
+				for (int layer = 0; layer < nLayers; layer++)
+					result.Patch[k].Value[layer] = Patch[k].waterSoluble_c[layer];
+			}
+			return result;
 		}
 	}
 
@@ -5084,16 +5556,16 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			CNPatchVariableType Result = new CNPatchVariableType();
-			Result.Patch = new CNPatchVariablePatchType[nPatches];
+			CNPatchVariableType result = new CNPatchVariableType();
+			result.Patch = new CNPatchVariablePatchType[nPatches];
 			for (int k = 0; k < nPatches; k++)
 			{
-				Result.Patch[k] = new CNPatchVariablePatchType();
-				Result.Patch[k].Value = new double[nLayers];
+				result.Patch[k] = new CNPatchVariablePatchType();
+				result.Patch[k].Value = new double[nLayers];
 				for (int layer = 0; layer < nLayers; layer++)
-					Result.Patch[k].Value[layer] = Patch[k].carbon_tot[layer];
+					result.Patch[k].Value[layer] = Patch[k].carbon_tot[layer];
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -5108,11 +5580,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].fom_c[0][layer] + Patch[k].fom_c[1][layer] + Patch[k].fom_c[2][layer];
-			return Result;
+					result[k] += Patch[k].fom_c[0][layer] + Patch[k].fom_c[1][layer] + Patch[k].fom_c[2][layer];
+			return result;
 		}
 	}
 
@@ -5127,11 +5599,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].hum_c[layer];
-			return Result;
+					result[k] += Patch[k].hum_c[layer];
+			return result;
 		}
 	}
 
@@ -5146,11 +5618,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].inert_c[layer];
-			return Result;
+					result[k] += Patch[k].inert_c[layer];
+			return result;
 		}
 	}
 
@@ -5165,11 +5637,30 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].biom_c[layer];
-			return Result;
+					result[k] += Patch[k].biom_c[layer];
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// Total water soluble C in the whole profile for each patch
+	/// </summary>
+	[Output]
+	[Units("kg/ha")]
+	[Description("Total water soluble C in the whole profile for each patch")]
+	private double[] PatchTotalWaterSolubleC
+	{
+		get
+		{
+			int nPatches = (Patch != null) ? Patch.Count : 1;
+			double[] result = new double[nPatches];
+			for (int k = 0; k < nPatches; k++)
+				for (int layer = 0; layer < dlayer.Length; layer++)
+					result[k] += Patch[k].waterSoluble_c[layer];
+			return result;
 		}
 	}
 
@@ -5184,11 +5675,11 @@ public partial class SoilNitrogen
 		get
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
-			double[] Result = new double[nPatches];
+			double[] result = new double[nPatches];
 			for (int k = 0; k < nPatches; k++)
 				for (int layer = 0; layer < dlayer.Length; layer++)
-					Result[k] += Patch[k].carbon_tot[layer];
-			return Result;
+					result[k] += Patch[k].carbon_tot[layer];
+			return result;
 		}
 	}
 
@@ -5208,7 +5699,7 @@ public partial class SoilNitrogen
 		{
 			int nPatches = (Patch != null) ? Patch.Count : 1;
 			int nLayers = (dlayer != null) ? dlayer.Length : 0;
-			double[] Result = new double[nLayers];
+			double[] result = new double[nLayers];
 			for (int k = 0; k < nPatches; k++)
 			{
 				double CLosses = 0.0;
@@ -5220,9 +5711,9 @@ public partial class SoilNitrogen
 										Patch[k].dlt_c_hum_to_atm[layer] +
 										Patch[k].dlt_c_biom_to_atm[layer]);
 				double deltaC = SumDoubleArray(Patch[k].carbon_tot) - Patch[k].TodaysInitialC;
-				Result[k]= -(CLosses + deltaC);
+				result[k]= -(CLosses + deltaC);
 			}
-			return Result;
+			return result;
 		}
 	}
 
@@ -5439,6 +5930,16 @@ public partial class SoilNitrogen
 	/// Marker for whether external ph is supplied, otherwise default is used
 	/// </summary>
 	private bool usingSimpleSoilpH = false;
+
+	/// <summary>
+	/// whether water soluble carbon calcualtion uses new C pools
+	/// </summary>
+	private bool usingNewPools = false;
+
+	/// <summary>
+	/// whether exponential function is used to compute water soluble carbon
+	/// </summary>
+	private bool usingExpFunction = false;
 
 	#endregion
 

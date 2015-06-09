@@ -684,12 +684,21 @@ public partial class SoilNitrogen
 			int index = 0; // denitrification calcs are not different whether there is pond or not. use 0 as default
 
 			// get available carbon from soil organic pools
-			double totalC = (hum_c[layer] + fom_c[0][layer] + fom_c[1][layer] + fom_c[2][layer]) * g.convFactor[layer];
-			double active_c = g.actC_parmA + g.actC_parmB * totalC;
+			double totalC = 0.0;//(hum_c[layer] + fom_c[0][layer] + fom_c[1][layer] + fom_c[2][layer]) * g.convFactor[layer];
+			if (g.usingNewPools)
+				totalC = (hum_c[layer] - inert_c[layer] + biom_c[layer] + fom_c[0][layer]) * g.convFactor[layer];
+			else
+				totalC = (hum_c[layer] + fom_c[0][layer] + fom_c[1][layer] + fom_c[2][layer]) * g.convFactor[layer];
+
+			//double active_c = 0.0;  replaced by waterSoluble_c
+			if (g.usingExpFunction)
+				waterSoluble_c[layer] = g.actCExp_parmA * Math.Pow(totalC, g.actCExp_parmB);
+			else
+				waterSoluble_c[layer] = g.actC_parmA + g.actC_parmB * totalC;
 			// Note: Ceres wheat has active_c = 0.4* fom_C_pool1 + 0.0031 * 0.58 * hum_C_conc + 24.5
 
 			// get the potential denitrification rate
-			double pot_denit_rate = g.DenitRateCoefficient * active_c;
+			double pot_denit_rate = g.DenitRateCoefficient * waterSoluble_c[layer];
 
 			if (pot_denit_rate >= g.epsilon)
 			{

@@ -89,6 +89,11 @@ public partial class SoilNitrogen
 		public double[] biom_c;
 
 		/// <summary>
+		/// Amount of water soluble C for each soil layer (for denitrification)
+		/// </summary>
+		public double[] waterSoluble_c;
+
+		/// <summary>
 		/// Nitrogen amount in soil m. biomass
 		/// </summary>
 		public double[] biom_n;
@@ -612,6 +617,7 @@ public partial class SoilNitrogen
 			Array.Resize(ref biom_c, nLayers);
 			Array.Resize(ref hum_c, nLayers);
 			Array.Resize(ref inert_c, nLayers);
+			Array.Resize(ref waterSoluble_c, nLayers);
 			Array.Resize(ref biom_n, nLayers);
 			Array.Resize(ref hum_n, nLayers);
 			Array.Resize(ref inert_n, nLayers);
