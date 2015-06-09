@@ -260,6 +260,9 @@ module Soiln2Module
       real         opt_temp(2)            ! Soil temperature above which there
                                           ! is no further effect on mineralisation
                                           ! and nitrification (oC)
+      real         temp_exponent          ! Exponent for power function used to 
+                                          ! calculate temperature factor (default 2.0)
+      real         tfactor_zero           ! Value for the temperature factor at 0 degreees
       real         NH4ppm_min             ! minimum allowable NH4 (ppm)
       real         no3ppm_min             ! minimum allowable NO3 (ppm)
       real         wf_min_index(max_wf_values)
@@ -858,6 +861,8 @@ subroutine soiln2_zero_all_globals ()
    c%fr_fom(:,:)           = 0.0
    c%OC2OM_factor          = 0.0
    c%opt_temp(:)           = 0.0
+   c%temp_exponent         = 0.0
+   c%tfactor_zero          = 0.0
    c%NH4ppm_min            = 0.0
    c%no3ppm_min            = 0.0
    c%wf_min_index(:)       = 0.0
@@ -2276,7 +2281,17 @@ subroutine soiln2_read_constants ()
    call read_real_var (section_name, 'cnrf_optcn', '(mm)', c%cnrf_optcn, numvals, 5.0, 100.0)
 
    call read_real_array (section_name, 'opt_temp', 2, '(mm)', c%opt_temp(:), numvals, 5.0, 100.0)
+   
+   call read_real_var_optional (section_name, 'temp_exponent', '()', c%temp_exponent, numvals, 0.0, 50.0)
+   if (numvals.eq.0) then
+      c%temp_exponent = 2.0
+   endif
 
+   call read_real_var_optional (section_name, 'tfactor_zero', '()', c%tfactor_zero, numvals, 0.0, 1.0)
+   if (numvals.eq.0) then
+      c%tfactor_zero = 0.0
+   endif
+   
    call read_real_array (section_name, 'wfmin_index', max_wf_values, '()', c%wf_min_index, numvals, 0.0, 2.0)
 
    call read_real_array (section_name, 'wfmin_values', max_wf_values, '(0-1)', c%wf_min_values, numvals, 0.0, 1.0)
@@ -4388,6 +4403,8 @@ real function soiln2_tf (layer, index)
 
 !+  Local Variables
    real tf                          ! temporary temperature factor
+   real auxv
+   real tzero
 
 !- Implementation Section ----------------------------------
 
@@ -4400,15 +4417,20 @@ real function soiln2_tf (layer, index)
 
    ! alternative quadratic temperature function is preferred
    !  with optimum temperature (CM - used 32 deg)
-   if (g%soil_temp(layer).gt.0.0) then
-      tf = divide (g%soil_temp(layer)*g%soil_temp(layer), c%opt_temp(index)**2.0, 0.0)
-      tf = bound (tf, 0.0, 1.0)
+   
+   ! Turned into a generalised power function with settable y intercept,
+   ! allowing both previous forms to be used, but defaulting to the quadratic
+   ! Linear: temp_exponent = 1.0; factor_zero = -0.166666; opt_temp = 35
+   ! Quadratic: temp_exponent = 2.0; factor_zero = 0.0; opt_temp = 32 (default)
+   auxv = c%tfactor_zero ** (1.0 / c%temp_exponent)
+   if (auxv .ge. 1.0) then
+      tf = 1.0
    else
-      ! Soil is too cold for mineralisation
-      tf = 0.0
+     tzero = c%opt_temp(index) * auxv / (auxv - 1.0)
+     tf = divide(max(0.0, g%soil_temp(layer) - tzero), c%opt_temp(index) - tzero, 0.0) ** c%temp_exponent
+     tf = bound (tf, 0.0, 1.0)
    endif
    soiln2_tf = tf
-
 
    call pop_routine (my_name)
    return
@@ -4437,7 +4459,7 @@ real function rothc_tf (layer,index)
 
 !+  Constant Values
    character  my_name*(*)           ! name of subroutine
-   parameter (my_name = 'soiln2_tf')
+   parameter (my_name = 'rothc_tf')
 
 !+  Local Variables
    real tf                          ! temporary temperature factor
