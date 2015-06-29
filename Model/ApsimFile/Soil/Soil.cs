@@ -33,7 +33,7 @@ namespace ApsimFile
         public string ASCOrder { get; set; }
         [Description("Australian Soil Classification Sub-Order")]
         public string ASCSubOrder { get; set; }
-        [Description("Soil texture or other descriptor")]
+        [Description("Soil type, texture or other descriptor")]
         public string SoilType { get; set; }
         [Description("Local name")]
         public string LocalName { get; set; }
@@ -1402,7 +1402,7 @@ namespace ApsimFile
         /// <summary>
         /// Crop lower limit mapped. Units: mm/mm
         /// </summary>
-        internal double[] LLMapped(string CropName, double[] ToThickness)
+        public double[] LLMapped(string CropName, double[] ToThickness)
         {
             SoilCrop SoilCrop = Crop(CropName);
             if (MathUtility.AreEqual(SoilCrop.Thickness, ToThickness))

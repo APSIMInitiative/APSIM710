@@ -10,7 +10,7 @@ namespace FTP
     public class Client
         {
 
-        public static void Upload(string FullFileName, string FTPFullFileName, string UserName, string Password)
+        public static void Upload(string FullFileName, string FTPFullFileName, string UserName, string Password, bool enableSSL = false)
             {
             // ------------------------------------------------------------------
             // Method to upload the specified FullFileName to the specified 
@@ -25,6 +25,7 @@ namespace FTP
             FTP.UseBinary = true;
             FTP.ContentLength = File.Length;
             FTP.UsePassive = false;
+            FTP.EnableSsl = enableSSL;
 
             // The buffer size is set to 2kb
             int BuffLength = 2048;

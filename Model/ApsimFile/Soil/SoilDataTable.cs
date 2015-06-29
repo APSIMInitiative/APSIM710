@@ -77,7 +77,8 @@ namespace ApsimFile
                 NewSoil.NearestTown = GetStringValue(Table, StartRow, "NearestTown");
                 NewSoil.Site = GetStringValue(Table, StartRow, "Site");
                 NewSoil.ApsoilNumber = GetStringValue(Table, StartRow, "APSoilNumber");
-                NewSoil.SoilType = GetStringValue(Table, StartRow, "SoilType");
+                NewSoil.SoilType = GetStringValue(Table, StartRow, "Soil type, texture or other descriptor");
+                NewSoil.LocalName = GetStringValue(Table, StartRow, "LocalName");
                 NewSoil.ASCOrder = GetStringValue(Table, StartRow, "ASC_Order");
                 NewSoil.ASCSubOrder = GetStringValue(Table, StartRow, "ASC_Sub-order");
                 NewSoil.Latitude = GetDoubleValue(Table, StartRow, "Latitude");
@@ -271,7 +272,8 @@ namespace ApsimFile
             SetStringValue(Table, "NearestTown", Soil.NearestTown, StartRow, NumValues);
             SetStringValue(Table, "Site", Soil.Site, StartRow, NumValues);
             SetStringValue(Table, "APSoilNumber", Soil.ApsoilNumber, StartRow, NumValues);
-            SetStringValue(Table, "SoilType", Soil.SoilType, StartRow, NumValues);
+            SetStringValue(Table, "Soil type texture or other descriptor", Soil.SoilType, StartRow, NumValues);
+            SetStringValue(Table, "Local name", Soil.LocalName, StartRow, NumValues);
             SetStringValue(Table, "ASC_Order", Soil.ASCOrder, StartRow, NumValues);
             SetStringValue(Table, "ASC_Sub-order", Soil.ASCSubOrder, StartRow, NumValues);
             SetDoubleValue(Table, "Latitude", Soil.Latitude, StartRow, NumValues);
