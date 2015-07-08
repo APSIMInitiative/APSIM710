@@ -1168,7 +1168,7 @@ public class Species
                 Teffect = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
                 if (Teffect > 1.25) Teffect = 1.25;
                 Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
-            }   //The extreme high temperatue (heat) effect is added separately
+            }   //The extreme high temperature (heat) effect is added separately
         }
 
         double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
@@ -1299,7 +1299,7 @@ public class Species
                     Teffect = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
                     if (Teffect > 1.25) Teffect = 1.25;
                     Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
-                }   //The extreme high temperatue (heat) effect is added separately
+                }   //The extreme high temperature (heat) effect is added separately
             }
         }
 
@@ -2411,10 +2411,11 @@ public class Species
     internal int RootZoneBottomLayer()
     {
         double depthFromSurface = 0.0;
-        int result = dlayer.Length;
+        int result = dlayer.Length - 1;
+        double maxDepth = Math.Min(rootDepth, dlayer.Sum());
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
-            if (depthFromSurface >= rootDepth)
+            if (depthFromSurface >= maxDepth)
             {
                 result = layer - 1;
                 layer = dlayer.Length;
