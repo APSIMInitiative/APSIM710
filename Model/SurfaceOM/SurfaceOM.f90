@@ -484,7 +484,7 @@ subroutine surfom_read_coeff ()
    call read_real_var (section_name, 'default_standing_fraction', '()', c%default_standing_fraction, numvals, 0.0, 1.0)
    call read_real_var (section_name, 'standing_extinct_coeff', '()', c%standing_extinct_coeff, numvals, 0.0, 1.0)
    call read_real_var_optional (section_name, 'fraction_faeces_added', '()', c%fraction_faeces_added, numvals, 0.0, 1.0)
-   if (numvals.le.0) c%fraction_faeces_added = 0.5
+   if (numvals.le.0) c%fraction_faeces_added = 0.7
 
 
    call pop_routine (my_name)

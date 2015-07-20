@@ -678,7 +678,7 @@ subroutine soiln2_read_param ()
    endif
 
    call read_real_var_optional (section_name, 'fraction_urine_added', '(0-1)', c%fraction_urine_added, numvals, 0.0, 1.0)
-   if (numvals.le.0) c%fraction_urine_added = 0.5
+   if (numvals.le.0) c%fraction_urine_added = 0.75
    
    string = ' '
    call read_char_var_optional (section_name, 'use_organic_solutes', '()', string, numvals)
