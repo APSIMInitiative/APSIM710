@@ -1,59 +1,61 @@
 ﻿<Type name="SlopeEffectsOnWeather">
-  <MetaData>
-    <UItype>CSUserInterface.GenericUI</UItype>
-    <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-    <Documentation name="Nitrogen science documentation"></Documentation>
-    <LargeIcon>%apsim%\UserInterface\Images\Hills32.png</LargeIcon>
-    <SmallIcon>%apsim%\UserInterface\Images\Hills16.png</SmallIcon>
-    <dll>%apsim%/Model/SlopeEffectsOnWeather.dll</dll>
-    <drops>
-      <drop>toolbox</drop>
-      <drop>area</drop>
-      <drop>simulation</drop>
-      <drop>folder</drop>
-      <drop>factor</drop>
-    </drops>
-    <ApsimToSim>
-      <component name="SlopeEffectsOnWeather" executable="%apsim%/Model/SlopeEffectsOnWeather.dll" class="SoilN">
-        <executable name="%apsim%/Model/SlopeEffectsOnWeather.dll" version="1.0" />
-        <initdata>
-          [Model]
-          [SlopeEffectsOnWeather.innerxml]
-        </initdata>
-      </component>
-    </ApsimToSim>
-  </MetaData>
-  <Model>
-    <SlopeEffectsOnWeather>
-      <!-- General location parameters -->
-      <SoilParamSet description="Angle of the slope, from horizontal (degrees)"> standard </SoilParamSet>
-      <SlopeAngle description="Angle of the slope, from horizontal (degrees)">0.0</SlopeAngle>
-      <AspectAngle description="Angle of the aspect, from north (degrees)">90.0</AspectAngle>
-      <EnviroAlbedo description="Albedo of surrounding environment">0.20</EnviroAlbedo>
-      
-      <!-- Parameters for adjusting solar radiation -->
-      <A_diffuseR description="Parameter A for diffuse radiation fraction">-3.71</A_diffuseR>
-      <B_diffuseR description="Parameter B for diffuse radiation fraction">7.13</B_diffuseR>
-      <!-- Bolland et al (2008) suggest a generic model with parameters A = -5.0 and B = 8.3.
-            The also show that A vary between -4.4 and -5.8, and B from 6.6 to 9.9  -->
-      
-      <!-- Parameters for adjusting air temperature -->
-      <kT_dTemp description="Parameter kT for temperature correction (rate of change)">0.25</kT_dTemp>
-      <uT_dTemp description="Parameter uT0 for temperature correction (maximum change)">20.0</uT_dTemp>
-      <bT_dTemp description="Parameter bT for temperature correction (wind effect)">0.75</bT_dTemp>
-      <Fn_dTemp description="Parameter Fn for temperature correction (increasing-decreasing radiation)">0.5</Fn_dTemp>
-      <Fx_dTemp description="Parameter Fx for temperature correction (min-max temperatures)">0.5</Fx_dTemp>
-      <!-- For NZ, at latitude -43o and for 30o slopes (Radcliffe, 1981), kT seem to be around 0.25;
-           The maximum change in Tmax (uT) seem to be between 15-30oC for NZ - After results from Gilligham (1978) and Radcliffe (1981);
-           The value of bT should be between 0.6 and 1.0, after McCutchan & Fox (1986) and Bennie et al (2008);
-           Again based on NZ data (Radcliffe, 1981), both Fn and Fx seem to be about 0.5; -->
-      
-      <!-- Parameters for adjusting other variables (these are not explicitly function of slope) -->
-      <dRain description="Relative change in rainfall (%)">0.0</dRain>
-      <dWind description="Relative change in wind (%)">0.0</dWind>
-      <dVapPressure description="Relative change in vapour pressure (%">0.0</dVapPressure>
-      <dRH description="Relative change in relative humidity (%">0.0</dRH>
-    </SlopeEffectsOnWeather>
-  </Model>
+    <MetaData>
+        <UItype>CSUserInterface.GenericUI</UItype>
+        <ShowInMainTree>Yes</ShowInMainTree>
+        <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+        <Documentation name="Nitrogen science documentation"></Documentation>
+        <LargeIcon>%apsim%\UserInterface\Images\Hills32.png</LargeIcon>
+        <SmallIcon>%apsim%\UserInterface\Images\Hills16.png</SmallIcon>
+        <dll>%apsim%/Model/SlopeEffectsOnWeather.dll</dll>
+        <drops>
+            <drop>toolbox</drop>
+            <drop>area</drop>
+            <drop>simulation</drop>
+            <drop>folder</drop>
+            <drop>factor</drop>
+        </drops>
+        <ApsimToSim>
+            <component name="SlopeEffectsOnWeather" executable="%apsim%/Model/SlopeEffectsOnWeather.dll" class="MicroMet">
+                <executable name="%apsim%/Model/SlopeEffectsOnWeather.dll" version="1.0" />
+                <initdata>
+                    [Model]
+                    [SlopeEffectsOnWeather.innerxml]
+                </initdata>
+            </component>
+        </ApsimToSim>
+    </MetaData>
+    <Model>
+        <SlopeEffectsOnWeather>
+            <!-- General location parameters -->
+            <SlopeAngle description="Angle of the slope, from horizontal (degrees)">0.0</SlopeAngle>
+            <AspectAngle description="Angle of the aspect, from north (degrees)">90.0</AspectAngle>
+            <Altitude description="Local altitude (meters above sea level)"> 50.0 </Altitude>
+            <SurroundsAlbedo description="Albedo of the surrounding environment (0-1)">0.20</SurroundsAlbedo>
+            
+            <!-- Parameters for adjusting solar radiation -->
+            <A_diffuseRadn description="Parameter A for diffuse radiation fraction">-3.66</A_diffuseRadn>
+            <B_diffuseRadn description="Parameter B for diffuse radiation fraction">7.01</B_diffuseRadn>
+            <!-- Bolland et al (2008) suggest a generic model with parameters A = -5.0 and B = 8.3.
+                        They also show that A vary between -4.4 and -5.8, and B from 6.6 to 9.9    
+                        Cichota (2015) found values A = -3.66 and B = 7.01, for New Zealand    -->
+            <TurbidityCoefficient description="Mean air turbidity for direct radiation (0-1)">0.95</TurbidityCoefficient>
+            <!-- The turbidity should vary, in practice, between 0.5 (for very dusty/polluted places) and 1.0 (for areas with natural vegetation)
+                        after Allen et al. (2006)-->
+
+            <!-- Parameters for adjusting air temperature -->
+            <aT0 description="Parameter of dltTemp × dltRadn function, max rate of change (oC per MJ/m2/day)">1.61</aT0>
+            <bT description="Parameter of dltTemp × dltRadn function, non linear coefficient (exponent)">0.88</bT>
+            <cT description="Parameter of dltTemp × dltRadn function, accounts for wind effects (0-1)">0.12</cT>
+            <FN description="Parameter of dltTemp × dltRadn function, used when dltRadn is negative (0-1)">0.81</FN>
+            <FM description="Parameter of dltTemp × dltRadn function, adjust for Tmin (0-1)">0.50</FM>
+            <!-- Parameters fitted for NZ, at latitudes -38, -40, and -43o and for slopes 15-25 degrees:
+                        aT0 = 1.61, bT = 0.88, cT = 0.12, FN = 0.88, FM = 0.50 - after Cichota (2015), considerable uncertainty on these.  -->
+
+            <!-- Parameters for adjusting other weather variables (these are not explicitly function of slope) -->
+            <dRain description="Relative change in rainfall (%)">0.0</dRain>
+            <dWind description="Relative change in wind (%)">0.0</dWind>
+            <dVapPressure description="Relative change in vapour pressure (%">0.0</dVapPressure>
+            <dRH description="Relative change in relative humidity (%">0.0</dRH>
+        </SlopeEffectsOnWeather>
+    </Model>
 </Type>

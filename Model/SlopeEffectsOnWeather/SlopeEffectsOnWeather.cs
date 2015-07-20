@@ -7,101 +7,189 @@ using System.Linq;
 using ModelFramework;
 using CSGeneral;
 
-
 /// <summary>
 /// This model can be used to adjust some of the weather variables when simulating a slopping surface (defined by slope and aspect angles)
 /// </summary>
 /// <remarks>
-/// -This include routines to modify the incoming solar radiation as well as minimum and maximum air temperatures;
-/// - Adjusts for rainfall, RHmin and RHmax, and windspeed, can be also done, but these are simply relative changes supplied by the user, not calculated. 
-/// - Calculations happens on PreNewMet event and take also into account the latitude of the site (read from the metfile).
+/// - This include routines to modify the incoming solar radiation as well as minimum and maximum air temperatures;
+/// - Adjusts for rainfall, RHmin and RHmax, vp, and windspeed, can be also done, but these are simply relative changes supplied by the user, not calculated. 
+/// - Calculations happens on PreNewMet event and take also into account the latitude of the site (read from the MetFile).
+/// - Altitude is also needed, it is a parameter for now (so are slope and aspect). These need to be read from 'Paddock' eventually.
+/// + References:
+///     Allen, R.G.; Pereira, L.S.; Raes, D.; & Smith, M., 1998. Crop evapotranspiration: guidelines for computing crop water requirements. Irrigation and Drainage Paper No. 56, FAO, Rome, Italy. 300 p.
+///     Allen, R.G.; Trezza, R.; & Tasumi, M. 2006. Analytical integrated functions for daily solar radiation on slopes. Agricultural and Forest Meteorology, 139(1–2):55-73.
+///     Almorox, J. & Hontoria, C. 2004. Global solar radiation estimation using sunshine duration in Spain. Energy Conversion and Management, 45(9-10):1529-1535.
+///     Boland, J.; Scott, L.; & Luther, M. 2001. Modelling the diffuse fraction of global solar radiation on a horizontal surface. Environmetrics, 12(2):103-116.
+///     Dervishi, S. & Mahdavi, A. 2012. Computing diffuse fraction of global horizontal solar radiation: A model comparison. Solar Energy, 86(6):1796-1802.
+///     Iqbal, M. 2012. An introduction to solar radiation: Elsevier Science. 408 p.
 /// </remarks>
 public class SlopeEffectsOnWeather
 {
     #region Links and Parameters
 
+    /// <summary>
+    /// Link to APSIM's clock
+    /// </summary>
     [Link]
     public Clock Clock = null;
 
+    /// <summary>
+    /// Link to APSIM's met file
+    /// </summary>
     [Link]
     public MetFile MyMetFile = null;
 
     /// <summary>
-    /// Angle of the slope, from horizontal
+    /// Angle of the slope, from horizontal (degrees)
     /// </summary>
     [Param]
     [Units("degrees")]
     private double SlopeAngle;
+
     /// <summary>
-    /// Angle of the aspect, from north
+    /// Angle of the aspect, from north (degrees)
     /// </summary>
     [Param]
     [Units("degrees")]
     private double AspectAngle;
+
     /// <summary>
-    /// Albedo of surrounding environment
+    /// Local altitude (meters above sea level)
     /// </summary>
     [Param]
-    private double EnviroAlbedo;
+    [Units("m")]
+    private double Altitude = 50;
+
+    /// <summary>
+    /// Albedo of the surrounding environment (0-1)
+    /// </summary>
+    [Param]
+    [Units("0-1")]
+    private double SurroundsAlbedo = 0.2;
+
     /// <summary>
     /// Parameter A for diffuse radiation fraction
     /// </summary>
     [Param]
-    private double A_diffuseR;
+    private double A_diffuseRadn = -5.0;
+
     /// <summary>
     /// Parameter B for diffuse radiation fraction
     /// </summary>
     [Param]
-    private double B_diffuseR;
+    private double B_diffuseRadn = 8.0;
+
     /// <summary>
-    /// Parameter kT for temperature correction (rate of change)
+    /// Mean air turbidity for direct radiation (0-1)
+    /// </summary>
+    /// <remarks>
+    /// The value should be, in practice, between 0.5 (for very dusty/polluted places) and 1.0 (for areas with natural vegetation)
+    /// Following Allen et al (2006)
+    /// </remarks>
+    [Param]
+    private double TurbidityCoefficient = 0.95;
+
+    /// <summary>
+    /// Parameter aT0 of dltTemp × dltRadn function, max rate of change (oC per MJ/m2/day)
     /// </summary>
     [Param]
-    private double kT_dTemp;
+    private double aT0 = 0.0;
+
     /// <summary>
-    /// Parameter uT0 for temperature correction (maximum change)
+    /// Parameter bT of dltTemp × dltRadn function, non linear coefficient (exponent)
     /// </summary>
     [Param]
-    private double uT_dTemp;
+    private double bT = 0.0;
+
     /// <summary>
-    /// Parameter bT for temperature correction (wind effect)
+    /// Parameter cT of dltTemp × dltRadn function, accounts for wind effects (0-1)
     /// </summary>
     [Param]
-    private double bT_dTemp;
+    private double cT = 0.0;
+
     /// <summary>
-    /// Parameter Fn for temperature correction (increasing-decreasing radiation)
+    /// Parameter FN of dltTemp × dltRadn function, used when dltRadn is negative (0-1)
     /// </summary>
     [Param]
-    private double Fn_dTemp;
+    private double FN = 0.0;
+
     /// <summary>
-    /// Parameter Fx for temperature correction (min-max temperatures)
+    /// Parameter FM of dltTemp × dltRadn function, adjust for Tmin (0-1)
     /// </summary>
     [Param]
-    private double Fx_dTemp;
+    private double FM = 0.0;
+
     /// <summary>
     /// Relative change in rainfall
     /// </summary>
     [Param]
     [Units("%")]
     private double dRain;
+
     /// <summary>
     /// Relative change in wind
     /// </summary>
     [Param]
     [Units("%")]
     private double dWind;
+
     /// <summary>
     /// Relative change in vapour pressure
     /// </summary>
     [Param]
     [Units("%")]
     private double dVapPressure;
+
     /// <summary>
     /// Relative change in relative humidity
     /// </summary>
     [Param]
     [Units("%")]
     private double dRH;
+
+    #region Internal parameters and constants
+
+    /// <summary>
+    /// Mean value of solar constant (w/m2)
+    /// </summary>
+    private double SolarConstant = 1367.0;
+
+    /// <summary>
+    /// Mean atmospheric pressure at sea level (hPa)
+    /// </summary>
+    private double StandardAtmosphericPressure = 101.325;
+
+    /// <summary>
+    /// Air temperature at standard conditions (Kelvin)
+    /// </summary>
+    private double StandardAtmosphericTemperature = 288.15;
+
+    /// <summary>
+    /// Mean acceleration of gravity at sea level (m/s^2)
+    /// </summary>
+    private double StandardGravitationalAcceleration = 9.80665;
+
+    /// <summary>
+    /// Standard environmental temperature lapse rate in dry air (K/m)
+    /// </summary>
+    private double StandardTemperatureLapseRate = 0.00649;
+
+    /// <summary>
+    /// Mean molar mass of Earth's dry air (kg/mol)
+    /// </summary>
+    private double StandardAtmosphericMolarMass = 0.0289644;
+
+    /// <summary>
+    /// Universal gas constant for air (J/mol/K)
+    /// </summary>
+    private double UniversalGasConstant = 8.31432;
+
+    /// <summary>
+    /// A threshold to evaluate significant values
+    /// </summary>
+    private double epsilon = 1e-10;
+
+    #endregion
 
     #endregion
 
@@ -114,6 +202,7 @@ public class SlopeEffectsOnWeather
     [Description("Original radiation value")]
     [Units("MJ/m2")]
     public double RadnMeasured;
+
     /// <summary>
     /// Direct solar radiation
     /// </summary>
@@ -121,6 +210,7 @@ public class SlopeEffectsOnWeather
     [Description("Direct solar radiation")]
     [Units("MJ/m2")]
     public double RadnDirect;
+
     /// <summary>
     /// Diffuse solar radiation (from sky)
     /// </summary>
@@ -128,6 +218,7 @@ public class SlopeEffectsOnWeather
     [Description("Diffuse solar radiation")]
     [Units("MJ/m2")]
     public double RadnDiffuse;
+
     /// <summary>
     /// Reflected solar radiation (from terrain)
     /// </summary>
@@ -135,23 +226,42 @@ public class SlopeEffectsOnWeather
     [Description("Reflected solar radiation (from terrain)")]
     [Units("MJ/m2")]
     public double RadnReflected;
+
     /// <summary>
-    /// Extraterestrial solar radiation
+    /// Extraterrestrial solar radiation
     /// </summary>
     [Output]
-    [Description("Extraterestrial solar radiation")]
+    [Description("Extraterrestrial solar radiation")]
     [Units("MJ/m2")]
     public double ExtraterrestrialRadn;
+
     /// <summary>
-    /// Sky cleaness index
+    /// Time length of direct sunshine on a horizontal surface
+    /// </summary>
+    [Output]
+    [Description("Length of direct sunshine on a horizontal surface")]
+    [Units("hours")]
+    public double MaxDayLength;
+
+    /// <summary>
+    /// Time length of direct sunshine on tilted surface (hrs)
+    /// </summary>
+    [Output]
+    [Description("Length of direct sunshine on tilted surface")]
+    [Units("hours")]
+    public double ActualDayLength;
+
+    /// <summary>
+    /// Sky clearness index
     /// </summary>
     /// <remarks>
     /// Provide an idea of how overcast the day is
     /// </remarks>
     [Output]
-    [Description("Atmospheric cleaness index")]
-    [Units("MJ/m2")]
+    [Description("Atmospheric clearness index")]
+    [Units("0-1")]
     public double ClearnessIndex;
+
     /// <summary>
     /// Fraction of total radiation that is diffuse
     /// </summary>
@@ -159,13 +269,22 @@ public class SlopeEffectsOnWeather
     [Description("Fraction of solar radiation that is diffuse (flat)")]
     [Units("0-1")]
     public double DiffuseRadnFraction;
+
     /// <summary>
-    /// Direct fraction of total radiation
+    /// Ratio of direct radiation between slope and horizontal surfaces
     /// </summary>
     [Output]
-    [Description("Ratio of direct solar radiation (flat-to-slope)")]
+    [Description("Ratio of direct solar radiation (slope-to-flat)")]
     [Units("-")]
     public double DirRadnRatio;
+
+    /// <summary>
+    /// Ratio of diffuse radiation between slope and horizontal surfaces
+    /// </summary>
+    [Output]
+    [Description("Ratio of diffuse solar radiation (slope-to-flat)")]
+    [Units("-")]
+    public double DiffRadnRatio;
 
     /// <summary>
     /// Fraction solar radiation direct
@@ -174,6 +293,7 @@ public class SlopeEffectsOnWeather
     [Description("Fraction solar radiation direct")]
     [Units("0-1")]
     public double FracRadnDirect;
+
     /// <summary>
     /// Fraction of solar radiation diffuse
     /// </summary>
@@ -181,6 +301,7 @@ public class SlopeEffectsOnWeather
     [Description("Fraction of solar radiation diffuse")]
     [Units("0-1")]
     public double FracRadnDiffuse;
+
     /// <summary>
     /// Fraction of solar radiation reflected from terrain
     /// </summary>
@@ -190,26 +311,13 @@ public class SlopeEffectsOnWeather
     public double FracRadnReflected;
 
     /// <summary>
-    ///  Upper threshold for the variation of Tmax
-    /// </summary>
-    [Output]
-    [Description("Upper threshold for the variation of Tmax")]
-    [Units("oC")]
-    public double upperTmaxVariation;
-    /// <summary>
-    ///  Upper threshold for the variation of Tmin
-    /// </summary>
-    [Output]
-    [Description("Upper threshold for the variation of Tmin")]
-    [Units("oC")]
-    public double upperTminVariation;
-    /// <summary>
     ///  Original value of Tmin
     /// </summary>
     [Output]
     [Description("Original value of Tmin")]
     [Units("oC")]
     public double TminMeasured;
+
     /// <summary>
     ///  Original value of Tmin
     /// </summary>
@@ -225,6 +333,7 @@ public class SlopeEffectsOnWeather
     [Description("Actual Tmean value, after adjusts")]
     [Units("oC")]
     public double TmeanActual;
+
     /// <summary>
     ///  Variation in Tmax
     /// </summary>
@@ -232,6 +341,7 @@ public class SlopeEffectsOnWeather
     [Description("Variation in Tmax")]
     [Units("oC")]
     public double dltTmax;
+
     /// <summary>
     ///  Variation in Tmin
     /// </summary>
@@ -240,20 +350,97 @@ public class SlopeEffectsOnWeather
     [Units("oC")]
     public double dltTmin;
 
+    /// <summary>
+    /// Mean local atmospheric pressure (hPa)
+    /// </summary>
+    [Output]
+    [Description("Mean local atmospheric pressure")]
+    [Units("hPa")]
+    public double AtmosphericPressure = 0.0;
+
     #endregion
 
     #region Internal variables
 
     /// <summary>
-    /// Value of solar constant (w/m2)
+    /// Latitude converted to radians
     /// </summary>
-    private double SolarConstant = 1367;
-
     private double LatitudeAngle;
+
+    /// <summary>
+    /// Slope factor for diffuse and reflected radiation (also called sky view)
+    /// </summary>
     private double SlopeFactor;
 
+    /// <summary>
+    /// Mean daily solar radiation after correction due to slope and aspect
+    /// </summary>
+    private double myRadn = 0.0;
+
+    /// <summary>
+    /// Minimum daily RH after correction imposed by the user
+    /// </summary>
+    private double myRHmin = 0.0;
+
+    /// <summary>
+    /// Maximum daily RH after correction imposed by the user
+    /// </summary>
+    private double myRHmax = 1.0;
+
+    /// <summary>
+    /// Mean daily RH after correction imposed by the user
+    /// </summary>
+    private double myRHmean = 80.0;
+
+    /// <summary>
+    /// Flag whether RH values can change (after user specification) or not
+    /// </summary>
+    /// <remarks>
+    /// RH values are not mandatory in APSIM met files, so if there are no values in the file, no changes can happen.
+    /// A valid value is still needed for the correction of radiation, a default value is used.
+    /// </remarks>
+    private bool canChangeRH = false;
+
+    /// <summary>
+    /// Mean daily vapour pressure after correction imposed by the user
+    /// </summary>
+    private double myVP = 10.0;
+
+    /// <summary>
+    /// Mean daily wind speed after correction imposed by the user
+    /// </summary>
+    private double myWindSpeed = 0.0;
+
+    /// <summary>
+    /// Hour angle for sunrise/sunset on a horizontal surface
+    /// </summary>
+    private double SunriseAngleHorizontal = 0.0;
+
+    /// <summary>
+    /// Hour angle for first sunrise on tilted surface
+    /// </summary>
+    private double SunriseAngle1Slope = 0.0;
+
+    /// <summary>
+    /// Hour angle for first sunset on tilted surface
+    /// </summary>
+    private double SunsetAngle1Slope = 0.0;
+
+    /// <summary>
+    /// Hour angle for second sunrise on tilted surface
+    /// </summary>
+    private double SunriseAngle2Slope = 0.0;
+
+    /// <summary>
+    /// Hour angle for second sunset on tilted surface
+    /// </summary>
+    private double SunsetAngle2Slope = 0.0;
+
+    /// <summary>
+    /// Flag whether initialisation procedure has been finished
+    /// </summary>
     private bool HasInitialised = false;
-    
+
     #endregion
 
     #region Calculations
@@ -261,139 +448,118 @@ public class SlopeEffectsOnWeather
     [EventHandler]
     public void OnInitialised()
     {
-
         // Check parameter values
-        if ((EnviroAlbedo < 0.0) || (EnviroAlbedo > 1))
-            throw new Exception("Albedo value is out of bounds (0-1)");
         if ((SlopeAngle < 0.0) || (SlopeAngle > 90))
             throw new Exception("Slope angle is out of the expected range (0-90deg)");
         if ((AspectAngle < 0.0) || (AspectAngle > 360))
             throw new Exception("Aspect angle is out of the expected range (0-600deg)");
+        if ((Altitude < -100.0) || (SurroundsAlbedo > 5000))
+            throw new Exception("Altitude value is out of bounds (0-1)");
+        if ((SurroundsAlbedo < 0.0) || (SurroundsAlbedo > 1.0))
+            throw new Exception("Albedo value is out of bounds (0-1)");
+        if ((TurbidityCoefficient < 0.0) || (TurbidityCoefficient > 1.0))
+            throw new Exception("Turbidity coefficient value is out of bounds (0-1)");
 
         // Convert and fix some parameters
         if (AspectAngle > 180)
             AspectAngle -= 180;
         SlopeAngle = Math.PI * SlopeAngle / 180;
         AspectAngle = Math.PI * AspectAngle / 180;
-        double AngleTolerance = 1 / 1000 / 3600;
-        //latitude close to zero yields an error, thus we limit it to a thousanth of a second
-        if (Math.Abs(MyMetFile.Latitude) < AngleTolerance)
-            LatitudeAngle = Math.PI * AngleTolerance / 180;
-        else
-            LatitudeAngle = Math.PI * MyMetFile.Latitude / 180;
-        dRain = Math.Max(0.0, 1 + dRain / 100);
-        dWind = Math.Max(0.0, 1 + dWind / 100);
-        dVapPressure = Math.Max(0.0, 1 + dVapPressure / 100);
-        dRH = Math.Max(0.0, 1 + dRH / 100);
+        LatitudeAngle = Math.PI * MyMetFile.Latitude / 180;
 
-        SlopeFactor = 1 - (SlopeAngle / Math.PI);
+        // Get the local mean atmospheric pressure, similar to Allen et al (1998)
+        double expPressure = StandardGravitationalAcceleration * StandardAtmosphericMolarMass / (UniversalGasConstant * StandardTemperatureLapseRate);
+        AtmosphericPressure = Math.Pow(1 - (StandardTemperatureLapseRate * Altitude / StandardAtmosphericTemperature), expPressure);
+        AtmosphericPressure *= StandardAtmosphericPressure;
+
+        // Get the slope factor for correcting reflected radiation, based on Allen et al. (2006)
+        SlopeFactor = 0.75 + (0.25 * Math.Cos(SlopeAngle)) - (0.5 * SlopeAngle / Math.PI);
+
+        // Covert the user defined changes from percent into fraction
+        dRain = Math.Max(0.0, 1.0 + (0.01 * dRain));
+        dWind = Math.Max(0.0, 1.0 + (0.01 * dWind));
+        dVapPressure = Math.Max(0.0, 1.0 + (0.01 * dVapPressure));
+        dRH = Math.Max(0.0, 1.0 + (0.01 * dRH));
+
+        // Finish initialisation
         HasInitialised = true;
-
-        Console.WriteLine("");
+        Console.WriteLine();
         Console.WriteLine("     Weather variables will be adjusted for slope and aspect");
-        Console.WriteLine("      - Radiation adjusted based on the model of Revfeim (1978), with diffuse fraction from Boland et al (2008)");
-        Console.WriteLine("      - Temperature max and min adjusted as function of changes in direct radiation, Cichota (2014)");
+        Console.WriteLine("      - Radiation and temperature adjusted based on the model described by Cichota (2015)");
         Console.WriteLine("      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope");
-        Console.WriteLine("");
+        Console.WriteLine();
     }
+
+    //[EventHandler]
+    //public void OnNewMet(NewMetType NewMetData)
+    //{
+    //    Console.WriteLine("This is PreNewMet of day " + Clock.Today.ToShortDateString());
+    //}
 
     [EventHandler]
     public void OnPreNewMet(NewMetType NewMetData)
     {
-        double WindSpeed;
-
+        // Get the basic met values, evaluate their changes and re-set them on MetFile
         if (HasInitialised)
         {
-            // Extraterrestrial radiation - following classic formulae (Almorox and Hontoria, 2004; Allen et al., 2005)
-            double DayAngle = (2 * Math.PI * (Math.Min(Clock.day_of_year, 365) - 1)) / 365;
-            double SolarDeclination = 0.006918 - 0.399912 * Math.Cos(DayAngle)
-               + 0.070257 * Math.Sin(DayAngle)
-               - 0.006758 * Math.Cos(2 * DayAngle)
-               + 0.000907 * Math.Sin(2 * DayAngle)
-               - 0.002697 * Math.Cos(3 * DayAngle)
-               + 0.001480 * Math.Sin(3 * DayAngle);
-            double EarthEccentricity = 1.00011 + 0.034221 * Math.Cos(DayAngle)
-               + 0.00128 * Math.Sin(DayAngle)
-               + 0.000719 * Math.Cos(2 * DayAngle)
-               + 0.000077 * Math.Sin(2 * DayAngle);
-            double SunriseAngle = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(LatitudeAngle) * Math.Tan(SolarDeclination))));
-            //DayLength = 2 * SunriseAngle / (15 * Math.PI / 180)
-            ExtraterrestrialRadn = (24 * 3600 * SolarConstant / 1000000) * EarthEccentricity
-               * (Math.Cos(LatitudeAngle) * Math.Cos(SolarDeclination) * Math.Sin(SunriseAngle)
-               + SunriseAngle * Math.Sin(LatitudeAngle) * Math.Sin(SolarDeclination)) / Math.PI;
-
-            // Sky clearness index - following typical approach (Boland et al., 2008; Dervishi and Mahdavi, 2012)
-            ClearnessIndex = Math.Min(1.0, Math.Max(0.0, MyMetFile.Radn / ExtraterrestrialRadn));
-
-            // Diffuse radiation fraction - approach similar to Boland et al. (2008); Fitted to NZ 
-            DiffuseRadnFraction = 1 / (1 + Math.Exp(A_diffuseR + B_diffuseR * ClearnessIndex));
-
-            // Adjust for direct and diffuse radiation - based on geometric corrections (Revfeim, 1978, Tian et al. 2001)
-            double EffectiveLatitude = Math.Asin(Math.Sin(LatitudeAngle) * Math.Cos(SlopeAngle) + Math.Cos(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle));
-            double DayLightShift = Math.Asin(-Math.Sin(SlopeAngle) * Math.Sin(AspectAngle) / Math.Cos(EffectiveLatitude));
-            double SunriseAngleSlope = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(EffectiveLatitude) * Math.Tan(SolarDeclination))));
-            double SunriseHour = Math.Min(SunriseAngle, DayLightShift + SunriseAngleSlope);
-            double SunsetHour = Math.Max(-SunriseAngle, DayLightShift - SunriseAngleSlope);
-            double DayDur = (SunriseHour - SunsetHour) / 2;
-            double MidDay = (SunriseHour + SunsetHour) / 2;
-            //double DayLengthSlope = 2 * DayDur / (15 * Math.PI / 180)
-            DirRadnRatio = Math.Sin(EffectiveLatitude) * (DayDur - Math.Sin(DayDur) * Math.Cos(MidDay) * Math.Cos(DayLightShift) / Math.Cos(SunriseAngleSlope))
-               / (Math.Sin(LatitudeAngle) * (SunriseAngle - Math.Tan(SunriseAngle)));
-
-            // Prepare the radiation outputs
-            RadnMeasured = MyMetFile.Radn;
-            RadnDirect = RadnMeasured * DirRadnRatio * (1 - DiffuseRadnFraction);
-            RadnDiffuse = RadnMeasured * SlopeFactor * DiffuseRadnFraction;
-            RadnReflected = RadnMeasured * EnviroAlbedo * (1 - SlopeFactor);
-            double ActualRadn = RadnDirect + RadnDiffuse + RadnReflected;
-
-            FracRadnDirect = RadnDirect / ActualRadn;
-            FracRadnDiffuse = RadnDiffuse / ActualRadn;
-            FracRadnReflected = RadnReflected / ActualRadn;
-
             // Get and adjust windspeed
+            bool myAux = MyMetFile.Get("wind", out myWindSpeed);
+            if (Math.Abs(dWind - 1.0) > epsilon)
+                myWindSpeed *= dWind;
 
-            bool myAux = MyMetFile.Get("wind", out WindSpeed);
-            if (Math.Abs(dWind) > 0.000001)
-                WindSpeed *= dWind;
-
-            // Prepare the temperature outputs
-            upperTmaxVariation = uT_dTemp * Math.Exp(-bT_dTemp * WindSpeed);
-            upperTminVariation = upperTmaxVariation * Fx_dTemp;
-            double F_rR = (DirRadnRatio >= 1.0 ? 1.0 : 0.5);
-            if (Math.Abs(DirRadnRatio - 1) > 0.000001)
-            {
-                dltTmax = upperTmaxVariation * F_rR * (DirRadnRatio - 1) / (kT_dTemp + Math.Abs(DirRadnRatio - 1));
-                dltTmin = upperTminVariation * F_rR * (DirRadnRatio - 1) / (kT_dTemp + Math.Abs(DirRadnRatio - 1));
+            // Get and adjust RHs - we'll chage RHmin and max so that RHmean changes according to dRH
+            if (MyMetFile.Get("rhmin", out myRHmin) && MyMetFile.Get("rhmax", out myRHmax))
+            { // we have values for RH
+                canChangeRH = true;
+                myRHmean = 0.5 * (myRHmin + myRHmax);
+                double varRH = 0.0;
+                if ((Math.Abs(dRH - 1.0) > epsilon) && (myRHmax > epsilon))
+                {
+                    varRH = 1.0 - dRH + Math.Min(100 / myRHmean, dRH) - Math.Max(0, 2.0 - dRH);
+                    myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
+                    myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
+                }
+                else
+                { // no variations imposed
+                    canChangeRH = false;
+                }
+                myRHmean = 0.5 * (myRHmin + myRHmax);
             }
+            else
+            { // we don't have values for RH min and max, check for mean RH
+                if (MyMetFile.Get("rh", out myRHmean))
+                { // we can use this value, but will not change it in the met file - TODO: check this is the best way
+                    if (Math.Abs(dRH - 1.0) > epsilon)
+                        myRHmean *= dRH;
+                    canChangeRH = false;
+                }
+                else
+                { // no value for RH is available, use a default
+                    myRHmean = 80.0;
+                }
+            }
+
+
+            // Get and adjust VP
+            myVP = MyMetFile.vp;
+            if (Math.Abs(dVapPressure) > epsilon)
+                myVP *= dVapPressure;
+
+            // Evaluate the changes in radiation due to slope and aspect
+            RadiationOnSlope();
+
+            // Evaluate the changes in temperature
+            DeltaTemperature();
             TmaxMeasured = MyMetFile.MaxT;
             TminMeasured = MyMetFile.MinT;
 
-            // Get and adjust RH
-            double myRHmin;
-            double myRHmax;
-            myAux = MyMetFile.Get("rhmin", out myRHmin);
-            myRHmin = Math.Min(100.0, Math.Max(0.0, myRHmin * dRH));
-            myAux = MyMetFile.Get("rhmax", out myRHmax);
-            myRHmax = Math.Min(100.0, Math.Max(myRHmin, myRHmax * dRH));
-
             // Set the adjusted weather variables
-            if (Math.Abs(dRain - 1) > 0.000001)
+            if (Math.Abs(dRain - 1.0) > epsilon)
                 MyMetFile.Rain *= (float)dRain;
-            if (Math.Abs(dVapPressure - 1) > 0.000001)
-                MyMetFile.vp *= (float)dVapPressure;
-            if (Math.Abs(dRH - 1) > 0.000001)
-            {
-                MyMetFile.Set("rhmin", (float)myRHmin);
-                MyMetFile.Set("rhmax", (float)myRHmax);
-            }
-            if (Math.Abs(dWind - 1) > 0.000001)
-                MyMetFile.Set("wind", (float)WindSpeed);
-            if (MyMetFile.Radn != ActualRadn)
-                MyMetFile.Radn = (float)ActualRadn;
-            if (dltTmax != 0.0)
+
+            if (Math.Abs(dltTmax) > epsilon)
                 MyMetFile.MaxT += (float)dltTmax;
-            if (dltTmin != 0.0)
+            if (Math.Abs(dltTmin) > epsilon)
             {
                 if (MyMetFile.MinT + dltTmin > MyMetFile.MaxT)
                     MyMetFile.MinT = MyMetFile.MaxT;
@@ -401,8 +567,358 @@ public class SlopeEffectsOnWeather
                     MyMetFile.MinT += (float)dltTmin;
             }
 
+            if (Math.Abs(MyMetFile.Radn - myRadn) > epsilon)
+                MyMetFile.Radn = (float)myRadn;
+
+            if (Math.Abs(dWind - 1.0) > epsilon)
+                MyMetFile.Set("wind", (float)myWindSpeed);
+
+            if (Math.Abs(dVapPressure - 1.0) > epsilon)
+                MyMetFile.vp *= (float)dVapPressure;
+
+            if (canChangeRH)
+            {
+                MyMetFile.Set("rhmin", (float)myRHmin);
+                MyMetFile.Set("rhmax", (float)myRHmax);
+            }
+
             // Prepare outputs
-            TmeanActual = (MyMetFile.MaxT + MyMetFile.MinT) / 2;
+            TmeanActual = 0.5 * (MyMetFile.MaxT + MyMetFile.MinT);
+        }
+    }
+
+    /// <summary>
+    /// Computes the solar radiation received by a tilted surface, based on measured values on horizontal
+    /// </summary>
+    /// <remarks>
+    /// Uses the methodology described by Cichota (2015), adapted from Allen et al. (2006) and Iqbal (2015)
+    /// </remarks>
+    private void RadiationOnSlope()
+    {
+        // Extraterrestrial radiation - following classic formulae (Almorox and Hontoria, 2004; Iqbal, 2015)
+        double DayAngle = 2 * Math.PI * Math.Min(0.9995, (Clock.day_of_year - 0.5) / 365.25);
+        double SolarDeclination = 0.006918 - (0.399912 * Math.Cos(DayAngle))
+                                + (0.070257 * Math.Sin(DayAngle))
+                                - (0.006758 * Math.Cos(2 * DayAngle))
+                                + (0.000907 * Math.Sin(2 * DayAngle))
+                                - (0.002697 * Math.Cos(3 * DayAngle))
+                                + (0.001480 * Math.Sin(3 * DayAngle));
+        double EarthEccentricity = 1.00011 + (0.034221 * Math.Cos(DayAngle))
+                                 + (0.00128 * Math.Sin(DayAngle))
+                                 + (0.000719 * Math.Cos(2 * DayAngle))
+                                 + (0.000077 * Math.Sin(2 * DayAngle));
+        SunriseAngleHorizontal = Math.Acos(Math.Max(-1, Math.Min(1, -Math.Tan(LatitudeAngle) * Math.Tan(SolarDeclination))));
+        double RelativeSolarIrradiance = ((Math.Cos(LatitudeAngle) * Math.Cos(SolarDeclination) * Math.Sin(SunriseAngleHorizontal))
+                                        + (Math.Sin(LatitudeAngle) * Math.Sin(SolarDeclination) * SunriseAngleHorizontal)) / Math.PI;
+        ExtraterrestrialRadn = RelativeSolarIrradiance * EarthEccentricity * SolarConstant * 24 * 3600 / 1000000;
+
+        // Sky clearness index - following typical approach (Boland et al., 2008; Dervishi and Mahdavi, 2012)
+        ClearnessIndex = Math.Min(1.0, Math.Max(0.0, MyMetFile.Radn / ExtraterrestrialRadn));
+
+        // Diffuse radiation fraction - same approach as Boland et al. (2008), equivalent to Allen et al. (2006) 
+        DiffuseRadnFraction = 1.0 / (1.0 + Math.Exp(A_diffuseRadn + (B_diffuseRadn * ClearnessIndex)));
+
+        if (SlopeAngle > epsilon)
+        {
+            // Auxiliary variables for radiation (Allen et al., 2006)
+            double a_ = Math.Sin(SolarDeclination) * ((Math.Sin(LatitudeAngle) * Math.Cos(SlopeAngle))
+                      - (Math.Cos(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle)));
+            double b_ = Math.Cos(SolarDeclination) * ((Math.Cos(LatitudeAngle) * Math.Cos(SlopeAngle))
+                      + (Math.Sin(LatitudeAngle) * Math.Sin(SlopeAngle) * Math.Cos(AspectAngle)));
+            double c_ = Math.Cos(SolarDeclination) * (Math.Sin(SlopeAngle) * Math.Sin(AspectAngle));
+            double g_ = Math.Sin(SolarDeclination) * Math.Sin(LatitudeAngle);
+            double h_ = Math.Cos(SolarDeclination) * Math.Cos(LatitudeAngle);
+
+            // Hour angles for the sunrise/sunset on slope (Cichota, 2015)
+            SunriseSunsetOnSlope(a_, b_, c_);
+
+            // Length of daylight, horizontal (max) and slope (actual)
+            MaxDayLength = 24 * SunriseAngleHorizontal / Math.PI;
+            ActualDayLength = 12 * (Math.Max(0.0, SunsetAngle1Slope - SunriseAngle1Slope)
+                            + Math.Max(0.0, SunsetAngle2Slope - SunriseAngle2Slope))
+                            / Math.PI;
+
+            // Extraterrestrial radiation on slope (Allen et al., 2006)
+            double RelativeIrradianceOnSlope = ((a_ * (SunsetAngle1Slope - SunriseAngle1Slope))
+                                             + (b_ * (Math.Sin(SunsetAngle1Slope) - Math.Sin(SunriseAngle1Slope)))
+                                             - (c_ * (Math.Cos(SunsetAngle1Slope) - Math.Cos(SunriseAngle1Slope)))
+                                             + (a_ * (SunsetAngle2Slope - SunriseAngle2Slope))
+                                             + (b_ * (Math.Sin(SunsetAngle2Slope) - Math.Sin(SunriseAngle2Slope)))
+                                             - (c_ * (Math.Cos(SunsetAngle2Slope) - Math.Cos(SunriseAngle2Slope))))
+                                             / (2 * Math.PI);
+
+            // Zenith angle integrated over the day - horizontal and slope (Allen et al., 2006)
+            double SinThetaZh = ((2 * SunriseAngleHorizontal * Math.Pow(g_, 2)) + (4 * g_ * h_ * Math.Sin(SunriseAngleHorizontal))
+                               + ((SunriseAngleHorizontal + (0.5 * Math.Sin(2 * SunriseAngleHorizontal))) * Math.Pow(h_, 2)))
+                               / (2 * ((g_ * SunriseAngleHorizontal) + (h_ * Math.Sin(SunriseAngleHorizontal))));
+            double SinThetaZs = 0.0;
+            if (ActualDayLength > epsilon)
+            {
+                double aNominator = (((b_ * g_) + (a_ * h_))
+                       * (Math.Sin(SunsetAngle1Slope) - Math.Sin(SunriseAngle1Slope) + Math.Sin(SunsetAngle2Slope) - Math.Sin(SunriseAngle2Slope)))
+                       - ((c_ * g_)
+                       * (Math.Cos(SunsetAngle1Slope) - Math.Cos(SunriseAngle1Slope) + Math.Cos(SunsetAngle2Slope) - Math.Cos(SunriseAngle2Slope)))
+                       + (((0.5 * b_ * h_) + (a_ * g_))
+                       * (SunsetAngle1Slope - SunriseAngle1Slope + SunsetAngle2Slope - SunriseAngle2Slope))
+                       + ((0.25 * b_ * h_)
+                       * (Math.Sin(2 * SunsetAngle1Slope) - Math.Sin(2 * SunriseAngle1Slope) + Math.Sin(2 * SunsetAngle2Slope) - Math.Sin(2 * SunriseAngle2Slope)))
+                       + ((0.5 * c_ * h_)
+                       * (Math.Pow(Math.Sin(SunsetAngle1Slope), 2.0) - Math.Pow(Math.Sin(SunriseAngle1Slope), 2.0)
+                       + Math.Pow(Math.Sin(SunsetAngle2Slope), 2.0) - Math.Pow(Math.Sin(SunriseAngle2Slope), 2.0)));
+                double aDenominator = (a_ * (SunsetAngle1Slope - SunriseAngle1Slope + SunsetAngle2Slope - SunriseAngle2Slope))
+                       + (b_ * (Math.Sin(SunsetAngle1Slope) - Math.Sin(SunriseAngle1Slope) + Math.Sin(SunsetAngle2Slope) - Math.Sin(SunriseAngle2Slope)))
+                       - (c_ * (Math.Cos(SunsetAngle1Slope) - Math.Cos(SunriseAngle1Slope) + Math.Cos(SunsetAngle2Slope) - Math.Cos(SunriseAngle2Slope)));
+                SinThetaZs = aNominator / aDenominator;
+            }
+
+            // Clearness index for direct beam radiation - horizontal and slope (Allen et al., 2006)
+            double KIh = 0.98 * Math.Exp((-0.00146 * AtmosphericPressure / (TurbidityCoefficient * SinThetaZh))
+                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myRHmean * myVP / 100) * AtmosphericPressure)) / SinThetaZh, 0.4)));
+            double KIs = 0.98 * Math.Exp((-0.00146 * AtmosphericPressure / (TurbidityCoefficient * SinThetaZs))
+                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myRHmean * myVP / 100) * AtmosphericPressure)) / SinThetaZs, 0.4)));
+
+            // Direct radiation ratio for slope
+            DirRadnRatio = (RelativeIrradianceOnSlope / RelativeSolarIrradiance) * (KIs / KIh);
+
+            // Diffuse radiation ratio for slope
+            DiffRadnRatio = ((1.0 - (ClearnessIndex * (1 - DiffuseRadnFraction)))
+                          * (1 + (Math.Sqrt(1 - DiffuseRadnFraction) * Math.Pow(Math.Sin(0.5 * SlopeAngle), 3.0)))
+                          * SlopeFactor) + (DirRadnRatio * ClearnessIndex * (1 - DiffuseRadnFraction));
+
+            // Prepare the radiation outputs
+            RadnMeasured = MyMetFile.Radn;
+            RadnDirect = RadnMeasured * DirRadnRatio * (1 - DiffuseRadnFraction);
+            RadnDiffuse = RadnMeasured * DiffRadnRatio * DiffuseRadnFraction;
+            RadnReflected = RadnMeasured * SurroundsAlbedo * (1 - SlopeFactor);
+            myRadn = RadnDirect + RadnDiffuse + RadnReflected;
+
+            FracRadnDirect = RadnDirect / myRadn;
+            FracRadnDiffuse = RadnDiffuse / myRadn;
+            FracRadnReflected = RadnReflected / myRadn;
+        }
+        else
+        {
+            // Length of daylight, horizontal (max) and slope (actual)
+            MaxDayLength = 24 * SunriseAngleHorizontal / Math.PI;
+            ActualDayLength = MaxDayLength;
+
+            // Direct and diffuse radiation ratios for slope
+            DirRadnRatio = 1.0;
+            DiffRadnRatio = 1.0;
+
+            // Prepare the radiation outputs
+            RadnMeasured = MyMetFile.Radn;
+            RadnDirect = RadnMeasured * (1 - DiffuseRadnFraction);
+            RadnDiffuse = RadnMeasured * DiffuseRadnFraction;
+            RadnReflected = 0.0;
+            myRadn = RadnDirect + RadnDiffuse + RadnReflected;
+
+            FracRadnDirect = RadnDirect / myRadn;
+            FracRadnDiffuse = RadnDiffuse / myRadn;
+            FracRadnReflected = RadnReflected / myRadn;
+        }
+    }
+
+    /// <summary>
+    /// Calculate the hour angles for sunrise and sunset on a tilted surface
+    /// </summary>
+    /// <param name="a_">Auxiliary parameter a</param>
+    /// <param name="b_">Auxiliary parameter b</param>
+    /// <param name="c_">Auxiliary parameter c</param>
+    private void SunriseSunsetOnSlope(double a_, double b_, double c_)
+    {
+        double WS1 = -Math.Acos(CosineWS(1, a_, b_, c_));
+        double WS2 = Math.Acos(CosineWS(-1, a_, b_, c_));
+        double adjWS1 = EvaluateSunAngles(-WS1, -(2 * Math.PI) - WS1, -Math.PI, WS1, a_, b_, c_);
+        double adjWS2 = EvaluateSunAngles((2 * Math.PI) - WS2, -WS2, Math.PI, WS2, a_, b_, c_);
+        double bSunrise1 = Math.Min(Math.Max(-SunriseAngleHorizontal, adjWS1), SunriseAngleHorizontal);
+        double bSunrise2 = -SunriseAngleHorizontal;
+        double bSunset1 = Math.Max(Math.Min(SunriseAngleHorizontal, adjWS2), -SunriseAngleHorizontal);
+        double bSunset2 = SunriseAngleHorizontal;
+        if (c_ < epsilon)
+        {
+            bSunrise2 = Math.Max(-SunriseAngleHorizontal, Math.Min(SunriseAngleHorizontal, Math.Min(Math.PI, adjWS1 + (2 * Math.PI))));
+        }
+        if (c_ >= epsilon)
+        {
+            bSunset2 = Math.Min(SunriseAngleHorizontal, Math.Max(-SunriseAngleHorizontal, Math.Max(-Math.PI, adjWS2 - (2 * Math.PI))));
+        }
+
+        // Assign the angles in the right order
+        if (bSunset1 > bSunrise1)
+        {
+            if (bSunset2 > bSunrise2)
+            {
+                if (bSunrise1 <= bSunrise2)
+                {
+                    SunriseAngle1Slope = bSunrise1;
+                    SunsetAngle2Slope = bSunset2;
+                    if (bSunrise2 > bSunset1)
+                    {
+                        SunriseAngle2Slope = bSunrise2;
+                        SunsetAngle1Slope = bSunset1;
+                    }
+                    else
+                    {
+                        SunriseAngle2Slope = bSunset2;
+                        SunsetAngle1Slope = bSunset2;
+                    }
+                }
+                else
+                {
+                    SunriseAngle1Slope = bSunrise2;
+                    SunsetAngle2Slope = bSunset1;
+                    if (bSunrise1 > bSunset2)
+                    {
+                        SunsetAngle1Slope = bSunset2;
+                        SunriseAngle2Slope = bSunrise1;
+                    }
+                    else
+                    {
+                        SunsetAngle1Slope = bSunset1;
+                        SunriseAngle2Slope = bSunset1;
+                    }
+                }
+            }
+            else
+            {
+                SunriseAngle1Slope = bSunrise1;
+                SunsetAngle1Slope = bSunset1;
+                SunriseAngle2Slope = bSunset1;
+                SunsetAngle2Slope = bSunset1;
+            }
+        }
+        else
+        {
+            if (bSunset2 > bSunrise2)
+            {
+                SunriseAngle1Slope = bSunrise2;
+                SunsetAngle1Slope = bSunset2;
+                SunriseAngle2Slope = bSunset2;
+                SunsetAngle2Slope = bSunset2;
+            }
+            else
+            {
+                SunriseAngle1Slope = 0.0;
+                SunsetAngle1Slope = 0.0;
+                SunriseAngle2Slope = 0.0;
+                SunsetAngle2Slope = 0.0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Compute the base cosine of ws (sunrise angle) on a tilted surface, uses a quadratic function
+    /// </summary>
+    /// <param name="mySwith">Whether the root is positive or negative</param>
+    /// <param name="a_">Auxiliary parameter a</param>
+    /// <param name="b_">Auxiliary parameter b</param>
+    /// <param name="c_">Auxiliary parameter c</param>
+    /// <returns>The value of the cosine of ws</returns>
+    private double CosineWS(double mySwith, double a_, double b_, double c_)
+    {
+        double result = 0.0;
+        if ((Math.Abs(a_) < epsilon) && (Math.Abs(b_) < epsilon))
+        {
+            result = mySwith;
+        }
+        else if (Math.Abs(c_) < epsilon)
+        {
+            if (Math.Abs(a_) < epsilon)
+                result = 0.0;
+            else if (Math.Abs(b_) < epsilon)
+            {
+                if (a_ < epsilon)
+                    result = -1000.0;
+                else
+                    result = 1000.0;
+            }
+            else
+            {
+                result = -a_ / b_;
+            }
+        }
+        else
+        {
+            result = (-(a_ * b_) + (mySwith * c_ * Math.Sqrt(Math.Max(0.0, -(a_ * a_) + (b_ * b_) + (c_ * c_))))) / ((b_ * b_) + (c_ * c_));
+        }
+
+        // limit the result to valid range
+        result = Math.Max(-1.0, Math.Min(1.0, result));
+
+        return result;
+    }
+
+    /// <summary>
+    /// Evaluate the results for sunrise/sunset angle (ws)
+    /// </summary>
+    /// <param name="WSoption1">Option 1 for ws</param>
+    /// <param name="WSoption2">Option 2 for ws</param>
+    /// <param name="WSoption3">Option 3 for ws</param>
+    /// <param name="WSdefault">Default option for ws</param>
+    /// <param name="a_">Auxiliary parameter a</param>
+    /// <param name="b_">Auxiliary parameter b</param>
+    /// <param name="c_">Auxiliary parameter c</param>
+    /// <returns>The appropriate value for ws</returns>
+    private double EvaluateSunAngles(double WSoption1, double WSoption2, double WSoption3, double WSdefault, double a_, double b_, double c_)
+    {
+        double result = 0.0;
+        if ((c_ > epsilon) && (Math.Abs(Math.Asin(a_ + (b_ * Math.Cos(WSoption1)) + (c_ * Math.Sin(WSoption1)))) < epsilon))
+        {
+            result = WSoption1;
+        }
+        else if ((c_ < -epsilon) && (Math.Abs(Math.Asin(a_ + (b_ * Math.Cos(WSoption2)) + (c_ * Math.Sin(WSoption2)))) < epsilon))
+        {
+            result = WSoption2;
+        }
+        else
+        {
+            if (Math.Asin(a_ + (b_ * Math.Cos(WSdefault)) + (c_ * Math.Sin(WSdefault))) > epsilon)
+            {
+                result = WSoption3;
+            }
+            else if (Math.Asin(a_ + (b_ * Math.Cos(WSdefault)) + (c_ * Math.Sin(WSdefault))) < -epsilon)
+            {
+                result = 0.0;
+            }
+            else
+            {
+                if ((Math.Abs(c_) < epsilon) && (b_ < epsilon))
+                {
+                    result = WSoption2;
+                }
+                else
+                {
+                    result = WSdefault;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Computes the variation in temperature caused by changes in incident radiation in tilted surfaces
+    /// </summary>
+    private void DeltaTemperature()
+    {
+        // Base temperature response to variation in direct radiation, as affected by wind
+        double aT = aT0 * Math.Exp(-cT * myWindSpeed);
+        double dltRadn = myRadn - RadnMeasured;
+        if (dltRadn < 0.0)
+        {
+            dltTmax = -FN * aT * Math.Pow(Math.Abs(dltRadn), bT);
+            dltTmin = -FN * FM * aT * Math.Pow(Math.Abs(dltRadn), bT);
+        }
+        else if (dltRadn > 0.0)
+        {
+            dltTmax = aT * Math.Pow(dltRadn, bT);
+            dltTmin = FM * aT * Math.Pow(dltRadn, bT);
+        }
+        else
+        {
+            dltTmax = 0.0;
+            dltTmin = 0.0;
         }
     }
 
