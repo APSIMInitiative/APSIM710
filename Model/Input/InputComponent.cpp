@@ -158,6 +158,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
           addRegistration(::respondToGetSet, 0, "MinT", singleType);       
           addRegistration(::respondToGetSet, 0, "Radn", singleType);       
           addRegistration(::respondToGetSet, 0, "Rain", singleType); 
+          addRegistration(::respondToGetSet, 0, "vp", singleType); 
           addRegistration(::respondToGet, 0, "Latitude", singleType);
           addRegistration(::respondToGet, 0, "tav", singleType);
           addRegistration(::respondToGet, 0, "amp", singleType);
