@@ -124,28 +124,28 @@ public class SlopeEffectsOnWeather
     /// </summary>
     [Param]
     [Units("%")]
-    private double dRain;
+    private double dRain = 0.0;
 
     /// <summary>
     /// Relative change in wind
     /// </summary>
     [Param]
     [Units("%")]
-    private double dWind;
+    private double dWind = 0.0;
 
     /// <summary>
     /// Relative change in vapour pressure
     /// </summary>
     [Param]
     [Units("%")]
-    private double dVapPressure;
+    private double dVapPressure = 0.0;
 
     /// <summary>
-    /// Relative change in relative humidity
+    /// Default value for wind speed, to be used if no value are supplied by APSIM
     /// </summary>
     [Param]
-    [Units("%")]
-    private double dRH;
+    [Units("m/s")]
+    private double defaultWindSpeed = 0.0;
 
     #region Internal parameters and constants
 
@@ -196,7 +196,7 @@ public class SlopeEffectsOnWeather
     #region Outputs
 
     /// <summary>
-    /// Original radn input
+    /// Original solar radiation input (MJ/m2)
     /// </summary>
     [Output]
     [Description("Original radiation value")]
@@ -204,7 +204,7 @@ public class SlopeEffectsOnWeather
     public double RadnMeasured;
 
     /// <summary>
-    /// Direct solar radiation
+    /// Direct solar radiation (MJ/m2)
     /// </summary>
     [Output]
     [Description("Direct solar radiation")]
@@ -212,7 +212,7 @@ public class SlopeEffectsOnWeather
     public double RadnDirect;
 
     /// <summary>
-    /// Diffuse solar radiation (from sky)
+    /// Diffuse solar radiation (MJ/m2)
     /// </summary>
     [Output]
     [Description("Diffuse solar radiation")]
@@ -220,7 +220,7 @@ public class SlopeEffectsOnWeather
     public double RadnDiffuse;
 
     /// <summary>
-    /// Reflected solar radiation (from terrain)
+    /// Reflected solar radiation  (MJ/m2)
     /// </summary>
     [Output]
     [Description("Reflected solar radiation (from terrain)")]
@@ -228,7 +228,7 @@ public class SlopeEffectsOnWeather
     public double RadnReflected;
 
     /// <summary>
-    /// Extraterrestrial solar radiation
+    /// Extraterrestrial solar radiation (MJ/m2)
     /// </summary>
     [Output]
     [Description("Extraterrestrial solar radiation")]
@@ -236,12 +236,12 @@ public class SlopeEffectsOnWeather
     public double ExtraterrestrialRadn;
 
     /// <summary>
-    /// Time length of direct sunshine on a horizontal surface
+    /// Time length of direct sunshine on a horizontal surface (hrs)
     /// </summary>
     [Output]
     [Description("Length of direct sunshine on a horizontal surface")]
     [Units("hours")]
-    public double MaxDayLength;
+    public double MaxDirSunshineLength;
 
     /// <summary>
     /// Time length of direct sunshine on tilted surface (hrs)
@@ -249,21 +249,21 @@ public class SlopeEffectsOnWeather
     [Output]
     [Description("Length of direct sunshine on tilted surface")]
     [Units("hours")]
-    public double ActualDayLength;
+    public double ActualDirSunshineLength;
 
     /// <summary>
-    /// Sky clearness index
+    /// Sky clearness index (0-1)
     /// </summary>
     /// <remarks>
     /// Provide an idea of how overcast the day is
     /// </remarks>
     [Output]
-    [Description("Atmospheric clearness index")]
+    [Description("Sky clearness index")]
     [Units("0-1")]
     public double ClearnessIndex;
 
     /// <summary>
-    /// Fraction of total radiation that is diffuse
+    /// Fraction of total radiation that is diffuse (0-1)
     /// </summary>
     [Output]
     [Description("Fraction of solar radiation that is diffuse (flat)")]
@@ -287,15 +287,15 @@ public class SlopeEffectsOnWeather
     public double DiffRadnRatio;
 
     /// <summary>
-    /// Fraction solar radiation direct
+    /// Fraction of solar radiation that is direct beam (0-1)
     /// </summary>
     [Output]
-    [Description("Fraction solar radiation direct")]
+    [Description("Fraction of solar radiation direct")]
     [Units("0-1")]
     public double FracRadnDirect;
 
     /// <summary>
-    /// Fraction of solar radiation diffuse
+    /// Fraction of solar radiation that is diffuse (0-1)
     /// </summary>
     [Output]
     [Description("Fraction of solar radiation diffuse")]
@@ -303,7 +303,7 @@ public class SlopeEffectsOnWeather
     public double FracRadnDiffuse;
 
     /// <summary>
-    /// Fraction of solar radiation reflected from terrain
+    /// Fraction of solar radiation reflected from terrain (0-1)
     /// </summary>
     [Output]
     [Description("Fraction of solar radiation reflected from terrain")]
@@ -311,7 +311,7 @@ public class SlopeEffectsOnWeather
     public double FracRadnReflected;
 
     /// <summary>
-    ///  Original value of Tmin
+    ///  Original value of minimum temperature (oC)
     /// </summary>
     [Output]
     [Description("Original value of Tmin")]
@@ -319,36 +319,39 @@ public class SlopeEffectsOnWeather
     public double TminMeasured;
 
     /// <summary>
-    ///  Original value of Tmin
+    ///  Original value of maximum  temperature (oC)
     /// </summary>
     [Output]
-    [Description("Original value of Tmin")]
+    [Description("Original value of Tmax")]
     [Units("oC")]
     public double TmaxMeasured;
 
     /// <summary>
-    ///  Actual Tmean value, after adjusts
+    ///  Actual Tmean value, after adjusts (oC)
     /// </summary>
     [Output]
     [Description("Actual Tmean value, after adjusts")]
     [Units("oC")]
-    public double TmeanActual;
+    public double TmeanActual
+    {
+        get { return 0.5 * (MyMetFile.MaxT + MyMetFile.MinT); }
+    }
 
     /// <summary>
-    ///  Variation in Tmax
-    /// </summary>
-    [Output]
-    [Description("Variation in Tmax")]
-    [Units("oC")]
-    public double dltTmax;
-
-    /// <summary>
-    ///  Variation in Tmin
+    ///  Variation in Tmin (oC)
     /// </summary>
     [Output]
     [Description("Variation in Tmin")]
     [Units("oC")]
     public double dltTmin;
+
+    /// <summary>
+    ///  Variation in Tmax (oC)
+    /// </summary>
+    [Output]
+    [Description("Variation in Tmax")]
+    [Units("oC")]
+    public double dltTmax;
 
     /// <summary>
     /// Mean local atmospheric pressure (hPa)
@@ -357,6 +360,62 @@ public class SlopeEffectsOnWeather
     [Description("Mean local atmospheric pressure")]
     [Units("hPa")]
     public double AtmosphericPressure = 0.0;
+
+    /// <summary>
+    /// Original rain input (mm)
+    /// </summary>
+    [Output]
+    [Description("Original rain value")]
+    [Units("mm")]
+    public double RainMeasured = -0.1;
+
+    /// <summary>
+    /// Original wind speed input (m/s)
+    /// </summary>
+    [Output]
+    [Description("Original wind speed value")]
+    [Units("m/s")]
+    public double WindSpeedMeasured = -0.1;
+
+    /// <summary>
+    /// Original vapour pressure input (hPa)
+    /// </summary>
+    [Output]
+    [Description("Original vapour pressure value")]
+    [Units("hPa")]
+    public double VPMeasured = -0.1;
+
+    /// <summary>
+    /// Original RH input (%)
+    /// </summary>
+    [Output]
+    [Description("Original RH value")]
+    [Units("%")]
+    public double RHMeasured = -0.1;
+
+    /// <summary>
+    /// Original (or default) RHmean input (%)
+    /// </summary>
+    [Output]
+    [Description("Original RHmean value (or default)")]
+    [Units("%")]
+    public double RHmeanMeasured = -0.1;
+
+    /// <summary>
+    /// Original RHmin input (%)
+    /// </summary>
+    [Output]
+    [Description("Original RHmin value")]
+    [Units("%")]
+    public double RHminMeasured = -0.1;
+
+    /// <summary>
+    /// Original RHmax input (%)
+    /// </summary>
+    [Output]
+    [Description("Original RHmax value")]
+    [Units("%")]
+    public double RHmaxMeasured = -0.1;
 
     #endregion
 
@@ -397,14 +456,23 @@ public class SlopeEffectsOnWeather
     /// </summary>
     /// <remarks>
     /// RH values are not mandatory in APSIM met files, so if there are no values in the file, no changes can happen.
-    /// A valid value is still needed for the correction of radiation, a default value is used.
     /// </remarks>
     private bool canChangeRH = false;
 
     /// <summary>
+    /// Flag whether RH values has changed or not
+    /// </summary>
+    private bool hasChangedRH = false;
+
+    /// <summary>
+    /// Flag whether there are values for RH min and max and they can be changed
+    /// </summary>
+    private bool canChangeRHminmax = false;
+
+    /// <summary>
     /// Mean daily vapour pressure after correction imposed by the user
     /// </summary>
-    private double myVP = 10.0;
+    private double myVP = 20.0;
 
     /// <summary>
     /// Mean daily wind speed after correction imposed by the user
@@ -439,7 +507,7 @@ public class SlopeEffectsOnWeather
     /// <summary>
     /// Flag whether initialisation procedure has been finished
     /// </summary>
-    private bool HasInitialised = false;
+    private bool hasInitialised = false;
 
     #endregion
 
@@ -476,86 +544,67 @@ public class SlopeEffectsOnWeather
         SlopeFactor = 0.75 + (0.25 * Math.Cos(SlopeAngle)) - (0.5 * SlopeAngle / Math.PI);
 
         // Covert the user defined changes from percent into fraction
-        dRain = Math.Max(0.0, 1.0 + (0.01 * dRain));
-        dWind = Math.Max(0.0, 1.0 + (0.01 * dWind));
-        dVapPressure = Math.Max(0.0, 1.0 + (0.01 * dVapPressure));
-        dRH = Math.Max(0.0, 1.0 + (0.01 * dRH));
+        dRain = Math.Max(-1.0, 0.01 * dRain);
+        dWind = Math.Max(-1.0, 0.01 * dWind);
+        dVapPressure = Math.Max(-1.0, 0.01 * dVapPressure);
 
         // Finish initialisation
-        HasInitialised = true;
+        hasInitialised = true;
+        /// NOTE: ideally the initialisation would happen at OnInit1 (which is triggered before OnPreNewMet), so we could start modifying
+        /// the weather data on the first day. However, there is a flaw in the way APSIM handles its initialisation. The PreNewMet event
+        /// happens before the [Link] to the met file is resolved, so it is not possible to set any of the variables for the first day of
+        /// simulation. And that's why we have to use the 'hasInitialised' variable here
+
         Console.WriteLine();
         Console.WriteLine("     Weather variables will be adjusted for slope and aspect");
         Console.WriteLine("      - Radiation and temperature adjusted based on the model described by Cichota (2015)");
-        Console.WriteLine("      - Rainfall, wind, vapour pressure, and RH are simple relative changes - not explicitly linked to slope");
+        Console.WriteLine("      - Rainfall, wind, and vapour pressure are simple relative changes - not explicitly linked to slope");
+        Console.WriteLine("      - The values of RH, if existent, will be adjusted whenever the temperature or vp change");
         Console.WriteLine();
     }
 
-    //[EventHandler]
-    //public void OnNewMet(NewMetType NewMetData)
-    //{
-    //    Console.WriteLine("This is PreNewMet of day " + Clock.Today.ToShortDateString());
-    //}
-
+    /// <summary>
+    /// Evaluate whether weather data is to be adjusted due to slope and aspect
+    /// </summary>
+    /// <param name="NewMetData">some weather data (not used here)</param>
     [EventHandler]
     public void OnPreNewMet(NewMetType NewMetData)
     {
         // Get the basic met values, evaluate their changes and re-set them on MetFile
-        if (HasInitialised)
+        if (hasInitialised)
         {
             // Get and adjust windspeed
-            bool myAux = MyMetFile.Get("wind", out myWindSpeed);
-            if (Math.Abs(dWind - 1.0) > epsilon)
-                myWindSpeed *= dWind;
-
-            // Get and adjust RHs - we'll chage RHmin and max so that RHmean changes according to dRH
-            if (MyMetFile.Get("rhmin", out myRHmin) && MyMetFile.Get("rhmax", out myRHmax))
-            { // we have values for RH
-                canChangeRH = true;
-                myRHmean = 0.5 * (myRHmin + myRHmax);
-                double varRH = 0.0;
-                if ((Math.Abs(dRH - 1.0) > epsilon) && (myRHmax > epsilon))
-                {
-                    varRH = 1.0 - dRH + Math.Min(100 / myRHmean, dRH) - Math.Max(0, 2.0 - dRH);
-                    myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
-                    myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
-                }
-                else
-                { // no variations imposed
-                    canChangeRH = false;
-                }
-                myRHmean = 0.5 * (myRHmin + myRHmax);
+            if (MyMetFile.Get("wind", out WindSpeedMeasured))
+            {
+                myWindSpeed = WindSpeedMeasured;
+                if (Math.Abs(dWind) > epsilon)
+                    myWindSpeed *= 1.0 + dWind;
             }
             else
-            { // we don't have values for RH min and max, check for mean RH
-                if (MyMetFile.Get("rh", out myRHmean))
-                { // we can use this value, but will not change it in the met file - TODO: check this is the best way
-                    if (Math.Abs(dRH - 1.0) > epsilon)
-                        myRHmean *= dRH;
-                    canChangeRH = false;
-                }
-                else
-                { // no value for RH is available, use a default
-                    myRHmean = 80.0;
-                }
-            }
+                myWindSpeed = defaultWindSpeed;
 
 
-            // Get and adjust VP
-            myVP = MyMetFile.vp;
-            if (Math.Abs(dVapPressure) > epsilon)
-                myVP *= dVapPressure;
+            // Evaluate changes in VP and RH
+            VPMeasured = MyMetFile.vp;
+            HumidityChanges();
 
             // Evaluate the changes in radiation due to slope and aspect
+            RadnMeasured = MyMetFile.Radn;
             RadiationOnSlope();
 
             // Evaluate the changes in temperature
-            DeltaTemperature();
             TmaxMeasured = MyMetFile.MaxT;
             TminMeasured = MyMetFile.MinT;
+            DeltaTemperature();
+
+            // Check whether RH needs further adjusting
+            if (canChangeRH)
+                CheckRH();
 
             // Set the adjusted weather variables
-            if (Math.Abs(dRain - 1.0) > epsilon)
-                MyMetFile.Rain *= (float)dRain;
+            RainMeasured = MyMetFile.Rain;
+            if (Math.Abs(dRain) > epsilon)
+                MyMetFile.Rain *= (float)(1.0 + dRain);
 
             if (Math.Abs(dltTmax) > epsilon)
                 MyMetFile.MaxT += (float)dltTmax;
@@ -570,20 +619,131 @@ public class SlopeEffectsOnWeather
             if (Math.Abs(MyMetFile.Radn - myRadn) > epsilon)
                 MyMetFile.Radn = (float)myRadn;
 
-            if (Math.Abs(dWind - 1.0) > epsilon)
+            if (!double.IsNaN(WindSpeedMeasured) && (Math.Abs(dWind) > epsilon))
                 MyMetFile.Set("wind", (float)myWindSpeed);
 
-            if (Math.Abs(dVapPressure - 1.0) > epsilon)
-                MyMetFile.vp *= (float)dVapPressure;
+            if (Math.Abs(dVapPressure) > epsilon)
+                MyMetFile.vp = (float)myVP;
 
+            if (canChangeRH && hasChangedRH)
+            {
+                double RHaux;
+                if (RHmeanMeasured > 0.0)
+                    MyMetFile.Set("rhmean", (float)myRHmean);
+
+                if (RHMeasured > 0.0)
+                    MyMetFile.Set("rh", (float)myRHmean);
+
+                if (canChangeRHminmax)
+                {
+                    MyMetFile.Set("rhmin", (float)myRHmin);
+                    MyMetFile.Set("rhmax", (float)myRHmax);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gather the values of vp and RH, check them, and adjust if possible
+    /// </summary>
+    /// <remarks>
+    /// The changes here are imposed by the user (when setting a value for dVapPressure, which is used for both vp and RH)
+    /// If vp is not supplied a value is calculated based on Tmean and RHmean
+    /// The changes in humidity are done based on RHmean. RHmin and RHmax, if existent, are changed so that their average equals RHmean
+    /// The value of RH is assumed to be the measurement at 9:00 o'clock (often reported by weather stations)
+    /// The value of RHmean, if existent, is assumed to be the true mean. 
+    /// If only RH is available, it is assumed to represent RHmean
+    /// If RH and and the max and min values are given, their average is taken as RHmean
+    /// If no values is given for RH a default values is used
+    ///   - TODO: these assumptions may have to be discussed/examined further
+    /// </remarks>
+    private void HumidityChanges()
+    {
+        canChangeRHminmax = false;
+
+        // get the value of RHmean
+        if (MyMetFile.Get("rhmean", out RHmeanMeasured))
+        { // there is a value representing the mean RH of the day
+            canChangeRH = true;
+            myRHmean = RHmeanMeasured;
+            if (MyMetFile.Get("rhmin", out RHminMeasured) && MyMetFile.Get("rhmax", out RHmaxMeasured))
+            { // we have values for both RHmin and max
+                myRHmin = RHminMeasured;
+                myRHmax = RHmaxMeasured;
+                canChangeRHminmax = true;
+            }
+        }
+        else if (MyMetFile.Get("rh", out RHMeasured))
+        { // there is a value representing the RH at 9 o'clock
+            canChangeRH = true;
+            myRHmean = RHMeasured;
+            if (MyMetFile.Get("rhmin", out RHminMeasured) && MyMetFile.Get("rhmax", out RHmaxMeasured))
+            { // we have values for both RHmin and max, update mean
+                myRHmin = RHminMeasured;
+                myRHmax = RHmaxMeasured;
+                myRHmean = (0.5 * myRHmean) + (0.25 * (myRHmin + myRHmax));
+                canChangeRHminmax = true;
+            }
+        }
+        else if (MyMetFile.Get("rhmin", out RHminMeasured) && MyMetFile.Get("rhmax", out RHmaxMeasured))
+        { // we have values for both RHmin and max only
+            myRHmin = RHminMeasured;
+            myRHmax = RHmaxMeasured;
+            myRHmean = 0.5 * (myRHmin + myRHmax);
+            canChangeRH = true;
+        }
+        else
+        { // there are no values for RH, no changes allowed then
+            canChangeRH = false;
+        }
+
+        // Adjust the values of VP and RH
+        myVP = VPMeasured;
+        if (Math.Abs(dVapPressure) > epsilon)
+        {
+            myVP *= 1.0 + dVapPressure;
             if (canChangeRH)
             {
-                MyMetFile.Set("rhmin", (float)myRHmin);
-                MyMetFile.Set("rhmax", (float)myRHmax);
-            }
+                myRHmean *= 1.0 + dVapPressure;
+                if (canChangeRHminmax && (myRHmax > epsilon))
+                {
+                    double varRH = dVapPressure + Math.Min(100 / myRHmean, 1.0 + dVapPressure) - Math.Max(0, 1.0 - dVapPressure);
+                    myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
+                    myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
 
-            // Prepare outputs
-            TmeanActual = 0.5 * (MyMetFile.MaxT + MyMetFile.MinT);
+                    // check changes
+                    if (Math.Abs((0.5 * (myRHmin + myRHmax)) - myRHmean) > epsilon)
+                        System.Diagnostics.Debugger.Break();
+                }
+                hasChangedRH = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Check the values of RH after the temperature was changed
+    /// </summary>
+    /// <remarks>
+    /// It is assumed here that vp remains constant (any changes in vp were accounted for earlier),
+    /// so the value of RH has to change here if temperature has changed (and there was originally a RH value)
+    /// </remarks>
+    private void CheckRH()
+    {
+        double TmeanMeasured = 0.5 * (TminMeasured + TmaxMeasured);
+        double TmeanNew = 0.5 * (TminMeasured + dltTmin + TmaxMeasured + dltTmax);
+        double dRH = Math.Exp(17.269 * TmeanMeasured / (TmeanMeasured + 237.3))
+                   / Math.Exp(17.269 * TmeanNew / (TmeanNew + 237.3));
+
+        if (Math.Abs(1.0 - dRH) > epsilon)
+        { // temperature varied, update RH
+            myRHmean *= dRH;
+            if (canChangeRHminmax && (myRHmax > epsilon))
+            {
+                double varRH = dVapPressure + Math.Min(100 / myRHmean, 1.0 + dVapPressure) - Math.Max(0, 1.0 - dVapPressure);
+                myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
+                myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
+            }
+            hasChangedRH = true;
         }
     }
 
@@ -633,8 +793,8 @@ public class SlopeEffectsOnWeather
             SunriseSunsetOnSlope(a_, b_, c_);
 
             // Length of daylight, horizontal (max) and slope (actual)
-            MaxDayLength = 24 * SunriseAngleHorizontal / Math.PI;
-            ActualDayLength = 12 * (Math.Max(0.0, SunsetAngle1Slope - SunriseAngle1Slope)
+            MaxDirSunshineLength = 24 * SunriseAngleHorizontal / Math.PI;
+            ActualDirSunshineLength = 12 * (Math.Max(0.0, SunsetAngle1Slope - SunriseAngle1Slope)
                             + Math.Max(0.0, SunsetAngle2Slope - SunriseAngle2Slope))
                             / Math.PI;
 
@@ -652,7 +812,7 @@ public class SlopeEffectsOnWeather
                                + ((SunriseAngleHorizontal + (0.5 * Math.Sin(2 * SunriseAngleHorizontal))) * Math.Pow(h_, 2)))
                                / (2 * ((g_ * SunriseAngleHorizontal) + (h_ * Math.Sin(SunriseAngleHorizontal))));
             double SinThetaZs = 0.0;
-            if (ActualDayLength > epsilon)
+            if (ActualDirSunshineLength > epsilon)
             {
                 double aNominator = (((b_ * g_) + (a_ * h_))
                        * (Math.Sin(SunsetAngle1Slope) - Math.Sin(SunriseAngle1Slope) + Math.Sin(SunsetAngle2Slope) - Math.Sin(SunriseAngle2Slope)))
@@ -673,9 +833,9 @@ public class SlopeEffectsOnWeather
 
             // Clearness index for direct beam radiation - horizontal and slope (Allen et al., 2006)
             double KIh = 0.98 * Math.Exp((-0.00146 * AtmosphericPressure / (TurbidityCoefficient * SinThetaZh))
-                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myRHmean * myVP / 100) * AtmosphericPressure)) / SinThetaZh, 0.4)));
+                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myVP / 100) * AtmosphericPressure)) / SinThetaZh, 0.4)));
             double KIs = 0.98 * Math.Exp((-0.00146 * AtmosphericPressure / (TurbidityCoefficient * SinThetaZs))
-                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myRHmean * myVP / 100) * AtmosphericPressure)) / SinThetaZs, 0.4)));
+                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myVP / 100) * AtmosphericPressure)) / SinThetaZs, 0.4)));
 
             // Direct radiation ratio for slope
             DirRadnRatio = (RelativeIrradianceOnSlope / RelativeSolarIrradiance) * (KIs / KIh);
@@ -686,7 +846,6 @@ public class SlopeEffectsOnWeather
                           * SlopeFactor) + (DirRadnRatio * ClearnessIndex * (1 - DiffuseRadnFraction));
 
             // Prepare the radiation outputs
-            RadnMeasured = MyMetFile.Radn;
             RadnDirect = RadnMeasured * DirRadnRatio * (1 - DiffuseRadnFraction);
             RadnDiffuse = RadnMeasured * DiffRadnRatio * DiffuseRadnFraction;
             RadnReflected = RadnMeasured * SurroundsAlbedo * (1 - SlopeFactor);
@@ -699,8 +858,8 @@ public class SlopeEffectsOnWeather
         else
         {
             // Length of daylight, horizontal (max) and slope (actual)
-            MaxDayLength = 24 * SunriseAngleHorizontal / Math.PI;
-            ActualDayLength = MaxDayLength;
+            MaxDirSunshineLength = 24 * SunriseAngleHorizontal / Math.PI;
+            ActualDirSunshineLength = MaxDirSunshineLength;
 
             // Direct and diffuse radiation ratios for slope
             DirRadnRatio = 1.0;
