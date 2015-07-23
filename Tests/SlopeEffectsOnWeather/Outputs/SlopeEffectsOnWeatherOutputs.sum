@@ -1,0 +1,1354 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.7
+Title                  = SlopeEffectsOnWeatherOutputs
+   Component                        "clock" = %apsim%\Model\Clock.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                   "AuxManager" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component   "Cut rotation for AgPasture" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                   "AuxManager" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component   "Cut rotation for AgPasture" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component        "SlopeEffectsOnWeather" = %apsim%\Model\SlopeEffectsOnWeather.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                   "AuxManager" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component   "Cut rotation for AgPasture" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/2000
+     Simulation end date   = 30/06/2001
+     Time step =           = 1440 (mins)
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        StandingPlantWt
+        HarvestWt
+        Rain
+        RainMeasured
+        Wind
+        WindSpeedMeasured
+        vp
+        VPMeasured
+        rh
+        rhmin
+        rhmax
+        RHMeasured
+        RHmeanMeasured
+        RHminMeasured
+        RHmaxMeasured
+        Radn
+        RadnMeasured
+        ExtraterrestrialRadn
+        RadnDirect
+        RadnDiffuse
+        RadnReflected
+        FracRadnDirect
+        FracRadnDiffuse
+        FracRadnReflected
+        ClearnessIndex
+        DiffuseRadnFraction
+        DirRadnRatio
+        DiffRadnRatio
+        day_length
+        MaxDirSunshineLength
+        ActualDirSunshineLength
+        AtmosphericPressure
+        MinT
+        MaxT
+        TminMeasured
+        TmaxMeasured
+        TmeanActual
+        Tmean as TmeanMeasured
+        dltTmin
+        dltTmax
+
+     Output file = SlopeEffectsOnWeatherOutputs Pdk1-MinimumWData.out
+     Format = normal
+
+------- Pdk1-MinimumWData.met Initialisation ----------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\SlopeEffectsOnWeather\Outputs\LincolnExcerpt1.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation and temperature adjusted based on the model described by Cichota (2015)
+      - Rainfall, wind, and vapour pressure are simple relative changes - not explicitly linked to slope
+      - The values of RH, if existent, will be adjusted whenever the temperature or vp change
+
+
+------- Pdk1-MinimumWData.accum Initialisation --------------------------------
+     Initialising
+
+------- Pdk1-MinimumWData.Irrigation Initialisation ---------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk1-MinimumWData.AuxManager Initialisation ---------------------------
+     Manager rules:
+     
+     SECTION:- init
+     tmean = 0
+     
+     SECTION:- start_of_day
+      tmean = 0.5 * (mint + maxt)
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : tmean = 0.00000
+
+------- Pdk1-MinimumWData.Micromet Initialisation -----------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk1-MinimumWData.SoilLismore Water Initialisation --------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk1-MinimumWData.SurfaceOrganicMatter Initialisation -----------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk1-MinimumWData.SoilLismore Nitrogen Initialisation -----------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk1-MinimumWData.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk1-MinimumWData.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    6.56    0.33    0.00
+             2     5.90  2.50    7.88    0.39    0.00
+             3     5.90  0.50    6.55    0.38    0.00
+             4     5.90  0.10    3.00    0.30    0.00
+             5     5.90  0.10    2.24    0.22    0.00
+             6     5.90  0.00    1.86    0.19    0.00
+             7     5.90  0.00    1.91    0.19    0.00
+          ------------------------------------------------
+           Totals               30.00    2.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1950.0   1500.0   450.0  2.10   780.0     56.9       750.0
+          whiteclover      650.0    500.0   150.0  0.72   260.0     21.4       750.0
+         -----------------------------------------------------------------------------
+          Totals          2600.0   2000.0   600.0  2.82  1040.0     78.2       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.404
+            1     100-300      0.469
+            2     300-600      0.126
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+
+------- Cut rotation for AgPasture Initialisation -----------------------------
+
+   Cut rotation for AgPasture initialised
+     rotation rule valid between 01/01/1900 and 31/12/2100
+     cut type: Fixed interval, cut only every 21 days
+   remove down to residual dm = [1500] kg/ha
+     fraction to return as dung & urine: 100.0%
+
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        StandingPlantWt
+        HarvestWt
+        Rain
+        RainMeasured
+        Wind
+        WindSpeedMeasured
+        vp
+        VPMeasured
+        rh
+        rhmin
+        rhmax
+        RHMeasured
+        RHmeanMeasured
+        RHminMeasured
+        RHmaxMeasured
+        Radn
+        RadnMeasured
+        ExtraterrestrialRadn
+        RadnDirect
+        RadnDiffuse
+        RadnReflected
+        FracRadnDirect
+        FracRadnDiffuse
+        FracRadnReflected
+        ClearnessIndex
+        DiffuseRadnFraction
+        DirRadnRatio
+        DiffRadnRatio
+        day_length
+        MaxDirSunshineLength
+        ActualDirSunshineLength
+        AtmosphericPressure
+        MinT
+        MaxT
+        TminMeasured
+        TmaxMeasured
+        TmeanActual
+        Tmean as TmeanMeasured
+        dltTmin
+        dltTmax
+
+     Output file = SlopeEffectsOnWeatherOutputs Pdk2-BasicWData.out
+     Format = normal
+
+------- Pdk2-BasicWData.met Initialisation ------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\SlopeEffectsOnWeather\Outputs\LincolnExcerpt2.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation and temperature adjusted based on the model described by Cichota (2015)
+      - Rainfall, wind, and vapour pressure are simple relative changes - not explicitly linked to slope
+      - The values of RH, if existent, will be adjusted whenever the temperature or vp change
+
+
+------- Pdk2-BasicWData.accum Initialisation ----------------------------------
+     Initialising
+
+------- Pdk2-BasicWData.Irrigation Initialisation -----------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk2-BasicWData.AuxManager Initialisation -----------------------------
+     Manager rules:
+     
+     SECTION:- init
+     tmean = 0
+     
+     SECTION:- start_of_day
+      tmean = 0.5 * (mint + maxt)
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : tmean = 0.00000
+
+------- Pdk2-BasicWData.Micromet Initialisation -------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk2-BasicWData.SoilLismore Water Initialisation ----------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk2-BasicWData.SurfaceOrganicMatter Initialisation -------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk2-BasicWData.SoilLismore Nitrogen Initialisation -------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk2-BasicWData.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk2-BasicWData.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    6.56    0.33    0.00
+             2     5.90  2.50    7.88    0.39    0.00
+             3     5.90  0.50    6.55    0.38    0.00
+             4     5.90  0.10    3.00    0.30    0.00
+             5     5.90  0.10    2.24    0.22    0.00
+             6     5.90  0.00    1.86    0.19    0.00
+             7     5.90  0.00    1.91    0.19    0.00
+          ------------------------------------------------
+           Totals               30.00    2.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1950.0   1500.0   450.0  2.10   780.0     56.9       750.0
+          whiteclover      650.0    500.0   150.0  0.72   260.0     21.4       750.0
+         -----------------------------------------------------------------------------
+          Totals          2600.0   2000.0   600.0  2.82  1040.0     78.2       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.404
+            1     100-300      0.469
+            2     300-600      0.126
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+
+------- Cut rotation for AgPasture Initialisation -----------------------------
+
+   Cut rotation for AgPasture initialised
+     rotation rule valid between 01/01/1900 and 31/12/2100
+     cut type: Fixed interval, cut only every 21 days
+   remove down to residual dm = [1500] kg/ha
+     fraction to return as dung & urine: 100.0%
+
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        StandingPlantWt
+        HarvestWt
+        Rain
+        RainMeasured
+        Wind
+        WindSpeedMeasured
+        vp
+        VPMeasured
+        rh
+        rhmin
+        rhmax
+        RHMeasured
+        RHmeanMeasured
+        RHminMeasured
+        RHmaxMeasured
+        Radn
+        RadnMeasured
+        ExtraterrestrialRadn
+        RadnDirect
+        RadnDiffuse
+        RadnReflected
+        FracRadnDirect
+        FracRadnDiffuse
+        FracRadnReflected
+        ClearnessIndex
+        DiffuseRadnFraction
+        DirRadnRatio
+        DiffRadnRatio
+        day_length
+        MaxDirSunshineLength
+        ActualDirSunshineLength
+        AtmosphericPressure
+        MinT
+        MaxT
+        TminMeasured
+        TmaxMeasured
+        TmeanActual
+        Tmean as TmeanMeasured
+        dltTmin
+        dltTmax
+
+     Output file = SlopeEffectsOnWeatherOutputs Pdk3-ComprehensiveWData.out
+     Format = normal
+
+------- Pdk3-ComprehensiveWData.met Initialisation ----------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\SlopeEffectsOnWeather\Outputs\LincolnExcerpt3.met
+
+------- SlopeEffectsOnWeather Initialisation ----------------------------------
+
+     Weather variables will be adjusted for slope and aspect
+      - Radiation and temperature adjusted based on the model described by Cichota (2015)
+      - Rainfall, wind, and vapour pressure are simple relative changes - not explicitly linked to slope
+      - The values of RH, if existent, will be adjusted whenever the temperature or vp change
+
+
+------- Pdk3-ComprehensiveWData.accum Initialisation --------------------------
+     Initialising
+
+------- Pdk3-ComprehensiveWData.Irrigation Initialisation ---------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Pdk3-ComprehensiveWData.AuxManager Initialisation ---------------------
+     Manager rules:
+     
+     SECTION:- init
+     tmean = 0
+     
+     SECTION:- start_of_day
+      tmean = 0.5 * (mint + maxt)
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : tmean = 0.00000
+
+------- Pdk3-ComprehensiveWData.Micromet Initialisation -----------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Pdk3-ComprehensiveWData.SoilLismore Water Initialisation --------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.140  0.320  0.450  0.320  1.250  0.613  0.400100.000
+          100.-  300.  0.060  0.140  0.320  0.450  0.320  1.310  0.340  0.500100.000
+          300.-  600.  0.030  0.030  0.070  0.150  0.070  1.230  0.048  0.600200.000
+          600.-  900.  0.030  0.030  0.050  0.080  0.050  1.240  0.000  0.600250.000
+          900.- 1200.  0.030  0.030  0.050  0.080  0.050  1.250  0.000  0.800250.000
+         1200.- 1500.  0.030  0.030  0.050  0.080  0.050  1.260  0.000  0.800350.000
+         1500.- 1800.  0.030  0.030  0.050  0.080  0.047  1.290  0.000  0.800500.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00      18.00      18.00      13.00
+          100.-  300.      28.00      36.00      36.00      26.00
+          300.-  600.       9.00      12.00      12.00      24.00
+          600.-  900.       9.00       6.00       6.00       9.00
+          900.- 1200.       9.00       6.00       6.00       9.00
+         1200.- 1500.       9.00       6.00       6.00       9.00
+         1500.- 1800.       9.00       5.10       6.00       9.00
+          ---------------------------------------------------------
+               Totals      87.00      89.10      90.00      99.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-apr
+            Eo from priestly-taylor
+
+------- Pdk3-ComprehensiveWData.SurfaceOrganicMatter Initialisation -----------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Pdk3-ComprehensiveWData.SoilLismore Nitrogen Initialisation -----------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk3-ComprehensiveWData.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Pdk3-ComprehensiveWData.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    6.56    0.33    0.00
+             2     5.90  2.50    7.88    0.39    0.00
+             3     5.90  0.50    6.55    0.38    0.00
+             4     5.90  0.10    3.00    0.30    0.00
+             5     5.90  0.10    2.24    0.22    0.00
+             6     5.90  0.00    1.86    0.19    0.00
+             7     5.90  0.00    1.91    0.19    0.00
+          ------------------------------------------------
+           Totals               30.00    2.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48653.8  4305.7  1346.2   168.3   117.2     2.9
+             2      64857.8  5739.6   642.2    80.3    84.0     2.1
+             3      18305.3  1619.9   144.7    18.1    50.9     1.3
+             4       3712.6   328.6     7.4     0.9    30.9     0.8
+             5       3750.0   331.9     0.0     0.0    18.7     0.5
+             6          0.0     0.0     0.0     0.0    11.4     0.3
+             7          0.0     0.0     0.0     0.0     6.9     0.2
+          ---------------------------------------------------------
+           Totals  139279.6 12325.6  2140.4   267.5   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1950.0   1500.0   450.0  2.10   780.0     56.9       750.0
+          whiteclover      650.0    500.0   150.0  0.72   260.0     21.4       750.0
+         -----------------------------------------------------------------------------
+          Totals          2600.0   2000.0   600.0  2.82  1040.0     78.2       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-100      0.404
+            1     100-300      0.469
+            2     300-600      0.126
+            3     600-900      0.001
+            4    900-1200      0.000
+            5   1200-1500      0.000
+            6   1500-1800      0.000
+         -----------------------------
+
+------- Cut rotation for AgPasture Initialisation -----------------------------
+
+   Cut rotation for AgPasture initialised
+     rotation rule valid between 01/01/1900 and 31/12/2100
+     cut type: Fixed interval, cut only every 21 days
+   remove down to residual dm = [1500] kg/ha
+     fraction to return as dung & urine: 100.0%
+
+------- Start of simulation  --------------------------------------------------
+01 July 2000 (Day of year=183), Cut rotation for AgPasture:
+     Removing 400kg DM/ha, with 13.3kg N/ha
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.78 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+01 July 2000 (Day of year=183), Cut rotation for AgPasture:
+     Removing 400kg DM/ha, with 13.3kg N/ha
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.78 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+01 July 2000 (Day of year=183), Cut rotation for AgPasture:
+     Removing 400kg DM/ha, with 13.3kg N/ha
+Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.78 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+22 July 2000 (Day of year=204), Cut rotation for AgPasture:
+     Removing 420kg DM/ha, with 15.0kg N/ha
+22 July 2000(Day of year=204), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.64 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+22 July 2000 (Day of year=204), Cut rotation for AgPasture:
+     Removing 420kg DM/ha, with 15.0kg N/ha
+22 July 2000(Day of year=204), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.64 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+22 July 2000 (Day of year=204), Cut rotation for AgPasture:
+     Removing 420kg DM/ha, with 15.0kg N/ha
+22 July 2000(Day of year=204), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.64 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 August 2000 (Day of year=225), Cut rotation for AgPasture:
+     Removing 801kg DM/ha, with 29.4kg N/ha
+12 August 2000(Day of year=225), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        15.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 August 2000 (Day of year=225), Cut rotation for AgPasture:
+     Removing 762kg DM/ha, with 27.9kg N/ha
+12 August 2000(Day of year=225), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.21 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 August 2000 (Day of year=225), Cut rotation for AgPasture:
+     Removing 762kg DM/ha, with 27.9kg N/ha
+12 August 2000(Day of year=225), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.21 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 September 2000 (Day of year=246), Cut rotation for AgPasture:
+     Removing 667kg DM/ha, with 24.0kg N/ha
+2 September 2000(Day of year=246), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.26 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 September 2000 (Day of year=246), Cut rotation for AgPasture:
+     Removing 632kg DM/ha, with 22.5kg N/ha
+2 September 2000(Day of year=246), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.47 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 September 2000 (Day of year=246), Cut rotation for AgPasture:
+     Removing 632kg DM/ha, with 22.5kg N/ha
+2 September 2000(Day of year=246), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.47 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 September 2000 (Day of year=267), Cut rotation for AgPasture:
+     Removing 869kg DM/ha, with 28.9kg N/ha
+23 September 2000(Day of year=267), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        14.74 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 September 2000 (Day of year=267), Cut rotation for AgPasture:
+     Removing 823kg DM/ha, with 27.0kg N/ha
+23 September 2000(Day of year=267), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.79 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 September 2000 (Day of year=267), Cut rotation for AgPasture:
+     Removing 823kg DM/ha, with 27.0kg N/ha
+23 September 2000(Day of year=267), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.79 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+14 October 2000 (Day of year=288), Cut rotation for AgPasture:
+     Removing 1180kg DM/ha, with 36.6kg N/ha
+14 October 2000(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        18.68 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+14 October 2000 (Day of year=288), Cut rotation for AgPasture:
+     Removing 1114kg DM/ha, with 34.0kg N/ha
+14 October 2000(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.36 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+14 October 2000 (Day of year=288), Cut rotation for AgPasture:
+     Removing 1114kg DM/ha, with 34.0kg N/ha
+14 October 2000(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        17.36 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+04 November 2000 (Day of year=309), Cut rotation for AgPasture:
+     Removing 1342kg DM/ha, with 40.1kg N/ha
+4 November 2000(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.45 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+04 November 2000 (Day of year=309), Cut rotation for AgPasture:
+     Removing 1255kg DM/ha, with 37.2kg N/ha
+4 November 2000(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        18.99 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+04 November 2000 (Day of year=309), Cut rotation for AgPasture:
+     Removing 1255kg DM/ha, with 37.2kg N/ha
+4 November 2000(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        18.99 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+25 November 2000 (Day of year=330), Cut rotation for AgPasture:
+     Removing 1250kg DM/ha, with 37.6kg N/ha
+25 November 2000(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        19.17 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+25 November 2000 (Day of year=330), Cut rotation for AgPasture:
+     Removing 1210kg DM/ha, with 36.4kg N/ha
+25 November 2000(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        18.54 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+25 November 2000 (Day of year=330), Cut rotation for AgPasture:
+     Removing 1210kg DM/ha, with 36.4kg N/ha
+25 November 2000(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        18.54 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+16 December 2000 (Day of year=351), Cut rotation for AgPasture:
+     Removing 1382kg DM/ha, with 41.5kg N/ha
+16 December 2000(Day of year=351), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.15 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+16 December 2000 (Day of year=351), Cut rotation for AgPasture:
+     Removing 1381kg DM/ha, with 41.8kg N/ha
+16 December 2000(Day of year=351), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.30 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+16 December 2000 (Day of year=351), Cut rotation for AgPasture:
+     Removing 1381kg DM/ha, with 41.8kg N/ha
+16 December 2000(Day of year=351), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.30 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+06 January 2001 (Day of year=6), Cut rotation for AgPasture:
+     Removing 1486kg DM/ha, with 45.6kg N/ha
+6 January 2001(Day of year=6), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        23.25 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+06 January 2001 (Day of year=6), Cut rotation for AgPasture:
+     Removing 1530kg DM/ha, with 47.4kg N/ha
+6 January 2001(Day of year=6), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        24.20 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+06 January 2001 (Day of year=6), Cut rotation for AgPasture:
+     Removing 1530kg DM/ha, with 47.4kg N/ha
+6 January 2001(Day of year=6), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        24.20 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+27 January 2001 (Day of year=27), Cut rotation for AgPasture:
+     Removing 1337kg DM/ha, with 42.6kg N/ha
+27 January 2001(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.71 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+27 January 2001 (Day of year=27), Cut rotation for AgPasture:
+     Removing 1316kg DM/ha, with 42.5kg N/ha
+27 January 2001(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+27 January 2001 (Day of year=27), Cut rotation for AgPasture:
+     Removing 1316kg DM/ha, with 42.5kg N/ha
+27 January 2001(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+17 February 2001 (Day of year=48), Cut rotation for AgPasture:
+     Removing 1317kg DM/ha, with 43.1kg N/ha
+17 February 2001(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.97 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+17 February 2001 (Day of year=48), Cut rotation for AgPasture:
+     Removing 1304kg DM/ha, with 42.8kg N/ha
+17 February 2001(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.83 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+17 February 2001 (Day of year=48), Cut rotation for AgPasture:
+     Removing 1304kg DM/ha, with 42.8kg N/ha
+17 February 2001(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.83 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+10 March 2001 (Day of year=69), Cut rotation for AgPasture:
+     Removing 1151kg DM/ha, with 40.2kg N/ha
+10 March 2001(Day of year=69), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.51 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+10 March 2001 (Day of year=69), Cut rotation for AgPasture:
+     Removing 1158kg DM/ha, with 40.3kg N/ha
+10 March 2001(Day of year=69), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.57 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+10 March 2001 (Day of year=69), Cut rotation for AgPasture:
+     Removing 1158kg DM/ha, with 40.3kg N/ha
+10 March 2001(Day of year=69), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.57 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+31 March 2001 (Day of year=90), Cut rotation for AgPasture:
+     Removing 1228kg DM/ha, with 43.8kg N/ha
+31 March 2001(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        22.36 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+31 March 2001 (Day of year=90), Cut rotation for AgPasture:
+     Removing 1197kg DM/ha, with 42.1kg N/ha
+31 March 2001(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.46 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+31 March 2001 (Day of year=90), Cut rotation for AgPasture:
+     Removing 1197kg DM/ha, with 42.1kg N/ha
+31 March 2001(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        21.46 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+21 April 2001 (Day of year=111), Cut rotation for AgPasture:
+     Removing 1188kg DM/ha, with 43.9kg N/ha
+21 April 2001(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        22.41 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+21 April 2001 (Day of year=111), Cut rotation for AgPasture:
+     Removing 1127kg DM/ha, with 40.5kg N/ha
+21 April 2001(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.63 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+21 April 2001 (Day of year=111), Cut rotation for AgPasture:
+     Removing 1127kg DM/ha, with 40.5kg N/ha
+21 April 2001(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        20.63 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 May 2001 (Day of year=132), Cut rotation for AgPasture:
+     Removing 294kg DM/ha, with 10.9kg N/ha
+12 May 2001(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.58 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 May 2001 (Day of year=132), Cut rotation for AgPasture:
+     Removing 283kg DM/ha, with 10.3kg N/ha
+12 May 2001(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.26 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 May 2001 (Day of year=132), Cut rotation for AgPasture:
+     Removing 283kg DM/ha, with 10.3kg N/ha
+12 May 2001(Day of year=132), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.26 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 June 2001 (Day of year=153), Cut rotation for AgPasture:
+     Removing 598kg DM/ha, with 23.6kg N/ha
+2 June 2001(Day of year=153), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.03 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 June 2001 (Day of year=153), Cut rotation for AgPasture:
+     Removing 590kg DM/ha, with 23.0kg N/ha
+2 June 2001(Day of year=153), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.71 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 June 2001 (Day of year=153), Cut rotation for AgPasture:
+     Removing 590kg DM/ha, with 23.0kg N/ha
+2 June 2001(Day of year=153), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        11.71 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 June 2001 (Day of year=174), Cut rotation for AgPasture:
+     Removing 528kg DM/ha, with 21.3kg N/ha
+23 June 2001(Day of year=174), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.88 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 June 2001 (Day of year=174), Cut rotation for AgPasture:
+     Removing 482kg DM/ha, with 19.0kg N/ha
+23 June 2001(Day of year=174), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 June 2001 (Day of year=174), Cut rotation for AgPasture:
+     Removing 482kg DM/ha, with 19.0kg N/ha
+23 June 2001(Day of year=174), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.70 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+30 June 2001(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.
+

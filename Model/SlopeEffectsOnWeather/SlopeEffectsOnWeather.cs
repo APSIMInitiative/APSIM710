@@ -627,7 +627,6 @@ public class SlopeEffectsOnWeather
 
             if (canChangeRH && hasChangedRH)
             {
-                double RHaux;
                 if (RHmeanMeasured > 0.0)
                     MyMetFile.Set("rhmean", (float)myRHmean);
 
