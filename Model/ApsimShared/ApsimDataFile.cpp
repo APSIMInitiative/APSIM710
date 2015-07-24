@@ -157,9 +157,9 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
             // of pointers to temporal Value objects. This will make it easier
             // later to append a string value to a value object when we do a
             // getline.
-            for (unsigned i = 0; i != fieldNames.size(); i++)
+			unsigned previousArrayIndex = 0;
+			for (unsigned i = 0; i != fieldNames.size(); i++)
                {
-               static unsigned previousArrayIndex = 0;
                string arrayIndexString = splitOffBracketedValue(fieldNames[i], '(', ')');
                bool newValue;
                if (arrayIndexString == "")
