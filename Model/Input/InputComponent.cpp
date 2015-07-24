@@ -127,9 +127,9 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  iAmMet = (findSubString(getClassType(), "metfile") != string::npos) || (Str_i_Cmp(getName(), "met") == 0);
 	  if (iAmMet)
 		 {
-		 daylengthID = addRegistration(::respondToGet, 0, "day_length", dayLengthType);
-		 vpID = addRegistration(::respondToGetSet, 0, "vp", vpType);
-       metDataID = addRegistration(::respondToGet, 0, "MetData", DDML(protocol::NewMetType()).c_str());
+		   vpID = addRegistration(::respondToGetSet, 0, "vp", vpType);
+		   daylengthID = addRegistration(::respondToGet, 0, "day_length", dayLengthType);
+           metDataID = addRegistration(::respondToGet, 0, "MetData", DDML(protocol::NewMetType()).c_str());
 		 }
 	  else
 		 daylengthID = 0;
@@ -338,10 +338,24 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
 // set the value of one of our variables.
 // ------------------------------------------------------------------
 bool InputComponent::respondToSet(unsigned int& fromID, protocol::QuerySetValueData& setValueData)
-   {
-   variables[setValueData.ID].setVariable(setValueData);
-   return true;
-   }
+{
+    if (variables.find(setValueData.ID) == variables.end())
+    {
+        if (iAmMet && setValueData.ID == vpID)
+        {
+           static Value value;  /// UGH! I don't like using static, but that's what is used in ApsimDataFile.cpp
+           value.name = "vp";
+           value.units = "hPa";
+           value.values.push_back("0.0");
+           StringVariant variable(&value, this, false);
+           variables.insert(make_pair(vpID, variable));
+        }
+        else
+          return false;
+    }
+    variables[setValueData.ID].setVariable(setValueData);
+    return true;
+}
 // ------------------------------------------------------------------
 // Event handler.
 // ------------------------------------------------------------------
