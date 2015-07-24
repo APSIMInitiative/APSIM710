@@ -159,7 +159,7 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
             // getline.
             for (unsigned i = 0; i != fieldNames.size(); i++)
                {
-               unsigned previousArrayIndex = 0;
+               static unsigned previousArrayIndex = 0;
                string arrayIndexString = splitOffBracketedValue(fieldNames[i], '(', ')');
                bool newValue;
                if (arrayIndexString == "")
