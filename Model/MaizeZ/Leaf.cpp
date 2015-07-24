@@ -461,7 +461,7 @@ double Leaf::provideN(double requiredN)
       if(dltLAI > 0)
          {
          double n = dltLAI * newLeafSLN;
-         double laiN = min(n,requiredN/2);
+         double laiN = Min(n,requiredN/2);
          dltLAI = (n - laiN) / newLeafSLN;
          requiredN -= laiN;
          nProvided += laiN;

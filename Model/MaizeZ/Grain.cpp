@@ -177,7 +177,7 @@ double Grain::calcGrainNumber(void)
 	double PGR = (plantDMt1 - plantDMt0) / nDays / plant->getPlantDensity();	// growth rate per plant per day
          
 	if(PGR > 0.1 && PGRprolific > 0.0 ) 
-		fgn = max(max(GNmaxProlific * (1.0 - (exp(-GNkProlific * (PGR - PGRprolific)))),
+		fgn = Max(Max(GNmaxProlific * (1.0 - (exp(-GNkProlific * (PGR - PGRprolific)))),
 		              GNmax * (1.0 - exp(-GNk * (PGR - PGRbase)))),
 		          0.0);
 	else if(PGR > 0.1 && PGR > PGRbase)

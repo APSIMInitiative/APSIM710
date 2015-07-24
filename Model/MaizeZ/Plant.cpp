@@ -196,7 +196,7 @@ void Plant::onSowCrop(Variant &sowLine)
    scienceAPI.write("    Day no     mm     m^2    mm     code     name  \n");
    scienceAPI.write("    -------------------------------------------------------\n");
 
-   sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s%8.2f\n",
+   sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s\n",
       today.doy, sowingDepth, plantDensity, rowSpacing,
       skipRow, cultivar.c_str());   scienceAPI.write(msg);
 
