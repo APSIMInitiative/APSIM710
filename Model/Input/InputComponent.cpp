@@ -251,6 +251,12 @@ GDate InputComponent::advanceToTodaysData(void)
    {
    try
       {
+      // Special handling to zero vp value, in case it was set externally,
+      // rather than read from the file
+      if (iAmMet && variables.find(vpID) != variables.end() && data.getDate() != gTodaysDate)
+      {
+           variables[vpID].setValue("0.0");
+      }
       while (!data.eof() && data.getDate() < gTodaysDate)
          data.next();
       if (data.eof())
@@ -343,7 +349,7 @@ bool InputComponent::respondToSet(unsigned int& fromID, protocol::QuerySetValueD
     {
         if (iAmMet && setValueData.ID == vpID)
         {
-           static Value value;  /// UGH! I don't like using static, but that's what is used in ApsimDataFile.cpp
+           static Value value; // Declared static because it must continue to exist until the call to setVariable is made
            value.name = "vp";
            value.units = "hPa";
            value.values.push_back("0.0");

@@ -38,6 +38,7 @@ class EXPORT StringVariant
       std::string getName(void);
       std::string getUnits(void);
       void setTemporalValue(Value* value);
+      void setValue(string newVal);
 
    private:
       protocol::Component* parent;

@@ -173,6 +173,13 @@ float StringVariant::asInteger()
    {
    return atoi(value->values[0].c_str());
    }
+
+void StringVariant::setValue(string newVal)
+{
+   value->values.erase(value->values.begin(), value->values.end());
+   value->values.push_back(newVal);
+}
+
 // ------------------------------------------------------------------
 // The value object passed in is the main value to use for this variable.
 // The value object already in 'value' is the default (backup) value
