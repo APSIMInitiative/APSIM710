@@ -581,7 +581,10 @@ public class SlopeEffectsOnWeather
                     myWindSpeed *= 1.0 + dWind;
             }
             else
+            {
+                WindSpeedMeasured = -1.0;
                 myWindSpeed = defaultWindSpeed;
+            }
 
 
             // Evaluate changes in VP and RH
@@ -619,7 +622,7 @@ public class SlopeEffectsOnWeather
             if (Math.Abs(MyMetFile.Radn - myRadn) > epsilon)
                 MyMetFile.Radn = (float)myRadn;
 
-            if (!double.IsNaN(WindSpeedMeasured) && (Math.Abs(dWind) > epsilon))
+            if ((WindSpeedMeasured > 0.0) && (Math.Abs(dWind) > epsilon))
                 MyMetFile.Set("wind", (float)myWindSpeed);
 
             if (Math.Abs(dVapPressure) > epsilon)
@@ -696,6 +699,16 @@ public class SlopeEffectsOnWeather
             canChangeRH = false;
         }
 
+        // make sure that we have values (replace NaN with a negative value)
+        if (Double.IsNaN(RHmeanMeasured))
+            RHmeanMeasured = -1.0;
+        if (Double.IsNaN(RHMeasured))
+            RHMeasured = -1.0;
+        if (Double.IsNaN(RHminMeasured))
+            RHminMeasured = -1.0;
+        if (Double.IsNaN(RHmaxMeasured))
+            RHmaxMeasured = -1.0;
+
         // Adjust the values of VP and RH
         myVP = VPMeasured;
         if (Math.Abs(dVapPressure) > epsilon)
@@ -709,10 +722,6 @@ public class SlopeEffectsOnWeather
                     double varRH = dVapPressure + Math.Min(100 / myRHmean, 1.0 + dVapPressure) - Math.Max(0, 1.0 - dVapPressure);
                     myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
                     myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
-
-                    // check changes
-                    if (Math.Abs((0.5 * (myRHmin + myRHmax)) - myRHmean) > epsilon)
-                        System.Diagnostics.Debugger.Break();
                 }
                 hasChangedRH = true;
             }
