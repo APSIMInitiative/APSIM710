@@ -44,7 +44,7 @@ namespace CMPServices
         /// <summary>
         /// temporary storage of error message from init1
         /// </summary>
-        private string init1Error;                      
+        protected string init1Error = "";                      
 
         /// <summary>
         /// Keeping track of drivers requested
@@ -98,7 +98,6 @@ namespace CMPServices
             interpreter = new TMessageInterpreter(FMyID);
             interpreter.initMsgIDCounter(FMyID * 1000000);     //ensure msgID's are interesting
 
-            init1Error = "";
             FModulePathName = getModulePath();
 
             checkPointTracer = new TCheckPointTracer();
@@ -688,6 +687,12 @@ namespace CMPServices
 
                 try
                 {
+                    if (init1Error.Length > 0)
+                    {
+                        string errorMsg = string.Format(FName + " Error in object construction: {0}", init1Error);
+                        sendError(errorMsg, true);
+                        return;
+                    }
                     init1Error = "";
                     FMyID = msg.to;         //store the ID chosen for this component
                     FParentID = msg.from;   //store the parent's (system) ID. init1's alway s come from the owner.

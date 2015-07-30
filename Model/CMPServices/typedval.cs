@@ -593,6 +593,8 @@ namespace CMPServices
                 {
                     while ((FBaseType > TBaseType.ITYPE_EMPTY) && (parser.Kind != sTYPECODES[(int)FBaseType]))
                         FBaseType--;
+                    if (FBaseType == TBaseType.ITYPE_EMPTY)
+                        throw new Exception("DDML parse error for \"" + parser.Name + "\"; kind \"" + parser.Kind + "\" is not supported.");
                 }
             }
 
