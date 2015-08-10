@@ -131,17 +131,9 @@ public class Manager2
                 Params.TempFiles.KeepFiles = false;
                 string[] source = new string[1];
                 source[0] = Text;
-#if __MonoCS__
-                System.Diagnostics.Process P1 = Utility.RunProcess("/bin/ln", "-sf /usr/bin/mcs mcs", ".");
-                Utility.CheckProcessExitedProperly(P1);
-#endif
+
                 CompilerResults results = Provider.CompileAssemblyFromSource(Params, source);
-#if __MonoCS__
-                // Ugh. This will break if there are several instances of ApsimModel.exe running,
-                // which is quite feasible if Apsim.exe has fired up parallell runs. FIXME
-                System.Diagnostics.Process P2 = Utility.RunProcess("/bin/rm", "-f mcs", ".");
-                Utility.CheckProcessExitedProperly(P2);
-#endif
+
                 string Errors = "";
                 foreach (CompilerError err in results.Errors)
                 {

@@ -221,6 +221,7 @@ namespace ApsimFile
 			ExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX.INTEL.bat"));
 			ExeWriter.NewLine = "\n";
 			ExeWriter.WriteLine ("#!/bin/bash");
+			ExeWriter.WriteLine ("export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
 			ExeWriter.WriteLine ("for i in $@; do if [ ! -f $i ]; then wget -nd -q $i; if [ \"$?\" != \"0\" ]; then exit $?; fi; i=`basename $i`; fi ; chmod +x $i; ./$i; rm -f $i; done");
 			ExeWriter.WriteLine ("if [ -d Temp ]; then rm -rf Temp; fi");
 			ExeWriter.Close ();
