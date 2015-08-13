@@ -4010,36 +4010,40 @@ public class AgPasture
             SetSpeciesState(s, InitialState[s]);
         }
     }
-    
+
     /// <summary>
     /// Allow setting up the DM and N amounts of any species
     /// </summary>
-    /// <param name="species">List with the index of species to be changed</param>
-    /// <param name="dmShoot">Array of DM shoot values for each species being changed</param>
-    /// <param name="dmRoot">Array of DM root values for each species being changed</param>
-    /// <param name="rootDepth">Array of root depth values for each species being changed</param>
-    /// <param name="dmFractions">Array with values of DM fractions for each pool in each species being changed</param>
-    /// <param name="nConcentations">Array of N concentration values for each pool in each species being changed</param>
+    /// <param name="NewSetState">New set of values for DM and N of given species</param>
+    /// <remarks>
+    /// The type NewSetState contains:
+    ///   - species: List with the index of species to be changed
+    ///   - dmShoot: Array of DM shoot values for each species being changed
+    ///   - dmRoot: Array of DM root values for each species being changed
+    ///   - rootDepth: Array of root depth values for each species being changed
+    ///   - dmFractions: Array with values of DM fractions for each pool in each species being changed
+    ///   - nConcentations: Array of N concentration values for each pool in each species being changed
+    /// </remarks>
     [EventHandler]
-    public void onSetSpeciesWt(int[] species, double[] dmShoot = null, double[] dmRoot = null, double[] rootDepth = null, double[][] dmFractions = null, double[][] nConcentations = null)
+    public void onSetSpeciesWt(SetSpeciesWtType NewSetState)
     {
         // all parameters but the index are optional
 
         SpeciesSetState NewState = new SpeciesSetState();
-        double[] currentFractions;
-        double[] currentConcentrations;
+        NewState.DMFraction = new double[11];
+        NewState.NConcentration = new double[12];
 
-       foreach (int s in species)
+       foreach (int s in NewSetState.species)
         {
            // get DM shoot
-            if (!dmShoot.Equals(null))
-                NewState.ShootDM = dmShoot[s];
+            if (!NewSetState.dmShoot.Equals(null))
+                NewState.ShootDM = NewSetState.dmShoot[s];
             else
                 NewState.ShootDM = mySpecies[s].dmshoot;
 
             // get DM root
-            if (!dmRoot.Equals(null))
-                NewState.RootDM = dmRoot[s];
+            if (!NewSetState.dmRoot.Equals(null))
+                NewState.RootDM = NewSetState.dmRoot[s];
             else
                 NewState.RootDM = mySpecies[s].dmroot;
 
@@ -4050,50 +4054,65 @@ public class AgPasture
                 NewState.RootDepth = mySpecies[s].rootDepth;
 
            // get dm fractions
-            if (!dmFractions.Equals(null))
+            if (!NewSetState.dmFractions.Equals(null))
             {
-                NewState.DMFraction = dmFractions[s];
+                NewState.DMFraction[0] = NewSetState.dmFractions[s].Leaf1;
+                NewState.DMFraction[1] = NewSetState.dmFractions[s].Leaf2;
+                NewState.DMFraction[2] = NewSetState.dmFractions[s].Leaf3;
+                NewState.DMFraction[3] = NewSetState.dmFractions[s].Leaf4;
+                NewState.DMFraction[4] = NewSetState.dmFractions[s].Stem1;
+                NewState.DMFraction[5] = NewSetState.dmFractions[s].Stem2;
+                NewState.DMFraction[6] = NewSetState.dmFractions[s].Stem3;
+                NewState.DMFraction[7] = NewSetState.dmFractions[s].Stem4;
+                NewState.DMFraction[8] = NewSetState.dmFractions[s].Stol1;
+                NewState.DMFraction[9] = NewSetState.dmFractions[s].Stol2;
+                NewState.DMFraction[10] = NewSetState.dmFractions[s].Stol3;
             }
             else
             {
-                currentFractions = new double[11];
-                currentFractions[0] = mySpecies[s].dmleaf1 / mySpecies[s].dmshoot;
-                currentFractions[1] = mySpecies[s].dmleaf2 / mySpecies[s].dmshoot;
-                currentFractions[2] = mySpecies[s].dmleaf3 / mySpecies[s].dmshoot;
-                currentFractions[3] = mySpecies[s].dmleaf4 / mySpecies[s].dmshoot;
-                currentFractions[4] = mySpecies[s].dmstem1 / mySpecies[s].dmshoot;
-                currentFractions[5] = mySpecies[s].dmstem2 / mySpecies[s].dmshoot;
-                currentFractions[6] = mySpecies[s].dmstem3 / mySpecies[s].dmshoot;
-                currentFractions[7] = mySpecies[s].dmstem4 / mySpecies[s].dmshoot;
-                currentFractions[8] = mySpecies[s].dmstol1 / mySpecies[s].dmshoot;
-                currentFractions[9] = mySpecies[s].dmstol2 / mySpecies[s].dmshoot;
-                currentFractions[10] = mySpecies[s].dmstol3 / mySpecies[s].dmshoot;
-
-                NewState.DMFraction = currentFractions;
+                NewState.DMFraction[0] = mySpecies[s].dmleaf1 / mySpecies[s].dmshoot;
+                NewState.DMFraction[1] = mySpecies[s].dmleaf2 / mySpecies[s].dmshoot;
+                NewState.DMFraction[2] = mySpecies[s].dmleaf3 / mySpecies[s].dmshoot;
+                NewState.DMFraction[3] = mySpecies[s].dmleaf4 / mySpecies[s].dmshoot;
+                NewState.DMFraction[4] = mySpecies[s].dmstem1 / mySpecies[s].dmshoot;
+                NewState.DMFraction[5] = mySpecies[s].dmstem2 / mySpecies[s].dmshoot;
+                NewState.DMFraction[6] = mySpecies[s].dmstem3 / mySpecies[s].dmshoot;
+                NewState.DMFraction[7] = mySpecies[s].dmstem4 / mySpecies[s].dmshoot;
+                NewState.DMFraction[8] = mySpecies[s].dmstol1 / mySpecies[s].dmshoot;
+                NewState.DMFraction[9] = mySpecies[s].dmstol2 / mySpecies[s].dmshoot;
+                NewState.DMFraction[10] = mySpecies[s].dmstol3 / mySpecies[s].dmshoot;
             }
 
            // get N concentrations
-            if (!nConcentations.Equals(null))
+            if (!NewSetState.nConcentations.Equals(null))
             {
-                NewState.NConcentration = nConcentations[s];
+                NewState.NConcentration[0] = NewSetState.nConcentations[s].Leaf1;
+                NewState.NConcentration[1] = NewSetState.nConcentations[s].Leaf2;
+                NewState.NConcentration[2] = NewSetState.nConcentations[s].Leaf3;
+                NewState.NConcentration[3] = NewSetState.nConcentations[s].Leaf4;
+                NewState.NConcentration[4] = NewSetState.nConcentations[s].Stem1;
+                NewState.NConcentration[5] = NewSetState.nConcentations[s].Stem2;
+                NewState.NConcentration[6] = NewSetState.nConcentations[s].Stem3;
+                NewState.NConcentration[7] = NewSetState.nConcentations[s].Stem4;
+                NewState.NConcentration[8] = NewSetState.nConcentations[s].Stol1;
+                NewState.NConcentration[9] = NewSetState.nConcentations[s].Stol2;
+                NewState.NConcentration[10] = NewSetState.nConcentations[s].Stol3;
+                NewState.NConcentration[11] = NewSetState.nConcentations[s].root;
             }
             else
             {
-                currentConcentrations = new double[12];
-                currentConcentrations[0] = mySpecies[s].Ncleaf1;
-                currentConcentrations[1] = mySpecies[s].Ncleaf2;
-                currentConcentrations[2] = mySpecies[s].Ncleaf3;
-                currentConcentrations[3] = mySpecies[s].Ncleaf4;
-                currentConcentrations[4] = mySpecies[s].Ncstem1;
-                currentConcentrations[5] = mySpecies[s].Ncstem2;
-                currentConcentrations[6] = mySpecies[s].Ncstem3;
-                currentConcentrations[7] = mySpecies[s].Ncstem4;
-                currentConcentrations[8] = mySpecies[s].Ncstol1;
-                currentConcentrations[9] = mySpecies[s].Ncstol2;
-                currentConcentrations[10] = mySpecies[s].Ncstol3;
-                currentConcentrations[11] = mySpecies[s].Ncroot;
-
-                NewState.NConcentration = currentConcentrations;
+                NewState.NConcentration[0] = mySpecies[s].Ncleaf1;
+                NewState.NConcentration[1] = mySpecies[s].Ncleaf2;
+                NewState.NConcentration[2] = mySpecies[s].Ncleaf3;
+                NewState.NConcentration[3] = mySpecies[s].Ncleaf4;
+                NewState.NConcentration[4] = mySpecies[s].Ncstem1;
+                NewState.NConcentration[5] = mySpecies[s].Ncstem2;
+                NewState.NConcentration[6] = mySpecies[s].Ncstem3;
+                NewState.NConcentration[7] = mySpecies[s].Ncstem4;
+                NewState.NConcentration[8] = mySpecies[s].Ncstol1;
+                NewState.NConcentration[9] = mySpecies[s].Ncstol2;
+                NewState.NConcentration[10] = mySpecies[s].Ncstol3;
+                NewState.NConcentration[11] = mySpecies[s].Ncroot;
             }
 
            // Set the species
