@@ -1995,7 +1995,7 @@ public class Species
                 else
                 {
                     double myB = Math.Abs(MetFile.Latitude) / referenceLatitude;
-                    doyIniPlateau += 183 * (paramALatFunction - paramALatFunction * myB + myB) * Math.Pow(myB, paramALatFunction - 1.0);
+                    doyIniPlateau += 183 * (paramALatFunction - (paramALatFunction * myB) + myB) * Math.Pow(myB, paramALatFunction - 1.0);
                 }
 
                 // compute the duration of the three phases (onset, plateau, and outset)
@@ -2528,4 +2528,33 @@ public class SpeciesState
 
     /// <summary>The constructor</summary>
     public SpeciesState() { }
+}
+
+////-----------------------------------------------------------------------------------------------
+/// <summary>
+/// Basic values defining species state
+/// </summary>
+public class SpeciesSetState
+{
+    /// <summary>DM of shoot</summary>
+    public double ShootDM = 0.0;
+
+    /// <summary>DM of roots</summary>
+    public double RootDM = 0.0;
+
+    /// <summary>Depth of roots</summary>
+    public double RootDepth = 0.0;
+
+    /// <summary> Fractions of DM for each biomass pool </summary>
+    public double[] DMFraction;
+
+    /// <summary> Concentration of N for each biomass pool, including roots </summary>
+    public double[] NConcentration;
+
+    /// <summary> Constructor, initialise some variables </summary>
+    public SpeciesSetState()
+    {
+        Array.Resize(ref DMFraction, 11);
+        Array.Resize(ref NConcentration, 12);
+    }
 }
