@@ -4019,8 +4019,9 @@ public class AgPasture
     /// <param name="dmRoot">Array of DM root values for each species being changed</param>
     /// <param name="rootDepth">Array of root depth values for each species being changed</param>
     /// <param name="dmFractions">Array with values of DM fractions for each pool in each species being changed</param>
-    /// <param name="nConcs">Array of N concentration values for each pool in each species being changed</param>
-    public void SetSpeciesWt(int[] species, double[] dmShoot = null, double[] dmRoot = null, double[] rootDepth=null, double[][] dmFractions = null, double[][] nConcs = null)
+    /// <param name="nConcentations">Array of N concentration values for each pool in each species being changed</param>
+    [EventHandler]
+    public void onSetSpeciesWt(int[] species, double[] dmShoot = null, double[] dmRoot = null, double[] rootDepth = null, double[][] dmFractions = null, double[][] nConcentations = null)
     {
         // all parameters but the index are optional
 
@@ -4072,9 +4073,9 @@ public class AgPasture
             }
 
            // get N concentrations
-            if (!nConcs.Equals(null))
+            if (!nConcentations.Equals(null))
             {
-                NewState.NConcentration = nConcs[s];
+                NewState.NConcentration = nConcentations[s];
             }
             else
             {
