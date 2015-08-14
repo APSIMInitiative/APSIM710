@@ -13,6 +13,19 @@
 
 // ------------------------------------------------------------------
 //  Short description:
+//     case insensitive string comparison routines.
+
+//  Notes:
+
+//  Changes:
+//    SB ???
+
+// ------------------------------------------------------------------
+int EXPORT Str_i_Cmp(const std::string &a, const std::string &b);
+#define Str_i_Eq(a,b)  (!Str_i_Cmp((a),(b)))
+
+// ------------------------------------------------------------------
+//  Short description:
 //    splits a string into words.
 
 //  Notes:
@@ -253,7 +266,7 @@ int Locate_string (const char* Search_string, StringContainer& words)
                                    Iter != words.end() && !Found;
                                    Iter++)
       {
-      Found = (strcmpi(Search_string, (*Iter).c_str()) == 0);
+      Found = (Str_i_Cmp(Search_string, (*Iter).c_str()) == 0);
       indx++;
       }
    if (!Found)
@@ -410,18 +423,6 @@ bool EXPORT replaceAll(std::string& St, const std::string& subString, const std:
 std::string EXPORT ftoa(double Float, int Num_decplaces);
 std::string EXPORT itoa(int Int);
 
-// ------------------------------------------------------------------
-//  Short description:
-//     case insensitive string comparison routines.
-
-//  Notes:
-
-//  Changes:
-//    SB ???
-
-// ------------------------------------------------------------------
-int EXPORT Str_i_Cmp(const std::string &a, const std::string &b);
-#define Str_i_Eq(a,b)  (!Str_i_Cmp((a),(b)))
 
 // ------------------------------------------------------------------
 //  Short description:

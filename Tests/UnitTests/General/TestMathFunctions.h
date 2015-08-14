@@ -8,11 +8,6 @@
 #ifndef TestMathFunctionsH
 #define TestMathFunctionsH
 
-#include <boost/test/unit_test.hpp>
-
-//---------------------------------------------------------------------------
-// Register all tests.
-//---------------------------------------------------------------------------
-boost::unit_test_framework::test_suite* testMathFunctions(void);
+CppUnit::TestSuite *getMathFunctions ();
 
 #endif

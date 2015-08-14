@@ -2,23 +2,14 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Test
 
-SRC = Test.cpp \
-      TestXml.cpp \
-      TestIoFunctions.cpp \
-      TestPathClass.cpp \
-      TestMathFunctions.cpp \
+SRC = Test.cpp TestHttp.cpp TestXml.cpp TestIoFunctions.cpp \
+      TestDateClass.cpp TestMathFunctions.cpp \
       TestStringFunctions.cpp \
-      TestDateClass.cpp \
-      TestHttp.cpp
+      TestPathClass.cpp 
 
-ifdef DEBUG
-  LIBS = General libboost_unit_test_framework-vc100-mt-gd-1_54
-else
-  LIBS = General libboost_unit_test_framework-vc100-mt-1_54
-endif
 
+LIBS = General cppunit_dll
 PROJECTTYPE = exe
-
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 

@@ -1,54 +1,62 @@
 //---------------------------------------------------------------------------
 #include <stdlib.h>
-//#include <dir.h>
-
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <general/path.h>
-#include "TestIoFunctions.h"
 #include <wchar.h>
-#include <direct.h>
+#include <sys/stat.h>
+#include <General/path.h>
 
-#include <boost/test/unit_test.hpp>
-using boost::unit_test_framework::test_suite;
+#if _MSC_VER 
+ #include <direct.h>
+ #define mkdir(x) _mkdir(x)
+ #define rmdir(x) _rmdir(x)
+#endif
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "TestIoFunctions.h"
+
 using namespace std;
+
+class IOTestCase : public CppUnit::TestFixture { 
+public:
+
 void TestExpandFileName (void)
    {
-   string buf = getCurrentDirectory();
-   buf += "\\test.dat";
+   Path p;
+   string buf = getCurrentDirectory() + p.dirDelim() + "test.dat";
    std::string s = ExpandFileName("test.dat");
-   BOOST_CHECK(s == buf);
+   CPPUNIT_ASSERT(s == buf);
 
    std::string t = ExpandFileName("blah/../test.dat");
-   BOOST_CHECK(t == buf);
+   CPPUNIT_ASSERT(t == buf);
    }
 
 void TestFileExists(void)
    {
-   unlink("test.dat");
-   BOOST_CHECK (fileExists("test.dat") == 0);
+   remove("test.dat");
+   CPPUNIT_ASSERT (fileExists("test.dat") == 0);
    ofstream out("test.dat");
    out.close();
-   BOOST_CHECK (fileExists("test.dat") != 0);
-   unlink("test.dat");
-   BOOST_CHECK (fileExists("test.dat") == 0);
+   CPPUNIT_ASSERT (fileExists("test.dat") != 0);
+   remove("test.dat");
+   CPPUNIT_ASSERT (fileExists("test.dat") == 0);
    }
 
 void TestDirectoryExists(void)
    {
    // raw removal
    rmdir("testdir");
-   BOOST_CHECK (DirectoryExists("testdir") == 0);
+   CPPUNIT_ASSERT (DirectoryExists("testdir") == 0);
    // make then del dir
    mkdir("testdir");
-   BOOST_CHECK (DirectoryExists("testdir") != 0);
+   CPPUNIT_ASSERT (DirectoryExists("testdir") != 0);
    rmdir("testdir");
-   BOOST_CHECK (DirectoryExists("testdir") == 0);
+   CPPUNIT_ASSERT (DirectoryExists("testdir") == 0);
    // long dir name
    char *t = "amealongdirnamealongdirnamealongdirnamealongdirn";
    mkdir(t);
-   BOOST_CHECK( DirectoryExists(t));
+   CPPUNIT_ASSERT( DirectoryExists(t));
    rmdir(t);
    }
 
@@ -56,36 +64,29 @@ void TestRemovePathAndExtension(void)
    {
    std::string s = "c:\\a\\b.c";
    RemovePathAndExtension(s);
-   BOOST_CHECK (s == "b");
+   CPPUNIT_ASSERT (s == "b");
 
    std::string t = "c:\\a.b\\c.d";
    RemovePathAndExtension(t);
-   BOOST_CHECK (t == "c");
+   CPPUNIT_ASSERT (t == "c");
+
+   std::string u = "/a.b/c.d";
+   RemovePathAndExtension(u);
+   CPPUNIT_ASSERT (u == "c");
    }
-
-
-
-// Not called and removed:
-//locateFile()
-//copyFiles()
-//getYoungestFile()
-//copyDirectories()
-//deleteFilesOrDirectories()
-//getRecursiveDirectoryListing(void)
-//copyFilesPreserveDirectories()
-//renameOnCollision()
+};
 
 //---------------------------------------------------------------------------
 // Register all tests.
 //---------------------------------------------------------------------------
-test_suite* testIoFunctions(void)
+CppUnit::TestSuite * getIoFunctions() 
    {
-   test_suite* test= BOOST_TEST_SUITE("testIoFunctions");
-   test->add(BOOST_TEST_CASE(&TestExpandFileName));
-   test->add(BOOST_TEST_CASE(&TestFileExists));
-   test->add(BOOST_TEST_CASE(&TestDirectoryExists));
-   test->add(BOOST_TEST_CASE(&TestRemovePathAndExtension));
+   CppUnit::TestSuite *suite= new CppUnit::TestSuite("IO Tests" );
+   suite->addTest(new CppUnit::TestCaller<IOTestCase>("TestExpandFileName", &IOTestCase::TestExpandFileName ) );
+   suite->addTest(new CppUnit::TestCaller<IOTestCase>("TestFileExists", &IOTestCase::TestFileExists ) );
+   suite->addTest(new CppUnit::TestCaller<IOTestCase>("TestDirectoryExists", &IOTestCase::TestDirectoryExists ) );
+   suite->addTest(new CppUnit::TestCaller<IOTestCase>("TestRemovePathAndExtension", &IOTestCase::TestRemovePathAndExtension ) );
 
-   return test;
+   return suite;
    }
 
