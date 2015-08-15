@@ -338,7 +338,7 @@ public class AgPasture
     [Units("")]
     private string[] useHeatStress;
     [Param]
-    [Description("onset tempeature for heat effects")]
+    [Description("onset temperature for heat effects")]
     [Units("")]
     private double[] heatOnsetT;
     [Param]
@@ -363,11 +363,11 @@ public class AgPasture
     [Units("")]
     private string[] useColdStress;
     [Param]
-    [Description("onset tempeature for cold effects")]
+    [Description("onset temperature for cold effects")]
     [Units("")]
     private double[] coldOnsetT;
     [Param]
-    [Description("full tempeature for cold effects")]
+    [Description("full temperature for cold effects")]
     [Units("")]
     private double[] coldFullT;
     [Param]
@@ -688,7 +688,7 @@ public class AgPasture
     [Units("")]
     private double[] NMaxFix;
 
-    ////  >> modifiers for growth limitin factors >>>
+    ////  >> modifiers for growth limiting factors >>>
     [Param]
     [Description("Coefficient for modifying the effect of N stress on plant growth")]
     [Units("")]
@@ -755,7 +755,7 @@ public class AgPasture
                     return "ExpoLinear";
                 default:
                     // case = 0
-                    return "Homogenous";
+                    return "Homogeneous";
             }
         }
         set
@@ -783,7 +783,7 @@ public class AgPasture
             for (int i = 0; i < value.Length; i++)
                 p_ExpoLinearDepthParam[i] = value[i];
             if (p_ExpoLinearDepthParam[0] == 1.0)
-                p_RootDistributionMethod = 0;    // effectivelly it defines a homogeneous distribution
+                p_RootDistributionMethod = 0;    // effectively it defines a homogeneous distribution
         }
     }
 
@@ -847,7 +847,7 @@ public class AgPasture
     private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
 
     //// --  Parameters for annual species  -------------------------------------------------------
-    //  these were de-actived (hiden) as they are not really used and some procedure were
+    //  these were de-activated (hidden) as they are not really used and some procedure were
     //   never really implemented  (RCichota, Oct/2014)
     //[Param]
     [Description("Species type (1=annual,0=perennial)")]
@@ -941,12 +941,12 @@ public class AgPasture
         set { Species.stockingRate = value; }
     }
 
-    [Input(IsOptional = true)]
-    public SetSpeciesWtType NewSpeciesState
+    [Output]
+    public SetSpeciesStateType NewSpeciesState
     {
         get
         {
-            SetSpeciesWtType MyDummyState = new SetSpeciesWtType();
+            SetSpeciesStateType MyDummyState = new SetSpeciesStateType();
             return MyDummyState;
         }
         set
@@ -982,7 +982,7 @@ public class AgPasture
     private double swardPotGrowthWater;
     /// <summary>Daily actual growth (kg/ha)</summary>
     private double swardActualGrowth;
-    /// <summary>Daily growth above growund (kg/ha)</summary>
+    /// <summary>Daily growth above ground (kg/ha)</summary>
     private double swardHerbageGrowth;
     /// <summary>Daily litter formation (kg/ha)</summary>
     private double swardLitterDM;
@@ -1597,7 +1597,6 @@ public class AgPasture
         mySpecies[s1].soilAvailableNO3 = new double[nLayers];
     }
 
-
     /// <summary>
     /// Set DM and N values for each species in the sward
     /// </summary>
@@ -1663,7 +1662,6 @@ public class AgPasture
         mySpecies[s].deadLAI = mySpecies[s].DeadLAI();
         mySpecies[s].totalLAI = mySpecies[s].greenLAI + mySpecies[s].deadLAI;
     }
-
 
     /// <summary>
     /// Let other module (micromet and SWIM) know about the existence of this crop (sward)
@@ -4039,7 +4037,7 @@ public class AgPasture
     ///   - nConcentrations: Array of N concentration values for each pool in each species being changed
     /// </remarks>
     [EventHandler]
-    public void onSetSpeciesWt(SetSpeciesWtType NewSetState)
+    public void onSetSpeciesState(SetSpeciesStateType NewSetState)
     {
         // all parameters but the index are optional
 
@@ -4134,7 +4132,7 @@ public class AgPasture
         }
     }
 
-    private void SetNewState(SetSpeciesWtType NewSetState)
+    private void SetNewState(SetSpeciesStateType NewSetState)
     {
         // all parameters but the index are optional
 
@@ -4470,7 +4468,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Plant status (dead, alive, etc)")]
+    [Description("Plant status (dead, alive, etc.)")]
     [Units("")]
     public string plant_status
     {
@@ -4487,7 +4485,7 @@ public class AgPasture
     [Units("")]
     public int Stage
     {
-        //An approximate of teh stages corresponding to that of other arable crops for management application settings.
+        //An approximate of the stages corresponding to that of other arable crops for management application settings.
         //Phenostage of the first species (ryegrass) is used for this approximation
         get
         {
@@ -4768,7 +4766,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Plant base potential photosyntetic rate")]
+    [Description("Plant base potential photosynthetic rate")]
     [Units("kgC/ha")]
     public double PlantPotentialPhotosynthesis
     {
@@ -5008,7 +5006,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].Nshoot;       //remoblised N is reported in stem
+                result += mySpecies[s].Nshoot;       //remobilised N is reported in stem
             return result;
         }
     }
@@ -7216,7 +7214,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Amount of N demaned from soil, for each species")]
+    [Description("Amount of N demanded from soil, for each species")]
     [Units("kgN/ha")]
     public double[] SpeciesDemandN
     {
