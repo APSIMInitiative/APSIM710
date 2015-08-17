@@ -77,7 +77,7 @@ namespace ApsimFile
                 NewSoil.NearestTown = GetStringValue(Table, StartRow, "NearestTown");
                 NewSoil.Site = GetStringValue(Table, StartRow, "Site");
                 NewSoil.ApsoilNumber = GetStringValue(Table, StartRow, "APSoilNumber");
-                NewSoil.SoilType = GetStringValue(Table, StartRow, "Soil type, texture or other descriptor");
+                NewSoil.SoilType = GetStringValue(Table, StartRow, "Soil type texture or other descriptor");
                 NewSoil.LocalName = GetStringValue(Table, StartRow, "LocalName");
                 NewSoil.ASCOrder = GetStringValue(Table, StartRow, "ASC_Order");
                 NewSoil.ASCSubOrder = GetStringValue(Table, StartRow, "ASC_Sub-order");

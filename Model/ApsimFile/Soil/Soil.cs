@@ -1221,7 +1221,7 @@ namespace ApsimFile
         {
             get
             {
-                if (SoilTemperature != null)
+                if (SoilTemperature != null && SoilTemperature.InitialSoilTemperature != null)
                     return Map(SoilTemperature.InitialSoilTemperature, SoilTemperature.Thickness, Thickness, MapType.Concentration, SoilTemperature.InitialSoilTemperature.Last());
                 else
                     return null;
