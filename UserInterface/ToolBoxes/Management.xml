@@ -1710,49 +1710,60 @@ public class Script
       <text>using System;
 using ModelFramework;
 using CSGeneral;
-
-public class Script 
-{      
-   [Link] Irrigation Irrigation; 
+ 
+public class Script
+{     
+   [Link] Irrigation Irrigation;
    [Input] DateTime today;
    [Param] string[] irrigDatesStr;  //a string array holding the dates as text
    [Param] string sameDays;         //if yes, we ignore the year component
    [Param] float amount;           //amount of irrigation to apply (mm)
    [Param] float eff;              //irrigation efficiency
-   
+    
    private DateTime[] irrigDates;   //an array to hold the converted dates
    private bool irrigToday = false; //a variable to hold whether or not we irrigate today
-   
+   private int year;
+   private string[] split;
+    
    [EventHandler] public void OnInitialised()
    {
       //convert the date strings to APSIM dates
       irrigDates = new DateTime[irrigDatesStr.Length];
       for (int i = 0; i &lt; irrigDates.Length ; i++)
-         irrigDates[i] = DateUtility.GetDate(irrigDatesStr[i]);
+      {
+         split = irrigDatesStr[i].Split('-');
+         if (split.Length == 3)
+         {
+            year = Convert.ToInt32(split[2]);
+            irrigDates[i] = DateUtility.GetDate(irrigDatesStr[i], year);
+         }
+         else
+            irrigDates[i] = DateUtility.GetDate(irrigDatesStr[i]);
+      }
    }
-          
+           
    // The following event handler will be called each day at the start of the day
    [EventHandler] public void OnPrepare()
    {
       irrigToday = false;
-      
+       
       //for every date in our date array
       foreach (DateTime day in irrigDates)
       {
-         if (sameDays.ToLower().Equals("yes")&amp;&amp; day.Day.Equals(today.Day) &amp;&amp; day.Month.Equals(today.Month))
-            irrigToday = true; 
+         if (sameDays.ToLower().Equals("yes") &amp;&amp; day.Day.Equals(today.Day) &amp;&amp; day.Month.Equals(today.Month))
+            irrigToday = true;
          else if (day.Day.Equals(today.Day) &amp;&amp; day.Month.Equals(today.Month) &amp;&amp; day.Year.Equals(today.Year))
-            irrigToday = true;   
+            irrigToday = true;  
       }
-      
-         if (irrigToday)
-         {
-            IrrigationApplicationType data = new IrrigationApplicationType();
-            data.Amount = amount;
-            Irrigation.Set("irrigation_efficiency", eff);
-            Irrigation.Apply(data);
-         }
-   }  
+       
+      if (irrigToday)
+      {
+         IrrigationApplicationType data = new IrrigationApplicationType();
+         data.Amount = amount;
+         Irrigation.Set("irrigation_efficiency", eff);
+         Irrigation.Apply(data);
+      }
+   } 
 }
        </text>
     </manager2>
