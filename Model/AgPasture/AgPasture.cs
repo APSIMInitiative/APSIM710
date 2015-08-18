@@ -636,10 +636,12 @@ public class AgPasture
     private double[] dmdeadmin;
 
     [Param]
+    [Output]
     [Description("Fractions of initial dmshoot for each biomass pool, for non-legumes")]
     [Units("0-1")]
     private double[] initialDMFractions_grass;
     [Param]
+    [Output]
     [Description("Fractions of initial dmshoot for each biomass pool, for legume species")]
     [Units("0-1")]
     private double[] initialDMFractions_legume;
