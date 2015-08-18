@@ -4037,7 +4037,7 @@ public class AgPasture
     ///   - nConcentrations: Array of N concentration values for each pool in each species being changed
     /// </remarks>
     [EventHandler]
-    public void onSetSpeciesState(SetSpeciesStateType NewSetState)
+    public void OnSetSpeciesState(SetSpeciesStateType NewSetState)
     {
         // all parameters but the index are optional
 
@@ -6365,6 +6365,23 @@ public class AgPasture
         }
     }
 
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Average N concentration in shoot, for each species")]
+    [Units("kgN/kgDM")]
+    public double[] SpeciesShootNConc
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                result[s] = MathUtility.Divide(mySpecies[s].Nshoot, mySpecies[s].dmshoot, 0.0);
+            }
+            return result;
+        }
+    }
+    
     /// <summary>An output</summary>
     [Output]
     [Description("Dry matter weight of leaves at stage 1 (young) for each species")]
