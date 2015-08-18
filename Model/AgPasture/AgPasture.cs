@@ -4031,28 +4031,42 @@ public class AgPasture
         NewState.DMFraction = new double[11];
         NewState.NConcentration = new double[12];
 
-       foreach (int s in NewSetState.speciesID)
+        foreach (int s in NewSetState.speciesID)
         {
-           // get DM shoot
-            if (!NewSetState.dmShoot.Equals(null))
+            // get DM shoot
+            if (NewSetState.dmShoot.Length > 0)
                 NewState.ShootDM = NewSetState.dmShoot[s];
             else
                 NewState.ShootDM = mySpecies[s].dmshoot;
 
             // get DM root
-            if (!NewSetState.dmRoot.Equals(null))
+            if (NewSetState.dmRoot.Length > 0)
                 NewState.RootDM = NewSetState.dmRoot[s];
             else
                 NewState.RootDM = mySpecies[s].dmroot;
 
             // get root depth
-            if (!rootDepth.Equals(null))
+            if (NewSetState.rootDepth.Length > 0)
                 NewState.RootDepth = rootDepth[s];
             else
                 NewState.RootDepth = mySpecies[s].rootDepth;
 
-           // get dm fractions
-            if (!NewSetState.dmFractions.Equals(null))
+            // get dm fractions
+            // This is bulshit, but seems to be the only way
+            double MyTotal = NewSetState.dmFractions[s].Leaf1
+                           + NewSetState.dmFractions[s].Leaf2
+                           + NewSetState.dmFractions[s].Leaf3
+                           + NewSetState.dmFractions[s].Leaf4
+                           + NewSetState.dmFractions[s].Stem1
+                           + NewSetState.dmFractions[s].Stem2
+                           + NewSetState.dmFractions[s].Stem3
+                           + NewSetState.dmFractions[s].Stem4
+                           + NewSetState.dmFractions[s].Stolon1
+                           + NewSetState.dmFractions[s].Stolon2
+                           + NewSetState.dmFractions[s].Stolon3
+                           + NewSetState.dmFractions[s].Roots;
+
+            if (MyTotal > 0.0)
             {
                 NewState.DMFraction[0] = NewSetState.dmFractions[s].Leaf1;
                 NewState.DMFraction[1] = NewSetState.dmFractions[s].Leaf2;
@@ -4082,8 +4096,21 @@ public class AgPasture
                 NewState.DMFraction[10] = mySpecies[s].dmstol3 / mySpecies[s].dmshoot;
             }
 
-           // get N concentrations
-            if (!NewSetState.nConcentrations.Equals(null))
+            // get N concentrations
+            MyTotal = NewSetState.dmFractions[s].Leaf1
+                    + NewSetState.dmFractions[s].Leaf2
+                    + NewSetState.dmFractions[s].Leaf3
+                    + NewSetState.dmFractions[s].Leaf4
+                    + NewSetState.dmFractions[s].Stem1
+                    + NewSetState.dmFractions[s].Stem2
+                    + NewSetState.dmFractions[s].Stem3
+                    + NewSetState.dmFractions[s].Stem4
+                    + NewSetState.dmFractions[s].Stolon1
+                    + NewSetState.dmFractions[s].Stolon2
+                    + NewSetState.dmFractions[s].Stolon3
+                    + NewSetState.dmFractions[s].Roots;
+
+            if (MyTotal > 0.0)
             {
                 NewState.NConcentration[0] = NewSetState.nConcentrations[s].Leaf1;
                 NewState.NConcentration[1] = NewSetState.nConcentrations[s].Leaf2;
@@ -4114,7 +4141,7 @@ public class AgPasture
                 NewState.NConcentration[11] = mySpecies[s].Ncroot;
             }
 
-           // Set the species
+            // Set the species
             SetSpeciesState(s, NewState);
         }
     }
@@ -6252,13 +6279,28 @@ public class AgPasture
     [Output]
     [Description("N amount in the plant's roots, for each species")]
     [Units("kgN/ha")]
-    public double[] SpeciesRootsN
+    public double[] SpeciesRootN
     {
         get
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].Nroot;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("N amount in the plant's shoot, for each species")]
+    [Units("kgN/ha")]
+    public double[] SpeciesShootN
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].Nshoot;
             return result;
         }
     }
