@@ -487,75 +487,75 @@
          <field name="dlt_fom_p_value" kind="single" array="T" />
       </type>
 
-	<type name="Residue_removed">
-   		<field name="residue_removed_action" kind="string"/>
-   		<field name="dlt_residue_fraction" kind="single"/>
-   		<field name="residue_incorp_fraction" kind="single" array="T"/>
-   	</type>
+   <type name="Residue_removed">
+      <field name="residue_removed_action" kind="string"/>
+      <field name="dlt_residue_fraction" kind="single"/>
+      <field name="residue_incorp_fraction" kind="single" array="T"/>
+   </type>
 
-   	<type name="Residue_added">
-   		<field name="residue_type" kind="string"/>
-   		<field name="dm_type" kind="string"/>
-   		<field name="dlt_residue_wt" kind="single"/>
-   		<field name="dlt_dm_n" kind="single"/>
-   		<field name="dlt_dm_p" kind="single"/>
-   	</type>
+   <type name="Residue_added">
+      <field name="residue_type" kind="string"/>
+      <field name="dm_type" kind="string"/>
+      <field name="dlt_residue_wt" kind="single"/>
+      <field name="dlt_dm_n" kind="single"/>
+      <field name="dlt_dm_p" kind="single"/>
+   </type>
 
-   	<type name="SurfaceOM_removed">
-   		<field name="SurfaceOM_type" kind="string"/>
-   		<field name="SurfaceOM_dm_type" kind="string"/>
-   		<field name="dlt_SurfaceOM_wt" kind="single"/>
-   		<field name="SurfaceOM_dlt_dm_n" kind="single"/>
-   		<field name="SurfaceOM_dlt_dm_p" kind="single"/>
-   	</type>
+   <type name="SurfaceOM_removed">
+      <field name="SurfaceOM_type" kind="string"/>
+      <field name="SurfaceOM_dm_type" kind="string"/>
+      <field name="dlt_SurfaceOM_wt" kind="single"/>
+      <field name="SurfaceOM_dlt_dm_n" kind="single"/>
+      <field name="SurfaceOM_dlt_dm_p" kind="single"/>
+   </type>
 
 
-		<!-- type can be: disc, burn, rip etc. -->
-		<!-- Specifying a "type" in a Tillage Event parameter presets the variables below, using values from either the SurfaceOM or SoilWater INI file -->
-		<!-- eg. Surface OM ini file has f_incorp and depth values for each type-->
-		<!--     SoilWater ini file cn_red, cn_rain, values for each type-->
-		<!-- The user does not have to specify a type. -->
-		<!-- They can just manually set the parameters for the tillage event.-->
-		<!-- eg."type=anything" then specify either SurfaceOM variables or SoilWater variables (depending on who you are sending Tillage event to) -->
-		<!--f_incorp and tillage_depth eg. 'Surface Organic Matter' tillage type=anything f_incorp=0.5 tillage_depth=100mm -->
-		<!--cn_red and cn_rain are used in SoilWater to alter runoff eg. 'SoilName Water' tillage type=anything cn_red=3 cn_rain=100mm-->
-	<type name="Tillage">
-   		<field name="type" kind="string"/>
-   		<field name="f_incorp" kind="single"/>
-   		<field name="tillage_depth" kind="single"/>
-		<field name="cn_red" kind="single"/>
-		<field name="cn_rain" kind="single"/>
-	</type>
+   <!-- type can be: disc, burn, rip etc. -->
+   <!-- Specifying a "type" in a Tillage Event parameter presets the variables below, using values from either the SurfaceOM or SoilWater INI file -->
+   <!-- eg. Surface OM ini file has f_incorp and depth values for each type-->
+   <!--     SoilWater ini file cn_red, cn_rain, values for each type-->
+   <!-- The user does not have to specify a type. -->
+   <!-- They can just manually set the parameters for the tillage event.-->
+   <!-- eg."type=anything" then specify either SurfaceOM variables or SoilWater variables (depending on who you are sending Tillage event to) -->
+   <!--f_incorp and tillage_depth eg. 'Surface Organic Matter' tillage type=anything f_incorp=0.5 tillage_depth=100mm -->
+   <!--cn_red and cn_rain are used in SoilWater to alter runoff eg. 'SoilName Water' tillage type=anything cn_red=3 cn_rain=100mm-->
+   <type name="Tillage">
+      <field name="type" kind="string"/>
+      <field name="f_incorp" kind="single"/>
+      <field name="tillage_depth" kind="single"/>
+      <field name="cn_red" kind="single"/>
+      <field name="cn_rain" kind="single"/>
+   </type>
 
-	<type name="Add_surfaceom">
-	   	<field name="name" kind="string"/>
-   		<field name="type" kind="string"/>
-   		<field name="mass" kind="single"/>
-		<field name="n" kind="single"/>
-		<field name="cnr" kind="single"/>
-		<field name="p" kind="single"/>
-		<field name="cpr" kind="single"/>
-   	</type>
+   <type name="Add_surfaceom">
+      <field name="name" kind="string"/>
+      <field name="type" kind="string"/>
+      <field name="mass" kind="single"/>
+      <field name="n" kind="single"/>
+      <field name="cnr" kind="single"/>
+      <field name="p" kind="single"/>
+      <field name="cpr" kind="single"/>
+      </type>
 
    <!--!!!!! WaterStorage  types  !!!!!!!!!!!!!!!!!!!!!!-->
 
-      <type name="BiomassRemoved">
-         <field name="crop_type" kind="string"/>
-         <field name="dm_type" kind="string" array="T"/>
-         <field name="dlt_crop_dm" kind="single" array="T"/>
-         <field name="dlt_dm_n" kind="single" array="T"/>
-         <field name="dlt_dm_p" kind="single" array="T"/>
-         <field name="fraction_to_residue" kind="single" array="T"/>
-      </type>
-      <type name="NewProfile">
-         <field name="dlayer" kind="single" array="T" />
-         <field name="air_dry_dep" kind="single" array="T" />
-         <field name="ll15_dep" kind="single" array="T" />
-         <field name="dul_dep" kind="single" array="T" />
-         <field name="sat_dep" kind="single" array="T" />
-         <field name="sw_dep" kind="single" array="T" />
-         <field name="bd" kind="single" array="T" />
-      </type>
+   <type name="BiomassRemoved">
+      <field name="crop_type" kind="string"/>
+      <field name="dm_type" kind="string" array="T"/>
+      <field name="dlt_crop_dm" kind="single" array="T"/>
+      <field name="dlt_dm_n" kind="single" array="T"/>
+      <field name="dlt_dm_p" kind="single" array="T"/>
+      <field name="fraction_to_residue" kind="single" array="T"/>
+   </type>
+   <type name="NewProfile">
+      <field name="dlayer" kind="single" array="T" />
+      <field name="air_dry_dep" kind="single" array="T" />
+      <field name="ll15_dep" kind="single" array="T" />
+      <field name="dul_dep" kind="single" array="T" />
+      <field name="sat_dep" kind="single" array="T" />
+      <field name="sw_dep" kind="single" array="T" />
+      <field name="bd" kind="single" array="T" />
+   </type>
 
    <type name="NewPotentialGrowth">
       <field name="sender" kind="string"/>
@@ -570,57 +570,49 @@
       <field name="cover" kind="single"/>
       <field name="cover_tot" kind="single"/>
    </type>
-      <type name="NewCrop">
-         <field name="sender" kind="string"/>
-         <field name="crop_type" kind="string"/>
-      </type>
+   <type name="NewCrop">
+      <field name="sender" kind="string"/>
+      <field name="crop_type" kind="string"/>
+   </type>
 
 
    <!--!!!!! AgPasture types  !!!!!!!!!!!!!!!!!!!!!!-->
 
    <type name="Graze">
-      <field name="sender" kind="string" unit="-" />
-      <field name="amount" kind="single" unit="kg" />
-      <field name="type" kind="string" unit="-" />
+      <field name="sender"  kind="string"  unit="-" />
+      <field name="amount"  kind="single"  unit="kgDM/ha" />
+      <field name="type"  kind="string"  unit="-" />
    </type>
    <type name="AnimalGraze">
       <field name="sender" kind="string" unit="-" />
       <field name="species" kind="string" unit="-" />
-      <field name="stocking_rate" kind="single" unit="number/ha" />
-      <field name="time_on_pasture" kind="single" unit="%" />
+      <field name="stockingRate" kind="single" unit="number/ha" />
+      <field name="timeOnPasture" kind="single" unit="%" />
+   </type>
+
+
+   <type name="PlantPools">
+      <field name="Leaf1"  kind="double"/>
+      <field name="Leaf2"  kind="double"/>
+      <field name="Leaf3"  kind="double"/>
+      <field name="Leaf4"  kind="double"/>
+      <field name="Stem1"  kind="double"/>
+      <field name="Stem2"  kind="double"/>
+      <field name="Stem3"  kind="double"/>
+      <field name="Stem4"  kind="double"/>
+      <field name="Stolon1"  kind="double"/>
+      <field name="Stolon2"  kind="double"/>
+      <field name="Stolon3"  kind="double"/>
+      <field name="Roots"   kind="double"/>
    </type>
    <type name="SetSpeciesState">
-      <field name="species"    kind="integer4" unit="-"        array="T"/>
-      <field name="dmShoot"    kind="double"   unit="kgDM/ha"  array="T"/>
-      <field name="dmRoot"     kind="double"   unit="kgDM/ha"  array="T"/>
-      <field name="rootDepth"  kind="double"   unit="mm"       array="T"/>
-      <field name="dmFractions" array="T">
-         <field name="Leaf1"  unit="-"  kind="double"/>
-         <field name="Leaf2"  unit="-"  kind="double"/>
-         <field name="Leaf3"  unit="-"  kind="double"/>
-         <field name="Leaf4"  unit="-"  kind="double"/>
-         <field name="Stem1"  unit="-"  kind="double"/>
-         <field name="Stem2"  unit="-"  kind="double"/>
-         <field name="Stem3"  unit="-"  kind="double"/>
-         <field name="Stem4"  unit="-"  kind="double"/>
-         <field name="Stol1"  unit="-"  kind="double"/>
-         <field name="Stol2"  unit="-"  kind="double"/>
-         <field name="Stol3"  unit="-"  kind="double"/>
-      </field>
-      <field name="nConcentrations" array="T">
-         <field name="Leaf1"  unit="-"  kind="double"/>
-         <field name="Leaf2"  unit="-"  kind="double"/>
-         <field name="Leaf3"  unit="-"  kind="double"/>
-         <field name="Leaf4"  unit="-"  kind="double"/>
-         <field name="Stem1"  unit="-"  kind="double"/>
-         <field name="Stem2"  unit="-"  kind="double"/>
-         <field name="Stem3"  unit="-"  kind="double"/>
-         <field name="Stem4"  unit="-"  kind="double"/>
-         <field name="Stol1"  unit="-"  kind="double"/>
-         <field name="Stol2"  unit="-"  kind="double"/>
-         <field name="Stol3"  unit="-"  kind="double"/>
-         <field name="root"   unit="-"  kind="double"/>
-      </field>
+      <field name="sender"  kind="string"  unit="-"   array="F" />
+      <field name="speciesID"  kind="integer4"  unit="-"  array="T" />
+      <field name="dmShoot"  kind="double"  unit="kgDM/ha"  array="T" />
+      <field name="dmRoot"  kind="double"  unit="kgDM/ha"  array="T" />
+      <field name="rootDepth"  kind="double"  unit="mm"  array="T" />
+      <field name="dmFractions"  type="PlantPools"  unit="-"  array="T" />
+      <field name="nConcentrations"  type="PlantPools"  unit="%"  array="T" />
    </type>
 
 

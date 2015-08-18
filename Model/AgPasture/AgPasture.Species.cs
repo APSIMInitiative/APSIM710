@@ -2534,7 +2534,7 @@ public class SpeciesState
 /// <summary>
 /// Basic values defining species state
 /// </summary>
-public class SpeciesSetState
+public class SpeciesStateSettings
 {
     /// <summary>DM of shoot</summary>
     public double ShootDM = 0.0;
@@ -2552,7 +2552,7 @@ public class SpeciesSetState
     public double[] NConcentration;
 
     /// <summary> Constructor, initialise some variables </summary>
-    public SpeciesSetState()
+    public SpeciesStateSettings()
     {
         Array.Resize(ref DMFraction, 11);
         Array.Resize(ref NConcentration, 12);

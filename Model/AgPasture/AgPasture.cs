@@ -941,20 +941,6 @@ public class AgPasture
         set { Species.stockingRate = value; }
     }
 
-    [Output]
-    public SetSpeciesStateType NewSpeciesState
-    {
-        get
-        {
-            SetSpeciesStateType MyDummyState = new SetSpeciesStateType();
-            return MyDummyState;
-        }
-        set
-        {
-            SetNewState(value);
-        }
-    }
-
     #endregion  -----------------------------------------------------------------------------------
 
     #region General internal variables  ------------------------------------------------------------
@@ -972,7 +958,7 @@ public class AgPasture
     /// <summary>
     /// Basic state parameters for each species
     /// </summary>
-    private SpeciesSetState[] InitialState;
+    private SpeciesStateSettings[] InitialState;
 
     //// Pasture sward parameters, aggregated over all species
 
@@ -1213,7 +1199,7 @@ public class AgPasture
         //// Create and initialise each species
 
         mySpecies = new Species[NumSpecies];
-        InitialState = new SpeciesSetState[NumSpecies];
+        InitialState = new SpeciesStateSettings[NumSpecies];
 
         // set links to static members (clock, MetData, dlayer, CO2, etc)
         Species.Clock = myClock;
@@ -1236,7 +1222,7 @@ public class AgPasture
                     SetSpeciesParameters(s1, s2);
 
                     // Set the initial values for the state parameters, will needed this in case of reset
-                    InitialState[s1] = new SpeciesSetState();
+                    InitialState[s1] = new SpeciesStateSettings();
                     if (iniShootDM[s1] > 0.0)
                         InitialState[s1].ShootDM = iniShootDM[s1];
                     else
@@ -1601,7 +1587,7 @@ public class AgPasture
     /// Set DM and N values for each species in the sward
     /// </summary>
     /// <param name="s">The index for the species being setup</param>
-    private void SetSpeciesState(int s, SpeciesSetState MyState)
+    private void SetSpeciesState(int s, SpeciesStateSettings MyState)
     {
 
         //// Shoot DM ....................................................
@@ -4041,11 +4027,11 @@ public class AgPasture
     {
         // all parameters but the index are optional
 
-        SpeciesSetState NewState = new SpeciesSetState();
+        SpeciesStateSettings NewState = new SpeciesStateSettings();
         NewState.DMFraction = new double[11];
         NewState.NConcentration = new double[12];
 
-       foreach (int s in NewSetState.species)
+       foreach (int s in NewSetState.speciesID)
         {
            // get DM shoot
             if (!NewSetState.dmShoot.Equals(null))
@@ -4076,9 +4062,10 @@ public class AgPasture
                 NewState.DMFraction[5] = NewSetState.dmFractions[s].Stem2;
                 NewState.DMFraction[6] = NewSetState.dmFractions[s].Stem3;
                 NewState.DMFraction[7] = NewSetState.dmFractions[s].Stem4;
-                NewState.DMFraction[8] = NewSetState.dmFractions[s].Stol1;
-                NewState.DMFraction[9] = NewSetState.dmFractions[s].Stol2;
-                NewState.DMFraction[10] = NewSetState.dmFractions[s].Stol3;
+                NewState.DMFraction[8] = NewSetState.dmFractions[s].Stolon1;
+                NewState.DMFraction[9] = NewSetState.dmFractions[s].Stolon2;
+                NewState.DMFraction[10] = NewSetState.dmFractions[s].Stolon3;
+                // NewSetState.dmFractions[s].Roots is not used here
             }
             else
             {
@@ -4106,10 +4093,10 @@ public class AgPasture
                 NewState.NConcentration[5] = NewSetState.nConcentrations[s].Stem2;
                 NewState.NConcentration[6] = NewSetState.nConcentrations[s].Stem3;
                 NewState.NConcentration[7] = NewSetState.nConcentrations[s].Stem4;
-                NewState.NConcentration[8] = NewSetState.nConcentrations[s].Stol1;
-                NewState.NConcentration[9] = NewSetState.nConcentrations[s].Stol2;
-                NewState.NConcentration[10] = NewSetState.nConcentrations[s].Stol3;
-                NewState.NConcentration[11] = NewSetState.nConcentrations[s].root;
+                NewState.NConcentration[8] = NewSetState.nConcentrations[s].Stolon1;
+                NewState.NConcentration[9] = NewSetState.nConcentrations[s].Stolon2;
+                NewState.NConcentration[10] = NewSetState.nConcentrations[s].Stolon3;
+                NewState.NConcentration[11] = NewSetState.nConcentrations[s].Roots;
             }
             else
             {
@@ -4136,11 +4123,11 @@ public class AgPasture
     {
         // all parameters but the index are optional
 
-        SpeciesSetState NewState = new SpeciesSetState();
+        SpeciesStateSettings NewState = new SpeciesStateSettings();
         NewState.DMFraction = new double[11];
         NewState.NConcentration = new double[12];
 
-        foreach (int s in NewSetState.species)
+        foreach (int s in NewSetState.speciesID)
         {
             // get DM shoot
             if (!NewSetState.dmShoot.Equals(null))
@@ -4171,9 +4158,9 @@ public class AgPasture
                 NewState.DMFraction[5] = NewSetState.dmFractions[s].Stem2;
                 NewState.DMFraction[6] = NewSetState.dmFractions[s].Stem3;
                 NewState.DMFraction[7] = NewSetState.dmFractions[s].Stem4;
-                NewState.DMFraction[8] = NewSetState.dmFractions[s].Stol1;
-                NewState.DMFraction[9] = NewSetState.dmFractions[s].Stol2;
-                NewState.DMFraction[10] = NewSetState.dmFractions[s].Stol3;
+                NewState.DMFraction[8] = NewSetState.dmFractions[s].Stolon1;
+                NewState.DMFraction[9] = NewSetState.dmFractions[s].Stolon2;
+                NewState.DMFraction[10] = NewSetState.dmFractions[s].Stolon3;
             }
             else
             {
@@ -4201,10 +4188,10 @@ public class AgPasture
                 NewState.NConcentration[5] = NewSetState.nConcentrations[s].Stem2;
                 NewState.NConcentration[6] = NewSetState.nConcentrations[s].Stem3;
                 NewState.NConcentration[7] = NewSetState.nConcentrations[s].Stem4;
-                NewState.NConcentration[8] = NewSetState.nConcentrations[s].Stol1;
-                NewState.NConcentration[9] = NewSetState.nConcentrations[s].Stol2;
-                NewState.NConcentration[10] = NewSetState.nConcentrations[s].Stol3;
-                NewState.NConcentration[11] = NewSetState.nConcentrations[s].root;
+                NewState.NConcentration[8] = NewSetState.nConcentrations[s].Stolon1;
+                NewState.NConcentration[9] = NewSetState.nConcentrations[s].Stolon2;
+                NewState.NConcentration[10] = NewSetState.nConcentrations[s].Stolon3;
+                NewState.NConcentration[11] = NewSetState.nConcentrations[s].Roots;
             }
             else
             {
