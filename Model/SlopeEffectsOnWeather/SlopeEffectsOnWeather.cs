@@ -90,6 +90,42 @@ public class SlopeEffectsOnWeather
     private double TurbidityCoefficient = 0.95;
 
     /// <summary>
+    /// Parameter a of the function for transimissivity index for direct radn
+    /// </summary>
+    [Param]
+    private double a_ki = 0.98;
+
+    /// <summary>
+    /// Parameter b of the function for transimissivity index for direct radn
+    /// </summary>
+    [Param]
+    private double b_ki = 0.00146;
+
+    /// <summary>
+    /// parameter c of the function for transimissivity index for direct radn
+    /// </summary>
+    [Param]
+    private double c_ki = 0.075;
+
+    /// <summary>
+    /// Parameter d of the function for transimissivity index for direct radn
+    /// </summary>
+    [Param]
+    private double d_ki = 0.40;
+
+    /// <summary>
+    /// Parameter a of the function for precipitable water (mm)
+    /// </summary>
+    [Param]
+    private double a_pw = 2.10;
+
+    /// <summary>
+    /// Parameter b for the function for precipitable water (mm/kPa^2)
+    /// </summary>
+    [Param]
+    private double b_pw = 0.14;
+    
+    /// <summary>
     /// Parameter aT0 of dltTemp × dltRadn function, max rate of change (oC per MJ/m2/day)
     /// </summary>
     [Param]
@@ -236,20 +272,20 @@ public class SlopeEffectsOnWeather
     public double ExtraterrestrialRadn;
 
     /// <summary>
-    /// Time length of direct sunshine on a horizontal surface (hrs)
+    /// Time length of direct sunlight on a horizontal surface (hrs)
     /// </summary>
     [Output]
-    [Description("Length of direct sunshine on a horizontal surface")]
+    [Description("Length of direct sunlight on a horizontal surface")]
     [Units("hours")]
-    public double MaxDirSunshineLength;
+    public double MaxDirSunlightLength;
 
     /// <summary>
-    /// Time length of direct sunshine on tilted surface (hrs)
+    /// Time length of direct sunlight on tilted surface (hrs)
     /// </summary>
     [Output]
-    [Description("Length of direct sunshine on tilted surface")]
+    [Description("Length of direct sunlight on tilted surface")]
     [Units("hours")]
-    public double ActualDirSunshineLength;
+    public double ActualDirSunlightLength;
 
     /// <summary>
     /// Sky clearness index (0-1)
@@ -437,6 +473,11 @@ public class SlopeEffectsOnWeather
     private double myRadn = 0.0;
 
     /// <summary>
+    /// Daily RH after correction imposed by the user (typicially this from is 9:00 reading)
+    /// </summary>
+    private double myRH = 80.0;
+
+    /// <summary>
     /// Minimum daily RH after correction imposed by the user
     /// </summary>
     private double myRHmin = 0.0;
@@ -547,6 +588,8 @@ public class SlopeEffectsOnWeather
         dRain = Math.Max(-1.0, 0.01 * dRain);
         dWind = Math.Max(-1.0, 0.01 * dWind);
         dVapPressure = Math.Max(-1.0, 0.01 * dVapPressure);
+        /// NOTE: dVapPressure has a variable upper bound, it cannot be higher than the saturated VP
+        ///       this upper limit will be assumed equal to 95% of saturation at daily Tmax
 
         // Finish initialisation
         hasInitialised = true;
@@ -634,7 +677,7 @@ public class SlopeEffectsOnWeather
                     MyMetFile.Set("rhmean", (float)myRHmean);
 
                 if (RHMeasured > 0.0)
-                    MyMetFile.Set("rh", (float)myRHmean);
+                    MyMetFile.Set("rh", (float)myRH);
 
                 if (canChangeRHminmax)
                 {
@@ -668,23 +711,34 @@ public class SlopeEffectsOnWeather
         { // there is a value representing the mean RH of the day
             canChangeRH = true;
             myRHmean = RHmeanMeasured;
+            myRH = RHmeanMeasured;
             if (MyMetFile.Get("rhmin", out RHminMeasured) && MyMetFile.Get("rhmax", out RHmaxMeasured))
             { // we have values for both RHmin and max
                 myRHmin = RHminMeasured;
                 myRHmax = RHmaxMeasured;
                 canChangeRHminmax = true;
             }
+            else
+            {
+                myRHmin = RHmeanMeasured;
+                myRHmax = RHmeanMeasured;
+            }
         }
         else if (MyMetFile.Get("rh", out RHMeasured))
-        { // there is a value representing the RH at 9 o'clock
+        { // there is a value representing the daily RH (typically measured at 9 o'clock)
             canChangeRH = true;
-            myRHmean = RHMeasured;
+            myRH = RHMeasured;
             if (MyMetFile.Get("rhmin", out RHminMeasured) && MyMetFile.Get("rhmax", out RHmaxMeasured))
             { // we have values for both RHmin and max, update mean
                 myRHmin = RHminMeasured;
                 myRHmax = RHmaxMeasured;
-                myRHmean = (0.5 * myRHmean) + (0.25 * (myRHmin + myRHmax));
+                myRHmean = Math.Min(100.0, Math.Max(0.0, (0.5 * myRH) + (0.25 * (myRHmin + myRHmax))));
                 canChangeRHminmax = true;
+            }
+            else
+            {
+                myRHmin = RHMeasured;
+                myRHmax = RHMeasured;
             }
         }
         else if (MyMetFile.Get("rhmin", out RHminMeasured) && MyMetFile.Get("rhmax", out RHmaxMeasured))
@@ -693,6 +747,7 @@ public class SlopeEffectsOnWeather
             myRHmax = RHmaxMeasured;
             myRHmean = 0.5 * (myRHmin + myRHmax);
             canChangeRH = true;
+            canChangeRHminmax = true;
         }
         else
         { // there are no values for RH, no changes allowed then
@@ -713,16 +768,34 @@ public class SlopeEffectsOnWeather
         myVP = VPMeasured;
         if (Math.Abs(dVapPressure) > epsilon)
         {
-            myVP *= 1.0 + dVapPressure;
+            // vp cannot go above saturation (assumed to be 95% of that at MaxT)
+            myVP = Math.Min(myVP * (1.0 + dVapPressure),
+                   0.95 * 6.1078 * Math.Exp(17.269 * MyMetFile.MaxT / (237.3 + MyMetFile.MaxT)));
+
+            double dRH = myVP / VPMeasured;  // RH varies in sinc with vp
             if (canChangeRH)
             {
-                myRHmean *= 1.0 + dVapPressure;
+                double vRHmin = myRH - myRHmin;
+                double vRHmax = myRHmax - myRH;
+                myRH *= dRH;
+                myRHmean *= dRH;
+                myRH = Math.Min(100.0, Math.Max(0.0, myRH));
+                myRHmean = Math.Min(100.0, Math.Max(0.0, myRHmean));
+
+                // correct RH min and max, keep within bounds (0-100) and at the same distance from RH (or RHmean)
                 if (canChangeRHminmax && (myRHmax > epsilon))
                 {
-                    double varRH = dVapPressure + Math.Min(100 / myRHmean, 1.0 + dVapPressure) - Math.Max(0, 1.0 - dVapPressure);
-                    myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
-                    myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
+                    double dVRH = Math.Min(MathUtility.Divide(Math.Min(vRHmin, myRH), vRHmin, 1.0),
+                                           MathUtility.Divide(Math.Min(vRHmax, 100 - myRH), vRHmax, 1.0));
+                    myRHmax = Math.Min(100.0, Math.Max(0.0, myRH + dVRH));
+                    myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRH - dVRH));
                 }
+                else
+                {
+                    myRHmin = myRH;
+                    myRHmax = myRH;
+                }
+
                 hasChangedRH = true;
             }
         }
@@ -744,13 +817,27 @@ public class SlopeEffectsOnWeather
 
         if (Math.Abs(1.0 - dRH) > epsilon)
         { // temperature varied, update RH
+            double vRHmin = myRH - myRHmin;
+            double vRHmax = myRHmax - myRH;
+            myRH *= dRH;
             myRHmean *= dRH;
+            myRH = Math.Min(100.0, Math.Max(0.0, myRH));
+            myRHmean = Math.Min(100.0, Math.Max(0.0, myRHmean));
+
+            // correct RH min and max, keep within bounds (0-100) and at the same distance from RH (or RHmean)
             if (canChangeRHminmax && (myRHmax > epsilon))
             {
-                double varRH = dVapPressure + Math.Min(100 / myRHmean, 1.0 + dVapPressure) - Math.Max(0, 1.0 - dVapPressure);
-                myRHmax = Math.Min(100.0, Math.Max(0.0, myRHmean * (1.0 + varRH)));
-                myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRHmean * (1.0 - varRH)));
+                double dVRH = Math.Min(MathUtility.Divide(Math.Min(vRHmin, myRH), vRHmin, 1.0),
+                                       MathUtility.Divide(Math.Min(vRHmax, 100 - myRH), vRHmax, 1.0));
+                myRHmax = Math.Min(100.0, Math.Max(0.0, myRH + dVRH));
+                myRHmin = Math.Min(myRHmax, Math.Max(0.0, myRH - dVRH));
             }
+            else
+            {
+                myRHmin = myRH;
+                myRHmax = myRH;
+            }
+
             hasChangedRH = true;
         }
     }
@@ -801,8 +888,8 @@ public class SlopeEffectsOnWeather
             SunriseSunsetOnSlope(a_, b_, c_);
 
             // Length of daylight, horizontal (max) and slope (actual)
-            MaxDirSunshineLength = 24 * SunriseAngleHorizontal / Math.PI;
-            ActualDirSunshineLength = 12 * (Math.Max(0.0, SunsetAngle1Slope - SunriseAngle1Slope)
+            MaxDirSunlightLength = 24 * SunriseAngleHorizontal / Math.PI;
+            ActualDirSunlightLength = 12 * (Math.Max(0.0, SunsetAngle1Slope - SunriseAngle1Slope)
                             + Math.Max(0.0, SunsetAngle2Slope - SunriseAngle2Slope))
                             / Math.PI;
 
@@ -815,12 +902,12 @@ public class SlopeEffectsOnWeather
                                              - (c_ * (Math.Cos(SunsetAngle2Slope) - Math.Cos(SunriseAngle2Slope))))
                                              / (2 * Math.PI);
 
-            // Zenith angle integrated over the day - horizontal and slope (Allen et al., 2006)
-            double SinThetaZh = ((2 * SunriseAngleHorizontal * Math.Pow(g_, 2)) + (4 * g_ * h_ * Math.Sin(SunriseAngleHorizontal))
+            // Mean path for direct beam radiation through the atmosphere - for horizontal and slope (Allen et al., 2006)
+            double MeanPathHorz = ((2 * SunriseAngleHorizontal * Math.Pow(g_, 2)) + (4 * g_ * h_ * Math.Sin(SunriseAngleHorizontal))
                                + ((SunriseAngleHorizontal + (0.5 * Math.Sin(2 * SunriseAngleHorizontal))) * Math.Pow(h_, 2)))
                                / (2 * ((g_ * SunriseAngleHorizontal) + (h_ * Math.Sin(SunriseAngleHorizontal))));
-            double SinThetaZs = 0.0;
-            if (ActualDirSunshineLength > epsilon)
+            double MeanPathSlope = 0.0;
+            if (ActualDirSunlightLength > epsilon)
             {
                 double aNominator = (((b_ * g_) + (a_ * h_))
                        * (Math.Sin(SunsetAngle1Slope) - Math.Sin(SunriseAngle1Slope) + Math.Sin(SunsetAngle2Slope) - Math.Sin(SunriseAngle2Slope)))
@@ -836,14 +923,17 @@ public class SlopeEffectsOnWeather
                 double aDenominator = (a_ * (SunsetAngle1Slope - SunriseAngle1Slope + SunsetAngle2Slope - SunriseAngle2Slope))
                        + (b_ * (Math.Sin(SunsetAngle1Slope) - Math.Sin(SunriseAngle1Slope) + Math.Sin(SunsetAngle2Slope) - Math.Sin(SunriseAngle2Slope)))
                        - (c_ * (Math.Cos(SunsetAngle1Slope) - Math.Cos(SunriseAngle1Slope) + Math.Cos(SunsetAngle2Slope) - Math.Cos(SunriseAngle2Slope)));
-                SinThetaZs = aNominator / aDenominator;
+                MeanPathSlope = aNominator / aDenominator;
             }
 
-            // Clearness index for direct beam radiation - horizontal and slope (Allen et al., 2006)
-            double KIh = 0.98 * Math.Exp((-0.00146 * AtmosphericPressure / (TurbidityCoefficient * SinThetaZh))
-                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myVP / 100) * AtmosphericPressure)) / SinThetaZh, 0.4)));
-            double KIs = 0.98 * Math.Exp((-0.00146 * AtmosphericPressure / (TurbidityCoefficient * SinThetaZs))
-                        - (0.075 * Math.Pow((2.1 + (0.14 * (0.1 * myVP / 100) * AtmosphericPressure)) / SinThetaZs, 0.4)));
+            // amount of precipitable water in the atmosphere  (Allen et al., 2006)
+            double PrecipitableWater = a_pw + (b_pw * (myVP * 0.1) * AtmosphericPressure);
+
+            // Transmissivity index for direct beam radiation - horizontal and slope (Allen et al., 2006)
+            double KIh = a_ki * Math.Exp((-b_ki * AtmosphericPressure / (TurbidityCoefficient * MeanPathHorz))
+                        - (c_ki * Math.Pow(PrecipitableWater / MeanPathHorz, d_ki)));
+            double KIs = a_ki * Math.Exp((-b_ki * AtmosphericPressure / (TurbidityCoefficient * MeanPathSlope))
+                        - (c_ki * Math.Pow(PrecipitableWater / MeanPathSlope, d_ki)));
 
             // Direct radiation ratio for slope
             DirRadnRatio = (RelativeIrradianceOnSlope / RelativeSolarIrradiance) * (KIs / KIh);
@@ -858,16 +948,12 @@ public class SlopeEffectsOnWeather
             RadnDiffuse = RadnMeasured * DiffRadnRatio * DiffuseRadnFraction;
             RadnReflected = RadnMeasured * SurroundsAlbedo * (1 - SlopeFactor);
             myRadn = RadnDirect + RadnDiffuse + RadnReflected;
-
-            FracRadnDirect = RadnDirect / myRadn;
-            FracRadnDiffuse = RadnDiffuse / myRadn;
-            FracRadnReflected = RadnReflected / myRadn;
         }
         else
         {
             // Length of daylight, horizontal (max) and slope (actual)
-            MaxDirSunshineLength = 24 * SunriseAngleHorizontal / Math.PI;
-            ActualDirSunshineLength = MaxDirSunshineLength;
+            MaxDirSunlightLength = 24 * SunriseAngleHorizontal / Math.PI;
+            ActualDirSunlightLength = MaxDirSunlightLength;
 
             // Direct and diffuse radiation ratios for slope
             DirRadnRatio = 1.0;
@@ -879,10 +965,19 @@ public class SlopeEffectsOnWeather
             RadnDiffuse = RadnMeasured * DiffuseRadnFraction;
             RadnReflected = 0.0;
             myRadn = RadnDirect + RadnDiffuse + RadnReflected;
+        }
 
+        if (myRadn > 0.0)
+        {
             FracRadnDirect = RadnDirect / myRadn;
             FracRadnDiffuse = RadnDiffuse / myRadn;
             FracRadnReflected = RadnReflected / myRadn;
+        }
+        else
+        {
+            FracRadnDirect = 0.0;
+            FracRadnDiffuse = 0.0;
+            FracRadnReflected = 0.0;
         }
     }
 
@@ -1072,20 +1167,20 @@ public class SlopeEffectsOnWeather
         // Base temperature response to variation in direct radiation, as affected by wind
         double aT = aT0 * Math.Exp(-cT * myWindSpeed);
         double dltRadn = myRadn - RadnMeasured;
-        if (dltRadn < 0.0)
+        dltTmax = 0.0;
+        dltTmin = 0.0;
+        if (aT > 0.0)
         {
-            dltTmax = -FN * aT * Math.Pow(Math.Abs(dltRadn), bT);
-            dltTmin = -FN * FM * aT * Math.Pow(Math.Abs(dltRadn), bT);
-        }
-        else if (dltRadn > 0.0)
-        {
-            dltTmax = aT * Math.Pow(dltRadn, bT);
-            dltTmin = FM * aT * Math.Pow(dltRadn, bT);
-        }
-        else
-        {
-            dltTmax = 0.0;
-            dltTmin = 0.0;
+            if (dltRadn < 0.0)
+            {
+                dltTmax = -FN * aT * Math.Pow(Math.Abs(dltRadn), bT);
+                dltTmin = -FN * FM * aT * Math.Pow(Math.Abs(dltRadn), bT);
+            }
+            else if (dltRadn > 0.0)
+            {
+                dltTmax = aT * Math.Pow(dltRadn, bT);
+                dltTmin = FM * aT * Math.Pow(dltRadn, bT);
+            }
         }
     }
 
