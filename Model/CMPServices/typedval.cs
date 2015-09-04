@@ -109,7 +109,7 @@ namespace CMPServices
         /// string dblString = sTYPECODES[TBaseType.ITYPE_DOUBLE];
         /// </code>
         /// </example>
-        protected static String[] sTYPECODES = {"",           // Zero entry is unused
+        public static String[] sTYPECODES = {"",           // Zero entry is unused
                            "integer1", //1
                            "integer2", //2
                            "integer4", //3

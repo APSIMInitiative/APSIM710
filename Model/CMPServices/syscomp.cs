@@ -330,21 +330,12 @@ namespace CMPServices
                         //if there were no subscribers to this published event then send a complete anyway
                         if (subscribers == 0)
                         {
-                            //check if this was an error event and send it to stderr if it was.
+                            //Removed the check to see if this was an error event and send it to stderr if it was.
 			                //this will happen during init or init2 when there are no connections.
-			                TDDMLValue param =  new TDDMLValue(sType, "");
-                            if (param.isRecord())
-                            {
-                                if ((param.member(1) != null) && (param.member(1).Name == "fatal"))
-                                {
-                                    param.setData(data, (int)paramSize, 0); //store the data
-                                    string errorMsg = param.member("message").asStr();
-                                    System.Console.Error.WriteLine(errorMsg); 
-                                }
-                            }
+			                //------------------------------------------------------------------------------------
                             if (toAck == 1)
 			                    sendComplete(msgFrom, msgID);
-                        }
+                        } 
                     }
                     break;
                 case Msgs.MSG_QUERYINFO:
@@ -358,11 +349,12 @@ namespace CMPServices
                         String queryName = interpreter.getTextField(Msgs.MSG_QUERYINFO_NAME);
                         //check for entities of KIND that are registered here.
                         //I could do some checks on the name to see if it was possible that they could be here
-                        doQueryInfo(msgFrom, msgID, kind, queryName);       //searches and returns returnInfo msg's
-
-                        //Then forward on the message to get info from other systems and from any child systems
-                        int forwardedCount = routeQueryInfo(msgFrom, msgID, kind, toAck, queryName);
-
+                        int forwardedCount = 0;
+                        if (!doQueryInfo(msgFrom, msgID, kind, queryName))       //searches and returns returnInfo msg's
+                        {
+                            //Then forward on the message to get info from other systems and from any child systems
+                            forwardedCount = routeQueryInfo(msgFrom, msgID, kind, toAck, queryName);
+                        }
                         if (forwardedCount == 0)    //if this system has no one to forward queries onto then send a complete from here
                             sendComplete(msgFrom, msgID);
                     }
@@ -648,8 +640,15 @@ namespace CMPServices
 
             msgDirector.addMsgTrunk(msgFrom, msgID, Msgs.MSG_QUERYINFO, 0, (int)toAck);    //record the incoming msg details
 
+            string searchName = TRegistrar.unQualifiedName(sName);
+            bool isWildCard = (searchName == "*");
+            bool isFQN = (String.Compare(searchName, sName, true) != 0);
+ 
+            bool done = false;
+            bool createMsg;
+
             int i = 0;
-            while (i < compList.Count)
+            while (!done && (i < compList.Count))
             {
                 child = compList[i];
                 if (child.isSystem)
@@ -657,13 +656,35 @@ namespace CMPServices
                     //send queryInfo's to any child systems. They will not send them back here.
                     if (child.compID != msgFrom)
                     {   //ensure it doesn't go to the originator
+                        createMsg = false;
                         uint childSysID = child.compID;
-                        TMsgHeader queryInfoMsg = buildQueryInfo(sName, (uint)kind, childSysID);
-                        forwardedCount++;
-                        msgDirector.addMsgBranch(msgFrom, msgID, queryInfoMsg.to, queryInfoMsg.msgID);         //record this outgoing queryInfo
+                        //if the szName is fully qualified without * then try to direct it to the correct child
+                        if (isFQN && !isWildCard)
+                        {
+                            int len = child.name.Length;
+                            if ((sName.Length >= len) && ((sName.Length == len) || (sName[len] == '.')))    //if this child length matches a full name in the search string
+                            {
+                                if (String.Compare(child.name, 0, sName, 0, child.name.Length, true) == 0)
+                                {
+                                    createMsg = true; //the name of the child is found in the query string so send it here and nowhere else
+                                    done = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            createMsg = true;   //not a fq query string so send it to this child anyway
+                        }
+                        //if this message needs to go to this child
+                        if (createMsg)
+                        {
+                            TMsgHeader queryInfoMsg = buildQueryInfo(sName, (uint)kind, childSysID);
+                            forwardedCount++;
+                            msgDirector.addMsgBranch(msgFrom, msgID, queryInfoMsg.to, queryInfoMsg.msgID);         //record this outgoing queryInfo
 
-                        //I will make a list of copies of these msgs and then send the copies later
-                        msgList.Add(queryInfoMsg);                           //stores a ptr to the msg and it's data
+                            //I will make a list of copies of these msgs and then send the copies later
+                            msgList.Add(queryInfoMsg);                           //stores a ptr to the msg and it's data
+                        }
                     }
                 }
                 i++;
@@ -956,17 +977,17 @@ namespace CMPServices
         //============================================================================
         protected virtual void doCompleteQueryInfo(uint msgFrom, uint origMsgID)
         {
+            uint remainingMsgs = 0;
             TTrunkMsg queryInfoMsg = new TTrunkMsg();
-            bool foundBranch = msgDirector.getBranch(Msgs.MSG_QUERYINFO, msgFrom, origMsgID, ref queryInfoMsg);   //get the initiator
+
+            bool foundBranch = msgDirector.pullBranch(Msgs.MSG_QUERYINFO, msgFrom, origMsgID, ref queryInfoMsg, ref remainingMsgs);   //get the initiator
             if (foundBranch)    //if this was a rebroadcast msg then
             {
                 uint queryInfoMsgID = queryInfoMsg.inMsgID;                 //store the initial msg id
                 uint senderID = queryInfoMsg.returnToCompID;                //store the sender id
                 //need to determine if I am ready to send a complete to the queryInfo sender
-                uint remainingMsgs = msgDirector.pruneBranch(Msgs.MSG_QUERYINFO, msgFrom, origMsgID);
                 if (remainingMsgs == 0)
                 {
-                    msgDirector.removeTrunk(senderID, queryInfoMsgID);     //remove the original msg from this tree
                     sendComplete(senderID, queryInfoMsgID);              //send a Complete(queryInfo)
                 }
             }
@@ -1145,32 +1166,36 @@ namespace CMPServices
         /// <param name="kind">Kind of entity.</param>
         /// <param name="sFQN">Name of the entity being searched for. May be fully qualified.</param>
         //============================================================================
-        protected void doQueryInfo(uint srcCompID, uint queryMsgID, int kind, string sFQN)
+        protected bool doQueryInfo(uint srcCompID, uint queryMsgID, int kind, string sFQN)
         {
             string searchName;
             string ownerName;
             uint entityOwnerID;               //compID that owns the entity being searched for
             TEntityList infoList = null;
             TIDSpec entity;
+            bool singleResponseRequired = false;
+            bool replied = false;
 
             //access the registrar to determine the match to event/property names
 
             searchName = TRegistrar.unQualifiedName(sFQN);
             ownerName = qualifiedOwnerName(sFQN);
 
+            bool isWildCard = searchName == "*";
+
             // Component and system names are handled outside of the registrar
             if (kind == TypeSpec.KIND_COMPONENT || kind == TypeSpec.KIND_SYSTEM)
             {
                 //check if no owner OR I am the owner OR wildcard as owner
                 System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-AU");
-                if ((ownerName.Length == 0) || (ownerName.ToLower(ci) == FName.ToLower(ci)) || (ownerName == "*"))
+                if ((ownerName.Length == 0) || (String.Compare(ownerName, FName, true, ci) == 0) || (ownerName == "*"))
                 {
                     infoList = new TEntityList();
                     //match searchName against Unqualified Names of the children
                     for (int i = 0; i < compList.Count; i++)
                     {
                         TComp child = compList[i];
-                        if ( ((searchName == "*") || (searchName.ToLower(ci) == TRegistrar.unQualifiedName(child.name).ToLower(ci))) //if '*' then match any child
+                        if ( (isWildCard || (searchName.ToLower(ci) == TRegistrar.unQualifiedName(child.name).ToLower(ci))) //if '*' then match any child
                               && ((kind == TypeSpec.KIND_COMPONENT) || child.isSystem) ) 
                         {  // If kind is KIND_SYSTEM, match only systems
                             uint regID = findCompID(child.name, true);
@@ -1203,8 +1228,15 @@ namespace CMPServices
                     entity = infoList.getEntity(i);
                     TMsgHeader newMsg = buildReturnInfo(queryMsgID, entity.compID, entity.itemID, entity.name, entity.sType, entity.kind, srcCompID);
                     sendMessage(newMsg);
+                    replied = true;
                 }
             }
+            if (replied)
+            {
+                singleResponseRequired = (String.Compare(searchName, sFQN, true) != 0) && !isWildCard;   //if this is fully qualified search then this response is all that is required
+            }
+
+            return singleResponseRequired;
         }
         //============================================================================
         /// <summary>
@@ -1395,6 +1427,8 @@ namespace CMPServices
                         //I will make a list of copies of these msgs and then send the copies later
                         msgList.Add(queryValueMsg);              //stores a ptr to the msg and it's data
                     }
+                    else // Driver lists have been sorted so that all matches are placed at the front; a non-match means we can quit looking
+                        break;
                 }
                 if (msgList.Count > 0)
                 {
@@ -1421,7 +1455,7 @@ namespace CMPServices
         //============================================================================
         protected virtual void handleReplyValue(TMsgHeader msg)
         {
-            int count;
+            uint count = 0;
             uint queryMsgID;
             uint msgFrom = msg.from;
 
@@ -1430,16 +1464,13 @@ namespace CMPServices
             queryMsgID = (uint)interpreter.getIntField(Msgs.MSG_REPLYVALUE_QUERYID);
 
             TTrunkMsg queryValueMsg = new TTrunkMsg();
-            bool foundBranch = msgDirector.getBranch(Msgs.MSG_GETVALUE, msgFrom, queryMsgID, ref queryValueMsg);
+
+            bool foundBranch = msgDirector.pullBranch(Msgs.MSG_GETVALUE, msgFrom, queryMsgID, ref queryValueMsg, ref count);
             if (foundBranch)    //if this msg was sent from here
             {   
                 uint getValueMsgID = queryValueMsg.inMsgID;                  //store the initial msg ID
                 uint requesterID = queryValueMsg.returnToCompID;             //store the sender ID
                 uint propID = (uint)queryValueMsg.propID;                          //ID of driving property
-
-                count = (int)msgDirector.pruneBranch(Msgs.MSG_GETVALUE, msgFrom, queryMsgID);
-                if (count == 0)
-                    msgDirector.removeTrunk(requesterID, getValueMsgID);
 
                 string sDDML = interpreter.getTextField(Msgs.MSG_REPLYVALUE_TYPE);
                 uint valueSize;
@@ -1455,7 +1486,7 @@ namespace CMPServices
                 {
                     sendComplete(requesterID, getValueMsgID);
                 }
-            }
+            } 
             else
             {      // ACK! We don't know about this message.
                 sendError("Error in routing of replyValue message", true); //send fatal error message
@@ -1733,18 +1764,17 @@ namespace CMPServices
         //============================================================================
         protected void doCompleteEvent(uint msgFrom, uint origMsgID)
         {
+            uint remainingMsgs = 0;
             TTrunkMsg publishMsg = new TTrunkMsg();
-            bool foundBranch = msgDirector.getBranch(Msgs.MSG_PUBLISHEVENT, msgFrom, origMsgID, ref publishMsg);   //get the initiator
+            bool foundBranch = msgDirector.pullBranch(Msgs.MSG_PUBLISHEVENT, msgFrom, origMsgID, ref publishMsg, ref remainingMsgs);   //get the initiator
             if (foundBranch)    //if this was a rebroadcast publishEvent then
-            {   
+            {
                 uint publishMsgID = publishMsg.inMsgID;                   //store the initial msg id
                 int toAck = publishMsg.toAck;
                 uint senderID = publishMsg.returnToCompID;                //store the sender id
                 //need to determine if I am ready to send a complete to the publishEvent sender
-                uint remainingMsgs = msgDirector.pruneBranch(Msgs.MSG_PUBLISHEVENT, msgFrom, origMsgID);
                 if (remainingMsgs == 0)
                 {
-                    msgDirector.removeTrunk(senderID, publishMsgID);     //remove the original msg from this tree
                     if (toAck == 1)                                       //if it requested a complete() then
                         sendComplete(senderID, publishMsgID);           //send a Complete(publishevent)
                 }
@@ -1876,7 +1906,8 @@ namespace CMPServices
                 //do any registration changes locally and then
                 //send the notifyRegistrationChange to all the assoc systems
                 String itemName = sName;
-                if (!sName.Contains(".")) //if the name is unqualified then
+                //if the name is unqualified
+                if (!sName.Contains(".") && (kind != TypeSpec.KIND_SUBSCRIBEDEVENT))	// don't qualify subscribed events (published?) 
                 {
                     itemName = findCompFQN(ownerID) + "." + sName; //form a fqn for the property/event
                 }
@@ -1975,14 +2006,20 @@ namespace CMPServices
                         for (int i = 1; i <= infoList.count(); i++)
                         {  //1-x indexed
                             entity = infoList.getEntity(i);
-                            // We need the FQN of the owner of the driving property
-                            // We obtain it via a query info
-                            TMsgHeader msg = buildQueryInfo(searchName, TypeSpec.KIND_OWNED_R, FMyID); //queryInfo is always sent to the owner
-                            //Keep a record of the request so that the system knows what to do
-                            // with the returned values in the handleReturnInfo()
-                            queryInfoTracker.addQueryMsg(msg.msgID, entity.compID, sName, entity.itemID, ownerID, TQueryInfoTracker.ADD_DRVPROPERTY_CONN);
-                            sendMessage(msg);
-                            //           registrar->addPropertyConnection(entity->compID, entity->itemID, ownerID, regID, entity->name);
+                            if (sName.Contains("."))                    //if the fqn is already known
+                            {
+                                registrar.addPropertyConnection(entity.compID, entity.itemID, ownerID, regID, sName, sType);
+                            }
+                            else
+                            {
+                                // We need the FQN of the owner of the driving property
+                                // We obtain it via a query info
+                                TMsgHeader msg = buildQueryInfo(searchName, TypeSpec.KIND_OWNED_R, FMyID); //queryInfo is always sent to the owner
+                                //Keep a record of the request so that the system knows what to do
+                                // with the returned values in the handleReturnInfo()
+                                queryInfoTracker.addQueryMsg(msg.msgID, entity.compID, sName, entity.itemID, ownerID, TQueryInfoTracker.ADD_DRVPROPERTY_CONN);
+                                sendMessage(msg);
+                            }
                         }
                     }
                     // A new writeable property might match the requirement of a requestSet
@@ -1996,14 +2033,20 @@ namespace CMPServices
                         for (int i = 1; i <= infoList.count(); i++)
                         {  //1-x indexed
                             entity = infoList.getEntity(i);
-                            // We need the FQN of the owner of the new writeable property
-                            //  We obtain it via a query info
-                            TMsgHeader msg = buildQueryInfo(searchName, TypeSpec.KIND_OWNED_W, FMyID); //queryInfo is always sent to the owner
-                            //Keep a record of the request so that the system knows what to do
-                            // with the returned values in the handleReturnInfo()
-                            queryInfoTracker.addQueryMsg(msg.msgID, entity.compID, sName, entity.itemID, ownerID, TQueryInfoTracker.ADD_SETPROPERTY_CONN);
-                            sendMessage(msg);
-                            // registrar->updateSetterConnection(entity->compID, entity->itemID, ownerID, regID, searchName);
+                            if (sName.Contains("."))                    //if the fqn is already known
+                            {
+                                registrar.updateSetterConnection(entity.compID, entity.itemID, ownerID, regID, sName);
+                            }
+                            else
+                            {
+                                // We need the FQN of the owner of the new writeable property
+                                //  We obtain it via a query info
+                                TMsgHeader msg = buildQueryInfo(searchName, TypeSpec.KIND_OWNED_W, FMyID); //queryInfo is always sent to the owner
+                                //Keep a record of the request so that the system knows what to do
+                                // with the returned values in the handleReturnInfo()
+                                queryInfoTracker.addQueryMsg(msg.msgID, entity.compID, sName, entity.itemID, ownerID, TQueryInfoTracker.ADD_SETPROPERTY_CONN);
+                                sendMessage(msg);
+                            }
                         }
                     }
                 }
@@ -2349,7 +2392,7 @@ namespace CMPServices
                     if (!matchFQN)
                         sCompName = TRegistrar.unQualifiedName(sCompName);
                     
-                    if ( (sName.ToLower(ci) == sCompName.ToLower(ci)) && (sCompName.Length > 0))
+                    if ( (sCompName.Length > 0) && (String.Compare(sName, sCompName, true, ci) == 0) )
                     {
                         found = true;
                         compID = child.compID;
@@ -2759,7 +2802,7 @@ namespace CMPServices
             if (ownerName.Length > 0)
             {  //if it has an owner then keep checking
                 System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-AU");
-                if (ownerName.ToLower(ci) == FName.ToLower(ci))
+                if (String.Compare(ownerName, FName, true, ci) == 0)
                 {   //if the owner is me
                     keepLooking = true;
                 }

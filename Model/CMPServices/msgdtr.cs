@@ -228,6 +228,70 @@ namespace CMPServices
 
             return found;
         }
+
+        //==============================================================================
+        /// <summary>
+        /// Find the trunk message for this branch and remove the branch. If there are no remaining branches then
+        /// the trunk with be removed also.
+        /// This function combines getBranch(), pruneBranch() and removeTrunk()
+        /// </summary>
+        /// <param name="trunkMsgType"></param>
+        /// <param name="toCompID"></param>
+        /// <param name="branchMsgID"></param>
+        /// <param name="msgFound">A ref to the trunk msg found.</param>
+        /// <param name="remainingBranches">The number of branches remaining after this one is removed</param>
+        /// <returns>True if the branch is found</returns>
+        //==============================================================================
+        public bool pullBranch(uint trunkMsgType, uint toCompID, uint branchMsgID, ref TTrunkMsg msgFound, ref uint remainingBranches)
+        {
+            TTrunkMsg bMsg;
+            TCompItem msgItem;
+            int i;
+            int b;
+            bool found = false;
+
+            i = trunkMsgList.Count - 1;
+            while (!found && (i >= 0))
+            {  //while more message trunks
+                bMsg = trunkMsgList[i];
+                if (bMsg.inMsgType == trunkMsgType) //if the incoming request was this type
+                {
+                    //now look through the branches to find the correct trunk
+                    b = 0;
+                    while (!found && (b < bMsg.branchMsgList.Count))
+                    {  //while more branches
+                        msgItem = bMsg.branchMsgList[b];
+                        if ((msgItem.itemID == branchMsgID) && (msgItem.compID == toCompID))    //if the branch is found
+                        {
+                            found = true;     //set found
+                            msgFound = bMsg;  //store the trunk msg
+
+                            if (bMsg.branchCount <= 1)  // if this is the last branched msg
+                            {
+                                //clear branch list and deactivate the trunk
+                                bMsg.branchMsgList.Clear();
+                                bMsg.branchCount = 0;
+                                bMsg.inMsgID = 0;        //flag unused
+                                remainingBranches = 0;
+                            }
+                            else  
+                            {
+                                //there are more branches so just deactivate this branch
+                                msgItem.compID = 0;     //flag unused
+                                bMsg.branchMsgList[b] = msgItem;
+                                bMsg.branchCount--;
+                                remainingBranches = bMsg.branchCount;   //store the count of branches
+                            }
+                            trunkMsgList[i] = bMsg;	 //store
+                        }
+                        b++;
+                    }
+                }
+                i--;
+            }
+
+            return found;
+        }
         //==============================================================================
         /// <summary>
         /// Tests the outgoing message ID's to see if it is listed as a branch of

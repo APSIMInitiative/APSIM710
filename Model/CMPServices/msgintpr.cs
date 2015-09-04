@@ -226,6 +226,75 @@ namespace CMPServices
         {
             runningID += amount;
         }
+
+        private TMsgHeader newMsg(int msgType, uint destCompID, int size)
+        {
+            if (++runningID == 0)
+                ++runningID;
+            msg = new TMsgHeader();
+            msg.version = 256;                      //protocol version
+            msg.msgType = (UInt16)msgType;          //id of msg type
+            msg.from = ownerCompID;                 //id of this component
+            msg.to = destCompID;                   //sending msg to a component
+            msg.msgID = runningID;                  //unique id
+            msg.toAck = msgSpec[msgType - 1].toAck;   //decide whether to acknowledge
+            msg.nDataBytes = (uint)size;            //init field
+            msg.dataPtr = new byte[msg.nDataBytes];
+            return msg;
+        }
+
+        private void addInt4(ref byte[] byteArray, ref int pos, uint value)
+        {
+            byteArray[pos++] = (Byte)(value);
+            byteArray[pos++] = (Byte)((value) >> 8);
+            byteArray[pos++] = (Byte)((value) >> 16);
+            byteArray[pos++] = (Byte)((value) >> 24);
+        }
+
+        /// <summary>
+        /// Build the QueryValue message
+        /// </summary>
+        /// <param name="destCompID"></param>
+        /// <param name="propID"></param>
+        /// <param name="reqByID"></param>
+        /// <returns></returns>
+        public TMsgHeader BuildQueryValueMsg(uint destCompID, uint propID, uint reqByID)
+        {
+            int ptr = 0;    //index in byte array
+            msg = newMsg(Msgs.MSG_QUERYVALUE, destCompID, 8);
+            addInt4(ref msg.dataPtr, ref ptr, propID);
+            addInt4(ref msg.dataPtr, ref ptr, reqByID);
+            return msg;
+        }
+
+        /// <summary>
+        /// Build the GetValue message
+        /// </summary>
+        /// <param name="driverID"></param>
+        /// <param name="FParentID"></param>
+        /// <returns></returns>
+        public TMsgHeader BuildGetValueMsg(int driverID, uint FParentID)
+        {
+            int ptr = 0;    //index in byte array
+            msg = newMsg(Msgs.MSG_GETVALUE, FParentID, 4);
+            addInt4(ref msg.dataPtr, ref ptr, (uint)driverID);
+            return msg;
+        }
+
+        /// <summary>
+        /// Build the Complete message
+        /// </summary>
+        /// <param name="msgTo"></param>
+        /// <param name="msgID"></param>
+        /// <returns></returns>
+        public TMsgHeader BuildCompleteMsg(uint msgTo, uint msgID)
+        {
+            int ptr = 0;    //index in byte array
+            msg = newMsg(Msgs.MSG_COMPLETE, msgTo, 4);
+            addInt4(ref msg.dataPtr, ref ptr, (uint)msgID);
+            return msg;
+        }
+
         //=========================================================================    
         /// <summary>
         /// Construct a message with fields appropriate to the nominated message.
@@ -550,7 +619,7 @@ namespace CMPServices
             int iValue = 0;
             int msgType;
             int iFld;
-            int byteIndex;
+            int byteIndex = 0;
 
             msgType = fieldID / 1000;          //fieldID / 1000 gives the message id
             iFld = fieldID % 1000;
@@ -560,7 +629,10 @@ namespace CMPServices
               && (msg.dataPtr.Length > 0))
             {
                 //at this point we need to calc the total offset in the dataptr for this int
-                byteIndex = (int)calcOffset(fieldID);
+                if (iFld > 1)
+                {
+                    byteIndex = (int)calcOffset(fieldID);
+                }
                 iValue = BitConverter.ToInt32(msg.dataPtr, byteIndex);    //get the int at this position
             }
             else
@@ -610,7 +682,7 @@ namespace CMPServices
         //=========================================================================
         public string getTextField(int fieldID)
         {
-            int byteIndex;
+            int byteIndex = 0;
             int msgType;
             int iFld;
             string strField;
@@ -622,7 +694,10 @@ namespace CMPServices
               && (msg.dataPtr.Length > 0))
             {
                 //at this point we need to calc the total offset in the dataptr for this char[]
-                byteIndex = (int)calcOffset(fieldID);
+                if (iFld > 1)
+                {
+                    byteIndex = (int)calcOffset(fieldID);
+                }
                 int strSize = BitConverter.ToInt32(msg.dataPtr, byteIndex);                      //get the size of the char string
                 byteIndex += (int)TTypedValue.typeSize[(int)TTypedValue.TBaseType.ITYPE_INT4];                   //jump past the DIM=x 4 bytes
                 strField = ascii.GetString(msg.dataPtr, byteIndex, strSize);

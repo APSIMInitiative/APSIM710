@@ -42,7 +42,7 @@ namespace CMPServices
         /// </summary>
         public string name;
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public string uqname;
         /// <summary>
@@ -313,6 +313,15 @@ namespace CMPServices
                     prop.matchesRule = false;
                 drvProperty.connects.storeEntity(prop, i);  //now store the updated property ref 
             }
+
+            // Move all rule matches to the front of the list
+            int lastMatchPos = 0;
+            for (int i = 1; i <= drvProperty.connects.count(); i++)  //for each connection
+            {
+                prop = drvProperty.connects.getEntity(i);
+                if (prop.matchesRule)
+                    drvProperty.connects.swap(i, ++lastMatchPos);
+            }
         }
         //=========================================================================
         /// <summary>
@@ -478,7 +487,7 @@ namespace CMPServices
             while ((result == null) && (i < list.Count))
             {
                 entity = list[i];
-                if ((entity.compID == compID) && (entity.uqname == entityName.ToLower()))
+                if ((entity.compID == compID) && (String.Compare(entity.uqname, entityName, true) == 0))
                 {
                     result = entity;
                     foundIdx = i;
@@ -528,8 +537,9 @@ namespace CMPServices
             // Do the check only if both strings are present; other return "compatible"
 
             int result = 0;
-            if (sTypeA.Equals(null) || sTypeA.Length < 1 ||
-                sTypeB.Equals(null) || sTypeB.Length < 1)
+            if ( (sTypeA.Equals(null) || sTypeA.Length < 1 ||
+                  sTypeB.Equals(null) || sTypeB.Length < 1) ||
+                  (sTypeA == sTypeB) )
             {
                 result = 3;
             }
@@ -674,7 +684,7 @@ namespace CMPServices
                         drvProperty.connects = new TEntityList();   //new list of connections to this driving property
                         newEntity = drvProperty;
                         storeEntityFields(ownerFQN, ownerID, regID, sName, sType, ref newEntity);   //now fill in the those fields common to all types
-                        drvPropList.Add(newEntity);
+                        insertIntoList(drvPropList, newEntity);
                     }
                     break;
                 case TypeSpec.KIND_OWNED_R:
@@ -687,7 +697,7 @@ namespace CMPServices
                         locProperty.chkpoint = true;
                         newEntity = locProperty;
                         storeEntityFields(ownerFQN, ownerID, regID, sName, sType, ref newEntity);   //now fill in the those fields common to all types
-                        ownedPropList.Add(newEntity);
+                        insertIntoList(ownedPropList, newEntity);
                     }
                     break;
                 case TypeSpec.KIND_PUBLISHEDEVENT:
@@ -699,7 +709,7 @@ namespace CMPServices
                         pubEvent.connects = new TEntityList();  //new list of connections to this driving property
                         newEntity = pubEvent;
                         storeEntityFields(ownerFQN, ownerID, regID, sName, sType, ref newEntity);   //now fill in the those fields common to all types
-                        pubEventList.Add(newEntity);
+                        insertIntoList(pubEventList, newEntity);
                     }
                     break;
                 case TypeSpec.KIND_SUBSCRIBEDEVENT:
@@ -707,7 +717,7 @@ namespace CMPServices
                         TSubEvent subEvent = new TSubEvent();
                         newEntity = subEvent;
                         storeEntityFields(ownerFQN, ownerID, regID, sName, sType, ref newEntity);   //now fill in the those fields common to all types
-                        subEventList.Add(newEntity);
+                        insertIntoList(subEventList, newEntity);
                     }
                     break;
                 case TypeSpec.KIND_REQUESTSET:
@@ -717,7 +727,7 @@ namespace CMPServices
                         setProperty.connects = new TEntityList();     //new list of connections to this driving property
                         newEntity = setProperty;
                         storeEntityFields(ownerFQN, ownerID, regID, sName, sType, ref newEntity);   //now fill in the those fields common to all types
-                        propSetList.Add(newEntity);
+                        insertIntoList(propSetList, newEntity);
                     }
                     break;
                 default:
@@ -727,6 +737,42 @@ namespace CMPServices
                     }
             }
         }
+
+        //============================================================================
+        // insertIntoList
+        //
+        // Insert the newItem into the entityList in order. Case insensitive
+        // comparison with uqname field.
+        //============================================================================
+        private int insertIntoList(List<TConnectEntity> entityList, TConnectEntity newItem)
+        {
+            TConnectEntity entity;
+            bool found = false;
+
+            //find the insertion point
+            int idx = entityList.FindIndex(
+                delegate(TConnectEntity item)
+                {
+                    return String.Compare(item.uqname, newItem.uqname, true) > 0;   //item that will follow
+                }
+            );
+
+            int i = Math.Max(idx, 0);
+            while (!found && (i < entityList.Count))
+            {
+                entity = entityList[i];
+                if (String.Compare(entity.uqname, newItem.uqname, true) > 0)
+                {
+                    found = true;
+                }
+                else
+                    i++;  // Only increment if no element found yet
+            }
+            entityList.Insert(i, newItem);
+
+            return 0;
+        }
+
         //============================================================================
         /// <summary>
         /// Store common field values in a TConnectEntity object.
@@ -1229,7 +1275,9 @@ namespace CMPServices
             if (!searchList.Equals(null))
             {
                 lowerSearchName = searchName.ToLower();
-                for (int i = 0; i < searchList.Count; i++)
+                int i = 0;
+                bool done = false;
+                while (!done && (i < searchList.Count))
                 {
                     entity = searchList[i];
                     entityName = entity.uqname;
@@ -1283,7 +1331,7 @@ namespace CMPServices
                             {
                                 String FQNSearchName = searchNameOwner + "." + searchName;
                                 int start = FQNSearchName.Length - entity.name.Length;     //determine the matching part of the string
-                                OKtoAdd &= (start >= 0) && (entity.name.Substring(start).ToLower() == FQNSearchName.ToLower());
+                                OKtoAdd &= (start >= 0) && (String.Compare(entity.name.Substring(start), FQNSearchName, true) == 0);
                             }
                             if (OKtoAdd)
                             {
@@ -1291,6 +1339,12 @@ namespace CMPServices
                             }
                         }//endif
                     }//endif
+                    //decide if there is need to keep searching this ordered list
+                    if (!useWildcard && String.Compare(searchName, entityName, true) < 0)
+                    {
+                        done = true;
+                    }
+                    i++;
                 }
             }
             return infoList;

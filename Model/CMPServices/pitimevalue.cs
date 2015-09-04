@@ -775,6 +775,35 @@ namespace CMPServices
         {
             return dSecPart;
         }
+        //==============================================================================
+        /// <summary>
+        /// Return the current date as a GRAZPLAN StdDATE value. 
+        /// </summary>
+        /// <returns></returns>
+        //==============================================================================
+        public int asStdDate()
+        {
+            int yr = 0;
+            uint mon = 0, day = 0, hr = 0, min = 0;
+            double sec = 0;
 
+            asDateTime(ref yr, ref mon, ref day, ref hr, ref min, ref sec);
+
+            return Convert.ToInt32(day + mon * 0x100 + yr * 0x10000);
+        }
+        //==============================================================================
+        /// <summary>
+        /// Set the internal date from the GRAZPLAN StdDATE value
+        /// </summary>
+        /// <param name="Dt"></param>
+        //==============================================================================
+        public void setFromStdDate(int Dt)
+        {
+            int day = (Dt & 0xFF);
+            int mon = ((Dt >> 8) & 0xFF);
+            int yr = ((Dt >> 16) & 0xFFFF);
+
+            setDate(dateTimeToJD(yr, (uint)mon, (uint)day, 0, 0, 0.0));
+        }
     }
 }

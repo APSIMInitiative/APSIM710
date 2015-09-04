@@ -286,7 +286,7 @@ namespace CMPServices
                 if (!matchFQN)
                     sCompName = TRegistrar.unQualifiedName(sCompName);
 
-                if ((sName.ToLower() == sCompName.ToLower()) && (sCompName.Length > 0))
+                if ((String.Compare(sName, sCompName, true) == 0) && (sCompName.Length > 0))
                 {
                     compID = FMyID;
                 }
