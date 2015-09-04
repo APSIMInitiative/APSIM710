@@ -342,6 +342,15 @@ namespace CMPServices
         public String sName;       //Name of the entity being queried.
     }
 
+    /// <summary>
+    /// Outgoing requests will come back and the doComplete is processed
+    /// </summary>
+    public struct TDriverRequest
+    {
+        public uint driverID;
+        public uint msgID;
+    }
+
     //==============================================================================
     /// <summary>
     /// Property definition. Used to store the component's properties.
@@ -402,14 +411,6 @@ namespace CMPServices
     [ComVisible(true)]
     public abstract class TAbstractComponent
     {
-        /// <summary>
-        /// published error event ID
-        /// </summary>
-        public const int EVTERROR = 0;       
-        /// <summary>
-        /// subscribing error event ID
-        /// </summary>
-        public const int EVTERROR_S = 1;     
         /// <summary>
         /// Has no connection limit
         /// </summary>
@@ -521,6 +522,11 @@ namespace CMPServices
         /// </summary>
         protected uint iFatalErrorID;        
 
+        /// <summary>
+        /// Track the current driver requests
+        /// </summary>
+        protected TDriverRequest[] FActiveDriverRequests = new TDriverRequest[0];
+
         //      protected TTypesDatabase typesDB;      //Interface to the DDML database
         /// <summary>
         /// List of owned properties
@@ -599,7 +605,7 @@ namespace CMPServices
             STD_CMP_PROPERTIES[PROP_AUTHOR].sDescr = "";
             STD_CMP_PROPERTIES[PROP_AUTHOR].sDescription = "The component author or maintainer";
             STD_CMP_PROPERTIES[PROP_ACTIVE].sName = "active";
-            STD_CMP_PROPERTIES[PROP_ACTIVE].sType = TTypedValue.STYPE_STR;
+            STD_CMP_PROPERTIES[PROP_ACTIVE].sType = TTypedValue.STYPE_BOOL;
             STD_CMP_PROPERTIES[PROP_ACTIVE].sDescr = "";
             STD_CMP_PROPERTIES[PROP_ACTIVE].sDescription = "";
             STD_CMP_PROPERTIES[PROP_STATE].sName = "state";
@@ -623,7 +629,7 @@ namespace CMPServices
             int i;
             FGuardProperties = false;
             for (i = 0; i < NO_STD_PROPERTIES; i++)
-                addProperty(STD_CMP_PROPERTIES[i].sName, i, true, false, false, "", false, STD_CMP_PROPERTIES[i].sType, 
+                addProperty(STD_CMP_PROPERTIES[i].sName, i, true, (i == PROP_STATE ? true : false), false, "", false, STD_CMP_PROPERTIES[i].sType, 
                             STD_CMP_PROPERTIES[i].sDescr, STD_CMP_PROPERTIES[i].sDescription);
             FGuardProperties = true;
             for (i = 0; i < NO_DEF_PROPERTIES; i++)
@@ -1483,7 +1489,8 @@ namespace CMPServices
                     else
                         value = src.item(idx + 4).item(1);
                 }
-                if (name == "sender" || name == "sender_id")
+                if (String.Compare(name, "sender", System.StringComparison.OrdinalIgnoreCase) == 0 
+                    || String.Compare(name, "sender_id", System.StringComparison.OrdinalIgnoreCase) == 0)
                     continue;
                 destField.setValue(value);
             }

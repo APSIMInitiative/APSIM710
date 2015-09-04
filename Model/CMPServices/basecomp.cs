@@ -28,11 +28,11 @@ namespace CMPServices
         /// <summary>
         /// List of messages that have been sent and await acknowledgement
         /// </summary>
-        protected Dictionary<UInt32, TMsgHeader> ackList;     
+        protected Dictionary<UInt32, TMsgHeader> ackList;
         /// <summary>
         /// track queryInfo msg's
         /// </summary>
-        protected TQueryInfoTracker queryInfoTracker;   
+        protected TQueryInfoTracker queryInfoTracker;
         /// <summary>
         /// 
         /// </summary>
@@ -40,21 +40,21 @@ namespace CMPServices
         /// <summary>
         /// The events manager
         /// </summary>
-        private TEventsManager eventsManager;           
+        private TEventsManager eventsManager;
         /// <summary>
         /// temporary storage of error message from init1
         /// </summary>
-        protected string init1Error = "";                      
+        protected string init1Error = "";
 
         /// <summary>
         /// Keeping track of drivers requested
         /// </summary>
-        protected List<TIDSpec> driverIDList;           
+        protected List<TIDSpec> driverIDList;
         internal TCheckPointTracer checkPointTracer;    //allows the following of the checkpoint process
         /// <summary>
         /// The object that is used for tracking the routing of messages.
         /// </summary>
-        protected TMsgDirector msgDirector;             
+        protected TMsgDirector msgDirector;
         /// <summary>
         /// ID of the driver used for checkpointing
         /// </summary>
@@ -80,7 +80,7 @@ namespace CMPServices
         /// <param name="sVersion">Version number string.</param>
         /// <param name="sAuthor">Author's name.</param>
         //============================================================================
-        protected TBaseComp(uint ID, uint parentID, MessageFromLogic msgCallBack,  
+        protected TBaseComp(uint ID, uint parentID, MessageFromLogic msgCallBack,
                          string sType, string sVersion, string sAuthor)
             : base()
         {
@@ -91,12 +91,12 @@ namespace CMPServices
 
             //could use System.Reflection.Assembly.GetExecutingAssembly().Location : to find the callback into the engine
             msgDestFunction = msgCallBack;  //store a ref to the delegate class function here
-            
+
             driverIDList = new List<TIDSpec>();
             ackList = new Dictionary<UInt32, TMsgHeader>();
             queryInfoTracker = new TQueryInfoTracker();     //tracks queryInfo msg's
             interpreter = new TMessageInterpreter(FMyID);
-            interpreter.initMsgIDCounter(FMyID * 1000000);     //ensure msgID's are interesting
+            interpreter.initMsgIDCounter(1000000);     //ensure msgID's are interesting
 
             FModulePathName = getModulePath();
 
@@ -110,7 +110,7 @@ namespace CMPServices
 
             eventsManager = new TEventsManager(this);
 
-            addEvent("error", EVTERROR, TypeSpec.KIND_PUBLISHEDEVENT, TypeSpec.typeERROR, "", "", 0);    //Publish the standard "error" event
+            //addEvent("error", EVTERROR, TypeSpec.KIND_PUBLISHEDEVENT, TypeSpec.typeERROR, "", "", 0);    //Publish the standard "error" event
         }
         //============================================================================
         /// <summary>
@@ -125,7 +125,7 @@ namespace CMPServices
             uint iCompID;
             uint iPropertyID;
             bool bSuccess;
-            
+
             uint msgID = msg.msgID;           //store some message details in local vars
             uint msgFrom = msg.from;
 
@@ -225,7 +225,7 @@ namespace CMPServices
                         handleReturnInfo(msg);
                     }
                     break;
-                case Msgs.MSG_REPLYSET:  
+                case Msgs.MSG_REPLYSET:
                     {
                         // Put here as a hack for APSIM not handling this as indicated in the spec.
                         // According to the spec, this message should be received only by systems, not "normal"
@@ -355,7 +355,7 @@ namespace CMPServices
         //============================================================================
         public override void sendError(string sMessage, bool bFatal)
         {
-            interpreter.setField(Msgs.MSG_ERROR_FATAL, bFatal);  
+            interpreter.setField(Msgs.MSG_ERROR_FATAL, bFatal);
             interpreter.setField(Msgs.MSG_ERROR_MESSAGE, sMessage);  //its ID
             TMsgHeader msg = interpreter.createMessage(Msgs.MSG_ERROR, FParentID);
             sendMessage(msg);
@@ -401,7 +401,7 @@ namespace CMPServices
         //==============================================================================
         protected virtual string getModulePath()
         {
-            return System.Reflection.Assembly.GetAssembly(this.GetType()).Location; 
+            return System.Reflection.Assembly.GetAssembly(this.GetType()).Location;
             // GetEntryAssembly().Location; // GetCallingAssembly().Location;// GetExecutingAssembly().Location;
         }
         //============================================================================
@@ -545,30 +545,35 @@ namespace CMPServices
                 }
                 if (!complete)
                 {
-                    foreach (TDriverInfo driver in driverList)
+                    TDriverInfo driver;
+                    //  If this "complete" is for a driving property request, then check for the correct number of answers
+                    for (int i = 0; i < FActiveDriverRequests.Length; i++)
                     {
-                        //  If this "complete" is for a driving
-                        //  property request, then check for
-                        //  the correct number of answers
-                        if ((driver != null) && driver.bRequestActive && (driver.iRequestMsg == origMsgID))
+                        if (FActiveDriverRequests[i].msgID == origMsgID)
                         {
-                            CheckDriverCount(driver);                                 //index of the driver=driver ID
-                            driver.bRequestActive = false;
-
-                            //determine if this is a Complete for state variables in a queryValue(state) process (when a system)
-                            if (msgDirector.isABranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID))
+                            driver = driverList[(int)FActiveDriverRequests[i].driverID];
+                            bool bFound = ((driver != null) && (driver.bRequestActive));
+                            if (bFound)
                             {
-                                TTrunkMsg srcMsg = new TTrunkMsg();
-                                if (msgDirector.getBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID, ref srcMsg))
+                                CheckDriverCount(driver);
+                                driver.bRequestActive = false;
+                                FActiveDriverRequests[i].msgID = 0;
+
+                                //determine if this is a Complete for state variables in a queryValue(state) process (when a system)
+                                if (msgDirector.isABranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID))
                                 {
-                                    if (msgDirector.pruneBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID) == 0)   //if this is the last 'state' value from the children then
+                                    TTrunkMsg srcMsg = new TTrunkMsg();
+                                    if (msgDirector.getBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID, ref srcMsg))
                                     {
-                                        replySystemStateValue(srcMsg.returnToCompID, srcMsg.inMsgID);
+                                        if (msgDirector.pruneBranch(Msgs.MSG_QUERYVALUE, FParentID, origMsgID) == 0)   //if this is the last 'state' value from the children then
+                                        {
+                                            replySystemStateValue(srcMsg.returnToCompID, srcMsg.inMsgID);
+                                        }
                                     }
                                 }
+                                complete = true;
+                                break;
                             }
-                            complete = true;
-                            break;
                         }
                     }
                 }
@@ -683,6 +688,7 @@ namespace CMPServices
             {
                 TDriverInfo dvrInfo;
                 TEventInfo evInfo;
+                TSetterProperty setterInfo;
                 int i;
 
                 try
@@ -700,24 +706,8 @@ namespace CMPServices
                     FActive = true;//**** CompParser.isActive;
                     //this is set by the component constructor         FSystem = compParser->isSystem();
 
-                    //register the events
-                    // We do this first, so that the error event is registered early on.
-                    // Otherwise, even our own exception handler won't work properly.
-                    // But because components might conceivably (if improbably) call addEvent
-                    // during either initDefProperty or initProperty, we need to use a
-                    // separate "register now" flag for events, to ensure those events
-                    // will be properly registered.
-                    for (i = 0; i < eventList.Count; i++)
-                    {
-                        if (eventList[i] != null)
-                        {
-                            evInfo = (TEventInfo)eventList[i];
-                            sendRegistration(evInfo.Name, evInfo.sDDML, i, evInfo.iKind, evInfo.destID, false, false, 0);
-                        }
-                    }
-                    bRegisterEventsNow = true;
-
-                    initAllInits(FSDMLComp);
+                    if (!initAllInits(FSDMLComp))
+                        throw new Exception("Error in initAllInits()");
 
                     //register all the driven inputs
                     for (i = 0; i < driverList.Count; i++)
@@ -731,7 +721,28 @@ namespace CMPServices
 
                     //register the properties
                     registerProperties();
+     
+                    //register the setters
+                    for (i = 0; i < setPropertyList.Count; i++)
+                    {
+                        if (setPropertyList[i] != null)
+                        {
+                            setterInfo = (TSetterProperty)setPropertyList[i];
+                            sendRegistration(setterInfo.Name, setterInfo.sDDML, i, TypeSpec.KIND_REQUESTSET, setterInfo.destCompID, false, false, 0);
+                        }
+                    }
 
+                    //register the events
+                    for (i = 0; i < eventList.Count; i++)
+                    {
+                        if (eventList[i] != null)
+                        {
+                            evInfo = (TEventInfo)eventList[i];
+                            sendRegistration(evInfo.Name, evInfo.sDDML, i, evInfo.iKind, evInfo.destID, false, false, 0);
+                        }
+                    }
+                    bRegisterEventsNow = true;
+                    
                     bRegisterNow = true;
 
                     if (init1Error.Length > 0)
@@ -749,7 +760,7 @@ namespace CMPServices
             }
             catch (Exception error)
             {
-                sendError(FName + " TBaseComp::doInit1(): " + error.Message, true);  
+                sendError(FName + " TBaseComp::doInit1(): " + error.Message, true);
             }
         }
         //============================================================================
@@ -1018,7 +1029,7 @@ namespace CMPServices
                         }
                         resetDict.Add(dictKey, resetValue);
                     }
-                    
+
                     if (!resetValue.setData(valPtr, (int)valSize, 0))       //now atempt the reset
                     {
                         TDDMLValue tmpReset = new TDDMLValue(sDDML, "");    //setData failed so create a new var of the correct type
@@ -1077,7 +1088,7 @@ namespace CMPServices
                 }
                 catch (Exception e)
                 {
-                    string errorMsg = string.Format(FName + " doSetDriver(): {0}", e.Message);
+                    string errorMsg = string.Format(FName + " Driver:{0} doSetDriver(): {1}", driverID, e.Message);
                     sendError(errorMsg, true);
                 }
             }
@@ -1390,8 +1401,9 @@ namespace CMPServices
         //============================================================================
         public override void sendComplete(uint msgTo, uint msgID)
         {
-            interpreter.setField(Msgs.MSG_COMPLETE_ACKID, msgID);
-            TMsgHeader ackMsg = interpreter.createMessage(Msgs.MSG_COMPLETE, msgTo);  //send back to the sender
+            TMsgHeader ackMsg = interpreter.BuildCompleteMsg(msgTo, msgID);
+            //interpreter.setField(Msgs.MSG_COMPLETE_ACKID, msgID);
+            //TMsgHeader ackMsg = interpreter.createMessage(Msgs.MSG_COMPLETE, msgTo);  //send back to the sender
             sendMessage(ackMsg);
         }
         //==============================================================================
@@ -1434,7 +1446,7 @@ namespace CMPServices
         protected void sendReplySetValueSuccess(uint reqMsgID, uint replyTo, bool success)
         {
             // Construct a reply
-            interpreter.setField(Msgs.MSG_REPLYSET_REQID, reqMsgID);    
+            interpreter.setField(Msgs.MSG_REPLYSET_REQID, reqMsgID);
             interpreter.setField(Msgs.MSG_REPLYSET_OK, success);
             interpreter.createMessage(Msgs.MSG_REPLYSET, replyTo);
 
@@ -1570,7 +1582,7 @@ namespace CMPServices
             while ((!driverFound) && (i < driverList.Count))
             {
                 driver = (TDriverInfo)driverList[i];
-                if ((driver != null) && (driver.Name.ToLower() == driverName.ToLower()))
+                if ( (driver != null) && (String.Compare(driver.Name, driverName, true) == 0) )
                 {
                     driverFound = true;
                     driverID = i;           //the driver that was found
@@ -1612,7 +1624,7 @@ namespace CMPServices
             while ((!setterFound) && (i < setPropertyList.Count))
             {
                 setter = setPropertyList[i];
-                if ((setter != null) && (setter.Name.ToLower() == setterName.ToLower()))
+                if ((setter != null) && (String.Compare(setter.Name, setterName, true) == 0))
                 {
                     setterFound = true;
                     setterID = i;
@@ -1750,6 +1762,7 @@ namespace CMPServices
                 driverInfo.iRequestMsg = msg.msgID;
                 driverInfo.iConnCount = 0;
                 driverList[driverID] = driverInfo;
+                TrackDriverRequest((uint)driverID, msg.msgID);
             }
             else
             {
@@ -1759,6 +1772,37 @@ namespace CMPServices
             }
             return msg.msgID;
         }
+
+        //==============================================================================
+        /// <summary>
+        /// Keep track of driver requests that are queried in doComplete()
+        /// </summary>
+        /// <param name="driverID"></param>
+        /// <param name="msgID"></param>
+        //==============================================================================
+        protected void TrackDriverRequest(uint driverID, uint msgID)
+        {
+            TDriverRequest request;
+            int i;
+            bool found;
+
+            found = false;
+            i = 0;
+            while ((i < FActiveDriverRequests.Length) && (!found))
+            {
+                if (FActiveDriverRequests[i].msgID == 0)
+                    found = true;
+                else
+                    i++;
+            }
+
+            if (!found) // i now equals Length(FActiveDriverRequests)
+                Array.Resize(ref FActiveDriverRequests, i + 1);
+
+            FActiveDriverRequests[i].driverID = driverID;
+            FActiveDriverRequests[i].msgID = msgID;
+        }
+
         //==============================================================================
         /// <summary>
         /// Build a requestSetvalue message.
@@ -1806,9 +1850,10 @@ namespace CMPServices
         //============================================================================
         protected void sendMessage(TMsgHeader msg)
         {
-            if ( (msg.to != 0) && (msg.from == FMyID) ) {
+            if ((msg.to != 0) && (msg.from == FMyID))
+            {
                 addToSentMsgList(msg);
-            } 
+            }
             sendMessageToEngine(msg);   //send to the parent system (passed through prot.dll)
         }
         //============================================================================
@@ -1863,12 +1908,6 @@ namespace CMPServices
             interpreter.setField(Msgs.MSG_PUBLISHEVENT_PARAMS, prmPtr, prmSize);
             TMsgHeader msg = interpreter.createMessage(Msgs.MSG_PUBLISHEVENT, FParentID);
             msg.toAck = Convert.ToUInt16(bAcknowledge);
-
-            if ((iEventID == EVTERROR) && eventInfo.member("fatal").asBool())
-            {
-                bFatalErrorSent = true;
-                iFatalErrorID = msg.msgID;
-            }
 
             sendMessage(msg);
         }
@@ -1941,7 +1980,7 @@ namespace CMPServices
         /// <returns></returns>
         //============================================================================
         protected TMsgHeader buildSendEvent(uint destCompID, uint publisherID, uint eventID,
-                                                   uint toAck, string sParamType, byte [] param, uint paramsSize)
+                                                   uint toAck, string sParamType, byte[] param, uint paramsSize)
         {
             TMsgHeader msg;
 
@@ -1967,9 +2006,11 @@ namespace CMPServices
         {
             TMsgHeader newMsg;
 
-            interpreter.setField(Msgs.MSG_QUERYVALUE_ID, propID);
-            interpreter.setField(Msgs.MSG_QUERYVALUE_REQBY, reqByID);
-            newMsg = interpreter.createMessage(Msgs.MSG_QUERYVALUE, destCompID); //get ownership of the msg
+            newMsg = interpreter.BuildQueryValueMsg(destCompID, propID, reqByID);
+
+            //interpreter.setField(Msgs.MSG_QUERYVALUE_ID, propID);
+            //interpreter.setField(Msgs.MSG_QUERYVALUE_REQBY, reqByID);
+            //newMsg = interpreter.createMessage(Msgs.MSG_QUERYVALUE, destCompID); //get ownership of the msg
 
             return newMsg;
         }
@@ -2128,7 +2169,7 @@ namespace CMPServices
 
             TQueryStore queryStore = new TQueryStore();
             queryStore.iSentMsgID = msg.msgID;
-            queryStore.sName      = sName;
+            queryStore.sName = sName;
             queryList.Add(queryStore);
 
             if (eventID != 0)
@@ -2155,7 +2196,7 @@ namespace CMPServices
         /// </summary>
         /// <param name="sScriptName">Name of the script.</param>
         //============================================================================
-        public virtual void deleteInitScript(string sScriptName) 
+        public virtual void deleteInitScript(string sScriptName)
         {
             if (FScriptManager != null)
                 FScriptManager.deleteInitScript(sScriptName);
@@ -2212,6 +2253,63 @@ namespace CMPServices
         {
             if (FScriptManager != null)
                 FScriptManager.valueFromInitScript(sScriptName, sPropertyName, ref sTypeDDML, ref pValueData);
+        }
+     
+        /// <summary>
+        /// Returns an unused property or event ID value, for use in a dynamic           
+        /// registration.                                                                
+        /// </summary>
+        /// <param name="iKind"></param>
+        /// <returns></returns>
+        protected int getUnusedID(int iKind)
+        {
+            int Result;
+            if ((iKind == TypeSpec.KIND_DRIVER) || (iKind == TypeSpec.KIND_OWNED_R) || (iKind == TypeSpec.KIND_OWNED_W) || (iKind == TypeSpec.KIND_OWNED_RW))
+                Result = Convert.ToInt32(Math.Max(driverList.Count, propertyList.Count));
+            else if ((iKind == TypeSpec.KIND_PUBLISHEDEVENT) || (iKind == TypeSpec.KIND_SUBSCRIBEDEVENT))
+                Result = eventList.Count;
+            else if (iKind == TypeSpec.KIND_REQUESTSET)
+                Result = setPropertyList.Count;
+            else
+                throw new Exception("Attempt to obtain ID for invalid kind of entity");
+
+            return Result;
+        }
+
+        /// <summary>
+        /// Extract the owning component name from the FQN
+        /// </summary>
+        /// <param name="sName"></param>
+        /// <returns></returns>
+        protected string OwnerName(string sName)
+        {
+            int Posn;
+
+            Posn = sName.Length - 1;
+            while ((Posn >= 0) && (sName[Posn] != '.'))
+                Posn--;
+            if (Posn >= 0)
+                return sName.Substring(0, Posn);
+            else
+                return "";
+        }
+
+        /// <summary>
+        /// Extract the unqualified name of the entity.
+        /// If there is no owner then the original name is returned.
+        /// </summary>
+        /// <param name="sFQName">Fully Qualified name</param>
+        /// <returns></returns>
+        protected string sUnQualifiedName(string sFQName)
+        {
+            int dotPos;
+
+            dotPos = sFQName.LastIndexOf('.');
+
+            if (dotPos >= 0)
+                return sFQName.Substring(dotPos + 1, sFQName.Length - dotPos - 1); //copy the last portion of the string
+            else
+                return sFQName;
         }
     }
 }

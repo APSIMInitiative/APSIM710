@@ -15,7 +15,13 @@ namespace CMPServices
     //==============================================================================
     public class TApsimContext
     {
+        /// <summary>
+        /// The macro found in the init section when using APSIM components in AusFarm
+        /// </summary>
         public const String MODELMACRO = "<!--[model]-->";       //replaceable with the constants/params for the component
+        /// <summary>
+        /// Carriage return. Redefined for platform later.
+        /// </summary>
         public String CR = "\r\n";
         private List<String> FInitList;
         private String FContextFile = "";
@@ -112,7 +118,7 @@ namespace CMPServices
         /// <param name="strContext"></param>
         /// <param name="modelConsts"></param>
         /// <param name="dllPath"></param>
-        /// <param name="expandModel"></param>
+        /// <param name="expandModel">Expand the Model macro in an APSIM init section</param>
         //==============================================================================
         public void getContextFromFile(out String strContext, out String modelConsts, String dllPath, Boolean expandModel)
         {
@@ -232,9 +238,17 @@ namespace CMPServices
                     buf.Append("  <initdata>\r\n");
                     buf.Append(model);
                     if (compClass.ToLower().StartsWith("plant."))
-                        buf.Append("    <uptake_source>apsim</uptake_source>" + CR);
+                    {
+                        if (InitNames.IndexOf("uptake_source") < 0) 
+                            InitNames.Add("uptake_source");                       //ensure it is an init
+                    }
                     for (i = 0; i < FInitList.Count - 1; i++)
-                        buf.Append("    <" + FInitList[i] + "></" + FInitList[i] + ">\r\n");
+                    {
+                        if (FInitList[i] == "uptake_source")
+                            buf.Append("    <" + FInitList[i] + ">apsim</" + FInitList[i] + ">\r\n");
+                        else
+                            buf.Append("    <" + FInitList[i] + "></" + FInitList[i] + ">\r\n");
+                    }
                     buf.Append("  </initdata>");
                     buf.Append("</component>");
                     strContext = buf.ToString();
@@ -421,9 +435,10 @@ namespace CMPServices
 
             return compDll;
         }
+        
         //==============================================================================
         /// <summary>
-        /// Edits the initdata element and replaces the consts/param values with [model] macro
+        /// Edits the &lt;initdata&gt; and replaces the consts/param values with [model] macro
         /// </summary>
         /// <param name="initText">The initdata section XML</param>
         /// <returns>The initdata section with only the inits and comments</returns>

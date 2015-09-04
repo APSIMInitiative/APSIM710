@@ -87,8 +87,6 @@ namespace CMPServices
             checkPointDriverID = -1;
             msgDirector = new TMsgDirector();
             eventsManager = new TEventsManager(this);
-
-            addEvent("error", EVTERROR, TypeSpec.KIND_PUBLISHEDEVENT, TypeSpec.typeERROR, "Error event", "", 0);    //Publish the standard "error" event
         }
         //==============================================================================
         /// <summary>
@@ -268,12 +266,6 @@ namespace CMPServices
             eventInfo.getData(ref prmPtr);             //gets a copy of the datablock
 
             iMsgID = BuildMsg(pWrapper, Msgs.MSG_PUBLISHEVENT, 0, iEventID, Convert.ToInt16(bAcknowledge), 0, eventInfo.sDDML, "", prmPtr, prmSize, Convert.ToInt16(bAcknowledge), ref msg);
-
-            if ((iEventID == EVTERROR) && eventInfo.member("fatal").asBool())
-            {
-                bFatalErrorSent = true;
-                iFatalErrorID = iMsgID;
-            }
 
             SendMsg(pWrapper, msg);
         }
@@ -1547,7 +1539,7 @@ namespace CMPServices
             while ((!setterFound) && (i < setPropertyList.Count))
             {
                 setter = (TSetterProperty)setPropertyList[i];
-                if ((setter != null) && (setter.Name.ToLower() == setterName.ToLower()))
+                if ((setter != null) && (String.Compare(setter.Name, setterName, true) == 0))
                 {
                     setterFound = true;
                     setterID = i;
@@ -2116,7 +2108,7 @@ namespace CMPServices
             while ((!driverFound) && (i < driverList.Count))
             {
                 driver = (TDriverInfo)driverList[i];
-                if ((driver != null) && (driver.Name.ToLower() == driverName.ToLower()))
+                if ((driver != null) && (String.Compare(driver.Name, driverName, true) == 0))
                 {
                     driverFound = true;
                     driverID = i;           //the driver that was found

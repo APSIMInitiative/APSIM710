@@ -75,7 +75,11 @@ namespace CMPServices
       /// Determines when script texts are updated.
       /// true = always update the script when a property changes
       /// </summary>
-      protected bool FRunningRebuild;      
+      protected bool FRunningRebuild;  
+      /// <summary>
+      /// Used to generate an sdml string for the init value
+      /// </summary>
+      protected TSDMLValue FSDMLWriter;         //use this object for conversion
       /// <summary>
       /// Construct a script manager.
       /// </summary>
@@ -83,6 +87,7 @@ namespace CMPServices
       {
          FRunningRebuild = runningRebuild;
          scriptList = new List<TScriptSpec>();
+         FSDMLWriter = new TSDMLValue("<empty/>", "defined");         //use this object for conversion
       }
       //==============================================================================
       /// <summary>
@@ -101,7 +106,7 @@ namespace CMPServices
          while ( (index < 0) && (i < scriptList.Count) ) 
          {
             script = scriptList[i];
-            if (script.scriptName.ToLower().Equals(sScriptName.ToLower()))    //case insensitive
+            if (String.Compare(script.scriptName, sScriptName, true) == 0)    //case insensitive
             {     
                index = i;
             }
@@ -132,7 +137,7 @@ namespace CMPServices
          while ( (index < 0) && (i < script.propertyList.Count) ) 
          {
             prop = script.propertyList[i];
-            if ( prop.name.ToLower().Equals(sPropertyName.ToLower()) )     //case insensitive 
+            if ( String.Compare(prop.name, sPropertyName, true) == 0 )      //case insensitive 
             {
                index = i;
             }
@@ -353,7 +358,6 @@ namespace CMPServices
       {
          TScriptProperty prop;
          TDDMLValue ddmlVal;
-         TSDMLValue sdml;
          uint blocksize;
          int i;
 
@@ -366,8 +370,7 @@ namespace CMPServices
             prop.name = sPropertyName;
             ddmlVal = new TDDMLValue(sTypeDDML, "");
             ddmlVal.setData(pValueData, pValueData.Length, 0);    //store the ddml value
-            sdml = new TSDMLValue("<empty/>", "defined");         //use this object for conversion
-            prop.sdmlType = sdml.getText(ddmlVal, 2, 2);          //store the sdml value description
+            prop.sdmlType = FSDMLWriter.getText(ddmlVal, 2, 2);          //store the sdml value description
             blocksize = ddmlVal.sizeBytes();                      //now I know the size of the type
             prop.datablock = new Byte[blocksize];                 //allocate mem
             for (i = 0; i < blocksize; i++) 
