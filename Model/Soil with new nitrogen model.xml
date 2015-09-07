@@ -37,17 +37,17 @@
           <SummerDate>[soil.SoilWater.SummerDate]</SummerDate>
           <WinterDate>[soil.SoilWater.WinterDate]</WinterDate>
 
-          <dlayer>[soil.Thickness]</dlayer>
-          <sat>[soil.Sat]</sat>
-          <dul>[soil.Dul]</dul>
-          <ll15>[soil.LL15]</ll15>
-          <air_dry>[soil.AirDry]</air_dry>
-          <swcon>[soil.SWCon]</swcon>
-          <bd>[soil.BD]</bd>
-          <sw>[soil.SW]</sw>
+          <dlayer>[soil.Water.Thickness]</dlayer>
+          <sat>[soil.Water.SAT]</sat>
+          <dul>[soil.Water.DUL]</dul>
+          <ll15>[soil.Water.LL15]</ll15>
+          <air_dry>[soil.Water.AirDry]</air_dry>
+          <swcon>[soil.SoilWater.SWCON]</swcon>
+          <bd>[soil.Water.BD]</bd>
+          <sw>[soil.Water.SW]</sw>
 
-          [if [soil.MWCon]]<mwcon>[soil.MWCon]</mwcon>[endif]
-          [if [soil.KS]]<ks>[soil.KS]</ks>[endif]
+          [if [soil.SoilWater.MWCON]]<mwcon>[soil.SoilWater.MWCON]</mwcon>[endif]
+          [if [soil.Water.KS]]<ks>[soil.Water.KS]</ks>[endif]
           [if [soil.SoilWater.Slope]]<slope>[soil.SoilWater.Slope]</slope>[endif]
           [if [soil.SoilWater.DischargeWidth]]<discharge_width>[soil.SoilWater.DischargeWidth]</discharge_width>[endif]
           [if [soil.SoilWater.CatchmentArea]]<catchment_area>[soil.SoilWater.CatchmentArea]</catchment_area>[endif]
@@ -65,14 +65,14 @@
           <cn_red>[Swim.CnRed]</cn_red>
           <cn_cov>[Swim.CnCov]</cn_cov>
           <salb>[Swim.Salb]</salb>
-          <dlayer>[soil.Thickness]</dlayer>
-          <air_dry>[soil.AirDry]</air_dry>
-          <sat>[soil.Sat]</sat>
-          <dul>[soil.Dul]</dul>
-          <ll15>[soil.LL15]</ll15>
-          <bd>[soil.BD]</bd>
-          <theta>[soil.SW]</theta>
-          <ks>[soil.KS]</ks>
+          <dlayer>[soil.Water.Thickness]</dlayer>
+          <air_dry>[soil.Water.AirDry]</air_dry>
+          <sat>[soil.Water.SAT]</sat>
+          <dul>[soil.Water.DUL]</dul>
+          <ll15>[soil.Water.LL15]</ll15>
+          <bd>[soil.Water.BD]</bd>
+          <theta>[soil.Water.SW]</theta>
+          <ks>[soil.Water.KS]</ks>
           <Kdul>[soil.Swim.Kdul]</Kdul>
           <psidul>[soil.Swim.PsiDUL]</psidul>
           <vapour_conductivity>[soil.Swim.VC]</vapour_conductivity>
@@ -104,14 +104,14 @@
             <WaterTableNH4>[soil.Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4>
             <WaterTableUrea>[soil.Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea>
             <WaterTableCl>[soil.Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl>
-            <NO3Exco>[soil.NO3Exco]</NO3Exco>
-            <NO3FIP>[soil.NO3FIP]</NO3FIP>
-            <NH4Exco>[soil.NH4Exco]</NH4Exco>
-            <NH4FIP>[soil.NH4FIP]</NH4FIP>
-            <UreaExco>[soil.UreaExco]</UreaExco>
-            <UreaFIP>[soil.UreaFIP]</UreaFIP>
-            <ClExco>[soil.ClExco]</ClExco>
-            <ClFIP>[soil.ClFIP]</ClFIP>
+            <NO3Exco>[soil.Swim.SwimSoluteParameters.NO3Exco]</NO3Exco>
+            <NO3FIP>[soil.Swim.SwimSoluteParameters.NO3FIP]</NO3FIP>
+            <NH4Exco>[soil.Swim.SwimSoluteParameters.NH4Exco]</NH4Exco>
+            <NH4FIP>[soil.Swim.SwimSoluteParameters.NH4FIP]</NH4FIP>
+            <UreaExco>[soil.Swim.SwimSoluteParameters.UreaExco]</UreaExco>
+            <UreaFIP>[soil.Swim.SwimSoluteParameters.UreaFIP]</UreaFIP>
+            <ClExco>[soil.Swim.SwimSoluteParameters.ClExco]</ClExco>
+            <ClFIP>[soil.Swim.SwimSoluteParameters.ClFIP]</ClFIP>
           </solute>
         </initdata>
       </component>
@@ -129,12 +129,12 @@
                 <HumusCNr>[soil.SoilOrganicMatter.SoilCN]</HumusCNr>
                 <enr_a_coeff>[soil.SoilOrganicMatter.EnrACoeff]</enr_a_coeff>
                 <enr_b_coeff>[soil.SoilOrganicMatter.EnrBCoeff]</enr_b_coeff>
-                <oc>[soil.OC]</oc>
-                <ph>[soil.PH]</ph>
-                <fbiom>[soil.FBIOM]</fbiom>
-                <finert>[soil.FINERT]</finert>
-                <no3ppm>[soil.NO3]</no3ppm>
-                <nh4ppm>[soil.NH4]</nh4ppm>
+                <oc>[soil.SoilOrganicMatter.OC]</oc>
+                <ph>[soil.Analysis.PH]</ph>
+                <fbiom>[soil.SoilOrganicMatter.FBIOM]</fbiom>
+                <finert>[soil.SoilOrganicMatter.FINERT]</finert>
+                <no3ppm>[soil.Nitrogen.NO3]</no3ppm>
+                <nh4ppm>[soil.Nitrogen.NH4]</nh4ppm>
               </SoilNitrogen>
             </ConstructModel>
             <OverrideIf name="" condition="SoilNParameterSet=sand">
@@ -246,14 +246,14 @@
           <rate_dissol_rock_P>[soil.Phosphorus.RateDissolRock]</rate_dissol_rock_P>
           <rate_loss_avail_P>[soil.Phosphorus.RateLossAvail]</rate_loss_avail_P>
           <sorption_coeff>[soil.Phosphorus.SorptionCoeff]</sorption_coeff>
-          <labile_p>[soil.LabileP]</labile_p>
-          <banded_p>[soil.BandedP]</banded_p>
-          <rock_p>[soil.RockP]</rock_p>
-          <sorption>[soil.Sorption]</sorption>
+          <labile_p>[soil.Phosphorus.LabileP]</labile_p>
+          <banded_p>[soil.Phosphorus.BandedP]</banded_p>
+          <rock_p>[soil.Phosphorus.RockP]</rock_p>
+          <sorption>[soil.Phosphorus.Sorption]</sorption>
         </initdata>
       </component>
       [endfor]
-      [if [soil.Cl]]
+      [if [soil.Analysis.CL]]
       <component name="Cl" executable="%apsim%/Model/Solute.%dllext%" class="Solute.Cl">
         <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" class="Solute" />
         <initdata>
@@ -261,7 +261,7 @@
           <lb_solute>0</lb_solute>
           <solute_names>cl</solute_names>
           <d0_cl>0</d0_cl>
-          <cl_ppm>[soil.Cl]</cl_ppm>
+          <cl_ppm>[soil.Analysis.CL]</cl_ppm>
         </initdata>
       </component>
       [endif]

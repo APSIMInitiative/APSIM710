@@ -138,33 +138,33 @@
          </tillage>
          -->
         
-         <diffus_const>[soil.DiffusConst]</diffus_const>
-         <diffus_slope>[soil.DiffusSlope]</diffus_slope>
-         <cn2_bare>[soil.CN2Bare]</cn2_bare>
-         <cn_red>[soil.CNRed]</cn_red>
-         <cn_cov>[soil.CNCov]</cn_cov>
-         <salb>[soil.Salb]</salb>
-         <summerdate>[soil.SummerDate]</summerdate>
-         <summeru>[soil.SummerU]</summeru>					
-         <summercona>[soil.SummerCona]</summercona>
-         <winterdate>[soil.WinterDate]</winterdate>					
-         <winteru>[soil.WinterU]</winteru>
-         <wintercona>[soil.WinterCona]</wintercona>				
-         <dlayer>[soil.Thickness(mm)]</dlayer>
-         <bd>[soil.BD(g/cc)]</bd>					
-         <sat>[soil.Sat(mm/mm)]</sat>
-         <dul>[soil.Dul(mm/mm)]</dul>
-         <sw>[soil.SW(mm/mm)]</sw>					
-         <ll15>[soil.LL15(mm/mm)]</ll15>
-         <air_dry>[soil.AirDry(mm/mm)]</air_dry>
-         <swcon>[soil.SWCon(0-1)]</swcon>
-         [if [soil.MaxPond]]<max_pond>[soil.MaxPond]</max_pond>[endif]					
-         [if [soil.Slope]]<slope>[soil.Slope]</slope>[endif]
-         [if [soil.DischargeWidth]]<discharge_width>[soil.DischargeWidth]</discharge_width>[endif]
-         [if [soil.CatchmentArea]]<catchment_area>[soil.CatchmentArea]</catchment_area>[endif]					
-         [if [soil.MWCon(0-1)]]<mwcon>[soil.MWCon(0-1)]</mwcon>[endif]
-         [if [soil.KS(mm/day)]]<ks>[soil.KS(mm/day)]</ks>[endif]
-         [if [soil.KLAT]]<klat>[soil.KLAT]</klat>[endif] 
+         <diffus_const>[soil.SoilWater.DiffusConst]</diffus_const>
+         <diffus_slope>[soil.SoilWater.DiffusSlope]</diffus_slope>
+         <cn2_bare>[soil.SoilWater.CN2Bare]</cn2_bare>
+         <cn_red>[soil.SoilWater.CNRed]</cn_red>
+         <cn_cov>[soil.SoilWater.CNCov]</cn_cov>
+         <salb>[soil.SoilWater.Salb]</salb>
+         <summerdate>[soil.SoilWater.SummerDate]</summerdate>
+         <summeru>[soil.SoilWater.SummerU]</summeru>					
+         <summercona>[soil.SoilWater.SummerCona]</summercona>
+         <winterdate>[soil.SoilWater.WinterDate]</winterdate>					
+         <winteru>[soil.SoilWater.WinterU]</winteru>
+         <wintercona>[soil.SoilWater.WinterCona]</wintercona>				
+         <dlayer>[soil.Water.Thickness(mm)]</dlayer>
+         <bd>[soil.Water.BD(g/cc)]</bd>					
+         <sat>[soil.Water.Sat(mm/mm)]</sat>
+         <dul>[soil.Water.Dul(mm/mm)]</dul>
+         <sw>[soil.Water.SW(mm/mm)]</sw>					
+         <ll15>[soil.Water.LL15(mm/mm)]</ll15>
+         <air_dry>[soil.Water.AirDry(mm/mm)]</air_dry>
+         <swcon>[soil.SoilOrganicMatter.SWCon(0-1)]</swcon>
+         [if [soil.SoilWater.MaxPond]]<max_pond>[soil.SoilWater.MaxPond]</max_pond>[endif]					
+         [if [soil.SoilWater.Slope]]<slope>[soil.SoilWater.Slope]</slope>[endif]
+         [if [soil.SoilWater.DischargeWidth]]<discharge_width>[soil.SoilWater.DischargeWidth]</discharge_width>[endif]
+         [if [soil.SoilWater.CatchmentArea]]<catchment_area>[soil.SoilWater.CatchmentArea]</catchment_area>[endif]					
+         [if [soil.SoilWater.MWCon]]<mwcon>[soil.SoilWater.MWCon]</mwcon>[endif]
+         [if [soil.Water.KS(mm/day)]]<ks>[soil.Water.KS(mm/day)]</ks>[endif]
+         [if [soil.SoilWater.KLAT]]<klat>[soil.SoilWater.KLAT]</klat>[endif] 
       </InstantiateModel>
       
       <!--
@@ -231,18 +231,18 @@
          <nit_n2o_frac description="Fraction of nitrified nitrogen lost as n2o">0.0 </nit_n2o_frac>      
      
          <soiltype>[soil.SoilType]</soiltype>
-         <root_cn>[soil.RootCN]</root_cn>
-         <root_wt>[soil.RootWT]</root_wt>
-         <soil_cn>[soil.SoilCN]</soil_cn>
-         <enr_a_coeff>[soil.EnrACoeff]</enr_a_coeff>
-         <enr_b_coeff>[soil.EnrBCoeff]</enr_b_coeff>
+         <root_cn>[soil.SoilOrganicMatter.RootCN]</root_cn>
+         <root_wt>[soil.SoilOrganicMatter.RootWT]</root_wt>
+         <soil_cn>[soil.SoilOrganicMatter.SoilCN]</soil_cn>
+         <enr_a_coeff>[soil.SoilOrganicMatter.EnrACoeff]</enr_a_coeff>
+         <enr_b_coeff>[soil.SoilOrganicMatter.EnrBCoeff]</enr_b_coeff>
          <profile_reduction>off</profile_reduction>
-         <oc>[soil.OC(Total %)]</oc>
-         <ph>[soil.PH(1:5 water)]</ph>
-         <fbiom>[soil.FBIOM(0-1)]</fbiom>
-         <finert>[soil.FINERT(0-1)]</finert>
-         <no3ppm>[soil.NO3(ppm)]</no3ppm>
-         <nh4ppm>[soil.NH4(ppm)]</nh4ppm>
+         <oc>[soil.SoilOrganicMatter.OC(Total %)]</oc>
+         <ph>[soil.Analysis.PH(1:5 water)]</ph>
+         <fbiom>[soil.SoilOrganicMatter.FBIOM(0-1)]</fbiom>
+         <finert>[soil.SoilOrganicMatter.FINERT(0-1)]</finert>
+         <no3ppm>[soil.Nitrogen.NO3(ppm)]</no3ppm>
+         <nh4ppm>[soil.Nitrogen.NH4(ppm)]</nh4ppm>
       </InstantiateModel>
       <OverrideIf name="" condition="soiltype=sand">
           <rd_biom description="potential rate of soil biomass">0.0324  0.015   </rd_biom>

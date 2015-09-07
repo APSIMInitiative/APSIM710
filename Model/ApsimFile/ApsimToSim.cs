@@ -309,7 +309,10 @@ public class ApsimToSim
         // Get rid of nodes under <soil> that are disabled.
         RemoveDisabledNodes(SoilNode);
 
-        Soil mySoil = Soil.Create(SoilNode.OuterXml);
+        APSIM.Shared.Soils.Soil mySoil = APSIM.Shared.Soils.SoilUtilities.FromXML(SoilNode.OuterXml);
+        mySoil = APSIM.Shared.Soils.APSIMReadySoil.Create(mySoil);
+        if (mySoil.Name == null)
+            mySoil.Name = "Soil";
 
         // Loop through all soil macros.
         int PosMacro = 0;
@@ -334,12 +337,15 @@ public class ApsimToSim
                 {
                     string CropName = MacroName.Substring(0, MacroName.IndexOf(' '));
                     string VariableName = MacroName.Substring(MacroName.IndexOf(' ') + 1);
+                    APSIM.Shared.Soils.SoilCrop crop = mySoil.Water.Crops.Find(c => c.Name.Equals(CropName, StringComparison.InvariantCultureIgnoreCase));
+                    if (crop == null)
+                        throw new Exception("Cannot find crop: " + CropName);
                     if (VariableName.Equals("ll", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = mySoil.LL(CropName);
+                        Obj = crop.LL;
                     else if (VariableName.Equals("kl", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = mySoil.KL(CropName);
+                        Obj = crop.KL;
                     else if (VariableName.Equals("xf", StringComparison.CurrentCultureIgnoreCase))
-                        Obj = mySoil.XF(CropName);
+                        Obj = crop.XF;
                 }
                 else
                     Obj = Utility.GetValueOfFieldOrProperty(MacroName, mySoil);
