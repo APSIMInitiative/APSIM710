@@ -520,89 +520,89 @@ c     endif
       implicit none
 
 *+  Local Variables
-      real A1        ! area of soil surface elements (m2/m2)
-      real A2        ! area of mulch elements (both sides) (m2/m2)
-      REAL RB        ! incoming solar beam shortwave radiation flux (W/m2)
-      real RD        ! incoming diffuse shortwave radiation flux (W/m2)
-      real RL        ! incoming longwave radiation flux (W/m2)
-      real PSI       ! the angle between the solar beam and the vertical (rad)
-      real TR        ! air temperature at reference height (K, oC)
-      real ttav      ! average of idealised sinusoidal soil surface temperature (K, oC)
-      real HV        ! latent heat flux up from soil surface due to water vapour (W/m2)
-      real tt        ! time after midday (s)
-      REAL RB0       ! RB at t=0
-      REAL P0        ! P(0)
-      real PPSI      ! proportion of radiation from direction PSI which penetrates mulch without interception (-)
-      real SF2       ! proportion of intercepted shortwave radiation scattered forward by the mulch (-)
-      real SB2       ! proportion of intercepted shortwave radiation scattered backward by the mulch (-)
-      real SB1       ! proportion of intercepted shortwave radiation scattered backward by the soil surface (-)
-      real ALPHA1    ! coefficient in the equations for thermal resistance RC1 to heat transfer by free convection from soil surface and mulch (W/m2/K(4/3)
-      real BETA2     ! coefficient in the equations for thermal resistance RC2 to heat transfer by free convection from soil surface and mulch (W/m2/K(5/4)
-      REAL IPSI      ! proportion of radiation from direction PSI intercepted by mulch (-)
-      real PAV       ! proportion of diffuse radiation which penetrates the mulch without interception (-)
-      real IAV       ! proportion of diffuse radiation intercepted by mulch (-)
-      real RHO1      ! reflection coefficient of soil surface for diffuse shortwave radiation (-)
-      real RHO2      ! reflection coefficient of mulch for diffuse shortwave radiation (-)
-      real TAU2      ! transmission coefficient of mulch for diffuse shortwave radiation (-)
-      REAL B1        ! unintercepted solar beam shortwave radiation flux just above soil surface (W/m2)
-      real ED1       ! downward diffuse shortwave radiation flux just above soil surface (W/m2)
-      real EU1       ! upward diffuse shortwave radiation fluxes just above soil durface (W/m2)
-      real EU2       ! upward diffuse shortwave radiation fluxes just above mulch (W/m2)
-      real ES1       ! net shortwave radiation fluxes absorbed by soil surface (W/m2)
-      real ES2       ! net shortwave radiation fluxes absorbed by mulch (W/m2)
-      real EL1       ! net longwave radiation fluxes absorbed by soil surface (W/m2)
-      real EL2       ! net longwave radiation fluxes absorbed by mulch (W/m2)
-      REAL HS1       ! sensible heat fluxes from soil surface to air due to convection (W/m2)
-      real HS2       ! sensible heat fluxes from mulch to air due to convection (W/m2)
-      real RC1       ! soil surface canopy average boundary layer resistances to sensible heat transfer (K m2/W)
-      real RC2       ! mulch canopy average boundary layer resistances to sensible heat transfer (K m2/W)
-      real TC1       ! soil surface temperature (K, oC)
-      real TC2       ! mulch temperature (K, oC)
-      real Gg        ! heat flux into the soil (W/m2)
-      real PHI       ! phase angle of idealized sinusoidal soil surface temperature (rad)
-      REAL H1        ! net heat fluxes at soil surface (W/m2)
-      real H2        ! net heat fluxes at mulch (W/m2)
-      real J11       ! partial derivative (W/m2/K)
-      real J12       ! partial derivative (W/m2/K)
-      real J21       ! partial derivative (W/m2/K)
-      real J22       ! partial derivative (W/m2/K)
-      real DJ        ! determinant of matrix (W2/m4/K2)
-      real DTC1      !
-      real DTC2
-      REAL YEFF      !
-      real F1        ! auxiliary variables ()
-      real F2        ! auxiliary variables ()
-      real F         ! auxiliary variables ()
-      real x1
-      real  x2
-      real  x3
-      real  x4
-      real wattm2    ! incoming shortwave radiation (W/m2)
-      real tempm     ! average temperature (oC)
-      real       ys(max_layers+1)                    ! magnitude of soil thermal admittance (W/m2/K)
-      real       phis(max_layers+1)                  ! phase angle of soil thermal admittance (rad)
-      real       ratio_G(max_layers+1)               ! ratio of heat flux between top and bottom layer boundaries ()
-      real       ratio_T(max_layers+1)               ! ratio of temperature between top and bottom layer boundaries ()
+      DOUBLE PRECISION A1        ! area of soil surface elements (m2/m2)
+      DOUBLE PRECISION A2        ! area of mulch elements (both sides) (m2/m2)
+      DOUBLE PRECISION RB        ! incoming solar beam shortwave radiation flux (W/m2)
+      DOUBLE PRECISION RD        ! incoming diffuse shortwave radiation flux (W/m2)
+      DOUBLE PRECISION RL        ! incoming longwave radiation flux (W/m2)
+      DOUBLE PRECISION PSI       ! the angle between the solar beam and the vertical (rad)
+      DOUBLE PRECISION TR        ! air temperature at reference height (K, oC)
+      DOUBLE PRECISION ttav      ! average of idealised sinusoidal soil surface temperature (K, oC)
+      DOUBLE PRECISION HV        ! latent heat flux up from soil surface due to water vapour (W/m2)
+      DOUBLE PRECISION tt        ! time after midday (s)
+      DOUBLE PRECISION RB0       ! RB at t=0
+      DOUBLE PRECISION P0        ! P(0)
+      DOUBLE PRECISION PPSI      ! proportion of radiation from direction PSI which penetrates mulch without interception (-)
+      DOUBLE PRECISION SF2       ! proportion of intercepted shortwave radiation scattered forward by the mulch (-)
+      DOUBLE PRECISION SB2       ! proportion of intercepted shortwave radiation scattered backward by the mulch (-)
+      DOUBLE PRECISION SB1       ! proportion of intercepted shortwave radiation scattered backward by the soil surface (-)
+      DOUBLE PRECISION ALPHA1    ! coefficient in the equations for thermal resistance RC1 to heat transfer by free convection from soil surface and mulch (W/m2/K(4/3)
+      DOUBLE PRECISION BETA2     ! coefficient in the equations for thermal resistance RC2 to heat transfer by free convection from soil surface and mulch (W/m2/K(5/4)
+      DOUBLE PRECISION IPSI      ! proportion of radiation from direction PSI intercepted by mulch (-)
+      DOUBLE PRECISION PAV       ! proportion of diffuse radiation which penetrates the mulch without interception (-)
+      DOUBLE PRECISION IAV       ! proportion of diffuse radiation intercepted by mulch (-)
+      DOUBLE PRECISION RHO1      ! reflection coefficient of soil surface for diffuse shortwave radiation (-)
+      DOUBLE PRECISION RHO2      ! reflection coefficient of mulch for diffuse shortwave radiation (-)
+      DOUBLE PRECISION TAU2      ! transmission coefficient of mulch for diffuse shortwave radiation (-)
+      DOUBLE PRECISION B1        ! unintercepted solar beam shortwave radiation flux just above soil surface (W/m2)
+      DOUBLE PRECISION ED1       ! downward diffuse shortwave radiation flux just above soil surface (W/m2)
+      DOUBLE PRECISION EU1       ! upward diffuse shortwave radiation fluxes just above soil durface (W/m2)
+      DOUBLE PRECISION EU2       ! upward diffuse shortwave radiation fluxes just above mulch (W/m2)
+      DOUBLE PRECISION ES1       ! net shortwave radiation fluxes absorbed by soil surface (W/m2)
+      DOUBLE PRECISION ES2       ! net shortwave radiation fluxes absorbed by mulch (W/m2)
+      DOUBLE PRECISION EL1       ! net longwave radiation fluxes absorbed by soil surface (W/m2)
+      DOUBLE PRECISION EL2       ! net longwave radiation fluxes absorbed by mulch (W/m2)
+      DOUBLE PRECISION HS1       ! sensible heat fluxes from soil surface to air due to convection (W/m2)
+      DOUBLE PRECISION HS2       ! sensible heat fluxes from mulch to air due to convection (W/m2)
+      DOUBLE PRECISION RC1       ! soil surface canopy average boundary layer resistances to sensible heat transfer (K m2/W)
+      DOUBLE PRECISION RC2       ! mulch canopy average boundary layer resistances to sensible heat transfer (K m2/W)
+      DOUBLE PRECISION TC1       ! soil surface temperature (K, oC)
+      DOUBLE PRECISION TC2       ! mulch temperature (K, oC)
+      DOUBLE PRECISION Gg        ! heat flux into the soil (W/m2)
+      DOUBLE PRECISION PHI       ! phase angle of idealized sinusoidal soil surface temperature (rad)
+      DOUBLE PRECISION H1        ! net heat fluxes at soil surface (W/m2)
+      DOUBLE PRECISION H2        ! net heat fluxes at mulch (W/m2)
+      DOUBLE PRECISION J11       ! partial derivative (W/m2/K)
+      DOUBLE PRECISION J12       ! partial derivative (W/m2/K)
+      DOUBLE PRECISION J21       ! partial derivative (W/m2/K)
+      DOUBLE PRECISION J22       ! partial derivative (W/m2/K)
+      DOUBLE PRECISION DJ        ! determinant of matrix (W2/m4/K2)
+      DOUBLE PRECISION DTC1      !
+      DOUBLE PRECISION DTC2
+      DOUBLE PRECISION YEFF      !
+      DOUBLE PRECISION F1        ! auxiliary variables ()
+      DOUBLE PRECISION F2        ! auxiliary variables ()
+      DOUBLE PRECISION F         ! auxiliary variables ()
+      DOUBLE PRECISION x1
+      DOUBLE PRECISION  x2
+      DOUBLE PRECISION  x3
+      DOUBLE PRECISION  x4
+      DOUBLE PRECISION wattm2    ! incoming shortwave radiation (W/m2)
+      DOUBLE PRECISION tempm     ! average temperature (oC)
+      DOUBLE PRECISION       ys(max_layers+1)                    ! magnitude of soil thermal admittance (W/m2/K)
+      DOUBLE PRECISION       phis(max_layers+1)                  ! phase angle of soil thermal admittance (rad)
+      DOUBLE PRECISION       ratio_G(max_layers+1)               ! ratio of heat flux between top and bottom layer boundaries ()
+      DOUBLE PRECISION       ratio_T(max_layers+1)               ! ratio of temperature between top and bottom layer boundaries ()
       integer    node
 
 *+  Constant Values
       character  myname*(*)            ! name of subroutine
       parameter (myname = 'TC1MAX')
 
-      REAL       SIGMA     ! Stefan-Boltzmann constant (W/m2/K4)
-      parameter (SIGMA = 5.67E-8)
+      DOUBLE PRECISION       SIGMA     ! Stefan-Boltzmann constant (W/m2/K4)
+      parameter (SIGMA = 5.67D-8)
 
-      real       PI        ! ratio of circumference to diameter of circle
-      parameter (PI = 3.1415927 )
+      DOUBLE PRECISION       PI        ! ratio of circumference to diameter of circle
+      parameter (PI = 4.0 * ATAN(1.0D0) )
 
-      real       OMEGA     ! daily angular frequency (rad/s)
+      DOUBLE PRECISION       OMEGA     ! daily angular frequency (rad/s)
       parameter (OMEGA = 2.0*PI / 86400.0)
 
-      real       TZ        ! temperature freezing point (K)
-      parameter (TZ = 273.16)
+      DOUBLE PRECISION       TZ        ! temperature freezing point (K)
+      parameter (TZ = 273.16D0)
 
-      real       w2        ! average width of mulch elements (m)
-      parameter (w2 = 0.02)
+      DOUBLE PRECISION       w2        ! average width of mulch elements (m)
+      parameter (w2 = 0.02D0)
 
 *- Implementation Section ----------------------------------
 
@@ -612,14 +612,14 @@ c     endif
       A1 = 1.0
       A2 = 2.*g%estimated_lai
 
-      wattm2 = 0.30*g%radn / 180.*698.
+      wattm2 = 0.30D0*g%radn / 180.D0*698.D0
       rb0 = 0.85*wattm2
       rd = 0.15*wattm2
               ! rl calculated from Monteith 1973
-      rl = 208. + 6.*g%maxt
-      p0 = exp(-A2 / 4.)
+      rl = 208.D0 + 6.D0*g%maxt
+      p0 = exp(-A2 / 4.D0)
       if (p0 .eq. 1.) p0 = 0.999
-      pav = exp(-A2 / 2.6)
+      pav = exp(-A2 / 2.6D0)
       if (pav .eq. 1.) pav = 0.999
 
       TR = g%maxt + TZ
@@ -688,7 +688,7 @@ c     endif
       DTC2 = (J21*H1 - J11*H2) / DJ
       IF (ABS(H1) + ABS(H2) .GT. 0.01) GO TO 30
 
-      X3 = PPSI*ALOG(PPSI)
+      X3 = PPSI*DLOG(PPSI)
       F1 = (1. - SB1)*(PPSI + SF2*IPSI - X3*(1. - SF2))
       F2 = (1. - SB2 - SF2)*(IPSI + IAV*SB1*PPSI + X3*(1. - IAV*SB1))
       F = ys(node)*SIN(phis(node)) / (RB*(F1 - (J12 / J22)*F2))
@@ -723,19 +723,19 @@ c     endif
       implicit none
 
 *+  Sub-Program Arguments
-      real       ys(*)                    ! (Output) magnitude of soil thermal admittance (W/m2/K)
-      real       phis(*)                  ! (Output) phase angle of soil thermal admittance (rad)
-      real       ratio_G(*)               ! ratio of heat flux between top and bottom layer boundaries ()
-      real       ratio_T(*)               ! ratio of temperature between top and bottom layer boundaries ()
+      DOUBLE PRECISION       ys(*)                    ! (Output) magnitude of soil thermal admittance (W/m2/K)
+      DOUBLE PRECISION       phis(*)                  ! (Output) phase angle of soil thermal admittance (rad)
+      DOUBLE PRECISION       ratio_G(*)               ! ratio of heat flux between top and bottom layer boundaries ()
+      DOUBLE PRECISION       ratio_T(*)               ! ratio of temperature between top and bottom layer boundaries ()
 
 *+  Local Variables
-      REAL Z             ! layer depth (decimetre)
-      real VWC           ! volumetric soil water content of layer (m3/m3)
-      real Cc
-      real K
-      real fun_A
-      real fun_M
-      real ll
+      DOUBLE PRECISION Z             ! layer depth (decimetre)
+      DOUBLE PRECISION VWC           ! volumetric soil water content of layer (m3/m3)
+      DOUBLE PRECISION Cc
+      DOUBLE PRECISION K
+      DOUBLE PRECISION fun_A
+      DOUBLE PRECISION fun_M
+      DOUBLE PRECISION ll
       COMPLEX YS1
       COMPLEX Y
       COMPLEX RG
@@ -746,22 +746,22 @@ c     endif
       integer nj   ! layer counter
       integer i    ! layer counter
       integer j    ! layer counter
-      real topsw   ! soil water depth in top profile (cm)
-      real subsw   ! soil water depth in sub-profile (cm)
-      real zd      ! depth (cm)
+      DOUBLE PRECISION topsw   ! soil water depth in top profile (cm)
+      DOUBLE PRECISION subsw   ! soil water depth in sub-profile (cm)
+      DOUBLE PRECISION zd      ! depth (cm)
       integer nj7
       integer node
-      real cumr
+      DOUBLE PRECISION cumr
 
 *+  Constant Values
       character  myname*(*)            ! name of subroutine
       parameter (myname = 'SOILT')
 
-      REAL Pp         ! period length (s)
-      parameter (Pp = 86400.0)
+      DOUBLE PRECISION Pp         ! period length (s)
+      parameter (Pp = 86400.0D0)
 
-      real vsw(max_layers)     ! volumetric soil water content of SoilT layers (m3/m3)
-      real tlayr(max_layers)   ! SoilT layer depths (7 is top, 1 is bottom)
+      DOUBLE PRECISION vsw(max_layers)     ! volumetric soil water content of SoilT layers (m3/m3)
+      DOUBLE PRECISION tlayr(max_layers)   ! SoilT layer depths (7 is top, 1 is bottom)
 
 !      DATA Pp / 86400. /
 !      data tlayr / 0.,0.,1.,1.,1.,1.,1. /
@@ -855,25 +855,25 @@ c     endif
       implicit none
 
 *+  Sub-Program Arguments
-      REAL VWC      ! (Input)
-      real C        ! (Output)
-      real K        ! (Output)
+      DOUBLE PRECISION VWC      ! (Input)
+      DOUBLE PRECISION C        ! (Output)
+      DOUBLE PRECISION K        ! (Output)
 
 *+  Local Variables
-      real x
+      DOUBLE PRECISION x
 
 *+  Constant Values
       character  myname*(*)            ! name of subroutine
       parameter (myname = 'GETCK')
 
-      REAL C0
-      parameter (C0 = 1.4E6)
-      real C1
-      parameter (C1 = 4.18E6)
-      real K0
-      parameter (K0 = 0.32)
-      real K1
-      parameter (K1 = 1.18)
+      DOUBLE PRECISION C0
+      parameter (C0 = 1.4D6)
+      DOUBLE PRECISION C1
+      parameter (C1 = 4.18D6)
+      DOUBLE PRECISION K0
+      parameter (K0 = 0.32D0)
+      DOUBLE PRECISION K1
+      parameter (K1 = 1.18D0)
 !      DATA C0, C1, K0, K1 / 1.4E6, 4.18E6, .32, 1.18 /
 *- Implementation Section ----------------------------------
 
@@ -898,18 +898,18 @@ c     endif
       implicit none
 
 *+  Sub-Program Arguments
-      REAL P         ! (Input) period length (s)
-      real Z         ! (Input) layer depth (decimetre)
-      real C         ! (Input)
-      real K         ! (Input)
+      DOUBLE PRECISION P         ! (Input) period length (s)
+      DOUBLE PRECISION Z         ! (Input) layer depth (decimetre)
+      DOUBLE PRECISION C         ! (Input)
+      DOUBLE PRECISION K         ! (Input)
       COMPLEX YS1    ! (Input)
       COMPLEX Y      !(Output)
       COMPLEX RG     !(Output)
       COMPLEX RT     !(Output)
 
 *+  Local Variables
-      REAL W
-      real D
+      DOUBLE PRECISION W
+      DOUBLE PRECISION D
       COMPLEX YINF
       COMPLEX R
       COMPLEX SINH
@@ -920,8 +920,8 @@ c     endif
       character  myname*(*)            ! name of subroutine
       parameter (myname = 'ADMIT1')
 
-      REAL PI
-      parameter (PI = 3.141592654)
+      DOUBLE PRECISION PI
+      parameter (PI = 4.0 * ATAN(1.0D0) )
 
 *- Implementation Section ----------------------------------
 
