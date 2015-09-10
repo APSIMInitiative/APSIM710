@@ -961,7 +961,10 @@
          
          call sugar_water_log (1)
          
-         !biomass gain with no water stress but with every other stress
+         !biomass gain with no water stress but with every other stress,
+         !because today's potential biomass accumulation is used to work out tomorrows 
+         !water demand which is then corrected for water stress.
+         !nb. for some reason this is also called in the prepare event each day. I don't know why.
          if (g%HourlyMetExists .eq. 0) then
              call sugar_bio_RUE(1)
          else
@@ -975,7 +978,10 @@
      :                    g%dlt_dm_pot_rue_pot)
          endif
          
-         call sugar_bio_actual (1) !choose between water stress and non water stressed
+         !choose between biomass gain with water stress and non water stressed, 
+         ! use which ever is less biomass gain.
+         call sugar_bio_actual (1)
+
          call sugar_respiration ()
          call sugar_leaf_area_stressed (1)
          call sugar_bio_partition (1)
@@ -4414,7 +4420,22 @@ cnh      c%crop_type = ' '
          endif         
          
          
+         !biomass gain with no water stress but with every other stress,
+         !because today's potential biomass accumulation is used to work out tomorrows 
+         !water demand which is then corrected for water stress.
+         !nb. for some reason this is also called in the process event each day. I don't know why.
+         if (g%HourlyMetExists .eq. 0) then
          call sugar_bio_RUE(1)
+         else
+             call sugar_dm_pot_rue_hourly(c%rue, g%current_stage, 
+     :                    g%radn_int, g%nfact_photo,g%temp_stress_photo,  
+     :                    g%oxdef_photo, g%lodge_redn_photo, 
+     :                    g%dlt_dm_pot_rue)
+
+             call sugar_dm_pot_rue_pot_hourly(c%rue, g%current_stage, 
+     :                    g%radn_int, 
+     :                    g%dlt_dm_pot_rue_pot)
+         endif
          
          !is transp_eff_cf based on stress instead of stage (ie. there a y_transp_eff_cf array in the ini file)
          if (c%te_by_stress_numvals .eq. 0) then
@@ -5343,6 +5364,7 @@ cnh      c%crop_type = ' '
       call pop_routine (myname)
       return
       end subroutine
+* ====================================================================
       subroutine Sugar_Send_Crop_Chopped_Event (crop_type
      :                                           , dm_type
      :                                           , dlt_crop_dm

@@ -3675,7 +3675,7 @@ c+!!!!!!!!! check order dependency of deltas
 
 *+  Constant Values
       character  my_name*(*)           ! name of procedure
-      parameter (my_name = 'sugar_water_demand')
+      parameter (my_name = 'sugar_water_demand_hourly')
 *+  Local Variables
       real      cover_green
       integer   current_phase
@@ -4053,7 +4053,7 @@ cnh      call sugar_radn_int (radn_int)
      :              , G_temp_stress_photo
      :              , G_oxdef_photo
      :              , G_lodge_redn_photo
-     :               )
+     :               )  !nb. notice that water stress is missing from sugar_rue_reduction.
 
          ! potential dry matter production with temperature
          ! and N content stresses is calculated.
@@ -4072,6 +4072,7 @@ cnh      call sugar_radn_int (radn_int)
             g%dlt_dm_pot_rue_hourly(h) = g%RadnHourly(h)*cover_green*rue
      
             dlt_dm_pot = dlt_dm_pot + g%dlt_dm_pot_rue_hourly(h)
+            !The reason dlt_dm_pot is still a potential is that water stress is accounted for later.
 10     continue
       
       
