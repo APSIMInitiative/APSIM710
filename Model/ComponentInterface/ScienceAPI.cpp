@@ -836,6 +836,16 @@ void ScienceAPI::subscribe(const std::string& name, RemoveCropBiomassFunctionTyp
    fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
    component->addEvent(name.c_str(), fn, wrapper->DDML());
    }
+void ScienceAPI::subscribe(const std::string& name, AddSurfaceOMFunctionType handler)
+   {
+   typedef CMPMethod1<AddSurfaceOMFunctionType, protocol::AddSurfaceOMType> WrapperType;
+   WrapperType* wrapper = new WrapperType (handler);
+   stuffToDelete.push_back(wrapper);
+
+   std::function<void(unsigned &, unsigned &, protocol::Variant &)> fn;
+   fn = std::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   component->addEvent(name.c_str(), fn, wrapper->DDML());
+   }
 void ScienceAPI::subscribe(const std::string& name, ApsimVariantFunctionType handler)
    {
    ApsimVariantWrapper* wrapper = new ApsimVariantWrapper(handler, component);

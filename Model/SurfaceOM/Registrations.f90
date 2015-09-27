@@ -12,7 +12,6 @@ module Registrations
       integer :: externalmassflow
       integer :: nitrogenchanged
       integer :: tillage
-      integer :: add_surfaceom
       integer :: sysinit
       integer :: reset
       integer :: create
@@ -27,6 +26,7 @@ module Registrations
       integer :: actualresiduedecompositioncalculated
       integer :: BiomassRemoved
       integer :: add_faeces
+      integer :: add_surfaceom
       integer :: dummy
 
    end type IDsType
@@ -63,12 +63,12 @@ module Registrations
          id%externalmassflow = add_registration(eventReg, 'externalmassflow', ExternalMassFlowTypeDDML, '')
          id%nitrogenchanged = add_registration(eventReg, 'nitrogenchanged', NitrogenChangedTypeDDML, '')			
          id%tillage = add_registration(respondToEventReg, 'tillage', TillageTypeDDML, '')
-         id%add_surfaceom = add_registration(respondToEventReg, 'add_surfaceom', ApsimVariantTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
          id%reset = add_registration(respondToEventReg, 'reset', nullTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
          id%sum_report = add_registration(respondToEventReg, 'sum_report', nullTypeDDML, '')
          id%remove_surfaceom = add_registration(respondToEventReg, 'remove_surfaceom', SurfaceOrganicMatterTypeDDML, '')
+         id%add_surfaceom = add_registration(respondToEventReg, 'add_surfaceom', AddSurfaceOMTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', timeTypeDDML, '')
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
          id%irrigated = add_registration(respondToEventReg, 'irrigated', ApsimVariantTypeDDML, '')
@@ -78,7 +78,6 @@ module Registrations
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%actualresiduedecompositioncalculated = add_registration(respondToEventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
          id%add_faeces = add_registration(respondToEventReg, 'AddFaeces', AddFaecesTypeDDML, '')
-
 	 end subroutine
 end module Registrations
 

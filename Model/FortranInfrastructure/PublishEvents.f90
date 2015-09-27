@@ -32,6 +32,8 @@ module PublishEventsModule
       call PublishIncorpFOM(QualifiedEventName, DataString)
    elseif (strings_equal(EventName, 'tillage')) then
       call PublishTillage(QualifiedEventName, DataString)
+   elseif (strings_equal(EventName, 'add_surfaceom')) then
+      call PublishAddSurfaceOM(QualifiedEventName, DataString)
    else
       ! some other non protocol event - use the old postbox method.
       if (strings_equal(ModuleName, 'publish')) then
@@ -289,6 +291,65 @@ module PublishEventsModule
    end do
    TillageID = add_registration(eventReg, QualifiedEventName, TillageTypeDDML, blank)
    call publish_Tillage(TillageID, tillage)
+
+   end subroutine
+
+   subroutine PublishAddSurfaceom(QualifiedEventName, DataString)
+   ! ---------------------------------------------------------------
+   ! Publishes an Add_surfaceom event using the data on the specified
+   ! DataString which should look like:
+   !    name=abc, type=def, mass=42.0, n=X, cnr = .., p = ..., cpr = ... 
+   ! ---------------------------------------------------------------
+
+   use ConstantsModule
+   use ErrorModule
+   use StringModule
+   use DataStrModule
+   use DataTypes
+   use ComponentInterfaceModule
+   use DataTypesInterface
+
+   implicit none
+
+   character DataString*(*)          ! (INPUT) Should be blank or have a plants_kill_fraction
+   character QualifiedEventName*(*)  ! (INPUT) Fully qualified event name (e.g. wheat.kill_crop)
+   character KeyName*(500)
+   character KeyValues(500)*(500)
+   character KeyUnits*500
+   integer NumValues
+   type(AddsurfaceOMType) :: Add_surfaceom
+   integer Add_surfaceomID
+
+   call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
+   Add_surfaceom%name = ' '
+   Add_surfaceom%type = ' '
+   Add_surfaceom%mass = 0.0
+   Add_surfaceom%n = 0.0
+   Add_surfaceom%cnr = 0.0
+   Add_surfaceom%p = 0.0
+   Add_surfaceom%cpr = 0.0
+
+   do while (NumValues > 0)
+      if (strings_equal(KeyName, 'type')) then
+         Add_surfaceom%type = KeyValues(1)
+      elseif (strings_equal(KeyName, 'name')) then
+         Add_surfaceom%name = KeyValues(1)
+      elseif (strings_equal(KeyName, 'mass')) then
+         Add_surfaceom%mass = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'n')) then
+         Add_surfaceom%n = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'cnr')) then
+         Add_surfaceom%cnr = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'p')) then
+         Add_surfaceom%p = StringToReal(KeyValues(1))
+      elseif (strings_equal(KeyName, 'cpr')) then
+         Add_surfaceom%cpr = StringToReal(KeyValues(1))
+      endif
+
+      call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
+   end do
+   Add_surfaceomID = add_registration(eventReg, QualifiedEventName, AddSurfaceOMTypeDDML, blank)
+   call publish_AddSurfaceom(Add_surfaceomID, Add_surfaceom)
 
    end subroutine
 

@@ -1576,7 +1576,7 @@ public partial class SurfaceOM
     /// <summary>
     /// Calculates surfom addition as a result of add_surfom message
     /// </summary>
-    private void surfom_add_surfom(Add_surfaceomType data)
+    private void surfom_add_surfom(AddSurfaceOMType data)
     {
 
         int

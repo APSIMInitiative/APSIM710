@@ -172,6 +172,10 @@ class EXPORT ScienceAPI
       #define FOMLayerFunction(address) FOMLayerFunctionType(std::bind(address, this, _1))
       void publish(const std::string& name, protocol::FOMLayerType& value);
 
+      #define AddSurfaceOMFunctionType std::function<void(protocol::AddSurfaceOMType&)>
+      #define AddSurfaceOMFunction(address) AddSurfaceOMFunctionType(std::bind(address, this, _1))
+      void subscribe(const std::string& name, AddSurfaceOMFunctionType handler);
+
       #define ApsimVariantFunctionType std::function<void(protocol::ApsimVariant&)>
       #define ApsimVariantFunction(address) ApsimVariantFunctionType(std::bind(address, this, _1))
       void publish(const std::string& name, protocol::ApsimVariant& value);

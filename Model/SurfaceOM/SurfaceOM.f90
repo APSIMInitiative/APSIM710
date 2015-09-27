@@ -2012,10 +2012,11 @@ subroutine surfom_incorp_single (surfom_name, action_type, F_incorp, Tillage_dep
 end subroutine
 
 !================================================================
-subroutine surfom_add_surfom ()
+subroutine surfom_add_surfom (variant)
 !================================================================
 
    implicit none
+   integer, intent(in) :: variant
 
 !+  Purpose
 !   Calculates surfom addition as a result of add_surfom message
@@ -2049,13 +2050,15 @@ subroutine surfom_add_surfom ()
    real       removed_from_standing
    real       removed_from_lying
    type (ExternalMassFlowType) :: massBalanceChange
+   type(AddSurfaceOMType) :: Add_surfaceom
 
 
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
-   surfom_name = ' '
-   call collect_char_var ('name', '()', surfom_name, numvals)
 
+   call unpack_AddSurfaceom(variant, Add_surfaceom)
+
+   surfom_name = Add_surfaceom%name
 
    SOMNo = surfom_number(surfom_name)
    if (SOMNo .eq. 0) then
@@ -2065,8 +2068,7 @@ subroutine surfom_add_surfom ()
        SOMNo = g%num_surfom
        g%SurfOM(SOMNo)%name = surfom_name
 
-       g%SurfOM(SOMNo)%OrganicMatterType = ' '
-       call collect_char_var ('type','()',g%SurfOM(SOMNo)%OrganicMatterType, numvals)
+       g%SurfOM(SOMNo)%OrganicMatterType = Add_surfaceom%type
 
        g%SurfOM(SOMNo)%PotDecompRate = 0.0
        g%SurfOM(SOMNo)%no3  = 0.0
@@ -2090,42 +2092,23 @@ subroutine surfom_add_surfom ()
    endif
 
    ! Get Mass of material added
-   call collect_real_var ('mass', '(kg/ha)', surfom_added, numvals, -100000.0, 100000.0)
+   surfom_added = Add_surfaceom%mass
    surfom_c_added = surfom_added * c%c_fract(SOMNo)
 
    if (surfom_added .gt. -10000.0) then
       ! Get N content of material added
-      surfom_N_added = 0.0
-      call collect_real_var_optional ('n', '(kg/ha)', surfom_N_added, numval_n, -10000.0, 10000.0)
-      if (numval_n  .eq.  0) then
-         surfom_cnr_added = 0.0
-         call collect_real_var_optional ('cnr', '()', surfom_cnr_added, numval_cnr, 0.0, 10000.0)
-         surfom_N_added = divide ((surfom_added * c%C_fract(SOMNo)), surfom_cnr_added, 0.0)
-
-         ! If no N info provided, and no cnr info provided then throw error
-         if (numval_cnr .eq. 0) then
-            Err_string = 'SurfaceOM N or SurfaceOM CN ratio not specified.'
-            call Fatal_ERROR (ERR_user, Err_string)
-         else
-            ! all ok
-         endif
+      surfom_N_added = Add_surfaceom%n
+      if (surfom_N_added  .le.  0) then
+         surfom_cnr_added = Add_surfaceom%cnr
+         surfom_N_added = divide (surfom_c_added, surfom_cnr_added, 0.0)
       else
       endif
 
       ! collect P information from this new member
-      surfom_p_added = 0.0
-      call collect_real_var_optional ('p', '(kg/ha)', surfom_p_added, numval_p, -10000.0, 10000.0)
-      if (numval_p .eq. 0) then
-         surfom_cpr_added = 0.0
-         call collect_real_var_optional ('cpr', '()', surfom_cpr_added, numval_cpr, 0.0, 10000.0)
-         surfom_P_added = divide ((surfom_added *  c%C_fract(SOMNo)), surfom_cpr_added, 0.0)
-         ! If no P info provided, and no cpr info provided then
-         ! use default cpr and throw warning error to notify user
-         If (numval_CPr  .eq.  0) then
-            surfom_p_added = divide ((surfom_added * c%C_fract(SOMNo)), c%default_cpr, 0.0)
-            Err_string = 'SurfOM P or SurfaceOM C:P ratio not specified - Default value applied.'
-            call Warning_ERROR (ERR_user, Err_string)
-         Endif
+      surfom_p_added = Add_surfaceom%p
+      if (surfom_p_added .le. 0) then
+         surfom_cpr_added = Add_surfaceom%cpr
+         surfom_p_added = divide (surfom_c_added, surfom_cpr_added, 0.0)
       else
       endif
 
@@ -3400,9 +3383,6 @@ subroutine Main (action, data_string)
       call surfom_get_other_variables ()
       call surfom_Process ()
 
-   else if (Action .eq. 'add_surfaceom') then
-      call surfom_Add_surfom ()
-
    else if (Action .eq. 'prop_up') then
       call surfom_prop_up ()
 
@@ -3481,6 +3461,8 @@ subroutine respondToEvent(fromID, eventID, variant)
       call SurfOMOnAddFaeces(variant)
    elseif (eventID  .eq. id%tillage) then
       call SurfOM_OnTillage(variant)
+   elseif (eventID .eq. id%add_surfaceom) then
+      call surfom_Add_surfom (variant)
    endif
    return
 end subroutine respondToEvent

@@ -20,7 +20,7 @@ public partial class SurfaceOM
     }
 
     [EventHandler]
-    public void OnAdd_surfaceom(Add_surfaceomType data)
+    public void OnAdd_surfaceom(AddSurfaceOMType data)
     {
         surfom_add_surfom(data);
     }
