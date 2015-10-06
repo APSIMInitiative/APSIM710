@@ -1591,11 +1591,6 @@ public class AgPasture
     /// <param name="s">The index for the species being setup</param>
     private void SetSpeciesState(int s, SpeciesStateSettings MyState)
     {
-        double iniDMshoot = mySpecies[s].dmshoot;
-        double iniDMroot = mySpecies[s].dmroot;
-        double iniNshot = mySpecies[s].Nshoot;
-        double iniNroot = mySpecies[s].Nroot;
-
         //// Shoot DM ....................................................
         mySpecies[s].dmshoot = MyState.ShootDM;
 
@@ -1653,25 +1648,22 @@ public class AgPasture
         mySpecies[s].greenLAI = mySpecies[s].GreenLAI();
         mySpecies[s].deadLAI = mySpecies[s].DeadLAI();
         mySpecies[s].totalLAI = mySpecies[s].greenLAI + mySpecies[s].deadLAI;
-
-        double endDMshoot = mySpecies[s].dmshoot;
-        double endDMroot = mySpecies[s].dmroot;
-        double endNshot = mySpecies[s].Nshoot;
-        double endNroot = mySpecies[s].Nroot;
     }
 
     /// <summary>
     /// Let other module (micromet and SWIM) know about the existence of this crop (sward)
     /// </summary>
     /// <remarks>
-    ///  Ideally we should advertise each species, other module would do the resource arbitration.
-    ///  However, when doing this we have to supply some data each for each module: the events 
-    ///  'New_Canopy' and 'NewPotentialGrowth' are used by micromet, but for SWIM outputs are needed
-    ///  (RLV and WaterDemand).  Raising events for each species work fine, but to have outputs sepately
-    ///  for each species would require changing the status of species (It would need to be a module on
-    ///  its own right - SWIM registers each crop module and then will as for the variables as it needs)
-    ///  This is possible, but require time and will be left as it is for now. The resource arbitration
-    ///  has to be done within AgPasture (RCichota, Nov2014)
+    ///  Ideally we should advertise each species, another module would do the resource arbitration.
+    ///  However, if we were to do this we would have to supply some data (outputs) for the modules
+    ///  that respond to the presence of a crop (SWIM and micromet):
+    ///  the events 'New_Canopy' and 'NewPotentialGrowth' are used by micromet to get the data, while
+    ///  SWIM requires some output variables (RLV and WaterDemand). Raising events for each species works
+    ///  fine, but to have outputs for each species would require changing a lot of code and how a species
+    ///  is interpreted by APSIM (It would need to be a module on its own right. SWIM needs to registers
+    ///  each crop module, whose outputs it will ask for when it needs). This seem possible to do, but
+    ///  requires time. It will be left as it is for now. The resource arbitration has to be done from
+    ///  within AgPasture (RCichota, Nov2014)
     /// </remarks>
     private void AdvertiseThisCrop()
     {
@@ -3673,7 +3665,18 @@ public class AgPasture
 
         ZeroVars();
 
+        for (int s = 0; s < NumSpecies; s++)
+        {
+            mySpecies[s].UpdateAggregated();
+            mySpecies[s].UpdatePlantParts();
+            mySpecies[s].bSown = false;
+        }
+
         isAlive = false;
+        if (swardTotalLAI > 0.0)
+        {
+            Console.WriteLine("Pasture is not completely killed.");
+        }
     }
 
     /// <summary>
@@ -3986,7 +3989,7 @@ public class AgPasture
                 TempTotal += TempAmounts[s] * TempWeights[s];
             }
 
-            // get the actual amounts to remove for each species
+            // get the actual amounts being removed for each species
             for (int s = 0; s < NumSpecies; s++)
             {
                 if (TempTotal > 0.0)
@@ -4063,7 +4066,7 @@ public class AgPasture
                 NewState.RootDepth = mySpecies[s].rootDepth;
 
             // get dm fractions
-            if (NewSetState.dmFractions.Length >0)
+            if (NewSetState.dmFractions.Length > 0)
             {
                 NewState.DMFraction[0] = NewSetState.dmFractions[s].Leaf1;
                 NewState.DMFraction[1] = NewSetState.dmFractions[s].Leaf2;
@@ -4094,7 +4097,7 @@ public class AgPasture
             }
 
             // get N concentrations
-            if (NewSetState.nConcentrations.Length>0)
+            if (NewSetState.nConcentrations.Length > 0)
             {
                 NewState.NConcentration[0] = NewSetState.nConcentrations[s].Leaf1;
                 NewState.NConcentration[1] = NewSetState.nConcentrations[s].Leaf2;
@@ -6299,7 +6302,7 @@ public class AgPasture
             return result;
         }
     }
-    
+
     /// <summary>An output</summary>
     [Output]
     [Description("Dry matter weight of leaves at stage 1 (young) for each species")]

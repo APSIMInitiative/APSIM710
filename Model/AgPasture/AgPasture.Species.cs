@@ -96,7 +96,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal int maxRootDepth;    //Maximum root depth (mm)
 
-    private bool bSown = false;
+    internal bool bSown = false;
     private double DDSfromSowing = 0.0;
     private double DDSfromEmergence = 0.0;
     private double DDSfromAnthesis = 0.0;
@@ -887,11 +887,6 @@ public class Species
         Nstol1 = Nstol2 = Nstol3 = Nroot = 0.0;
 
         phenoStage = 0;
-
-        if (totalLAI > 0.0)  //return totalLAI = 0
-        {
-            Console.WriteLine("Plant is not completely killed.");
-        }
     }
 
     #endregion
@@ -1474,7 +1469,8 @@ public class Species
         gama = refTissueTurnoverRate * gftt * gfwt * gftleaf;
 
         // Stolons turnover rate (legumes)
-        gamaS = refTurnoverRateStolon * gftt * gfwt * gftleaf;    //gama;
+        if (isLegume)
+            gamaS = refTurnoverRateStolon * gftt * gfwt * gftleaf;
 
         // Littering rate
         gamaD = refLitteringRate * gfwL * digestDead / 0.4;
@@ -1570,7 +1566,7 @@ public class Species
             double Nfrom2to3 = Ncleaf2 * DMfrom2to3;
             double Nfrom3to4 = NcleafMin * DMfrom3to4;
             double Nfrom4toL = Ncleaf4 * DMfrom4toL;
-            double Nleaf3Remob = (Ncleaf3 - NcleafMin) * DMfrom3to4;
+            Nleaf3Remob = (Ncleaf3 - NcleafMin) * DMfrom3to4;
 
             Nleaf1 += 0.0 - Nfrom1to2;   // N in was considered in PartitionDMGrown()
             Nleaf2 += Nfrom1to2 - Nfrom2to3;
@@ -1604,7 +1600,7 @@ public class Species
             Nfrom2to3 = Ncstem2 * DMfrom2to3;
             Nfrom3to4 = NcstemMin * DMfrom3to4;
             Nfrom4toL = Ncstem4 * DMfrom4toL;
-            double Nstem3Remob = (Ncstem3 - NcstemMin) * DMfrom3to4;
+            Nstem3Remob = (Ncstem3 - NcstemMin) * DMfrom3to4;
 
             Nstem1 += 0.0 - Nfrom1to2;    // N in was considered in PartitionDMGrown()
             Nstem2 += Nfrom1to2 - Nfrom2to3;
@@ -1622,32 +1618,35 @@ public class Species
             { Ncstem4 = Nstem4 / dmstem4; }
 
             // Stolons
-            DMfrom1to2 = facGrowingTissue * gamaS * prevState.dmstol1;
-            DMfrom2to3 = gamaS * prevState.dmstol2;
-            double DMfrom3toL = gamaS * prevState.dmstol3;
+            if (isLegume)
+            {
+                DMfrom1to2 = facGrowingTissue * gamaS * prevState.dmstol1;
+                DMfrom2to3 = gamaS * prevState.dmstol2;
+                double DMfrom3toL = gamaS * prevState.dmstol3;
 
-            dmstol1 += 0.0 - DMfrom1to2;      // DM in was considered in PartitionDMGrown()
-            dmstol2 += DMfrom1to2 - DMfrom2to3;
-            dmstol3 += DMfrom2to3 - DMfrom3toL;
-            dGrowthHerbage -= DMfrom3toL;
-            dLitter += DMfrom3toL;
+                dmstol1 += 0.0 - DMfrom1to2;      // DM in was considered in PartitionDMGrown()
+                dmstol2 += DMfrom1to2 - DMfrom2to3;
+                dmstol3 += DMfrom2to3 - DMfrom3toL;
+                dGrowthHerbage -= DMfrom3toL;
+                dLitter += DMfrom3toL;
 
-            Nfrom1to2 = Ncstol1 * DMfrom1to2;
-            Nfrom2to3 = Ncstol2 * DMfrom2to3;
-            Nfrom3to4 = 0.5 * (Ncstol3 + NcstolMin) * DMfrom3toL;
-            double Nstol3Remob = 0.5 * (Ncstol3 - NcstolMin) * DMfrom3toL;
+                Nfrom1to2 = Ncstol1 * DMfrom1to2;
+                Nfrom2to3 = Ncstol2 * DMfrom2to3;
+                Nfrom3to4 = 0.5 * (Ncstol3 + NcstolMin) * DMfrom3toL;
+                Nstol3Remob = 0.5 * (Ncstol3 - NcstolMin) * DMfrom3toL;
 
-            Nstol1 += 0.0 - Nfrom1to2;    // N in was considered in PartitionDMGrown()
-            Nstol2 += Nfrom1to2 - Nfrom2to3;
-            Nstol3 += Nfrom2to3 - Nfrom3to4 - Nstol3Remob;
-            dNLitter += Nfrom3to4;
+                Nstol1 += 0.0 - Nfrom1to2;    // N in was considered in PartitionDMGrown()
+                Nstol2 += Nfrom1to2 - Nfrom2to3;
+                Nstol3 += Nfrom2to3 - Nfrom3to4 - Nstol3Remob;
+                dNLitter += Nfrom3to4;
 
-            if (dmstol1 != 0)
-            { Ncstol1 = Nstol1 / dmstol1; }
-            if (dmstol2 != 0)
-            { Ncstol2 = Nstol2 / dmstol2; }
-            if (dmstol3 != 0)
-            { Ncstol3 = Nstol3 / dmstol3; }
+                if (dmstol1 != 0)
+                { Ncstol1 = Nstol1 / dmstol1; }
+                if (dmstol2 != 0)
+                { Ncstol2 = Nstol2 / dmstol2; }
+                if (dmstol3 != 0)
+                { Ncstol3 = Nstol3 / dmstol3; }
+            }
 
             // Roots
             dRootSen = gamaR * prevState.dmroot;
@@ -1808,37 +1807,27 @@ public class Species
     #region Functions  ----------------------------------------------------------------------------
 
     /// <summary>
-    /// Plant photosynthesis increase to eleveated [CO2]
+    /// Effects of atmospheric [CO2] on plant photosynthesis
     /// </summary>
     /// <returns>CO2 effect on photosynthesis</returns>
     private double PCO2Effects()
     {
-        if (Math.Abs(CO2 - referenceCO2) < 0.5)
-            return 1.0;
-
-        double Kp = CO2PmaxScale;
-        if (photoPath == "C4")
-            Kp = 150;
-
-        double Fp = (CO2 / (Kp + CO2)) * ((referenceCO2 + Kp) / referenceCO2);
-        return Fp;
+        double termActual = (CO2 + CO2PmaxScale) / CO2;
+        double termReference = (referenceCO2 + CO2PmaxScale) / referenceCO2;
+        return termReference / termActual;
     }
 
     /// <summary>
-    /// Plant nitrogen [N] decline to elevated [CO2]
+    /// Plant nitrogen [N] decline due to elevated [CO2]
     /// </summary>
     /// <returns>CO2 effect on plant N concentration</returns>
     private double NCO2Effects()
     {
-        if (Math.Abs(CO2 - referenceCO2) < 0.5)
+        if (CO2 <= referenceCO2)
             return 1.0;
 
-        double L = CO2NMin;         // 0.7 - lamda: same for C3 & C4 plants
-        double Kn = CO2NScale;      // 600 - ppm,   when CO2 = 600ppm, Fn = 0.5*(1+lamda);
-        double Qn = CO2NCurvature;  //2 - curveture factor
-
-        double interm = Math.Pow((Kn - referenceCO2), Qn);
-        double Fn = (L + (1 - L) * interm / (interm + Math.Pow((CO2 - referenceCO2), Qn)));
+        double factorCO2 = Math.Pow((CO2NScale - referenceCO2) / (CO2 - referenceCO2), CO2NCurvature);
+        double Fn = (CO2NMin + factorCO2) / (1 + factorCO2);
         return Fn;
     }
 
