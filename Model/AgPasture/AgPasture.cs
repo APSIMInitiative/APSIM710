@@ -3025,23 +3025,23 @@ public class AgPasture
     {
         //1) Get the total N demand (species by species)
         swardNFixed = 0.0;
-        double p_Ndemand = 0.0;
+        double p_NdemandLux = 0.0;
         double p_NdemandOpt = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
-            swardNFixed += mySpecies[s].CalcNdemand();       //minimum N fixation
-            p_NdemandOpt += mySpecies[s].NdemandOpt;    //demand for optimum [N]
-            p_Ndemand += mySpecies[s].NdemandLux;       //demand for luxury [N]
+            swardNFixed += mySpecies[s].CalcNdemand();     //minimum N fixation
+            p_NdemandOpt += mySpecies[s].NdemandOpt;       //demand for optimum [N]
+            p_NdemandLux += mySpecies[s].NdemandLux;       //demand for luxury [N]
         }
 
         //2) Update Nfix of legume species under N stress
         double Nstress = 1.0;
-        if (p_Ndemand > 0.0 && (p_Ndemand > swardSoilNavailable + swardNFixed))
-            Nstress = swardSoilNavailable / (p_Ndemand - swardNFixed);
+        if (p_NdemandOpt > 0.0 && (p_NdemandOpt > swardSoilNavailable + swardNFixed))
+            Nstress = swardSoilNavailable / (p_NdemandOpt - swardNFixed);
 
         for (int s = 0; s < NumSpecies; s++)
         {
-            if (mySpecies[s].isLegume && (Nstress < 0.99))  //more fixation under Nstress
+            if (mySpecies[s].isLegume && (Nstress < 0.999))  //more fixation under Nstress
             {
                 double newNfix = mySpecies[s].MaxFix;
                 newNfix -= (mySpecies[s].MaxFix - mySpecies[s].MinFix) * Nstress;
@@ -3058,7 +3058,7 @@ public class AgPasture
         {
             if (mySpecies[s].NdemandLux <= mySpecies[s].Nremob + mySpecies[s].Nfix)
             {
-                // Nremob and Nfix are able to supply all N - note: Nfix = 0 for non-legumes
+                // Nremob and/or Nfix are able to supply all N
                 mySpecies[s].remob2NewGrowth = Math.Max(0.0, mySpecies[s].NdemandLux - mySpecies[s].Nfix);
                 mySpecies[s].Nremob -= mySpecies[s].remob2NewGrowth;
                 mySpecies[s].soilNdemand = 0.0;
@@ -3096,14 +3096,14 @@ public class AgPasture
                 }
                 else
                 {
-                    // soil cannot supply all N needed. Get the available N and partition between species
+                    // soil cannot supply all N needed. Uptake the available N and partition it between species
                     mySpecies[s].soilNuptake = swardSoilNavailable * MathUtility.Divide(mySpecies[s].soilNdemand, swardSoilNDemand, 0.0);
                     mySpecies[s].newGrowthN += mySpecies[s].soilNuptake;
 
-                    // check whether demand for optimum growth is satisfied
+                    // check whether demand for optimum growth has been satisfied
                     if (mySpecies[s].NdemandOpt > mySpecies[s].newGrowthN)
                     {
-                        // plant still needs more N for optimum growth (luxury uptake is ignored), check whether luxury N in plants can be used
+                        // plant still needs more N for optimum growth, check whether luxury N already in the plants can be used
                         double Nmissing = mySpecies[s].NdemandOpt - mySpecies[s].newGrowthN;
                         if (Nmissing <= mySpecies[s].NLuxury2 + mySpecies[s].NLuxury3)
                         {
