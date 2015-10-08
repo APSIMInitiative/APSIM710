@@ -4025,6 +4025,2260 @@ fallowin = 0</text>
       </manager>
     </folder>
   </folder>
+  <folder name="AgPasture management">
+      <folder name="OldManager">
+        <manager name="Regular cut and carry">
+          <ui>
+            <category type="category" description="Regular harvest or grazing" />
+            <AgPasture type="modulename" description=" Select the pasture name to harvest:">AgPasture</AgPasture>
+            <date1 type="date" description=" Enter the first harvest or grazing date:">01/07/1980</date1>
+            <date2 type="date" description=" Enter the final harvest or grazing date:">31/12/1980</date2>
+            <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description=" Select the amount type:">SetResidueAmount</amount_type>
+            <amount type="text" description=" Enter herbage amount (kg/ha):">1400</amount>
+            <interval type="text" description=" Enter the interval between harvest or grazing (days):">21</interval>
+          </ui>
+          <script>
+            <text>
+
+account = -1
+
+</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+account = account + 1
+returned_dm = 0
+removed_dm = 0
+returned_n =0
+removed_n =0
+
+if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]')) then
+   if (account = [interval]) then
+      account = 0
+      '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)
+      removed_dm = [AgPasture].HarvestWt
+      removed_n = [AgPasture].HarvestN
+   endif
+endif
+
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Regular harvest or grazing">
+          <ui>
+            <category type="category" description="Regular harvest or grazing" />
+            <AgPasture type="modulename" description=" Select the pasture name to harvest:">AgPasture</AgPasture>
+            <date1 type="date" description=" Enter the first harvest or grazing date:">01/07/1900</date1>
+            <date2 type="date" description=" Enter the final harvest or grazing date:">31/12/1980</date2>
+            <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description=" Select the amount type:">SetResidueAmount</amount_type>
+            <amount type="text" description=" Enter herbage amount (kg/ha):">1400</amount>
+            <interval type="text" description=" Enter the interval between harvest or grazing (days):">21</interval>
+            <category type="category" description="Parameters for returned material" />
+            <dm_frac type="text" description=" Fraction of nitrogen returned as excreta:">0.85</dm_frac>
+            <urine_n_frac type="text" description=" Fraction of returned nitrogen in urine:">0.6</urine_n_frac>
+          </ui>
+          <script>
+            <text>
+account = [interval] - 1
+</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+account = account + 1
+returned_dm = 0
+removed_dm = 0
+returned_n =0
+removed_n =0
+n_som = 0
+n_urine = 0
+
+if ((today &gt;= date('[date1]') and (today &lt;= date('[date2]')) then
+   if (account = [interval]) then
+      account = 0
+      '[AgPasture]' graze type = '[amount_type]', amount = [amount] (kg/ha)
+      removed_dm = [AgPasture].HarvestWt * [AgPasture].DefoliatedDigestibility
+      returned_dm = [AgPasture].HarvestWt * (1.0 - [AgPasture].DefoliatedDigestibility)
+
+      removed_n  = [AgPasture].HarvestN *(1.0 - [dm_frac])
+      returned_n = [AgPasture].HarvestN * [dm_frac]
+      n_som      = returned_n * (1.0 - [urine_n_frac])
+      n_urine    = returned_n *  [urine_n_frac]
+      n_urine1 = 0.7 * n_urine
+      n_urine2 = 0.3 * n_urine
+      'SurfaceOrganicMatter' add_surfaceom name = '[AgPasture]', type = RuminantDung_PastureFed, mass = returned_dm (kg/ha), n = n_som (kg/ha)
+      depthUrine = 0.5 * dlayer(1)
+      'fertiliser' apply amount =  n_urine1  (kg/ha), depth = depthUrine (mm), type = urea_n ()
+      depthUrine = dlayer(1) + 0.5 * dlayer(2)
+      'fertiliser' apply amount =  n_urine2  (kg/ha), depth = depthUrine (mm), type = urea_n ()
+   endif
+endif
+ </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Rotational cut and carry based on biomass">
+          <ui>
+            <category type="category" description="Harvest or grazing based on biomass" />
+            <AgPasture type="modulename" description=" Select the pasture name to harvest:">agpasture</AgPasture>
+            <date1 type="date" description=" Enter the first harvest or grazing date:">01/07/1900</date1>
+            <date2 type="date" description=" Enter the final harvest or grazing date:">31/12/2100</date2>
+            <upper_amount type="text" description=" Enter herbage anmount to start grazing (harvest)  (kg/ha):">2000</upper_amount>
+            <amount type="text" description=" Enter the amount to remove per day (kg/ha), type '-1' to remove all available herbage:">500</amount>
+            <lower_amount type="text" description=" Enter the herbage amount to stop grazing (residue, kg/ha):">1400</lower_amount>
+          </ui>
+          <script>
+            <text>
+
+continuegrazing = 0
+
+
+   </text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+returned_dm = 0
+removed_dm = 0
+returned_n =0
+removed_n =0
+
+if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]'))) then
+   if ([AgPasture].AboveGroundWt &gt; '[upper_amount]') then
+      continuegrazing = 1
+   endif
+
+   if (continuegrazing = 1) then
+      removable_amt  =  [AgPasture].AboveGroundWt - [lower_amount]
+      if ([amount] = -1 )  or ('[amount]' &gt; removable_amt ) then
+         daily_amt =  removable_amt
+         continuegrazing = 0
+      else
+         daily_amt = [amount]
+         continuegrazing = 1
+      endif
+      '[AgPasture]' graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)
+      removed_dm = [AgPasture].HarvestWt
+      removed_n = [AgPasture].HarvestN
+   endif
+endif
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Cut and carry on fixed dates">
+          <ui>
+            <category type="category" description="Harvest on given dates" />
+            <AgPasture type="modulename" description=" Select the pasture name to harvest:">AgPasture</AgPasture>
+            <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description=" Select the amount type:">SetResidueAmount</amount_type>
+            <amount type="text" description=" Enter herbage amount (kg/ha):">1400</amount>
+            <category type="category" description="Enter dates: (dd/mm/yyyy)" />
+            <date1 type="date" description="Date 1">15/07/1980</date1>
+            <date2 type="date" description="Date 2">10/08/1980</date2>
+            <date3 type="date" description="Date 3">01/10/1980</date3>
+            <date4 type="date" description="Date 4">22/10/1980</date4>
+            <date5 type="date" description="Date 5">16/11/1980</date5>
+            <date6 type="date" description="Date 6">05/12/1980</date6>
+            <date7 type="date" description="Date 7">31/12/1980</date7>
+            <date8 type="date" description="Date 8">25/01/1981</date8>
+            <date9 type="date" description="Date 9">25/02/1981</date9>
+            <date10 type="date" description="Date 10">30/03/1981</date10>
+            <date11 type="date" description="Date 11" />
+            <date12 type="date" description="Date 12" />
+          </ui>
+          <script>
+            <text>
+returned_dm = 0
+removed_dm = 0
+returned_n =0
+removed_n =0
+
+if (today = date('[date1]')) or (today = date('[date2]')) or (today = date('[date3]')) or
+   (today = date('[date4]')) or (today = date('[date5]')) or (today = date('[date6]')) or
+   (today = date('[date7]')) or (today = date('[date8]')) or (today = date('[date9]')) or
+   (today = date('[date10]')) or (today = date('[date11]')) or (today = date('[date12]')) then
+
+   '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)
+   removed_dm = [AgPasture].HarvestWt
+   removed_n = [AgPasture].HarvestN
+endif
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvest or grazing on fixed dates (with return)">
+          <ui>
+            <category type="category" description="Harvest on given dates" />
+            <AgPasture type="modulename" description=" Select the pasture name to harvest:">AgPasture</AgPasture>
+            <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description=" Select the amount type:">SetResidueAmount</amount_type>
+            <amount type="text" description=" Enter herbage amount (kg/ha):">1400</amount>
+            <category type="category" description="Parameters for returned material" />
+            <dm_frac type="text" description=" Fraction of nitrogen returned as excreta:">0.85</dm_frac>
+            <urine_n_frac type="text" description=" Fraction of returned nitrogen in urine:">0.6</urine_n_frac>
+            <category type="category" description="Enter dates: (dd/mm/yyyy)" />
+            <date1 type="date" description="Date 1">15/07/1980</date1>
+            <date2 type="date" description="Date 2">10/08/1980</date2>
+            <date3 type="date" description="Date 3">01/10/1980</date3>
+            <date4 type="date" description="Date 4">22/10/1980</date4>
+            <date5 type="date" description="Date 5">16/11/1980</date5>
+            <date6 type="date" description="Date 6">05/12/1980</date6>
+            <date7 type="date" description="Date 7">31/12/1980</date7>
+            <date8 type="date" description="Date 8">25/01/1981</date8>
+            <date9 type="date" description="Date 9">25/02/1981</date9>
+            <date10 type="date" description="Date 10">30/03/1981</date10>
+            <date11 type="date" description="Date 11" />
+            <date12 type="date" description="Date 12" />
+          </ui>
+          <script>
+            <text>
+returned_dm = 0
+removed_dm = 0
+returned_n =0
+removed_n =0
+n_som = 0
+n_urine = 0
+
+if (today = date('[date1]')) or (today = date('[date2]')) or (today = date('[date3]')) or
+   (today = date('[date4]')) or (today = date('[date5]')) or (today = date('[date6]')) or
+   (today = date('[date7]')) or (today = date('[date8]')) or (today = date('[date9]')) or
+   (today = date('[date10]')) or (today = date('[date11]')) or (today = date('[date12]')) then
+
+   '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)
+   removed_dm = [AgPasture].HarvestWt * [AgPasture].DefoliatedDigestibility
+   returned_dm = [AgPasture].HarvestWt * (1.0 - [AgPasture].DefoliatedDigestibility)
+   removed_n  = [AgPasture].HarvestN *(1.0 - [dm_frac])
+   returned_n = [AgPasture].HarvestN * [dm_frac]
+   n_som      = returned_n * (1.0 - [urine_n_frac])
+   n_urine    = returned_n *  [urine_n_frac]
+   n_urine1 = 0.7 * n_urine
+   n_urine2 = 0.3 * n_urine
+
+   n_urine1 = 0.7 * n_urine
+   n_urine2 = 0.3 * n_urine
+   'SurfaceOrganicMatter' add_surfaceom name = '[AgPasture]', type = RuminantDung_PastureFed, mass = returned_dm (kg/ha), n = n_som (kg/ha)
+   depthUrine = 0.5 * dlayer(1)
+   'fertiliser' apply amount =  n_urine1  (kg/ha), depth = depthUrine (mm), type = urea_n ()
+   depthUrine = dlayer(1) + 0.5 * dlayer(2)
+   'fertiliser' apply amount =  n_urine2  (kg/ha), depth = depthUrine (mm), type = urea_n ()
+endif
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="End pasture on a fixed date">
+          <ui>
+            <category type="category" description="Kill pasture on given date" />
+            <crop type="modulename" description=" Select the name of pasture to end:">AgPasture</crop>
+            <date type="date" description=" Enter the date to end the pasture (dd/mmm/yyyy):">10/07/1980</date>
+          </ui>
+          <script>
+            <text>
+if (today = date('[date]') then
+   [crop] KillCrop KillFracion = 0
+endif
+
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Sow pasture on a fixed date">
+          <ui>
+            <category type="category" description="Sowing pasture on a given date" />
+            <pasture type="modulename" description=" Select the pasture name to sow:">AgPasture</pasture>
+            <date type="text" description=" Enter sowing date (dd/mmm/yyyy):">01/10/1980</date>
+          </ui>
+          <script>
+            <text>! This is basicaly the original from Frank Li, slight modification to acount for any upgrades and to some outputs
+
+if (today = date('[date]') then
+    [pasture] sow
+endif
+                  </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <folder name="ManagerNet">
+        <manager2 name="Cut and carry at regular intervals">
+          <ui>
+            <Dummy1 type="category" description="Setting up a harvesting rotation for AgPasture" />
+            <CutPasture_StartDate type="ddmmmdate" description=" Enter the date to start the rotation (dd/mm/yyyy):">01/01/1900</CutPasture_StartDate>
+            <CutPasture_EndDate type="ddmmmdate" description=" Enter the date to end the rotation (dd/mm/yyyy):">31/12/2100</CutPasture_EndDate>
+            <Interval2Cut type="text" description=" Enter the interval between harvests (days):">21</Interval2Cut>
+            <RemoveAmountType type="list" listvalues="Setting DM amount to remove,Setting residual DM amount" description=" Choose what amount is being defined:">Setting residual DM amount</RemoveAmountType>
+            <HerbageAmount type="text" description=" Enter the herbage amount (kgDM/ha):">1400</HerbageAmount>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing rotation for AgPasture. All harvested material is carried away.
+// The rotation is valid between two given dates only, these don't need to be bounded to the simulation dates (start date is set to simulation start date, if prior to it).
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green)
+// This manager allows harvest on fixed intervals:
+//   Cut is allowed at given days only (set by start rotation date and then at regular intervals);
+//   Cut happens if existing DM is greater than ResidualDM;
+//   Cut is only allowed on the date selected, 'Can_Cut' is set to "no" at the end of the day;
+//   The amount is defined by either the residualDM (all above it is harvested) or a given amount is removed
+
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime CutPasture_StartDate;  //Date to start the cutting rotation
+   [Param] private DateTime CutPasture_EndDate;    //Date to end cutting rotation
+   [Param] private int Interval2Cut;               //The interval between cuts (days)
+   [Param] private string RemoveAmountType;        //The type of amount being defined (Setting DM amount to remove,Setting residual DM amount)
+   [Param] private double HerbageAmount ;          //The DM amount (kg/ha, DM above ground)
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;     //Today's date
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private double LowerThreshold;      //Minimum residual DM
+   private double MinimumFraction;     //Minimum fraction of given amount that still triggers a harvest
+   private int CutInterval;
+   private double ResidualDM;
+   private double AmountWanted;
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //Reset variables
+      CutInterval = Interval2Cut;
+      DaysAfterCut = CutInterval - 1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+      LowerThreshold = 500;   // assume a minimum of 500kgDM/ha
+      MinimumFraction = 0.1;  // assume that at least 10% of required amount should be available to trigger a harvest
+
+      //write messages on summary file
+      string myMessage1 = ", every " + CutInterval.ToString() + " days";
+      string myMessage2 = "     remove ";
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = 0.0;
+         myMessage2 += "all biomass down to residual DM (" + ResidualDM.ToString("#0") + " kgDM/ha)";
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+         myMessage2 += "a given amount (" + AmountWanted.ToString("#0") + " kgDM/ha)";
+      }
+      Console.WriteLine("");
+      Console.WriteLine("   Harvest rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_StartDate.ToString("dd/MM/yyyy") + " and " + CutPasture_EndDate.ToString("dd/MM/yyyy"));
+      Console.WriteLine("     rotation type: harvest at regular intervals" + myMessage1);
+      Console.WriteLine(myMessage2);
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest = 0.0;
+      double AmountHarvestable = 0.0;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      CutInterval = Interval2Cut;
+      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = Math.Max(0.0, PreHarvestDM - ResidualDM);
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+      }
+
+      //Decide whether cut is allowed:
+      if ((Today.Date &gt;= CutPasture_StartDate.Date) &amp;&amp; (Today.Date &lt;= CutPasture_EndDate.Date))
+      {
+         if (DaysAfterCut &gt;= CutInterval)
+         {
+            CutIsAllowed = true;
+            Can_Cut = "yes";
+         }
+         else
+         {
+            CutIsAllowed = false;
+            Can_Cut = "no";
+            //always reset CutIsAllowed
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            AmountHarvestable = Math.Max(0.0, PreHarvestDM - ResidualDM);
+            if (AmountHarvestable &gt;= AmountWanted * MinimumFraction)
+               Amount2Harvest = Math.Min(AmountWanted, AmountHarvestable);
+            else
+               Amount2Harvest = AmountWanted;
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingPlantWt;
+            }
+         }
+         else
+         {
+            Amount2Harvest = 0.0;
+            AmountHarvestable = 0.0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestWt;
+      harvested_n = MyAgPasture.HarvestN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Grazing at regular intervals">
+          <ui>
+            <Dummy1 type="category" description="Setting up a harvesting rotation for AgPasture" />
+            <CutPasture_StartDate type="ddmmmdate" description=" Enter the date to start the rotation (dd/mm/yyyy):">01/01/1900</CutPasture_StartDate>
+            <CutPasture_EndDate type="ddmmmdate" description=" Enter the date to end the rotation (dd/mm/yyyy):">31/12/2100</CutPasture_EndDate>
+            <Interval2Cut type="text" description=" Enter the interval between harvests (days):">21</Interval2Cut>
+            <RemoveAmountType type="list" listvalues="Setting DM amount to remove,Setting residual DM amount" description=" Choose what amount is being defined:">Setting residual DM amount</RemoveAmountType>
+            <HerbageAmount type="text" description=" Enter the herbage amount (kgDM/ha):">1400</HerbageAmount>
+            <Dummy3 type="category" description="Settings for dung/urine" />
+            <FracN2Remove type="text" description=" Enter fraction of N that is removed from the field (0-1):">0.15</FracN2Remove>
+            <UrineDepth type="text" description=" Enter the depth down to which urine will apllied (mm):">300</UrineDepth>
+            <FracN2Dung type="text" description=" Enter the proportion of N returned in dung (0-1):">0.4</FracN2Dung>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing rotation for AgPasture. It also handles the return of harvested material, as dung and urine.
+// The rotation is valid between two given dates only, these don't need to be bounded to the simulation dates (start date is set to simulation start date, if prior to it).
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green).
+// This manager allows harvest on fixed intervals:
+//   Cut is allowed at given days only (set by start rotation date and then at regular intervals);
+//   Cut happens if amount to remove is set and/or if existing DM is greater than ResidualDM;
+//   Cut is only allowed on the date selected, 'Can_Cut' is set to "no" at the end of the day;
+//
+// Removal of DM (carbon) is based on digestibility, while for N a fraction is removed
+// The DM and N to be returned as dung are added to surfaceOM 'RuminantDung_PastureFed'.
+// The partition of N between urine and dung is set by the user.
+// N urine is added as urea fertiliser, distributed from surface down to  a given depth. The proportion per layer decreases linearly with depth.
+
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime CutPasture_StartDate;  //Date to start the cutting rotation
+   [Param] private DateTime CutPasture_EndDate;    //Date to end cutting rotation
+   [Param] private int Interval2Cut;               //The interval between cuts, used if cut trigger type is by interval (days), (values will be interpolated using DoY)
+   [Param] private string RemoveAmountType;        //The type of amount being defined (Setting DM amount to remove,Setting residual DM amount)
+   [Param] private double HerbageAmount ;          //The DM amount (kg/ha, DM above ground)
+
+   [Param] private double FracN2Remove;            //Fraction of the N in the material cut that is removed from simulation (0-1)
+   [Param] private double UrineDepth;              //The depth down to which urine will be applied (mm), proportion applied per layer decrease with depth
+   [Param] private double FracN2Dung;              //The fraction of returned N that goes into dung, if return is as dung &amp; urine (0-1)
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+   [Link] private Fertiliser MyFertiliser;
+   [Link] private SurfaceOM MySurfaceOM;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;     //Today's date
+   [Input] private double[] dlayer;    //Today's day of year
+   private double LowerThreshold;      //Minimum residual DM
+   private double MinimumFraction;     //Minimum fraction of given amount that still triggers a harvest
+   private int CutInterval;
+   private double ResidualDM;
+   private double AmountWanted;
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kgN/ha")] public double NReturnedInDung;    //N returned as dung (SurfaceOM)
+   [Output][Units("kgN/ha")] public double NReturnedInUrine;   //N returned as urine (urea)
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private double[] FracLayer;         //The fraction of urine to be applied in each layer
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //Reset variables
+      CutInterval = Interval2Cut;
+      DaysAfterCut = CutInterval - 1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+      LowerThreshold = 500;   // assume a minimum of 500kgDM/ha
+      MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
+
+      //Check the fractions of DM ad N to remove
+      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      if ((FracN2Remove &lt; 0.0) || (FracN2Remove &gt; 1.0))
+      {
+         throw new Exception("Fraction of N to remove is out of bounds");
+      }
+      if ((FracN2Dung &lt; 0.0) || (FracN2Dung &gt; 1.0))
+      {
+         throw new Exception("Proportion of N to return as dung is out of bounds");
+      }
+
+      //compute the fraction of urine to be aplied per layer
+      FracLayer = new double[dlayer.Length];
+      double DepthFromSurface = 0.0;
+      double dltZ = 0.0;
+      for (int z = 0; z &lt; dlayer.Length;z++)
+      {
+         if(DepthFromSurface &lt; UrineDepth)
+         {
+            dltZ = Math.Min(dlayer[z], UrineDepth - DepthFromSurface);
+            FracLayer[z] = 2 * dltZ * (1 - ((DepthFromSurface + 0.5 * dltZ) / UrineDepth)) / UrineDepth;
+         }
+         DepthFromSurface += dlayer[z];
+      }
+
+      //write messages on summary file
+      string myMessage1 = ", every " + CutInterval.ToString() + " days";
+      string myMessage2 = "     remove ";
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = 0.0;
+         myMessage2 += "all biomass down to residual DM (" + ResidualDM.ToString("#0") + " kgDM/ha)";
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+         myMessage2 += "a given amount (" + AmountWanted.ToString("#0") + " kgDM/ha)";
+      }
+      Console.WriteLine("");
+      Console.WriteLine("   Harvest rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_StartDate.ToString("dd/MM/yyyy") + " and " + CutPasture_EndDate.ToString("dd/MM/yyyy"));
+      Console.WriteLine("     rotation type: harvest at regular intervals" + myMessage1);
+      Console.WriteLine(myMessage2);
+      Console.WriteLine("     fraction of harvested DM to return as dung: based on herbage digestibility");
+      myMessage2 = ((1.0 - FracN2Remove) * 100).ToString("#0.0") + "% (" + ((1.0 - FracN2Dung) * 100).ToString("#0.0") + "% of it as urine)";
+      Console.WriteLine("     fraction of harvested N to return as dung &amp; urine: " + myMessage2);
+      Console.WriteLine("     proportion of urine N to be added in each layer:");
+      myMessage1 = FracLayer[0].ToString("0.000");
+      for (int z = 1;z &lt; dlayer.Length;z++)
+      {
+         myMessage1 += ", " + FracLayer[z].ToString("0.000");
+      }
+      Console.WriteLine("      " + myMessage1);
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest = 0.0;
+      double AmountHarvestable = 0.0;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      NReturnedInDung = 0.0;
+      NReturnedInUrine = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      CutInterval = Interval2Cut;
+      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = Math.Max(0.0, PreHarvestDM - ResidualDM);
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+      }
+
+      //Decide whether cut is allowed:
+      if ((Today.Date &gt;= CutPasture_StartDate.Date) &amp;&amp; (Today.Date &lt;= CutPasture_EndDate.Date))
+      {
+         if (DaysAfterCut &gt;= CutInterval)
+         {
+            CutIsAllowed = true;
+            Can_Cut = "yes";
+         }
+         else
+         {
+            CutIsAllowed = false;
+            Can_Cut = "no";
+            //always reset CutIsAllowed
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            AmountHarvestable = Math.Max(0.0, PreHarvestDM - ResidualDM);
+            if (AmountHarvestable &gt;= AmountWanted * MinimumFraction)
+               Amount2Harvest = Math.Min(AmountWanted, AmountHarvestable);
+            else
+               Amount2Harvest = AmountWanted;
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               HandleResidues();
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingPlantWt;
+            }
+         }
+         else
+         {
+            Amount2Harvest = 0.0;
+            AmountHarvestable = 0.0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestWt;
+      harvested_n = MyAgPasture.HarvestN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+
+
+   private void HandleResidues()
+   {
+      // -- Residue management -------------------------------------------------------------------------
+
+      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      removed_dm = harvested_dm * FracDM2Remove;
+      removed_n = harvested_n * FracN2Remove;
+      returned_dm = harvested_dm - removed_dm;
+      returned_n = harvested_n - removed_n;
+
+      if (returned_dm &lt; 0.0)
+      {
+         throw new Exception("Return_DM value is negative");
+      }
+      if (returned_n &lt; 0.0)
+      {
+         throw new Exception("Return_N value is negative");
+      }
+
+      NReturnedInDung = returned_n * FracN2Dung;
+      NReturnedInUrine = Math.Max(0.0, returned_n - (returned_n * FracN2Dung));
+
+      if (NReturnedInDung &gt; returned_n)
+      {
+         throw new Exception("Amount of N to return as dung is larger than total return, check proportion or CN ratio");
+      }
+
+      if ((returned_dm &gt; 0.0) || (NReturnedInDung &gt; 0.0))
+      {
+         BiomassRemovedType SOMData = new BiomassRemovedType();
+         SOMData.crop_type = "RuminantDung_PastureFed";
+         SOMData.dm_type = new string[] { SOMData.crop_type };
+         SOMData.dlt_crop_dm = new float[] { (float) returned_dm };
+         SOMData.dlt_dm_n = new float[] { (float) NReturnedInDung };
+         SOMData.fraction_to_residue = new float[] { 1.0F };
+         MySurfaceOM.BiomassRemoved(SOMData);
+      }
+
+      if (NReturnedInUrine &gt; 0.0)
+      {
+         FertiliserApplicationType UrineData = new FertiliserApplicationType();
+         UrineData.Amount = (float) NReturnedInUrine;
+         UrineData.Depth = 10;   // mm
+         UrineData.Type = "urea_n";
+         MyFertiliser.Apply(UrineData);
+      }
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Cut and carry at target biomass">
+          <ui>
+            <Dummy1 type="category" description="Setting up a harvesting rotation for AgPasture" />
+            <CutPasture_StartDate type="ddmmmdate" description=" Enter the date to start the rotation (dd/mm/yyyy):">01/01/1900</CutPasture_StartDate>
+            <CutPasture_EndDate type="ddmmmdate" description=" Enter the date to end the rotation (dd/mm/yyyy):">31/12/2100</CutPasture_EndDate>
+            <UpperThreshold type="text" description=" Enter the target standing biomass to trigger a harvest (kgDM/ha):">2000</UpperThreshold>
+            <LowerThreshold type="text" description=" Enter the residual standing biomass after cut (kgDM/ha):">1400</LowerThreshold>
+            <Amount2Cut type="text" description=" Enter the amount to remove each harvesting day (kgDM/ha), type '-1' to remove all available DM:">500</Amount2Cut>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing rotation for AgPasture. All harvested material is carried away.
+// The rotation is valid between two given dates only, these don't need to be bounded to the simulation dates (start date is set to simulation start date, if prior to it).
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green)
+// This manager allows harvest whenever a target standing DM is reached
+// After triggered, harvest of a given amount will happen untill DM is bellow the LowerThreshold (i.e. residual DM);
+
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime CutPasture_StartDate;  //Date to start the cutting rotation
+   [Param] private DateTime CutPasture_EndDate;    //Date to end cutting rotation
+   [Param] private double UpperThreshold;          //The standing biomass amount to trigger a cut(kg/ha, DM above ground)
+   [Param] private double LowerThreshold;          //The minimum residual DM amount left after cut (kg/ha, DM above ground)
+   [Param] private double Amount2Cut;              //The amount of DM to be removed at each cut, limited to residual DM (kg/ha, DM above ground)
+   //  Note: If Amount2Cut is negative, all biomass down to residual DM is removed in a single day
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;     //Today's date
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private double MinimumFraction;     //Minimum fraction of given amount that still triggers a harvest
+   private double TriggerDM;
+   private double ResidualDM;
+   private double AmountWanted;
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //Reset variables
+      DaysAfterCut = -1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+      TriggerDM = UpperThreshold;
+      ResidualDM = LowerThreshold;
+      MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
+
+      //write messages on summary file
+      string myMessage1 = ", cut when DM reaches " + TriggerDM + " kgDM/ha";
+      string myMessage2 = "     remove all biomass down to residual DM (" + ResidualDM.ToString("#0") + " kgDM/ha)";
+      if (Amount2Cut &gt; 0.0)
+      {
+         myMessage2 += ", " + Amount2Cut.ToString("#0.0") + "kg/ha per day";
+      }
+      Console.WriteLine("");
+      Console.WriteLine("   Harvest rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_StartDate.ToString("dd/MM/yyyy") + " and " + CutPasture_EndDate.ToString("dd/MM/yyyy"));
+      Console.WriteLine("     rotation type: target standing biomass" + myMessage1);
+      Console.WriteLine(myMessage2);
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest;
+      double AmountHarvestable;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      TriggerDM = UpperThreshold;
+      ResidualDM = LowerThreshold;
+      if (Amount2Cut &gt; 0.0)
+      {
+         AmountWanted = Amount2Cut;
+      }
+      else
+      {
+         AmountWanted = Math.Max(0.0, PreHarvestDM - ResidualDM);
+      }
+
+      //Decide whether cut is allowed:
+      if ((Today.Date &gt;= CutPasture_StartDate.Date) &amp;&amp; (Today.Date &lt;= CutPasture_EndDate.Date))
+      {
+         if (PreHarvestDM &gt;= TriggerDM)
+         {
+            CutIsAllowed = true;
+            Can_Cut = "yes";
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            AmountHarvestable = Math.Max(0.0, PreHarvestDM - ResidualDM);
+            if (AmountHarvestable &gt;= AmountWanted * MinimumFraction)
+               Amount2Harvest = Math.Min(AmountWanted, AmountHarvestable);
+            else
+               Amount2Harvest = AmountWanted;
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               if (PostHarvestDM - ResidualDM &lt;= AmountWanted * MinimumFraction)
+               {
+                  CutIsAllowed = false;
+                  Can_Cut = "no";
+               }
+            }
+         }
+         else
+         {
+            Amount2Harvest = 0.0;
+            AmountHarvestable = 0.0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestWt;
+      harvested_n = MyAgPasture.HarvestN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Cut and carry on given dates">
+          <ui>
+            <Dummy1 type="category" description="Harvesting AgPasture on given dates" />
+            <CutPasture_Dates type="ddmmyyyy" description=" Enter the dates for each harvest (dd/mm/yyyy or dd-mmm): ">15/07/1980  10/08/1980  01/10/1980  22/10/1980  16/11/1980  05/12/1980  31/12/1980  25/01/1981  25/02/1981  30/03/1981  02/05/1981</CutPasture_Dates>
+            <RemoveAmountType type="list" listvalues="Setting DM amount to remove,Setting residual DM amount" description=" Choose what amount is being defined:">Setting residual DM amount</RemoveAmountType>
+            <HerbageAmount type="text" description=" Enter the herbage amount (kgDM/ha):">1400</HerbageAmount>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing rotation for AgPasture. All harvested material is carried away.
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green).
+// Harvest is allowed only at given dates, but only happens if there is enough biomass
+// The amount to remove is defined by either the residualDM (all above it is harvested) or a given amount is removed
+//
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private string[] CutPasture_Dates;      //Dates to harvest
+   [Param] private string RemoveAmountType;        //The type of amount being defined (Setting DM amount to remove,Setting residual DM amount)
+   [Param] private double HerbageAmount ;          //The DM amount (kg/ha, DM above ground)
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;     //Today's date
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private int NumCuts;                //The number of cuttings to be performed
+   private int nCut;                   //Counter for the number of cuttings
+   private DateTime[] GivenDates;      //Dates given for each cut
+   private double LowerThreshold;      //Minimum residual DM
+   private double MinimumFraction;     //Minimum fraction of given amount that still triggers a harvest
+   private double ResidualDM;
+   private double AmountWanted;
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //set up the array with dates
+      NumCuts = CutPasture_Dates.Length;
+      GivenDates = new DateTime[NumCuts];
+      for (int i = 0;i &lt; NumCuts;i++)
+      {
+         GivenDates[i] = DateTime.Parse(CutPasture_Dates[i]);
+      }
+
+      //Reset variables
+      DaysAfterCut = -1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+      nCut = 0;
+      LowerThreshold = 500;   // assume a minimum of 500kgDM/ha
+      MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
+
+      //write messages on summary file
+      string myMessage1 = "harvest triggered on given dates";
+      string myMessage2 = "     remove ";
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = 0.0;
+         myMessage2 += "all biomass down to residual DM (" + ResidualDM.ToString("#0") + " kgDM/ha)";
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+         myMessage2 += "a given amount (" + AmountWanted.ToString("#0") + " kgDM/ha)";
+      }
+      Console.WriteLine("");
+      Console.WriteLine("   Harvest rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_Dates[0] + " and " + CutPasture_Dates[NumCuts - 1]);
+      Console.WriteLine("     rotation type: " + myMessage1);
+      Console.WriteLine(myMessage2);
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest = 0.0;
+      double AmountHarvestable = 0.0;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = Math.Max(0.0, PreHarvestDM - ResidualDM);
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+      }
+
+      //Decide whether cut is allowed:
+      if (nCut &lt; NumCuts)
+      {
+         if (Today.Date == GivenDates[nCut].Date)
+         {
+            CutIsAllowed = true;
+            Can_Cut = "yes";
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            AmountHarvestable = Math.Max(0.0, PreHarvestDM - ResidualDM);
+            if (AmountHarvestable &gt;= AmountWanted * MinimumFraction)
+               Amount2Harvest = Math.Min(AmountWanted, AmountHarvestable);
+            else
+               Amount2Harvest = AmountWanted;
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               CutIsAllowed = false;
+               Can_Cut = "no";
+               nCut += 1;
+            }
+         }
+         else
+         {
+            Amount2Harvest = 0;
+            AmountHarvestable = 0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestWt;
+      harvested_n = MyAgPasture.HarvestN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Grazing on given dates">
+          <ui>
+            <Dummy1 type="category" description="Harvesting AgPasture on given dates" />
+            <CutPasture_Dates type="ddmmyyyy" description=" Enter the dates for each harvest (dd/mm/yyyy or dd-mmm): ">15/07/1980  10/08/1980  01/10/1980  22/10/1980  16/11/1980  05/12/1980  31/12/1980  25/01/1981  25/02/1981  30/03/1981  02/05/1981</CutPasture_Dates>
+            <RemoveAmountType type="list" listvalues="Setting DM amount to remove,Setting residual DM amount" description=" Choose what amount is being defined:">Setting residual DM amount</RemoveAmountType>
+            <HerbageAmount type="text" description=" Enter the herbage amount (kgDM/ha):">1400</HerbageAmount>
+            <Dummy3 type="category" description="Management of harvested material" />
+            <FracN2Remove type="text" description=" Enter fraction of N that is removed from the field (0-1):">0.15</FracN2Remove>
+            <UrineDepth type="text" description=" Enter the depth down to which urine is apllied (mm):">150</UrineDepth>
+            <FracN2Dung type="text" description=" Enter the proportion of N returned in dung (0-1):">0.4</FracN2Dung>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing of AgPasture on given dates, for. It also handles the return of harvested material.
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green).
+// All standing biomass will be removed down to residual DM (LowerThreshold);
+//
+// Removal of DM (carbon) is based on digestibility, while for N a fraction is removed
+// The DM and N to be returned as dung are added to surfaceOM 'RuminantDung_PastureFed'.
+// The partition of N between urine and dung is set by the user.
+// N urine is added as urea fertiliser, distributed from surface down to  a given depth. The proportion per layer decreases linearly with depth.
+//
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private string[] CutPasture_Dates;      //Dates to harvest
+   [Param] private string RemoveAmountType;        //The type of amount being defined (Setting DM amount to remove,Setting residual DM amount)
+   [Param] private double HerbageAmount ;          //The DM amount (kg/ha, DM above ground)
+
+   [Param] private double FracN2Remove;            //Fraction of the N in the material cut that is removed from simulation (0-1)
+   [Param] private double UrineDepth;              //The depth down to which urine will be applied (mm), proportion applied per layer decrease with depth
+   [Param] private double FracN2Dung;              //The fraction of returned N that goes into dung, if return is as dung &amp; urine (0-1)
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+   [Link] private Fertiliser MyFertiliser;
+   [Link] private SurfaceOM MySurfaceOM;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;    //Today's date
+   [Input] private double[] dlayer;   //Today's day of year
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kgN/ha")] public double NReturnedInDung;    //N returned as dung (SurfaceOM)
+   [Output][Units("kgN/ha")] public double NReturnedInUrine;   //N returned as urine (urea)
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private double[] FracLayer;         //The fraction of urine to be applied in each layer
+   private int NumCuts;                //The number of cuttings to be performed
+   private int nCut;                   //Counter for the number of cuttings
+   private DateTime[] GivenDates;      //Dates given for each cut
+   private double LowerThreshold;      //Minimum residual DM
+   private double MinimumFraction;     //Minimum fraction of given amount that still triggers a harvest
+   private double ResidualDM;
+   private double AmountWanted;
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //set up the array with dates
+      NumCuts = CutPasture_Dates.Length;
+      GivenDates = new DateTime[NumCuts];
+      for (int i = 0;i &lt; NumCuts;i++)
+      {
+         GivenDates[i] = DateTime.Parse(CutPasture_Dates[i]);
+      }
+
+      //Reset variables
+      DaysAfterCut = -1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+      nCut = 0;
+      LowerThreshold = 500;   // assume a minimum of 500kgDM/ha
+      MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
+
+      //Check the fractions of DM ad N to remove
+      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      if ((FracN2Remove &lt; 0.0) || (FracN2Remove &gt; 1.0))
+      {
+         throw new Exception("Fraction of N to remove is out of bounds");
+      }
+      if ((FracN2Dung &lt; 0.0) || (FracN2Dung &gt; 1.0))
+      {
+         throw new Exception("Proportion of N to return as dung is out of bounds");
+      }
+
+
+      //compute the fraction of urine to be aplied per layer
+      FracLayer = new double[dlayer.Length];
+      double DepthFromSurface = 0.0;
+      double dltZ = 0.0;
+      for (int z = 0; z &lt; dlayer.Length;z++)
+      {
+         if(DepthFromSurface &lt; UrineDepth)
+         {
+            dltZ = Math.Min(dlayer[z], UrineDepth - DepthFromSurface);
+            FracLayer[z] = 2 * dltZ * (1 - ((DepthFromSurface + 0.5 * dltZ) / UrineDepth)) / UrineDepth;
+         }
+         DepthFromSurface += dlayer[z];
+      }
+
+      //write messages on summary file
+      string myMessage1 = "harvest triggered on given dates";
+      string myMessage2 = "     remove ";
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = 0.0;
+         myMessage2 += "all biomass down to residual DM (" + ResidualDM.ToString("#0") + " kgDM/ha)";
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+         myMessage2 += "a given amount (" + AmountWanted.ToString("#0") + " kgDM/ha)";
+      }
+      Console.WriteLine("");
+      Console.WriteLine("   Harvest rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_Dates[0] + " and " + CutPasture_Dates[NumCuts - 1]);
+      Console.WriteLine("     rotation type: " + myMessage1);
+      Console.WriteLine(myMessage2);
+      Console.WriteLine("     fraction of harvested DM to return as dung: based on herbage digestibility");
+      myMessage2 = ((1.0 - FracN2Remove) * 100).ToString("#0.0") + "% (" + ((1.0 - FracN2Dung) * 100).ToString("#0.0") + "% of it as urine)";
+      Console.WriteLine("     fraction of harvested N to return as dung &amp; urine: " + myMessage2);
+      Console.WriteLine("     proportion of urine N to be added in each layer:");
+      myMessage1 = FracLayer[0].ToString("0.000");
+      for (int z = 1;z &lt; dlayer.Length;z++)
+      {
+         myMessage1 += ", " + FracLayer[z].ToString("0.000");
+      }
+      Console.WriteLine("      " + myMessage1);
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest = 0.0;
+      double AmountHarvestable = 0.0;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      NReturnedInDung = 0.0;
+      NReturnedInUrine = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = Math.Max(0.0, PreHarvestDM - ResidualDM);
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+      }
+
+      //Decide whether cut is allowed:
+      if (nCut &lt; NumCuts)
+      {
+         if (Today.Date == GivenDates[nCut].Date)
+         {
+            CutIsAllowed = true;
+            Can_Cut = "yes";
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            AmountHarvestable = Math.Max(0.0, PreHarvestDM - ResidualDM);
+            if (AmountHarvestable &gt;= AmountWanted * MinimumFraction)
+               Amount2Harvest = Math.Min(AmountWanted, AmountHarvestable);
+            else
+               Amount2Harvest = AmountWanted;
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               HandleResidues();
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               CutIsAllowed = false;
+               Can_Cut = "no";
+               nCut += 1;
+            }
+         }
+         else
+         {
+            Amount2Harvest = 0;
+            AmountHarvestable = 0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestWt;
+      harvested_n = MyAgPasture.HarvestN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+
+
+   private void HandleResidues()
+   {
+      // -- Residue management -------------------------------------------------------------------------
+
+      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      removed_dm = harvested_dm * FracDM2Remove;
+      removed_n = harvested_n * FracN2Remove;
+      returned_dm = harvested_dm - removed_dm;
+      returned_n = harvested_n - removed_n;
+
+      if (returned_dm &lt; 0.0)
+      {
+         throw new Exception("Return_DM value is negative");
+      }
+      if (returned_n &lt; 0.0)
+      {
+         throw new Exception("Return_N value is negative");
+      }
+
+      NReturnedInDung = returned_n * FracN2Dung;
+      NReturnedInUrine = Math.Max(0.0, returned_n - NReturnedInDung);
+
+      if (NReturnedInDung &gt; returned_n)
+      {
+         throw new Exception("Amount of N to return as dung is larger than total return, check proportion or CN ratio");
+      }
+
+      if ((returned_dm &gt; 0.0) || (NReturnedInDung &gt; 0.0))
+      {
+         BiomassRemovedType SOMData = new BiomassRemovedType();
+         SOMData.crop_type = "RuminantDung_PastureFed";
+         SOMData.dm_type = new string[] { SOMData.crop_type };
+         SOMData.dlt_crop_dm = new float[] { (float) returned_dm };
+         SOMData.dlt_dm_n = new float[] { (float) NReturnedInDung };
+         SOMData.fraction_to_residue = new float[] { 1.0F };
+         MySurfaceOM.BiomassRemoved(SOMData);
+      }
+
+      if (NReturnedInUrine &gt; 0)
+      {
+         FertiliserApplicationType UrineData = new FertiliserApplicationType();
+         UrineData.Amount = (float) NReturnedInUrine;
+         UrineData.Depth = 10;   // mm
+         UrineData.Type = "urea_n";
+         MyFertiliser.Apply(UrineData);
+      }
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Kill AgPasture">
+          <ui>
+            <Dummy1 type="category" description="Kill off an instance of AgPasture" />
+            <KillPasture_Date type="ddmmmdate" description=" Enter the date to kill the pasture (dd/mm/yyyy): ">10/07/1980</KillPasture_Date>
+            <KillPasture_Name type="modulename" description=" Choose the instance of AgPasture to be killed:">AgPasture</KillPasture_Name>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager kills off AgPasture (stop it growing)
+
+//--&gt;  Last uptaded in: 01/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime KillPasture_Date;    //Date to kill off the pasture
+   [Param] private string KillPasture_Name;      //Name of the instance of AgPasture to be killed off
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private Paddock MyPaddock;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;   //Today's date
+
+   private AgPasture MyAgPasture;
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      Console.WriteLine("");
+      Console.WriteLine("   Kill AgPasture initialised");
+      Console.WriteLine("     " + KillPasture_Name + " will be killed off in " + KillPasture_Date.ToShortDateString());
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      //Decide whether to kill the pasture
+      if (Today.Date == KillPasture_Date.Date)
+      {
+         MyAgPasture = (AgPasture) MyPaddock.LinkByName(KillPasture_Name);
+         MyAgPasture.KillCrop(1.0F);
+      }
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Sow AgPasture">
+          <ui>
+            <Dummy1 type="category" description="Sowing an instance of AgPasture" />
+            <SowPasture_Date type="ddmmmdate" description=" Enter the date to sow the pasture (dd/mm/yyyy): ">01/10/1980</SowPasture_Date>
+            <SowPasture_Name type="modulename" description=" Choose the instance of AgPasture to sow:">AgPasture</SowPasture_Name>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sow AgPasture (allows it to grow)
+
+//--&gt;  Last uptaded in: 01/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime SowPasture_Date;    //Date to sow the pasture
+   [Param] private string SowPasture_Name;      //The name of the instance of AgPasture to be sown
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private Paddock MyPaddock;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;   //Today's date
+
+   private AgPasture MyAgPasture;
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      Console.WriteLine("");
+      Console.WriteLine("   Sow AgPasture initialised");
+      Console.WriteLine("     " + SowPasture_Name + " will be swon in " + SowPasture_Date.ToShortDateString());
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      //Decide whether is time to sow the pasture
+      if (Today.Date == SowPasture_Date.Date)
+      {
+         MyAgPasture = (AgPasture) MyPaddock.LinkByName(SowPasture_Name);
+         SowType SowData = new SowType();
+         MyAgPasture.Sow(SowData);
+      }
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="ApplyFertiliserAfterHarvest">
+          <ui>
+            <Dummy1 type="category" description="Rules for applying fertiliser following pasture harvest" />
+            <AllowFertiliser type="yesno" description=" Allow fertiliser rules?">yes</AllowFertiliser>
+            <Fertilise_StartDate type="text" description=" Start of the period for fertiliser applications (dd-mmm):">01-Aug</Fertilise_StartDate>
+            <Fertilise_EndDate type="text" description=" End of the period for fertiliser applications (dd-mmm):">15-May</Fertilise_EndDate>
+            <NApplyDelay type="text" description=" Number of days after pasture harvest to apply fertiliser:">2</NApplyDelay>
+            <Dummy2 type="category" description="Nitrogen fertiliser parameters" />
+            <FertType type="list" listvalues="Urea,NH4N,NO3N,Ammonium nitrate" description=" Choose the type of fertiliser to apply:">Urea</FertType>
+            <FertAmount type="text" description=" Nitrogen rate to apply (kgN/ha):">25</FertAmount>
+            <FertDepth type="text" description=" Depth of fertiliser application (mm):">2</FertDepth>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up the application of fertiliser N following pasture harvest. A delay after harvest can be defined (in days).
+// The rules apply for a window defined by start and end dates (inclusive)
+// Type of fertiliser, amount and depth can be set
+
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   [Param] private string AllowFertiliser;      //Flag whether this manager is enabled
+   [Param] private string Fertilise_StartDate;  //Start of period when fertiliser applications are allowed (dd-mmm)
+   [Param] private string Fertilise_EndDate;    //End of period when fertiliser applications are allowed (dd-mmm)
+   [Param] private int NApplyDelay;             //Number of days after harvest which fertiliser is applied
+   [Param] private string FertType;             //Type of fertiliser N to apply (Urea,NH4N,NO3N,Ammonium nitrate)
+   [Param] private double FertAmount;           //Amount of fertiliser to aplly (kgN/ha)
+   [Param] private double FertDepth;            //Depth to apply the fertiliser (mm)
+
+   [Link] private AgPasture MyPasture;
+   [Link] private Fertiliser MyFert;
+
+   [Input] private DateTime Today;
+
+   private bool AllowFertiliserApplication;
+   private DateTime StartDateNApply;
+   private DateTime EndDateNApply;
+   private int DaysAfterGraze;
+   private string TypeFert;
+
+   [EventHandler] public void OnInitialised()
+   {
+      //Parse the dates in date format
+      StartDateNApply = DateTime.Parse(Fertilise_StartDate);
+      EndDateNApply = DateTime.Parse(Fertilise_EndDate);
+
+      AllowFertiliserApplication = AllowFertiliser.ToLower() == "yes";
+
+      // Check type of fertiliser n to apply
+      if (FertType.ToLower() == "urea")
+         TypeFert = "urea_n";
+      else if (FertType.ToLower() == "nh4n")
+         TypeFert = "nh4_n";
+      else if (FertType.ToLower() == "no3n")
+         TypeFert = "no3_n";
+      else if (FertType.ToLower() == "ammonium nitrate")
+         TypeFert = "nh4no3";
+      else
+         throw new Exception(" type of fertiliser is not recognised");
+
+      DaysAfterGraze = -1;
+      Console.WriteLine("");
+      Console.WriteLine("   Manager will apply fertiliser " + NApplyDelay + " days after grazing");
+      Console.WriteLine("   During the period between " + StartDateNApply.ToString("dd MMMM") + " and " + EndDateNApply.ToString("dd MMMM"));
+      Console.WriteLine("");
+   }
+
+   [EventHandler] public void OnPrepare()
+   {
+      if (AllowFertiliserApplication &amp;&amp; isBetween(Today, StartDateNApply, EndDateNApply))
+      {  // we are within the period for fertiliser rules
+         if ( DaysAfterGraze == NApplyDelay)
+         {
+            ApplyFert();
+         }
+      }
+   }
+
+   [EventHandler] public void OnPost()
+   {
+      if(MyPasture.HarvestWt &gt; 0.0)
+      {
+         DaysAfterGraze = 0;
+      }
+      else
+      {
+         DaysAfterGraze += 1;
+      }
+   }
+
+   private void ApplyFert()
+   {
+      FertiliserApplicationType FertData = new FertiliserApplicationType();
+      FertData.Amount = (float) FertAmount;
+      FertData.Type = TypeFert;
+      FertData.Depth = (float) FertDepth;
+      MyFert.Apply(FertData);
+   }
+
+
+   private bool isBetween(DateTime theDate, DateTime startDate, DateTime endDate)
+   {
+      // Check whether theDate is between two dates (ignores year)
+
+      bool result = false;
+
+      if (startDate &gt; endDate)
+      { // period crosses over the end of the year
+         result = (theDate.DayOfYear &gt;= startDate.DayOfYear) | (theDate.DayOfYear &lt;= endDate.DayOfYear);
+      }
+      else
+      { // period is in the middle of the year
+         result = (theDate.DayOfYear &gt;= startDate.DayOfYear) &amp;&amp; (theDate.DayOfYear &lt;= endDate.DayOfYear);
+      }
+
+      return result;
+   }
+}
+</text>
+        </manager2>
+        <manager2 name="Harvesting AgPasture">
+          <ui>
+            <Dummy1 type="category" description="Setting up a harvesting rotation for AgPasture" />
+            <CutPasture_StartDate type="ddmmmdate" description=" Enter the date to start the rotation (dd/mm/yyyy):">01/01/1900</CutPasture_StartDate>
+            <CutPasture_EndDate type="ddmmmdate" description=" Enter the date to end the rotation (dd/mm/yyyy):">31/12/2100</CutPasture_EndDate>
+            <Dummy2 type="category" description="Parameters defining the interval and amount to harvest" />
+            <CutTriggerType type="list" listvalues="Fixed interval,Target interval,Target standing biomass" description=" Choose the trigger type, defines when harvests can occur:">Fixed interval</CutTriggerType>
+            <Intervals2Cut type="text" description="   If trigger is interval between harvests, enter its value (days):">21</Intervals2Cut>
+            <UpperThresholds type="text" description="   If trigger is the sward standing biomass, enter the amount (kgDM/ha):">2800</UpperThresholds>
+            <RemoveAmountType type="list" listvalues="Set amount,Target amount,Given amounts down to residual DM,All herbage down to residual DM" description=" Choose how the amount to harvest will be defined:">All herbage down to residual DM</RemoveAmountType>
+            <Amounts2Cut type="text" description="   If setting an amount, enter the value to harvest at each cut (kgDM/ha):">185</Amounts2Cut>
+            <MinimumFraction type="text" description="      For target amount, enter the fraction of the target below which harvest is ignored (0-1):">0.33</MinimumFraction>
+            <LowerThresholds type="text" description="   Enter the minimum residual standing biomass after cut (kgDM/ha):">1400</LowerThresholds>
+            <Dummy3 type="category" description="Management of harvested material" />
+            <ResidueTreatmentType type="list" listvalues="Return as residue,Return as dung &amp; urine" description=" Choose the treatment type for the harvested material:">Return as residue</ResidueTreatmentType>
+            <DMRemovalOption type="list" listvalues="Based on herbage digestibility,type a fraction (0-1)" description=" Enter fraction of DM that is removed from the field (0-1):">1.0</DMRemovalOption>
+            <FracN2Remove type="text" description=" Enter fraction of N that is removed from the field (0-1):">1.0</FracN2Remove>
+            <Dummy4 type="category" description="   If returning residues as dung &amp; urine" />
+            <UrineDepth type="text" description="    Enter the depth down to which urine will apllied (mm):">150</UrineDepth>
+            <NinDungChoice type="list" listvalues="Set the proportion returned,Define the C:N ratio" description="    Choose how the N content in dung is defined:">Set the proportion returned</NinDungChoice>
+            <FracN2Dung type="text" description="      If setting the proportion of N returned in dung, enter the value (0-1):">0.4</FracN2Dung>
+            <CNratioDung type="text" description="      If defining the C:N ratio of dung, enter the value (approx. 10 to 20):">0.0</CNratioDung>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing rotation for AgPasture. It also handles the return of harvested material.
+// The rotation is valid between two given dates only, these don't need to be bounded to the simulation dates (start date is set to simulation start date, if prior to it).
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green).
+// Whether harvest can happen or not is evaluated in the first day (always), and thereof evaluations follow a trigger, varying for rotation types.
+// + Cut trigger types:
+//  - Fixed interval:
+//     Cut is allowed at given days only (set by start rotation date and then at regular intervals);
+//     Cut happens if the existing DM harvestable meets the amount required (HarvestAmount). If amount to remove is set then LowerThreshold is ignored;
+//     Cut is only allowed on the date selected, 'Can_Cut' is set to "no" at the end of the day;
+//  - Target interval:
+//     Cut is allowed from given days (begins at start rotation date and at regular intervals after last cut);
+//     Cut happens only if existing DM is greater than the residual DM (LowerThreshold), thus the amount harvested may be smaller than the value set (HarvestAmount);
+//     Cut is allowed from the date selected until something is harvested (i.e. amount harvestable is greater then a minimum value), only then 'Can_Cut' is set to "no";
+//  - Target standing biomass:
+//     Cut is allowed when existing DM reaches the target value (UpperThreshold);
+//     Cut always happens (unless UpperThreshold is bellow the LowerThreshold, i.e. residual DM);
+//     Cut is allowed until something is harvested (this can take few days, according to remove options), 'Can_Cut' is then set to "no";
+//
+// + Remove amount options:
+//  - Set amount: The amount to remove is fixed, if this amount is not available, no cut is performed;
+//  - Target amount: The amount is the smallest of the given target value and difference between existing DM and the LowerThreshold (residual DM);
+//   » To avoid harvesting very small amounts, a minimum fraction of the target amount can be defined. If the existing amount is below that fraction the harvest is ignored.
+//  - Given amounts down to residual DM: Amount to remove in a given day is given (this can be reduced as it is limited to the difference to the minimum residual DM). 
+//     However, harvest only stops when standing DM reaches the LowerThreshold.  The minimum fraction to remove is also applied here to avoid very small harvest amounts;
+//  - All herbage down to residual DM: Amount to remove is the difference between existing DM and the minimum residual DM (LowerThreshold);
+//
+// + Residue management options:
+//  - Return as residue: A fraction of the DM harvested (plus the N on it) is added, as grass residue, to the surfaceOM module;
+//  - Return as dung &amp; urine: A fraction of the amount harvested is returned to the soil as evenly distributed urine (urea) and dung;
+//     This is a very simplified approach where the fractions of DM (i.e. carbon) and N to be removed are set separately.
+//     The fraction of dry matter (or carbon) to be removed can be set (0-1) or allowed to be calculated based on herbage digestibility.
+//     The fraction of N that is removed from the field should be given, the remaining is returned.
+//     The partition of N between urine and dung is set by the user by defining how N in dung is computed.
+//     The DM and N to be returned as dung are added to surfaceOM as 'RuminantDung_PastureFed'.
+//     N urine is added as urea fertiliser, distributed from surface down to a given depth. The proportion per layer decreases linearly with depth.
+//  + Defining the N content in dung:
+//    - Set proportion returned: A fraction of N not removed from the field is returned in the dung. The proportion returned as dung should be given.
+//    - Define the C:N ratio: The C:N ratio for dung can be defined. Note that this option may alter the amount returned as urine (to ensure mass balance).
+
+// » The values for few parameters can be entered as an array, these are interpreted as defining the rotation within a year, so the first value is assumed to be for 01/Jan,
+//    the last value is for 31/Dec, and the values in between are spread evenly over the year. The value of the parameter for each day of the year is calculated
+//    dynamically by linear interpolation.  The parameters that can be set up as arrays are:
+//    - Interval between harvests (Interval2Cut)
+//    - The DM amount to trigger a harvest (UpperThreshold)
+//    - The amount to remove on each harvest (Amount2Cut)
+//    - The residual DM after harvest (LowerThreshold)
+
+//--&gt;  Last updated in: 05/Oct/2015 ..................
+// - developed by R.Cichota
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime CutPasture_StartDate;  //Date to start the cutting rotation
+   [Param] private DateTime CutPasture_EndDate;    //Date to end cutting rotation
+
+   [Param] private string CutTriggerType;          //The cut trigger type (Fixed interval,Target interval,Target standing biomass)
+   [Param] private double[] Intervals2Cut;         //The interval between cuts, used if cut trigger type is by interval (days), (values will be interpolated using DoY)
+   [Param] private double[] UpperThresholds;       //The standing biomass amount to trigger a cut, if cut type is target biomass (kg/ha, standing DM [leaf+stem/sheath]), (values will be interpolated using DoY)
+
+   [Param] private string RemoveAmountType;        //The way to compute how much pasture is cut (Set amount,Target amount,Given amounts down to residual DM, All herbage down to residual DM)
+   [Param] private double[] Amounts2Cut;           //The amount of DM to be removed at each cut, limited to residual DM (LowerThreshold) (kg/ha, DM above ground), (values will be interpolated using DoY)
+   [Param] private double MinimumFraction;         //The minimum fraction of harvest amount that is meaningful, below which harvest is ignored (for target amount)
+   [Param] private double[] LowerThresholds;       //The minimum residual DM amount left after cut (kg/ha, DM above ground), (values will be interpolated using DoY)
+
+   [Param] private string ResidueTreatmentType;    //The treatment to the material cut (Return as residue,Return as dung &amp; urine)
+   [Param] private string DMRemovalOption;         //The option to define DM to remove (Based on herbage digestibility,type a fraction (0-1))
+   [Param] private double FracN2Remove;            //Fraction of the N in the material cut that is removed from simulation (0-1)
+
+   [Param] private double UrineDepth;              //The depth down to which urine will be applied (mm), proportion applied per layer decrease with depth
+   [Param] private string NinDungChoice;           //The way N in dung is defined (Set proportion returned,Set CN ratio)
+   [Param] private double FracN2Dung;              //The fraction of returned N that goes into dung, if return is as dung &amp; urine (0-1)
+   [Param] private double CNratioDung;             //The C:N ratio of dung, if return is as dung and urine (~10-20)
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+   [Link] private Fertiliser MyFertiliser;
+   [Link] private SurfaceOM MySurfaceOM;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;     //Today's date
+   [Input] private double[] dlayer;    //Today's day of year
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kgN/ha")] public double NReturnedInDung;    //N returned as dung (SurfaceOM)
+   [Output][Units("kgN/ha")] public double NReturnedInUrine;   //N returned as urine (urea)
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+   [Output][Units("kg/ha")] public double ResidualDM;          //Today's residual DM
+   [Output][Units("kg/ha")] public double TriggerDM;           //Today's trigger DM
+   [Output][Units("kg/ha")] public double HarvestAmount;       //Today's DM amount to harvest
+   [Output][Units("days")] public int CutInterval;             //Todays cut interval
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private int[] LowerThresholdDays;   //The DoY for each value of lower threshold
+   private int[] UpperThresholdDays;   //The DoY for each value of upper threshold
+   private int[] Amount2HarvestDays;   //The DoY for each amount to cut given
+   private int[] CutIntervalDays;      //The DoY for each given cut interval
+   private double[] FracLayer;         //The fraction of urine to be applied in each layer
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //Set the arrays with days
+      LowerThresholdDays = setDays(LowerThresholds.Length);
+      UpperThresholdDays = setDays(UpperThresholds.Length);
+      Amount2HarvestDays = setDays(Amounts2Cut.Length);
+      CutIntervalDays = setDays(Intervals2Cut.Length);
+
+      //Reset variables
+      CutInterval = (int) InterpolateVals(Today.DayOfYear, CutIntervalDays, Intervals2Cut);
+      ResidualDM = InterpolateVals(Today.DayOfYear, LowerThresholdDays, LowerThresholds);
+      TriggerDM = InterpolateVals(Today.DayOfYear, UpperThresholdDays, UpperThresholds);
+      HarvestAmount = InterpolateVals(Today.DayOfYear, Amount2HarvestDays, Amounts2Cut);
+      DaysAfterCut = CutInterval - 1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+
+      //The fraction of DM to remove
+      // - DMRemovalOption can be a value (0-1 = FracDM2Remove) or a string, which tell us that FracDM2Remove is based on digestibility
+      if (DMRemovalOption.Contains("digestibility"))
+      {
+         FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      }
+      else
+      {
+         try
+         {
+            FracDM2Remove = Convert.ToDouble(DMRemovalOption);
+            if ((FracDM2Remove &lt; 0.0) || (FracDM2Remove &gt; 1.0))
+            {
+               throw new Exception("Fraction of DM to remove is out of bounds");
+            }
+         }
+         catch
+         {
+            throw new Exception("Fraction of DM to remove is not valid");
+         }
+      }
+
+      //The fraction of N to remove
+      if ((FracN2Remove &lt; 0.0) || (FracN2Remove &gt; 1.0))
+      {
+         throw new Exception("Fraction of N to remove is out of bounds");
+      }
+
+      //How to return residues (DM and N)
+      if (ResidueTreatmentType.Contains("urine"))
+      {
+         if (NinDungChoice.Contains("proportion"))
+         {
+            if ((FracN2Dung &lt; 0.0) || (FracN2Dung &gt; 1.0))
+            {
+               throw new Exception("Proportion of N to return as dung is out of bounds");
+            }
+         }
+         else if (NinDungChoice.Contains("CN ratio"))
+         {
+            if ((CNratioDung &lt; 0.0) || (CNratioDung &gt; 50.0))
+            {
+               throw new Exception("C:N ratio of dung is out of bounds");
+            }
+         }
+         else
+         {
+            throw new Exception("Choice for setting N content in dung is not valid");
+         }
+      }
+
+      //compute the fraction of urine to be applied per layer
+      if (ResidueTreatmentType.Contains("urine"))
+      {
+         FracLayer = new double[dlayer.Length];
+         double DepthFromSurface = 0.0;
+         double dltZ = 0.0;
+         for (int z = 0; z &lt; dlayer.Length;z++)
+         {
+            if(DepthFromSurface &lt; UrineDepth)
+            {
+               dltZ = Math.Min(dlayer[z], UrineDepth - DepthFromSurface);
+               FracLayer[z] = 2 * dltZ * (1 - ((DepthFromSurface + 0.5 * dltZ) / UrineDepth)) / UrineDepth;
+            }
+            DepthFromSurface += dlayer[z];
+         }
+      }
+      //Check whether choices are allowed and prepare messages
+      string myMessage1;
+      string myMessage2 = "     remove ";
+      switch (CutTriggerType.ToLower())
+      {
+         case "fixed interval":
+            if (RemoveAmountType.ToLower().Contains("amount"))
+            {
+               if (RemoveAmountType.ToLower().Contains("residual"))
+               {
+                  myMessage2 += RemoveAmountType.ToLower() + " (amount = " + HarvestAmount.ToString("#0") + " kg/ha/day, residual DM = " + ResidualDM.ToString("#0") + " kg/ha)";
+               }
+               else
+               {
+                  myMessage2 += RemoveAmountType.ToLower() + " = " + HarvestAmount.ToString("#0") + " kg/ha";
+               }
+            }
+            else
+            {
+               myMessage2 += RemoveAmountType.ToLower() + " (" + ResidualDM + " kg/ha)";
+            }
+            myMessage1 = ", cut only every " + CutInterval.ToString() + " days";
+            break;
+         case "target interval":
+            if (RemoveAmountType.ToLower().Contains("amount"))
+            {               if (RemoveAmountType.ToLower().Contains("residual"))
+               {
+                  myMessage2 += RemoveAmountType.ToLower() + " (amount = " + HarvestAmount.ToString("#0") + " kg/ha/day, residual DM = " + ResidualDM.ToString("#0") + " kg/ha)";
+               }
+               else
+
+               {
+                  myMessage2 += RemoveAmountType.ToLower() + " = " + HarvestAmount.ToString("#0") + " kg/ha";
+               }
+            }
+            else
+            {
+               myMessage2 += RemoveAmountType.ToLower() + " = (" + ResidualDM + " kg/ha)";
+            }
+            myMessage1 = ", cut every " + CutInterval.ToString() + " days, or when possible";
+            break;
+         case "target standing biomass":
+            if (RemoveAmountType.ToLower().Contains("amount"))
+            {
+               if (RemoveAmountType.ToLower().Contains("residual"))
+               {
+                  myMessage2 += RemoveAmountType.ToLower() + " (amount = " + HarvestAmount.ToString("#0") + " kg/ha/day, residual DM = " + ResidualDM.ToString("#0") + " kg/ha)";
+               }
+               else
+               {
+                  myMessage2 += RemoveAmountType.ToLower() + " = " + HarvestAmount.ToString("#0") + " kg/ha";
+               }
+            }
+            else
+            {
+               myMessage2 += RemoveAmountType.ToLower() + " = (" + ResidualDM + " kg/ha)";
+            }
+            myMessage1 = ", cut when DM reaches " + TriggerDM + " kgDM/ha";
+            break;
+         default:
+            throw new Exception("Cut trigger type is not valid");
+      }
+
+      //write messages on summary file
+      Console.WriteLine("");
+      Console.WriteLine("   Harvesting rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_StartDate.ToString("dd/MM/yyyy") + " and " + CutPasture_EndDate.ToString("dd/MM/yyyy"));
+      Console.WriteLine("     rotation type: " + CutTriggerType.ToLower() + myMessage1);
+      Console.WriteLine(myMessage2);
+      if (DMRemovalOption.Contains("digestibility"))
+      {
+         myMessage1 = DMRemovalOption.ToLower();
+      }
+      else
+      {
+         myMessage1 = ((1.0 - FracDM2Remove) * 100).ToString("#0.0") + "%";
+      }
+      Console.WriteLine("     fraction of harvested DM to " + ResidueTreatmentType.ToLower() + ": " + myMessage1);
+      myMessage1 = ((1.0 - FracN2Remove) * 100).ToString("#0.0") + "%";
+      if (FracN2Remove &lt; 0.999999)
+      {
+         myMessage1 += " (" + ((1.0 - FracN2Dung) * 100).ToString("#0.0") + "% of it as urine)";
+      }
+      Console.WriteLine("     fraction of harvested N to " + ResidueTreatmentType.ToLower() + ": " + myMessage1);
+      if (ResidueTreatmentType.Contains("urine"))
+      {
+         Console.WriteLine("     proportion of urine N to be added in each layer:");
+         myMessage1 = FracLayer[0].ToString("0.000");
+         for (int z = 1;z &lt; dlayer.Length;z++)
+         {
+            myMessage1 += ", " + FracLayer[z].ToString("0.000");
+         }
+         Console.WriteLine("      " + myMessage1);
+      }
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest;
+      double AmountHarvestable;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      NReturnedInDung = 0.0;
+      NReturnedInUrine = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      CutInterval = (int) InterpolateVals(Today.DayOfYear, CutIntervalDays, Intervals2Cut);
+      ResidualDM = InterpolateVals(Today.DayOfYear, LowerThresholdDays, LowerThresholds);
+      TriggerDM = InterpolateVals(Today.DayOfYear, UpperThresholdDays, UpperThresholds);
+      HarvestAmount = InterpolateVals(Today.DayOfYear, Amount2HarvestDays, Amounts2Cut);
+      PreHarvestDM = MyAgPasture.StandingPlantWt;
+
+      //Decide whether cut is allowed:
+      if ((Today.Date &gt;= CutPasture_StartDate.Date) &amp;&amp; (Today.Date &lt;= CutPasture_EndDate.Date))
+      {
+         switch (CutTriggerType.ToLower())
+         {
+            case "fixed interval":
+               //Always send an CutIsAllowed if interval is right, it will be reset in the end of the day
+               if (DaysAfterCut &gt;= CutInterval)
+               {
+                  CutIsAllowed = true;
+               }
+               break;
+            case "target interval":
+               //Always send an CutIsAllowed if interval is right, it will be reset only if cut actually happens (depends on amount type)
+               if (DaysAfterCut &gt;= CutInterval)
+               {
+                  CutIsAllowed = true;
+               }
+               break;
+            case "target standing biomass":
+               //Send an CutIsAllowed if DM amount is above the target (TriggerDM/UpperThreshold), it will be reset if cut actually happens
+               if (PreHarvestDM &gt;= TriggerDM)
+               {
+                  CutIsAllowed = true;
+               }
+               break;
+         }
+
+         //The use of these avoid (or at least reduces) problems when two managers are used in the same simulation
+         if (CutIsAllowed)
+         {
+            Can_Cut = "yes";
+         }
+         else
+         {
+            Can_Cut = "no";
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            switch (RemoveAmountType.ToLower())
+            {
+               case "set amount":
+                  Amount2Harvest = HarvestAmount;
+                  if (CutTriggerType.ToLower() == "fixed interval")
+                  {
+                     AmountHarvestable = Math.Min(MyAgPasture.HarvestableWt, PreHarvestDM);
+                  }
+                  else
+                  {
+                     AmountHarvestable = Math.Min(MyAgPasture.HarvestableWt, Math.Max(0.0, PreHarvestDM - ResidualDM));
+                  }
+                  break;
+               case "target amount":
+                  Amount2Harvest = Math.Min(Math.Max(MinimumFraction * HarvestAmount, PreHarvestDM - ResidualDM), HarvestAmount);
+                  AmountHarvestable = Math.Min(MyAgPasture.HarvestableWt, Math.Max(0.0, PreHarvestDM - ResidualDM));
+                  break;
+               case "given amounts down to residual dm":
+                  Amount2Harvest = Math.Min(Math.Max(MinimumFraction * HarvestAmount, PreHarvestDM - ResidualDM), HarvestAmount);
+                  AmountHarvestable = Math.Min(MyAgPasture.HarvestableWt, Math.Max(0.0, PreHarvestDM - ResidualDM));
+                  break;
+               case "all herbage down to residual dm":
+                  Amount2Harvest = Math.Max(0.0, PreHarvestDM - ResidualDM);
+                  AmountHarvestable = Math.Min(MyAgPasture.HarvestableWt, Math.Max(0.0, PreHarvestDM - ResidualDM));
+                  break;
+               default:
+                  throw new Exception("Option to compute DM amount to harvest is not valid");
+            }
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               HandleResidues();
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               if (RemoveAmountType.Contains("amount"))
+               { // check whether remaining amount is significant
+                  if (Math.Abs(PostHarvestDM - ResidualDM) &lt; MinimumFraction * HarvestAmount)
+                  {
+                     CutIsAllowed = false;
+                  }
+               }
+               else
+               {
+                  CutIsAllowed = false;
+               }
+            }
+            if (CutTriggerType.ToLower() == "fixed interval")
+            {
+               //always reset CutIsAllowed for fixed interval
+               DaysAfterCut = 0;
+               CutIsAllowed = false;
+            }
+
+         }
+         else
+         {
+            Amount2Harvest = 0.0;
+            AmountHarvestable = 0.0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestWt;
+      harvested_n = MyAgPasture.HarvestN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+
+
+   private void HandleResidues()
+   {
+      // -- Residue management -------------------------------------------------------------------------
+
+      if (DMRemovalOption.Contains("digestibility"))
+      {
+         FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      }
+      removed_dm = harvested_dm * FracDM2Remove;
+      removed_n = harvested_n * FracN2Remove;
+      returned_dm = harvested_dm - removed_dm;
+      returned_n = harvested_n - removed_n;
+
+      if (returned_dm &lt; 0.0)
+      {
+         throw new Exception("Return_DM value is negative");
+      }
+      if (returned_n &lt; 0.0)
+      {
+         throw new Exception("Return_N value is negative");
+      }
+
+      if (ResidueTreatmentType.ToLower() == "return as residue")
+      {
+         if (FracDM2Remove &lt; 1.0)
+         {
+            BiomassRemovedType SOMData = new BiomassRemovedType();
+            SOMData.crop_type = "grass";
+            SOMData.dm_type = new string[] { SOMData.crop_type };
+            SOMData.dlt_crop_dm = new float[] { (float) returned_dm };
+            SOMData.dlt_dm_n = new float[] { (float) returned_n };
+            SOMData.fraction_to_residue = new float[] { 1.0F };
+            MySurfaceOM.BiomassRemoved(SOMData);
+         }
+      }
+      else if (ResidueTreatmentType.ToLower() == "return as dung &amp; urine")
+      {
+         // It is advised that dung and urine return should be done using another manager or modules, such as 'UrinePatch'
+
+         if (NinDungChoice.Contains("proportion"))
+         {
+            NReturnedInDung = returned_n * FracN2Dung;
+         }
+         else if (NinDungChoice.Contains("CN ratio"))
+         {
+            NReturnedInDung = returned_dm / CNratioDung;
+         }
+         NReturnedInUrine = Math.Max(0.0, returned_n - NReturnedInDung);
+
+         if (NReturnedInDung &gt; returned_n)
+         {
+            throw new Exception("Amount of N to return as dung is larger than total return, check proportion or CN ratio");
+         }
+
+         if ((returned_dm &gt; 0.0) || (NReturnedInDung &gt; 0.0))
+         {
+            BiomassRemovedType SOMData = new BiomassRemovedType();
+            SOMData.crop_type = "RuminantDung_PastureFed";
+            SOMData.dm_type = new string[] { SOMData.crop_type };
+            SOMData.dlt_crop_dm = new float[] { (float) returned_dm };
+            SOMData.dlt_dm_n = new float[] { (float) NReturnedInDung };
+            SOMData.fraction_to_residue = new float[] { 1.0F };
+            MySurfaceOM.BiomassRemoved(SOMData);
+         }
+
+         if (NReturnedInUrine &gt; 0.0)
+         {
+            FertiliserApplicationType UrineData = new FertiliserApplicationType();
+            UrineData.Amount = (float) NReturnedInUrine;
+            UrineData.Depth = 10;   // mm
+            UrineData.Type = "urea_n";
+            MyFertiliser.Apply(UrineData);
+         }
+      }
+      else
+      {
+         throw new Exception("Residue management type is not valid");
+      }
+   }
+
+   private int[] setDays(int NumDates)
+   {
+      //Define the day of year for each value on am array, given the array's length - first value, day=1; last value day = 365; dates in between spread evenly (rounded)
+      int[] xArray;
+      if (NumDates &lt; 366)
+      {
+         xArray = new int[NumDates];
+         xArray[0] = 1;
+         if (NumDates &gt; 1)
+         {
+            xArray[NumDates - 1] = 365;
+            if (NumDates &gt; 2)
+            {
+               for (int i = 1; i &lt; NumDates - 1; i++)
+               {
+                  xArray[i] = 365 * i / (NumDates);
+               }
+            }
+         }
+      }
+      else
+      {
+         throw new Exception("Number of items on CoverTarget greater than maximum allowed (365)");
+      }
+
+      return xArray;
+   }
+
+   private double InterpolateVals(int my_x, int[] xArray, double[] yArray)
+   {
+      //Find out the value corresponding to my_x in the function described by the x and y arrays
+      double my_y = 0.0;
+      int iN = xArray.Length - 1;
+      if (my_x &lt;= xArray[0])
+      {
+         //values below x[0] are set to y[0]
+         my_y = yArray[0];
+      }
+      else if (my_x &gt;= xArray[iN])
+      {
+         //value above x(n) are set to y(n)
+         my_y = yArray[iN];
+      }
+      else
+      {
+         //find the nearest neighbours and interpolate (linear)
+         for (int i = 1; i &lt;= iN; i++)
+         {
+            if (my_x &lt;= xArray[i])
+            {
+               my_y = yArray[i - 1] + ((my_x - xArray[i - 1]) * (yArray[i] - yArray[i - 1]) / (xArray[i] - xArray[i - 1]));
+               i = xArray.Length;
+            }
+         }
+      }
+
+      return my_y;
+   }
+}
+</text>
+        </manager2>
+      </folder>
+  </folder>
   <folder name="TCL Manager">
     <tclmanager name="Empty Manager">
       <rule name="Logic">
@@ -5468,400 +7722,6 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
       <event>init</event>
     </script>
   </RLink>
-  <folder name="AgPasture management">
-    <manager name="Regular cut and remove (no return)">
-      <ui>
-        <category description="Regular harvest or grazing" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter pasture type">agpasture</AgPasture>
-        <date1 type="date" description="Enter the first harvest or grazing date">1/7/1995</date1>
-        <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Select the amount type">SetResidueAmount</amount_type>
-        <amount type="text" description="Enter herbage amount (kg/ha)">1250</amount>
-        <interval type="text" description="Enter the intervals between harvest or grazing (days)">14</interval>
-      </ui>
-      <script name="end_of_day">
-        <text><![CDATA[account = account + 1
-   if ( (today = date('[date1]')) or 
-         (today >date('[date1]') and account = [interval] ) ) then
-                 account = 0
-                '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)             
-    endif
-           
-
-                  
-
-   ]]></text>
-        <event>end_of_day</event>
-      </script>
-      <script name="init">
-        <text>account = 0
-   somMass = 0
-   somN = 0
-   urineN =0</text>
-        <event>init</event>
-      </script>
-    </manager>
-    <manager name="Cut and remove on fixed dates (no return)">
-      <ui>
-        <category description="Harvest" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter crop name">agpasture</AgPasture>
-        <amount type="text" description="Enter harvest amount (kg/ha):">1000</amount>
-        <type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Enter harvest amount  type">SetResidueAmount</type>
-        <date1 type="date" description="Enter harvest date 1">14/10/1966</date1>
-        <date2 type="date" description="Enter harvest date 2:">28/10/1966</date2>
-      </ui>
-      <script name="end_of_day">
-        <text>
-           if (today = date('[date1]') ) then
-                '[AgPasture]' graze type = '[type]', amount = [amount]
-            endif
-           
-           if (today = date('[date2]') ) then
-               '[AgPasture]' graze type ='[type]', amount =[amount]
-           endif
-                  
-
-   </text>
-        <event>end_of_day</event>
-      </script>
-    </manager>
-    <manager name="Regular harvest or grazing (with return)">
-      <ui>
-        <category description="Regular harvest or grazing" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter pasture type">agpasture</AgPasture>
-        <date1 type="date" description="Enter the first harvest or grazing date">1/7/1900</date1>
-        <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Select the amount type">SetResidueAmount</amount_type>
-        <amount type="text" description="Enter herbage amount (kg/ha)">1000</amount>
-        <interval type="text" description="Enter the intervals between harvest or grazing (days)">21</interval>
-        <category description="Material returns" type="category" />
-        <dm_frac type="text" description="Fraction of nitrogen returned as excreta">0.85</dm_frac>
-        <urine_n_frac type="text" description="Fraction of returned nitrogen in urine">0.6</urine_n_frac>
-        <urine_depth type="text" description="Urine deposit depth (mm)">150</urine_depth>
-      </ui>
-      <script name="end_of_day">
-        <text><![CDATA[account = account + 1
-   dm_som = 0
-   dm_removed = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   n_urine1 = 0
-   n_urine2 = 0
-   if ( (today = date('[date1]')) or
-        (today >date('[date1]') and account = [interval] )) then
-                 account = 0
-                 '[AgPasture]' graze type = '[amount_type]', amount = [amount] (kg/ha)
-                 digest = DefoliatedDigestibility                 
-                 dm_som = HarvestWt * (1-digest)
-                           
-                 n_removed  = HarvestN *(1.0-[dm_frac])
-                 n_returned = HarvestN * [dm_frac]
-                 n_som      = n_returned * ( 1.0 - [urine_n_frac] )
-                 n_urine    = n_returned *  [urine_n_frac]  
-                 n_urine1 = 0.6 * n_urine
-                 n_urine2 = 0.4 * n_urine
-                  'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
-                 'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
-                 'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-    endif
-    
-           
-
-                  
-
-   ]]></text>
-        <event>end_of_day</event>
-      </script>
-      <script name="init">
-        <text>account = 0
-   </text>
-        <event>init</event>
-      </script>
-    </manager>
-    <manager name="Harvest or grazing on fixed dates (with return)">
-      <ui>
-        <category description="Harvest or grazeing" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Select pasture name">agpasture</AgPasture>
-        <amount type="text" description="Enter harvest amount (kg/ha):">1000</amount>
-        <amount_type type="list" listvalues="SetResidueAmount,SetRemoveAmount" description="Enter harvest amount  type">SetResidueAmount</amount_type>
-        <category description="Material returns" type="category" />
-        <dm_frac type="text" description="Fraction of nitrogen returned as excreta">0.85</dm_frac>
-        <urine_n_frac type="text" description="Fraction of returned nitrogen in urine">0.6</urine_n_frac>
-        <urine_depth type="text" description="Depth of returned nitrogen in soil profile (mm)">300</urine_depth>
-        <category description="Enter dates: (d/mm/yyyy)" type="category" />
-        <date1 type="date" description="Date 1">1/10/1990</date1>
-        <date2 type="date" description="Date 2">1/11/1990</date2>
-        <date3 type="date" description="Date 3">1/12/1990</date3>
-      </ui>
-      <script name="end_of_day">
-        <text>dm_som = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   n_urine1 = 0
-   n_urine2 = 0
-   if (today = date('[date1]')) or
-      (today = date('[date2]')) or
-      (today = date('[date3]'))then
-                 '[AgPasture]' graze type = '[amount_type]', amount = [amount] (kg/ha)
-                 digest = DefoliatedDigestibility                 
-                 dm_som = HarvestWt * (1-digest)
-                           
-                 n_removed  = HarvestN *(1.0-[dm_frac])
-                 n_returned = HarvestN * [dm_frac]
-                 n_som      = n_returned * ( 1.0 - [urine_n_frac] )
-                 n_urine    = n_returned *  [urine_n_frac]  
-                 n_urine1 = 0.6 * n_urine
-                 n_urine2 = 0.4 * n_urine
-                  'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
-                 'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
-                 'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-   endif
-   </text>
-        <event>end_of_day</event>
-      </script>
-    </manager>
-    <manager name="Rotational grazing with herbage mass between two limits">
-      <ui>
-        <category description="Regular harvest or grazing" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum, ryegrass,clover" description="Enter pasture type">agpasture</AgPasture>
-        <date1 type="date" description="Enter the first harvest or grazing date">1/7/1900</date1>
-        <upper_amount type="text" description="Enter herbage anmount to start grazing (harvest)  (kg/ha)">1800</upper_amount>
-        <amount type="text" description="Enter daily amount (kg/ha) or -1 for remove once to residee below">400</amount>
-        <lower_amount type="text" description="Enter herbage amount to stop grazing (residue, kg/ha)">1000</lower_amount>
-        <category description="Material returns" type="category" />
-        <dm_frac type="text" description="Fraction of nitrogen returned as excreta">0.85</dm_frac>
-        <urine_n_frac type="text" description="Fraction of returned nitrogen in urine">0.6</urine_n_frac>
-        <urine_depth type="text" description="Urine deposit depth (mm)">300</urine_depth>
-      </ui>
-      <script name="end_of_day">
-        <text><![CDATA[dm_som = 0
-   dm_removed = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   n_urine1 = 0
-   n_urine2 = 0
-
-   if ( today >= date('[date1]') )  then
-          if ( ( [AgPasture].AboveGroundWt  > '[upper_amount]' )  or  (  ( [AgPasture].AboveGroundWt > '[lower_amount]') and (continuegrazing = 1) ) ) then
-                 removable_amt  =  [AgPasture].AboveGroundWt - [lower_amount]               
-                 if ([amount] = -1 )  or ('[amount]' > removable_amt ) then
-                        daily_amt =  removable_amt 
-                        continuegrazing = 0
-                 else
-                        daily_amt = [amount]
-                        continuegrazing= 1
-                 endif      
-                 
-                 '[AgPasture]' graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)                
-                 digest = DefoliatedDigestibility                 
-                 dm_som = HarvestWt * (1-digest)                        
-                 n_removed  = HarvestN *(1.0-[dm_frac])
-                 n_returned = HarvestN * [dm_frac]
-                 n_som      = n_returned * ( 1.0 - [urine_n_frac] )
-                 n_urine    = n_returned *  [urine_n_frac]  
-                 n_urine1 = 0.6 * n_urine
-                 n_urine2 = 0.4 * n_urine
-                  'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
-                 'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
-                 'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-         endif
-    endif
-           
-
-                  
-
-   ]]></text>
-        <event>end_of_day</event>
-      </script>
-      <script name="init">
-        <text>account = 0
-   dm_som = 0
-   dm_removed = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   continuegrazing = 1
-   daily_amt = 0</text>
-        <event>init</event>
-      </script>
-    </manager>
-    <manager name="Rotation grazing with herbage mass between two limits-clover">
-      <ui>
-        <category description="Regular harvest or grazing" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass,clover" description="Enter pasture type">clover</AgPasture>
-        <date1 type="date" description="Enter the first harvest or grazing date">1/7/1900</date1>
-        <upper_amount type="text" description="Enter herbage anmount to start grazing (harvest)  (kg/ha)">600</upper_amount>
-        <amount type="text" description="Enter daily amount (kg/ha) or -1 for remove once to residee below">100</amount>
-        <lower_amount type="text" description="Enter herbage amount to stop grazing (residue, kg/ha)">300</lower_amount>
-        <category description="Material returns" type="category" />
-        <dm_frac type="text" description="Fraction of nitrogen returned as excreta">0.85</dm_frac>
-        <urine_n_frac type="text" description="Fraction of returned nitrogen in urine">0.6</urine_n_frac>
-        <urine_depth type="text" description="Urine deposit depth (mm)">300</urine_depth>
-      </ui>
-      <script name="end_of_day">
-        <text><![CDATA[dm_som = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   n_urine1 = 0
-   n_urine2 = 0
-
-   if ( today >= date('[date1]') )  then
-          if ( ( [AgPasture].AboveGroundWt  > '[upper_amount]' )  or  (  ( [AgPasture].AboveGroundWt > '[lower_amount]') and (continuegrazing = 1) ) ) then
-                 removable_amt  =  [AgPasture].AboveGroundWt - [lower_amount]               
-                 if ([amount] = -1 )  or ('[amount]' > removable_amt ) then
-                        daily_amt =  removable_amt 
-                        continuegrazing = 0
-                 else
-                        daily_amt = [amount]
-                        continuegrazing= 1
-                 endif      
-                 
-                '[AgPasture]' graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)  
-                 
-                 digest = DefoliatedDigestibility
-                 dm_som = HarvestWt * ([1-digest)
-                                    
-                 n_removed   = [AgPasture].HarvestN *(1-[dm_frac])
-                 n_returned  = [AgPasture].HarvestN * [dm_frac]
-                 n_som       = n_returned* ( 1 - [urine_n_frac] )
-                 n_urine     = n_returned *  [urine_n_frac]  
-                 n_urine1 = 0.6 * n_urine
-                 n_urine2 = 0.4 * n_urine
-                 'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
-                 'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
-                 'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-         endif
-    endif
-           
-
-                  
-
-   ]]></text>
-        <event>end_of_day</event>
-      </script>
-      <script name="init">
-        <text>account = 0
-   dm_som = 0
-   dm_removed = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   continuegrazing = 1
-   daily_amt = 0</text>
-        <event>init</event>
-      </script>
-    </manager>
-    <manager name="Rotation grazing with herbage mass between two limits-ryegrass">
-      <ui>
-        <category description="Regular harvest or grazing" type="category" />
-        <AgPasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass,clover" description="Enter pasture type">ryegrass</AgPasture>
-        <date1 type="date" description="Enter the first harvest or grazing date">1/7/1900</date1>
-        <upper_amount type="text" description="Enter herbage anmount to start grazing (harvest)  (kg/ha)">750</upper_amount>
-        <amount type="text" description="Enter daily amount (kg/ha) or -1 for remove once to residee below">100</amount>
-        <lower_amount type="text" description="Enter herbage amount to stop grazing (residue, kg/ha)">300</lower_amount>
-        <category description="Material returns" type="category" />
-        <dm_frac type="text" description="Fraction of nitrogen returned as excreta">0.85</dm_frac>
-        <urine_n_frac type="text" description="Fraction of returned nitrogen returned in urine">0.6</urine_n_frac>
-        <urine_depth type="text" description="Urine deposit depth (mm)">300</urine_depth>
-      </ui>
-      <script name="end_of_day">
-        <text><![CDATA[dm_som = 0
-   dm_removed = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   n_urine1 = 0
-   n_urine2 = 0
-
-   if ( today >= date('[date1]') )  then
-          if ( ( [AgPasture].AboveGroundWt  > '[upper_amount]' )  or  (  ( [AgPasture].AboveGroundWt > '[lower_amount]') and (continuegrazing = 1) ) ) then
-                 removable_amt  =  [AgPasture].AboveGroundWt - [lower_amount]               
-                 if ([amount] = -1 )  or ('[amount]' > removable_amt ) then
-                        daily_amt =  removable_amt 
-                        continuegrazing = 0
-                 else
-                        daily_amt = [amount]
-                        continuegrazing= 1
-                 endif      
-                 
-                '[AgPasture]'  graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)                                   
-                 dm_som = HarvestWt * ([1-digest)             
-                 
-                 n_removed   = [AgPasture].HarvestN *(1-[dm_frac])
-                 n_returned  = [AgPasture].HarvestN * [dm_frac]
-                 n_som       = n_returned* ( 1 - [urine_n_frac] )
-                 n_urine     = n_returned *  [urine_n_frac]  
-                 n_urine1 = 0.6 * n_urine
-                 n_urine2 = 0.4 * n_urine
-                 'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
-                 'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
-                 'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-         endif
-    endif
-           
-
-                  
-
-   ]]></text>
-        <event>end_of_day</event>
-      </script>
-      <script name="init">
-        <text>account = 0
-   dm_som = 0
-   dm_removed = 0
-   n_returned =0
-   n_removed =0
-   n_som = 0
-   n_urine = 0
-   n_urine1 =0
-   n_urine2 = 0
-   continuegrazing = 1
-   daily_amt = 0</text>
-        <event>init</event>
-      </script>
-    </manager>
-    <manager name="Sow pasture on a fixed date">
-      <ui>
-        <category description="Sowing criteria" type="category" />
-        <date type="text" description="Enter sowing date (d/mmm/yyyy) : ">1/07/1990</date>
-        <category description="Sowing parameters" type="category" />
-        <pasture type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter name of pasture to sow : ">agpasture</pasture>
-      </ui>
-      <script name="start_of_day">
-        <text>
-           if (today = date('[date]') then
-                 [pasture] sow 
-            endif
-                  </text>
-        <event>start_of_day</event>
-      </script>
-    </manager>
-    <manager name="End pasture on a fixed date">
-      <ui>
-        <category description="Harvesting criteria" type="category" />
-        <crop type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter name of pasture to end:">agpasture</crop>
-        <date type="date" description="Enter ending date :">10/12/1990</date>
-      </ui>
-      <script name="end_of_day">
-        <text>
-           if (today = date('[date]') then
-                 [crop]  KillCrop KillFracion = 0
-           endif
-
-               </text>
-        <event>end_of_day</event>
-      </script>
-    </manager>
-  </folder>
   <operations name="Operations Schedule" />
   <accum>
     <variable name="variable">variable</variable>
