@@ -122,6 +122,9 @@ public class Species
     internal double thetaPhoto;
 
     /// <summary>Some Description</summary>
+    internal double fractionPAR;
+
+    /// <summary>Some Description</summary>
     internal double lightExtCoeff;    //Light extinction coefficient
 
     /// <summary>Some Description</summary>
@@ -752,6 +755,12 @@ public class Species
     internal double glfN = 1.0;      //from N deficit
 
     /// <summary>Some Description</summary>
+    internal double RadnFactor;
+
+    /// <summary>Some Description</summary>
+    internal double CO2Factor;
+
+    /// <summary>Some Description</summary>
     internal double NcFactor;
 
     /// <summary>Some Description</summary>
@@ -1094,6 +1103,10 @@ public class Species
     /// <returns>Pot growth</returns>
     internal double DailyGrowthPot()
     {
+        CO2Factor = 1.0;
+        NcFactor = 1.0;
+        RadnFactor = 1.0;
+
         // annuals phenology
         if (isAnnual)
         {
@@ -1111,16 +1124,16 @@ public class Species
         double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
 
         double glfT = GFTemperature(Tmean);
-        double co2Effect = PCO2Effects();
+        CO2Factor = PCO2Effects();
         NcFactor = PmxNeffect();
 
-        double Pm_mean = Pm * glfT * co2Effect * NcFactor;
+        double Pm_mean = Pm * glfT * CO2Factor * NcFactor;
 
         glfT = GFTemperature(Tday);
-        double Pm_day = Pm * glfT * co2Effect * NcFactor;
+        double Pm_day = Pm * glfT * CO2Factor * NcFactor;
 
         double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
-        IL = 1.33333 * 0.5 * swardInterceptedRadn * swardLightExtCoeff * 1000000 / tau;
+        IL = swardLightExtCoeff * 1.33333 * 0.5 * swardInterceptedRadn * 1000000 / tau;
         double IL2 = IL / 2;                      //IL for early & late period of a day
 
         // Photosynthesis per LAI under full irradiance at the top of the canopy
@@ -1135,18 +1148,21 @@ public class Species
         // Upscaling from 'per LAI' to 'per ground area'
         double carbon_m2 = 0.5 * (Pl1 + Pl2) * swardCoverGreen * intRadnFrac / lightExtCoeff;
         carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
-        // tau: from second => day; 
+        // tau: from second => day;
         // 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
         // (12.0 / 44.0): from CO2 to carbohydrate (DM)
 
-        Pgross = 10000 * carbon_m2;                 //10000: 'kg/m^2' =>'kg/ha'
+        PotPhoto = 10000 * carbon_m2;                 //10000: 'kg/m^2' =>'kg/ha'
 
         //Add extreme temperature effects;
         ExtremeTempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
-        Pgross *= ExtremeTempStress;
+        Pgross = PotPhoto * ExtremeTempStress;
 
         // Consider generic growth limiting factor
         Pgross *= GLFGeneric;
+
+        // Radiation effects (for reporting purposes only)
+        RadnFactor = ((0.25 * Pl2) + (0.75 * Pl1)) / ((0.25 * Pm_mean) + (0.75 * Pm_day));
 
         // Respiration, maintenance and growth
         double Teffect = 0.0;
@@ -1194,54 +1210,62 @@ public class Species
     /// </summary>
     internal void DailyPotentialPhotosynthesis()
     {
-        bool someGrowth = true;
+        bool isGrowing = true;
 
         // annuals phenology
         if (isAnnual)
-            someGrowth = annualPhenology();
+            isGrowing = annualPhenology();
 
         // skip growth is plant hasn't germinated yet
         if (phenoStage == 0 || greenLAI == 0)
-            someGrowth = false;
+            isGrowing = false;
 
-        if (someGrowth)
+        // set basic values for growth factors
+        CO2Factor = 1.0;
+        NcFactor = 1.0;
+        RadnFactor = 1.0;
+
+        if (isGrowing)
         {
-            //Add temp effects to Pm
-            double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
-            double Tday = (0.25 * Tmean) + (0.75 * MetFile.MaxT);
+            //CO2 effects
+            CO2Factor = PCO2Effects();
 
-            double co2Effect = PCO2Effects();
+            //N concentration effects
             NcFactor = PmxNeffect();
-            double glfT = GFTemperature(Tmean);
 
-            double Pm_1 = Pm * glfT * co2Effect * NcFactor;
+            //Temperature effects
+            double glfTmean = GFTemperature(0.5 * (MetFile.MinT + MetFile.MaxT));
 
-            glfT = GFTemperature(Tday);
-            double Pm_2 = Pm * glfT * co2Effect * NcFactor;
+            //Potential photosynthetic rate at dawn/dusk (first and last quarter of the day)
+            double Pm1 = Pm * glfTmean * CO2Factor * NcFactor;
 
-            double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
-            //IL1 = 1.33333 * 0.5 * interceptedRadn * lightExtCoeff * 1000000 / tau;
-            //double IL2 = IL1 / 2;                      //IL for early & late period of a day
+            //Potential photosynthetic rate at brigth light (half of sunligth length, middle of day)
+            double Pm2 = Pm * glfTemp * CO2Factor * NcFactor;
 
-            // radiation  - include dusk/dawn effect
-            double iRadn = interceptedRadn * (4.0 / 3.0);  // MJ/m2.day
-            iRadn *= 1000000;                              // J/m2.day
-            iRadn /= tau;                                  // J/m2.s
+            //Sunlight length, converted to seconds
+            double tau = 3600 * MetFile.day_length;
 
-            // Intercepted radiation (J/m2 leaf/s)
-            IL = iRadn * lightExtCoeff * Math.Exp(-lightExtCoeff * greenLAI);
+            //Photosynthetic active radiation - include dusk/dawn effect
+            double interceptedPAR = interceptedRadn * fractionPAR * (4.0 / 3.0);
+            interceptedPAR *= 1000000 / tau;          // converted from MJ/m2.day to J/m2.s
 
-            // Photosynthesis per leaf area under full irradiance at the top of the canopy
-            double Pl1 = SingleLeafPhotosynthesis(iRadn, Pm_1);  // main part of the day
-            double Pl2 = SingleLeafPhotosynthesis(iRadn, Pm_2);  // early and late parts of the day
+            //Intercepted irradiance (J/m2 leaf/s)
+            IL = lightExtCoeff * interceptedPAR;
 
-            // Upscaling from 'per LAI' to 'per ground area'
-            double carbon_m2 = 0.5 * (Pl1 + Pl2);    // mgCO2/m2 leaf/s
+            //Photosynthesis per leaf area under full irradiance at the top of the canopy
+            double Pl1 = SingleLeafPhotosynthesis(0.5 * interceptedPAR, Pm1);   // early and late parts of the day
+            double Pl2 = SingleLeafPhotosynthesis(interceptedPAR, Pm2);         // main part of the day
+
+            // Radiation effects (for reporting purposes only)
+            RadnFactor = ((0.25 * Pl1) + (0.75 * Pl2)) / ((0.25 * Pm1) + (0.75 * Pm2));
+
+            //Canopy photosynthesis - Upscaling from 'per LAI' to 'per ground area'
+            double carbon_m2 = 0.5 * (Pl1 + Pl2);     // mgCO2/m2 leaf/s
             carbon_m2 *= coverGreen / lightExtCoeff;  // mgCO2/m2.s - land area
-            carbon_m2 *= 0.000001;                    // kgCO2/m2.s 
+            carbon_m2 *= 0.000001;                    // kgCO2/m2.s
             carbon_m2 *= tau;                         // kgCO2/m2.day
-            carbon_m2 *= 12.0 / 44.0;                 // kgDM/m2.day
-            PotPhoto = 10000 * carbon_m2;               // kgDM/ha.day
+            carbon_m2 *= 12.0 / 44.0;                 // kgC/m2.day
+            PotPhoto = 10000 * carbon_m2;             // kgC/ha.day
 
             //Add extreme temperature effects;
             double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
@@ -1280,7 +1304,7 @@ public class Species
         double Teffect = 0.0;
         if (LiveDM > 0.0)
         {
-            double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
+            double Tmean = 0.5 * (MetFile.MaxT + MetFile.MinT);
             if (Tmean > growthTmin)
             {
                 if (Tmean < growthTopt)
@@ -2090,9 +2114,10 @@ public class Species
     /// <returns>GLFtemp</returns>
     internal double GFTemperature(double T)
     {
-        if (photoPath == "C4") glfTemp = GFTempC4(T);
-        else glfTemp = GFTempC3(T);
-        return glfTemp;
+        if (photoPath == "C4")
+            return GFTempC4(T);
+        else
+            return GFTempC3(T);
     }
 
     /// <summary>

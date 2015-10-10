@@ -312,6 +312,11 @@ public class AgPasture
     private double[] thetaPhoto;
 
     [Param]
+    [Description("Fraction of radiation that is photosynthetic active")]
+    [Units("0-1")]
+    private double[] fractionPAR;
+
+    [Param]
     [Description("Light extinction coefficient")]
     [Units("")]
     private double[] lightExtCoeff;
@@ -1404,6 +1409,7 @@ public class AgPasture
         mySpecies[s1].growthEfficiency = growthEfficiency[s2];
         mySpecies[s1].alphaPhoto = alphaPhoto[s2];
         mySpecies[s1].thetaPhoto = thetaPhoto[s2];
+        mySpecies[s1].fractionPAR = fractionPAR[s2];
         mySpecies[s1].lightExtCoeff = lightExtCoeff[s2];
 
         // Temperature, general effect and extreme, heat and cold effects
@@ -1921,8 +1927,7 @@ public class AgPasture
     /// </remarks>
     private void DoNewPotentialGrowthEvent()
     {
-        double Tday = (0.75 * MetData.MaxT)
-                    + (0.25 * MetData.MinT);
+        double Tday = (0.75 * MetData.MaxT) + (0.25 * MetData.MinT);
         swardGLFTemp = 0.0;     // this will be the glfTemp output, as weighted average
         for (int s = 0; s < NumSpecies; s++)
         {
@@ -1932,11 +1937,12 @@ public class AgPasture
                 prop = MathUtility.Divide(mySpecies[s].dmgreen, swardGreenDM, 1.0);
             }
 
-            swardGLFTemp += mySpecies[s].GFTemperature(Tday) * prop;
+            mySpecies[s].glfTemp = mySpecies[s].GFTemperature(Tday);
+            swardGLFTemp += mySpecies[s].glfTemp * prop;
         }
 
-        double gft = 1;
-        if (Tday < 20)
+        double gft = 1.0;
+        if (Tday < 20.0)
         {
             gft = Math.Sqrt(swardGLFTemp);
         }
@@ -1949,7 +1955,7 @@ public class AgPasture
         // assumed in calculation of temperature effect on transpiration (in micromet).
         // Here we passed it as sqrt - (Doing so by a comparison of swardGLFTemp and that
         // used in wheat). Temperature effects on NET production of forage species in other models
-        // (e.g., grassgro) are not so significant for T = 10-20 degrees(C)
+        // (e.g., grassgro) are not so significant for T = 10-20 degrees(C) - [Frank Li]
 
         frgr = Math.Min(FVPD, gft);
         frgr = Math.Min(frgr, GLFgeneric);
@@ -2069,11 +2075,14 @@ public class AgPasture
     /// </summary>
     private void PartitionAboveGroundResources()
     {
-        // Intercepted solar Radn and ET were considered for whole sward, partition between species based on LAI and lightExtCoeff
+        // Intercepted solar Radn and ET were considered for whole sward, 
+        // partition between species is based on LAI and lightExtCoeff (i.e. cover)
         double sumkLAI = 0.0;
+        double sumCoverGreen = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
             sumkLAI += mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff;
+            sumCoverGreen += mySpecies[s].coverGreen;
         }
 
         for (int s = 0; s < NumSpecies; s++)
@@ -2086,6 +2095,8 @@ public class AgPasture
             else
             {
                 mySpecies[s].intRadnFrac = mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff / sumkLAI;
+                //mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumCoverGreen;
+
                 mySpecies[s].interceptedRadn = InterceptedRadn * mySpecies[s].intRadnFrac;
 
                 mySpecies[s].WaterDemand = swardWaterDemand * mySpecies[s].intRadnFrac;
@@ -4655,6 +4666,22 @@ public class AgPasture
     [Units("g/m^2")]
     public double stemsenescedwt { get { return StemDeadWt * 0.10; } }
 
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Plant potential photosynthetic rate")]
+    [Units("kgC/ha")]
+    public double PlantPotentialPhotosynthesis
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                result += mySpecies[s].PotPhoto;
+            return result;
+        }
+    }
+
     /// <summary>An output</summary>
     [Output]
     [Description("Plant potential carbon assimilation")]
@@ -4672,22 +4699,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Plant base potential photosynthetic rate")]
-    [Units("kgC/ha")]
-    public double PlantPotentialPhotosynthesis
-    {
-        get
-        {
-            double result = 0.0;
-            for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].PotPhoto;
-            return result;
-        }
-    }
-
-    /// <summary>An output</summary>
-    [Output]
-    [Description("Plant carbon loss by respiration")]
+    [Description("Plant carbon loss due to respiration")]
     [Units("kgC/ha")]
     public double PlantCarbonLossRespiration
     {
@@ -4717,7 +4729,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Potential plant growth, correct for extreme temperatures")]
+    [Description("Plant net potential growth (after respiration)")]
     [Units("kgDM/ha")]
     public double PlantPotentialGrowthWt
     {
@@ -4726,7 +4738,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Potential plant growth, correct for temperature and water")]
+    [Description("Potential plant growth (after water stress)")]
     [Units("kgDM/ha")]
     public double PlantGrowthNoNLimit
     {
@@ -4735,30 +4747,29 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Actual plant growth (before littering)")]
+    [Description("Actual plant growth (before tissue turnover)")]
     [Units("kgDM/ha")]
     public double PlantGrowthWt
     {
-        //dm_daily_growth, including roots & before littering
         get { return swardActualGrowth; }
     }
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Actual herbage (shoot) growth")]
+    [Description("Plant net growth (after tissue turnover)")]
     [Units("kgDM/ha")]
-    public double HerbageGrowthWt
+    public double PlantNetGrowthWt
     {
-        get { return swardHerbageGrowth; }
+        get { return swardActualGrowth - swardLitterDM - swardSenescedRootDM; }
     }
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Plant effective growth (actual minus tissue turnover)")]
+    [Description("Actual net herbage growth (above-ground only)")]
     [Units("kgDM/ha")]
-    public double PlantEffectiveGrowthWt
+    public double HerbageGrowthWt
     {
-        get { return swardActualGrowth - swardLitterDM - swardSenescedRootDM; }
+        get { return swardHerbageGrowth; }
     }
 
     /// <summary>An output</summary>
@@ -5442,23 +5453,6 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Plant growth limiting factor due to plant N concentration")]
-    [Units("0-1")]
-    public double GLFnConcentration
-    {
-        get
-        {
-            double result = 0.0;
-            for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].NcFactor * mySpecies[s].dmshoot;
-            if (AboveGroundWt > 0.0)
-                result /= AboveGroundWt;
-            return result;
-        }
-    }
-
-    /// <summary>An output</summary>
-    [Output]
     [Description("Dry matter allocated to roots")]
     [Units("kgDM/ha")]
     public double DMToRoots
@@ -5610,7 +5604,7 @@ public class AgPasture
         get { return swardGLFWater; }
     }
 
-    //**Stress factors
+    //** other growth stress factors
     /// <summary>An output</summary>
     [Output]
     [Description("Plant growth limiting factor due to temperature")]
@@ -5622,50 +5616,6 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Generic plant growth limiting factor related to soil fertility, user set")]
-    [Units("0-1")]
-    public double GLFsfert
-    {
-        get
-        {
-            double result = 0.0;
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                double prop = 1.0 / NumSpecies;
-                if (swardGreenDM > 0.0)
-                {
-                    prop = mySpecies[s].dmgreen / swardGreenDM;
-                }
-                result += mySpecies[s].GLFSFertility * prop;
-            }
-            return result;
-        }
-    }
-
-    /// <summary>An output</summary>
-    [Output]
-    [Description("Generic plant growth limiting factor, user set")]
-    [Units("0-1")]
-    public double GLFgeneric
-    {
-        get
-        {
-            double result = 0.0;
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                double prop = 1.0 / NumSpecies;
-                if (swardGreenDM > 0.0)
-                {
-                    prop = mySpecies[s].dmgreen / swardGreenDM;
-                }
-                result += mySpecies[s].GLFGeneric * prop;
-            }
-            return result;
-        }
-    }
-
-    /// <summary>An output</summary>
-    [Output]
     [Description("Plant growth limiting factor due to extreme temperatures")]
     [Units("0-1")]
     public double GLFxtemp
@@ -5673,12 +5623,36 @@ public class AgPasture
         get
         {
             double result = 1.0;
-            if (PlantPotentialPhotosynthesis > 0.0)
+            if (swardGreenDM > 0.0)
             {
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
-                    result += mySpecies[s].Pgross * mySpecies[s].ExtremeTempStress;
-                result /= PlantPotentialPhotosynthesis;
+                    result += mySpecies[s].ExtremeTempStress * mySpecies[s].dmgreen;
+                result /= swardGreenDM;
+            }
+
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Generic plant growth limiting factor related to soil fertility, user set")]
+    [Units("0-1")]
+    public double GLFsfert
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].GLFSFertility * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
             }
             return result;
         }
@@ -5696,6 +5670,98 @@ public class AgPasture
             return frgr;
         }
     }
+
+    //** photosynthesis stress factors
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Effect of radiation on photosynthesis")]
+    [Units("0-1")]
+    public double RadnFactor
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0; 
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].RadnFactor * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Effect of CO2 concentration on photosynthesis")]
+    [Units("0-1")]
+    public double CO2Factor
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].CO2Factor * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Limiting factor for photosynthesis due to plant N concentration")]
+    [Units("0-1")]
+    public double GLFnConcentration
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].NcFactor * mySpecies[s].dmgreen;
+                }
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Generic limiting factor for photosynthesis, user set")]
+    [Units("0-1")]
+    public double GLFgeneric
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].GLFGeneric * mySpecies[s].dmgreen;
+                }
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+
     /// <summary>An output</summary>
     [Output]
     [Description("Sward average height")]                 //needed by micromet
@@ -6800,6 +6866,51 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
+    [Description("Potential photosynthetic rate for each species")]
+    [Units("kgC/ha")]
+    public double[] SpeciesPotPhotosynthesis
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].PotPhoto;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Potential C assimilation for each species")]
+    [Units("kgC/ha")]
+    public double[] SpeciesPotCarbonAssimilation
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].Pgross;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Carbon loss due to respiration for each species")]
+    [Units("kgC/ha")]
+    public double[] SpeciesCarbonLossRespiration
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].Resp_m + mySpecies[s].Resp_g;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
     [Description("Gross potential growth for each species")]
     [Units("kgDM/ha")]
     public double[] SpeciesPotGrowthGross
@@ -6830,9 +6941,9 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Potential growth, after water stress, for each species")]
+    [Description("Potential growth for each species (after water stress)")]
     [Units("kgDM/ha")]
-    public double[] SpeciesPotGrowthW
+    public double[] SpeciesPotGrowthNoNLimit
     {
         get
         {
@@ -6845,7 +6956,7 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Actual growth for each species")]
+    [Description("Actual growth for each species (before tissue turnover)")]
     [Units("kgDM/ha")]
     public double[] SpeciesGrowthWt
     {
@@ -6860,7 +6971,22 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Actual above-ground growth for each species")]
+    [Description("Net growth for each species (after tissue turnover)")]
+    [Units("kgDM/ha")]
+    public double[] SpeciesNetGrowthWt
+    {
+        get
+        {
+            double[] result = new double[NumSpecies];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].dGrowth - mySpecies[s].dLitter - mySpecies[s].dRootSen;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Actual net herbage growth for each species (above-ground only)")]
     [Units("kgDM/ha")]
     public double[] SpeciesHerbageGrowth
     {
@@ -7367,9 +7493,9 @@ public class AgPasture
         get
         {
             double[] result = new double[mySpecies.Length];
-            double Tmnw = (0.75 * MetData.MaxT) + (0.25 * MetData.MinT);  // weighted Tmean
+            //double Tday = (0.75 * MetData.MaxT) + (0.25 * MetData.MinT);
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].GFTemperature(Tmnw);
+                result[s] = mySpecies[s].glfTemp; // GFTemperature(Tday);
             return result;
         }
     }
@@ -7400,36 +7526,6 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].IL;
-            return result;
-        }
-    }
-
-    /// <summary>An output</summary>
-    [Output]
-    [Description("Potential C assimilation, corrected for extreme temperatures")]
-    [Units("kgC/ha")]
-    public double[] SpeciesPotCarbonAssimilation
-    {
-        get
-        {
-            double[] result = new double[mySpecies.Length];
-            for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].Pgross;
-            return result;
-        }
-    }
-
-    /// <summary>An output</summary>
-    [Output]
-    [Description("Loss of C via respiration")]
-    [Units("kgC/ha")]
-    public double[] SpeciesCarbonLossRespiration
-    {
-        get
-        {
-            double[] result = new double[mySpecies.Length];
-            for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].Resp_m + mySpecies[s].Resp_g;
             return result;
         }
     }
