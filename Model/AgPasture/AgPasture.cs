@@ -1228,7 +1228,7 @@ public class AgPasture
                     // set the parameters and initialise the species
                     SetSpeciesParameters(s1, s2);
 
-                    // Set the initial values for the state parameters, will needed this in case of reset
+                    // save the initial values for the state parameters, will needed this in case of reset
                     InitialState[s1] = new SpeciesStateSettings();
                     if (iniShootDM[s1] > 0.0)
                         InitialState[s1].ShootDM = iniShootDM[s1];
@@ -1247,12 +1247,12 @@ public class AgPasture
                             InitialState[s1].RootDM = iniShootDM[s1] / mySpecies[s2].targetSRratio;
                     }
 
-                    if (iniRootDepth[s1] > 0.0)     // also needed to determine the max root deth of species being simulated
+                    if (iniRootDepth[s1] > 0.0)
                         InitialState[s1].RootDepth = iniRootDepth[s1];
                     else
                     {
                         InitialState[s1].RootDepth = myRootDepth[s2];
-                        iniRootDepth[s1] = myRootDepth[s2];
+                        iniRootDepth[s1] = myRootDepth[s2];  // needed to determine the max root deth of species being simulated
                     }
 
                     if (mySpecies[s1].isLegume)
@@ -1282,94 +1282,49 @@ public class AgPasture
         for (int s = 0; s < NumSpecies; s++)
         {
             if (!usingSpeciesRoot)
-            {  // Get the max root depth of all species
+            {  // get the max root depth of all species
                 InitialState[s].RootDepth = iniRootDepth.Max();
             }
 
             SetSpeciesState(s, InitialState[s]);
-        }
 
-        //// Initialising the aggregated parameters (whole sward)
-        swardLightExtCoeff = 0.0;
-        for (int s = 0; s < NumSpecies; s++)
-        {
-            //accumulate LAI of all species
-            swardGreenLAI += mySpecies[s].greenLAI;
-            swardDeadLAI += mySpecies[s].deadLAI;
-
-            swardGreenDM += mySpecies[s].dmgreen;
-            swardDeadDM += mySpecies[s].dmdead;
-
-            //accumulate the sum for weighted average
-            swardLightExtCoeff += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
-
-            //Set the deepest root as sward depth
+            // get the deepest root as sward depth
             if (mySpecies[s].rootDepth > swardRootDepth)
             {
                 swardRootDepth = mySpecies[s].rootDepth;
                 swardRootZoneBottomLayer = mySpecies[s].RootZoneBottomLayer();
             }
-
-            swardRootDM += mySpecies[s].dmroot;
         }
 
-        swardTotalLAI = swardGreenLAI + swardDeadLAI;
-        swardShootDM = swardGreenDM + swardDeadDM;
-
-        if (swardTotalLAI == 0.0)
-        {
-            swardLightExtCoeff = 1.0;
-        }
-        else
-        {
-            swardLightExtCoeff = swardLightExtCoeff / swardTotalLAI;
-        }
-
-        // Check plant height
-        if (usingSpeciesHeight)
-        { // each species has its own height
-            swardHeight = mySpecies[0].height * mySpecies[0].dmshoot;
-            for (int s = 1; s < NumSpecies; s++)
-            {
-                swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
-            }
-
-            swardHeight /= AboveGroundWt;
-        }
-        else
-        { // only sward height is considered
-            swardHeight = HeightfromDM();
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                mySpecies[s].height = swardHeight;
-            }
-        }
-
-        // Check root distribution
+        // check root distribution
         if (usingSpeciesRoot)
         { // each species has its own distribution
             RootFraction = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                for (int s = 0; s < NumSpecies; s++)
-                {
-                    RootFraction[layer] += mySpecies[s].dmroot * mySpecies[s].rootFraction[layer];
-                }
-                RootFraction[layer] /= RootWt;
-            }
         }
         else
-        {
+        { // only sward height is considered
             RootFraction = RootProfileDistribution(-1);
             for (int s = 0; s < NumSpecies; s++)
             {
-                mySpecies[s].rootFraction = new double[dlayer.Length];
-                for (int layer = 0; layer < dlayer.Length; layer++)
+                mySpecies[s].rootFraction = new double[nLayers];
+                for (int layer = 0; layer < nLayers; layer++)
                 {
                     mySpecies[s].rootFraction[layer] = RootFraction[layer];
                 }
             }
         }
+
+        //// Initialising the aggregated variables (whole sward)
+        UpdateAggregatedVariables();
+
+        //// Weighted average of lightExtCoeff for the sward (should be updated daily)
+        double sumkLAI = 0.0;
+        swardLightExtCoeff = 1.0;
+        for (int s = 0; s < NumSpecies; s++)
+            sumkLAI += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
+        if (swardTotalLAI > 0.0)
+            swardLightExtCoeff = sumkLAI / swardTotalLAI;
+        ///TODO: this should be done on UpdateAggregatedVariables, which is updated every day
 
         FractionToHarvest = new double[NumSpecies];
     }
@@ -1634,8 +1589,8 @@ public class AgPasture
         mySpecies[s].Nstol3 = mySpecies[s].dmstol3 * MyState.NConcentration[10];
         mySpecies[s].Nroot = mySpecies[s].dmroot * MyState.NConcentration[11];
 
-        //// Aggregated DM variables .....................................
-        mySpecies[s].UpdateAggregated();
+        //// Aggregated and plant parts variables ........................
+        mySpecies[s].UpdateAggregatedVariables();
 
         //// Plant height ................................................
         if (usingSpeciesHeight)
@@ -1649,11 +1604,92 @@ public class AgPasture
         { // each species has it own root distribution
             mySpecies[s].rootFraction = RootProfileDistribution(s);
         }
+    }
 
-        //// LAI ........................................................
-        mySpecies[s].greenLAI = mySpecies[s].GreenLAI();
-        mySpecies[s].deadLAI = mySpecies[s].DeadLAI();
-        mySpecies[s].totalLAI = mySpecies[s].greenLAI + mySpecies[s].deadLAI;
+    /// <summary>
+    /// Update the values of variables for whole plant parts and the sward
+    /// </summary>
+    private void UpdateAggregatedVariables()
+    {
+        // reset some variables
+        swardGreenDM = 0.0;
+        swardDeadDM = 0.0;
+        swardHerbageGrowth = 0.0;
+        swardRootDM = 0.0;
+        swardLitterDM = 0.0;
+        swardLitterN = 0.0;
+        swardSenescedRootDM = 0.0;
+        swardSenescedRootN = 0.0;
+        swardGreenLAI = 0.0;
+        swardDeadLAI = 0.0;
+        double sumkLAI = 0.0;
+
+        for (int s = 0; s < NumSpecies; s++)
+        {
+            //accumulate the DM and N for all species
+            swardGreenDM += mySpecies[s].dmgreen;
+            swardDeadDM += mySpecies[s].dmdead;
+            swardHerbageGrowth += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
+            swardRootDM += mySpecies[s].dmroot;
+            swardLitterDM += mySpecies[s].dLitter;
+            swardLitterN += mySpecies[s].dNLitter;
+            swardSenescedRootDM += mySpecies[s].dRootSen;
+            swardSenescedRootN += mySpecies[s].dNrootSen;
+
+            //accumulate LAI of all species
+            swardGreenLAI += mySpecies[s].greenLAI;
+            swardDeadLAI += mySpecies[s].deadLAI;
+
+            //accumulate this for weighted average of lightExtCoeff
+            sumkLAI += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
+        }
+
+        swardTotalLAI = swardGreenLAI + swardDeadLAI;
+        swardShootDM = swardGreenDM + swardDeadDM;
+
+        // get sward light extinction coefficient
+        if (swardTotalLAI > 0.0)
+        {
+            //swardLightExtCoeff = sumkLAI / swardTotalLAI;
+        }
+        else
+        {
+            swardLightExtCoeff = 1.0;
+        }
+
+        // get the average plant height for sward
+        if (usingSpeciesHeight)
+        { // each species has its own height
+            swardHeight = mySpecies[0].height * mySpecies[0].dmshoot;
+            for (int s = 1; s < NumSpecies; s++)
+            {
+                swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
+            }
+
+            swardHeight /= AboveGroundWt;
+        }
+        else
+        { // only sward height is considered
+            swardHeight = HeightfromDM();
+            for (int s = 0; s < NumSpecies; s++)
+            { // need to pass this back to each species
+                mySpecies[s].height = swardHeight;
+            }
+        }
+
+        // get sward average root distribution
+        if (usingSpeciesRoot)
+        {
+            for (int layer = 0; layer < dlayer.Length; layer++)
+            {
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    RootFraction[layer] += mySpecies[s].dmroot * mySpecies[s].rootFraction[layer];
+                }
+                RootFraction[layer] /= RootWt;
+            }
+        }
+        //else  root distribution does not change 
     }
 
     /// <summary>
@@ -1760,41 +1796,6 @@ public class AgPasture
 
         // Clear FractionHarvest array
         Array.Clear(FractionToHarvest, 0, FractionToHarvest.Length);
-
-        // Get sward average plant height
-        if (usingSpeciesHeight)
-        {
-            swardHeight = mySpecies[0].height * mySpecies[0].dmshoot;
-            for (int s = 1; s < NumSpecies; s++)
-            {
-                swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
-            }
-            swardHeight /= AboveGroundWt;
-        }
-        else
-        {
-            swardHeight = HeightfromDM();
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                mySpecies[s].height = swardHeight;
-            }
-        }
-
-        // Get sward average root distribution
-        if (usingSpeciesRoot)
-        {
-            int nLayers = dlayer.Length;
-            RootFraction = new double[nLayers];
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                for (int s = 0; s < NumSpecies; s++)
-                {
-                    RootFraction[layer] += mySpecies[s].dmroot * mySpecies[s].rootFraction[layer];
-                }
-                RootFraction[layer] /= RootWt;
-            }
-        }
-        //else  root distribution does not change 
 
         // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
         DoNewCanopyEvent();
@@ -2073,16 +2074,18 @@ public class AgPasture
     /// <summary>
     /// Estimate the allocation of intercepted radiation and ET for each species
     /// </summary>
+    /// <remarks>
+    /// Intercepted solar Radn and ET were considered (by micromet) for whole sward, so need to partiton here
+    /// Partition between species is based on LAI and lightExtCoeff, followint micromet's approach
+    /// note: original AgPasture used green cover
+    /// </remarks>
     private void PartitionAboveGroundResources()
     {
-        // Intercepted solar Radn and ET were considered for whole sward, 
-        // partition between species is based on LAI and lightExtCoeff (i.e. cover)
         double sumkLAI = 0.0;
         double sumCoverGreen = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
             sumkLAI += mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff;
-            sumCoverGreen += mySpecies[s].coverGreen;
         }
 
         for (int s = 0; s < NumSpecies; s++)
@@ -2091,14 +2094,12 @@ public class AgPasture
             {
                 mySpecies[s].intRadnFrac = 0.0;
                 mySpecies[s].interceptedRadn = 0.0;
+                mySpecies[s].WaterDemand = 0.0;
             }
             else
             {
                 mySpecies[s].intRadnFrac = mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff / sumkLAI;
-                //mySpecies[s].intRadnFrac = mySpecies[s].coverGreen / sumCoverGreen;
-
                 mySpecies[s].interceptedRadn = InterceptedRadn * mySpecies[s].intRadnFrac;
-
                 mySpecies[s].WaterDemand = swardWaterDemand * mySpecies[s].intRadnFrac;
             }
         }
@@ -3573,18 +3574,6 @@ public class AgPasture
     /// </summary>
     private void GrowthAndPartition()
     {
-        // reset some variables
-        swardGreenLAI = 0.0;
-        swardDeadLAI = 0.0;
-        swardGreenDM = 0.0;
-        swardDeadDM = 0.0;
-        swardHerbageGrowth = 0.0;
-        swardRootDM = 0.0;
-        swardLitterDM = 0.0;
-        swardLitterN = 0.0;
-        swardSenescedRootDM = 0.0;
-        swardSenescedRootN = 0.0;
-
         for (int s = 0; s < NumSpecies; s++)
         {
             // Compute the partitioning of DM grown
@@ -3593,30 +3582,15 @@ public class AgPasture
             // Compute the tissue turnover
             mySpecies[s].TissueTurnover();
 
-            // update aggregated variables
-            mySpecies[s].UpdateAggregated();
-
-            swardGreenDM += mySpecies[s].dmgreen;
-            swardDeadDM += mySpecies[s].dmdead;
-            swardRootDM += mySpecies[s].dmroot;
-            swardHerbageGrowth += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
-            swardLitterDM += mySpecies[s].dLitter;
-            swardLitterN += mySpecies[s].dNLitter;
-            swardSenescedRootDM += mySpecies[s].dRootSen;
-            swardSenescedRootN += mySpecies[s].dNrootSen;
-
-            // update plant parts (LAI, height, root)
-            mySpecies[s].UpdatePlantParts();
-
-            swardGreenLAI += mySpecies[s].greenLAI;
-            swardDeadLAI += mySpecies[s].deadLAI;
+            // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+            mySpecies[s].UpdateAggregatedVariables();
 
             // Calc todays digestibility
             mySpecies[s].calcDigestibility();
         }
 
-        swardTotalLAI = swardGreenLAI + swardDeadLAI;
-        swardShootDM = swardGreenDM + swardDeadDM;
+        // Update aggregated variables (whole sward)
+        UpdateAggregatedVariables();
 
         // Return litter to surface OM
         DoSurfaceOMReturn(swardLitterDM, swardLitterN, 1.0);
@@ -3676,12 +3650,15 @@ public class AgPasture
 
         ZeroVars();
 
+        // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
         for (int s = 0; s < NumSpecies; s++)
         {
-            mySpecies[s].UpdateAggregated();
-            mySpecies[s].UpdatePlantParts();
+            mySpecies[s].UpdateAggregatedVariables();
             mySpecies[s].bSown = false;
         }
+
+        // Update aggregated variables (whole sward)
+        UpdateAggregatedVariables();
 
         isAlive = false;
         if (swardTotalLAI > 0.0)
@@ -3912,12 +3889,16 @@ public class AgPasture
         {
             swardHarvestedDM += mySpecies[s].dmdefoliated;
             swardHarvestedN += mySpecies[s].Ndefoliated;
-            mySpecies[s].UpdateAggregated();
-            mySpecies[s].UpdatePlantParts();
+
+            // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+            mySpecies[s].UpdateAggregatedVariables();
 
             // RCichota May 2014: store the defoliated amount (to use for senescence)
             mySpecies[s].prevState.dmdefoliated = mySpecies[s].dmdefoliated;
         }
+
+        // Update aggregated variables (whole sward)
+        UpdateAggregatedVariables();
 
         //In this routine of no selection among species, the removed tissue from different species
         //will be in proportion with exisisting mass of each species.
@@ -4012,6 +3993,9 @@ public class AgPasture
                 // get digestibility of harvested material
                 swardHarvestDigestibility += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated / AmountToRemove;
             }
+
+            // Update aggregated variables (whole sward)
+            //UpdateAggregatedVariables();  TODO: enable this
         }
     }
 
@@ -4031,7 +4015,35 @@ public class AgPasture
             }
 
             SetSpeciesState(s, InitialState[s]);
+
+            // get the deepest root as sward depth
+            if (mySpecies[s].rootDepth > swardRootDepth)
+            {
+                swardRootDepth = mySpecies[s].rootDepth;
+                swardRootZoneBottomLayer = mySpecies[s].RootZoneBottomLayer();
+            }
         }
+
+        // check root distribution
+        if (usingSpeciesRoot)
+        { // each species has its own distribution
+            RootFraction = new double[dlayer.Length];
+        }
+        else
+        { // only sward height is considered
+            RootFraction = RootProfileDistribution(-1);
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                mySpecies[s].rootFraction = new double[dlayer.Length];
+                for (int layer = 0; layer < dlayer.Length; layer++)
+                {
+                    mySpecies[s].rootFraction[layer] = RootFraction[layer];
+                }
+            }
+        }
+
+        // update aggregated variables (whole sward)
+        UpdateAggregatedVariables();
     }
 
     /// <summary>
@@ -4142,6 +4154,9 @@ public class AgPasture
             // Set the species
             SetSpeciesState(s, NewState);
         }
+
+        // Update aggregated variables (whole sward)
+        UpdateAggregatedVariables();
     }
 
     #endregion  -----------------------------------------------------------------------------------
@@ -5683,7 +5698,7 @@ public class AgPasture
             double result = 1.0;
             if (swardGreenDM > 0.0)
             {
-                result = 0.0; 
+                result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     result += mySpecies[s].RadnFactor * mySpecies[s].dmgreen;

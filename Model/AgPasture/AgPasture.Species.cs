@@ -967,8 +967,7 @@ public class Species
         Nroot = dmroot * Ncroot;
 
         //calculated, DM and LAI,  species-specific
-        UpdateAggregated();   // agregated properties, such as p_totalLAI
-        UpdatePlantParts();
+        UpdateAggregatedVariables();
 
         dGrowthPot = 0.0;        // daily growth potential
         dGrowthW = 0.0;          // daily growth considering only water deficit
@@ -1706,9 +1705,9 @@ public class Species
     /// <summary>
     /// Update aggregated variables
     /// </summary>
-    internal void UpdateAggregated()   //update DM, N
+    internal void UpdateAggregatedVariables()   //update DM, N
     {
-        //DM
+        //// - DM  -------------------------------------------------------
         dmleaf = dmleaf1 + dmleaf2 + dmleaf3 + dmleaf4;
         dmstem = dmstem1 + dmstem2 + dmstem3 + dmstem4;
         dmstol = dmstol1 + dmstol2 + dmstol3;
@@ -1724,7 +1723,7 @@ public class Species
 
         dmdead = dmleaf4 + dmstem4;
 
-        //N
+        //// - N  --------------------------------------------------------
         Nleaf = Nleaf1 + Nleaf2 + Nleaf3 + Nleaf4;
         Nstem = Nstem1 + Nstem2 + Nstem3 + Nstem4;
         Nstolon = Nstol1 + Nstol2 + Nstol3;
@@ -1735,13 +1734,7 @@ public class Species
                + Nstem1 + Nstem2 + Nstem3
                + Nstol1 + Nstol2 + Nstol3;
         Ndead = Nleaf4 + Nstem4;
-    }
 
-    /// <summary>
-    /// Update various plant characteristics: LAI, height, root distribution
-    /// </summary>
-    internal void UpdatePlantParts()
-    {
         //// - LAI  ------------------------------------------------------
         greenLAI = GreenLAI();
         deadLAI = DeadLAI();
@@ -2360,9 +2353,8 @@ public class Species
         NLuxury2 *= FractionRemainingGreen;
         NLuxury3 *= FractionRemainingGreen;
 
-        // update variables
-        UpdateAggregated();
-        UpdatePlantParts();
+        // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+        UpdateAggregatedVariables();
 
         // check balance and set outputs
         double NremobRemove = PreRemovalNRemob - Nremob;
@@ -2446,17 +2438,13 @@ public class Species
     /// <summary>
     /// Compute the distribution of roots in the soil profile after growth (sum is equal to one)
     /// </summary>
+    /// <remarks>
+    /// Root distribution is not changed during the simulation, so this will return the initial RootFraction
+    /// </remarks>
     /// <returns>The proportion of root mass in each soil layer</returns>
     private double[] RootGrowthDistribution(double deltaDM)
     {
-        int nLayers = dlayer.Length;
-        double[] result = new double[nLayers];
-        for (int layer = 0; layer < nLayers; layer++)
-        {
-            result[layer] = rootFraction[layer];
-        }
-
-        return result;
+        return rootFraction;
     }
 
     /// <summary>
