@@ -610,6 +610,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double[] rootFraction;
 
+    /// <summary>Root length density (mm/mm3)</summary>
     internal double[] RLD
     {
         get
@@ -617,8 +618,8 @@ public class Species
             double[] Result = new double[dlayer.Length];
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
-                Result[layer] = dmroot * rootFraction[layer]
-                              * specificRootLength / dlayer[layer];
+                Result[layer] = (dmroot * 0.1) * rootFraction[layer] * specificRootLength;   // m/m2
+                Result[layer] /= dlayer[layer] * 1000;    // mm/mm3
             }
 
             return Result;

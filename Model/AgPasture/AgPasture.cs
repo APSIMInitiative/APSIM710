@@ -95,6 +95,25 @@ public class AgPasture
         }
     }
 
+    private bool updateLightExtCoeffAllowed = false;
+    [Param]
+    [Description("Whether the light extintion coefficient of whole sward is computed every day")]
+    [Units("yes/no")]
+    private string UpdateLightExtCoeffDaily
+    {
+        get
+        {
+            if (updateLightExtCoeffAllowed)
+                return "yes";
+            else
+                return "no";
+        }
+        set
+        {
+            updateLightExtCoeffAllowed = value.ToLower() == "yes";
+        }
+    }
+
     private bool usingWAvailableBySpecies = false;
     [Param]
     [Description("Whether the water availability is determined by species, instead of whole sward")]
@@ -711,6 +730,11 @@ public class AgPasture
     private double[] soilSatFactor;
 
     [Param]
+    [Description("Factor for adjusting water uptake (kl) due to number of species")]
+    [Units("-")]
+    private double UptakeFactorSpecies;
+
+    [Param]
     [Description("Generic growth limiting factor")]
     [Units("0-1")]
     private double[] GenericGLF;
@@ -905,11 +929,11 @@ public class AgPasture
     [Input]
     private double[] sw_dep;  //soil water by layer
     [Input]
-    private double[] sw;      //soil water content by layer
-    [Input]
     private double[] SAT_dep;     //saturation point
     [Input]
-    private double[] DUL;     //drainage upper limit (field capacity);
+    private double[] DUL_dep;     //drainage upper limit (field capacity);
+    [Input]
+    private double[] LL15_dep;     //drainage lower limit (wilting point);
     [Input]
     private double[] nh4;     //SNH4dep = new float[dlayer.Length];
     [Input]
@@ -1020,6 +1044,8 @@ public class AgPasture
     /// <summary>Soil water uptake as given by an external module (mm)</summary>
     private double[] swardWaterUptakeByAPSIM;
 
+    /// <summary>Lower limit for soil water uptake (whole sward, from soil)</summary>
+    private double[] LL_dep;
 
     /// <summary>Soil NH4_N uptake as given by an external module (kgN/ha)</summary>
     private double[] swardNH4UptakeByAPSIM;
@@ -1184,8 +1210,25 @@ public class AgPasture
                 ExpoLinearCurveParam = iniRootCurveParam;
         }
 
+        // check that uptake factor is equal or greater than one
+        if (UptakeFactorSpecies < 1.0)
+            UptakeFactorSpecies = 1.0;
+
         // Number of layers
         int nLayers = dlayer.Length;
+
+        // initialise LL
+        LL_dep = new double[nLayers];
+        if (ll.Length > 1)
+        { // there are values for LL (so we should be using SoilWat)
+            for (int layer = 0; layer < nLayers; layer++)
+                LL_dep[layer] = ll[layer] * dlayer[layer];
+        }
+        else
+        { // no values for LL (so we should be using SWIM - use LL15)
+            for (int layer = 0; layer < nLayers; layer++)
+                LL_dep[layer] = LL15_dep[layer];
+        }
 
         // check whether valkues for kNO3 and kNH4 were given for all layers
         if (kNH4.Length == 1)
@@ -1614,7 +1657,6 @@ public class AgPasture
         // reset some variables
         swardGreenDM = 0.0;
         swardDeadDM = 0.0;
-        swardHerbageGrowth = 0.0;
         swardRootDM = 0.0;
         swardLitterDM = 0.0;
         swardLitterN = 0.0;
@@ -1629,7 +1671,6 @@ public class AgPasture
             //accumulate the DM and N for all species
             swardGreenDM += mySpecies[s].dmgreen;
             swardDeadDM += mySpecies[s].dmdead;
-            swardHerbageGrowth += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
             swardRootDM += mySpecies[s].dmroot;
             swardLitterDM += mySpecies[s].dLitter;
             swardLitterN += mySpecies[s].dNLitter;
@@ -1648,13 +1689,16 @@ public class AgPasture
         swardShootDM = swardGreenDM + swardDeadDM;
 
         // get sward light extinction coefficient
-        if (swardTotalLAI > 0.0)
+        if (updateLightExtCoeffAllowed)
         {
-            //swardLightExtCoeff = sumkLAI / swardTotalLAI;
-        }
-        else
-        {
-            swardLightExtCoeff = 1.0;
+            if (swardTotalLAI > 0.0)
+            {
+                swardLightExtCoeff = sumkLAI / swardTotalLAI;
+            }
+            else
+            {
+                swardLightExtCoeff = 1.0;
+            }
         }
 
         // get the average plant height for sward
@@ -2144,6 +2188,7 @@ public class AgPasture
         double[] PAW = new double[dlayer.Length];
         double layerFrac = 0.0;              // fraction of layer explored by roots
         double PotAvailableWater = 0.0;      // total potential PAW (or maximum)
+        double xFac = 0.0;                   // extractability factor for each layer
         double wFrac = 0.0;                  // availability faction for each species
 
         // find out plant soil available water
@@ -2154,9 +2199,10 @@ public class AgPasture
                 for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
                 {
                     layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-                    PotAvailableWater *= layerFrac;
-                    mySpecies[s].soilAvailableWater[layer] = Math.Max(0.0, kl[layer] * PotAvailableWater);
+                    PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                    xFac = kl[layer];
+                    PotAvailableWater *= Math.Min(1.0, xFac);
+                    mySpecies[s].soilAvailableWater[layer] = PotAvailableWater;
                 }
             }
 
@@ -2164,8 +2210,11 @@ public class AgPasture
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 // maximum PAW for this layer
-                PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-                // adjust factor
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                // adjust factor for number of species
+                xFac = kl[layer] * Math.Pow(NumSpecies, 1.0 / UptakeFactorSpecies);
+                PotAvailableWater *= Math.Min(1.0, xFac);
                 wFrac = MathUtility.Divide(PotAvailableWater, mySpecies.Sum(x => x.soilAvailableWater[layer]), 0.0);
                 for (int s = 0; s < NumSpecies; s++)
                 {
@@ -2179,11 +2228,12 @@ public class AgPasture
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-                PotAvailableWater *= layerFrac;
-                PAW[layer] = Math.Max(0.0, kl[layer] * PotAvailableWater);
+                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                xFac = kl[layer];
+                PotAvailableWater *= Math.Min(1.0, xFac);
+                PAW[layer] = PotAvailableWater;
                 for (int s = 0; s < NumSpecies; s++)
-                { // partition based on demand
+                { // partition based on demand (not really used)
                     wFrac = MathUtility.Divide(mySpecies[s].WaterDemand, swardWaterDemand, 0.0);
                     mySpecies[s].soilAvailableWater[layer] = PAW[layer] * Math.Min(1.0, wFrac);
                 }
@@ -2201,40 +2251,40 @@ public class AgPasture
     /// <returns>Amount of plant available water</returns>
     private double[] PlantAvailableSoilWater()
     {
+        // zero out the variables
         double[] PAW = new double[dlayer.Length];
         double layerFrac = 0.0;              // fraction of layer explored by roots
         double PotAvailableWater = 0.0;      // total potential PAW (or maximum)
-        double xFac = 1.0;                   // extractability factor for each layer
+        double xFac = 0.0;                   // extractability factor for each layer
         double wFrac = 0.0;                  // availability faction for each species
+        double refRLD = 0.0;                 // reference RLD for sward, weighed
 
-        // find out soil available water
+        // find out plant soil available water
         if (usingWAvailableBySpecies)
-        {  // Considering each species
+        { // considering root presence for each species
             for (int s = 0; s < NumSpecies; s++)
             { // amount if each species was alone
                 for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
                 {
                     layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-                    PotAvailableWater = Math.Max(0.0, PotAvailableWater * layerFrac);
-                    if (mySpecies[s].referenceRLD > 0.0)
-                    {
-                        xFac = Math.Min(1.0, kl[layer] * mySpecies[s].RLD[layer] / mySpecies[s].referenceRLD);
-                    }
-                    else
-                    {
-                        xFac = Math.Min(1.0, kl[layer]);
-                    }
-                    mySpecies[s].soilAvailableWater[layer] = PotAvailableWater * xFac;
+                    PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                    xFac = kl[layer] * MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 0.0);
+                    PotAvailableWater *= Math.Min(1.0, xFac);
+                    mySpecies[s].soilAvailableWater[layer] = PotAvailableWater;
                 }
+                refRLD += mySpecies[s].referenceRLD + mySpecies[s].dmroot;
             }
 
             // Adjust the values so that total available water is equal or less than maximum
+            refRLD /= swardRootDM;
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 // maximum PAW for this layer
-                PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-                // adjust paw for each species
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                // adjust factor for number of species
+                xFac = kl[layer] * MathUtility.Divide(rlv[layer], refRLD, 0.0) * Math.Pow(NumSpecies, 1.0 / UptakeFactorSpecies);
+                PotAvailableWater *= Math.Min(1.0, xFac);
                 wFrac = MathUtility.Divide(PotAvailableWater, mySpecies.Sum(x => x.soilAvailableWater[layer]), 0.0);
                 for (int s = 0; s < NumSpecies; s++)
                 {
@@ -2244,22 +2294,14 @@ public class AgPasture
             }
         }
         else
-        {  // considering whole sward
+        {  // considering the whole sward
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                PotAvailableWater = sw_dep[layer] - (ll[layer] * dlayer[layer]);
-                PotAvailableWater = Math.Max(0.0, PotAvailableWater * layerFrac);
-                if (referenceRLD[0] > 0.0)
-                {
-                    xFac = Math.Min(1.0, kl[layer] * rlv[layer] / referenceRLD[0]);
-                }
-                else
-                {
-                    xFac = Math.Min(1.0, kl[layer]);
-                }
-
-                PAW[layer] = PotAvailableWater * xFac;
+                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                xFac = kl[layer] * MathUtility.Divide(rlv[layer], referenceRLD[0], 0.0);
+                PotAvailableWater *= Math.Min(1.0, xFac);
+                PAW[layer] = PotAvailableWater;
                 for (int s = 0; s < NumSpecies; s++)
                 { // partition based on root distribution
                     wFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
@@ -2280,7 +2322,7 @@ public class AgPasture
     private double[] PlantAvailableWaterAPSIM()
     {
         double[] PAW = new double[dlayer.Length];
-        double wFrac = 0.0;                  // availability faction for each species
+        double wFrac = 0.0;                  // availability fraction for each species
 
         // check that we have an input from apsim
         if (swardWaterUptakeByAPSIM == null)
@@ -2343,7 +2385,7 @@ public class AgPasture
             }
         }
         else
-        {
+        { // consider whole sward - partition between species is cosmetic only
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
 
@@ -2432,12 +2474,14 @@ public class AgPasture
                 for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
                 {
                     soilWaterUptake[layer] = soilAvailableWater[layer];
-                    XSwater[layer] = soilWaterUptake[layer] - swardWaterUptakeByAPSIM[layer];
-                    if (XSwater[layer] > 0.000001)
+                    XSwater[layer] = swardWaterUptakeByAPSIM[layer] - soilWaterUptake[layer];
+                    if (XSwater[layer] < -0.000001)
                         throw new Exception("Water uptake of AgPasture is greater than that given by SWIM");
+
+                    XSwater[layer] = Math.Max(0.0, XSwater[layer]);
                 }
 
-                if (XSwater.Sum() < 0.0)
+                if (XSwater.Sum() > 0.0)
                 {
                     SendWaterChanges(XSwater);
                     Console.WriteLine("AgPasture is sending " + XSwater.Sum().ToString("#0.00#") + " mm of water back to soil module (uptake not used by plant)");
@@ -2605,7 +2649,7 @@ public class AgPasture
             { //amount as if each species was alone
                 for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
                 {
-                    wSatFrac = MathUtility.Divide(sw[layer] - ll[layer], DUL[layer] - ll[layer], 0.0);
+                    wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                     wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                     wSatFrac = Math.Pow(wSatFrac, mySpecies[s].NextraSWF);
                     layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
@@ -2642,7 +2686,7 @@ public class AgPasture
         { // consider whole sward
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                wSatFrac = MathUtility.Divide(sw[layer] - ll[layer], DUL[layer] - ll[layer], 0.0);
+                wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                 wSatFrac = Math.Pow(wSatFrac, NextraSWF[0]);
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
@@ -2778,7 +2822,7 @@ public class AgPasture
             { //amount as if each species was alone
                 for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
                 {
-                    wSatFrac = MathUtility.Divide(sw[layer] - ll[layer], DUL[layer] - ll[layer], 0.0);
+                    wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                     wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                     wSatFrac = Math.Pow(wSatFrac, mySpecies[s].NextraSWF);
                     layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
@@ -2825,7 +2869,7 @@ public class AgPasture
         { // consider whole sward
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                wSatFrac = MathUtility.Divide(sw[layer] - ll[layer], DUL[layer] - ll[layer], 0.0);
+                wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                 wSatFrac = Math.Pow(wSatFrac, NextraSWF[0]);
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
@@ -3471,13 +3515,14 @@ public class AgPasture
                     {
                         double mySW = 0.0;       //soil water content
                         double mySat = 0.0;      //water content at saturation
-                        double myDUL = 0.0;      //water contenct at field capacity
+                        double myDUL = 0.0;      //water content at field capacity
                         for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
                         {
                             mySW += sw_dep[layer];
                             mySat += SAT_dep[layer];
-                            myDUL += DUL[layer] * dlayer[layer];
+                            myDUL += DUL_dep[layer];
                         }
+
                         if (mySW > myDUL)
                         {
                             mySpecies[s].glfWater = 1 - (mySpecies[s].soilSatFactor * (mySW - myDUL) / (mySat - myDUL));
@@ -3488,8 +3533,11 @@ public class AgPasture
                     accum_LAI += mySpecies[s].greenLAI;
                 }
 
-                if (swardGreenLAI > 0.0)
-                    swardGLFWater = accum_gfwater / swardGreenLAI;
+                // TODO:
+                //if (swardGreenLAI > 0.0)
+                //    swardGLFWater = accum_gfwater / swardGreenLAI;
+                if (accum_LAI > 0.0)
+                    swardGLFWater = accum_gfwater / accum_LAI;
                 else
                     swardGLFWater = 1.0;
             }
@@ -3506,7 +3554,7 @@ public class AgPasture
                     {
                         mySW += sw_dep[layer];
                         mySat += SAT_dep[layer];
-                        myDUL += DUL[layer] * dlayer[layer];
+                        myDUL += DUL_dep[layer];
                     }
 
                     if (mySW > myDUL) //if saturated
@@ -3591,6 +3639,11 @@ public class AgPasture
 
         // Update aggregated variables (whole sward)
         UpdateAggregatedVariables();
+
+        // Compute the herbage growth for sward
+        swardHerbageGrowth = 0.0;
+        for (int s = 0; s < NumSpecies; s++)
+            swardHerbageGrowth += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
 
         // Return litter to surface OM
         DoSurfaceOMReturn(swardLitterDM, swardLitterN, 1.0);
@@ -3995,7 +4048,7 @@ public class AgPasture
             }
 
             // Update aggregated variables (whole sward)
-            //UpdateAggregatedVariables();  TODO: enable this
+            UpdateAggregatedVariables();
         }
     }
 
@@ -4014,7 +4067,11 @@ public class AgPasture
                 InitialState[s].RootDepth = iniRootDepth.Max();
             }
 
+            // set initial state
             SetSpeciesState(s, InitialState[s]);
+
+            // reset previous state
+            mySpecies[s].SetPrevPools();
 
             // get the deepest root as sward depth
             if (mySpecies[s].rootDepth > swardRootDepth)

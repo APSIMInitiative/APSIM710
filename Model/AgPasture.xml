@@ -164,18 +164,24 @@
             <UseHeightBySpecies description="Whether plant height is determined for each species, instead of avg sward (yes/no)">no</UseHeightBySpecies>
             <UseRootBySpecies description="Whether root distribution is determined for each species, instead of avg sward (yes/no)">no</UseRootBySpecies>
             <UsePhotosynthesisBySpecies description="Whether photosynthesis is computed by species or average sward (yes/no)">no</UsePhotosynthesisBySpecies>
+            <UpdateLightExtCoeffDaily description="Whether the light extintion coefficient of whole sward is computed every day (yes/no)">no</UpdateLightExtCoeffDaily>
 
             <UseWaterAvailableBySpecies description="Whether water availability is determined by species, instead of whole sward">no</UseWaterAvailableBySpecies>
             <UseNAvailableBySpecies description="Whether N availability is determined by species, instead of whole sward">no</UseNAvailableBySpecies>
             <UseAlternativeWaterAvailable description="Whether alternative method for determining plant available water is used">no</UseAlternativeWaterAvailable>
             <NAvailabilityMethod description="Which method for determining plant available N is used (0-4)">0</NAvailabilityMethod>
             <!--  -->
+            <UseWaterUptakeBySpecies description="Whether water uptake is determined by species, instead of whole sward">no</UseWaterUptakeBySpecies>
             <UseAlternativeWaterUptake description="Whether alternative method for determining plant water uptake is used">no</UseAlternativeWaterUptake>
             <UseAlternativeNUptake description="Whether alternative method for determining plant N uptake is used">no</UseAlternativeNUptake>
             <!-- Standard method determines water or N availability considering the whole sward, the amount taken up mostly ignores species.
                    The alternative method takes into account variations in root distribution as well as demand to define uptake for each species-->
             <referenceRLD description="Reference root length density for water and N uptake (mm/mm3)">0.20  0.20  0.20</referenceRLD>
             <NextraSWF description="Exponent factor of function determining soil extractable N (approach01)">0.25  0.25  0.25</NextraSWF>
+
+            <UptakeFactorSpecies description="Factor for adjusting water uptake (kl) due to number of species (>1.0)">2.0</UptakeFactorSpecies>
+            <!-- The UptakeFactorSpecies is used when water uptake is done 'BySpecies'. It controls how the kl is added, if = 1.0 kl is simply
+                    multiplied by number of species, otherwise the increment decrease with the number of species, a large value means no addition -->
 
             <MaximumUptakeRateNH4 description="Maximum NH4 uptake rate for each species (ppm/day)">0.50  0.50  0.50</MaximumUptakeRateNH4>
             <MaximumUptakeRateNO3 description="Maximum NO3 uptake rate for each species (ppm/day)">0.50  0.50  0.50</MaximumUptakeRateNO3>
