@@ -716,7 +716,10 @@ public class Species
     internal double WaterDemand = 0.0;
 
     /// <summary>Amount of soil water taken up</summary>
-    internal double soilWaterUptake = 0.0;
+    internal double WaterUptake = 0.0;
+
+    /// <summary>Amount of soil water taken up</summary>
+    internal double[] soilWaterUptake;
 
     /// <summary>Some Description</summary>
     internal double waterStressFactor;
