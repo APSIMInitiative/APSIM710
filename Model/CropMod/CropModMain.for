@@ -53,6 +53,8 @@
      :                                    nullTypeDDML, '')
       id%crop_chopped = add_registration(eventReg, 'crop_chopped',
      :                                   ApsimVariantTypeDDML, '')
+      id%biomass_removed = add_registration(eventReg, 'BiomassRemoved',
+     :                                   BiomassRemovedTypeDDML, '')
       id%sowing = add_registration(eventReg, 'sowing',
      :                             nullTypeDDML, '')
       id%harvesting = add_registration(eventReg, 'harvesting',

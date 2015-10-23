@@ -1656,6 +1656,7 @@
           integer :: incorp_fom
           integer :: add_residue_p
           integer :: crop_chopped
+          integer :: biomass_removed
           integer :: sowing
           integer :: harvesting
           integer :: create

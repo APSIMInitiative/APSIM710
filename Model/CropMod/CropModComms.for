@@ -3015,8 +3015,9 @@ c        end if
      :                              , P_residue
      :                              )
 
-         call Send_Crop_Chopped_Event_N_P
-     :                (c%crop_type
+         call Send_BiomassRemoved_Event_N_P(
+     :               id%biomass_removed
+     :               , c%crop_type
      :               , part_name
      :               , dm_residue
      :               , N_residue
@@ -3060,8 +3061,9 @@ c        end if
 
       if (sum(dm_residue(leaf:)) .gt. 0.0) then
 
-            call Send_Crop_Chopped_Event_N_P
-     :                (c%crop_type
+            call Send_BiomassRemoved_Event_N_P(
+     :               id%biomass_removed
+     :               , c%crop_type
      :               , part_name
      :               , dm_residue
      :               , N_residue
@@ -3474,8 +3476,9 @@ c        end if
 
          if (sum(dlt_dm_crop(:)) .gt. 0.0) then
 
-            call Send_Crop_Chopped_Event_N_P
-     :                (c%crop_type
+            call Send_BiomassRemoved_Event_N_P(
+     :               id%biomass_removed
+     :               ,c%crop_type
      :               , part_name
      :               , dlt_dm_crop
      :               , dlt_dm_N
@@ -3697,8 +3700,9 @@ c    :             - g%N_dead(root) - g%N_dead(grain))
 
          if (sum(dlt_dm_crop(leaf:)) .gt. 0.0) then
 
-            call Send_Crop_Chopped_Event_N_P
-     :                (c%crop_type
+            call Send_BiomassRemoved_Event_N_P(
+     :               id%biomass_removed
+     :               , c%crop_type
      :               , part_name
      :               , dlt_dm_crop
      :               , dlt_dm_N
