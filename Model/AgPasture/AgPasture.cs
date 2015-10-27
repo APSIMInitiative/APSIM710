@@ -2185,43 +2185,44 @@ public class AgPasture
     /// <returns>Amount of plant available water</returns>
     private double[] PlantAvailableWaterClassic()
     {
-        // zero out the variables
-        double[] PAW = new double[dlayer.Length];
-        double layerFrac = 0.0;              // fraction of layer explored by roots
-        double PotAvailableWater = 0.0;      // total potential PAW (or maximum)
-        double xFac = 0.0;                   // extractability factor for each layer
-        double wFrac = 0.0;                  // availability faction for each species
+        double[] PAW = new double[dlayer.Length];   // total amount of Plant Available Water
+        double layerFrac = 0.0;                     // fraction of layer explored by roots
+        double auxAvailableWater = 0.0;             // auxiliary amount of available water
+        double potentialAvailableWater = 0.0;       // potential (or maximum) amount of water available
+        int nSpecies = 0;                           // number of species with root within a layer
+        double xFac = 0.0;                          // extractability factor for each layer
+        double wFrac = 0.0;                         // available fraction for each species
 
         // find out plant soil available water
         if (usingWAvailableBySpecies)
         { // considering root presence for each species
-            for (int s = 0; s < NumSpecies; s++)
-            { // amount if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                    xFac = kl[layer];
-                    PotAvailableWater *= Math.Min(1.0, xFac);
-                    mySpecies[s].soilAvailableWater[layer] = PotAvailableWater;
-                }
-            }
-
-            // Adjust the values so that total available water is equal or less than maximum
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum PAW for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                // adjust factor for number of species
-                xFac = kl[layer] * Math.Pow(NumSpecies, 1.0 / UptakeFactorSpecies);
-                PotAvailableWater *= Math.Min(1.0, xFac);
-                wFrac = MathUtility.Divide(PotAvailableWater, mySpecies.Sum(x => x.soilAvailableWater[layer]), 0.0);
+                potentialAvailableWater = 0.0;
+                nSpecies = 0;
                 for (int s = 0; s < NumSpecies; s++)
-                {
-                    mySpecies[s].soilAvailableWater[layer] *= Math.Min(1.0, wFrac);
-                    PAW[layer] += mySpecies[s].soilAvailableWater[layer];
+                { // amount if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        nSpecies += 1;
+                        auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                        xFac = Math.Min(1.0, kl[layer]);
+                        potentialAvailableWater = Math.Max(potentialAvailableWater, auxAvailableWater);
+                        mySpecies[s].soilAvailableWater[layer] = auxAvailableWater * xFac;
+                        PAW[layer] += mySpecies[s].soilAvailableWater[layer];
+                    }
                 }
+
+                // correct total PAW according to number of species and make sure it doesn't exceed potential available
+                auxAvailableWater = PAW[layer];
+                xFac = Math.Min(1.0, Math.Pow(nSpecies, 1.0 / UptakeFactorSpecies));
+                PAW[layer] = Math.Min(PAW[layer] * xFac, potentialAvailableWater);
+
+                // correct values for each species to match PAW
+                wFrac = MathUtility.Divide(PAW[layer], auxAvailableWater, 0.0);
+                for (int s = 0; s < NumSpecies; s++)
+                    mySpecies[s].soilAvailableWater[layer] *= wFrac;
             }
         }
         else
@@ -2229,14 +2230,13 @@ public class AgPasture
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                xFac = kl[layer];
-                PotAvailableWater *= Math.Min(1.0, xFac);
-                PAW[layer] = PotAvailableWater;
+                auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                xFac = Math.Min(1.0, kl[layer]);
+                PAW[layer] = auxAvailableWater * xFac;
                 for (int s = 0; s < NumSpecies; s++)
-                { // partition based on demand (not really used)
-                    wFrac = MathUtility.Divide(mySpecies[s].WaterDemand, swardWaterDemand, 0.0);
-                    mySpecies[s].soilAvailableWater[layer] = PAW[layer] * Math.Min(1.0, wFrac);
+                { // simple partition, based on demand
+                    wFrac = Math.Min(1.0, MathUtility.Divide(mySpecies[s].WaterDemand, swardWaterDemand, 0.0));
+                    mySpecies[s].soilAvailableWater[layer] = PAW[layer] * wFrac;
                 }
             }
         }
@@ -2252,46 +2252,43 @@ public class AgPasture
     /// <returns>Amount of plant available water</returns>
     private double[] PlantAvailableSoilWater()
     {
-        // zero out the variables
-        double[] PAW = new double[dlayer.Length];
-        double layerFrac = 0.0;              // fraction of layer explored by roots
-        double PotAvailableWater = 0.0;      // total potential PAW (or maximum)
-        double xFac = 0.0;                   // extractability factor for each layer
-        double wFrac = 0.0;                  // availability faction for each species
-        double refRLD = 0.0;                 // reference RLD for sward, weighed
+        double[] PAW = new double[dlayer.Length];   // total amount of Plant Available Water
+        double layerFrac = 0.0;                     // fraction of layer explored by roots
+        double auxAvailableWater = 0.0;             // auxiliary amount of available water
+        double potentialAvailableWater = 0.0;       // potential (or maximum) amount of water available
+        int nSpecies = 0;                           // number of species with root within a layer
+        double xFac = 0.0;                          // extractability factor for each layer
+        double wFrac = 0.0;                         // available fraction for each species
 
         // find out plant soil available water
         if (usingWAvailableBySpecies)
         { // considering root presence for each species
-            for (int s = 0; s < NumSpecies; s++)
-            { // amount if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                    xFac = kl[layer] * MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 0.0);
-                    PotAvailableWater *= Math.Min(1.0, xFac);
-                    mySpecies[s].soilAvailableWater[layer] = PotAvailableWater;
-                }
-                refRLD += mySpecies[s].referenceRLD + mySpecies[s].dmroot;
-            }
-
-            // Adjust the values so that total available water is equal or less than maximum
-            refRLD /= swardRootDM;
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum PAW for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                // adjust factor for number of species
-                xFac = kl[layer] * MathUtility.Divide(rlv[layer], refRLD, 0.0) * Math.Pow(NumSpecies, 1.0 / UptakeFactorSpecies);
-                PotAvailableWater *= Math.Min(1.0, xFac);
-                wFrac = MathUtility.Divide(PotAvailableWater, mySpecies.Sum(x => x.soilAvailableWater[layer]), 0.0);
+                potentialAvailableWater = 0.0;
+                nSpecies = 0;
                 for (int s = 0; s < NumSpecies; s++)
-                {
-                    mySpecies[s].soilAvailableWater[layer] *= Math.Min(1.0, wFrac);
-                    PAW[layer] += mySpecies[s].soilAvailableWater[layer];
+                { // amount if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        nSpecies += 1;
+                        auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                        xFac = Math.Min(1.0, kl[layer] * MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 0.0));
+                        potentialAvailableWater = Math.Max(potentialAvailableWater, auxAvailableWater);
+                        mySpecies[s].soilAvailableWater[layer] = auxAvailableWater * xFac;
+                        PAW[layer] += mySpecies[s].soilAvailableWater[layer];
+                    }
                 }
+
+                // correct total PAW to make sure it doesn't exceed potential available
+                auxAvailableWater = PAW[layer];
+                PAW[layer] = Math.Min(PAW[layer], potentialAvailableWater);
+
+                // correct values for each species to match PAW
+                wFrac = MathUtility.Divide(PAW[layer], auxAvailableWater, 0.0);
+                for (int s = 0; s < NumSpecies; s++)
+                    mySpecies[s].soilAvailableWater[layer] *= wFrac;
             }
         }
         else
@@ -2299,14 +2296,13 @@ public class AgPasture
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                PotAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                xFac = kl[layer] * MathUtility.Divide(rlv[layer], referenceRLD[0], 0.0);
-                PotAvailableWater *= Math.Min(1.0, xFac);
-                PAW[layer] = PotAvailableWater;
+                auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
+                xFac = Math.Min(1.0, kl[layer] * MathUtility.Divide(rlv[layer], referenceRLD[0], 0.0));
+                PAW[layer] = auxAvailableWater * xFac;
                 for (int s = 0; s < NumSpecies; s++)
                 { // partition based on root distribution
-                    wFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
-                    mySpecies[s].soilAvailableWater[layer] = PAW[layer] * Math.Min(1.0, wFrac);
+                    wFrac = Math.Min(1.0, MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0));
+                    mySpecies[s].soilAvailableWater[layer] = PAW[layer] * wFrac;
                 }
             }
         }
@@ -2322,8 +2318,8 @@ public class AgPasture
     /// <returns>Amount of plant available water</returns>
     private double[] PlantAvailableWaterAPSIM()
     {
-        double[] PAW = new double[dlayer.Length];
-        double wFrac = 0.0;                  // availability fraction for each species
+        double[] PAW = new double[dlayer.Length];   // total amount of Plant Available Water
+        double wFrac = 0.0;                         // available fraction for each species
 
         // check that we have an input from apsim
         if (swardWaterUptakeByAPSIM == null)
@@ -2332,16 +2328,16 @@ public class AgPasture
         // get the overall ratio of water uptake to demand
         double uptakeRatio = Math.Min(1.0, swardWaterDemand / swardWaterUptakeByAPSIM.Sum());
 
-        // update/partition the uptake (from SWIM) 
+        // update/partition the uptake (from SWIM)
         if (usingWAvailableBySpecies)
-        { // consider water available for each species - this might mean that some water will go back to SWIM
+        { // consider water available for each species, consider root distribution - this might mean that some water will go back to SWIM
             double[,] auxUptake = new double[NumSpecies, dlayer.Length];
             double[] auxTotalUptake = new double[NumSpecies];
             double[] auxActualUptake = new double[NumSpecies];
             double upWeight;
             double totWeight;
 
-            // basic partition of uptake, consider root distribution and demand
+            // basic partition of uptake, based on root distribution and demand
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 totWeight = mySpecies.Sum(x => x.WaterDemand * x.RLD[layer]);
@@ -2372,12 +2368,12 @@ public class AgPasture
             }
         }
         else
-        { // consider water available for whole sward (uptake may occur even if species doesn't have roots in the layer)
-            for (int s = 0; s < NumSpecies; s++)
+        { // consider water available for whole sward
+            for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                wFrac = MathUtility.Divide(mySpecies[s].WaterDemand, swardWaterDemand, 1.0);
-                for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
-                {
+                for (int s = 0; s < NumSpecies; s++)
+                { // simple partition, based on demand
+                    wFrac = MathUtility.Divide(mySpecies[s].WaterDemand, swardWaterDemand, 1.0);
                     mySpecies[s].soilWaterUptake[layer] = swardWaterUptakeByAPSIM[layer] * Math.Min(1.0, wFrac);
                     mySpecies[s].soilAvailableWater[layer] = mySpecies[s].soilWaterUptake[layer] / uptakeRatio;
                     PAW[layer] += mySpecies[s].soilAvailableWater[layer];
@@ -2393,8 +2389,8 @@ public class AgPasture
     /// </summary>
     private void WaterBudgetAndUptake()
     {
+        double wFrac = 0.0;                 // uptake fraction for each species
         int nLayers = dlayer.Length;
-        double wFrac = 0.0;
 
         // clear some variables
         Array.Clear(soilWaterUptake, 0, nLayers);
@@ -2457,6 +2453,7 @@ public class AgPasture
         else
         { // uptake was computed by external module (SWIM)
             // partition of uptake was already done in PlantWaterAvailability(), using PlantAvailableWaterAPSIM()
+            // need to check here whether uptake is smaller than estiamted by SWIM and return any excess water
             if (usingWUptakeBySpecies)
             { // consider each species
                 double[] XSwater = new double[dlayer.Length];
@@ -2547,58 +2544,57 @@ public class AgPasture
     /// This is the 'classic' method, all N in the root zone is available
     /// </summary>
     /// <remarks>
-    /// The method has been modified to consider limits to available N (as defined in SoilNitrogen)
-    /// This is used when dealing with SoilCNPatches, limiting plants access to patches with very high N content
+    /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
+    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
     private double PlantExtractableNClassic()
     {
         double totalAvailable = 0.0;
         double layerFrac = 1.0;         // fraction of each layer explored by roots
-        double maxAvailableNH4 = 0.0;   // maximum NH4 amount available in each layer
-        double maxAvailableNO3 = 0.0;   // maximum NO3 amount available in each layer
+        double auxAvailableNH4;         // auxiliary NH4 amount available
+        double auxAvailableNO3;         // auxiliary NO3 amount available
+        double potentialAvailableNH4;   // maximum NH4 amount available in each layer
+        double potentialAvailableNO3;   // maximum NO3 amount available in each layer
+        double[] xFac = new double[2];  // extractability factor for each layer
         double nFrac = 0.0;             // fraction available for each species
 
         if (usingNAvailableBySpecies)
         { // consider each species
-            for (int s = 0; s < NumSpecies; s++)
-            { //amount as if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    if (nh4_PlantAvailable == null)
-                    { // there are soilNPatches
-                        mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac;
-                    }
-                    else
-                    {
-                        mySpecies[s].soilAvailableNH4[layer] = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
-                    }
-                    soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                    soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                }
-            }
-
-            // Adjust the values so that total available N is equal or less than maximum
+            xFac[0] = 1.0;
+            xFac[1] = 1.0;
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum N available for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (nh4_PlantAvailable == null)
-                { // there are no soilNPatches, use classic approach
-                    maxAvailableNH4 = nh4[layer] * layerFrac;
-                    maxAvailableNO3 = no3[layer] * layerFrac;
-                }
-                else
-                { // SoilNitrogen has patches, have to use plant available
-                    maxAvailableNH4 = nh4_PlantAvailable[layer] * layerFrac;
-                    maxAvailableNO3 = no3_PlantAvailable[layer] * layerFrac;
+                potentialAvailableNH4 = 0.0;
+                potentialAvailableNO3 = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                { // amount as if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        if (nh4_PlantAvailable == null)
+                        { // there are no soilNPatches, use classic approach
+                            auxAvailableNH4 = nh4[layer] * layerFrac;
+                            auxAvailableNO3 = no3[layer] * layerFrac;
+                        }
+                        else
+                        { // SoilNitrogen has patches, best to use plant available
+                            auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                            auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+                        }
+
+                        mySpecies[s].soilAvailableNH4[layer] = auxAvailableNH4 * xFac[0];
+                        mySpecies[s].soilAvailableNO3[layer] = auxAvailableNO3 * xFac[1];
+                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+                        potentialAvailableNH4 = Math.Max(potentialAvailableNH4, auxAvailableNH4);
+                        potentialAvailableNO3 = Math.Max(potentialAvailableNO3, auxAvailableNO3);
+                    }
                 }
 
                 // adjust amounts of NH4 for each species
-                nFrac = MathUtility.Divide(maxAvailableNH4, soilNH4Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNH4, soilNH4Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNH4Available[layer] = 0.0;
@@ -2610,7 +2606,7 @@ public class AgPasture
                 }
 
                 // adjust amounts of NO3 for each species
-                nFrac = MathUtility.Divide(maxAvailableNO3, soilNO3Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNO3, soilNO3Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNO3Available[layer] = 0.0;
@@ -2626,19 +2622,24 @@ public class AgPasture
         }
         else
         { // consider whole sward
+            xFac[0] = 1.0;
+            xFac[1] = 1.0;
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
                 if (nh4_PlantAvailable == null)
                 { // there are no soilNPatches, use classic approach
-                    soilNH4Available[layer] = nh4[layer] * layerFrac;
-                    soilNO3Available[layer] = no3[layer] * layerFrac;
+                    auxAvailableNH4 = nh4[layer] * layerFrac;
+                    auxAvailableNO3 = no3[layer] * layerFrac;
                 }
                 else
-                { // SoilNitrogen has patches, have to use plant available
-                    soilNH4Available[layer] = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
-                    soilNO3Available[layer] = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+                { // SoilNitrogen has patches, best to use plant available
+                    auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                    auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
                 }
+
+                soilNH4Available[layer] += auxAvailableNH4 * xFac[0];
+                soilNO3Available[layer] += auxAvailableNO3 * xFac[1];
 
                 // partition amount to each species (simple approach, based on root presence, values not really used)
                 double totRootFrac = 0.0;
@@ -2646,10 +2647,10 @@ public class AgPasture
                     totRootFrac += LayerFractionForRoots(layer, mySpecies[s].rootDepth);
 
                 for (int s = 0; s < NumSpecies; s++)
-                { 
+                {
                     if (totRootFrac > 0.0)
                     {
-                        layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth) / totRootFrac;
+                        nFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth) / totRootFrac;
                         mySpecies[s].soilAvailableNH4[layer] = soilNH4Available[layer] * nFrac;
                         mySpecies[s].soilAvailableNO3[layer] = soilNO3Available[layer] * nFrac;
                     }
@@ -2673,63 +2674,61 @@ public class AgPasture
     /// an extractability factor for each N form
     /// </summary>
     /// <remarks>
-    /// The method has been modified to consider limits to available N (as defined in SoilNitrogen)
-    /// This is used when dealing with SoilCNPatches, limiting plants access to patches with very high N content
+    /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
+    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
     private double PlantExtractableSoilN_M1()
     {
         double totalAvailable = 0.0;
         double layerFrac = 1.0;         // fraction of each layer explored by roots
-        double maxAvailableNH4 = 0.0;   // maximum NH4 amount available in each layer
-        double maxAvailableNO3 = 0.0;   // maximum NO3 amount available in each layer
+        double auxAvailableNH4;         // auxiliary NH4 amount available
+        double auxAvailableNO3;         // auxiliary NO3 amount available
+        double potentialAvailableNH4;   // maximum NH4 amount available in each layer
+        double potentialAvailableNO3;   // maximum NO3 amount available in each layer
+        double[] xFac = new double[2];  // extractability factor for each layer
         double nFrac = 0.0;             // fraction available for each species
         double wSatFrac = 0.0;          // water saturation fraction
 
         if (usingNAvailableBySpecies)
         { // consider each species
-            for (int s = 0; s < NumSpecies; s++)
-            { //amount as if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
-                    wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
-                    wSatFrac = Math.Pow(wSatFrac, mySpecies[s].NextraSWF);
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    if (nh4_PlantAvailable == null)
-                    { // there are no soilNPatches, use classic approach
-                        mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac * kNH4[layer] * wSatFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac * kNO3[layer] * wSatFrac;
-                    }
-                    else
-                    { // SoilNitrogen has patches, have to use plant available
-                        mySpecies[s].soilAvailableNH4[layer] = nh4_PlantAvailable[layer] * layerFrac * kNH4[layer] * wSatFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = no3_PlantAvailable[layer] * layerFrac * kNO3[layer] * wSatFrac;
-                    }
-
-                    soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                    soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                }
-            }
-
-            // Adjust the values so that total available N is equal or less than maximum
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum N available for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (nh4_PlantAvailable == null)
-                { // there are no soilNPatches, use classic approach
-                    maxAvailableNH4 = nh4[layer] * layerFrac;
-                    maxAvailableNO3 = no3[layer] * layerFrac;
-                }
-                else
-                { // SoilNitrogen has patches, have to use plant available
-                    maxAvailableNH4 = nh4_PlantAvailable[layer] * layerFrac;
-                    maxAvailableNO3 = no3_PlantAvailable[layer] * layerFrac;
+                potentialAvailableNH4 = 0.0;
+                potentialAvailableNO3 = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                { // amount as if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
+                        wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
+                        wSatFrac = Math.Pow(wSatFrac, mySpecies[s].NextraSWF);
+                        xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac);
+                        xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac);
+                        if (nh4_PlantAvailable == null)
+                        { // there are no soilNPatches, use classic approach
+                            auxAvailableNH4 = nh4[layer] * layerFrac;
+                            auxAvailableNO3 = no3[layer] * layerFrac;
+                        }
+                        else
+                        { // SoilNitrogen has patches, best to use plant available
+                            auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                            auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+                        }
+
+                        mySpecies[s].soilAvailableNH4[layer] = auxAvailableNH4 * xFac[0];
+                        mySpecies[s].soilAvailableNO3[layer] = auxAvailableNO3 * xFac[1];
+                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+                        potentialAvailableNH4 = Math.Max(potentialAvailableNH4, auxAvailableNH4);
+                        potentialAvailableNO3 = Math.Max(potentialAvailableNO3, auxAvailableNO3);
+                    }
                 }
 
                 // adjust amounts of NH4 for each species
-                nFrac = MathUtility.Divide(maxAvailableNH4, soilNH4Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNH4, soilNH4Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNH4Available[layer] = 0.0;
@@ -2741,7 +2740,7 @@ public class AgPasture
                 }
 
                 // adjust amounts of NO3 for each species
-                nFrac = MathUtility.Divide(maxAvailableNO3, soilNO3Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNO3, soilNO3Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNO3Available[layer] = 0.0;
@@ -2759,22 +2758,27 @@ public class AgPasture
         { // consider whole sward
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
                 wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                 wSatFrac = Math.Pow(wSatFrac, NextraSWF[0]);
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+                xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac);
+                xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac);
                 if (nh4_PlantAvailable == null)
                 { // there are no soilNPatches, use classic approach
-                    soilNH4Available[layer] = nh4[layer] * layerFrac * kNH4[layer] * wSatFrac;
-                    soilNO3Available[layer] = no3[layer] * layerFrac * kNO3[layer] * wSatFrac;
+                    auxAvailableNH4 = nh4[layer] * layerFrac;
+                    auxAvailableNO3 = no3[layer] * layerFrac;
                 }
                 else
-                { // SoilNitrogen has patches, have to use plant available
-                    soilNH4Available[layer] = nh4_PlantAvailable[layer] * layerFrac * kNH4[layer] * wSatFrac;
-                    soilNO3Available[layer] = no3_PlantAvailable[layer] * layerFrac * kNO3[layer] * wSatFrac;
+                { // SoilNitrogen has patches, best to use plant available
+                    auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                    auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
                 }
 
-                // partition amount to each species (simple approach, based on root density, values not really used)
+                soilNH4Available[layer] += auxAvailableNH4 * xFac[0];
+                soilNO3Available[layer] += auxAvailableNO3 * xFac[1];
+
+                // partition amount to each species (simple approach, based on root length density)
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     nFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
@@ -2795,71 +2799,59 @@ public class AgPasture
     /// an extractability factor for each N form
     /// </summary>
     /// <remarks>
-    /// The method has been modified to consider limits to available N (as defined in SoilNitrogen)
-    /// This is used when dealing with SoilCNPatches, limiting plants access to patches with very high N content
+    /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
+    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
     private double PlantExtractableSoilN_M2()
     {
         double totalAvailable = 0.0;
         double layerFrac = 1.0;         // fraction of each layer explored by roots
-        double maxAvailableNH4 = 0.0;   // maximum NH4 amount available in each layer
-        double maxAvailableNO3 = 0.0;   // maximum NO3 amount available in each layer
-        double nFrac = 0.0;             // fraction available for each species
+        double auxAvailableNH4;         // auxiliary NH4 amount available
+        double auxAvailableNO3;         // auxiliary NO3 amount available
+        double potentialAvailableNH4;   // maximum NH4 amount available in each layer
+        double potentialAvailableNO3;   // maximum NO3 amount available in each layer
         double[] xFac = new double[2];  // extractability factor for each layer
+        double nFrac = 0.0;             // fraction available for each species
+        double rlFrac = 0.0;            // root length fraction
 
         if (usingNAvailableBySpecies)
         { // considering each species
-            for (int s = 0; s < NumSpecies; s++)
-            { //amount as if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    if (mySpecies[s].referenceRLD > 0.0)
-                    {
-                        xFac[0] = Math.Min(1.0, kNH4[layer] * mySpecies[s].RLD[layer] / mySpecies[s].referenceRLD);
-                        xFac[1] = Math.Min(1.0, kNO3[layer] * mySpecies[s].RLD[layer] / mySpecies[s].referenceRLD);
-                    }
-                    else
-                    {
-                        xFac[0] = Math.Min(1.0, kNH4[layer]);
-                        xFac[1] = Math.Min(1.0, kNO3[layer]);
-                    }
-
-                    if (nh4_PlantAvailable == null)
-                    { // there are no soilNPatches, use classic approach
-                        mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac * xFac[0];
-                        mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac * xFac[1];
-                    }
-                    else
-                    { // SoilNitrogen has patches, have to use plant available
-                        mySpecies[s].soilAvailableNH4[layer] = nh4_PlantAvailable[layer] * layerFrac * xFac[0];
-                        mySpecies[s].soilAvailableNO3[layer] = no3_PlantAvailable[layer] * layerFrac * xFac[1];
-                    }
-
-                    soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                    soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                }
-            }
-
-            // Adjust the values so that total available N is equal or less than maximum
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum N available for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (nh4_PlantAvailable == null)
-                { // there are no soilNPatches, use classic approach
-                    maxAvailableNH4 = nh4[layer] * layerFrac;
-                    maxAvailableNO3 = no3[layer] * layerFrac;
-                }
-                else
-                { // SoilNitrogen has patches, have to use plant available
-                    maxAvailableNH4 = nh4_PlantAvailable[layer] * layerFrac;
-                    maxAvailableNO3 = no3_PlantAvailable[layer] * layerFrac;
+                potentialAvailableNH4 = 0.0;
+                potentialAvailableNO3 = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                { // amount as if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        rlFrac = MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 1.0);
+                        xFac[0] = Math.Min(1.0, kNH4[layer] * rlFrac);
+                        xFac[1] = Math.Min(1.0, kNO3[layer] * rlFrac);
+                        if (nh4_PlantAvailable == null)
+                        { // there are no soilNPatches, use classic approach
+                            auxAvailableNH4 = nh4[layer] * layerFrac;
+                            auxAvailableNO3 = no3[layer] * layerFrac;
+                        }
+                        else
+                        { // SoilNitrogen has patches, best to use plant available
+                            auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                            auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+                        }
+
+                        mySpecies[s].soilAvailableNH4[layer] = auxAvailableNH4 * xFac[0];
+                        mySpecies[s].soilAvailableNO3[layer] = auxAvailableNO3 * xFac[1];
+                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+                        potentialAvailableNH4 = Math.Max(potentialAvailableNH4, auxAvailableNH4);
+                        potentialAvailableNO3 = Math.Max(potentialAvailableNO3, auxAvailableNO3);
+                    }
                 }
 
                 // adjust amounts of NH4 for each species
-                nFrac = MathUtility.Divide(maxAvailableNH4, soilNH4Available[layer] , 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNH4, soilNH4Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNH4Available[layer] = 0.0;
@@ -2871,7 +2863,7 @@ public class AgPasture
                 }
 
                 // adjust amounts of NO3 for each species
-                nFrac = MathUtility.Divide(maxAvailableNO3,  soilNO3Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNO3, soilNO3Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNO3Available[layer] = 0.0;
@@ -2890,29 +2882,25 @@ public class AgPasture
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (referenceRLD[0] > 0.0)
-                {
-                    xFac[0] = Math.Min(1.0, kNH4[layer] * rlv[layer] / referenceRLD[0]);
-                    xFac[1] = Math.Min(1.0, kNO3[layer] * rlv[layer] / referenceRLD[0]);
-                }
-                else
-                {
-                    xFac[0] = Math.Min(1.0, kNH4[layer]);
-                    xFac[1] = Math.Min(1.0, kNO3[layer]);
-                }
-
+                rlFrac = MathUtility.Divide(rlv[layer], referenceRLD[0], 1.0);
+                xFac[0] = Math.Min(1.0, kNH4[layer] * rlFrac);
+                xFac[1] = Math.Min(1.0, kNO3[layer] * rlFrac);
                 if (nh4_PlantAvailable == null)
                 { // there are no soilNPatches, use classic approach
-                    soilNH4Available[layer] = nh4[layer] * layerFrac * xFac[0];
-                    soilNO3Available[layer] = no3[layer] * layerFrac * xFac[1];
+                    auxAvailableNH4 = nh4[layer] * layerFrac;
+                    auxAvailableNO3 = no3[layer] * layerFrac;
                 }
                 else
-                { // SoilNitrogen has patches, have to use plant available
-                    soilNH4Available[layer] = nh4_PlantAvailable[layer] * layerFrac * xFac[0];
-                    soilNO3Available[layer] = no3_PlantAvailable[layer] * layerFrac * xFac[1];
+                { // SoilNitrogen has patches, best to use plant available
+                    auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                    auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
                 }
 
-                // partition amount to each species (simple approach, based on root density, values not really used)
+                soilNH4Available[layer] += auxAvailableNH4 * xFac[0];
+                soilNO3Available[layer] += auxAvailableNO3 * xFac[1];
+
+
+                // partition amount to each species (simple approach, based on root length density)
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     nFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
@@ -2933,75 +2921,63 @@ public class AgPasture
     /// water content and an extractability factor for each N form
     /// </summary>
     /// <remarks>
-    /// The method has been modified to consider limits to available N (as defined in SoilNitrogen)
-    /// This is used when dealing with SoilCNPatches, limiting plants access to patches with very high N content
+    /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
+    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
     private double PlantExtractableSoilN_M3()
     {
         double totalAvailable = 0.0;
         double layerFrac = 1.0;         // fraction of each layer explored by roots
-        double maxAvailableNH4 = 0.0;   // maximum NH4 amount available in each layer
-        double maxAvailableNO3 = 0.0;   // maximum NO3 amount available in each layer
+        double auxAvailableNH4;         // auxiliary NH4 amount available
+        double auxAvailableNO3;         // auxiliary NO3 amount available
+        double potentialAvailableNH4;   // maximum NH4 amount available in each layer
+        double potentialAvailableNO3;   // maximum NO3 amount available in each layer
+        double[] xFac = new double[2];  // extractability factor for each layer
         double nFrac = 0.0;             // fraction available for each species
         double wSatFrac = 0.0;          // water saturation fraction
-        double[] xFac = new double[2];  // extractability factor for each layer
+        double rlFrac = 0.0;            // root length fraction
 
         if (usingNAvailableBySpecies)
         { // consider each species
-            for (int s = 0; s < NumSpecies; s++)
-            { //amount as if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
-                    wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
-                    wSatFrac = Math.Pow(wSatFrac, mySpecies[s].NextraSWF);
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                    if (mySpecies[s].referenceRLD > 0.0)
-                    {
-                        xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac * mySpecies[s].RLD[layer] / mySpecies[s].referenceRLD);
-                        xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac * mySpecies[s].RLD[layer] / mySpecies[s].referenceRLD);
-                    }
-                    else
-                    {
-                        xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac);
-                        xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac);
-                    }
-
-                    if (nh4_PlantAvailable == null)
-                    { // there are no soilNPatches, use classic approach
-                        mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac * xFac[0];
-                        mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac * xFac[1];
-                    }
-                    else
-                    { // SoilNitrogen has patches, have to use plant available
-                        mySpecies[s].soilAvailableNH4[layer] = nh4_PlantAvailable[layer] * layerFrac * xFac[0];
-                        mySpecies[s].soilAvailableNO3[layer] = no3_PlantAvailable[layer] * layerFrac * xFac[1];
-                    }
-
-                    soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                    soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                }
-            }
-
-            // Adjust the values so that total available N is equal or less than maximum
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum N available for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (nh4_PlantAvailable == null)
-                { // there are no soilNPatches, use classic approach
-                    maxAvailableNH4 = nh4[layer] * layerFrac;
-                    maxAvailableNO3 = no3[layer] * layerFrac;
-                }
-                else
-                { // SoilNitrogen has patches, have to use plant available
-                    maxAvailableNH4 = nh4_PlantAvailable[layer] * layerFrac;
-                    maxAvailableNO3 = no3_PlantAvailable[layer] * layerFrac;
+                potentialAvailableNH4 = 0.0;
+                potentialAvailableNO3 = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                { //amount as if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
+                        wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
+                        wSatFrac = Math.Pow(wSatFrac, mySpecies[s].NextraSWF);
+                        rlFrac = MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 1.0);
+                        xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac * rlFrac);
+                        xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac * rlFrac);
+                        if (nh4_PlantAvailable == null)
+                        { // there are no soilNPatches, use classic approach
+                            auxAvailableNH4 = nh4[layer] * layerFrac;
+                            auxAvailableNO3 = no3[layer] * layerFrac;
+                        }
+                        else
+                        { // SoilNitrogen has patches, best to use plant available
+                            auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                            auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
+                        }
+
+                        mySpecies[s].soilAvailableNH4[layer] = auxAvailableNH4 * xFac[0];
+                        mySpecies[s].soilAvailableNO3[layer] = auxAvailableNO3 * xFac[1];
+                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+                        potentialAvailableNH4 = Math.Max(potentialAvailableNH4, auxAvailableNH4);
+                        potentialAvailableNO3 = Math.Max(potentialAvailableNO3, auxAvailableNO3);
+                    }
                 }
 
                 // adjust amounts of NH4 for each species
-                nFrac = MathUtility.Divide(maxAvailableNH4, soilNH4Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNH4, soilNH4Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNH4Available[layer] = 0.0;
@@ -3013,7 +2989,7 @@ public class AgPasture
                 }
 
                 // adjust amounts of NO3 for each species
-                nFrac = MathUtility.Divide(maxAvailableNO3, soilNO3Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNO3, soilNO3Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNO3Available[layer] = 0.0;
@@ -3031,41 +3007,28 @@ public class AgPasture
         { // consider whole sward
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
                 wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                 wSatFrac = Math.Pow(wSatFrac, NextraSWF[0]);
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (referenceRLD[0] > 0.0)
-                {
-                    xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac * rlv[layer] / referenceRLD[0]);
-                    xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac * rlv[layer] / referenceRLD[0]);
-                }
-                else
-                {
-                    xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac);
-                    xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac);
-                }
-
+                rlFrac=MathUtility.Divide(rlv[layer] , referenceRLD[0],1.0);
+                xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac*rlFrac);
+                xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac * rlFrac);
                 if (nh4_PlantAvailable == null)
                 { // there are no soilNPatches, use classic approach
-                    soilNH4Available[layer] = nh4[layer] * layerFrac * xFac[0];
-                    soilNO3Available[layer] = no3[layer] * layerFrac * xFac[1];
+                    auxAvailableNH4 = nh4[layer] * layerFrac;
+                    auxAvailableNO3 = no3[layer] * layerFrac;
                 }
                 else
-                { // SoilNitrogen has patches, have to use plant available
-                    soilNH4Available[layer] = nh4_PlantAvailable[layer] * layerFrac * xFac[0];
-                    soilNO3Available[layer] = no3_PlantAvailable[layer] * layerFrac * xFac[1];
+                { // SoilNitrogen has patches, best to use plant available
+                    auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                    auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
                 }
 
-                // partition amount to each species (simple approach, based on root density, values not really used)
-                for (int s = 0; s < NumSpecies; s++)
-                {
-                    nFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
-                    mySpecies[s].soilAvailableNH4[layer] = soilNH4Available[layer] * nFrac;
-                    mySpecies[s].soilAvailableNO3[layer] = soilNO3Available[layer] * nFrac;
-                }
+                soilNH4Available[layer] += auxAvailableNH4 * xFac[0];
+                soilNO3Available[layer] += auxAvailableNO3 * xFac[1];
 
-                // partition amount to each species (simple approach, based on root density, values not really used)
+                // partition amount to each species (simple approach, based on root length density)
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     nFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
@@ -3082,82 +3045,65 @@ public class AgPasture
 
     /// <summary>
     /// Gets the amount of soil N that plants can extract (method 4)
-    /// This approach considers a maximum uptake rate for each N form 
+    /// This approach considers the presence of SoilCNPatches (in SoilNitrogen) as maximum uptake rate for each N form 
     /// </summary>
     /// <remarks>
-    /// The method has been modified to use when dealing with SoilCNPatches (defined in SoilNitrogen)
+    /// Tentative only, not fully implemented.
+    /// It attempts to limit the uptake from each patch here instead of getting the value from SoilNitrogen
+    /// SoilNitrogen supplied NN_PlantAvailable as a limited amount (where NN is either Nnh4 or no3), here we get
+    /// the values per patch (PatchNN.Patch[k].Value) then decide the amount taken up. 
+    /// The approach limits the maximum uptake, but all N is available in the soil is available (as classicAPSIM)
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
     private double PlantExtractableSoilN_M4()
     {
         double totalAvailable = 0.0;
         double layerFrac = 1.0;         // fraction of each layer explored by roots
-        double maxAvailableNH4 = 0.0;   // maximum NH4 amount available in each layer
-        double maxAvailableNO3 = 0.0;   // maximum NO3 amount available in each layer
+        double potentialAvailableNH4;   // maximum NH4 amount available in each layer
+        double potentialAvailableNO3;   // maximum NO3 amount available in each layer
         double MaxUptakeNH4 = 0.0;      // maximum NH4 amount that can be taken up, in each layer
         double MaxUptakeNO3 = 0.0;      // maximum NO3 amount that can be taken up, in each layer
         double nFrac = 0.0;             // fraction available for each species
 
         if (usingNAvailableBySpecies)
         { // consider each species
-            for (int s = 0; s < NumSpecies; s++)
-            { //amount as if each species was alone
-                if (PatchArea == null)
-                { // there are no patches, so use 'classic' approach
-                    for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                    {
-                        layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                        mySpecies[s].soilAvailableNH4[layer] = nh4[layer] * layerFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = no3[layer] * layerFrac;
-                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                    }
-                }
-                else
-                {  // go over each patch and get amount available as if each species was alone
-                    int nPatches = PatchNH4.Patch.Length;
-                    for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                    {
-                        MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
-                        MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
-                        layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                        for (int k = 0; k < 1; k++)
-                        {
-                            mySpecies[s].soilAvailableNH4[layer] = Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
-                            mySpecies[s].soilAvailableNO3[layer] = Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNO3) * PatchArea[k] * layerFrac;
-                        }
-
-                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                    }
-                }
-            }
-
-            // Adjust the values so that total available N is equal or less than maximum
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
-                // maximum N available for this layer
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (PatchArea == null)
-                { // there are no patches, so use 'classic' approach
-                    maxAvailableNH4 = nh4[layer] * layerFrac;
-                    maxAvailableNO3 = no3[layer] * layerFrac;
-                }
-                else
-                {  // go over each patch
-                    MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
-                    MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
-                    maxAvailableNH4 = 0.0;
-                    maxAvailableNO3 = 0.0;
-                    for (int k = 0; k < 1; k++)
+                potentialAvailableNH4 = 0.0;
+                potentialAvailableNO3 = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                { //amount as if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
                     {
-                        maxAvailableNH4 += Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
-                        maxAvailableNO3 += Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
+                        if (PatchArea == null)
+                        { // there are no patches, so use 'classic' approach
+                            mySpecies[s].soilAvailableNH4[layer] = nh4[layer];
+                            mySpecies[s].soilAvailableNO3[layer] = no3[layer];
+                        }
+                        else
+                        {  // go over each patch and get amount available as if each species was alone
+                            int nPatches = PatchNH4.Patch.Length;
+                            MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
+                            MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
+                            for (int k = 0; k < 1; k++)
+                            {
+                                mySpecies[s].soilAvailableNH4[layer] = Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k];
+                                mySpecies[s].soilAvailableNO3[layer] = Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNO3) * PatchArea[k];
+                            }
+                        }
+
+                        mySpecies[s].soilAvailableNH4[layer] *= layerFrac;
+                        mySpecies[s].soilAvailableNO3[layer] *= layerFrac;
+                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+                        potentialAvailableNH4 = Math.Max(potentialAvailableNH4, mySpecies[s].soilAvailableNH4[layer]);
+                        potentialAvailableNO3 = Math.Max(potentialAvailableNO3, mySpecies[s].soilAvailableNO3[layer]);
                     }
                 }
 
                 // adjust amounts of NH4 for each species
-                nFrac = MathUtility.Divide(maxAvailableNH4, soilNH4Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNH4, soilNH4Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNH4Available[layer] = 0.0;
@@ -3169,7 +3115,7 @@ public class AgPasture
                 }
 
                 // adjust amounts of NO3 for each species
-                nFrac = MathUtility.Divide(maxAvailableNO3, soilNO3Available[layer], 0.0);
+                nFrac = MathUtility.Divide(potentialAvailableNO3, soilNO3Available[layer], 0.0);
                 if (nFrac < 0.999999)
                 {
                     soilNO3Available[layer] = 0.0;
@@ -3185,35 +3131,28 @@ public class AgPasture
         }
         else
         { // consider whole sward
-            if (PatchArea == null)
-            { // there are no patches, so use 'classic' approach
-                for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
-                {
-                    layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+            for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+            {
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+                if (PatchArea == null)
+                { // there are no patches, so use 'classic' approach
                     soilNH4Available[layer] += nh4[layer] * layerFrac;
                     soilNO3Available[layer] += no3[layer] * layerFrac;
                 }
-            }
-            else
-            { // go over each patch and get the available N
-                int nPatches = PatchNH4.Patch.Length;
-                for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
-                {
+                else
+                { // go over each patch and get the available N
+                    int nPatches = PatchNH4.Patch.Length;
                     MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
                     MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
                     layerFrac = LayerFractionForRoots(layer, swardRootDepth);
                     for (int k = 0; k < nPatches; k++)
                     {
-                        double teste = nh4[layer] * 1;
                         soilNH4Available[layer] += Math.Min(PatchNH4.Patch[k].Value[layer], MaxUptakeNH4) * PatchArea[k] * layerFrac;
                         soilNO3Available[layer] += Math.Min(PatchNO3.Patch[k].Value[layer], MaxUptakeNO3) * PatchArea[k] * layerFrac;
                     }
                 }
-            }
 
-            for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
-            {
-                // partition amount to each species (simple approach, based on root density, values not really used)
+                // partition amount to each species (simple approach, based on root length density)
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     nFrac = MathUtility.Divide(mySpecies[s].RLD[layer], rlv[layer], 0.0);
@@ -3234,73 +3173,65 @@ public class AgPasture
     /// </summary>
     /// <remarks>
     /// This is an implementation of uptake option 3 of Plant1
-    /// The method has been modified to consider limits to available N (as defined in SoilNitrogen)
-    /// This is used when dealing with SoilCNPatches, limiting plants access to patches with very high N content
+    /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
+    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
     private double PlantExtractableSoilN_M5()
     {
         double totalAvailable = 0.0;
-        double swUpFactor = 0.0;        // water uptake factor, fraction of total water taken up
-        double speciesUpFrac = 0.0;     // fraction of water uptake for each species, to partition availability
         double layerFrac = 1.0;         // fraction of each layer explored by roots
+        double auxAvailableNH4;         // auxiliary NH4 amount available
+        double auxAvailableNO3;         // auxiliary NO3 amount available
+        double potentialAvailableNH4;   // maximum NH4 amount available in each layer
+        double potentialAvailableNO3;   // maximum NO3 amount available in each layer
         double MaxUptakeNH4 = 0.0;      // maximum NH4 amount that can be taken up, in each layer
         double MaxUptakeNO3 = 0.0;      // maximum NO3 amount that can be taken up, in each layer
-        double maxAvailableNH4 = 0.0;   // maximum NH4 amount available in each layer
-        double maxAvailableNO3 = 0.0;   // maximum NO3 amount available in each layer
+        double swUpFactor = 0.0;        // water uptake factor, fraction of total water taken up
+        double[] xFac = new double[2];  // extractability factor for each layer
         double nFrac = 0.0;             // fraction available for each species
         double auxUptake = 0.0;
 
         if (usingNAvailableBySpecies)
         { // consider each species
-            for (int s = 0; s < NumSpecies; s++)
-            { //amount as if each species was alone
-                for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
-                {
-                    swUpFactor = MathUtility.Divide(soilWaterUptake[layer], sw_dep[layer], 0.0);
-                    speciesUpFrac = MathUtility.Divide(mySpecies[s].soilWaterUptake[layer], soilWaterUptake[layer], 0.0);
-                    MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
-                    MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
-                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-
-                    if (nh4_PlantAvailable == null)
-                    { // there are no soilNPatches, use classic approach
-                        auxUptake = nh4[layer] * layerFrac * swUpFactor * kNH4[layer] * speciesUpFrac;
-                        mySpecies[s].soilAvailableNH4[layer] = Math.Min(MaxUptakeNH4, auxUptake);
-                        auxUptake = no3[layer] * layerFrac * swUpFactor * kNO3[layer] * speciesUpFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = Math.Min(MaxUptakeNO3, auxUptake);
-                    }
-                    else
-                    { // SoilNitrogen has patches, have to use plant available
-                        auxUptake = nh4_PlantAvailable[layer] * layerFrac * swUpFactor * kNH4[layer] * speciesUpFrac;
-                        mySpecies[s].soilAvailableNH4[layer] = Math.Min(MaxUptakeNH4, auxUptake);
-                        auxUptake = no3_PlantAvailable[layer] * layerFrac * swUpFactor * kNO3[layer] * speciesUpFrac;
-                        mySpecies[s].soilAvailableNO3[layer] = Math.Min(MaxUptakeNO3, auxUptake);
-                    }
-
-                    soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
-                    soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
-                }
-            }
-
-            // Adjust the values so that total available N is equal or less than maximum
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
+                potentialAvailableNH4 = 0.0;
+                potentialAvailableNO3 = 0.0;
+                MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
+                MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
                 swUpFactor = MathUtility.Divide(soilWaterUptake[layer], sw_dep[layer], 0.0);
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                if (nh4_PlantAvailable == null)
-                { // there are no soilNPatches, use classic approach
-                    maxAvailableNH4 = nh4[layer] * layerFrac * swUpFactor;
-                    maxAvailableNO3 = no3[layer] * layerFrac * swUpFactor;
-                }
-                else
-                { // SoilNitrogen has patches, have to use plant available
-                    maxAvailableNH4 = nh4_PlantAvailable[layer] * layerFrac * swUpFactor;
-                    maxAvailableNO3 = no3_PlantAvailable[layer] * layerFrac * swUpFactor;
+                for (int s = 0; s < NumSpecies; s++)
+                { //amount as if each species was alone
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    if (layerFrac > 0.0)
+                    {
+                        nFrac = MathUtility.Divide(mySpecies[s].soilWaterUptake[layer], soilWaterUptake[layer], 0.0);
+                        xFac[0] = Math.Min(1.0, swUpFactor * kNH4[layer]);
+                        xFac[1] = Math.Min(1.0, swUpFactor * kNO3[layer]);
+                        if (nh4_PlantAvailable == null)
+                        { // there are no soilNPatches, use classic approach
+                            auxAvailableNH4 = nh4[layer] * layerFrac;
+                            auxAvailableNO3 = no3[layer] * layerFrac;
+                        }
+                        else
+                        { // SoilNitrogen has patches, best to use plant available
+                            auxAvailableNH4 = nh4_PlantAvailable[layer] * layerFrac;
+                            auxAvailableNO3 = no3_PlantAvailable[layer] * layerFrac;
+                        }
+
+                        mySpecies[s].soilAvailableNH4[layer] = auxAvailableNH4 * xFac[0] * nFrac;
+                        mySpecies[s].soilAvailableNO3[layer] = auxAvailableNO3 * xFac[1] * nFrac;
+                        soilNH4Available[layer] += mySpecies[s].soilAvailableNH4[layer];
+                        soilNO3Available[layer] += mySpecies[s].soilAvailableNO3[layer];
+                        potentialAvailableNH4 = Math.Max(potentialAvailableNH4, auxAvailableNH4);
+                        potentialAvailableNO3 = Math.Max(potentialAvailableNO3, auxAvailableNO3);
+                    }
                 }
 
                 // adjust amounts of NH4 for each species
-                nFrac = Math.Min(1.0, MathUtility.Divide(maxAvailableNH4, soilNH4Available[layer], 0.0));
+                nFrac = Math.Min(1.0, MathUtility.Divide(potentialAvailableNH4, soilNH4Available[layer], 0.0));
                 if (nFrac < 1.0)
                 {
                     soilNH4Available[layer] = 0.0;
@@ -3312,7 +3243,7 @@ public class AgPasture
                 }
 
                 // adjust amounts of NO3 for each species
-                nFrac = Math.Min(1.0, MathUtility.Divide(maxAvailableNO3, soilNO3Available[layer], 0.0));
+                nFrac = Math.Min(1.0, MathUtility.Divide(potentialAvailableNO3, soilNO3Available[layer], 0.0));
                 if (nFrac < 1.0)
                 {
                     soilNO3Available[layer] = 0.0;
@@ -3330,24 +3261,26 @@ public class AgPasture
         { // consider whole sward
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
                 swUpFactor = MathUtility.Divide(soilWaterUptake[layer], soilAvailableWater[layer], 0.0);
                 MaxUptakeNH4 = MaximumUptakeRateNH4[0] * 0.01 * bd[layer] * dlayer[layer];
                 MaxUptakeNO3 = MaximumUptakeRateNO3[0] * 0.01 * bd[layer] * dlayer[layer];
-                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+                xFac[0] = Math.Min(1.0, swUpFactor * kNH4[layer]);
+                xFac[1] = Math.Min(1.0, swUpFactor * kNO3[layer]);
+
                 if (nh4_PlantAvailable == null)
                 { // there are no soilNPatches, use classic approach
-                    auxUptake = nh4[layer] * layerFrac * swUpFactor * kNH4[layer];
-                    soilNH4Available[layer] += Math.Min(maxAvailableNH4, auxUptake);
-                    auxUptake = no3[layer] * layerFrac * swUpFactor * kNO3[layer];
-                    soilNO3Available[layer] += Math.Min(maxAvailableNO3, auxUptake);
+                    auxAvailableNH4 = nh4[layer] * layerFrac;
+                    auxAvailableNO3 = no3[layer] * layerFrac;
                 }
                 else
-                { // SoilNitrogen has patches, have to use plant available
-                    auxUptake = nh4_PlantAvailable[layer] * layerFrac * swUpFactor * kNH4[layer];
-                    soilNH4Available[layer] += Math.Min(maxAvailableNH4, auxUptake);
-                    auxUptake = no3_PlantAvailable[layer] * layerFrac * swUpFactor * kNO3[layer];
-                    soilNO3Available[layer] += Math.Min(maxAvailableNO3, auxUptake);
+                { // SoilNitrogen has patches, best to use plant available
+                    auxAvailableNH4 = Math.Min(nh4[layer], nh4_PlantAvailable[layer]) * layerFrac;
+                    auxAvailableNO3 = Math.Min(no3[layer], no3_PlantAvailable[layer]) * layerFrac;
                 }
+
+                soilNH4Available[layer] += auxAvailableNH4 * xFac[0];
+                soilNO3Available[layer] += auxAvailableNO3 * xFac[1];
             }
 
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
@@ -3883,7 +3816,7 @@ public class AgPasture
                     // calculate soil moisture content in root zone
                     double mySW = 0.0;       //soil water content
                     double mySat = 0.0;      //water content at saturation
-                    double myDUL = 0.0;      //water contenct at field capacity
+                    double myDUL = 0.0;      //water content at field capacity
                     for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
                     {
                         double layerFrac = LayerFractionForRoots(layer, swardRootDepth);
@@ -5932,14 +5865,17 @@ public class AgPasture
             //Compute the root length, total over the whole profile
             double[] result = new double[dlayer.Length];
             double Total_Rlength = 0.0;
-            for (int s = 0; s < NumSpecies; s++)
-            {  // average root length (m root/m2 soil)
-                Total_Rlength += (mySpecies[s].dmroot * 0.1) * mySpecies[s].specificRootLength;
-            }
-            Total_Rlength *= 0.001;          // convert into mm root/mm2 soil)
             for (int layer = 0; layer < result.Length; layer++)
             {
-                result[layer] = RootFraction[layer] * Total_Rlength / dlayer[layer];    // mm root/mm3 soil
+                Total_Rlength = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {  // average root length (m root/m2 soil)
+                    if (usingSpeciesRoot)
+                        Total_Rlength += (mySpecies[s].dmroot * 0.1) * mySpecies[s].rootFraction[layer] * mySpecies[s].specificRootLength;
+                    else
+                        Total_Rlength += (mySpecies[s].dmroot * 0.1) * RootFraction[layer] * mySpecies[s].specificRootLength;
+                }
+                result[layer] = Total_Rlength / (dlayer[layer] * 1000);    // mm root/mm3 soil
             }
             return result;
         }
