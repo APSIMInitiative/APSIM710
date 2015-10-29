@@ -43,6 +43,16 @@ Paddock:
    Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
    Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
    Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component "Regular harvest or grazing (with return)" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                         "SWIM" = %apsim%\Model\SWIM3.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -80,6 +90,7 @@ Paddock:
         dlayer
         NitrogenUptakeLayers
         RootWtFraction
+        rlv as RootDensity
 
      Output file = Sim02-SWIM3 pad1.out
      Format = normal
@@ -468,6 +479,7 @@ Paddock:
         dlayer
         NitrogenUptakeLayers
         RootWtFraction
+        rlv as RootDensity
 
      Output file = Sim02-SWIM3 pad2.out
      Format = normal
@@ -856,6 +868,7 @@ Paddock:
         dlayer
         NitrogenUptakeLayers
         RootWtFraction
+        rlv as RootDensity
 
      Output file = Sim02-SWIM3 pad3.out
      Format = normal
@@ -1214,20 +1227,417 @@ Paddock:
          -----------------------------
           Layer     Depth  FractionWt
          -----------------------------
-            0        0-10      0.033
-            1       10-30      0.067
-            2       30-60      0.100
-            3      60-100      0.133
-            4     100-200      0.314
-            5     200-400      0.295
-            6     400-600      0.056
-            7     600-800      0.002
+            0        0-10      0.040
+            1       10-30      0.081
+            2       30-60      0.121
+            3      60-100      0.161
+            4     100-200      0.301
+            5     200-400      0.251
+            6     400-600      0.043
+            7     600-800      0.001
+            8    800-1100      0.000
+            9   1100-1400      0.000
+           10   1400-1700      0.000
+           11   1700-1800      0.000
+         -----------------------------
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        drain
+        HarvestWt
+        TotalPlantWt
+        AboveGroundWt
+        StandingPlantWt
+        HarvestableWt
+        SpeciesAboveGroundWt(1) as RyegrassWt
+        SpeciesAboveGroundWt(2) as WhiteCloverWt
+        dlayer
+        NitrogenUptakeLayers
+        RootWtFraction
+        rlv as RootDensity
+
+     Output file = Sim02-SWIM3 pad4.out
+     Format = normal
+
+------- pad4.accum Initialisation ---------------------------------------------
+     Initialising
+
+------- pad4.Regular harvest or grazing (with return) Initialisation ----------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     account = account + 1
+     dm_som = 0
+     dm_removed = 0
+     n_returned =0
+     n_removed =0
+     n_som = 0
+     n_urine = 0
+     n_urine1 = 0
+     n_urine2 = 0
+     if ( (today = date('01/07/1900')) or
+          (today >date('01/07/1900') and account = 21 )) then
+       account = 0
+       'agpasture' graze type = 'setresidueamount', amount = 1200 (kg/ha)
+       digest = defoliateddigestibility
+       dm_som = harvestwt * (1-digest)
+       n_removed  = harvestn *(1.0-0.85)
+       n_returned = harvestn * 0.85
+       n_som      = n_returned * ( 1.0 - 0.6 )
+       n_urine    = n_returned *  0.6
+       n_urine1 = 0.6 * n_urine
+       n_urine2 = 0.4 * n_urine
+        'surface organic matter' add_surfaceom name = 'agpasture', type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha), cpr = 1.0
+       'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
+       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+      endif
+     
+     SECTION:- init
+     account = 0
+     END of rules
+     
+     Manager creating a new local real variable : account = 0.00000
+
+------- pad4.Micromet Initialisation ------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     14000.00
+             exceeds upper limit of    1000.000
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- pad4.SWIM Initialisation ----------------------------------------------
+     
+     
+                           APSIM Soil Profile
+                           ------------------
+     
+     ---------------------------------------------------------------
+      x    dlayer   BD   SW     LL15   DUL   SAT      Ks      Psi
+     ---------------------------------------------------------------
+        0.0   10.0  1.25  0.320  0.140  0.320  0.450 ******   -100.0
+       20.0   20.0  1.25  0.320  0.140  0.320  0.450 ******   -100.0
+       40.0   30.0  1.25  0.320  0.140  0.320  0.450 ******   -100.0
+       80.0   40.0  1.25  0.320  0.140  0.320  0.450 ******   -100.0
+      120.0  100.0  1.31  0.320  0.140  0.320  0.450 ******   -100.0
+      280.0  200.0  1.27  0.195  0.085  0.195  0.300 ******   -100.0
+      520.0  200.0  1.23  0.070  0.030  0.070  0.150 ******   -100.0
+      680.0  200.0  1.24  0.050  0.030  0.050  0.080 ******   -100.0
+      920.0  300.0  1.25  0.050  0.030  0.050  0.080 ******   -100.0
+     1280.0  300.0  1.26  0.050  0.030  0.050  0.080 ******   -100.0
+     1520.0  300.0  1.28  0.048  0.030  0.050  0.080 ******   -148.9
+     1800.0  100.0  1.29  0.047  0.030  0.050  0.080 ******   -184.2
+     ---------------------------------------------------------------
+     
+     
+                       Soil Moisture Characteristics
+                       -----------------------------
+     
+     --------------------------------------------------------------------
+                              Soil Water Potential (cm)
+         x       0      10      25    100   1000  15000   10^6   10^7
+     --------------------------------------------------------------------
+        0.0 | 0.4500 0.4035 0.3700 0.3200 0.2363 0.1400 0.0395 0.0000
+       20.0 | 0.4500 0.4035 0.3700 0.3200 0.2363 0.1400 0.0395 0.0000
+       40.0 | 0.4500 0.4035 0.3700 0.3200 0.2363 0.1400 0.0395 0.0000
+       80.0 | 0.4500 0.4035 0.3700 0.3200 0.2363 0.1400 0.0395 0.0000
+      120.0 | 0.4500 0.4035 0.3700 0.3200 0.2363 0.1400 0.0395 0.0000
+      280.0 | 0.3000 0.2604 0.2330 0.1950 0.1419 0.0850 0.0240 0.0000
+      520.0 | 0.1500 0.1173 0.0960 0.0700 0.0476 0.0300 0.0084 0.0000
+      680.0 | 0.0800 0.0680 0.0601 0.0500 0.0403 0.0300 0.0092 0.0000
+      920.0 | 0.0800 0.0680 0.0601 0.0500 0.0403 0.0300 0.0092 0.0000
+     1280.0 | 0.0800 0.0680 0.0601 0.0500 0.0403 0.0300 0.0092 0.0000
+     1520.0 | 0.0800 0.0680 0.0601 0.0500 0.0403 0.0300 0.0092 0.0000
+     1800.0 | 0.0800 0.0680 0.0601 0.0500 0.0403 0.0300 0.0092 0.0000
+     --------------------------------------------------------------------
+     
+     
+                        Soil Hydraulic Conductivity
+                        ---------------------------
+     
+     -----------------------------------------------------------------------
+                              Soil Water Potential (cm)
+         x       0        10       25       100     1000    15000     10^6
+     -----------------------------------------------------------------------
+        0.0 | .140E+05 75.4     1.99     .100     .101E-02 .368E-06 .181E-14
+       20.0 | .140E+05 75.4     1.99     .100     .101E-02 .368E-06 .181E-14
+       40.0 | .140E+05 75.4     1.99     .100     .101E-02 .368E-06 .181E-14
+       80.0 | .140E+05 75.4     1.99     .100     .101E-02 .368E-06 .181E-14
+      120.0 | .140E+05 75.4     1.99     .100     .101E-02 .368E-06 .181E-14
+      280.0 | .140E+05 70.1     2.34     .100     .827E-03 .364E-06 .188E-14
+      520.0 | .140E+05 248.     11.3     .100     .327E-03 .346E-06 .225E-14
+      680.0 | .140E+05 143.     6.84     .100     .734E-03 .950E-06 .212E-17
+      920.0 | .140E+05 143.     6.84     .100     .734E-03 .950E-06 .212E-17
+     1280.0 | .140E+05 143.     6.84     .100     .734E-03 .950E-06 .212E-17
+     1520.0 | .140E+05 143.     6.84     .100     .734E-03 .950E-06 .212E-17
+     1800.0 | .140E+05 143.     6.84     .100     .734E-03 .950E-06 .212E-17
+     -----------------------------------------------------------------------
+     
+     
+          bottom boundary condition = specified gradient (     0.000)
+          vapour conductivity       = on
+          Evaporation Source        = calc
+     
+
+------- pad4.Surface Organic Matter Initialisation ----------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- pad4.SoilLismore Nitrogen Initialisation ------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: pad4.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: pad4.SoilLismore Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type 0
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.90  4.00    0.95    0.02    0.00
+             2     5.90  4.00    1.90    0.03    0.00
+             3     5.90  4.00    2.86    0.05    0.00
+             4     5.90  4.00    3.81    0.07    0.00
+             5     5.90  2.50    9.52    0.17    0.00
+             6     5.90  1.50   14.15    0.34    0.00
+             7     5.90  0.50    9.52    0.32    0.00
+             8     5.90  0.10    9.52    0.33    0.00
+             9     5.90  0.10   14.29    0.49    0.00
+            10     5.90  0.03   14.29    0.50    0.00
+            11     5.90  0.00   14.29    0.51    0.00
+            12     5.90  0.00    4.76    0.17    0.00
+          ------------------------------------------------
+           Totals               99.87    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       4865.4   430.6   134.6    16.8    53.2     1.3
+             2       9730.8   861.1   269.2    33.7    51.5     1.3
+             3      14596.2  1291.7   403.8    50.5    49.0     1.2
+             4      19461.5  1722.3   538.5    67.3    45.8     1.1
+             5      32428.9  2869.8   321.1    40.1    38.8     1.0
+             6      37763.8  3341.9   336.2    42.0    27.8     0.7
+             7      12203.5  1080.0    96.5    12.1    19.9     0.5
+             8       2475.1   219.0     4.9     0.6    14.3     0.4
+             9       3738.5   330.8     2.5     0.3     8.7     0.2
+            10       1244.4   110.1     0.0     0.0     5.2     0.1
+            11          0.0     0.0     0.0     0.0     3.2     0.1
+            12          0.0     0.0     0.0     0.0     2.7     0.1
+          ---------------------------------------------------------
+           Totals  138508.2 12257.4  2107.3   263.4   320.0     8.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Using default root parameters for grass
+     Component name: pad4.SWIM
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1950.0   1500.0   450.0  2.10   780.0     56.9       750.0
+          whiteclover      650.0    500.0   150.0  0.72   260.0     21.4       350.0
+         -----------------------------------------------------------------------------
+          Totals          2600.0   2000.0   600.0  2.82  1040.0     78.2       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by an external module
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0        0-10      0.064
+            1       10-30      0.120
+            2       30-60      0.157
+            3      60-100      0.170
+            4     100-200      0.272
+            5     200-400      0.186
+            6     400-600      0.030
+            7     600-800      0.001
             8    800-1100      0.000
             9   1100-1400      0.000
            10   1400-1700      0.000
            11   1700-1800      0.000
          -----------------------------
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : dm_som = 0.00000
+     Manager creating a new local real variable : dm_removed = 0.00000
+     Manager creating a new local real variable : n_returned = 0.00000
+     Manager creating a new local real variable : n_removed = 0.00000
+     Manager creating a new local real variable : n_som = 0.00000
+     Manager creating a new local real variable : n_urine = 0.00000
+     Manager creating a new local real variable : n_urine1 = 0.00000
+     Manager creating a new local real variable : n_urine2 = 0.00000
      Manager creating a new local real variable : dm_som = 0.00000
      Manager creating a new local real variable : dm_removed = 0.00000
      Manager creating a new local real variable : n_returned = 0.00000
@@ -1281,15 +1691,29 @@ Paddock:
          5.89 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 21 July 1980(Day of year=203), pad3.Regular harvest or grazing (with return): 
-     Manager creating a new local real variable : digest = 0.68788
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 256.11206 (kg/ha), n = 9.81858 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.83673 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : digest = 0.68789
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 256.10468 (kg/ha), n = 9.81866 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.83680 (kg/ha), depth = 50 (mm), type = urea_n
 21 July 1980(Day of year=203), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          8.84 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.89115 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.89120 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.89 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+21 July 1980(Day of year=203), pad4.Regular harvest or grazing (with return): 
+     Manager creating a new local real variable : digest = 0.68789
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 256.10583 (kg/ha), n = 9.81877 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.83689 (kg/ha), depth = 50 (mm), type = urea_n
+21 July 1980(Day of year=203), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.84 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 5.89126 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
          5.89 of N as urea (urea_n)
@@ -1321,14 +1745,27 @@ Paddock:
          3.43 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 11 August 1980(Day of year=224), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 129.33589 (kg/ha), n = 5.63371 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 5.07034 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 129.34918 (kg/ha), n = 5.63435 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 5.07092 (kg/ha), depth = 50 (mm), type = urea_n
 11 August 1980(Day of year=224), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          5.07 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.38022 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.38061 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         3.38 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+11 August 1980(Day of year=224), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 129.36324 (kg/ha), n = 5.63525 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 5.07173 (kg/ha), depth = 50 (mm), type = urea_n
+11 August 1980(Day of year=224), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.07 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 3.38115 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
          3.38 of N as urea (urea_n)
@@ -1360,14 +1797,27 @@ Paddock:
          4.88 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 1 September 1980(Day of year=245), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 176.25743 (kg/ha), n = 8.08632 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 7.27769 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 176.28413 (kg/ha), n = 8.08799 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.27919 (kg/ha), depth = 50 (mm), type = urea_n
 1 September 1980(Day of year=245), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
          7.28 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.85180 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.85279 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.85 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+1 September 1980(Day of year=245), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 176.32278 (kg/ha), n = 8.09026 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.28124 (kg/ha), depth = 50 (mm), type = urea_n
+1 September 1980(Day of year=245), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.28 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 4.85416 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
          4.85 of N as urea (urea_n)
@@ -1399,17 +1849,30 @@ Paddock:
          6.33 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 22 September 1980(Day of year=266), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 254.35773 (kg/ha), n = 10.81725 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 9.73553 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 253.96402 (kg/ha), n = 10.80161 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.72145 (kg/ha), depth = 50 (mm), type = urea_n
 22 September 1980(Day of year=266), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.74 of N as urea (urea_n)
+         9.72 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.49035 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.48097 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.49 of N as urea (urea_n)
+         6.48 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+22 September 1980(Day of year=266), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 253.34282 (kg/ha), n = 10.77620 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.69859 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.70 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 6.46572 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.47 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 13 October 1980(Day of year=287), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 296.67859 (kg/ha), n = 10.82992 (kg/ha), cpr = 1.0
@@ -1438,17 +1901,30 @@ Paddock:
          5.86 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 13 October 1980(Day of year=287), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 283.66812 (kg/ha), n = 10.21971 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 9.19774 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 281.57391 (kg/ha), n = 10.12740 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.11465 (kg/ha), depth = 50 (mm), type = urea_n
 13 October 1980(Day of year=287), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.20 of N as urea (urea_n)
+         9.11 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.13182 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.07644 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.13 of N as urea (urea_n)
+         6.08 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+13 October 1980(Day of year=287), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 278.76187 (kg/ha), n = 10.00778 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.00701 (kg/ha), depth = 50 (mm), type = urea_n
+13 October 1980(Day of year=287), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.01 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 6.00467 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.00 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 3 November 1980(Day of year=308), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 222.42062 (kg/ha), n = 5.79256 (kg/ha), cpr = 1.0
@@ -1477,17 +1953,30 @@ Paddock:
          3.07 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 3 November 1980(Day of year=308), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 190.06047 (kg/ha), n = 4.68858 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.21972 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 187.54510 (kg/ha), n = 4.58931 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.13038 (kg/ha), depth = 50 (mm), type = urea_n
 3 November 1980(Day of year=308), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.22 of N as urea (urea_n)
+         4.13 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 2.81315 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 2.75359 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         2.81 of N as urea (urea_n)
+         2.75 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+3 November 1980(Day of year=308), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 185.63225 (kg/ha), n = 4.51463 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.06316 (kg/ha), depth = 50 (mm), type = urea_n
+3 November 1980(Day of year=308), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.06 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 2.70878 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         2.71 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 6 November 1980(Day of year=311), pad2.SWIM: 
      Maximum iterations reached - swim will reduce timestep
@@ -1499,8 +1988,9 @@ Paddock:
 6 November 1980(Day of year=311), pad3.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          10.875 to:           5.438
+6 November 1980(Day of year=311), pad4.SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.156 to:           4.078
+     ApsimSwim|apswim_swim - Changing dt value from:          10.875 to:           5.438
 7 November 1980(Day of year=312), pad1.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           9.000 to:           4.500
@@ -1560,6 +2050,33 @@ Paddock:
      ApsimSwim|apswim_swim - Changing dt value from:           7.817 to:           3.908
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           5.863 to:           2.931
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           4.397 to:           2.198
+7 November 1980(Day of year=312), pad4.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           9.000 to:           4.500
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           2.250 to:           1.125
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.276 to:           4.138
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           2.069 to:           1.034
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.276 to:           4.138
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           2.069 to:           1.034
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.276 to:           4.138
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           2.069 to:           1.034
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.276 to:           4.138
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           2.069 to:           1.034
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.276 to:           4.138
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           7.300 to:           3.650
 8 November 1980(Day of year=313), pad1.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           8.565 to:           4.282
@@ -1576,11 +2093,18 @@ Paddock:
      ApsimSwim|apswim_swim - Changing dt value from:           7.441 to:           3.721
 8 November 1980(Day of year=313), pad3.SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.413 to:           4.207
+     ApsimSwim|apswim_swim - Changing dt value from:           8.314 to:           4.157
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           9.897 to:           4.948
+     ApsimSwim|apswim_swim - Changing dt value from:           9.921 to:           4.961
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           7.423 to:           3.711
+     ApsimSwim|apswim_swim - Changing dt value from:           7.441 to:           3.721
+8 November 1980(Day of year=313), pad4.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.471 to:           4.236
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           9.882 to:           4.941
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           7.412 to:           3.706
 24 November 1980(Day of year=329), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 275.45914 (kg/ha), n = 8.19449 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 7.37504 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1608,17 +2132,30 @@ Paddock:
          4.57 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 24 November 1980(Day of year=329), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 265.59201 (kg/ha), n = 7.78850 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 7.00966 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 261.60983 (kg/ha), n = 7.69070 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.92164 (kg/ha), depth = 50 (mm), type = urea_n
 24 November 1980(Day of year=329), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         7.01 of N as urea (urea_n)
+         6.92 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.67310 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.61442 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         4.67 of N as urea (urea_n)
+         4.61 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+24 November 1980(Day of year=329), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 260.51791 (kg/ha), n = 7.63836 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.87453 (kg/ha), depth = 50 (mm), type = urea_n
+24 November 1980(Day of year=329), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.87 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 4.58302 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         4.58 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 25 November 1980(Day of year=330), pad2.SWIM: 
      Maximum iterations reached - swim will reduce timestep
@@ -1652,17 +2189,30 @@ Paddock:
          4.90 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 15 December 1980(Day of year=350), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 307.51273 (kg/ha), n = 8.44568 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 7.60111 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 305.20029 (kg/ha), n = 8.38792 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.54912 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 1980(Day of year=350), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         7.60 of N as urea (urea_n)
+         7.55 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.06740 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.03275 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.07 of N as urea (urea_n)
+         5.03 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+15 December 1980(Day of year=350), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 303.54446 (kg/ha), n = 8.32704 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.49433 (kg/ha), depth = 50 (mm), type = urea_n
+15 December 1980(Day of year=350), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.49 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 4.99622 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 5 January 1981(Day of year=5), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 138.54608 (kg/ha), n = 2.22917 (kg/ha), cpr = 1.0
@@ -1691,17 +2241,30 @@ Paddock:
          1.85 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 5 January 1981(Day of year=5), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 156.98389 (kg/ha), n = 2.60104 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 2.34093 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 154.42688 (kg/ha), n = 2.54453 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.29007 (kg/ha), depth = 50 (mm), type = urea_n
 5 January 1981(Day of year=5), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.34 of N as urea (urea_n)
+         2.29 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 1.56062 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 1.52672 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         1.56 of N as urea (urea_n)
+         1.53 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+5 January 1981(Day of year=5), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 161.45041 (kg/ha), n = 2.71459 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.44313 (kg/ha), depth = 50 (mm), type = urea_n
+5 January 1981(Day of year=5), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.44 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 1.62875 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         1.63 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 12 January 1981(Day of year=12), pad1.SWIM: 
      Maximum iterations reached - swim will reduce timestep
@@ -1732,6 +2295,27 @@ Paddock:
      ApsimSwim|apswim_swim - Changing dt value from:           5.906 to:           2.953
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           4.430 to:           2.215
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           3.322 to:           1.661
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           0.831 to:           0.415
+12 January 1981(Day of year=12), pad4.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:          10.500 to:           5.250
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           7.875 to:           3.938
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           5.906 to:           2.953
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           4.430 to:           2.215
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           3.322 to:           1.661
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           0.831 to:           0.415
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           3.115 to:           1.557
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           0.779 to:           0.389
 13 January 1981(Day of year=13), pad1.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          12.000 to:           6.000
@@ -1743,10 +2327,16 @@ Paddock:
 13 January 1981(Day of year=13), pad3.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          12.000 to:           6.000
+13 January 1981(Day of year=13), pad4.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:          12.000 to:           6.000
 21 January 1981(Day of year=21), pad2.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
 21 January 1981(Day of year=21), pad3.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
+21 January 1981(Day of year=21), pad4.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
 26 January 1981(Day of year=26), pad1.Regular harvest or grazing (with return): 
@@ -1761,6 +2351,10 @@ Paddock:
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+26 January 1981(Day of year=26), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 16 February 1981(Day of year=47), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1770,6 +2364,10 @@ Paddock:
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 16 February 1981(Day of year=47), pad3.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+16 February 1981(Day of year=47), pad4.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
@@ -1796,6 +2394,13 @@ Paddock:
      ApsimSwim|apswim_swim - Changing dt value from:           7.313 to:           3.656
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           5.484 to:           2.742
+8 March 1981(Day of year=67), pad4.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           9.000 to:           4.500
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           9.750 to:           4.875
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           7.313 to:           3.656
 9 March 1981(Day of year=68), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1808,6 +2413,10 @@ Paddock:
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+9 March 1981(Day of year=68), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 27 March 1981(Day of year=86), pad2.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
@@ -1816,6 +2425,17 @@ Paddock:
 27 March 1981(Day of year=86), pad3.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.563 to:           4.281
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           6.422 to:           3.211
+27 March 1981(Day of year=86), pad4.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.563 to:           4.281
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           6.422 to:           3.211
 30 March 1981(Day of year=89), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1825,6 +2445,10 @@ Paddock:
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 30 March 1981(Day of year=89), pad3.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+30 March 1981(Day of year=89), pad4.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
@@ -1840,6 +2464,10 @@ Paddock:
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+20 April 1981(Day of year=110), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 11 May 1981(Day of year=131), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1849,6 +2477,10 @@ Paddock:
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 11 May 1981(Day of year=131), pad3.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+11 May 1981(Day of year=131), pad4.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
@@ -1864,6 +2496,10 @@ Paddock:
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+1 June 1981(Day of year=152), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 22 June 1981(Day of year=173), pad1.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1873,6 +2509,10 @@ Paddock:
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
 22 June 1981(Day of year=173), pad3.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n
+22 June 1981(Day of year=173), pad4.Regular harvest or grazing (with return): 
      Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 0.00000 (kg/ha), n = 0.00000 (kg/ha), cpr = 1.0
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = urea_n
      Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 150 (mm), type = urea_n

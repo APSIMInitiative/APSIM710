@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.7-r3765" name="Simulations">
+<folder version="36" creator="Apsim 7.7-r3768" name="Simulations">
   <memo name="Info">
  Test for different ways to enter/compute values for root density  -  RootWtFraction (rlvp)           -  RCichota, May 2014, updated June 2014
 
@@ -7,12 +7,16 @@
 
     This simulation demonstrate the three ways to define how the values of RootWtFraction are determined.  This is demonstrated here for SoilWat as well as for 
  SWIM simulations, in each simulation, in different paddocks, all the setup possibilities are tested. The choice of method to define RootWtFraction is made by 
- selecting different values for the parameter 'RootDistributionMethod', this can be: Homogeneous, UserDefined, or ExpoLinear.
+ selecting different values for the parameter 'RootDistributionMethod', these can be: Homogeneous, UserDefined, or ExpoLinear.
+   When using the ExpoLinear model, the calculation of root distribution can be performed for the whole sward or for each species (a weigthed average is then
+ computed for the sward). The root distribution changes over time when using the calculation by species, as the weight used to compute the total distribution is
+ the root DM of each species. To compute root distribution by species one need to set the parameters UseRootBySpecies to 'yes'.
    The simulation describe these as follow:
     - pad1: RootWtFraction is set as homogeneous over the soil down to the root_depth (this means root density is homogeneous throughout the profile);
     - pad2: rlvp values are supplied, this means that RootWtFraction is entered manually in the GUI (typically one for each layer should be given, but AgPasture will 
        ignore excess values and assume zero for missing values - rlvp value are converted to RootWtFraction by normalising the values so they add up to one);
     - pad3: RootWtFraction is computed using the ExpoLinear, two parameters ('ExpoLinearDepthParam' and 'ExpoLinearCurveParam') are set up in the GUI;
+    - pad4: RootWtFraction is computed using the ExpoLinear, the parameters for each species are set up in the GUI;
 
 
  + ExpoLinear model for distributing roots over the soil profile:
@@ -141,10 +145,46 @@ if ( (today = date('[date1]')) or
         <LocationAccuracy>0</LocationAccuracy>
         <YearOfSampling>0</YearOfSampling>
         <DataSource>published soil profile description (as an example)</DataSource>
-        <InitialWater name="Initial water">
-          <FractionFull>0.99</FractionFull>
-          <PercentMethod>FilledFromTop</PercentMethod>
-        </InitialWater>
+        <Analysis>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+          </PH>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
         <Water>
           <Thickness>
             <double>100</double>
@@ -584,26 +624,11 @@ if ( (today = date('[date1]')) or
             <double>1</double>
           </FInert>
         </SoilOrganicMatter>
-        <Analysis>
-          <Thickness>
-            <double>100</double>
-            <double>200</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-          </Thickness>
-          <PH>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-          </PH>
-        </Analysis>
+        <InitialWater name="Initial water">
+          <FractionFull>0.99</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Thickness>
@@ -662,6 +687,7 @@ if ( (today = date('[date1]')) or
           <variable>dlayer</variable>
           <variable>NitrogenUptakeLayers</variable>
           <variable>RootWtFraction</variable>
+          <variable>rlv as RootDensity</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>end_day</event>
@@ -729,11 +755,11 @@ if ( (today = date('[date1]')) or
       <fertiliser name="Fertiliser" shortcut="/Simulations/Sim01-SoilWat/pad1/Fertiliser" />
       <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim01-SoilWat/pad1/Surface Organic Matter" />
       <Soil name="SoilLismore" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
+        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
         <Water shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Water" />
         <SoilWater shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
         <Sample name="Initial nitrogen" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial nitrogen" />
       </Soil>
       <AgPasture>
@@ -775,11 +801,11 @@ if ( (today = date('[date1]')) or
       <fertiliser name="Fertiliser" shortcut="/Simulations/Sim01-SoilWat/pad1/Fertiliser" />
       <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim01-SoilWat/pad1/Surface Organic Matter" />
       <Soil name="SoilLismore" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
+        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
         <Water shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Water" />
         <SoilWater shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilWater" />
         <SoilOrganicMatter shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
-        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
         <Sample name="Initial nitrogen" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial nitrogen" />
       </Soil>
       <AgPasture>
@@ -791,8 +817,8 @@ if ( (today = date('[date1]')) or
         <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
         <Dummy2 type="category" description="Root distribution parameters (being tested)" />
         <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
-        <ExpoLinearDepthParam type="text" description="Root distribution parameter, fraction of root depth to decrease root proportion (0-1):">0.2  0.2</ExpoLinearDepthParam>
-        <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">3   3</ExpoLinearCurveParam>
+        <ExpoLinearDepthParam type="text" description="Depth from surface below which the proportion of roots starts to decrease (mm):">90   70</ExpoLinearDepthParam>
+        <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">3.2  2.5</ExpoLinearCurveParam>
       </AgPasture>
       <outputfile shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile">
         <filename output="yes">Sim01-SoilWat pad3.out</filename>
@@ -816,12 +842,81 @@ if ( (today = date('[date1]')) or
         </Graph>
       </outputfile>
     </area>
+    <area name="pad4" shortcut="/Simulations/Sim01-SoilWat/pad1">
+      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Sim01-SoilWat/pad1/Regular harvest or grazing (with return)" />
+      <micromet name="Micromet" shortcut="/Simulations/Sim01-SoilWat/pad1/Micromet" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Sim01-SoilWat/pad1/Fertiliser" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim01-SoilWat/pad1/Surface Organic Matter" />
+      <Soil name="SoilLismore" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore">
+        <Analysis shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Analysis" />
+        <Water shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Water" />
+        <SoilWater shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilWater" />
+        <SoilOrganicMatter shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/SoilOrganicMatter" />
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim01-SoilWat/pad1/SoilLismore/Initial nitrogen" />
+      </Soil>
+      <AgPasture>
+        <Dummy1 type="category" description="Initial values for each species to be simulated" />
+        <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
+        <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
+        <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
+        <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
+        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
+        <Dummy2 type="category" description="Root distribution parameters (being tested)" />
+        <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
+        <ExpoLinearDepthParam type="text" description="Depth from surface below which the proportion of roots starts to decrease (mm):">1.0  10.0</ExpoLinearDepthParam>
+        <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">4.3  3.0</ExpoLinearCurveParam>
+        <UseRootBySpecies type="yesno" description="Compute root distribution for each species isolated?">yes</UseRootBySpecies>
+      </AgPasture>
+      <outputfile shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile">
+        <filename output="yes">Sim01-SoilWat pad4.out</filename>
+        <title>Sim01-SoilWat pad4</title>
+        <variables name="Variables" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Reporting Frequency" />
+        <Graph name="PlantWt" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Harvest herbage" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="SpeciesWt" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt">
+          <Plot shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim01-SoilWat/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+    <Graph name="RootDensity">
+      <Legend>
+        <CheckedTitles> Sim01-SoilWat pad1</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad2</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad3</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad4</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Depth</Y>
+        <colour>
+        </colour>
+        <XTop>RootDensity</XTop>
+        <GDDepth name="Depth">
+          <AllXOnTopAxis>Yes</AllXOnTopAxis>
+          <Date>1/7/1980</Date>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </GDDepth>
+      </Plot>
+    </Graph>
     <Graph name="RootWtFraction">
       <Legend>
-        <CheckedTitles> Paddock1-SoilWat pad1</CheckedTitles>
-        <CheckedTitles> Paddock1-SoilWat pad2</CheckedTitles>
-        <CheckedTitles> Paddock1-SoilWat pad3</CheckedTitles>
-        <CheckedTitles> Paddock1-SoilWat pad4</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad1</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad2</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad3</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad4</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -839,10 +934,9 @@ if ( (today = date('[date1]')) or
     </Graph>
     <Graph name="Drainage">
       <Legend>
-        <CheckedTitles> PasturePaddockSoilWat pad1</CheckedTitles>
-        <CheckedTitles> PasturePaddockSoilWat pad2</CheckedTitles>
-        <CheckedTitles> PasturePaddockSoilWat pad3</CheckedTitles>
-        <CheckedTitles> PasturePaddockSoilWat pad4</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad1</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad2</CheckedTitles>
+        <CheckedTitles> Sim01-SoilWat pad3</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -968,11 +1062,110 @@ if ( (today = date('[date1]')) or
         <LocationAccuracy>0</LocationAccuracy>
         <YearOfSampling>0</YearOfSampling>
         <DataSource>published soil profile description (as an example)</DataSource>
-        <InitialWater name="Initial water">
-          <FractionFull>0.99</FractionFull>
-          <PercentMethod>FilledFromTop</PercentMethod>
-        </InitialWater>
+        <Analysis>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+          </PH>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
         <Water>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.25</double>
+            <double>1.31</double>
+            <double>1.23</double>
+            <double>1.24</double>
+            <double>1.25</double>
+            <double>1.26</double>
+            <double>1.29</double>
+          </BD>
+          <AirDry>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+          </AirDry>
+          <LL15>
+            <double>0.14</double>
+            <double>0.14</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+          </LL15>
+          <DUL>
+            <double>0.32</double>
+            <double>0.32</double>
+            <double>0.07</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+          </DUL>
+          <SAT>
+            <double>0.45</double>
+            <double>0.45</double>
+            <double>0.15</double>
+            <double>0.08</double>
+            <double>0.08</double>
+            <double>0.08</double>
+            <double>0.08</double>
+          </SAT>
+          <KS>
+            <double>14000</double>
+            <double>14000</double>
+            <double>14000</double>
+            <double>14000</double>
+            <double>14000</double>
+            <double>14000</double>
+            <double>14000</double>
+          </KS>
           <SoilCrop name="ryegrass_clover">
             <Thickness>
               <double>100</double>
@@ -1277,164 +1470,7 @@ if ( (today = date('[date1]')) or
               <double>1</double>
             </XF>
           </SoilCrop>
-          <Thickness>
-            <double>100</double>
-            <double>200</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-          </Thickness>
-          <KS>
-            <double>14000</double>
-            <double>14000</double>
-            <double>14000</double>
-            <double>14000</double>
-            <double>14000</double>
-            <double>14000</double>
-            <double>14000</double>
-          </KS>
-          <BD>
-            <double>1.25</double>
-            <double>1.31</double>
-            <double>1.23</double>
-            <double>1.24</double>
-            <double>1.25</double>
-            <double>1.26</double>
-            <double>1.29</double>
-          </BD>
-          <AirDry>
-            <double>0.06</double>
-            <double>0.06</double>
-            <double>0.03</double>
-            <double>0.03</double>
-            <double>0.03</double>
-            <double>0.03</double>
-            <double>0.03</double>
-          </AirDry>
-          <LL15>
-            <double>0.14</double>
-            <double>0.14</double>
-            <double>0.03</double>
-            <double>0.03</double>
-            <double>0.03</double>
-            <double>0.03</double>
-            <double>0.03</double>
-          </LL15>
-          <DUL>
-            <double>0.32</double>
-            <double>0.32</double>
-            <double>0.07</double>
-            <double>0.05</double>
-            <double>0.05</double>
-            <double>0.05</double>
-            <double>0.05</double>
-          </DUL>
-          <SAT>
-            <double>0.45</double>
-            <double>0.45</double>
-            <double>0.15</double>
-            <double>0.08</double>
-            <double>0.08</double>
-            <double>0.08</double>
-            <double>0.08</double>
-          </SAT>
         </Water>
-        <SoilOrganicMatter>
-          <RootCN>40</RootCN>
-          <RootWt>800</RootWt>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
-          <Thickness>
-            <double>100</double>
-            <double>200</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-          </Thickness>
-          <OC>
-            <double>4</double>
-            <double>2.5</double>
-            <double>0.5</double>
-            <double>0.1</double>
-            <double>0.1</double>
-            <double>0</double>
-            <double>0</double>
-          </OC>
-          <FBiom>
-            <double>0.04</double>
-            <double>0.02</double>
-            <double>0.02</double>
-            <double>0.01</double>
-            <double>0.01</double>
-            <double>0</double>
-            <double>0</double>
-          </FBiom>
-          <FInert>
-            <double>0.3</double>
-            <double>0.5</double>
-            <double>0.6</double>
-            <double>0.8</double>
-            <double>1</double>
-            <double>1</double>
-            <double>1</double>
-          </FInert>
-          <OCUnits>Total</OCUnits>
-        </SoilOrganicMatter>
-        <Analysis>
-          <Thickness>
-            <double>100</double>
-            <double>200</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-          </Thickness>
-          <PH>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-            <double>5.9</double>
-          </PH>
-        </Analysis>
-        <Sample name="Initial nitrogen">
-          <Date type="date" description="Sample date:" />
-          <Thickness>
-            <double>100</double>
-            <double>200</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-            <double>300</double>
-          </Thickness>
-          <NO3>
-            <double>7.61904761904762</double>
-            <double>7.27008360596147</double>
-            <double>3.87146728610143</double>
-            <double>3.84024577572965</double>
-            <double>3.80952380952381</double>
-            <double>3.77928949357521</double>
-            <double>3.69139904023625</double>
-          </NO3>
-          <NH4>
-            <double>0.132451499118166</double>
-            <double>0.132451499118166</double>
-            <double>0.132451499118166</double>
-            <double>0.132451499118166</double>
-            <double>0.132451499118166</double>
-            <double>0.132451499118166</double>
-            <double>0.132451499118166</double>
-          </NH4>
-        </Sample>
         <Swim>
           <Salb>0.13</Salb>
           <CN2Bare>73</CN2Bare>
@@ -1507,6 +1543,50 @@ if ( (today = date('[date1]')) or
             </ClFIP>
           </SwimSoluteParameters>
         </Swim>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>800</RootWt>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>4</double>
+            <double>2.5</double>
+            <double>0.5</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0</double>
+            <double>0</double>
+          </OC>
+          <FBiom>
+            <double>0.04</double>
+            <double>0.02</double>
+            <double>0.02</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0</double>
+            <double>0</double>
+          </FBiom>
+          <FInert>
+            <double>0.3</double>
+            <double>0.5</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </FInert>
+          <OCUnits>Total</OCUnits>
+        </SoilOrganicMatter>
         <LayerStructure>
           <Thickness>
             <double>10</double>
@@ -1523,6 +1603,45 @@ if ( (today = date('[date1]')) or
             <double>100</double>
           </Thickness>
         </LayerStructure>
+        <InitialWater name="Initial water">
+          <FractionFull>0.99</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
+        <Sample name="Initial nitrogen">
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>7.61904761904762</double>
+            <double>7.27008360596147</double>
+            <double>3.87146728610143</double>
+            <double>3.84024577572965</double>
+            <double>3.80952380952381</double>
+            <double>3.77928949357521</double>
+            <double>3.69139904023625</double>
+          </NO3>
+          <NH4>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+          </NH4>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
+        </Sample>
       </Soil>
       <AgPasture>
         <Dummy1 type="category" description="Initial values for each species to be simulated" />
@@ -1551,6 +1670,7 @@ if ( (today = date('[date1]')) or
           <variable>dlayer</variable>
           <variable>NitrogenUptakeLayers</variable>
           <variable>RootWtFraction</variable>
+          <variable>rlv as RootDensity</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>end_day</event>
@@ -1618,15 +1738,15 @@ if ( (today = date('[date1]')) or
       <fertiliser name="Fertiliser" shortcut="/Simulations/Sim02-SWIM3/pad1/Fertiliser" />
       <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim02-SWIM3/pad1/Surface Organic Matter" />
       <Soil name="SoilLismore" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
-        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
+        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
         <Swim shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim">
           <SwimSoluteParameters shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
         </Swim>
+        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
         <LayerStructure shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/LayerStructure" />
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
       </Soil>
       <AgPasture>
         <Dummy1 type="category" description="Initial values for each species to be simulated" />
@@ -1675,19 +1795,19 @@ if ( (today = date('[date1]')) or
         <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">apsim</WaterUptakeSource>
         <Dummy2 type="category" description="Root distribution parameters (being tested)" />
         <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
-        <ExpoLinearDepthParam type="text" description="Root distribution parameter, fraction of root depth to decrease root proportion (0-1):">0.2</ExpoLinearDepthParam>
-        <ExpoLinearCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">3</ExpoLinearCurveParam>
+        <iniRootDepthParam type="text" description="Depth from surface below which the proportion of roots starts to decrease (mm):">90   70</iniRootDepthParam>
+        <iniRootCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">3.2  2.5</iniRootCurveParam>
       </AgPasture>
       <Soil name="SoilLismore" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore">
-        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
-        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
-        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
         <Analysis shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Analysis" />
-        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
+        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
         <Swim shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim">
           <SwimSoluteParameters shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
         </Swim>
+        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
         <LayerStructure shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/LayerStructure" />
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
       </Soil>
       <outputfile shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile">
         <filename output="yes">Sim02-SWIM3 pad3.out</filename>
@@ -1711,12 +1831,84 @@ if ( (today = date('[date1]')) or
         </Graph>
       </outputfile>
     </area>
+    <area name="pad4" shortcut="/Simulations/Sim02-SWIM3/pad1">
+      <manager name="Regular harvest or grazing (with return)" shortcut="/Simulations/Sim02-SWIM3/pad1/Regular harvest or grazing (with return)" />
+      <micromet name="Micromet" shortcut="/Simulations/Sim02-SWIM3/pad1/Micromet" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Sim02-SWIM3/pad1/Fertiliser" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Sim02-SWIM3/pad1/Surface Organic Matter" />
+      <AgPasture>
+        <Dummy1 type="category" description="Initial values for each species to be simulated" />
+        <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
+        <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
+        <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
+        <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
+        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">apsim</WaterUptakeSource>
+        <Dummy2 type="category" description="Root distribution parameters (being tested)" />
+        <RootDistributionMethod type="list" listvalues="Homogeneous,UserDefined,ExpoLinear" description="Method to define the root distribution over the soil profile:">ExpoLinear</RootDistributionMethod>
+        <iniRootDepthParam type="text" description="Depth from surface below which the proportion of roots starts to decrease (mm):">1.0  10.0</iniRootDepthParam>
+        <iniRootCurveParam type="text" description="Root distribution parameter, exponent for decreasing phase of root proportion:">4.3  3.0</iniRootCurveParam>
+        <UseRootBySpecies type="yesno" description="Compute root distribution for each species isolated?">yes</UseRootBySpecies>
+      </AgPasture>
+      <Soil name="SoilLismore" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore">
+        <Analysis shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Analysis" />
+        <Water shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Water" />
+        <Swim shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim">
+          <SwimSoluteParameters shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Swim/SwimSoluteParameters" />
+        </Swim>
+        <SoilOrganicMatter shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/SoilOrganicMatter" />
+        <LayerStructure shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/LayerStructure" />
+        <InitialWater name="Initial water" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial water" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Sim02-SWIM3/pad1/SoilLismore/Initial nitrogen" />
+      </Soil>
+      <outputfile shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile">
+        <filename output="yes">Sim02-SWIM3 pad4.out</filename>
+        <title>Sim02-SWIM3 pad4</title>
+        <variables name="Variables" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Reporting Frequency" />
+        <Graph name="PlantWt" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/PlantWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Harvest herbage" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/Harvest herbage/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="SpeciesWt" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt">
+          <Plot shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/Sim02-SWIM3/pad1/outputfile/SpeciesWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+    <Graph name="RootDensity">
+      <Legend>
+        <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
+      </Legend>
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Depth</Y>
+        <colour>
+        </colour>
+        <XTop>RootDensity</XTop>
+        <GDDepth name="Depth">
+          <AllXOnTopAxis>Yes</AllXOnTopAxis>
+          <Date>1/7/1980</Date>
+          <GDApsimFileReader name="ApsimFileReader" />
+        </GDDepth>
+      </Plot>
+    </Graph>
     <Graph name="RootWtFraction">
       <Legend>
-        <CheckedTitles> Paddock2-SWIM3 pad1</CheckedTitles>
-        <CheckedTitles> Paddock2-SWIM3 pad2</CheckedTitles>
-        <CheckedTitles> Paddock2-SWIM3 pad3</CheckedTitles>
-        <CheckedTitles> Paddock2-SWIM3 pad4</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1734,10 +1926,10 @@ if ( (today = date('[date1]')) or
     </Graph>
     <Graph name="Drainage">
       <Legend>
-        <CheckedTitles> Paddock2-SWIM3 pad1</CheckedTitles>
-        <CheckedTitles> Paddock2-SWIM3 pad2</CheckedTitles>
-        <CheckedTitles> Paddock2-SWIM3 pad3</CheckedTitles>
-        <CheckedTitles> Paddock2-SWIM3 pad4</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1752,10 +1944,10 @@ if ( (today = date('[date1]')) or
     <Graph name="HarvestWt">
       <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0DgEAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchcuR3JhcGhpY3MzRC5CcnVzaC5Db2xvch8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yGS5TZXJpZXMuMC5Qb2ludGVyLlZpc2libGUXLlNlcmllcy4wLlBvaW50ZXIuU3R5bGUbLlNlcmllcy4wLlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoFy5TZXJpZXMuMC5MaW5lUGVuLlN0eWxlDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IZLlNlcmllcy4xLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjEuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uV2lkdGgXLlNlcmllcy4xLkxpbmVQZW4uU3R5bGUSLlNlcmllcy4xLlZlcnRBeGlzDy5TZXJpZXMuMS5UaXRsZR4uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMS5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjEuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMhUuU2VyaWVzLjIuQnJ1c2guQ29sb3IZLlNlcmllcy4yLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjIuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjIuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4yLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4yLkxpbmVQZW4uQ29sb3IXLlNlcmllcy4yLkxpbmVQZW4uV2lkdGgPLlNlcmllcy4yLlRpdGxlHi5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy4yLk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuMi5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCFNlcmllcy4zFS5TZXJpZXMuMy5CcnVzaC5Db2xvchkuU2VyaWVzLjMuUG9pbnRlci5WaXNpYmxlFy5TZXJpZXMuMy5Qb2ludGVyLlN0eWxlGy5TZXJpZXMuMy5Qb2ludGVyLlBlbi5Db2xvch0uU2VyaWVzLjMuUG9pbnRlci5CcnVzaC5Db2xvchcuU2VyaWVzLjMuTGluZVBlbi5Db2xvchcuU2VyaWVzLjMuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjMuVGl0bGUeLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjMuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4zLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjQVLlNlcmllcy40LkJydXNoLkNvbG9yGS5TZXJpZXMuNC5Qb2ludGVyLlZpc2libGUXLlNlcmllcy40LlBvaW50ZXIuU3R5bGUbLlNlcmllcy40LlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuNC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuNC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuNC5MaW5lUGVuLldpZHRoEi5TZXJpZXMuNC5WZXJ0QXhpcw8uU2VyaWVzLjQuVGl0bGUeLlNlcmllcy40Lk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjQuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy40Lk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjUVLlNlcmllcy41LkJydXNoLkNvbG9yGS5TZXJpZXMuNS5Qb2ludGVyLlZpc2libGUXLlNlcmllcy41LlBvaW50ZXIuU3R5bGUbLlNlcmllcy41LlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuNS5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuNS5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuNS5MaW5lUGVuLldpZHRoEi5TZXJpZXMuNS5WZXJ0QXhpcw8uU2VyaWVzLjUuVGl0bGUeLlNlcmllcy41Lk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjUuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy41Lk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUULldhbGxzLkxlZnQuQXV0b0hpZGUaLldhbGxzLkxlZnQuU2hhZG93LlZpc2libGUVLldhbGxzLlJpZ2h0LkF1dG9IaWRlGy5XYWxscy5SaWdodC5TaGFkb3cuVmlzaWJsZRQuV2FsbHMuQmFjay5BdXRvSGlkZRouV2FsbHMuQmFjay5TaGFkb3cuVmlzaWJsZRYuV2FsbHMuQm90dG9tLkF1dG9IaWRlHC5XYWxscy5Cb3R0b20uU2hhZG93LlZpc2libGUOLldhbGxzLlZpc2libGUcLkF4ZXMuTGVmdC5MYWJlbHMuU2VwYXJhdGlvbh0uQXhlcy5MZWZ0LkxhYmVscy5WYWx1ZUZvcm1hdBsuQXhlcy5MZWZ0LkxhYmVscy5Gb250Lk5hbWUbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplJS5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuTGVmdC5MYWJlbHMuU2hhZG93LlZpc2libGUULkF4ZXMuTGVmdC5BdXRvbWF0aWMYLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAVLkF4ZXMuTGVmdC5HcmlkLlN0eWxlGS5BeGVzLkxlZnQuR3JpZC5aUG9zaXRpb24XLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IWLkF4ZXMuTGVmdC5UaXRsZS5MaW5lcxouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZSguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yJC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IfLkF4ZXMuTGVmdC5UaXRsZS5TaGFkb3cuVmlzaWJsZRsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZSQuQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUfLkF4ZXMuVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRMuQXhlcy5Ub3AuQXV0b21hdGljFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBQuQXhlcy5Ub3AuR3JpZC5TdHlsZRguQXhlcy5Ub3AuR3JpZC5aUG9zaXRpb24WLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUjLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUmLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuUmlnaHQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFS5BeGVzLlJpZ2h0LkF1dG9tYXRpYxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwFi5BeGVzLlJpZ2h0LkdyaWQuU3R5bGUaLkF4ZXMuUmlnaHQuR3JpZC5aUG9zaXRpb24YLkF4ZXMuUmlnaHQuR3JpZC5WaXNpYmxlHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchcuQXhlcy5SaWdodC5UaXRsZS5MaW5lcxsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZR4uQXhlcy5Cb3R0b20uTGFiZWxzLlNlcGFyYXRpb24iLkF4ZXMuQm90dG9tLkxhYmVscy5EYXRlVGltZUZvcm1hdB8uQXhlcy5Cb3R0b20uTGFiZWxzLlZhbHVlRm9ybWF0HS5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5OYW1lHS5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5TaXplJy5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSIuQXhlcy5Cb3R0b20uTGFiZWxzLlNoYWRvdy5WaXNpYmxlHS5BeGVzLkJvdHRvbS5BdXRvbWF0aWNNYXhpbXVtHS5BeGVzLkJvdHRvbS5BdXRvbWF0aWNNaW5pbXVtGi5BeGVzLkJvdHRvbS5BeGlzUGVuLldpZHRoGy5BeGVzLkJvdHRvbS5BeGlzUGVuLkVuZENhcBcuQXhlcy5Cb3R0b20uR3JpZC5TdHlsZRsuQXhlcy5Cb3R0b20uR3JpZC5aUG9zaXRpb24ZLkF4ZXMuQm90dG9tLkdyaWQuVmlzaWJsZRouQXhlcy5Cb3R0b20uTWF4aW11bU9mZnNldBQuQXhlcy5Cb3R0b20uTWF4aW11bRQuQXhlcy5Cb3R0b20uTWluaW11bRouQXhlcy5Cb3R0b20uTWluaW11bU9mZnNldB8uQXhlcy5Cb3R0b20uTWlub3JUaWNrcy5WaXNpYmxlGC5BeGVzLkJvdHRvbS5UaWNrcy5Db2xvchguQXhlcy5Cb3R0b20uVGl0bGUuTGluZXMcLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuTmFtZRwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5TaXplJi5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LkJydXNoLkNvbG9yIS5BeGVzLkJvdHRvbS5UaXRsZS5TaGFkb3cuVmlzaWJsZSkuQXhlcy5EZXB0aFRvcC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSQuQXhlcy5EZXB0aFRvcC5MYWJlbHMuU2hhZG93LlZpc2libGUYLkF4ZXMuRGVwdGhUb3AuQXV0b21hdGljGS5BeGVzLkRlcHRoVG9wLkdyaWQuU3R5bGUdLkF4ZXMuRGVwdGhUb3AuR3JpZC5aUG9zaXRpb24oLkF4ZXMuRGVwdGhUb3AuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSMuQXhlcy5EZXB0aFRvcC5UaXRsZS5TaGFkb3cuVmlzaWJsZSYuQXhlcy5EZXB0aC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5EZXB0aC5MYWJlbHMuU2hhZG93LlZpc2libGUVLkF4ZXMuRGVwdGguQXV0b21hdGljFi5BeGVzLkRlcHRoLkdyaWQuU3R5bGUaLkF4ZXMuRGVwdGguR3JpZC5aUG9zaXRpb24lLkF4ZXMuRGVwdGguVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSAuQXhlcy5EZXB0aC5UaXRsZS5TaGFkb3cuVmlzaWJsZQAAAAAEAAQABAAEAAAAAAAAAAYBAAAAAAAAAAAAAAAAAAQEAAAABAQABAAAAAABBAAEBAQEAAQBAAQAAAAEBAAAAQQABAQEBAAEBAEABAAAAAQEAAABBAAEBAQEAAEABAAAAAQEAAABBAAEBAQEAAEABAAAAAQEAAABBAAEBAQEAAQBAAQAAAAEBAAAAQQABAQEBAAEAQAEAAAABAQAAAAAAAAAAAAAAAABAQAAAAAABAQAAAAABAYBAAQABAAAAQEAAAAAAAQEAAAABAEAAAQAAAABAQAAAAAABAQAAAAEBgEAAAQAAAEBAQAAAAAAAAQEAAAAAAAAAAQGAQAABAAAAAAEAAAAAAAABAAAAAgIAQghU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAwAAAAgjU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMCAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABIFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAgAAAAEBAQEBAQEIAQEBAQEBAQEGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgmU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELlNtb290aGluZ01vZGUEAAAAJVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAjU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5WZXJ0aWNhbEF4aXMCAAAACCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAII1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuVmVydGljYWxBeGlzAgAAAAgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCNTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlZlcnRpY2FsQXhpcwIAAAAIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBAQEBAQEBAQEBCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACBRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgBAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBAQEiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEBAQEiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQECAAAAiwUAAJcDAAABBAAAAAX7////IVN5c3RlbS5XaW5kb3dzLkZvcm1zLk1vdXNlQnV0dG9ucwEAAAAHdmFsdWVfXwAIAwAAAAAAQAABAAAABfr///8jU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMBAAAAB3ZhbHVlX18ACAIAAAAAAAAAAAX5////FFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAARuYW1lBXZhbHVlCmtub3duQ29sb3IFc3RhdGUBAAAACQcHBAAAAAr/////AAAAAAAAAgABBfj///8gU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMBAAAAB3ZhbHVlX18ACAIAAAADAAAAAQAAAAAAAQkJAAAABgoAAAAGVGFob21hDAAAAAAAAAAAAAAAAAAAAACQdUAAAAAAAJB1QAMAAAAAAfX////5////CgAAAAAAAAAApAABAAH0////+f///woAAAAAAAAAACUAAQAAvwIAAKoBAAAF8////yZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQEAAAAHdmFsdWVfXwAIBAAAAAEAAAAF8v///yVTeXN0ZW0uRHJhd2luZy5UZXh0LlRleHRSZW5kZXJpbmdIaW50AQAAAAd2YWx1ZV9fAAgEAAAAAAAAAAAB8f////n///8KAAAAAAAAAAAlAAEAAQAAAAAAAAAAAAAAAAYQAAAAG1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuTGluZQHv////+f///woAAAAAAAAAACUAAQABBe7///8kU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAAAQAAAAHt////+f///woAAAAAAAAAAKQAAQAB7P////n///8KAAAAAAAAAAAlAAEAAev////5////CpkAAP8AAAAAAAACAAIAAAAF6v///yJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAYXAAAAKlBsb3QsIGRtX2RhaWx5X2hhcnZlc3QsSXJyaWc0UGFkZG9ja3MgcGFkMAoAAAAF6P///yZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAIAAAAAAAAAAAB5////+7///8AAAAAAeb////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB5P////n///8KAAAAAAAAAACNAAEAAQHj////7v///wEAAAAB4v////n///8KAAAAAAAAAACkAAEAAeH////5////CgAAAAAAAAAAjQABAAHg////+f///woAAJn/AAAAAAAAAgACAAAAAd/////q////AgAAAAXe////I1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuVmVydGljYWxBeGlzAQAAAAd2YWx1ZV9fAAgCAAAAAQAAAAYjAAAANVBsb3QsIEN1bXVsYXRpdmUgZG1fZGFpbHlfaGFydmVzdCxJcnJpZzRQYWRkb2NrcyBwYWQwCgAAAAHc////6P///wAAAAAIAAAAAAAAAAAB2////+7///8AAAAAAdr////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB2P////n///8KAAAAAAAAAAAlAAEAAQHX////7v///wEAAAAB1v////n///8KAAAAAAAAAACkAAEAAdX////5////CgAAAAAAAAAAJQABAAHU////+f///wqZAAD/AAAAAAAAAgACAAAABi0AAAAnT2JzZXJ2ZWQsIGRtX2hhcnZlc3QsV2luY2hNZWFzdXJlczkwXzJrCgAAAAHS////6P///wAAAAAIAAAAAAAAAAAB0f///+7///8AAAAAAdD////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABzv////n///8KAAAAAAAAAACNAAEAAQHN////7v///wEAAAABzP////n///8KAAAAAAAAAACkAAEAAcv////5////CgAAAAAAAAAAjQABAAHK////+f///woAAJn/AAAAAAAAAgACAAAABjcAAAAoT2JzZXJ2ZWQsIGRtX2hhcnZlc3QzLFdpbmNoTWVhc3VyZXM5MF8yawoAAAAByP///+j///8AAAAACAAAAAAAAAAAAcf////u////AAAAAAHG////+f///woAAAAAAAAAACMAAQAAAAAAAAkQAAAAAcT////5////CgAAAAAAAAAATwABAAEBw////+7///8BAAAAAcL////5////CgAAAAAAAAAApAABAAHB////+f///woAAAAAAAAAAE8AAQABwP////n///8KAE0A/wAAAAAAAAIAAgAAAAG/////3v///wEAAAAGQgAAADJPYnNlcnZlZCwgQ3VtdWxhdGl2ZSBkbV9oYXJ2ZXN0LFdpbmNoTWVhc3VyZXM5MF8yawoAAAABvf///+j///8AAAAACAAAAAAAAAAAAbz////u////AAAAAAG7////+f///woAAAAAAAAAACMAAQAAAAAAAAkQAAAAAbn////5////CgAAAAAAAAAAfwABAAEBuP///+7///8BAAAAAbf////5////CgAAAAAAAAAApAABAAG2////+f///woAAAAAAAAAAH8AAQABtf////n///8KAGOZ/wAAAAAAAAIAAgAAAAG0////3v///wEAAAAGTQAAADNPYnNlcnZlZCwgQ3VtdWxhdGl2ZSBkbV9oYXJ2ZXN0MyxXaW5jaE1lYXN1cmVzOTBfMmsKAAAAAbL////o////AAAAAAgAAAAAAAAAAAGx////7v///wAAAAABsP////n///8KAAAAAAAAAAAjAAEAAAAAAAAAAAAAAAAAAABQAAAABlEAAAAIIyMjMC4jIyMJCgAAAAkAAAAAAAEBAAAABa3///8gU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXABAAAAB3ZhbHVlX18ACAQAAAACAAAAAaz////q////AQAAAAAAAAAAAAAAAAoAAAAAAav////5////CgAAAP8AAAAAAAACAAlWAAAACQoAAAALAAAAAaj////5////CsAAAP8AAAAAAAACAAABp/////n///8K/wAA/wAAAAAAAAIAAFAAAAAJUQAAAAkKAAAACQAAAAAAAQEAAAABpP///63///8CAAAAAaP////q////AQAAAAAAAAAAAAAAAAABov////n///8KAAAA/wAAAAAAAAIACQoAAAALAAAAAAGh////+f///wr/AAD/AAAAAAAAAgAAAFAAAAAJUQAAAAkKAAAACQAAAAAAAQEAAAABnv///63///8CAAAAAZ3////q////AQAAAAAAAAAAAAAAAAABnP////n///8KAAAA/wAAAAAAAAIACWUAAAAJCgAAAAsAAAAAAZn////5////Cv8AAP8AAAAAAAACAABQAAAABmgAAAAJZC9NTS95eXl5CVEAAAAJCgAAAAkAAAAAAAAAAQAAAAGV////rf///wIAAAABlP///+r///8BAAAAAAAAAAAAAAAACgAAAAAAAACAA+JAAAAAAEAN4EAKAAAAAAGT////+f///woAAAD/AAAAAAAAAgAJbgAAAAkKAAAACwAAAAABkP////n///8K/wAA/wAAAAAAAAIAAAAAAQGP////6v///wEAAAAAAAAAAAAAAAAAAAABAY7////q////AQAAAAAAAAAAAAAAAAARCQAAAAEAAAAGcwAAAAARVgAAAAEAAAAJcwAAABFlAAAAAQAAAAlzAAAAEW4AAAABAAAACXMAAAAL</Format>
       <Legend>
-        <CheckedTitles> PasturePaddockWithSWIM3 pad1</CheckedTitles>
-        <CheckedTitles> PasturePaddockWithSWIM3 pad2</CheckedTitles>
-        <CheckedTitles> PasturePaddockWithSWIM3 pad3</CheckedTitles>
-        <CheckedTitles> PasturePaddockWithSWIM3 pad4</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+        <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
       </Legend>
       <Plot>
         <SeriesType>Solid line</SeriesType>
@@ -1770,14 +1962,14 @@ if ( (today = date('[date1]')) or
   </simulation>
   <Graph name="AboveGroundWt">
     <Legend>
-      <CheckedTitles> Paddock1-SoilWat pad1</CheckedTitles>
-      <CheckedTitles> Paddock1-SoilWat pad2</CheckedTitles>
-      <CheckedTitles> Paddock1-SoilWat pad3</CheckedTitles>
-      <CheckedTitles> Paddock1-SoilWat pad4</CheckedTitles>
-      <CheckedTitles> Paddock2-SWIM3 pad1</CheckedTitles>
-      <CheckedTitles> Paddock2-SWIM3 pad2</CheckedTitles>
-      <CheckedTitles> Paddock2-SWIM3 pad3</CheckedTitles>
-      <CheckedTitles> Paddock2-SWIM3 pad4</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad1</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad2</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad3</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad4</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
     </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
@@ -1792,14 +1984,14 @@ if ( (today = date('[date1]')) or
   <Graph name="HarvestWt">
     <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249Mi4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ0DgEAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzFC5QYW5uaW5nLk1vdXNlQnV0dG9uFy5QYW5lbC5JbWFnZUJldmVsLldpZHRoEi5QYW5lbC5CZXZlbC5PdXRlchUuUGFuZWwuU2hhZG93LlZpc2libGUSLlBhbmVsLkJydXNoLkNvbG9yEi5MZWdlbmQuQ2hlY2tCb3hlcxEuTGVnZW5kLkFsaWdubWVudBcuTGVnZW5kLlRpdGxlLkZvbnQuQm9sZCEuTGVnZW5kLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUcLkxlZ2VuZC5UaXRsZS5TaGFkb3cuVmlzaWJsZRkuTGVnZW5kLlRpdGxlLlBlbi5WaXNpYmxlGy5MZWdlbmQuRm9udC5TaGFkb3cuVmlzaWJsZRYuTGVnZW5kLlNoYWRvdy5WaXNpYmxlEy5MZWdlbmQuVHJhbnNwYXJlbnQNLkhlYWRlci5MaW5lcxEuSGVhZGVyLkZvbnQuTmFtZREuSGVhZGVyLkZvbnQuU2l6ZRsuSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkhlYWRlci5TaGFkb3cuVmlzaWJsZR4uU3ViSGVhZGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkhlYWRlci5TaGFkb3cuVmlzaWJsZRsuRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUWLkZvb3Rlci5TaGFkb3cuVmlzaWJsZR4uU3ViRm9vdGVyLkZvbnQuU2hhZG93LlZpc2libGUZLlN1YkZvb3Rlci5TaGFkb3cuVmlzaWJsZRUuQXNwZWN0LlJvdGF0aW9uRmxvYXQWLkFzcGVjdC5FbGV2YXRpb25GbG9hdBkuQXNwZWN0LkNvbG9yUGFsZXR0ZUluZGV4Di5Bc3BlY3QuVmlldzNEFS5HcmFwaGljczNELlBlbi5Db2xvchcuR3JhcGhpY3MzRC5CcnVzaC5Db2xvch8uR3JhcGhpY3MzRC5Gb250LlNoYWRvdy5WaXNpYmxlEy5HcmFwaGljczNELlhDZW50ZXITLkdyYXBoaWNzM0QuWUNlbnRlchkuR3JhcGhpY3MzRC5TbW9vdGhpbmdNb2RlHS5HcmFwaGljczNELlRleHRSZW5kZXJpbmdIaW50Gi5HcmFwaGljczNELlN1cHBvcnRzM0RUZXh0FS5HcmFwaGljczNELkJhY2tDb2xvchUuR3JhcGhpY3MzRC5Vc2VCdWZmZXIcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWBwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5ZHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLloIU2VyaWVzLjAVLlNlcmllcy4wLkJydXNoLkNvbG9yGS5TZXJpZXMuMC5Qb2ludGVyLlZpc2libGUXLlNlcmllcy4wLlBvaW50ZXIuU3R5bGUbLlNlcmllcy4wLlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuMC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMC5MaW5lUGVuLldpZHRoFy5TZXJpZXMuMC5MaW5lUGVuLlN0eWxlDy5TZXJpZXMuMC5UaXRsZR4uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMC5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjAuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMRUuU2VyaWVzLjEuQnJ1c2guQ29sb3IZLlNlcmllcy4xLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjEuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjEuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4xLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uQ29sb3IXLlNlcmllcy4xLkxpbmVQZW4uV2lkdGgXLlNlcmllcy4xLkxpbmVQZW4uU3R5bGUSLlNlcmllcy4xLlZlcnRBeGlzDy5TZXJpZXMuMS5UaXRsZR4uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMS5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjEuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMhUuU2VyaWVzLjIuQnJ1c2guQ29sb3IZLlNlcmllcy4yLlBvaW50ZXIuVmlzaWJsZRcuU2VyaWVzLjIuUG9pbnRlci5TdHlsZRsuU2VyaWVzLjIuUG9pbnRlci5QZW4uQ29sb3IdLlNlcmllcy4yLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4yLkxpbmVQZW4uQ29sb3IXLlNlcmllcy4yLkxpbmVQZW4uV2lkdGgPLlNlcmllcy4yLlRpdGxlHi5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy4yLk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuMi5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCFNlcmllcy4zFS5TZXJpZXMuMy5CcnVzaC5Db2xvchkuU2VyaWVzLjMuUG9pbnRlci5WaXNpYmxlFy5TZXJpZXMuMy5Qb2ludGVyLlN0eWxlGy5TZXJpZXMuMy5Qb2ludGVyLlBlbi5Db2xvch0uU2VyaWVzLjMuUG9pbnRlci5CcnVzaC5Db2xvchcuU2VyaWVzLjMuTGluZVBlbi5Db2xvchcuU2VyaWVzLjMuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjMuVGl0bGUeLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjMuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4zLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjQVLlNlcmllcy40LkJydXNoLkNvbG9yGS5TZXJpZXMuNC5Qb2ludGVyLlZpc2libGUXLlNlcmllcy40LlBvaW50ZXIuU3R5bGUbLlNlcmllcy40LlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuNC5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuNC5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuNC5MaW5lUGVuLldpZHRoEi5TZXJpZXMuNC5WZXJ0QXhpcw8uU2VyaWVzLjQuVGl0bGUeLlNlcmllcy40Lk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuNC5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjQuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjQuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy40Lk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjUVLlNlcmllcy41LkJydXNoLkNvbG9yGS5TZXJpZXMuNS5Qb2ludGVyLlZpc2libGUXLlNlcmllcy41LlBvaW50ZXIuU3R5bGUbLlNlcmllcy41LlBvaW50ZXIuUGVuLkNvbG9yHS5TZXJpZXMuNS5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuNS5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuNS5MaW5lUGVuLldpZHRoEi5TZXJpZXMuNS5WZXJ0QXhpcw8uU2VyaWVzLjUuVGl0bGUeLlNlcmllcy41Lk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuNS5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjUuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjUuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy41Lk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUULldhbGxzLkxlZnQuQXV0b0hpZGUaLldhbGxzLkxlZnQuU2hhZG93LlZpc2libGUVLldhbGxzLlJpZ2h0LkF1dG9IaWRlGy5XYWxscy5SaWdodC5TaGFkb3cuVmlzaWJsZRQuV2FsbHMuQmFjay5BdXRvSGlkZRouV2FsbHMuQmFjay5TaGFkb3cuVmlzaWJsZRYuV2FsbHMuQm90dG9tLkF1dG9IaWRlHC5XYWxscy5Cb3R0b20uU2hhZG93LlZpc2libGUOLldhbGxzLlZpc2libGUcLkF4ZXMuTGVmdC5MYWJlbHMuU2VwYXJhdGlvbh0uQXhlcy5MZWZ0LkxhYmVscy5WYWx1ZUZvcm1hdBsuQXhlcy5MZWZ0LkxhYmVscy5Gb250Lk5hbWUbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5TaXplJS5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuTGVmdC5MYWJlbHMuU2hhZG93LlZpc2libGUULkF4ZXMuTGVmdC5BdXRvbWF0aWMYLkF4ZXMuTGVmdC5BeGlzUGVuLldpZHRoGS5BeGVzLkxlZnQuQXhpc1Blbi5FbmRDYXAVLkF4ZXMuTGVmdC5HcmlkLlN0eWxlGS5BeGVzLkxlZnQuR3JpZC5aUG9zaXRpb24XLkF4ZXMuTGVmdC5HcmlkLlZpc2libGUYLkF4ZXMuTGVmdC5NYXhpbXVtT2Zmc2V0HS5BeGVzLkxlZnQuTWlub3JUaWNrcy5WaXNpYmxlFi5BeGVzLkxlZnQuVGlja3MuQ29sb3IWLkF4ZXMuTGVmdC5UaXRsZS5MaW5lcxouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuTmFtZRouQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2l6ZSguQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LkJydXNoLkNvbG9yJC5BeGVzLkxlZnQuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IfLkF4ZXMuTGVmdC5UaXRsZS5TaGFkb3cuVmlzaWJsZRsuQXhlcy5Ub3AuTGFiZWxzLlNlcGFyYXRpb24cLkF4ZXMuVG9wLkxhYmVscy5WYWx1ZUZvcm1hdBouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuTmFtZRouQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2l6ZSQuQXhlcy5Ub3AuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUfLkF4ZXMuVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRMuQXhlcy5Ub3AuQXV0b21hdGljFy5BeGVzLlRvcC5BeGlzUGVuLldpZHRoGC5BeGVzLlRvcC5BeGlzUGVuLkVuZENhcBQuQXhlcy5Ub3AuR3JpZC5TdHlsZRguQXhlcy5Ub3AuR3JpZC5aUG9zaXRpb24WLkF4ZXMuVG9wLkdyaWQuVmlzaWJsZRwuQXhlcy5Ub3AuTWlub3JUaWNrcy5WaXNpYmxlFS5BeGVzLlRvcC5UaWNrcy5Db2xvchkuQXhlcy5Ub3AuVGl0bGUuRm9udC5OYW1lGS5BeGVzLlRvcC5UaXRsZS5Gb250LlNpemUjLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUgLkF4ZXMuVG9wLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IeLkF4ZXMuVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlES5BeGVzLlRvcC5WaXNpYmxlHS5BeGVzLlJpZ2h0LkxhYmVscy5TZXBhcmF0aW9uHi5BeGVzLlJpZ2h0LkxhYmVscy5WYWx1ZUZvcm1hdBwuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5OYW1lHC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250LlNpemUmLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuUmlnaHQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFS5BeGVzLlJpZ2h0LkF1dG9tYXRpYxkuQXhlcy5SaWdodC5BeGlzUGVuLldpZHRoGi5BeGVzLlJpZ2h0LkF4aXNQZW4uRW5kQ2FwFi5BeGVzLlJpZ2h0LkdyaWQuU3R5bGUaLkF4ZXMuUmlnaHQuR3JpZC5aUG9zaXRpb24YLkF4ZXMuUmlnaHQuR3JpZC5WaXNpYmxlHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchcuQXhlcy5SaWdodC5UaXRsZS5MaW5lcxsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZR4uQXhlcy5Cb3R0b20uTGFiZWxzLlNlcGFyYXRpb24iLkF4ZXMuQm90dG9tLkxhYmVscy5EYXRlVGltZUZvcm1hdB8uQXhlcy5Cb3R0b20uTGFiZWxzLlZhbHVlRm9ybWF0HS5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5OYW1lHS5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5TaXplJy5BeGVzLkJvdHRvbS5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSIuQXhlcy5Cb3R0b20uTGFiZWxzLlNoYWRvdy5WaXNpYmxlHS5BeGVzLkJvdHRvbS5BdXRvbWF0aWNNYXhpbXVtHS5BeGVzLkJvdHRvbS5BdXRvbWF0aWNNaW5pbXVtGi5BeGVzLkJvdHRvbS5BeGlzUGVuLldpZHRoGy5BeGVzLkJvdHRvbS5BeGlzUGVuLkVuZENhcBcuQXhlcy5Cb3R0b20uR3JpZC5TdHlsZRsuQXhlcy5Cb3R0b20uR3JpZC5aUG9zaXRpb24ZLkF4ZXMuQm90dG9tLkdyaWQuVmlzaWJsZRouQXhlcy5Cb3R0b20uTWF4aW11bU9mZnNldBQuQXhlcy5Cb3R0b20uTWF4aW11bRQuQXhlcy5Cb3R0b20uTWluaW11bRouQXhlcy5Cb3R0b20uTWluaW11bU9mZnNldB8uQXhlcy5Cb3R0b20uTWlub3JUaWNrcy5WaXNpYmxlGC5BeGVzLkJvdHRvbS5UaWNrcy5Db2xvchguQXhlcy5Cb3R0b20uVGl0bGUuTGluZXMcLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuTmFtZRwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5TaXplJi5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LkJydXNoLkNvbG9yIS5BeGVzLkJvdHRvbS5UaXRsZS5TaGFkb3cuVmlzaWJsZSkuQXhlcy5EZXB0aFRvcC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSQuQXhlcy5EZXB0aFRvcC5MYWJlbHMuU2hhZG93LlZpc2libGUYLkF4ZXMuRGVwdGhUb3AuQXV0b21hdGljGS5BeGVzLkRlcHRoVG9wLkdyaWQuU3R5bGUdLkF4ZXMuRGVwdGhUb3AuR3JpZC5aUG9zaXRpb24oLkF4ZXMuRGVwdGhUb3AuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSMuQXhlcy5EZXB0aFRvcC5UaXRsZS5TaGFkb3cuVmlzaWJsZSYuQXhlcy5EZXB0aC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5EZXB0aC5MYWJlbHMuU2hhZG93LlZpc2libGUVLkF4ZXMuRGVwdGguQXV0b21hdGljFi5BeGVzLkRlcHRoLkdyaWQuU3R5bGUaLkF4ZXMuRGVwdGguR3JpZC5aUG9zaXRpb24lLkF4ZXMuRGVwdGguVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSAuQXhlcy5EZXB0aC5UaXRsZS5TaGFkb3cuVmlzaWJsZQAAAAAEAAQABAAEAAAAAAAAAAYBAAAAAAAAAAAAAAAAAAQEAAAABAQABAAAAAABBAAEBAQEAAQBAAQAAAAEBAAAAQQABAQEBAAEBAEABAAAAAQEAAABBAAEBAQEAAEABAAAAAQEAAABBAAEBAQEAAEABAAAAAQEAAABBAAEBAQEAAQBAAQAAAAEBAAAAQQABAQEBAAEAQAEAAAABAQAAAAAAAAAAAAAAAABAQAAAAAABAQAAAAABAYBAAQABAAAAQEAAAAAAAQEAAAABAEAAAQAAAABAQAAAAAABAQAAAAEBgEAAAQAAAEBAQAAAAAAAAQEAAAAAAAAAAQGAQAABAAAAAAEAAAAAAAABAAAAAgIAQghU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAwAAAAgjU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMCAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABIFN0ZWVtYS5UZWVDaGFydC5MZWdlbmRBbGlnbm1lbnRzAgAAAAEBAQEBAQEIAQEBAQEBAQEGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgmU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELlNtb290aGluZ01vZGUEAAAAJVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAjU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5WZXJ0aWNhbEF4aXMCAAAACCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAII1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuVmVydGljYWxBeGlzAgAAAAgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACCNTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlZlcnRpY2FsQXhpcwIAAAAIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBAQEBAQEBAQEBCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACBRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgBAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQgGBggBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBAQEiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQEBAQEiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQECAAAAiwUAAJcDAAABBAAAAAX7////IVN5c3RlbS5XaW5kb3dzLkZvcm1zLk1vdXNlQnV0dG9ucwEAAAAHdmFsdWVfXwAIAwAAAAAAQAABAAAABfr///8jU3RlZW1hLlRlZUNoYXJ0LkRyYXdpbmcuQmV2ZWxTdHlsZXMBAAAAB3ZhbHVlX18ACAIAAAAAAAAAAAX5////FFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAARuYW1lBXZhbHVlCmtub3duQ29sb3IFc3RhdGUBAAAACQcHBAAAAAr/////AAAAAAAAAgABBfj///8gU3RlZW1hLlRlZUNoYXJ0LkxlZ2VuZEFsaWdubWVudHMBAAAAB3ZhbHVlX18ACAIAAAADAAAAAQAAAAAAAQkJAAAABgoAAAAGVGFob21hDAAAAAAAAAAAAAAAAAAAAACQdUAAAAAAAJB1QAMAAAAAAfX////5////CgAAAAAAAAAApAABAAH0////+f///woAAAAAAAAAACUAAQAAvwIAAKoBAAAF8////yZTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuU21vb3RoaW5nTW9kZQEAAAAHdmFsdWVfXwAIBAAAAAEAAAAF8v///yVTeXN0ZW0uRHJhd2luZy5UZXh0LlRleHRSZW5kZXJpbmdIaW50AQAAAAd2YWx1ZV9fAAgEAAAAAAAAAAAB8f////n///8KAAAAAAAAAAAlAAEAAQAAAAAAAAAAAAAAAAYQAAAAG1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuTGluZQHv////+f///woAAAAAAAAAACUAAQABBe7///8kU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAAAQAAAAHt////+f///woAAAAAAAAAAKQAAQAB7P////n///8KAAAAAAAAAAAlAAEAAev////5////CpkAAP8AAAAAAAACAAIAAAAF6v///yJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlAQAAAAd2YWx1ZV9fAAgEAAAAAgAAAAYXAAAAKlBsb3QsIGRtX2RhaWx5X2hhcnZlc3QsSXJyaWc0UGFkZG9ja3MgcGFkMAoAAAAF6P///yZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAIAAAAAAAAAAAB5////+7///8AAAAAAeb////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB5P////n///8KAAAAAAAAAACNAAEAAQHj////7v///wEAAAAB4v////n///8KAAAAAAAAAACkAAEAAeH////5////CgAAAAAAAAAAjQABAAHg////+f///woAAJn/AAAAAAAAAgACAAAAAd/////q////AgAAAAXe////I1N0ZWVtYS5UZWVDaGFydC5TdHlsZXMuVmVydGljYWxBeGlzAQAAAAd2YWx1ZV9fAAgCAAAAAQAAAAYjAAAANVBsb3QsIEN1bXVsYXRpdmUgZG1fZGFpbHlfaGFydmVzdCxJcnJpZzRQYWRkb2NrcyBwYWQwCgAAAAHc////6P///wAAAAAIAAAAAAAAAAAB2////+7///8AAAAAAdr////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB2P////n///8KAAAAAAAAAAAlAAEAAQHX////7v///wEAAAAB1v////n///8KAAAAAAAAAACkAAEAAdX////5////CgAAAAAAAAAAJQABAAHU////+f///wqZAAD/AAAAAAAAAgACAAAABi0AAAAnT2JzZXJ2ZWQsIGRtX2hhcnZlc3QsV2luY2hNZWFzdXJlczkwXzJrCgAAAAHS////6P///wAAAAAIAAAAAAAAAAAB0f///+7///8AAAAAAdD////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAABzv////n///8KAAAAAAAAAACNAAEAAQHN////7v///wEAAAABzP////n///8KAAAAAAAAAACkAAEAAcv////5////CgAAAAAAAAAAjQABAAHK////+f///woAAJn/AAAAAAAAAgACAAAABjcAAAAoT2JzZXJ2ZWQsIGRtX2hhcnZlc3QzLFdpbmNoTWVhc3VyZXM5MF8yawoAAAAByP///+j///8AAAAACAAAAAAAAAAAAcf////u////AAAAAAHG////+f///woAAAAAAAAAACMAAQAAAAAAAAkQAAAAAcT////5////CgAAAAAAAAAATwABAAEBw////+7///8BAAAAAcL////5////CgAAAAAAAAAApAABAAHB////+f///woAAAAAAAAAAE8AAQABwP////n///8KAE0A/wAAAAAAAAIAAgAAAAG/////3v///wEAAAAGQgAAADJPYnNlcnZlZCwgQ3VtdWxhdGl2ZSBkbV9oYXJ2ZXN0LFdpbmNoTWVhc3VyZXM5MF8yawoAAAABvf///+j///8AAAAACAAAAAAAAAAAAbz////u////AAAAAAG7////+f///woAAAAAAAAAACMAAQAAAAAAAAkQAAAAAbn////5////CgAAAAAAAAAAfwABAAEBuP///+7///8BAAAAAbf////5////CgAAAAAAAAAApAABAAG2////+f///woAAAAAAAAAAH8AAQABtf////n///8KAGOZ/wAAAAAAAAIAAgAAAAG0////3v///wEAAAAGTQAAADNPYnNlcnZlZCwgQ3VtdWxhdGl2ZSBkbV9oYXJ2ZXN0MyxXaW5jaE1lYXN1cmVzOTBfMmsKAAAAAbL////o////AAAAAAgAAAAAAAAAAAGx////7v///wAAAAABsP////n///8KAAAAAAAAAAAjAAEAAAAAAAAAAAAAAAAAAABQAAAABlEAAAAIIyMjMC4jIyMJCgAAAAkAAAAAAAEBAAAABa3///8gU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXABAAAAB3ZhbHVlX18ACAQAAAACAAAAAaz////q////AQAAAAAAAAAAAAAAAAoAAAAAAav////5////CgAAAP8AAAAAAAACAAlWAAAACQoAAAALAAAAAaj////5////CsAAAP8AAAAAAAACAAABp/////n///8K/wAA/wAAAAAAAAIAAFAAAAAJUQAAAAkKAAAACQAAAAAAAQEAAAABpP///63///8CAAAAAaP////q////AQAAAAAAAAAAAAAAAAABov////n///8KAAAA/wAAAAAAAAIACQoAAAALAAAAAAGh////+f///wr/AAD/AAAAAAAAAgAAAFAAAAAJUQAAAAkKAAAACQAAAAAAAQEAAAABnv///63///8CAAAAAZ3////q////AQAAAAAAAAAAAAAAAAABnP////n///8KAAAA/wAAAAAAAAIACWUAAAAJCgAAAAsAAAAAAZn////5////Cv8AAP8AAAAAAAACAABQAAAABmgAAAAJZC9NTS95eXl5CVEAAAAJCgAAAAkAAAAAAAAAAQAAAAGV////rf///wIAAAABlP///+r///8BAAAAAAAAAAAAAAAACgAAAAAAAACAA+JAAAAAAEAN4EAKAAAAAAGT////+f///woAAAD/AAAAAAAAAgAJbgAAAAkKAAAACwAAAAABkP////n///8K/wAA/wAAAAAAAAIAAAAAAQGP////6v///wEAAAAAAAAAAAAAAAAAAAABAY7////q////AQAAAAAAAAAAAAAAAAARCQAAAAEAAAAGcwAAAAARVgAAAAEAAAAJcwAAABFlAAAAAQAAAAlzAAAAEW4AAAABAAAACXMAAAAL</Format>
     <Legend>
-      <CheckedTitles> PasturePaddockSoilWat pad1</CheckedTitles>
-      <CheckedTitles> PasturePaddockSoilWat pad2</CheckedTitles>
-      <CheckedTitles> PasturePaddockSoilWat pad3</CheckedTitles>
-      <CheckedTitles> PasturePaddockSoilWat pad4</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad1</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad2</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad3</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad4</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad1</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad2</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad3</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad4</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
     </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
@@ -1813,13 +2005,14 @@ if ( (today = date('[date1]')) or
   </Graph>
   <Graph name="Drainage">
     <Legend>
-      <CheckedTitles> PasturePaddockSoilWat pad1</CheckedTitles>
-      <CheckedTitles> PasturePaddockSoilWat pad2</CheckedTitles>
-      <CheckedTitles> PasturePaddockSoilWat pad3</CheckedTitles>
-      <CheckedTitles> PasturePaddockSoilWat pad4</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad1</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad2</CheckedTitles>
-      <CheckedTitles> PasturePaddockWithSWIM3 pad3</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad1</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad2</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad3</CheckedTitles>
+      <CheckedTitles> Sim01-SoilWat pad4</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad1</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad2</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad3</CheckedTitles>
+      <CheckedTitles> Sim02-SWIM3 pad4</CheckedTitles>
     </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>

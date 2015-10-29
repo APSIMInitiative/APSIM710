@@ -235,18 +235,28 @@ public class AgPasture
     [Units("ppm/day")]
     private double[] MaximumUptakeRateNO3;
 
+    double[] refRLD;
     [Param]
     [Description("Reference root length density for water and N uptake")]
-    [Units("mm/mm3")]
-    private double[] referenceRLD;
+    [Units("cm/cm3")]
+    private double[] referenceRLD
+    {
+        get { return refRLD; }
+        set
+        { // convert values to mm/mm3
+            refRLD = new double[value.Length];
+            for (int s = 0; s < value.Length; s++)
+                refRLD[s] = value[s] * 0.01;
+        }
+    }
 
     [Param]
-    [Description("Coefficient for NH4 availability")]
+    [Description("Coefficient for NH4 availability, for each layer")]
     [Units("0-1")]
     private double[] kNH4;
 
     [Param]
-    [Description("Coefficient for NO3 availability")]
+    [Description("Coefficient for NO3 availability, for each layer")]
     [Units("0-1")]
     private double[] kNO3;
 
@@ -730,11 +740,6 @@ public class AgPasture
     private double[] soilSatFactor;
 
     [Param]
-    [Description("Factor for adjusting water uptake (kl) due to number of species")]
-    [Units("-")]
-    private double UptakeFactorSpecies;
-
-    [Param]
     [Description("Generic growth limiting factor")]
     [Units("0-1")]
     private double[] GenericGLF;
@@ -769,7 +774,7 @@ public class AgPasture
         set { myRootDepth = value; }
     }
 
-    private int p_RootDistributionMethod = 0;
+    private int rootsDistributionMethod = 0;
     [Param]
     [Output]
     [Description("Root distribution method")]
@@ -778,7 +783,7 @@ public class AgPasture
     {
         get
         {
-            switch (p_RootDistributionMethod)
+            switch (rootsDistributionMethod)
             {
                 case 1:
                     return "UserDefined";
@@ -792,47 +797,45 @@ public class AgPasture
         set
         {
             if (value.ToLower() == "userdefined")
-                p_RootDistributionMethod = 1;
+                rootsDistributionMethod = 1;
             else if (value.ToLower() == "expolinear")
-                p_RootDistributionMethod = 2;
+                rootsDistributionMethod = 2;
             else      // default = homogeneous
-                p_RootDistributionMethod = 0;
+                rootsDistributionMethod = 0;
         }
     }
 
-    private double[] p_ExpoLinearDepthParam;
+    private double[] rootTopDepthParam;
     [Param]
     [Output]
-    [Description("Fraction of root depth where its proportion starts to decrease")]
-    [Units("0-1")]
+    [Description("Depth from surface where root proportion starts to decrease")]
+    [Units("mm")]
     private double[] ExpoLinearDepthParam
     {
-        get { return p_ExpoLinearDepthParam; }
+        get { return rootTopDepthParam; }
         set
         {
-            p_ExpoLinearDepthParam = new double[value.Length];
-            for (int i = 0; i < value.Length; i++)
-                p_ExpoLinearDepthParam[i] = value[i];
-            if (p_ExpoLinearDepthParam[0] == 1.0)
-                p_RootDistributionMethod = 0;    // effectively it defines a homogeneous distribution
+            rootTopDepthParam = new double[value.Length];
+            for (int s = 0; s < value.Length; s++)
+                rootTopDepthParam[s] = value[s];
         }
     }
 
-    private double[] p_ExpoLinearCurveParam;
+    private double[] rootCurveParam;
     [Param]
     [Output]
     [Description("Exponent to determine mass distribution in the soil profile")]
     [Units("")]
     private double[] ExpoLinearCurveParam
     {
-        get { return p_ExpoLinearCurveParam; }
+        get { return rootCurveParam; }
         set
         {
-            p_ExpoLinearCurveParam = new double[value.Length];
-            for (int i = 0; i < value.Length; i++)
-                p_ExpoLinearCurveParam[i] = value[i];
-            if (p_ExpoLinearCurveParam[0] == 0.0)
-                p_RootDistributionMethod = 0;   // It is impossible to solve, but its limit is a homogeneous distribution
+            rootCurveParam = new double[value.Length];
+            for (int s = 0; s < value.Length; s++)
+                rootCurveParam[s] = value[s];
+            if (rootCurveParam[0] == 0.0)
+                rootsDistributionMethod = 0;   // It is impossible to solve, but its limit is a homogeneous distribution
         }
     }
 
@@ -1161,14 +1164,17 @@ public class AgPasture
         // get the number of species to be simulated
         NumSpecies = speciesToSimulate.Length;
 
-        // check number of species - no more than those we have parameters for (given here by speciesName)
+        // check that the basic parameters have been given to each species
+        CheckSpeciesParameters();
+
+        // check number of species to simulate - should be less than those we have parameters for (given here by speciesName)
         if (NumSpecies > speciesName.Length)
             throw new Exception("Number of species to simulate is greater than the number of species for which parameters were given");
         if (NumSpecies < 1)
-            throw new Exception("Number of species to simulate is zero");
+            throw new Exception("Number of species to simulate cannot be zero");
 
-        // check for duplicates and whether species have been parameterised
-        for (int s1 = 0; s1 < NumSpecies; s1++)
+        // check names of species to simulate, look for duplicates and whether species have been parameterised
+        for (int s1 = 0; s1 < NumSpecies; s1++)  // s1 = species to simulate, for which parameters are being set
         {
             for (int s2 = s1 + 1; s2 < NumSpecies; s2++)
             {
@@ -1177,7 +1183,7 @@ public class AgPasture
             }
 
             int myCount = 0;
-            for (int s2 = 0; s2 < speciesName.Length; s2++)
+            for (int s2 = 0; s2 < speciesName.Length; s2++) // s2 = species parameterised, where parameter come from
             {
                 if (speciesToSimulate[s1].ToLower() == speciesName[s2].ToLower())
                     myCount += 1;
@@ -1186,38 +1192,59 @@ public class AgPasture
             if (myCount < 1)
                 throw new Exception("The name \"" + speciesToSimulate[s1] + "\" does not correspond to any parameterised species, check spelling");
         }
-        //// --------------------------------------------------------------------------------------
 
-        // make sure that DM fractions for initialisation have the right number of values (cut excess or add zeroes)
-        //   there are 12 pools 4 for leaves, 4 for stems, and 3 for stolons
-        Array.Resize(ref initialDMFractions_grass, 11);
-        Array.Resize(ref initialDMFractions_legume, 11);
+        // check whether values for parameters that may have an 'ini' setup (over-write the default ones) were given for each species
+        //   assume that the paramter has negative values if not to be used
+        if (iniShootDM != null)
+        {
+            if ((iniShootDM.Sum() > 0.0) && (iniShootDM.Length < NumSpecies))
+                throw new Exception("Number of values for paramater \"iniShootDM\" is smaller than number of species");
+            else
+                Array.Resize(ref iniShootDM, NumSpecies);
+        }
+        if (iniRootDM != null)
+        {
+            if ((iniRootDepth.Sum() > 0.0) && (iniRootDM.Length < NumSpecies))
+                throw new Exception("Number of values for paramater \"iniRootDM\" is smaller than number of species");
+            else
+                Array.Resize(ref iniRootDM, NumSpecies);
+        }
 
-        // check whether values for root distribution parameters were given for each species (over-write the default ones)
+        if (iniRootDepth != null)
+        {
+            if ((iniRootDepth.Sum() > 0.0) && (iniRootDepth.Length < NumSpecies))
+                throw new Exception("Number of values for paramater \"iniRootDepth\" is smaller than number of species");
+            else
+                Array.Resize(ref iniRootDepth, NumSpecies);
+        }
+
         if (iniRootDepthParam != null)
         {
-            if (iniRootDepthParam.Length < NumSpecies)
-                throw new Exception("Number of values for paramater \"iniRootDepthParam\" was smaller than number of species");
+            if ((iniRootDepthParam.Sum() > 0.0) && (iniRootDepthParam.Length < NumSpecies))
+                throw new Exception("Number of values for paramater \"iniRootDepthParam\" is smaller than number of species");
             else
-                ExpoLinearDepthParam = iniRootDepthParam;
+                Array.Resize(ref iniRootDepthParam, NumSpecies);
         }
 
         if (iniRootCurveParam != null)
         {
-            if (iniRootCurveParam.Length < NumSpecies)
-                throw new Exception("Number of values for paramater \"iniRootCurveParam\" was smaller than number of species");
+            if ((iniRootCurveParam.Sum() > 0.0) && (iniRootCurveParam.Length < NumSpecies))
+                throw new Exception("Number of values for paramater \"iniRootCurveParam\" is smaller than number of species");
             else
-                ExpoLinearCurveParam = iniRootCurveParam;
+                Array.Resize(ref iniRootCurveParam, NumSpecies);
         }
 
-        // check that uptake factor is equal or greater than one
-        if (UptakeFactorSpecies < 1.0)
-            UptakeFactorSpecies = 1.0;
+        // make sure that DM fractions for initialisation have the right number of values (delete excess or add zeroes)
+        //   there are 12 pools 4 for leaves, 4 for stems, and 3 for stolons
+        Array.Resize(ref initialDMFractions_grass, 11);
+        Array.Resize(ref initialDMFractions_legume, 11);
+
+        //// --------------------------------------------------------------------------------------
 
         // Number of layers
         int nLayers = dlayer.Length;
 
-        // initialise LL
+        // initialise LL, same for all species (ideally this would de given for each species)
         LL_dep = new double[nLayers];
         if (ll.Length == nLayers)
         { // there are values for LL (so we should be using SoilWat)
@@ -1237,14 +1264,17 @@ public class AgPasture
             for (int layer = 1; layer < nLayers; layer++)
                 kNH4[layer] = kNH4[0];
         }
+        else
+            Array.Resize(ref kNH4, nLayers);
+
         if (kNO3.Length == 1)
         {// if only one value was given, assume homogeneous over the profile
             Array.Resize(ref kNO3, nLayers);
             for (int layer = 1; layer < nLayers; layer++)
                 kNO3[layer] = kNO3[0];
         }
-        Array.Resize(ref kNH4, nLayers);
-        Array.Resize(ref kNO3, nLayers);
+        else
+            Array.Resize(ref kNO3, nLayers);
 
         //// Create and initialise each species
 
@@ -1256,9 +1286,9 @@ public class AgPasture
         Species.MetFile = MetData;
         Species.CO2 = co2;
 
-        for (int s1 = 0; s1 < NumSpecies; s1++)
+        for (int s1 = 0; s1 < NumSpecies; s1++)  // s1 = species to simulate, for which parameters are being set
         {
-            for (int s2 = 0; s2 < speciesName.Length; s2++)
+            for (int s2 = 0; s2 < speciesName.Length; s2++) // s2 = species parameterised, where parameter come from
             {
                 if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
                 {
@@ -1296,6 +1326,30 @@ public class AgPasture
                     {
                         InitialState[s1].RootDepth = myRootDepth[s2];
                         iniRootDepth[s1] = myRootDepth[s2];  // needed to determine the max root deth of species being simulated
+                    }
+
+                    if (iniRootDepthParam[s1] > 0.0)
+                    {
+                        if (iniRootDepthParam[s1] >= InitialState[s1].RootDepth)
+                        {
+                            rootTopDepthParam[s1] = InitialState[s1].RootDepth;
+                            mySpecies[s1].rootDistributionMethod = 0;
+                            if (s1 == 0)
+                                rootsDistributionMethod = 0;
+                        }
+                        else
+                            rootTopDepthParam[s1] = iniRootDepthParam[s1];
+                    }
+
+                    if (iniRootCurveParam[s1] >= 0.0)
+                    {
+                        rootTopDepthParam[s1] = iniRootDepthParam[s1];
+                        if (iniRootCurveParam[s1] == 0.0)
+                        {
+                            mySpecies[s1].rootDistributionMethod = 0;
+                            if (s1 == 0)
+                                rootsDistributionMethod = 0;
+                        }
                     }
 
                     if (mySpecies[s1].isLegume)
@@ -1361,15 +1415,270 @@ public class AgPasture
         UpdateAggregatedVariables();
 
         //// Weighted average of lightExtCoeff for the sward (should be updated daily)
-        double sumkLAI = 0.0;
+        double sumkLAI = mySpecies.Sum(x => x.lightExtCoeff * x.totalLAI);
         swardLightExtCoeff = 1.0;
-        for (int s = 0; s < NumSpecies; s++)
-            sumkLAI += mySpecies[s].lightExtCoeff * mySpecies[s].totalLAI;
         if (swardTotalLAI > 0.0)
             swardLightExtCoeff = sumkLAI / swardTotalLAI;
-        ///TODO: this should be done on UpdateAggregatedVariables, which is updated every day
 
         FractionToHarvest = new double[NumSpecies];
+    }
+
+    /// <summary>
+    /// Check whether all parameter have been given to each species
+    /// </summary>
+    private void CheckSpeciesParameters()
+    {
+        //// >> General parameters (name and type)  >>>
+        if (speciesName.Length < NumSpecies)
+            breakCode("speciesName");
+        if (micrometType.Length < NumSpecies)
+            breakCode("micrometType");
+        if (photoPath.Length < NumSpecies)
+            breakCode("photoPath");
+        if (isLegume.Length < NumSpecies)
+            breakCode("isLegume");
+
+        //// >> Potential growth (photosynthesis)  >>>
+        if (Pm.Length < NumSpecies)
+            breakCode("Pm");
+        if (growthEfficiency.Length < NumSpecies)
+            breakCode("growthEfficiency");
+        if (maintRespiration.Length < NumSpecies)
+            breakCode("maintRespiration");
+        if (alphaPhoto.Length < NumSpecies)
+            breakCode("alphaPhoto");
+        if (thetaPhoto.Length < NumSpecies)
+            breakCode("thetaPhoto");
+        if (fractionPAR.Length < NumSpecies)
+            breakCode("fractionPAR");
+        if (lightExtCoeff.Length < NumSpecies)
+            breakCode("lightExtCoeff");
+
+        // Temperature, general effect and extreme, heat and cold effects
+        if (growthTmin.Length < NumSpecies)
+            breakCode("growthTmin");
+        if (growthTopt.Length < NumSpecies)
+            breakCode("growthTopt");
+        if (growthTref.Length < NumSpecies)
+            breakCode("growthTref");
+        if (growthTq.Length < NumSpecies)
+            breakCode("growthTq");
+        if (useHeatStress.Length < NumSpecies)
+            breakCode("useHeatStress");
+        if (heatOnsetT.Length < NumSpecies)
+            breakCode("heatOnsetT");
+        if (heatFullT.Length < NumSpecies)
+            breakCode("heatFullT");
+        if (heatSumT.Length < NumSpecies)
+            breakCode("heatSumT");
+        if (heatTq.Length < NumSpecies)
+            breakCode("heatTq");
+        if (heatRecoverT.Length < NumSpecies)
+            breakCode("heatRecoverT");
+        if (useColdStress.Length < NumSpecies)
+            breakCode("useColdStress");
+        if (coldOnsetT.Length < NumSpecies)
+            breakCode("coldOnsetT");
+        if (coldFullT.Length < NumSpecies)
+            breakCode("coldFullT");
+        if (coldSumT.Length < NumSpecies)
+            breakCode("coldSumT");
+        if (coldTq.Length < NumSpecies)
+            breakCode("coldTq");
+        if (coldRecoverT.Length < NumSpecies)
+            breakCode("coldRecoverT");
+
+        // CO2 effects
+        if (referenceCO2.Length < NumSpecies)
+            breakCode("referenceCO2");
+        if (CO2PmaxScale.Length < NumSpecies)
+            breakCode("CO2PmaxScale");
+        if (CO2NScale.Length < NumSpecies)
+            breakCode("CO2NScale");
+        if (CO2NMin.Length < NumSpecies)
+            breakCode("CO2NMin");
+        if (CO2NCurvature.Length < NumSpecies)
+            breakCode("CO2NCurvature");
+
+        ////  >> Parition of new growth  >>>
+        if (maxRootFraction.Length < NumSpecies)
+            breakCode("maxRootFraction");
+        if (targetSRratio.Length < NumSpecies)
+            breakCode("targetSRratio");
+        if (allocationSeasonF.Length < NumSpecies)
+            breakCode("allocationSeasonF");
+        if (StartHighAllocation.Length < NumSpecies)
+            breakCode("StartHighAllocation");
+        if (DurationHighAllocation.Length < NumSpecies)
+            breakCode("DurationHighAllocation");
+        if (ShoulderHighAllocation.Length < NumSpecies)
+            breakCode("ShoulderHighAllocation");
+        if (useLatitudeFunction.Length < NumSpecies)
+            breakCode("useLatitudeFunction");
+        if (ReferenceLatitude.Length < NumSpecies)
+            breakCode("ReferenceLatitude");
+        if (paramALatFunction.Length < NumSpecies)
+            breakCode("paramALatFunction");
+        if (onsetFacLatFunction.Length < NumSpecies)
+            breakCode("onsetFacLatFunction");
+        if (outsetFacLatFunction.Length < NumSpecies)
+            breakCode("outsetFacLatFunction");
+        if (maxShoulderLatFunction.Length < NumSpecies)
+            breakCode("maxShoulderLatFunction");
+        if (minPlateauLatFunction.Length < NumSpecies)
+            breakCode("minPlateauLatFunction");
+        if (paramBLatFunction.Length < NumSpecies)
+            breakCode("paramBLatFunction");
+        if (allocationMax.Length < NumSpecies)
+            breakCode("allocationMax");
+        if (paramCLatFunction.Length < NumSpecies)
+            breakCode("paramCLatFunction");
+
+        if (maxFLeaf.Length < NumSpecies)
+            breakCode("maxFLeaf");
+        if (minFLeaf.Length < NumSpecies)
+            breakCode("minFLeaf");
+        if (dmMaxFLeaf.Length < NumSpecies)
+            breakCode("dmMaxFLeaf");
+        if (dmReferenceFLeaf.Length < NumSpecies)
+            breakCode("dmReferenceFLeaf");
+        if (exponentFLeaf.Length < NumSpecies)
+            breakCode("exponentFLeaf");
+        if (fStolon.Length < NumSpecies)
+            breakCode("fStolon");
+        if (SpecificLeafArea.Length < NumSpecies)
+            breakCode("SpecificLeafArea");
+        if (SpecificRootLength.Length < NumSpecies)
+            breakCode("SpecificRootLength");
+
+        ////  >> Tissue turnover and senescence  >>>
+        if (liveLeavesPerTiller.Length < NumSpecies)
+            breakCode("liveLeavesPerTiller");
+        if (rateLive2Dead.Length < NumSpecies)
+            breakCode("rateLive2Dead");
+        if (facGrowingTissue.Length < NumSpecies)
+            breakCode("facGrowingTissue");
+        if (refTurnoverRateStolon.Length < NumSpecies)
+            breakCode("refTurnoverRateStolon");
+        if (rateDead2Litter.Length < NumSpecies)
+            breakCode("rateDead2Litter");
+        if (rateRootSen.Length < NumSpecies)
+            breakCode("rateRootSen");
+        if (massFluxTmin.Length < NumSpecies)
+            breakCode("massFluxTmin");
+        if (massFluxTopt.Length < NumSpecies)
+            breakCode("massFluxTopt");
+        if (massFluxTq.Length < NumSpecies)
+            breakCode("massFluxTq");
+        if (massFluxW0.Length < NumSpecies)
+            breakCode("massFluxW0");
+        if (massFluxWopt.Length < NumSpecies)
+            breakCode("massFluxWopt");
+        if (massFluxDeadWq.Length < NumSpecies)
+            breakCode("massFluxDeadWq");
+        if (stockParameter.Length < NumSpecies)
+            breakCode("stockParameter");
+        if (Kappa2_Remob.Length < NumSpecies)
+            breakCode("Kappa2_Remob");
+        if (Kappa3_Remob.Length < NumSpecies)
+            breakCode("Kappa3_Remob");
+        if (Kappa4_Remob.Length < NumSpecies)
+            breakCode("Kappa4_Remob");
+
+        ////  >> Digestibility and feed quality  >>>
+        if (digestLive.Length < NumSpecies)
+            breakCode("digestLive");
+        if (digestDead.Length < NumSpecies)
+            breakCode("digestDead");
+
+        ////  >> DM limits for harvest and senescence  >>>
+        if (dmshoot.Length < NumSpecies)
+            breakCode("dmshoot");
+        if (dmroot.Length < NumSpecies)
+            breakCode("dmroot");
+        if (dmgreenmin.Length < NumSpecies)
+            breakCode("dmgreenmin");
+        if (dmdeadmin.Length < NumSpecies)
+            breakCode("dmdeadmin");
+
+        ////  >> N fixation  >>>
+        if (NMinFix.Length < NumSpecies)
+            breakCode("NMinFix");
+        if (NMaxFix.Length < NumSpecies)
+            breakCode("NMaxFix");
+
+        ////  >> Growth limiting factor  >>>
+        if (NdilutCoeff.Length < NumSpecies)
+            breakCode("NdilutCoeff");
+        if (waterStressFactor.Length < NumSpecies)
+            breakCode("waterStressFactor");
+        if (soilSatFactor.Length < NumSpecies)
+            breakCode("soilSatFactor");
+        if (GenericGLF.Length < NumSpecies)
+            breakCode("GenericGLF");
+        if (SFertilityGLF.Length < NumSpecies)
+            breakCode("SFertilityGLF");
+
+        ////  >> grazing preferences  >>>
+        if (PreferenceForGreenDM.Length < NumSpecies)
+            breakCode("PreferenceForGreenDM");
+        if (PreferenceForDeadDM.Length < NumSpecies)
+            breakCode("PreferenceForDeadDM");
+        if (PreferenceForLeaves.Length < NumSpecies)
+            breakCode("PreferenceForLeaves");
+
+        ////  >> Root depth and distribution  >>>
+        if (rootDepth.Length < NumSpecies)
+            breakCode("rootDepth");
+        if (RootDistributionMethod.Length < NumSpecies)
+            breakCode("RootDistributionMethod");
+        if (ExpoLinearDepthParam.Length < NumSpecies)
+            breakCode("ExpoLinearDepthParam");
+        if (ExpoLinearCurveParam.Length < NumSpecies)
+            breakCode("ExpoLinearCurveParam");
+        if (refRLD.Length < NumSpecies)
+            breakCode("referenceRLD");
+        if (NextraSWF.Length < NumSpecies)
+            breakCode("NextraSWF");
+        if (MaximumUptakeRateNH4.Length < NumSpecies)
+            breakCode("MaximumUptakeRateNH4");
+        if (MaximumUptakeRateNO3.Length < NumSpecies)
+            breakCode("MaximumUptakeRateNO3");
+
+        ////  >> Plant height  >>>
+        if (MaxPlantHeight.Length < NumSpecies)
+            breakCode("MaxPlantHeight");
+        if (MassForMaxHeight.Length < NumSpecies)
+            breakCode("MassForMaxHeight");
+        if (ExponentHeightFromMass.Length < NumSpecies)
+            breakCode("ExponentHeightFromMass");
+
+        //// >> N concentrations  >>>
+        if (NconcOptimum_leaves.Length < NumSpecies)
+            breakCode("NconcOptimum_leaves");
+        if (NconcMaximum_leaves.Length < NumSpecies)
+            breakCode("NconcMaximum_leaves");
+        if (NconcMinimum_leaves.Length < NumSpecies)
+            breakCode("NconcMinimum_leaves");
+        if (RelativeNconc_Stems.Length < NumSpecies)
+            breakCode("RelativeNconc_Stems");
+        if (RelativeNconc_Stolons.Length < NumSpecies)
+            breakCode("RelativeNconc_Stolons");
+        if (RelativeNconc_Roots.Length < NumSpecies)
+            breakCode("RelativeNconc_Roots");
+        if (RelativeNconc_stage2.Length < NumSpecies)
+            breakCode("RelativeNconc_stage2");
+        if (RelativeNconc_stage3.Length < NumSpecies)
+            breakCode("RelativeNconc_stage3");
+    }
+
+    /// <summary>
+    /// Throw an exception error about wrong parameter setup, with message
+    /// </summary>
+    /// <param name="myVariable"></param>
+    private void breakCode(string myVariable)
+    {
+        throw new Exception("Number of values for paramater \"" + myVariable + "\" is smaller than number of species");
     }
 
     /// <summary>
@@ -1506,22 +1815,22 @@ public class AgPasture
         mySpecies[s1].usingSpeciesRoot = usingSpeciesRoot;
         if (usingSpeciesRoot)
         { // root specified for each species
-            mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
-            mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[s2];
-            mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[s2];
+            mySpecies[s1].rootDistributionMethod = rootsDistributionMethod;
+            mySpecies[s1].expoLinearDepthParam = rootTopDepthParam[s2];
+            mySpecies[s1].expoLinearCurveParam = rootCurveParam[s2];
             mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[s2];
             mySpecies[s1].MaximumUptakeRateNO3 = MaximumUptakeRateNO3[s2];
-            mySpecies[s1].referenceRLD = referenceRLD[s2];
+            mySpecies[s1].referenceRLD = refRLD[s2];
             mySpecies[s1].NextraSWF = NextraSWF[s2];
         }
         else
         { // root specified for whole sward (use first species as data entry)
-            mySpecies[s1].rootDistributionMethod = p_RootDistributionMethod;
-            mySpecies[s1].expoLinearDepthParam = p_ExpoLinearDepthParam[0];
-            mySpecies[s1].expoLinearCurveParam = p_ExpoLinearCurveParam[0];
+            mySpecies[s1].rootDistributionMethod = rootsDistributionMethod;
+            mySpecies[s1].expoLinearDepthParam = rootTopDepthParam[0];
+            mySpecies[s1].expoLinearCurveParam = rootCurveParam[0];
             mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[0];
             mySpecies[s1].MaximumUptakeRateNO3 = MaximumUptakeRateNO3[0];
-            mySpecies[s1].referenceRLD = referenceRLD[0];
+            mySpecies[s1].referenceRLD = refRLD[0];
             mySpecies[s1].NextraSWF = NextraSWF[0];
         }
 
@@ -2214,15 +2523,16 @@ public class AgPasture
                     }
                 }
 
-                // correct total PAW according to number of species and make sure it doesn't exceed potential available
+                // correct total PAW to make sure it doesn't exceed potential available
                 auxAvailableWater = PAW[layer];
-                xFac = Math.Min(1.0, Math.Pow(nSpecies, 1.0 / UptakeFactorSpecies));
-                PAW[layer] = Math.Min(PAW[layer] * xFac, potentialAvailableWater);
+                PAW[layer] = Math.Min(PAW[layer], potentialAvailableWater);
 
                 // correct values for each species to match PAW
-                wFrac = MathUtility.Divide(PAW[layer], auxAvailableWater, 0.0);
                 for (int s = 0; s < NumSpecies; s++)
-                    mySpecies[s].soilAvailableWater[layer] *= wFrac;
+                {
+                    wFrac = MathUtility.Divide(mySpecies[s].soilAvailableWater[layer], auxAvailableWater, 0.0);
+                    mySpecies[s].soilAvailableWater[layer] = PAW[layer] * wFrac;
+                }
             }
         }
         else
@@ -2297,7 +2607,7 @@ public class AgPasture
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
                 auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                xFac = Math.Min(1.0, kl[layer] * MathUtility.Divide(rlv[layer], referenceRLD[0], 0.0));
+                xFac = Math.Min(1.0, kl[layer] * MathUtility.Divide(rlv[layer], refRLD[0], 0.0));
                 PAW[layer] = auxAvailableWater * xFac;
                 for (int s = 0; s < NumSpecies; s++)
                 { // partition based on root distribution
@@ -2324,9 +2634,6 @@ public class AgPasture
         // check that we have an input from apsim
         if (swardWaterUptakeByAPSIM == null)
             throw new Exception("No module provided an estimate for water uptake, check water module or set WaterUptakeSource to \"calc\"");
-
-        // get the overall ratio of water uptake to demand
-        double uptakeRatio = Math.Min(1.0, swardWaterDemand / swardWaterUptakeByAPSIM.Sum());
 
         // update/partition the uptake (from SWIM)
         if (usingWAvailableBySpecies)
@@ -2361,7 +2668,7 @@ public class AgPasture
                 {
                     mySpecies[s].soilWaterUptake[layer] = Math.Min(auxUptake[s, layer], mySpecies[s].WaterDemand -
                         uptakeUpToThisLayer);
-                    mySpecies[s].soilAvailableWater[layer] = mySpecies[s].soilWaterUptake[layer] / uptakeRatio;
+                    mySpecies[s].soilAvailableWater[layer] = mySpecies[s].soilWaterUptake[layer];
                     PAW[layer] += mySpecies[s].soilAvailableWater[layer];
                     uptakeUpToThisLayer += mySpecies[s].soilWaterUptake[layer];
                 }
@@ -2375,7 +2682,7 @@ public class AgPasture
                 { // simple partition, based on demand
                     wFrac = MathUtility.Divide(mySpecies[s].WaterDemand, swardWaterDemand, 1.0);
                     mySpecies[s].soilWaterUptake[layer] = swardWaterUptakeByAPSIM[layer] * Math.Min(1.0, wFrac);
-                    mySpecies[s].soilAvailableWater[layer] = mySpecies[s].soilWaterUptake[layer] / uptakeRatio;
+                    mySpecies[s].soilAvailableWater[layer] = mySpecies[s].soilWaterUptake[layer];
                     PAW[layer] += mySpecies[s].soilAvailableWater[layer];
                 }
             }
@@ -2882,7 +3189,7 @@ public class AgPasture
             for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
             {
                 layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                rlFrac = MathUtility.Divide(rlv[layer], referenceRLD[0], 1.0);
+                rlFrac = MathUtility.Divide(rlv[layer], refRLD[0], 1.0);
                 xFac[0] = Math.Min(1.0, kNH4[layer] * rlFrac);
                 xFac[1] = Math.Min(1.0, kNO3[layer] * rlFrac);
                 if (nh4_PlantAvailable == null)
@@ -3011,8 +3318,8 @@ public class AgPasture
                 wSatFrac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 wSatFrac = Math.Max(0.0, Math.Min(wSatFrac, 1.0));
                 wSatFrac = Math.Pow(wSatFrac, NextraSWF[0]);
-                rlFrac=MathUtility.Divide(rlv[layer] , referenceRLD[0],1.0);
-                xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac*rlFrac);
+                rlFrac = MathUtility.Divide(rlv[layer], refRLD[0], 1.0);
+                xFac[0] = Math.Min(1.0, kNH4[layer] * wSatFrac * rlFrac);
                 xFac[1] = Math.Min(1.0, kNO3[layer] * wSatFrac * rlFrac);
                 if (nh4_PlantAvailable == null)
                 { // there are no soilNPatches, use classic approach
@@ -4330,7 +4637,7 @@ public class AgPasture
         {
             if (!usingSpeciesRoot)
             {  // Get the max root depth of all species
-                InitialState[s].RootDepth = iniRootDepth.Max();
+                InitialState[s].RootDepth = mySpecies.Max(x => x.rootDepth);
             }
 
             // set initial state
@@ -4407,7 +4714,7 @@ public class AgPasture
 
             // get root depth
             if (NewSetState.rootDepth.Length > 0)
-                NewState.RootDepth = rootDepth[s];
+                NewState.RootDepth = myRootDepth[s];
             else
                 NewState.RootDepth = mySpecies[s].rootDepth;
 
@@ -4507,12 +4814,15 @@ public class AgPasture
             s = 0;   // will use parameters from first species
         }
 
-        switch (p_RootDistributionMethod)
+        switch (mySpecies[s].rootDistributionMethod)
         {
             case 0:
                 {
-                    // homogenous distribution over soil profile (same root density throughout the profile)
+                    // homogeneous distribution over soil profile (same root density throughout the profile)
                     double DepthTop = 0.0;
+                    sumProportion = myRootDepth;
+                    if (sumProportion <= 0.0)
+                        throw new Exception("Could not calculate root distribution");
                     for (int layer = 0; layer < nLayers; layer++)
                     {
                         if (DepthTop >= myRootDepth)
@@ -4520,10 +4830,11 @@ public class AgPasture
                         else if (DepthTop + dlayer[layer] <= myRootDepth)
                             result[layer] = dlayer[layer];
                         else
-                            result[layer] = myRootDepth - DepthTop;
-                        sumProportion += result[layer];
+                            result[layer] = (myRootDepth - DepthTop);
                         DepthTop += dlayer[layer];
+                        result[layer] /= sumProportion;
                     }
+
                     break;
                 }
             case 1:
@@ -4535,49 +4846,58 @@ public class AgPasture
                         result[layer] = rlvp[layer];
                         sumProportion += result[layer];
                     }
+
+                    if (sumProportion > 0.0)
+                    {
+                        for (int layer = 0; layer < nLayers; layer++)
+                        {
+                            result[layer] = result[layer] / sumProportion;
+                        }
+                    }
+                    else
+                        throw new Exception("Could not calculate root distribution");
+
                     break;
                 }
             case 2:
                 {
                     // distribution calculated using ExpoLinear method
-                    //  Considers homogeneous distribution from surface down to a fraction of root depth (p_ExpoLinearDepthParam)
-                    //   below this depth, the proportion of root decrease following a power function (exponent = p_ExpoLinearCurveParam)
+                    //  Considers homogeneous distribution from surface down to a given depth (rootTopDepthParam)
+                    //   below this depth, the proportion of root decreases following a power function (exponent = rootCurveParam)
                     //   if exponent is one than the proportion decreases linearly.
-                    double DepthTop = 0.0;
-                    double DepthFirstStage = myRootDepth * p_ExpoLinearDepthParam[s];
-                    double DepthSecondStage = myRootDepth - DepthFirstStage;
+                    double depthTop = 0.0;
+                    double depthBottom = 0.0;
+
+                    sumProportion = (myRootDepth + (rootTopDepthParam[s] * rootCurveParam[s])) / (rootCurveParam[s] + 1);
+                    if (sumProportion <= 0.0)
+                        throw new Exception("Could not calculate root distribution");
+
                     for (int layer = 0; layer < nLayers; layer++)
                     {
-                        if (DepthTop >= myRootDepth)
+                        depthBottom += dlayer[layer];
+                        if (depthTop >= myRootDepth)
+                        { // totally out of root zone
                             result[layer] = 0.0;
-                        else if (DepthTop + dlayer[layer] <= DepthFirstStage)
+                        }
+                        else if (depthBottom <= rootTopDepthParam[s])
+                        { // totally in the first stage
                             result[layer] = dlayer[layer];
+                        }
                         else
-                        {
-                            if (DepthTop < DepthFirstStage)
-                                result[layer] = DepthFirstStage - DepthTop;
-                            if ((p_ExpoLinearDepthParam[s] < 1.0) && (p_ExpoLinearCurveParam[s] > 0.0))
-                            {
-                                double thisDepth = Math.Max(0.0, DepthTop - DepthFirstStage);
-                                double Ftop = (thisDepth - DepthSecondStage) / (p_ExpoLinearCurveParam[s] + 1);
-                                if (DepthSecondStage > 0.0)
-                                    Ftop *= Math.Pow(1 - (thisDepth / DepthSecondStage), p_ExpoLinearCurveParam[s]);
-                                thisDepth = Math.Min(DepthTop + dlayer[layer] - DepthFirstStage, DepthSecondStage);
-                                double Fbottom = (thisDepth - DepthSecondStage) / (p_ExpoLinearCurveParam[s] + 1);
-                                if (DepthSecondStage > 0.0)
-                                    Fbottom *= Math.Pow(1 - (thisDepth / DepthSecondStage), p_ExpoLinearCurveParam[s]);
-                                result[layer] += Math.Max(0.0, Fbottom - Ftop);
-                            }
-                            else if (DepthTop + dlayer[layer] <= myRootDepth)
-                            {
-                                result[layer] += Math.Min(DepthTop + dlayer[layer], myRootDepth)
-                                              - Math.Max(DepthTop, DepthFirstStage);
+                        { // at least partially on second stage
+                            result[layer] = Math.Pow(myRootDepth - Math.Max(depthTop, rootTopDepthParam[s]), rootCurveParam[s] + 1)
+                                          - Math.Pow(myRootDepth - Math.Min(depthBottom, myRootDepth), rootCurveParam[s] + 1);
+                            result[layer] /= (rootCurveParam[s] + 1) * Math.Pow(myRootDepth - rootTopDepthParam[s], rootCurveParam[s]);
+                            if (depthTop < rootTopDepthParam[s])
+                            { // partially in first stage
+                                result[layer] += rootTopDepthParam[s] - depthTop;
                             }
                         }
 
-                        sumProportion += result[layer];
-                        DepthTop += dlayer[layer];
+                        result[layer] /= sumProportion;
+                        depthTop += dlayer[layer];
                     }
+
                     break;
                 }
             default:
@@ -4585,11 +4905,7 @@ public class AgPasture
                     throw new Exception("No valid method for computing root distribution was selected");
                 }
         }
-        if (sumProportion > 0.0)
-            for (int layer = 0; layer < nLayers; layer++)
-                result[layer] = result[layer] / sumProportion;
-        else
-            throw new Exception("Could not calculate root distribution");
+
         return result;
     }
 

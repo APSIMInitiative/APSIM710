@@ -1165,7 +1165,7 @@ public class Species
         Pgross *= GLFGeneric;
 
         // Radiation effects (for reporting purposes only)
-        RadnFactor = ((0.25 * Pl2) + (0.75 * Pl1)) / ((0.25 * Pm_mean) + (0.75 * Pm_day));
+        RadnFactor = MathUtility.Divide((0.25 * Pl2) + (0.75 * Pl1), (0.25 * Pm_mean) + (0.75 * Pm_day), 1.0);
 
         // Respiration, maintenance and growth
         double Teffect = 0.0;
