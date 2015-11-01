@@ -608,6 +608,9 @@ public class Species
     internal double NextraSWF = 0.25;
 
     /// <summary>Some Description</summary>
+    internal int layerBottomRootZone;
+
+    /// <summary>Some Description</summary>
     internal double[] rootFraction;
 
     /// <summary>Root length density (mm/mm3)</summary>
@@ -679,7 +682,7 @@ public class Species
     internal double NdemandOpt = 0.0;
 
     /// <summary>Some Description</summary>
-    internal double Nfix = 0.0;         //N fixed by legumes
+    internal double NFixed = 0.0;         //N fixed by legumes
 
     /// <summary>Some Description</summary>
     internal double NLuxury2 = 0.0;               // luxury N (above Nopt) potentially remobilisable
@@ -688,10 +691,10 @@ public class Species
     internal double NLuxury3 = 0.0;               // luxury N (above Nopt)potentially remobilisable
 
     /// <summary>Some Description</summary>
-    internal double NFastRemob2 = 0.0;   // amount of luxury N remobilised from tissue 2
+    internal double NLuxuryRemob2 = 0.0;   // amount of luxury N remobilised from tissue 2
 
     /// <summary>Some Description</summary>
-    internal double NFastRemob3 = 0.0;   // amount of luxury N remobilised from tissue 3
+    internal double NLuxuryRemob3 = 0.0;   // amount of luxury N remobilised from tissue 3
 
     //// > Harvest variables  >>>
 
@@ -736,12 +739,9 @@ public class Species
     /// <summary>N demand from soil</summary>
     internal double soilNdemand = 0.0;
 
-    /// <summary>Amount of N taken up</summary>
-    internal double soilNuptake = 0.0;
-
-    /// <summary>Some Description</summary>
+    /// <summary>Amount of N_NH4 taken up</summary>
     internal double soilNH4Uptake;
-    /// <summary>Some Description</summary>
+    /// <summary>Amount of N_NO3 taken up</summary>
     internal double soilNO3Uptake;
 
     /// <summary>Some Description</summary>
@@ -1071,6 +1071,7 @@ public class Species
         if (isAnnual)
         {
             rootDepth = 50 + (maxRootDepth - 50) * MathUtility.Divide(daysfromEmergence, daysEmgToAnth, 1.0);
+            layerBottomRootZone = GetRootZoneBottomLayer();
             //considering root distribution change, here?
         }
 
@@ -1451,22 +1452,22 @@ public class Species
             }
 
             // check whether luxury N was remobilised during N balance
-            if (NFastRemob2 + NFastRemob3 > 0.0)
+            if (NLuxuryRemob2 + NLuxuryRemob3 > 0.0)
             {
                 // partition any used N into plant parts (by N content)
                 Nsum = Nleaf2 + Nstem2 + Nstol2;
-                if (NFastRemob2 > 0.0 && Nsum > 0.0)
+                if (NLuxuryRemob2 > 0.0 && Nsum > 0.0)
                 {
-                    Nleaf2 -= NFastRemob2 * Nleaf2 / Nsum;
-                    Nstem2 -= NFastRemob2 * Nstem2 / Nsum;
-                    Nstol2 -= NFastRemob2 * Nstol2 / Nsum;
+                    Nleaf2 -= NLuxuryRemob2 * Nleaf2 / Nsum;
+                    Nstem2 -= NLuxuryRemob2 * Nstem2 / Nsum;
+                    Nstol2 -= NLuxuryRemob2 * Nstol2 / Nsum;
                 }
                 Nsum = Nleaf3 + Nstem3 + Nstol3;
-                if (NFastRemob3 > 0.0 && Nsum > 0.0)
+                if (NLuxuryRemob3 > 0.0 && Nsum > 0.0)
                 {
-                    Nleaf3 -= NFastRemob3 * Nleaf3 / Nsum;
-                    Nstem3 -= NFastRemob3 * Nstem3 / Nsum;
-                    Nstol3 -= NFastRemob3 * Nstol3 / Nsum;
+                    Nleaf3 -= NLuxuryRemob3 * Nleaf3 / Nsum;
+                    Nstem3 -= NLuxuryRemob3 * Nstem3 / Nsum;
+                    Nstol3 -= NLuxuryRemob3 * Nstol3 / Nsum;
                 }
             }
         }
@@ -1871,10 +1872,9 @@ public class Species
     }
 
     /// <summary>
-    /// Species N demand for potential growth (soilNdemand)
+    /// Computes the N demand for potential growth (at optimum and luxury N levels)
     /// </summary>
-    /// <returns>Amount of N demanded</returns>
-    internal double CalcNdemand()
+    internal void CalcTotalNDemand()
     {
         fShoot = NewGrowthToShoot();
         double fL = UpdatefLeaf(); //to consider more dm to leaf when DM is lower?
@@ -1894,15 +1894,111 @@ public class Species
 
         //N demand for new growth assuming luxury uptake (maximum [N])
         NdemandLux = toRoot * NcrootMax + toStol * NcstolMax + toLeaf * NcleafMax + toStem * NcstemMax;
-        //Ndemand *= NCO2Effects();       //luxury uptake not reduced
+        //luxury uptake not reduced
+    }
 
-        //even with sufficient soil N available
-        if (isLegume)
-            Nfix = MinFix * NdemandOpt;
+    /// <summary>
+    /// Computes amount of biologically fixed N
+    /// </summary>
+    internal void CalcNFixation()
+    {
+        double SoilNavailable = soilAvailableNH4.Sum() + soilAvailableNO3.Sum();
+        double Nstress = 1.0;
+        if (NdemandOpt > 0.0 && (NdemandOpt > SoilNavailable + MinFix))
+            Nstress = SoilNavailable / (NdemandOpt - MinFix);
+
+        if (Nstress <= 0.999)
+        { // more fixation under N stress
+            double moreNfixation = (MaxFix - MinFix) * (1 - Nstress);
+            moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation));
+            NFixed = (MinFix + moreNfixation) * NdemandOpt;
+        }
         else
-            Nfix = 0.0;
+        { // minimum fixation even if not needed
+            NFixed = MinFix * NdemandOpt;
+        }
+    }
 
-        return Nfix;
+    /// <summary>
+    /// Computes the amount of N remobilised from senescent material used in new growth
+    /// </summary>
+    internal void CalcNRemobSenescent()
+    {
+        if (NdemandLux <= Nremob + NFixed)
+        { // Nremob and/or Nfix are able to supply all N
+            remob2NewGrowth = Math.Max(0.0, NdemandLux - NFixed);
+            Nremob -= remob2NewGrowth;
+        }
+        else
+        { // not enough N within the plant, uptake is needed
+            remob2NewGrowth = Nremob;
+            Nremob = 0.0;
+        }
+
+        newGrowthN = remob2NewGrowth + NFixed;
+    }
+
+    /// <summary>
+    /// Computes the amount of N remobilisation from luxury N to be used in new growth
+    /// </summary>
+    internal void CalcNRemobLuxury()
+    {
+        double remainingNdemand = NdemandOpt - newGrowthN;
+        if (remainingNdemand <= NLuxury2 + NLuxury3)
+        { // there is luxury N that can be used for optimum growth
+            if (remainingNdemand <= NLuxury3)
+            { // tissue 3 is able to supply all
+                NLuxuryRemob3 = remainingNdemand;
+                NLuxuryRemob2 = 0.0;
+                remainingNdemand = 0.0;
+            }
+            else
+            { // get first from tissue 3, then from tissue 2
+
+                NLuxuryRemob3 = NLuxury3;
+                remainingNdemand -= NLuxury3;
+                NLuxuryRemob2 = remainingNdemand;
+                remainingNdemand = 0.0;
+            }
+        }
+        else
+        { // N luxury is not enough for optimum growth, use up all there is
+            if (NLuxury2 + NLuxury3 > 0.0)
+            {
+                NLuxuryRemob3 = NLuxury3;
+                remainingNdemand -= NLuxury3;
+                NLuxuryRemob2 = NLuxury2;
+                remainingNdemand -= NLuxury2;
+            }
+        }
+
+        newGrowthN += NLuxuryRemob3 + NLuxuryRemob2;
+    }
+
+    /// <summary>
+    /// Computes the amount of N taken up from soil
+    /// </summary>
+    internal void CalcNUptake()
+    {
+        double soilNavailable = soilAvailableNH4.Sum() + soilAvailableNO3.Sum();
+        double soilNuptake = 0.0;
+        if (soilNavailable >= soilNdemand)
+        { // soil can supply all N needed
+            soilNuptake = soilNdemand;
+        }
+        else
+        { // soil cannot supply all N needed. Uptake the available
+            soilNuptake = soilNavailable;
+        }
+
+        newGrowthN += soilNuptake;
+
+        if (soilNuptake > 0.0)
+        { // values for each N form
+            double nFormFrac = Math.Min(1.0, MathUtility.Divide(soilAvailableNH4.Sum(), soilNavailable, 0.0));
+            soilNH4Uptake = soilNuptake * nFormFrac;
+            soilNO3Uptake = soilNuptake * (1.0 - nFormFrac);
+        }
     }
 
     /// <summary>
@@ -1961,10 +2057,10 @@ public class Species
     private double NFixCost()
     {
         double costF = 1.0;    //  reduction of net production as cost of N-fixing
-        if (!isLegume || Nfix == 0 || NdemandLux == 0)      //  happens when plant has no growth
+        if (!isLegume || NFixed == 0 || NdemandLux == 0)      //  happens when plant has no growth
         { return costF; }
 
-        double actFix = Nfix / NdemandLux;
+        double actFix = NFixed / NdemandLux;
         costF = 1 - 0.24 * (actFix - MinFix) / (MaxFix - MinFix);
         if (costF < 0.76)
             costF = 0.76;
@@ -2292,12 +2388,12 @@ public class Species
                                + Math.Max(0.0, dmleaf4 + dmstem4 - dmdeadmin);
 
         // get the weights for each pool, consider preference and available DM
-        double FractionNotRemoved = 0.0;
+        double FractionToRemoved = 0.0;
         if (AmountRemovable > 0.0)
-            FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
+            FractionToRemoved = Math.Min(1.0, MathUtility.Divide(AmountToRemove, AmountRemovable, 0.0));
 
-        double TempPrefGreen = PrefGreen + (PrefDead * (1 - FractionNotRemoved));
-        double TempPrefDead = PrefDead + (PrefGreen * (1 - FractionNotRemoved));
+        double TempPrefGreen = PrefGreen + (PrefDead * FractionToRemoved);
+        double TempPrefDead = PrefDead + (PrefGreen * FractionToRemoved);
         double TempRemovableGreen = Math.Max(0.0, dmleaf_green + dmstem_green - dmgreenmin);
         double TempRemovableDead = Math.Max(0.0, dmleaf4 + dmstem4 - dmdeadmin);
 
@@ -2418,7 +2514,7 @@ public class Species
     /// Find the layer at the bottom of the root zone
     /// </summary>
     /// <returns>layer at bottom of root zone</returns>
-    internal int RootZoneBottomLayer()
+    internal int GetRootZoneBottomLayer()
     {
         double depthFromSurface = 0.0;
         int result = dlayer.Length - 1;

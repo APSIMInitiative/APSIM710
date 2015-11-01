@@ -1055,9 +1055,9 @@ public class AgPasture
     /// <summary>Soil NO3_N uptake as given by an external module (kgN/ha)</summary>
     private double[] swardNO3UptakeByAPSIM;
 
-    /// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+    /// <summary>Amount of N available in each soil layer (kgN/ha)</summary>
     private double[] soilNH4Available;
-    /// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
+    /// <summary>Amount of N available in each soil layer (kgN/ha)</summary>
     private double[] soilNO3Available;
     /// <summary>Total plant available N in soil (kgN/ha)</summary>
     private double swardSoilNavailable;
@@ -1389,7 +1389,7 @@ public class AgPasture
             if (mySpecies[s].rootDepth > swardRootDepth)
             {
                 swardRootDepth = mySpecies[s].rootDepth;
-                swardRootZoneBottomLayer = mySpecies[s].RootZoneBottomLayer();
+                swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
             }
         }
 
@@ -1926,7 +1926,6 @@ public class AgPasture
 
         //// Root DM  ....................................................
         mySpecies[s].dmroot = MyState.RootDM;
-        mySpecies[s].rootDepth = MyState.RootDepth;
 
         //// Initial N amount in each pool ...............................
         mySpecies[s].Nleaf1 = mySpecies[s].dmleaf1 * MyState.NConcentration[0];
@@ -1953,6 +1952,7 @@ public class AgPasture
 
         //// Root depth and distribution  ................................
         mySpecies[s].rootDepth = MyState.RootDepth;
+        mySpecies[s].layerBottomRootZone = mySpecies[s].GetRootZoneBottomLayer();
         if (usingSpeciesRoot)
         { // each species has it own root distribution
             mySpecies[s].rootFraction = RootProfileDistribution(s);
@@ -2174,7 +2174,7 @@ public class AgPasture
             if (swardRootDepth < newRootDepth)
             { // the deepest root_depth is used
                 swardRootDepth = newRootDepth;
-                swardRootZoneBottomLayer = mySpecies[s].RootZoneBottomLayer();
+                swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
             }
         }
 
@@ -3657,124 +3657,131 @@ public class AgPasture
     {
         //1) Get the total N demand (species by species)
         swardNFixed = 0.0;
-        double p_NdemandLux = 0.0;
-        double p_NdemandOpt = 0.0;
+        double swardNdemandLux = 0.0;
+        double swardNdemandOpt = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
-            swardNFixed += mySpecies[s].CalcNdemand();     //minimum N fixation
-            p_NdemandOpt += mySpecies[s].NdemandOpt;       //demand for optimum [N]
-            p_NdemandLux += mySpecies[s].NdemandLux;       //demand for luxury [N]
-        }
-
-        //2) Update Nfix of legume species under N stress
-        double Nstress = 1.0;
-        if (p_NdemandOpt > 0.0 && (p_NdemandOpt > swardSoilNavailable + swardNFixed))
-            Nstress = swardSoilNavailable / (p_NdemandOpt - swardNFixed);
-
-        for (int s = 0; s < NumSpecies; s++)
-        {
-            if (mySpecies[s].isLegume && (Nstress < 0.999))  //more fixation under Nstress
-            {
-                double newNfix = mySpecies[s].MaxFix;
-                newNfix -= (mySpecies[s].MaxFix - mySpecies[s].MinFix) * Nstress;
-                newNfix *= mySpecies[s].NdemandOpt;
-                double moreNfix = Math.Max(0.0, newNfix - mySpecies[s].Nfix);
-                mySpecies[s].Nfix = newNfix;
-                swardNFixed += moreNfix;
+            mySpecies[s].CalcTotalNDemand();
+            swardNdemandOpt += mySpecies[s].NdemandOpt;
+            swardNdemandLux += mySpecies[s].NdemandLux;
+            if (!usingNAvailableBySpecies && (mySpecies[s].isLegume))
+            { // minimum N fixation for whole sward
+                mySpecies[s].NFixed = mySpecies[s].MinFix * mySpecies[s].NdemandOpt;
+                swardNFixed += mySpecies[s].NFixed;
             }
         }
 
-        //3) Get N remobilised and calculate N demand from soil
+        //2) Update N fixation of legume species if under N stress
+        if (usingNAvailableBySpecies)
+        { // consider each species separately (need N available for each species)
+            swardNFixed = 0.0; // this is re-calculated here
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                if (mySpecies[s].isLegume)
+                {
+                    mySpecies[s].CalcNFixation();
+                    swardNFixed += mySpecies[s].NFixed;
+                }
+            }
+        }
+        else
+        { // consider whole sward
+            double Nstress = 1.0;
+            if (swardNdemandOpt > 0.0 && (swardNdemandOpt > swardSoilNavailable + swardNFixed))
+                Nstress = swardSoilNavailable / (swardNdemandOpt - swardNFixed);
+
+            if (Nstress < 0.999)
+            { // more fixation under N stress
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    if (mySpecies[s].isLegume)
+                    {
+                        double moreNfixation = (mySpecies[s].MaxFix - mySpecies[s].MinFix) * (1 - Nstress);
+                        moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation)) * mySpecies[s].NdemandOpt;
+                        mySpecies[s].NFixed += moreNfixation;
+                        swardNFixed += moreNfixation;
+                    }
+                }
+            }
+        }
+
+        //3) Get N remobilised of senesced material and calculate N demand from soil
         swardSoilNDemand = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
-            if (mySpecies[s].NdemandLux <= mySpecies[s].Nremob + mySpecies[s].Nfix)
-            {
-                // Nremob and/or Nfix are able to supply all N
-                mySpecies[s].remob2NewGrowth = Math.Max(0.0, mySpecies[s].NdemandLux - mySpecies[s].Nfix);
-                mySpecies[s].Nremob -= mySpecies[s].remob2NewGrowth;
-                mySpecies[s].soilNdemand = 0.0;
+            mySpecies[s].CalcNRemobSenescent();
+
+            if (mySpecies[s].newGrowthN < mySpecies[s].NdemandLux)
+            { // all Nremob and/or Nfix were used up, check demand from the soil
+                mySpecies[s].soilNdemand = mySpecies[s].NdemandLux - mySpecies[s].newGrowthN;
+                swardSoilNDemand += mySpecies[s].soilNdemand;
             }
             else
-            {
-                // not enough N within the plant, uptake is needed
-                mySpecies[s].remob2NewGrowth = mySpecies[s].Nremob;
-                mySpecies[s].Nremob = 0.0;
-                mySpecies[s].soilNdemand = mySpecies[s].NdemandLux - (mySpecies[s].Nfix + mySpecies[s].remob2NewGrowth);
-            }
-
-            mySpecies[s].newGrowthN = mySpecies[s].remob2NewGrowth + mySpecies[s].Nfix;
-            swardSoilNDemand += mySpecies[s].soilNdemand;
+                mySpecies[s].soilNdemand = 0.0;
         }
 
-        //4) Compute soil N uptake, newGrowthN and N limitation factor
+        //4) Compute soil N uptake and consider remobilisation of luxury N
         for (int s = 0; s < NumSpecies; s++)
         {
             if (mySpecies[s].soilNdemand == 0.0)
             {
-                mySpecies[s].soilNuptake = 0.0;
-                mySpecies[s].NFastRemob3 = 0.0;
-                mySpecies[s].NFastRemob2 = 0.0;
+                // no need for uptake or extra remobilisation
+                mySpecies[s].soilNH4Uptake = 0.0;
+                mySpecies[s].soilNO3Uptake = 0.0;
+                mySpecies[s].NLuxuryRemob3 = 0.0;
+                mySpecies[s].NLuxuryRemob2 = 0.0;
             }
             else
             {
-                if (swardSoilNavailable >= swardSoilNDemand)
-                {
-                    // soil can supply all remaining N needed
-                    mySpecies[s].soilNuptake = mySpecies[s].soilNdemand;
-                    mySpecies[s].NFastRemob3 = 0.0;
-                    mySpecies[s].NFastRemob2 = 0.0;
-                    mySpecies[s].newGrowthN += mySpecies[s].soilNuptake;
-                }
-                else
-                {
-                    // soil cannot supply all N needed. Uptake the available N and partition it between species
-                    mySpecies[s].soilNuptake = swardSoilNavailable * MathUtility.Divide(mySpecies[s].soilNdemand, swardSoilNDemand, 0.0);
-                    mySpecies[s].newGrowthN += mySpecies[s].soilNuptake;
-
+                if (usingAlternativeNUptake)
+                { // consider each species separately
+                    mySpecies[s].CalcNUptake();
                     // check whether demand for optimum growth has been satisfied
                     if (mySpecies[s].NdemandOpt > mySpecies[s].newGrowthN)
                     {
                         // plant still needs more N for optimum growth, check whether luxury N already in the plants can be used
-                        double Nmissing = mySpecies[s].NdemandOpt - mySpecies[s].newGrowthN;
-                        if (Nmissing <= mySpecies[s].NLuxury2 + mySpecies[s].NLuxury3)
-                        {
-                            // There is luxury N that can be used for optimum growth, first from tissue 3
-                            if (Nmissing <= mySpecies[s].NLuxury3)
-                            {
-                                mySpecies[s].NFastRemob3 = Nmissing;
-                                mySpecies[s].NFastRemob2 = 0.0;
-                                Nmissing = 0.0;
-                            }
-                            else
-                            {
-                                mySpecies[s].NFastRemob3 = mySpecies[s].NLuxury3;
-                                Nmissing -= mySpecies[s].NLuxury3;
-
-                                // remaining from tissue 2
-                                mySpecies[s].NFastRemob2 = Nmissing;
-                                Nmissing = 0.0;
-                            }
-                        }
-                        else
-                        {
-                            // N luxury is not enough for optimum growth, use up all there is
-                            if (mySpecies[s].NLuxury2 + mySpecies[s].NLuxury3 > 0.0)
-                            {
-                                mySpecies[s].NFastRemob3 = mySpecies[s].NLuxury3;
-                                Nmissing -= mySpecies[s].NLuxury3;
-                                mySpecies[s].NFastRemob2 = mySpecies[s].NLuxury2;
-                                Nmissing -= mySpecies[s].NLuxury2;
-                            }
-                        }
-
-                        mySpecies[s].newGrowthN += mySpecies[s].NFastRemob3 + mySpecies[s].NFastRemob2;
+                        mySpecies[s].CalcNRemobLuxury();
                     }
                     else
                     {
-                        // N supply is enough for optimum growth, although luxury uptake is not fully accomplished
-                        mySpecies[s].NFastRemob3 = 0.0;
-                        mySpecies[s].NFastRemob2 = 0.0;
+                        // N supply was enough for optimum growth, no need to use luxury N
+                        mySpecies[s].NLuxuryRemob3 = 0.0;
+                        mySpecies[s].NLuxuryRemob2 = 0.0;
+                    }
+                }
+                else
+                { // consider the whole sward
+                    if (swardSoilNavailable >= swardSoilNDemand)
+                    {
+                        // soil can supply all N demanded for maximum uptake (luxury N)
+                        double nFormFrac = soilNH4Available.Sum() / (soilNH4Available.Sum() + soilNO3Available.Sum());
+                        mySpecies[s].soilNH4Uptake = mySpecies[s].soilNdemand * nFormFrac;
+                        mySpecies[s].soilNO3Uptake = mySpecies[s].soilNdemand * (1.0 - nFormFrac);
+                        mySpecies[s].NLuxuryRemob3 = 0.0;
+                        mySpecies[s].NLuxuryRemob2 = 0.0;
+                        mySpecies[s].newGrowthN += mySpecies[s].soilNH4Uptake + mySpecies[s].soilNO3Uptake;
+                    }
+                    else
+                    {
+                        // soil cannot supply all N needed. Uptake the available N and partition it between species
+                        double nFormFrac = soilNH4Available.Sum() / (soilNH4Available.Sum() + soilNO3Available.Sum());
+                        double speciesNuptake = swardSoilNavailable * MathUtility.Divide(mySpecies[s].soilNdemand, swardSoilNDemand, 0.0);
+                        mySpecies[s].soilNH4Uptake = speciesNuptake * nFormFrac;
+                        mySpecies[s].soilNO3Uptake = speciesNuptake * (1 - nFormFrac);
+                        mySpecies[s].newGrowthN += mySpecies[s].soilNH4Uptake + mySpecies[s].soilNO3Uptake;
+
+                        // check whether demand for optimum growth has been satisfied
+                        if (mySpecies[s].NdemandOpt > mySpecies[s].newGrowthN)
+                        {
+                            // plant still needs more N for optimum growth, check whether luxury N already in the plants can be used
+                            mySpecies[s].CalcNRemobLuxury();
+                        }
+                        else
+                        {
+                            // N supply is enough for optimum growth, although luxury uptake is not fully accomplished
+                            mySpecies[s].NLuxuryRemob3 = 0.0;
+                            mySpecies[s].NLuxuryRemob2 = 0.0;
+                        }
                     }
                 }
             }
@@ -3792,65 +3799,41 @@ public class AgPasture
         // clear some variables
         Array.Clear(soilNH4Uptake, 0, dlayer.Length);
         Array.Clear(soilNO3Uptake, 0, dlayer.Length);
+        double upFrac;
+        double totalNavailable;
+        double totalNUptake;
 
         if (usingAlternativeNUptake)
-        { // consider partition of uptake for each species
-            double fraction = 0.0;
-            double totNAvail = 0.0;
+        { // consider each species separatelly, aggregate amount here
+            upFrac = 0.0;
             for (int s = 0; s < NumSpecies; s++)
             {
-                if (mySpecies[s].soilNuptake > 0.0)
+                totalNavailable = mySpecies[s].soilAvailableNH4.Sum() + mySpecies[s].soilAvailableNO3.Sum();
+                totalNUptake = mySpecies[s].soilNH4Uptake + mySpecies[s].soilNO3Uptake;
+                if (totalNUptake > 0.0)
                 { // there is some uptake
-
-                    // partition between N forms
-                    totNAvail = mySpecies[s].soilAvailableNH4.Sum() + mySpecies[s].soilAvailableNO3.Sum();
-                    fraction = MathUtility.Divide(mySpecies[s].soilAvailableNH4.Sum(), totNAvail, 0.0);
-                    mySpecies[s].soilNH4Uptake = mySpecies[s].soilNuptake * fraction;
-                    mySpecies[s].soilNO3Uptake = mySpecies[s].soilNuptake * (1 - fraction);
-
                     // partition amongst layers
-                    fraction = MathUtility.Divide(mySpecies[s].soilNuptake, totNAvail, 0.0);
-                    for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
+                    upFrac = Math.Min(1.0, MathUtility.Divide(totalNUptake, totalNavailable, 0.0));
+                    for (int layer = 0; layer <= mySpecies[s].layerBottomRootZone; layer++)
                     {
-                        soilNH4Uptake[layer] += mySpecies[s].soilAvailableNH4[layer] * fraction;
-                        soilNO3Uptake[layer] += mySpecies[s].soilAvailableNO3[layer] * fraction;
+                        soilNH4Uptake[layer] += mySpecies[s].soilAvailableNH4[layer] * upFrac;
+                        soilNO3Uptake[layer] += mySpecies[s].soilAvailableNO3[layer] * upFrac;
                     }
-                }
-                else
-                { // No uptake, zero variables
-                    mySpecies[s].soilNH4Uptake = 0.0;
-                    mySpecies[s].soilNO3Uptake = 0.0;
                 }
             }
         }
         else
-        { // uptake partition ignores species
-            double totalNuptake = mySpecies.Sum(x => x.soilNuptake);
-
-            if (totalNuptake > 0.0)
+        { // consider the whole sward
+            totalNavailable = swardSoilNavailable;
+            totalNUptake = mySpecies.Sum(x => x.soilNH4Uptake + x.soilNO3Uptake);
+            if (totalNUptake > 0.0)
             {
                 // partition uptake amongst layers
-                double fraction = Math.Min(1.0, MathUtility.Divide(totalNuptake, swardSoilNavailable, 0.0));
+                upFrac = Math.Min(1.0, MathUtility.Divide(totalNUptake, totalNavailable, 0.0));
                 for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
                 {
-                    soilNH4Uptake[layer] = soilNH4Available[layer] * fraction;
-                    soilNO3Uptake[layer] = soilNO3Available[layer] * fraction;
-                }
-
-                // partition uptake between N form for each species
-                fraction = MathUtility.Divide(soilNH4Uptake.Sum(), totalNuptake, 0.0);
-                for (int s = 0; s < NumSpecies; s++)
-                {
-                    mySpecies[s].soilNH4Uptake = mySpecies[s].soilNuptake * fraction;
-                    mySpecies[s].soilNO3Uptake = mySpecies[s].soilNuptake * (1 - fraction);
-                }
-            }
-            else
-            { // no uptake, zero variables
-                for (int s = 0; s < NumSpecies; s++)
-                {
-                    mySpecies[s].soilNH4Uptake = 0.0;
-                    mySpecies[s].soilNO3Uptake = 0.0;
+                    soilNH4Uptake[layer] = soilNH4Available[layer] * upFrac;
+                    soilNO3Uptake[layer] = soilNO3Available[layer] * upFrac;
                 }
             }
         }
@@ -3876,7 +3859,7 @@ public class AgPasture
             SendWaterChanges(soilWaterUptake);
 
         // do actual N uptake
-        if (soilNH4Uptake.Sum() + soilNO3Uptake.Sum() > 0.0)
+        if ((NUptakeSource.ToLower() == "calc") && (soilNH4Uptake.Sum() + soilNO3Uptake.Sum() > 0.0))
         {
             if ((NExtractabilityMethod == 4) && (PatchArea != null))
             { // uptake should be 'patch-aware' (to use when dealing with SoilCNPatches)
@@ -4093,7 +4076,7 @@ public class AgPasture
                         double mySW = 0.0;       //soil water content
                         double mySat = 0.0;      //water content at saturation
                         double myDUL = 0.0;      //water content at field capacity
-                        for (int layer = 0; layer <= mySpecies[s].RootZoneBottomLayer(); layer++)
+                        for (int layer = 0; layer <= mySpecies[s].layerBottomRootZone; layer++)
                         {
                             double layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
                             mySW += sw_dep[layer] * layerFrac;
@@ -4620,6 +4603,10 @@ public class AgPasture
                 swardHarvestDigestibility += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated / AmountToRemove;
             }
 
+            //TODO: have to make sure were return the amount removed as the actuall amount removed (check values by species)
+            //  Also, the calculation of digestibility have to be updated
+            swardHarvestDigestibility = Math.Min(1.0, swardHarvestDigestibility);
+
             // Update aggregated variables (whole sward)
             UpdateAggregatedVariables();
         }
@@ -4650,7 +4637,7 @@ public class AgPasture
             if (mySpecies[s].rootDepth > swardRootDepth)
             {
                 swardRootDepth = mySpecies[s].rootDepth;
-                swardRootZoneBottomLayer = mySpecies[s].RootZoneBottomLayer();
+                swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
             }
         }
 
@@ -5929,7 +5916,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].NFastRemob2 + mySpecies[s].NFastRemob3;
+                result += mySpecies[s].NLuxuryRemob2 + mySpecies[s].NLuxuryRemob3;
             return result;
         }
     }
@@ -7876,7 +7863,7 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = mySpecies[s].NFastRemob2 + mySpecies[s].NFastRemob3;
+                result[s] = mySpecies[s].NLuxuryRemob2 + mySpecies[s].NLuxuryRemob3;
             }
             return result;
         }
@@ -7893,7 +7880,7 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = mySpecies[s].Nfix;
+                result[s] = mySpecies[s].NFixed;
             }
             return result;
         }
@@ -7998,7 +7985,7 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = mySpecies[s].soilNuptake;
+                result[s] = mySpecies[s].soilNH4Uptake + mySpecies[s].soilNO3Uptake;
             }
             return result;
         }
