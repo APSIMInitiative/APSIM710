@@ -50,6 +50,8 @@ class Soil
       float sw_supply [max_layer];                      // potential water to take up (supply)
                                                         // from current soil water (mm)
       float getModifiedKL(int LayerIndex);
+      void onSetKLFactor(float Factor);
+      float KLFactor;
 
    private:
       void zero(void);

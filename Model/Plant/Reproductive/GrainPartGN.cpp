@@ -47,7 +47,16 @@ void fruitGrainPartGN::onInit1(protocol::Component *system)
 
    system->addGettableVar("grain_no",gGrain_no, "/m^2", "Grain number");
    setupGetFunction(system, "grain_size", protocol::DTsingle, false, &fruitGrainPartGN::get_grain_size, "g", "Size of each grain");
+   
+   //scienceAPI.expose("GrainKillFraction", "", "Fraction of grains killed", GrainKillFraction);
+   scienceAPI.exposeWritable("GrainKillFraction", "", "GrainKillFraction", FloatSetter(&fruitGrainPartGN::onSetGrainKillFraction));
 }
+
+
+   void fruitGrainPartGN::onSetGrainKillFraction(float Factor)
+   {
+   	GrainKillFraction = Factor;
+   }
 
 float fruitGrainPartGN::grainWt(void)
    //===========================================================================
@@ -138,6 +147,7 @@ void fruitGrainPartGN::zeroAllGlobals(void)
    pPotential_grain_growth_rate = 0.0;
    pMaxGrainSize = 0.0;
    gGrain_no = 0.0;
+   GrainKillFraction = 0.0;
 
 }
 
@@ -170,7 +180,11 @@ void fruitGrainPartGN::update(void)
    // transfer plant grain no.
    float dlt_grain_no_lost  = gGrain_no * plant->population().DyingFractionPlants();
    gGrain_no -= dlt_grain_no_lost;
+   
+   gGrain_no = gGrain_no * (1.0 - GrainKillFraction);
+   GrainKillFraction = 0.0;
    Debug("meal.GrainNo=%f", gGrain_no);
+   
 }
 
 //void fruitGrainPartGN::display(ostream &os)

@@ -32,6 +32,9 @@ public:                                             // member functions
    float grainNo(void);
    float grainWt(void);
    void doNDemandGrain(float nfact_grain_conc, float swdef_expansion);
+   
+   double GrainKillFraction;
+   void onSetGrainKillFraction(float Factor);
 
 protected:
    void doDMDemandGrain(void) ;

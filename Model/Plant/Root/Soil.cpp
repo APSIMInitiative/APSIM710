@@ -41,12 +41,19 @@ void Soil::onInit1(protocol::Component *)
    scienceAPI.exposeRWArray("xf", "", "Root exploration factor", xf, FloatVectorSetter(&Soil::xf_setter));
    scienceAPI.exposeRWArray("kl", "", "Root water uptake parameter", kl, FloatVectorSetter(&Soil::kl_setter));
    scienceAPI.exposeRWArray("ll_dep", "mm", "Plant Lower Limit", ll_dep, FloatVectorSetter(&Soil::ll_dep_setter));
+   scienceAPI.expose("KLFactor","0-1","Factor to apply to KL values", KLFactor);
+   scienceAPI.exposeWritable("KLFactor", "0-1", "Factor to apply to KL values", FloatSetter(&Soil::onSetKLFactor));
    //scienceAPI.expose("xf", "", "Root exploration factor", xf);
    //scienceAPI.expose("kl", "", "Root water uptake parameter", kl);
    //scienceAPI.expose("ll_dep", "mm", "Plant Lower Limit (mm)", ll_dep);
 
    }
 
+   void Soil::onSetKLFactor(float Factor)
+   {
+   	KLFactor = Factor;
+   }
+   
 void Soil::Read(void)
 //=======================================================================================
 // Read parameters
@@ -226,6 +233,9 @@ void Soil::zero(void)
 //=======================================================================================
 // Zero everything
    {
+   
+      KLFactor = 1.0;  // Default value is 1
+   
       sw_lb = 0.0;
       sw_ub = 0.0;
       sw_dep_ub = 0.0;
@@ -984,23 +994,25 @@ void Soil::plant_nit_supply(float root_depth, float *root_length)
 //=======================================================================================
 float Soil::getModifiedKL(int i)
    {
+   // Modify KL due to salt impacts, or user specified amount (ie often via the manager)
+   
    if (ModifyKL)
       {
-      float KLFactor = 1.0;
+      float KLSaltFactor = 1.0;
       if (cl.size() > 0)
-         KLFactor = min(1.0, ClA * exp(ClB * cl[i]));
+         KLSaltFactor = min(1.0, ClA * exp(ClB * cl[i]));
         
       else if (esp.size() > 0)
-        KLFactor = min(1.0, ESPA * exp(ESPB * esp[i]));
+        KLSaltFactor = min(1.0, ESPA * exp(ESPB * esp[i]));
 
       else if (ec.size() > 0)
-        KLFactor = min(1.0, ECA * exp(ECB * ec[i]));
+        KLSaltFactor = min(1.0, ECA * exp(ECB * ec[i]));
 
-      if (KLFactor != 1.0)
+      if (KLSaltFactor != 1.0)
          HaveModifiedKLValues = true;
         
-      return kl[i] * KLFactor;
+      return kl[i] * KLSaltFactor * KLFactor;
       }   
    else
-      return kl[i];
+      return kl[i]*KLFactor;
    }
