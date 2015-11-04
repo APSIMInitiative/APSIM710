@@ -103,7 +103,7 @@
          RDINQR = ReadRealArray(XNAME   &   ! Variable Name
             , '()'           &   ! Units
 	        , IsOptional     &
-            , X, numvals, 100, -1.0E9, 1.0E9)
+            , X, numvals, 100, -1.0E9, 1.0E9) .ne. 0
       endif
       RETURN
       END
@@ -116,24 +116,24 @@
       CHARACTER*(*) XNAME
       character*(10) apsimName
       REAL X
-      integer found
+      logical found
 
-      found = 0
+      found = .false.
       call getApsimName (xname, apsimName)
       if (XNAME .eq. 'NL') then
          X = g%SoilProfile%num_dlayer
-         found = 1
+         found = .true.
       else if (apsimName .ne. ' ') then
          if (apsimName .eq. 'SBDUR') then
-           X = g%sow_SBDUR; found = 1
+           X = g%sow_SBDUR; found = .true.
          elseif (apsimName .eq. 'NH') then
-           X = g%sow_NH; found = 1
+           X = g%sow_NH; found = .true.
          elseif (apsimName .eq. 'NPLH') then
-           X = g%sow_NPLH; found = 1
+           X = g%sow_NPLH; found = .true.
          elseif (apsimName .eq. 'NPLSB') then
-           X = g%sow_NPLSB; found = 1
+           X = g%sow_NPLSB; found = .true.
          elseif (apsimName .eq. 'NPLDS') then
-           X = g%sow_NPLDS; found = 1
+           X = g%sow_NPLDS; found = .true.
          else
    	       found = Get(apsimName, '()', 1, X, -1.0E9, 1.0E9 )
 		 end if
@@ -141,9 +141,9 @@
           found = ReadReal(XNAME &   ! Variable Name
             , '()'            &   ! Units
 	    , 1     &   !isOptional
-            , X, -1.0E9, 1.0E9 )
+            , X, -1.0E9, 1.0E9 ) .ne. 0
       end if
-      if (found .eq. 0) then
+      if (.not. found) then
         call FatalERR('oryza', 'Cannot read parameter '//xname)
       end if 
       end subroutine
@@ -157,20 +157,20 @@
       CHARACTER*(*) XNAME
       character*(10) apsimName
       INTEGER X
-      integer found
+      logical found
       call getApsimName (xname, apsimName)
       if (XNAME .eq. 'NL') then
          X = g%SoilProfile%num_dlayer
-         found = 1
+         found = .true.
       else if (apsimName .ne. ' ') then
          found = Get(apsimName, '()', 1, X, -1000000, 1000000 )
       else
          found = ReadInteger(XNAME &   ! Variable Name
                             , '()'  &   ! Units
 	                    , 1     &   !isOptional
-                            , X, -1000000, 1000000)
+                            , X, -1000000, 1000000) .ne. 0
       end if
-      if (found .eq. 0) then
+      if (.not. found) then
         call FatalERR('oryza', 'Cannot read parameter '//xname)
       endif 
       end subroutine
@@ -216,7 +216,7 @@
             , X               &   ! Variable
 	    , IFND            &   ! number returned
 	    , ILDEC           &   ! Size of array
-            , -1.0E9, 1.0E9)       !lower, upper
+            , -1.0E9, 1.0E9) .ne. 0    !lower, upper
       endif
       if (.not. found) then
         call FatalERR('oryza', 'Cannot read parameter '//xname)

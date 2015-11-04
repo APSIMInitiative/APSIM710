@@ -329,7 +329,9 @@
 
 ! (BB: MAY 2003): Check on input data validity
          CHECKTB = 0. 
-         DO TSTCHK = 0.,2.,0.1
+!         DO TSTCHK = 0.,2.,0.1
+         DO I = 0, 20
+            TSTCHK = I / 10.0
             CHECKTB = LINT2('FLVTB',FLVTB,ILFLVT,TSTCHK) + &
                       LINT2('FSTTB',FSTTB,ILFSTT,TSTCHK) + &
                       LINT2('FSOTB',FSOTB,ILFSOT,TSTCHK)

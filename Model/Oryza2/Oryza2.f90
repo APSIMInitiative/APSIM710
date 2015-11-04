@@ -749,11 +749,11 @@
       found = Get('sand', '()', 0, g%soil_sand, numvals, max_layer, 0.0, 100.0)
       found = Get('clay', '()', 0, g%soil_clay, numvals, max_layer, 0.0, 100.0)
 
-      found = ReadParam('kl', '()', 1, g%soil_kl, numvals, max_layer, 0.0, 1.0)
-      found = ReadParam('zrtms', '()', 1, g%zrtms, 0.0, 1000.0)
+      found = ReadParam('kl', '()', 1, g%soil_kl, numvals, max_layer, 0.0, 1.0) .ne. 0
+      found = ReadParam('zrtms', '()', 1, g%zrtms, 0.0, 1000.0) .ne. 0
 
-      found = ReadParam('crop_type', '()', 0, g%crop_type)
-      found = ReadParam('uptake_source', '()', 1, g%uptake_source)
+      found = ReadParam('crop_type', '()', 0, g%crop_type) .ne. 0
+      found = ReadParam('uptake_source', '()', 1, g%uptake_source) .ne. 0
       if (.not. found) then
          ! nothing in our parameters - see if swim3 is plugged in
          found = Get('swim3', '()', 1, dummy, 0.0, 1.0)
