@@ -885,7 +885,7 @@ subroutine soilp_read_constants ()
    endif
    call read_real_array (section_name,'crit_p_rlv',max_crops,'()',c%crit_p_rlv,numvals,0.0,100.0)
    if (num_crops_read .ne. numvals) then
-      call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
+      call fatal_error(err_internal, 'length of crit_p_rlv doesnt match crop_name')
    endif
 
    ! read P pool bounds
