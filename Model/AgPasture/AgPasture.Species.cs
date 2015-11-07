@@ -762,6 +762,9 @@ public class Species
     internal double RadnFactor;
 
     /// <summary>Some Description</summary>
+    internal double TempFactor;
+
+    /// <summary>Some Description</summary>
     internal double CO2Factor;
 
     /// <summary>Some Description</summary>
@@ -806,7 +809,7 @@ public class Species
     internal double dNrootSen = 0.0;     //N in dRootSen
 
     /// <summary>Some Description</summary>
-    internal double IL;
+    internal double IrradianceCanopy;
 
     /// <summary>Some Description</summary>
     internal double PotPhoto;
@@ -1127,6 +1130,9 @@ public class Species
         double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
         double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
 
+        //Temperature growth factor (for reporting purposes only)
+        TempFactor = MathUtility.Divide((0.25 * GFTemperature(Tmean)) + (0.75 * GFTemperature(Tday)), GFTemperature(growthTopt), 1.0);
+
         double glfT = GFTemperature(Tmean);
         CO2Factor = PCO2Effects();
         NcFactor = PmxNeffect();
@@ -1137,12 +1143,12 @@ public class Species
         double Pm_day = Pm * glfT * CO2Factor * NcFactor;
 
         double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
-        IL = swardLightExtCoeff * 1.33333 * 0.5 * swardInterceptedRadn * 1000000 / tau;
-        double IL2 = IL / 2;                      //IL for early & late period of a day
+        IrradianceCanopy = swardLightExtCoeff * 1.33333 * 0.5 * swardInterceptedRadn * 1000000 / tau;
+        double IL2 = IrradianceCanopy / 2;                      //IL for early & late period of a day
 
         // Photosynthesis per LAI under full irradiance at the top of the canopy
-        double photoAux1 = alphaPhoto * IL + Pm_day;
-        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pm_day;
+        double photoAux1 = alphaPhoto * IrradianceCanopy + Pm_day;
+        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IrradianceCanopy * Pm_day;
         double Pl1 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
 
         photoAux1 = alphaPhoto * IL2 + Pm_mean;
@@ -1237,43 +1243,49 @@ public class Species
             //N concentration effects
             NcFactor = PmxNeffect();
 
-            //Temperature effects
+            //Temperature effects at dawn/dusk
             double glfTmean = GFTemperature(0.5 * (MetFile.MinT + MetFile.MaxT));
+
+            //Temperature growth factor (for reporting purposes only)
+            TempFactor = MathUtility.Divide((0.25 * glfTmean) + (0.75 * glfTemp), GFTemperature(growthTopt), 1.0);
 
             //Potential photosynthetic rate at dawn/dusk (first and last quarter of the day)
             double Pm1 = Pm * glfTmean * CO2Factor * NcFactor;
 
-            //Potential photosynthetic rate at brigth light (half of sunligth length, middle of day)
+            //Potential photosynthetic rate at bright light (half of sunlight length, middle of day)
             double Pm2 = Pm * glfTemp * CO2Factor * NcFactor;
 
             //Sunlight length, converted to seconds
             double tau = 3600 * MetFile.day_length;
 
-            //Photosynthetic active radiation - include dusk/dawn effect
-            double interceptedPAR = interceptedRadn * fractionPAR * (4.0 / 3.0);
-            interceptedPAR *= 1000000 / tau;          // converted from MJ/m2.day to J/m2.s
+            //Photosynthetic active irradiance - converted from MJ/m2.day to J/m2.s
+            double interceptedPAR = MetFile.Radn * fractionPAR * 1000000 / tau;
 
-            //Intercepted irradiance (J/m2 leaf/s)
-            IL = lightExtCoeff * interceptedPAR;
+            //Irradiance at top of canopy in the middle of the day (J/m2 leaf/s)
+            IrradianceCanopy = lightExtCoeff * interceptedPAR * (4.0 / 3.0);
 
             //Photosynthesis per leaf area under full irradiance at the top of the canopy
-            double Pl1 = SingleLeafPhotosynthesis(0.5 * interceptedPAR, Pm1);   // early and late parts of the day
-            double Pl2 = SingleLeafPhotosynthesis(interceptedPAR, Pm2);         // main part of the day
+            double Pl1 = SingleLeafPhotosynthesis(0.5 * IrradianceCanopy, Pm1);   // early and late parts of the day
+            double Pl2 = SingleLeafPhotosynthesis(IrradianceCanopy, Pm2);         // main part of the day
 
             // Radiation effects (for reporting purposes only)
-            RadnFactor = ((0.25 * Pl1) + (0.75 * Pl2)) / ((0.25 * Pm1) + (0.75 * Pm2));
+            RadnFactor = MathUtility.Divide((0.25 * Pl1) + (0.75 * Pl2), (0.25 * Pm1) + (0.75 * Pm2), 1.0);
+
+            // Fraction of total radiation available to this plant
+            double radnFrac = intRadnFrac * MathUtility.Divide(interceptedRadn, MetFile.Radn, 1.0);
 
             //Canopy photosynthesis - Upscaling from 'per LAI' to 'per ground area'
             double carbon_m2 = 0.5 * (Pl1 + Pl2);     // mgCO2/m2 leaf/s
-            carbon_m2 *= coverGreen / lightExtCoeff;  // mgCO2/m2.s - land area
+            carbon_m2 *= coverGreen * radnFrac;       // mgCO2/m2 leaf/s - canopy
+            carbon_m2 /= lightExtCoeff;               // mgCO2/m2.s - land area
             carbon_m2 *= 0.000001;                    // kgCO2/m2.s
             carbon_m2 *= tau;                         // kgCO2/m2.day
             carbon_m2 *= 12.0 / 44.0;                 // kgC/m2.day
             PotPhoto = 10000 * carbon_m2;             // kgC/ha.day
 
             //Add extreme temperature effects;
-            double TempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
-            Pgross = PotPhoto * TempStress;
+            ExtremeTempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
+            Pgross = PotPhoto * ExtremeTempStress;
 
             // Consider a generic growth limiting factor
             Pgross *= GLFGeneric;
@@ -1312,17 +1324,15 @@ public class Species
             if (Tmean > growthTmin)
             {
                 if (Tmean < growthTopt)
-                {
+                { // Using growthTopt as reference
                     Teffect = GFTemperature(Tmean);
-                    //Teffect = Math.Pow(Teffect, 1.5);
                 }
                 else
-                {
-                    //Teffect = 1;
-                    Teffect = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
+                { // Using growthTopt as reference, and set a maximum rise to 1.25
+                    Teffect = Tmean / growthTopt;
                     if (Teffect > 1.25) Teffect = 1.25;
                     Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
-                }   //The extreme high temperature (heat) effect is added separately
+                }   //The extreme high temperature (heat) effect is added separately (TODO?)
             }
         }
 
@@ -1331,6 +1341,8 @@ public class Species
 
         // growth respiration
         Resp_g = Pgross * (1 - growthEfficiency);
+
+        ///TODO: add respiration costs for N fixation
     }
 
     /// <summary>
@@ -2054,17 +2066,19 @@ public class Species
     /// Cost of N fixation (not implemented)
     /// </summary>
     /// <returns>Cost</returns>
-    private double NFixCost()
+    private double NFixationCost()
     {
-        double costF = 1.0;    //  reduction of net production as cost of N-fixing
-        if (!isLegume || NFixed == 0 || NdemandLux == 0)      //  happens when plant has no growth
-        { return costF; }
+        //  reduction of net production as cost of N-fixing
+        double costFactor = 1.0;
+        if (NdemandLux > 0)
+        {
+            double actFix = NFixed / NdemandLux;
+            costFactor = 1 - 0.24 * (actFix - MinFix) / (MaxFix - MinFix);
+            if (costFactor < 0.76)
+                costFactor = 0.76;
+        }
 
-        double actFix = NFixed / NdemandLux;
-        costF = 1 - 0.24 * (actFix - MinFix) / (MaxFix - MinFix);
-        if (costF < 0.76)
-            costF = 0.76;
-        return costF;
+        return costFactor;
     }
 
     /// <summary>

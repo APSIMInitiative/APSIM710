@@ -18,12 +18,12 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component   "Regular harvest or grazing" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component            "SoilLismore Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component         "SoilLismore Nitrogen" = %apsim%\Model\SoilN.dll
    Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component "Grazing at regular intervals" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -55,6 +55,9 @@ Paddock:
         HarvestWt
         SpeciesStandingLiveWt
         LAI_total
+        LAI_green
+        LAI_dead
+        SpeciesHarvestPct(2) as CloverContent
         surfaceom_wt
 
      Output file = agpasturePaddock pad.out
@@ -74,43 +77,6 @@ Paddock:
            depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
-
-------- pad.Regular harvest or grazing Initialisation -------------------------
-     Manager rules:
-     
-     SECTION:- init
-     account = 21 - 1
-     
-     SECTION:- start_of_day
-     account = account + 1
-     returned_dm = 0
-     removed_dm = 0
-     returned_n =0
-     removed_n =0
-     n_som = 0
-     n_urine = 0
-     if ((today >= date('01/07/1900') and (today <= date('31/12/2100')) then
-        if (account = 21) then
-           account = 0
-           'agpasture' graze type = 'setresidueamount', amount = 1000 (kg/ha)
-           removed_dm = agpasture.harvestwt * agpasture.defoliateddigestibility
-           returned_dm = agpasture.harvestwt * (1.0 - agpasture.defoliateddigestibility)
-           removed_n  = agpasture.harvestn *(1.0 - 0.85)
-           returned_n = agpasture.harvestn * 0.85
-           n_som      = returned_n * (1.0 - 0.6)
-           n_urine    = returned_n *  0.6
-           n_urine1 = 0.7 * n_urine
-           n_urine2 = 0.3 * n_urine
-           'surfaceorganicmatter' add_surfaceom name = 'agpasture', type = ruminantdung_pasturefed, mass = returned_dm (kg/ha), n = n_som (kg/ha)
-           depthurine = 0.5 * dlayer(1)
-           'fertiliser' apply amount =  n_urine1  (kg/ha), depth = depthurine (mm), type = urea_n ()
-           depthurine = dlayer(1) + 0.5 * dlayer(2)
-           'fertiliser' apply amount =  n_urine2  (kg/ha), depth = depthurine (mm), type = urea_n ()
-        endif
-     endif
-     END of rules
-     
-     Manager creating a new local real variable : account = 20.00000
 
 ------- pad.Micromet Initialisation -------------------------------------------
      Initialising
@@ -312,250 +278,145 @@ Paddock:
             5   1200-1500      0.000
             6   1500-1800      0.000
          -----------------------------
+
+------- Grazing at regular intervals Initialisation ---------------------------
+
+   Harvest rotation for AgPasture initialised
+     rotation rule valid between 01/01/1900 and 31/12/2100
+     rotation type: harvest at regular intervals, every 21 days
+     remove all biomass down to residual DM (1000 kgDM/ha)
+     fraction of harvested DM to return as dung: based on herbage digestibility
+     fraction of harvested N to return as dung & urine: 85.0% (60.0% of it as urine)
+     proportion of urine N to be added in each layer:
+      0.556, 0.444, 0.000, 0.000, 0.000, 0.000, 0.000
+
 ------- Start of simulation  --------------------------------------------------
-1 July 1980(Day of year=183), pad.Regular harvest or grazing: 
-     Manager creating a new local real variable : returned_dm = 0.00000
-     Manager creating a new local real variable : removed_dm = 0.00000
-     Manager creating a new local real variable : returned_n = 0.00000
-     Manager creating a new local real variable : removed_n = 0.00000
-     Manager creating a new local real variable : n_som = 0.00000
-     Manager creating a new local real variable : n_urine = 0.00000
-     Manager creating a new local real variable : n_urine1 = 10.67534
-     Manager creating a new local real variable : n_urine2 = 4.57514
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 298.48318 (kg/ha), n = 10.16699 (kg/ha)
-     Manager creating a new local real variable : depthurine = 50.00000
-     Manager sending message :- fertiliser apply  amount = 10.67534 (kg/ha), depth = 50.00000 (mm), type = urea_n
+01 July 1980 (Day of year=183), Grazing at regular intervals:
+     Removing 900kg DM/ha, with 29.9kg N/ha
 1 July 1980(Day of year=183), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        10.68 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 4.57514 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         4.58 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-22 July 1980(Day of year=204), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 48.79736 (kg/ha), n = 1.93438 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 2.03109 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        15.25 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+22 July 1980 (Day of year=204), Grazing at regular intervals:
+     Removing 169kg DM/ha, with 6.1kg N/ha
 22 July 1980(Day of year=204), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.03 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 0.87047 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         0.87 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-12 August 1980(Day of year=225), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 129.07867 (kg/ha), n = 5.83362 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 6.12531 (kg/ha), depth = 50.00000 (mm), type = urea_n
+         3.09 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 August 1980 (Day of year=225), Grazing at regular intervals:
+     Removing 448kg DM/ha, with 17.2kg N/ha
 12 August 1980(Day of year=225), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         6.13 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 2.62513 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         2.63 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-2 September 1980(Day of year=246), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 173.27820 (kg/ha), n = 8.23174 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 8.64333 (kg/ha), depth = 50.00000 (mm), type = urea_n
+         8.78 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 September 1980 (Day of year=246), Grazing at regular intervals:
+     Removing 613kg DM/ha, with 24.5kg N/ha
 2 September 1980(Day of year=246), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.64 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 3.70428 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         3.70 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-23 September 1980(Day of year=267), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 265.57556 (kg/ha), n = 11.74788 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 12.33527 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        12.48 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 September 1980 (Day of year=267), Grazing at regular intervals:
+     Removing 922kg DM/ha, with 34.8kg N/ha
 23 September 1980(Day of year=267), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        12.34 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 5.28655 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         5.29 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-14 October 1980(Day of year=288), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 316.21365 (kg/ha), n = 12.26445 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 12.87768 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        17.74 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+14 October 1980 (Day of year=288), Grazing at regular intervals:
+     Removing 1048kg DM/ha, with 36.3kg N/ha
 14 October 1980(Day of year=288), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        12.88 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 5.51900 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         5.52 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-4 November 1980(Day of year=309), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 410.79767 (kg/ha), n = 13.65554 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 14.33832 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        18.53 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+04 November 1980 (Day of year=309), Grazing at regular intervals:
+     Removing 1294kg DM/ha, with 40.4kg N/ha
 4 November 1980(Day of year=309), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        14.34 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 6.14500 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         6.14 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-25 November 1980(Day of year=330), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 389.31976 (kg/ha), n = 12.62551 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 13.25679 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        20.61 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+25 November 1980 (Day of year=330), Grazing at regular intervals:
+     Removing 1217kg DM/ha, with 37.3kg N/ha
 25 November 1980(Day of year=330), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        13.26 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 5.68148 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         5.68 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-16 December 1980(Day of year=351), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 388.04562 (kg/ha), n = 11.89579 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 12.49058 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        19.05 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+16 December 1980 (Day of year=351), Grazing at regular intervals:
+     Removing 1173kg DM/ha, with 35.2kg N/ha
 16 December 1980(Day of year=351), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        12.49 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 5.35310 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         5.35 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-6 January 1981(Day of year=6), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 458.97141 (kg/ha), n = 13.92323 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 14.61939 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        17.94 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+06 January 1981 (Day of year=6), Grazing at regular intervals:
+     Removing 1383kg DM/ha, with 41.3kg N/ha
 6 January 1981(Day of year=6), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        14.62 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 6.26545 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         6.27 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-27 January 1981(Day of year=27), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 439.52356 (kg/ha), n = 13.93360 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 14.63029 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        21.07 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+27 January 1981 (Day of year=27), Grazing at regular intervals:
+     Removing 1369kg DM/ha, with 42.0kg N/ha
 27 January 1981(Day of year=27), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        14.63 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 6.27012 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         6.27 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-17 February 1981(Day of year=48), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 357.10043 (kg/ha), n = 12.40685 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 13.02720 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        21.41 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+17 February 1981 (Day of year=48), Grazing at regular intervals:
+     Removing 1093kg DM/ha, with 36.7kg N/ha
 17 February 1981(Day of year=48), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        13.03 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 5.58308 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         5.58 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-10 March 1981(Day of year=69), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 248.07375 (kg/ha), n = 9.49736 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 9.97223 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        18.73 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+10 March 1981 (Day of year=69), Grazing at regular intervals:
+     Removing 783kg DM/ha, with 28.4kg N/ha
 10 March 1981(Day of year=69), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.97 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 4.27382 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         4.27 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-31 March 1981(Day of year=90), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 246.08923 (kg/ha), n = 9.98084 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 10.47988 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        14.47 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+31 March 1981 (Day of year=90), Grazing at regular intervals:
+     Removing 784kg DM/ha, with 29.1kg N/ha
 31 March 1981(Day of year=90), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        10.48 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 4.49138 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         4.49 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-21 April 1981(Day of year=111), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 179.28230 (kg/ha), n = 7.51280 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 7.88845 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        14.83 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+21 April 1981 (Day of year=111), Grazing at regular intervals:
+     Removing 595kg DM/ha, with 22.8kg N/ha
 21 April 1981(Day of year=111), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         7.89 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 3.38076 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         3.38 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-12 May 1981(Day of year=132), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 102.45379 (kg/ha), n = 4.35833 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 4.57624 (kg/ha), depth = 50.00000 (mm), type = urea_n
+        11.61 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 May 1981 (Day of year=132), Grazing at regular intervals:
+     Removing 341kg DM/ha, with 13.2kg N/ha
 12 May 1981(Day of year=132), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.58 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 1.96125 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         1.96 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-2 June 1981(Day of year=153), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 58.65058 (kg/ha), n = 2.76371 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 2.90190 (kg/ha), depth = 50.00000 (mm), type = urea_n
+         6.74 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+02 June 1981 (Day of year=153), Grazing at regular intervals:
+     Removing 204kg DM/ha, with 8.2kg N/ha
 2 June 1981(Day of year=153), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.90 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 1.24367 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         1.24 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
-23 June 1981(Day of year=174), pad.Regular harvest or grazing: 
-     Manager sending message :- surfaceorganicmatter add_surfaceom  name = 'agpasture', type = ruminantdung_pasturefed, mass = 14.38279 (kg/ha), n = 0.66228 (kg/ha)
-     Manager sending message :- fertiliser apply  amount = 0.69540 (kg/ha), depth = 50.00000 (mm), type = urea_n
+         4.19 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 June 1981 (Day of year=174), Grazing at regular intervals:
+     Removing 49kg DM/ha, with 2.0kg N/ha
 23 June 1981(Day of year=174), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         0.70 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   1)
-     Manager sending message :- fertiliser apply  amount = 0.29803 (kg/ha), depth = 200.00000 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         0.30 of N as urea (urea_n)
-                                         added at depth  200.00 (layer   2)
+         1.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
 30 June 1981(Day of year=181), clock: 
      Simulation is terminating due to end criteria being met.
 
