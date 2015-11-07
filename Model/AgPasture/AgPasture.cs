@@ -714,13 +714,43 @@ public class AgPasture
     ////  >> N fixation (for legumes) >>>
     [Param]
     [Description("Minimum fraction of N demand fixed by legumes")]
-    [Units("")]
+    [Units("0-1")]
     private double[] NMinFix;
     [Param]
     [Description("Maximum fraction of N demand fixed by legumes")]
-    [Units("")]
+    [Units("0-1")]
     private double[] NMaxFix;
 
+    [Param]
+    [Description("Maximum reduction in growth as cost for N fixation")]
+    [Units("0-1")]
+    private double[] NFixCostMax;
+
+    [Param]
+    [Description("Respiration cost due to the presence of symbiont bacteria")]
+    [Units("gC/gCroots")]
+    private double[] symbiontCostFactor;
+    [Param]
+    [Description("Activity cost of N fixation")]
+    [Units("gC/gNfixed")]
+    private double[] NFixingCostFactor;
+    
+    private int NFixationCostMethod = 0;
+    [Param]
+    [Description("Which method is used for determining the costs of N fixation")]
+    [Units("0-2")]
+    private double NFixCostMethod
+    {
+        get
+        {
+            return NFixationCostMethod;
+        }
+        set
+        {
+            NFixationCostMethod = (int)value;
+        }
+    }
+    
     ////  >> modifiers for growth limiting factors >>>
     [Param]
     [Description("Coefficient for modifying the effect of N stress on plant growth")]
@@ -1800,6 +1830,10 @@ public class AgPasture
         ////  >> N fixation  >>>
         mySpecies[s1].MaxFix = NMaxFix[s2];   //N-fix fraction when no soil N available, read in later
         mySpecies[s1].MinFix = NMinFix[s2];   //N-fix fraction when soil N sufficient
+
+        mySpecies[s1].NFixCostMax = NFixCostMax[s2];
+        mySpecies[s1].symbiontCostFactor = symbiontCostFactor[s2];
+        mySpecies[s1].NFixingCostFactor = NFixingCostFactor[s2];
 
         ////  >> Growth limiting factor  >>>
         mySpecies[s1].NdilutCoeff = NdilutCoeff[s2];
@@ -5573,6 +5607,21 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
+    [Description("Plant carbon spent due to N fixation")]
+    [Units("kgC/ha")]
+    public double PlantNFixationCosts
+    {
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                result += mySpecies[s].costNFixation;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
     [Description("Plant gross potential growth")]
     [Units("kgDM/ha")]
     public double PlantPotentialGrossGrowth
@@ -7826,6 +7875,21 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].Resp_m + mySpecies[s].Resp_g;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Carbon spent due to N fixation for each species")]
+    [Units("kgC/ha")]
+    public double[] SpeciesNfixationCosts
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].costNFixation;
             return result;
         }
     }

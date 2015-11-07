@@ -345,11 +345,23 @@ public class Species
 
     //// > N fixation  >>>
 
-    /// <summary>Some Description</summary>
-    internal double MaxFix;   //N-fix fraction when no soil N available, read in later
+    /// <summary>N fixation fraction when no soil N available</summary>
+    internal double MaxFix;
+
+    /// <summary>N fixation fraction when soil N sufficient</summary>
+    internal double MinFix;
+
+    /// <summary>Maximum reduction in growth as cost for N fixation</summary>
+    internal double NFixCostMax;
+
+    /// <summary>Respiration cost due to the presence of symbiont bacteria (gC/gC roots)</summary>
+    internal double symbiontCostFactor;
+
+    /// <summary>Activity cost of N fixation (gC/gN fixed)</summary>
+    internal double NFixingCostFactor;
 
     /// <summary>Some Description</summary>
-    internal double MinFix;   //N-fix fraction when soil N sufficient
+    internal int NFixationCostMethod;
 
     //// > DM amounts, for each tissue and pool
 
@@ -823,6 +835,9 @@ public class Species
     /// <summary>Some Description</summary>
     internal double Resp_g;
 
+    /// <summary>Some Description</summary>
+    internal double costNFixation;
+
     //// > Partitioning and turnover rates  >>>
 
     /// <summary>actual fraction of new growth added to shoot</summary>
@@ -1196,13 +1211,20 @@ public class Species
         Resp_m = maintRespiration * Teffect * NcFactor * LiveDM;
         Resp_g = Pgross * (1 - growthEfficiency);
 
+        // N fixation costs
+        costNFixation = 0.0;
+        if (NFixationCostMethod == 1)
+            costNFixation = NFixationCost_M1(Pgross);
+        else if (NFixationCostMethod == 2)
+            costNFixation = NFixationCost_M2();
+
         // ** C budget is not explicitly done here as in EM
         Cremob = 0.0;                     // Nremob* C2N_protein;    // No carbon budget here
         // Nu_remob[elC] := C2N_protein * Nu_remob[elN];
         // need to substract CRemob from dm turnover?
 
         // Net potential growth (C) of the day (excluding growth respiration)
-        dGrowthPot = Pgross + Cremob - Resp_g - Resp_m;
+        dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
         dGrowthPot = Math.Max(0.0, dGrowthPot);
 
         //convert C to DM
@@ -1356,8 +1378,15 @@ public class Species
         // Nu_remob[elC] := C2N_protein * Nu_remob[elN];
         // need to substract CRemob from dm rutnover?
 
+        // N fixation costs
+        costNFixation = 0.0;
+        if (NFixationCostMethod == 1)
+            costNFixation = NFixationCost_M1(Pgross);
+        else if (NFixationCostMethod == 2)
+            costNFixation = NFixationCost_M2();
+
         // Net potential growth (C) of the day (excluding growth respiration)
-        dGrowthPot = Pgross + Cremob - Resp_g - Resp_m;
+        dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
         dGrowthPot = Math.Max(0.0, dGrowthPot);
 
         if (dGrowthPot > 0.0)
@@ -2063,22 +2092,47 @@ public class Species
     }
 
     /// <summary>
-    /// Cost of N fixation (not implemented)
+    /// Cost of N fixation
     /// </summary>
-    /// <returns>Cost</returns>
-    private double NFixationCost()
+    /// <remarks>
+    /// Original method (F. Li)
+    /// </remarks>
+    /// <returns>Carbon spent on N fixation</returns>
+    private double NFixationCost_M1(double GrowthC)
     {
         //  reduction of net production as cost of N-fixing
         double costFactor = 1.0;
-        if (NdemandLux > 0)
+        if (NdemandOpt > 0.0)
         {
-            double actFix = NFixed / NdemandLux;
-            costFactor = 1 - 0.24 * (actFix - MinFix) / (MaxFix - MinFix);
-            if (costFactor < 0.76)
-                costFactor = 0.76;
+            double actFix = NFixed / NdemandOpt;
+            costFactor = 1.0 - NFixCostMax * (actFix - MinFix) / (MaxFix - MinFix);
         }
 
-        return costFactor;
+        return costFactor * GrowthC;
+    }
+
+    /// <summary>
+    /// Calculates the costs of N fixation
+    /// </summary>
+    /// <remarks>
+    /// Approach separates maintenance and activity costs, based roughly on results from:
+    /// Rainbird RM, Hitz WD, Hardy RWF 1984. Experimental determination of the respiration associated with soybean/rhizobium nitrogenase 
+    ///    function, nodule maintenance, and total nodule nitrogen fixation. Plant Physiology 75(1): 49-53.
+    /// Voisin AS, Salon C, Jeudy C, Warembourg FR 2003. Symbiotic N2 fixation activity in relation to C economy of Pisum sativum L. as a
+    ///    function of plant phenology. Journal of Experimental Botany 54(393): 2733-2744.
+    /// Minchin FR, Witty JF 2005. Respiratory/carbon costs of symbiotic nitrogen fixation in legumes. In: Lambers H, Ribas-Carbo M eds. 
+    ///    Plant Respiration. Advances in Photosynthesis and Respiration, Springer Netherlands. Pp. 195-205.
+    /// </remarks>
+    /// <returns>Carbon spent on N fixation</returns>
+    private double NFixationCost_M2()
+    {
+        //  respiration cost of symbiont (presence of rhizobia is assumed to be proportional to root mass)
+        double maintenanceCost = dmroot * CarbonFractionDM * symbiontCostFactor;
+
+        //  respiration cost of N fixation (assumed as a simple function of N fixed)
+        double activityCost = NFixed * NFixingCostFactor;
+
+        return maintenanceCost + activityCost;
     }
 
     /// <summary>
