@@ -1030,7 +1030,7 @@ namespace CMPServices
                         resetDict.Add(dictKey, resetValue);
                     }
 
-                    if (!resetValue.setData(valPtr, (int)valSize, 0))       //now atempt the reset
+                    if (resetValue.setData(valPtr, (int)valSize, 0) == 0)   //now atempt the reset
                     {
                         TDDMLValue tmpReset = new TDDMLValue(sDDML, "");    //setData failed so create a new var of the correct type
                         tmpReset.setData(valPtr, (int)valSize, 0);

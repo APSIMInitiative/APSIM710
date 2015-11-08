@@ -35,6 +35,10 @@ namespace CMPServices
         /// Used when the connection matches the rule (e.g. nearest)
         /// </summary>
         public bool matchesRule;
+        /// <summary>
+        /// Holds the onnection name iff a connection is specfied with a fully qualified name
+        /// </summary>
+        public String connectFQN;
     }
     //==============================================================================
     /// <summary>

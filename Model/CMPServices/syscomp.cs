@@ -1226,7 +1226,14 @@ namespace CMPServices
                 for (int i = 1; i <= infoList.count(); i++)
                 {  //1-x indexed
                     entity = infoList.getEntity(i);
-                    TMsgHeader newMsg = buildReturnInfo(queryMsgID, entity.compID, entity.itemID, entity.name, entity.sType, entity.kind, srcCompID);
+                    // If an subscribed event was registered with a fully-qualified name,
+                    // we don't want to be able to connect to it generically. See bug 2163.
+                    // To assist with this, we include the fully-qualified name as an 
+                    // attribute in the type DDML.
+                    string sDDML = entity.sType;
+                    if (!string.IsNullOrEmpty(entity.connectFQN) && sDDML.Substring(0, 5).Equals("<type"))
+                        sDDML = sDDML.Insert(5, " connectFQN=\"" + entity.connectFQN + "\" ");
+                    TMsgHeader newMsg = buildReturnInfo(queryMsgID, entity.compID, entity.itemID, entity.name, sDDML, entity.kind, srcCompID);
                     sendMessage(newMsg);
                     replied = true;
                 }
@@ -2059,7 +2066,9 @@ namespace CMPServices
                 registrar.deregistration(kind, ownerID, regID);      //give it to the registrar
             }
             //send the notifyRegistrationChange to all the assoc systems
-            broadcastRegoChange(registered, kind, ownerID, (int)regID, sName, sType, msgFrom);
+            //drivers have been registered and all connections made so nothing is gained by broadcasting their registration.
+            if (kind != TypeSpec.KIND_DRIVER)
+                broadcastRegoChange(registered, kind, ownerID, (int)regID, sName, sType, msgFrom);
         }
         //============================================================================
         /// <summary>

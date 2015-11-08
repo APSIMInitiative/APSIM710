@@ -2290,9 +2290,9 @@ namespace CMPServices
         /// <param name="newData">The new data to copy into this typed value.</param>
         /// <param name="iNewSize">The size of the source typed value.</param>
         //============================================================================
-        public void setData(Byte[] newData, int iNewSize)
+        public int setData(Byte[] newData, int iNewSize)
         {
-            setData(newData, iNewSize, 0);
+            return setData(newData, iNewSize, 0);
         }
         //============================================================================
         /// <summary>
@@ -2303,21 +2303,22 @@ namespace CMPServices
         /// <param name="startIndex">Start at this index in the byte array.</param>
         // N.Herrmann Apr 2002
         //============================================================================
-        public Boolean setData(Byte[] newData, int iNewSize, uint startIndex)
+        public int setData(Byte[] newData, int iNewSize, uint startIndex)
         {
             uint dim;
             int i;
             int bytesRemain;
             TTypedValue value;
-            uint childSize;
-            Boolean success = true;
+            int childSize;
+            int itemSize = 0;
 
             bytesRemain = 0;
             if ((iNewSize > 0) && (newData != null))
             {         //if the incoming block has data
                 if (FIsScalar)
                 {
-                    success = copyDataBlock(newData, startIndex); //copies scalars (including strings)
+                    copyDataBlock(newData, startIndex); //copies scalars (including strings)
+                    itemSize = (int)FDataSize;
                 }
                 else
                 {
@@ -2330,20 +2331,18 @@ namespace CMPServices
                             setElementCount(dim);   //create or delete child elements
                         bytesRemain = iNewSize - (int)INTSIZE;
                         startIndex += INTSIZE;
+                        itemSize = (int)INTSIZE;
                     }
                     //now copy the children. All children exist now
                     //go through each child and set the data block
                     i = 0;
-                    while (success && (i < FMembers.Count))
+                    while (i < FMembers.Count)
                     {             //for each field
                         value = FMembers[i];
-                        success = value.setData(newData, bytesRemain, startIndex);             //store the datablock
-                        if (success)
-                        {
-                            childSize = value.sizeBytes();
-                            bytesRemain = bytesRemain - (int)childSize;
-                            startIndex += childSize;                      //inc ptr along this dataBlock
-                        }
+                        childSize = value.setData(newData, bytesRemain, startIndex);             //store the datablock
+                        itemSize += childSize;
+                        bytesRemain = bytesRemain - (int)childSize;
+                        startIndex += (uint)childSize;                      //inc ptr along this dataBlock
                         i++;
                     }
                     //store the size in bytes for this type
@@ -2357,7 +2356,7 @@ namespace CMPServices
             //   if bytesRemain <> 0 then
             //      raise Exception.Create( 'Input data inconsistent with type of value in setData()' + Name );
 
-            return success;
+            return itemSize;
         }
 
 
@@ -2460,16 +2459,18 @@ namespace CMPServices
         /// <param name="startIndex">Start at this index in the byte array.</param>
         // N.Herrmann Apr 2002
         //============================================================================
-        public void setData(IntPtr newData, uint startIndex)
+        public int setData(IntPtr newData, uint startIndex)
         {
             uint dim;
             int i;
             TTypedValue value;
-            uint childSize;
+            int childSize;
+            int itemSize = 0;
 
             if (!newData.Equals(IntPtr.Zero)) {                   //if the incoming block has data
                 if (FIsScalar) {
                     copyDataBlock(newData, startIndex);    //copies scalars (including strings)
+                    itemSize = (int)FDataSize;
                 }
                 else {
                     if (FIsArray) {
@@ -2477,22 +2478,23 @@ namespace CMPServices
                         if (dim != count())
                             setElementCount(dim);   //create or delete child elements
                         startIndex += INTSIZE;
+                        itemSize = (int)INTSIZE;
                     }
                     //now copy the children. All children exist now
                     //go through each child and set the data block
                     for (i = 0; i < FMembers.Count; i++) {      //for each field
                         value = FMembers[i];
-                        value.setData(newData, startIndex);                      //store the datablock
-                        childSize = value.sizeBytes();
-                        startIndex += childSize;                    //inc ptr along this dataBlock
+                        childSize = value.setData(newData, startIndex);                      //store the datablock
+                        itemSize+= childSize;
+                        startIndex += (uint)childSize;                    //inc ptr along this dataBlock
                     }
                 }
             }
             else if (FIsArray) {
                 setElementCount(0);
             }
+            return itemSize;
         }
-
     }
 
     //============================================================================

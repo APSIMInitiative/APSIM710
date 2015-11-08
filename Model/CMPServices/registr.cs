@@ -1079,6 +1079,18 @@ namespace CMPServices
                 ((pubEvent.destID == 0) || (pubEvent.destID == destCompID)) &&
                 getCompatibleType(sDDML, pubEvent.sType) == 3)
             {
+                // Do a last-minute check to see whether the potential receiver of the event
+                // was registered with a fully-qualifed publisher. Avoid making "generic"
+                // connections if that was the case, and connect only if we can match
+                // the receiver's fully qualified request. See bug 2163.
+                if (sDDML.Contains("connectFQN"))
+                {
+                    TXMLParser parser = new TXMLParser(sDDML);
+                    String connect = parser.getAttrValue(parser.rootNode(), "connectFQN");
+                    connect = TBaseComp.qualifiedOwnerName(connect);
+                    if (!connect.Equals(pubEvent.ownerFQN, StringComparison.OrdinalIgnoreCase))
+                        return;
+                }
                 pubEvent.connects.add(destCompID, destEventID, destCompFQN, TypeSpec.KIND_SUBSCRIBEDEVENT, sDDML, true);
                 pubEventList[foundAt] = pubEvent;
             }
@@ -1335,7 +1347,9 @@ namespace CMPServices
                             }
                             if (OKtoAdd)
                             {
-                                infoList.add(entity.compID, entity.regID, sFQN, propKind, entity.sType, true);
+                                TIDSpec entry = infoList.add(entity.compID, entity.regID, sFQN, propKind, entity.sType, true);
+                                if (entity.name.Contains("."))
+                                    entry.connectFQN = entity.name;
                             }
                         }//endif
                     }//endif
