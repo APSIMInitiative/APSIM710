@@ -482,7 +482,7 @@ namespace UIBits
         {
             try
             {
-                List<string> ColumnsChanged = Paste(Clipboard.GetText(), CurrentCell);
+                List<string> ColumnsChanged = Paste(Clipboard.GetText(), CurrentCell, true);
                 if (ColumnsChanged.Count > 0 && TableColumnChangedEvent != null)
                     TableColumnChangedEvent.Invoke(ColumnsChanged);
             }
@@ -496,7 +496,7 @@ namespace UIBits
         /// Internal method to paste the specified contents into the specified cell of the grid. 
         /// DataTable event is not invoked.
         /// </summary>
-        private List<string> Paste(string Contents, DataGridViewCell CellToPasteInto)
+        private List<string> Paste(string Contents, DataGridViewCell CellToPasteInto, bool stripTrailer)
         {
             InRefresh = true;
             List<string> ColumnsChanged = new List<string>();
@@ -513,7 +513,7 @@ namespace UIBits
                     for (int iLine = 0; iLine < Lines.Length; iLine++)
                     {
                         string Line = Lines[iLine];
-                        if (Line.Length == 0 && iLine == Lines.Length - 1) // If we have an empty string at the end (thank you, Excel), ignore it.
+                        if (stripTrailer && Line.Length == 0 && iLine == Lines.Length - 1) // If we have an empty string at the end (thank you, Excel), ignore it.
                             break;
                         string[] LineBits = Line.Split('\t');
                         for (int i = 0; i < LineBits.GetLength(0); ++i)
@@ -596,10 +596,10 @@ namespace UIBits
                     string ContentsToPutInStartRow = GetClipboardContent().GetText();
 
                     // Paste the contents into the row below.
-                    List<string> ColumnsChanged = Paste(ContentsToMoveDown, this.Rows[StartRow + 1].Cells[StartCol]);
+                    List<string> ColumnsChanged = Paste(ContentsToMoveDown, this.Rows[StartRow + 1].Cells[StartCol], false);
 
                     // Paste the bit we replaced into the start row.
-                    Paste(ContentsToPutInStartRow, this.Rows[StartRow].Cells[StartCol]);
+                    Paste(ContentsToPutInStartRow, this.Rows[StartRow].Cells[StartCol], false);
 
                     // Now invoke the table column changed event.
                     if (TableColumnChangedEvent != null)
@@ -641,10 +641,10 @@ namespace UIBits
                     string ContentsToPutInEndRow = GetClipboardContent().GetText();
 
                     // Paste the contents into the row below.
-                    List<string> ColumnsChanged = Paste(ContentsToMoveUp, this.Rows[StartRow - 1].Cells[StartCol]);
+                    List<string> ColumnsChanged = Paste(ContentsToMoveUp, this.Rows[StartRow - 1].Cells[StartCol], false);
 
                     // Paste the bit we replaced into the end row.
-                    Paste(ContentsToPutInEndRow, this.Rows[EndRow].Cells[StartCol]);
+                    Paste(ContentsToPutInEndRow, this.Rows[EndRow].Cells[StartCol], false);
 
                     // Now invoke the table column changed event.
                     if (TableColumnChangedEvent != null)
