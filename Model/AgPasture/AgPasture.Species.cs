@@ -774,6 +774,9 @@ public class Species
     internal double RadnFactor;
 
     /// <summary>Some Description</summary>
+    internal double canopyCompetitionFactor;
+
+    /// <summary>Some Description</summary>
     internal double TempFactor;
 
     /// <summary>Some Description</summary>
@@ -821,7 +824,7 @@ public class Species
     internal double dNrootSen = 0.0;     //N in dRootSen
 
     /// <summary>Some Description</summary>
-    internal double IrradianceCanopy;
+    internal double IrradianceTopOfCanopy;
 
     /// <summary>Some Description</summary>
     internal double PotPhoto;
@@ -1158,12 +1161,13 @@ public class Species
         double Pm_day = Pm * glfT * CO2Factor * NcFactor;
 
         double tau = 3600 * MetFile.day_length;                //conversion of hour to seconds
-        IrradianceCanopy = swardLightExtCoeff * 1.33333 * 0.5 * swardInterceptedRadn * 1000000 / tau;
-        double IL2 = IrradianceCanopy / 2;                      //IL for early & late period of a day
+        double IL = swardLightExtCoeff * 1.33333 * 0.5 * swardInterceptedRadn * 1000000 / tau;
+        double IL2 = IL / 2;                      //IL for early & late period of a day
+        IrradianceTopOfCanopy = IL;
 
         // Photosynthesis per LAI under full irradiance at the top of the canopy
-        double photoAux1 = alphaPhoto * IrradianceCanopy + Pm_day;
-        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IrradianceCanopy * Pm_day;
+        double photoAux1 = alphaPhoto * IL + Pm_day;
+        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pm_day;
         double Pl1 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
 
         photoAux1 = alphaPhoto * IL2 + Pm_mean;
@@ -1281,29 +1285,29 @@ public class Species
             double tau = 3600 * MetFile.day_length;
 
             //Photosynthetic active irradiance - converted from MJ/m2.day to J/m2.s
-            double interceptedPAR = MetFile.Radn * fractionPAR * 1000000 / tau;
+            double incidentPAR = MetFile.Radn * fractionPAR * 1000000 / tau;
 
             //Irradiance at top of canopy in the middle of the day (J/m2 leaf/s)
-            IrradianceCanopy = lightExtCoeff * interceptedPAR * (4.0 / 3.0);
+            IrradianceTopOfCanopy = lightExtCoeff * incidentPAR * (4.0 / 3.0);
 
             //Photosynthesis per leaf area under full irradiance at the top of the canopy
-            double Pl1 = SingleLeafPhotosynthesis(0.5 * IrradianceCanopy, Pm1);   // early and late parts of the day
-            double Pl2 = SingleLeafPhotosynthesis(IrradianceCanopy, Pm2);         // main part of the day
+            double Pl1 = SingleLeafPhotosynthesis(0.5 * IrradianceTopOfCanopy, Pm1);   // early and late parts of the day
+            double Pl2 = SingleLeafPhotosynthesis(IrradianceTopOfCanopy, Pm2);         // main part of the day
 
             // Radiation effects (for reporting purposes only)
             RadnFactor = MathUtility.Divide((0.25 * Pl1) + (0.75 * Pl2), (0.25 * Pm1) + (0.75 * Pm2), 1.0);
 
             // Fraction of total radiation available to this plant
-            double radnFrac = intRadnFrac * MathUtility.Divide(interceptedRadn, MetFile.Radn, 1.0);
+            canopyCompetitionFactor = MathUtility.Divide(interceptedRadn, MetFile.Radn * coverGreen, 1.0);
 
-            //Canopy photosynthesis - Upscaling from 'per LAI' to 'per ground area'
-            double carbon_m2 = 0.5 * (Pl1 + Pl2);     // mgCO2/m2 leaf/s
-            carbon_m2 *= coverGreen * radnFrac;       // mgCO2/m2 leaf/s - canopy
-            carbon_m2 /= lightExtCoeff;               // mgCO2/m2.s - land area
-            carbon_m2 *= 0.000001;                    // kgCO2/m2.s
-            carbon_m2 *= tau;                         // kgCO2/m2.day
-            carbon_m2 *= 12.0 / 44.0;                 // kgC/m2.day
-            PotPhoto = 10000 * carbon_m2;             // kgC/ha.day
+            //Canopy photosynthesis - Upscaling from 'per leaf' to 'per ground' area
+            double carbon_m2 = 0.5 * (Pl1 + Pl2);               // mgCO2/m2 leaf/s
+            carbon_m2 *= coverGreen * canopyCompetitionFactor;  // mgCO2/m2 leaf/s - canopy
+            carbon_m2 /= lightExtCoeff;                         // mgCO2/m2.s - ground area
+            carbon_m2 *= 0.000001;                              // kgCO2/m2.s
+            carbon_m2 *= tau;                                   // kgCO2/m2.day
+            carbon_m2 *= 12.0 / 44.0;                           // kgC/m2.day
+            PotPhoto = 10000 * carbon_m2;                       // kgC/ha.day
 
             //Add extreme temperature effects;
             ExtremeTempStress = HeatEffect() * ColdEffect();      // in practice only one temp stress factor is < 1
@@ -2127,7 +2131,8 @@ public class Species
     private double NFixationCost_M2()
     {
         //  respiration cost of symbiont (presence of rhizobia is assumed to be proportional to root mass)
-        double maintenanceCost = dmroot * CarbonFractionDM * symbiontCostFactor;
+        double Tfactor = GFTemperature(0.5 * (MetFile.MaxT + MetFile.MinT));
+        double maintenanceCost = dmroot * CarbonFractionDM * symbiontCostFactor * Tfactor;
 
         //  respiration cost of N fixation (assumed as a simple function of N fixed)
         double activityCost = NFixed * NFixingCostFactor;

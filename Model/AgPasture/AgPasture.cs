@@ -2183,8 +2183,9 @@ public class AgPasture
         Array.Clear(FractionToHarvest, 0, FractionToHarvest.Length);
 
         // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
-        DoNewCanopyEvent();
-        DoNewPotentialGrowthEvent();
+        //DoNewCanopyEvent();
+        //DoNewPotentialGrowthEvent();
+        // RCichota Nov2015, moved these to the beginning of OnProcess (avoids conflict with grazing at start of day)
     }
 
     /// <summary>
@@ -2208,6 +2209,10 @@ public class AgPasture
                 swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
             }
         }
+
+        // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
+        DoNewCanopyEvent();
+        DoNewPotentialGrowthEvent();
 
         // Pass on some parameters to different species
         SetSpeciesWithSwardData();
@@ -6617,6 +6622,29 @@ public class AgPasture
             return result;
         }
     }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Radiation interception factor due to canopy competition")]
+    [Units("0-1")]
+    public double CanopyFactor
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].canopyCompetitionFactor * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
     
     /// <summary>An output</summary>
     [Output]
@@ -8460,6 +8488,21 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
+    [Description("Radiation interception factor due to canopy competition, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesCanopyFactor
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].canopyCompetitionFactor;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
     [Description("Temperature factor for photosynthesis, for each species")]
     [Units("0-1")]
     public double[] SpeciesTempFactor
@@ -8602,7 +8645,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].IrradianceCanopy;
+                result[s] = mySpecies[s].IrradianceTopOfCanopy;
             return result;
         }
     }
