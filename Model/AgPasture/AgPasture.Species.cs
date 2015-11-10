@@ -164,9 +164,6 @@ public class Species
     private double accumTHeat = 0.0;          //accumulated temperature from previous heat strike = sum of '25-MeanT'(>0)
 
     /// <summary>Some Description</summary>
-    private double heatFactor = 1.0;
-
-    /// <summary>Some Description</summary>
     internal bool usingColdStress = false;
 
     /// <summary>Some Description</summary>
@@ -191,7 +188,7 @@ public class Species
     private double accumTCold = 0.0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
 
     /// <summary>Some Description</summary>
-    private double coldFactor = 1.0;
+    internal double maxTempEffectResp = 1.25;
 
     /// <summary>Some Description</summary>
     internal double referenceCO2 = 380;                  //ambient CO2 concentration
@@ -794,6 +791,15 @@ public class Species
     /// <summary>Some Description</summary>
     internal double ExtremeTempStress;
 
+    /// <summary>Some Description</summary>
+    internal double tempFactorRespiration;
+
+    /// <summary>Some Description</summary>
+    internal double tempFacTTurnover;
+
+    /// <summary>Some Description</summary>
+    internal double swFacTTurnover;
+    
     //// > Growth deltas  >>>
 
     /// <summary>Some Description</summary>
@@ -879,14 +885,17 @@ public class Species
 
     //// - Constants  -----------------------------------------------------------------------------
 
-    /// <summary>Some Description</summary>
-    const double CarbonFractionDM = 0.4;            //DM to C converion
+    /// <summary>DM to C converion</summary>
+    const double CarbonFractionDM = 0.4;
 
-    /// <summary>Some Description</summary>
+    /// <summary>N mols per mol of protein</summary>
     const double N2Protein = 6.25;      //this is for plants... (higher amino acids)
 
-    /// <summary>Some Description</summary>
+    /// <summary>CN ratio of proteins</summary>
     const double ProteinCNr = 3.5;     //C:N in remobilised material
+
+    /// <summary>CN ratio of cell wall</summary>
+    const double CNw = 100;
 
     #endregion
 
@@ -1008,11 +1017,10 @@ public class Species
     internal int Phenology()
     {
         const double DDSEmergence = 150;   // to be an input parameter
-        double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
 
         if (bSown && phenoStage == 0)            //  before emergence
         {
-            DDSfromSowing += meanT;
+            DDSfromSowing += Tmean;
             if (DDSfromSowing > DDSEmergence)
             {
                 phenoStage = 1;
@@ -1145,7 +1153,6 @@ public class Species
             return dGrowthPot = 0.0;
 
         //Add temp effects to Pm
-        double Tmean = (MetFile.MaxT + MetFile.MinT) / 2;
         double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
 
         //Temperature growth factor (for reporting purposes only)
@@ -1194,33 +1201,36 @@ public class Species
         RadnFactor = MathUtility.Divide((0.25 * Pl2) + (0.75 * Pl1), (0.25 * Pm_mean) + (0.75 * Pm_day), 1.0);
 
         // Respiration, maintenance and growth
-        double Teffect = 0.0;
+        tempFactorRespiration = 0.0;
         if (Tmean > growthTmin)
         {
             if (Tmean < growthTopt)
             {
-                Teffect = GFTemperature(Tmean);
+                tempFactorRespiration = GFTemperature(Tmean);
                 //Teffect = Math.Pow(Teffect, 1.5);
             }
             else
             {
                 //Teffect = 1;
-                Teffect = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
-                if (Teffect > 1.25) Teffect = 1.25;
-                Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
+                tempFactorRespiration = Tmean / growthTopt;        // Using growthTopt as reference, and set a maximum rise to 1.25
+                if (tempFactorRespiration > maxTempEffectResp) tempFactorRespiration = maxTempEffectResp;
+                tempFactorRespiration *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
             }   //The extreme high temperature (heat) effect is added separately
         }
 
         double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
-        Resp_m = maintRespiration * Teffect * NcFactor * LiveDM;
+        Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveDM;
         Resp_g = Pgross * (1 - growthEfficiency);
 
         // N fixation costs
         costNFixation = 0.0;
-        if (NFixationCostMethod == 1)
-            costNFixation = NFixationCost_M1(Pgross);
-        else if (NFixationCostMethod == 2)
-            costNFixation = NFixationCost_M2();
+        if (isLegume)
+        {
+            if (NFixationCostMethod == 1)
+                costNFixation = NFixationCost_M1(Pgross);
+            else if (NFixationCostMethod == 2)
+                costNFixation = NFixationCost_M2();
+        }
 
         // ** C budget is not explicitly done here as in EM
         Cremob = 0.0;                     // Nremob* C2N_protein;    // No carbon budget here
@@ -1270,7 +1280,7 @@ public class Species
             NcFactor = PmxNeffect();
 
             //Temperature effects at dawn/dusk
-            double glfTmean = GFTemperature(0.5 * (MetFile.MinT + MetFile.MaxT));
+            double glfTmean = GFTemperature(Tmean);
 
             //Temperature growth factor (for reporting purposes only)
             TempFactor = MathUtility.Divide((0.25 * glfTmean) + (0.75 * glfTemp), GFTemperature(growthTopt), 1.0);
@@ -1343,32 +1353,16 @@ public class Species
     internal void DailyPlantRespiration()
     {
         double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
-        double Teffect = 0.0;
-        if (LiveDM > 0.0)
-        {
-            double Tmean = 0.5 * (MetFile.MaxT + MetFile.MinT);
-            if (Tmean > growthTmin)
-            {
-                if (Tmean < growthTopt)
-                { // Using growthTopt as reference
-                    Teffect = GFTemperature(Tmean);
-                }
-                else
-                { // Using growthTopt as reference, and set a maximum rise to 1.25
-                    Teffect = Tmean / growthTopt;
-                    if (Teffect > 1.25) Teffect = 1.25;
-                    Teffect *= GFTemperature(growthTopt);  // Added by RCichota,oct/2014 - after changes in temp function needed this to make the function continuous
-                }   //The extreme high temperature (heat) effect is added separately (TODO?)
-            }
-        }
 
         // maintenance respiration
-        Resp_m = maintRespiration * Teffect * NcFactor * LiveDM;
+        tempFactorRespiration = TemperatureEffectOnTissueTurnover();
+        if (LiveDM > 0.0)
+            Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveDM;
+        else
+            Resp_m = 0.0;
 
         // growth respiration
         Resp_g = Pgross * (1 - growthEfficiency);
-
-        ///TODO: add respiration costs for N fixation
     }
 
     /// <summary>
@@ -1384,10 +1378,13 @@ public class Species
 
         // N fixation costs
         costNFixation = 0.0;
-        if (NFixationCostMethod == 1)
-            costNFixation = NFixationCost_M1(Pgross);
-        else if (NFixationCostMethod == 2)
-            costNFixation = NFixationCost_M2();
+        if (isLegume)
+        {
+            if (NFixationCostMethod == 1)
+                costNFixation = NFixationCost_M1(Pgross);
+            else if (NFixationCostMethod == 2)
+                costNFixation = NFixationCost_M2();
+        }
 
         // Net potential growth (C) of the day (excluding growth respiration)
         dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
@@ -1527,32 +1524,32 @@ public class Species
         //  the number of leaves per tiller also influences the rate (3 stage pools are used to describe any number of leaves)
 
         // Get the temperature factor for tissue turnover
-        double gftt = GFTempTissue();
+        tempFacTTurnover = TemperatureEffectOnTissueTurnover();
 
         // Get the moisture factor for tissue turnover
-        double gfwt = GFWaterTissue();
+        swFacTTurnover = MoistureEffectOnTissueTurnover();
 
         // Get the moisture factor for littering rate
-        double gfwL = Math.Pow(glfWater, exponentGLFW2dead);
+        double swFacTTDead = Math.Pow(glfWater, exponentGLFW2dead);
 
         // Consider the number of leaves
-        double gftleaf = 3.0 / liveLeavesPerTiller;       // three refers to the number of stages used in the model
+        double leafFac = 3.0 / liveLeavesPerTiller;       // three refers to the number of stages used in the model
 
         // Leaf and stems turnover rate
-        gama = refTissueTurnoverRate * gftt * gfwt * gftleaf;
+        gama = refTissueTurnoverRate * tempFacTTurnover * swFacTTurnover * leafFac;
 
         // Stolons turnover rate (legumes)
         if (isLegume)
-            gamaS = refTurnoverRateStolon * gftt * gfwt * gftleaf;
+            gamaS = refTurnoverRateStolon * tempFacTTurnover * swFacTTurnover * leafFac;
 
         // Littering rate
-        gamaD = refLitteringRate * gfwL * digestDead / 0.4;
+        gamaD = refLitteringRate * swFacTTDead * digestDead / 0.4;
 
         // Adjust littering rate due to stock trampling
         gamaD += stockParameter * stockingRate;
 
         // Roots turnover rate
-        gamaR = gftt * (2 - glfWater) * rateRootSen;
+        gamaR = tempFacTTurnover * (2 - glfWater) * rateRootSen;
 
         if (gama == 0.0)
         { //if gama ==0 due to gftt or gfwt, then skip "turnover" part
@@ -1866,12 +1863,20 @@ public class Species
         prevState.dmgreen = dmgreen;
         prevState.dmdead = dmdead;
 
+        prevState.Nshoot = Nshoot;
+
         // RCichota May 2014: moved pS.dmdefoliated to be stored at the time of a removal (it is zeroed at the end of process)
     }
 
     #endregion
 
     #region Functions  ----------------------------------------------------------------------------
+
+    /// <summary>
+    /// The mean temperature for the day
+    /// </summary>
+    private double Tmean
+    { get { return 0.5 * (MetFile.MaxT + MetFile.MinT); } }
 
     /// <summary>
     /// Effects of atmospheric [CO2] on plant photosynthesis
@@ -2099,20 +2104,20 @@ public class Species
     /// Cost of N fixation
     /// </summary>
     /// <remarks>
-    /// Original method (F. Li)
+    /// Original method (F. Li), modified by RCichota to return an equivalent to respiration
     /// </remarks>
     /// <returns>Carbon spent on N fixation</returns>
     private double NFixationCost_M1(double GrowthC)
     {
         //  reduction of net production as cost of N-fixing
-        double costFactor = 1.0;
+        double costFactor = 0.0;
         if (NdemandOpt > 0.0)
         {
             double actFix = NFixed / NdemandOpt;
-            costFactor = 1.0 - NFixCostMax * (actFix - MinFix) / (MaxFix - MinFix);
+            costFactor = NFixCostMax * (actFix - MinFix) / (MaxFix - MinFix);
         }
 
-        return costFactor * GrowthC;
+        return GrowthC * Math.Min(1.0, Math.Max(0.0, costFactor));
     }
 
     /// <summary>
@@ -2131,7 +2136,7 @@ public class Species
     private double NFixationCost_M2()
     {
         //  respiration cost of symbiont (presence of rhizobia is assumed to be proportional to root mass)
-        double Tfactor = GFTemperature(0.5 * (MetFile.MaxT + MetFile.MinT));
+        double Tfactor = GFTemperature(Tmean);
         double maintenanceCost = dmroot * CarbonFractionDM * symbiontCostFactor * Tfactor;
 
         //  respiration cost of N fixation (assumed as a simple function of N fixed)
@@ -2340,16 +2345,20 @@ public class Species
     {
         if (usingHeatStress)
         {
-            // check heat stress factor
+            double heatFactor;
             if (MetFile.MaxT > heatFullT)
-            {
+            { // very high temperature, full stress
                 heatFactor = 0.0;
                 accumTHeat = 0.0;
             }
             else if (MetFile.MaxT > heatOnsetT)
-            {
+            { // high temperature, add some stress
                 heatFactor = highTempStress * (heatFullT - MetFile.MaxT) / (heatFullT - heatOnsetT);
                 accumTHeat = 0.0;
+            }
+            else
+            { // cool temperature, same stress as yesterday
+                heatFactor = highTempStress;
             }
 
             // check recovery factor
@@ -2358,9 +2367,7 @@ public class Species
                 recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
 
             // accumulate temperature
-            double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
-            accumTHeat += Math.Max(0.0, heatRecoverT - meanT);
-            //// TODO: move this to the beginning, so todays temperature is taken into account (faster recovery)
+            accumTHeat += Math.Max(0.0, heatRecoverT - Tmean);
 
             // heat stress
             highTempStress = Math.Min(1.0, heatFactor + recoveryFactor);
@@ -2379,16 +2386,20 @@ public class Species
     {
         if (usingColdStress)
         {
-            // check cold stress factor
+            double coldFactor;
             if (MetFile.MinT < coldFullT)
-            {
+            { // very low temperature, full stress
                 coldFactor = 0.0;
                 accumTCold = 0.0;
             }
             else if (MetFile.MinT < coldOnsetT)
-            {
+            { // low temperature, add some stress
                 coldFactor = lowTempStress * (MetFile.MinT - coldFullT) / (coldOnsetT - coldFullT);
                 accumTCold = 0.0;
+            }
+            else
+            { // warm temperature, same stress as yesterday
+                coldFactor = lowTempStress;
             }
 
             // check recovery factor
@@ -2397,8 +2408,7 @@ public class Species
                 recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
 
             // accumulate temperature
-            double meanT = 0.5 * (MetFile.MaxT + MetFile.MinT);
-            accumTCold += Math.Max(0.0, meanT - coldRecoverT);
+            accumTCold += Math.Max(0.0, Tmean - coldRecoverT);
 
             // cold stress
             lowTempStress = Math.Min(1.0, coldFactor + recoveryFactor);
@@ -2410,39 +2420,57 @@ public class Species
     }
 
     /// <summary>
-    /// Effect of water stress on tissue turnover rate
+    /// Computes the effects of temperature on respiration
     /// </summary>
-    /// <returns>Moisture effect</returns>
-    private double GFWaterTissue()
+    /// <returns>Temperature factor</returns>
+    private double TempEffectOnRespiration()
     {
-        double gfwt = 1.0;
+        double result = 0.0;
+        if (Tmean > growthTmin)
+        {
+            if (Tmean < growthTopt)
+            { // Using growthTopt as reference temperature
+                result = GFTemperature(Tmean);
+            }
+            else
+            { // Using growthTopt as reference temperature, and set a maximum rise
+                result = Math.Min(maxTempEffectResp, Tmean / growthTopt);
+                result *= GFTemperature(growthTopt);
+                // Added by RCichota,oct/2014 - after changes in temp function, needed this to make the function continuous
+            }
+        }
 
-        if (glfWater < massFluxWopt)
-            gfwt = 1 + (massFluxW0 - 1.0) * ((massFluxWopt - glfWater) / massFluxWopt);
-
-        if (gfwt < 1.0) gfwt = 1.0;
-        if (gfwt > massFluxW0) gfwt = massFluxW0;
-        return gfwt;
+        return result;
     }
 
     /// <summary>
     ///  Effect of temperature on tissue turnover rate
     /// </summary>
-    /// <returns>Temp effect</returns>
-    private double GFTempTissue()
+    /// <returns>Temperature effect</returns>
+    private double TemperatureEffectOnTissueTurnover()
     {
-        double T = (MetFile.MaxT + MetFile.MinT) / 2;
+        double result;
+        if (Tmean <= massFluxTmin)
+            result = 0.0;
+        else if (Tmean < massFluxTopt)
+            result = Math.Pow((Tmean - massFluxTmin) / (massFluxTopt - massFluxTmin), massFluxTq);
+        else
+            result = 1.0;
 
-        double gftt = 0.0;        //default as T < massFluxTmin
-        if (T > massFluxTmin && T <= massFluxTopt)
-        {
-            gftt = Math.Pow((T - massFluxTmin) / (massFluxTopt - massFluxTmin), massFluxTq);
-        }
-        else if (T > massFluxTopt)
-        {
-            gftt = 1.0;
-        }
-        return gftt;
+        return result;
+    }
+
+    /// <summary>
+    /// Effect of water stress on tissue turnover rate
+    /// </summary>
+    /// <returns>Moisture effect</returns>
+    private double MoistureEffectOnTissueTurnover()
+    {
+        double result = 1.0;
+        if (glfWater < massFluxWopt)
+            result = 1.0 + (massFluxW0 - 1.0) * ((massFluxWopt - glfWater) / massFluxWopt);
+
+        return Math.Max(1.0, Math.Min(massFluxW0, result));
     }
 
     /// <summary>
@@ -2454,9 +2482,10 @@ public class Species
     /// <returns>Amount removed</returns>
     internal double RemoveDM(double AmountToRemove, double PrefGreen, double PrefDead)
     {
+        // save current state
+        SetPrevPools();
+
         // check existing amount and what is harvestable
-        double PreRemovalDM = dmshoot;
-        double PreRemovalN = Nshoot;
         double AmountRemovable = Math.Max(0.0, dmleaf_green + dmstem_green - dmgreenmin)
                                + Math.Max(0.0, dmleaf4 + dmstem4 - dmdeadmin);
 
@@ -2495,7 +2524,11 @@ public class Species
         FractionRemainingDead = Math.Max(0.0, Math.Min(1.0, FractionRemainingDead));
 
         // get digestibility of DM being harvested
-        digestDefoliated = calcDigestibility();
+        double fCN = (dmgreen * CarbonFractionDM) / Ngreen;
+        double greenDigestibility = tissueDigestibility(fCN, digestLive, 0.5 * dGrowth / dmgreen); // assume half of new growth is sugar
+        fCN = (dmdead * CarbonFractionDM) / Ndead;
+        double deadDigestibility = tissueDigestibility(fCN, digestDead, 0.0); // no sugars in dead material
+        digestDefoliated = FractionToHarvestGreen * greenDigestibility + FractionToHarvestDead * deadDigestibility;
 
         // update the various pools
         dmleaf1 *= FractionRemainingGreen;
@@ -2531,21 +2564,22 @@ public class Species
 
         // check balance and set outputs
         double NremobRemove = PreRemovalNRemob - Nremob;
-        dmdefoliated = PreRemovalDM - dmshoot;
+        dmdefoliated = prevState.dmshoot - dmshoot;
         prevState.dmdefoliated = dmdefoliated;
-        Ndefoliated = PreRemovalN - Nshoot;
+        Ndefoliated = prevState.Nshoot - Nshoot;
         if (Math.Abs(dmdefoliated - AmountToRemove) > 0.00001)
             throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
 
-        return Ndefoliated;
+        return dmdefoliated;
     }
 
     /// <summary>
     /// Calculate the average plant digestibility (above ground)
     /// </summary>
     /// <returns>digestibility</returns>
-    internal double calcDigestibility()
+    internal double calcDigestibility1()
     {
+        //TODO: delete this
         if ((dmleaf + dmstem) <= 0.0)
         {
             digestHerbage = 0.0;
@@ -2581,6 +2615,70 @@ public class Species
         digestHerbage = (1 - deadFrac) * digestibilityLive + deadFrac * digestibilityDead;
 
         return digestHerbage;
+    }
+
+    /// <summary>
+    /// Calculate the average herbage digestibility (above ground)
+    /// </summary>
+    /// <returns>digestibility</returns>
+    internal void calcDigestibility()
+    {
+        double fSugar;
+        double CNtissue;
+        if (dmshoot > 0.0)
+        {
+            //Live
+            double digestibilityLive = 0.0;
+            double greenShootDM = dmleaf_green + dmstem_green;
+            double greenShootN = Nleaf1 + Nleaf2 + Nleaf3 + Nstem1 + Nstem2 + Nstem3;
+            if ((greenShootDM > 0.0) & (greenShootN > 0.0))
+            {
+                fSugar = 0.5 * dGrowth / dmgreen;               //sugar fraction is assumed as half of growth
+                CNtissue = 0.4 * greenShootDM / greenShootN;    //CN ratio of live shoots (minus stolon)
+                digestibilityLive = tissueDigestibility(CNtissue, digestLive, fSugar);
+            }
+
+            //Dead
+            double digestibilityDead = 0.0;
+            if ((dmdead > 0.0) && (Ndead > 0.0))
+            {
+                fSugar = 0.0;                                   //no sugar in dead material
+                CNtissue = (dmdead * CarbonFractionDM) / Ndead; //CN ratio of standing dead;
+                digestibilityDead = tissueDigestibility(CNtissue, digestDead, 0.0);
+            }
+
+            double deadFrac = MathUtility.Divide(dmdead, greenShootDM, 0.0);
+            digestHerbage = digestibilityLive * (1 - deadFrac) + digestibilityDead * deadFrac;
+        }
+        else
+            digestHerbage = 0.0;
+    }
+
+    /// <summary>
+    /// Calculate the digestibility of plant material
+    /// </summary>
+    /// <remarks>
+    /// Assumes fixed CN ratios and digestibilites of various materials
+    /// Digestibility of sugars (dissolved carbohydrates) and proteins is assumed to be one
+    /// </remarks>
+    /// <param name="tissueCN">the CN ratio of the tissue</param>
+    /// <param name="nonSolubleDigest">the digestibility of non-soluble fraction of the tissue</param>
+    /// <param name="fSugar">the fraction of soluble carbohydrate of the tissue</param>
+    /// <returns>the tissue digestibility</returns>
+    internal double tissueDigestibility(double tissueCN, double nonSolubleDigest, double fSugar)
+    {
+        double result = 0.0;
+        if (tissueCN > 0.0)
+        {
+            //Fraction of protein in the tissue
+            double fProtein = (fSugar - 1 + (CNw / tissueCN)) * (ProteinCNr / (CNw - ProteinCNr));
+            //Fraction of non-soluble material in the tissue (cell wall)
+            double fCellWall = 1 - fSugar - fProtein;
+
+            result = fSugar + fProtein + fCellWall * nonSolubleDigest;
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -2698,6 +2796,10 @@ public class SpeciesState
     public double dmtotal;
     /// <summary>DM defoliated</summary>
     public double dmdefoliated;
+
+    /// <summary>N in shoot</summary>
+    public double Nshoot;
+
     /// <summary>N remobilsed from senesced tissue</summary>
     public double Nremob;
 

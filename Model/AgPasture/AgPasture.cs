@@ -415,6 +415,11 @@ public class AgPasture
     private double[] coldTq;
 
     [Param]
+    [Description("Maximum effect of temperature on respiration")]
+    [Units("")]
+    private double[] maxTeffectResp;
+
+    [Param]
     [Description("Base CO2 content in atmosphere")]
     [Units("")]
     private double[] referenceCO2;
@@ -1763,6 +1768,7 @@ public class AgPasture
         mySpecies[s1].coldTq = coldTq[s2];
         mySpecies[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
         mySpecies[s1].coldRecoverT = coldRecoverT[s2];
+        mySpecies[s1].maxTempEffectResp = maxTeffectResp[s2];
 
         // CO2 effects
         mySpecies[s1].referenceCO2 = referenceCO2[s2];
@@ -1831,6 +1837,7 @@ public class AgPasture
         mySpecies[s1].MaxFix = NMaxFix[s2];   //N-fix fraction when no soil N available, read in later
         mySpecies[s1].MinFix = NMinFix[s2];   //N-fix fraction when soil N sufficient
 
+        mySpecies[s1].NFixationCostMethod = NFixationCostMethod;
         mySpecies[s1].NFixCostMax = NFixCostMax[s2];
         mySpecies[s1].symbiontCostFactor = symbiontCostFactor[s2];
         mySpecies[s1].NFixingCostFactor = NFixingCostFactor[s2];
@@ -2197,7 +2204,7 @@ public class AgPasture
         if (!isAlive)
             return;
 
-        // Remember last status, and update root depth frontier (root depth for annuals)
+        // Remember current state of each species and update root depth frontier (root depth for annuals)
         for (int s = 0; s < NumSpecies; s++)
         {
             mySpecies[s].SetPrevPools();
@@ -4446,7 +4453,7 @@ public class AgPasture
             // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
             mySpecies[s].UpdateAggregatedVariables();
 
-            // Calc todays digestibility
+            // Calc today's herbage digestibility
             mySpecies[s].calcDigestibility();
         }
 
@@ -4771,7 +4778,6 @@ public class AgPasture
         //The digetibility below is an approximation (= that of pasture swards).
         //It is more reasonable to calculate it organ-by-organ for each species, then put them together.
         swardHarvestDigestibility = HerbageDigestibility;
-
     }
 
     /// <summary>
@@ -4797,6 +4803,11 @@ public class AgPasture
         if ((!isAlive) || swardShootDM == 0)
             return;
 
+        // zero the sward variables
+        swardHarvestedDM = 0.0;
+        swardHarvestedN = 0.0;
+        swardHarvestDigestibility = 0.0;
+
         // get the amount that can potentially be removed
         double AmountRemovable = 0.0;
         for (int s = 0; s < NumSpecies; s++)
@@ -4819,14 +4830,11 @@ public class AgPasture
         {
             Console.WriteLine("  AgPasture - Method to set amount to remove was not recognized, command will be ignored");
         }
-        // get the actual amount to remove
+
+        // get the actual amount to be removed
         double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
 
-        swardHarvestedDM = AmountToRemove;
-        swardHarvestedN = 0.0;
-        swardHarvestDigestibility = 0.0;
-
-        // get the amounts to remove by species:
+        // get the amounts to remove by species
         double FractionNotRemoved = 0.0;
         if (AmountRemovable > 0.0)
             FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
@@ -4854,15 +4862,17 @@ public class AgPasture
                     FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
                 else
                     FractionToHarvest[s] = 0.0;
-                swardHarvestedN += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
+                swardHarvestedDM += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
+                swardHarvestedN += mySpecies[s].Ndefoliated;
 
                 // get digestibility of harvested material
                 swardHarvestDigestibility += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated / AmountToRemove;
             }
 
-            //TODO: have to make sure were return the amount removed as the actuall amount removed (check values by species)
-            //  Also, the calculation of digestibility have to be updated
+            // check some varaibles
             swardHarvestDigestibility = Math.Min(1.0, swardHarvestDigestibility);
+            if (Math.Abs(swardHarvestedDM - AmountToRemove) > 0.00001)
+                throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
 
             // Update aggregated variables (whole sward)
             UpdateAggregatedVariables();
@@ -6738,6 +6748,75 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
+    [Description("Effect of temperature on respiration")]
+    [Units("0-1")]
+    public double TempFactorRespiration
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].tempFactorRespiration * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Effect of temperature on tissue turnover")]
+    [Units("0-1")]
+    public double TempFactorTurnover
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].tempFacTTurnover * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Water stress factor on tissue turnover")]
+    [Units("0-1")]
+    public double WaterStressFactorTurnover
+    {
+        get
+        {
+            double result = 1.0;
+            if (swardGreenDM > 0.0)
+            {
+                result = 0.0;
+                for (int s = 0; s < NumSpecies; s++)
+                {
+                    result += mySpecies[s].swFacTTurnover * mySpecies[s].dmgreen;
+                }
+
+                result /= swardGreenDM;
+            }
+            return result;
+        }
+    }
+    
+    /// <summary>An output</summary>
+    [Output]
     [Description("Sward average height")]                 //needed by micromet
     [Units("mm")]
     public double Height
@@ -8104,6 +8183,36 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
+    [Description("Average digestibility of harvested material, for each species")]
+    [Units("0-1")]
+    public double[] speciesDefoliatedDigestibility
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].digestDefoliated;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Average ME of harvested material, for each species")]
+    [Units("(MJ/kgDM)")]
+    public double[] speciesHerbageMEconc
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = 16 * mySpecies[s].digestDefoliated;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
     [Description("Rate of turnover for live DM, for each species")]
     [Units("0-1")]
     public double[] SpeciesLiveDMTurnoverRate
@@ -8635,6 +8744,50 @@ public class AgPasture
         }
     }
 
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Temperature factor for respiration, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesTempFactorRespiration
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].tempFactorRespiration;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Temperature factor for tissue turnover, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesTempFactorTurnover
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].tempFacTTurnover;
+            return result;
+        }
+    }
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Water stress factor for tissue turnover, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesWaterStressTurnover
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].swFacTTurnover;
+            return result;
+        }
+    }
+    
     /// <summary>An output</summary>
     [Output]
     [Description("Irradiance per leaf area on the top of canopy")]
