@@ -356,10 +356,6 @@ public class AgPasture
     [Units("")]
     private double[] growthTopt;
     [Param]
-    [Description("reference temperature for growth")]
-    [Units("")]
-    private double[] growthTref;
-    [Param]
     [Description("Coefficient q on temperature function for plant growth")]
     [Units("")]
     private double[] growthTq;
@@ -415,11 +411,6 @@ public class AgPasture
     private double[] coldTq;
 
     [Param]
-    [Description("Maximum effect of temperature on respiration")]
-    [Units("")]
-    private double[] maxTeffectResp;
-
-    [Param]
     [Description("Base CO2 content in atmosphere")]
     [Units("")]
     private double[] referenceCO2;
@@ -439,6 +430,16 @@ public class AgPasture
     [Description("")]
     [Units("")]
     private double[] CO2NCurvature;
+
+    [Param]
+    [Description("Reference temperature for maintenance respiration")]
+    [Units("oC")]
+    private double[] respTref;
+
+    [Param]
+    [Description("Maximum effect of temperature on respiration")]
+    [Units("")]
+    private double[] maxTeffectResp;
 
     ////  >> Partition of new growth  >>>
     // - Shoot:root partition
@@ -1491,8 +1492,6 @@ public class AgPasture
             breakCode("growthTmin");
         if (growthTopt.Length < NumSpecies)
             breakCode("growthTopt");
-        if (growthTref.Length < NumSpecies)
-            breakCode("growthTref");
         if (growthTq.Length < NumSpecies)
             breakCode("growthTq");
         if (useHeatStress.Length < NumSpecies)
@@ -1532,7 +1531,13 @@ public class AgPasture
         if (CO2NCurvature.Length < NumSpecies)
             breakCode("CO2NCurvature");
 
-        ////  >> Parition of new growth  >>>
+        // respiration
+        if (respTref.Length < NumSpecies)
+            breakCode("respTref");
+        if (maxTeffectResp.Length < NumSpecies)
+            breakCode("maxTeffectResp");
+
+        ////  >> Partition of new growth  >>>
         if (maxRootFraction.Length < NumSpecies)
             breakCode("maxRootFraction");
         if (targetSRratio.Length < NumSpecies)
@@ -1638,6 +1643,12 @@ public class AgPasture
             breakCode("NMinFix");
         if (NMaxFix.Length < NumSpecies)
             breakCode("NMaxFix");
+        if (NFixCostMax.Length < NumSpecies)
+            breakCode("NFixCostMax");
+        if (symbiontCostFactor.Length < NumSpecies)
+            breakCode("symbiontCostFactor");
+        if (NFixingCostFactor.Length < NumSpecies)
+            breakCode("NFixingCostFactor");
 
         ////  >> Growth limiting factor  >>>
         if (NdilutCoeff.Length < NumSpecies)
@@ -1754,7 +1765,6 @@ public class AgPasture
         // Temperature, general effect and extreme, heat and cold effects
         mySpecies[s1].growthTmin = growthTmin[s2];
         mySpecies[s1].growthTopt = growthTopt[s2];
-        mySpecies[s1].growthTref = growthTref[s2];
         mySpecies[s1].growthTq = growthTq[s2];
         mySpecies[s1].usingHeatStress = useHeatStress[s2].ToLower() == "yes";
         mySpecies[s1].heatOnsetT = heatOnsetT[s2];            //onset tempeature for heat effects
@@ -1769,6 +1779,7 @@ public class AgPasture
         mySpecies[s1].coldSumT = coldSumT[s2];                //temperature sum for recovery - sum of means
         mySpecies[s1].coldRecoverT = coldRecoverT[s2];
         mySpecies[s1].maxTempEffectResp = maxTeffectResp[s2];
+        mySpecies[s1].respTref = respTref[s2];
 
         // CO2 effects
         mySpecies[s1].referenceCO2 = referenceCO2[s2];

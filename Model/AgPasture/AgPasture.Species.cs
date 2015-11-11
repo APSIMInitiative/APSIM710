@@ -134,9 +134,6 @@ public class Species
     internal double growthTopt;   //Optimum temperature (grtopt) - originally 20
 
     /// <summary>Some Description</summary>
-    internal double growthTref;
-
-    /// <summary>Some Description</summary>
     internal double growthTq;        //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
 
     /// <summary>Some Description</summary>
@@ -188,9 +185,6 @@ public class Species
     private double accumTCold = 0.0;       //accumulated temperature from previous cold strike = sum of MeanT (>0)
 
     /// <summary>Some Description</summary>
-    internal double maxTempEffectResp = 1.25;
-
-    /// <summary>Some Description</summary>
     internal double referenceCO2 = 380;                  //ambient CO2 concentration
 
     /// <summary>Some Description</summary>
@@ -204,6 +198,12 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal double CO2NCurvature;
+
+    /// <summary>Some Description</summary>
+    internal double maxTempEffectResp = 1.25;
+
+    /// <summary>Some Description</summary>
+    internal double respTref;
 
     //// > DM partition >>>
 
@@ -1156,7 +1156,7 @@ public class Species
         double Tday = Tmean + 0.5 * (MetFile.MaxT - Tmean);
 
         //Temperature growth factor (for reporting purposes only)
-        TempFactor = MathUtility.Divide((0.25 * GFTemperature(Tmean)) + (0.75 * GFTemperature(Tday)), GFTemperature(growthTopt), 1.0);
+        TempFactor = (0.25 * GFTemperature(Tmean)) + (0.75 * GFTemperature(Tday));
 
         double glfT = GFTemperature(Tmean);
         CO2Factor = PCO2Effects();
@@ -1283,7 +1283,7 @@ public class Species
             double glfTmean = GFTemperature(Tmean);
 
             //Temperature growth factor (for reporting purposes only)
-            TempFactor = MathUtility.Divide((0.25 * glfTmean) + (0.75 * glfTemp), GFTemperature(growthTopt), 1.0);
+            TempFactor = (0.25 * glfTmean) + (0.75 * glfTemp);
 
             //Potential photosynthetic rate at dawn/dusk (first and last quarter of the day)
             double Pm1 = Pm * glfTmean * CO2Factor * NcFactor;
@@ -1355,7 +1355,7 @@ public class Species
         double LiveDM = (dmgreen + dmroot) * CarbonFractionDM;       //converting DM to C    (kgC/ha)
 
         // maintenance respiration
-        tempFactorRespiration = TemperatureEffectOnTissueTurnover();
+        tempFactorRespiration = TemperatureEffectOnRespiration();
         if (LiveDM > 0.0)
             Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveDM;
         else
@@ -2298,18 +2298,17 @@ public class Species
     /// <returns>GLFTemp</returns>
     private double GFTempC3(double T)
     {
-        double gft3 = 0.0;
-        double growthTmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-        if (T > growthTmin && T < growthTmax)
+        double result = 0.0;
+        double growthTmax = growthTopt + ((growthTopt - growthTmin) / growthTq);
+        if ((T > growthTmin) && (T < growthTmax))
         {
             double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
-            double val2 = Math.Pow((growthTref - growthTmin), growthTq) * (growthTmax - growthTref);
-            gft3 = val1 / val2;
-
-            if (gft3 < 0.0) gft3 = 0.0;
-            //if (gft3 > 1.0) gft3 = 1.0;
+            double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
+            result = val1 / val2;
+            if (result < 0.0) result = 0.0;
         }
-        return gft3;
+
+        return result;
     }
 
     /// <summary>
@@ -2319,22 +2318,25 @@ public class Species
     /// <returns>GLFTemp</returns>
     public double GFTempC4(double T)
     {
-        double gft4 = 0.0;          // Assign value 0 for the case of T < Tmin
-
-        if (T > growthTmin)         // same as GFTempC3 for [Tmin,Topt], but T as Topt if T > Topt
+        double result;
+        if (T <= growthTmin)
         {
-            if (T > growthTopt)
-                T = growthTopt;
-
+            result = 0.0;
+        }
+        else if (T>=growthTopt)
+        {
+            result = 1.0;
+        }
+        else
+        {
             double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
             double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-            double val2 = Math.Pow((growthTref - growthTmin), growthTq) * (Tmax - growthTref);
-            gft4 = val1 / val2;
-
-            if (gft4 < 0.0) gft4 = 0.0;
-            //if (gft4 > 1.0) gft4 = 1.0;
+            double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+            result = val1 / val2;
+            if (result < 0.0) result = 0.0;
         }
-        return gft4;
+
+        return result;
     }
 
     /// <summary>
@@ -2423,21 +2425,24 @@ public class Species
     /// Computes the effects of temperature on respiration
     /// </summary>
     /// <returns>Temperature factor</returns>
-    private double TempEffectOnRespiration()
+    private double TemperatureEffectOnRespiration()
     {
-        double result = 0.0;
-        if (Tmean > growthTmin)
-        {
-            if (Tmean < growthTopt)
-            { // Using growthTopt as reference temperature
-                result = GFTemperature(Tmean);
-            }
-            else
-            { // Using growthTopt as reference temperature, and set a maximum rise
-                result = Math.Min(maxTempEffectResp, Tmean / growthTopt);
-                result *= GFTemperature(growthTopt);
-                // Added by RCichota,oct/2014 - after changes in temp function, needed this to make the function continuous
-            }
+        double result;
+        double respTmin = 0.5 * growthTmin; // assume average between zero and growthTmin
+        if (Tmean <= respTmin)
+        { // too cold, no respiration
+            result = 0.0;
+        }
+        else if (Tmean < respTref)
+        { // respiration is a power function of temperature
+            double respTmax = respTref * growthTq / (growthTq - 1);
+            double val1 = Math.Pow((Tmean - respTmin) / (respTref - respTmin), growthTq);
+            double val2 = (respTmax - Tmean) / (respTmax - respTref);
+            result = val1 * val2;
+        }
+        else
+        { // continue to rise proportionally to temperature, up to a maximum
+            result = Math.Min(maxTempEffectResp, Tmean / respTref);
         }
 
         return result;
