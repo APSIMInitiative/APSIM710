@@ -2053,6 +2053,15 @@ cnh added as per request by Dr Val Snow
 
          call apswim_reset_water_balance (2,suction)
 
+crc added by RCichota as per request by Dr Iris Vogeler
+      else if (Variable_name .eq. 'soil_type') then
+         call collect_char_array (
+     :              'soil_type',
+     :              p%n+1,
+     :              '(?)',
+     :              p%soil_type(0),
+     :              numvals)
+
 cnh added as per request by Dr Val Snow
 
       else if (index(Variable_name,'exco_').eq.1) then
