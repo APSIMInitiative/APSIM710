@@ -60,6 +60,8 @@ namespace CSUserInterface
 			// auto-size itself, get it's width, then turn off auto-sizing and apply the width.
 			// We don't want to leave auto-sizing on, since that disables the user's ability
             // to resize the columns
+            // We also need to make sure the Grids have a handle for all this to work correctly. See Task 4104
+            IntPtr handle = StartOfDayGrid.Handle;
             StartOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             int w = StartOfDayGrid.Columns[0].Width;
             StartOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -67,6 +69,7 @@ namespace CSUserInterface
 			StartOfDayGrid.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 			StartOfDayGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 			StartOfDayGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            handle = EndOfDayGrid.Handle;
 			EndOfDayGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             EndOfDayGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             w = EndOfDayGrid.Columns[0].Width;
