@@ -58,6 +58,8 @@ module Registrations
          id%RefreshSoilType = add_registration(respondToEventReg, 'RefreshSoilType', nullTypeDDML, '')
          
       ! variables that are gettable and settable
+      dummy = add_reg(respondToGetReg, 'dlayer', floatarrayTypeDDML, 'mm', 'Thickness of profile layer')
+      dummy = add_reg(respondToGetReg, 'bd', floatarrayTypeDDML, 'g/cm^3', 'Bulk density')
       dummy = add_reg(respondToGetSetReg, 'sw', floatarrayTypeDDML, 'mm/mm', 'Soil water content')
       dummy = add_reg(respondToGetReg, 'sw_dep', floatarrayTypeDDML, 'mm', 'Soil water content')
       dummy = add_reg(respondToGetReg, 'dul_dep', floatarrayTypeDDML, 'mm', 'Drained Upper Limit')
@@ -66,8 +68,6 @@ module Registrations
       dummy = add_reg(respondToGetReg, 'll15', floatarrayTypeDDML, 'mm/mm', '15 bar Lower Limit')
       dummy = add_reg(respondToGetReg, 'sat_dep', floatarrayTypeDDML, 'mm', 'Saturated water content')
       dummy = add_reg(respondToGetReg, 'sat', floatarrayTypeDDML, 'mm/mm', 'Saturated water content')
-      dummy = add_reg(respondToGetReg, 'dlayer', floatarrayTypeDDML, 'mm', 'Thickness of profile layer')
-      dummy = add_reg(respondToGetReg, 'bd', floatarrayTypeDDML, 'g/cm^3', 'Bulk density')
       dummy = add_reg(respondToGetReg, 'swf', floatarrayTypeDDML, '', 'Space weighting factor, water')
       dummy = add_reg(respondToGetReg, 'wp', doubleTypeDDML, 'mm', 'Water amount')
       dummy = add_reg(respondToGetReg, 'p', doublearrayTypeDDML, '', 'Modified psi function')

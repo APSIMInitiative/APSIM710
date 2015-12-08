@@ -1666,7 +1666,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
        character        ucrop*(strsize)   ! crop name
        logical          uflag      ! uptake flag
        double precision uptake(0:M)
-       character        uunits*(strsize)  ! utake units
+       character        uunits*(strsize)  ! uptake units
        double precision flow_array(0:M)
        character        flow_name*(strsize) ! Name of flow
        character        flow_units*(strsize) !
@@ -1681,6 +1681,12 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            Variable_name,
      :            '(mm)',
      :            g%dlayer(0),
+     :            p%n+1)
+      else if (Variable_name .eq. 'soil_type') then
+         call respond2Get_char_array (
+     :            Variable_name,
+     :            '()',
+     :            p%soil_type(0),
      :            p%n+1)
       else if (Variable_name .eq. 'bd') then
          call respond2Get_double_array (
@@ -10390,6 +10396,9 @@ cRC            Changes by RCichota, 30/Jan/2010
 *        270899 nih added clock tick event
 *        121099 dph added ACTION_Create handler.
 
+*+  Local Variables
+       character Event_string*40       ! String to output
+
 *+  Constant Values
       character myname*(*)
       parameter (myname = 'APSwim Main')
@@ -10408,8 +10417,12 @@ cRC            Changes by RCichota, 30/Jan/2010
       else if ((Action.eq.ACTION_reset)
      :         .or.(Action.eq.ACTION_init)) then
          call apswim_reset ()
+         call apswim_sum_report ()
 
       else if (Action.eq.ACTION_RefreshSoilType) then
+         ! Notify system that we have initialised
+         Event_string = 'Refreshing soil type '
+         call Write_string (Event_string)
          call apswim_RefreshSoilType ()
          call apswim_sum_report ()
 
