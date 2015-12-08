@@ -2106,6 +2106,8 @@ crc added by RCichota as per request by Dr Iris Vogeler
      :              '(?)',
      :              p%soil_type(0),
      :              numvals)
+         call apswim_RefreshSoilType ()
+         call apswim_sum_report ()
 
 cnh added as per request by Dr Val Snow
 
@@ -10420,9 +10422,6 @@ cRC            Changes by RCichota, 30/Jan/2010
          call apswim_sum_report ()
 
       else if (Action.eq.ACTION_RefreshSoilType) then
-         ! Notify system that we have initialised
-         Event_string = 'Refreshing soil type '
-         call Write_string (Event_string)
          call apswim_RefreshSoilType ()
          call apswim_sum_report ()
 
