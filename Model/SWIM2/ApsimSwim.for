@@ -637,6 +637,45 @@
       end subroutine
 
 
+* ====================================================================
+       subroutine apswim_RefreshSoilType ()
+* ====================================================================
+
+      implicit none
+
+*+  Purpose
+*      re-initialise apswim module, after changing soil_type
+*      can be used to simulate changes in soil due to tillage or compaction
+
+*+  Changes
+*     Added by RCichota and IVogeler (7/12/2015)
+
+*+  Constant Values
+      character myname*(*)
+      parameter (myname = 'apswim_refreshsoiltype')
+
+*+  Local Variables
+       character Event_string*40       ! String to output
+
+*- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+      ! Notify system that we have initialised
+      Event_string = 'Refreshing soil type '
+      call Write_string (Event_string)
+
+      ! calculate anything swim needs from input parameters
+      call apswim_init_calc ()
+
+      ! check all inputs for errors
+      call apswim_check_inputs()
+
+      call apswim_New_Profile_Event()
+
+      call pop_routine (myname)
+      return
+      end subroutine
+
 
 * ====================================================================
        subroutine apswim_read_param ()
@@ -10369,6 +10408,10 @@ cRC            Changes by RCichota, 30/Jan/2010
       else if ((Action.eq.ACTION_reset)
      :         .or.(Action.eq.ACTION_init)) then
          call apswim_reset ()
+
+      else if (Action.eq.ACTION_RefreshSoilType) then
+         call apswim_RefreshSoilType ()
+         call apswim_sum_report ()
 
       else if (action.eq.ACTION_sum_report) then
          call apswim_sum_report ()

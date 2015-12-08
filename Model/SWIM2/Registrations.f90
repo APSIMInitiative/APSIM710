@@ -23,6 +23,8 @@ module Registrations
       integer :: WaterUptakesCalculated
       integer :: NitrogenChanged
       integer :: RunoffEvent
+      integer :: RefreshSoilType
+
    end type IDsType
 
    contains
@@ -53,6 +55,7 @@ module Registrations
          id%WaterUptakesCalculated = add_registration(eventReg, 'WaterUptakesCalculated', nullTypeDDML, '')
          id%NitrogenChanged = add_registration(eventReg, 'NitrogenChanged', NitrogenChangedTypeDDML, '')
          id%RunoffEvent = add_registration(eventReg, 'RunoffEvent', RunoffEventTypeDDML, '')
+         id%RefreshSoilType = add_registration(respondToEventReg, 'RefreshSoilType', nullTypeDDML, '')
          
       ! variables that are gettable and settable
       dummy = add_reg(respondToGetSetReg, 'sw', floatarrayTypeDDML, 'mm/mm', 'Soil water content')
