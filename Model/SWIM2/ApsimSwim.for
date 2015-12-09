@@ -655,7 +655,13 @@
       parameter (myname = 'apswim_refreshsoiltype')
 
 *+  Local Variables
-       character Event_string*40       ! String to output
+      character Event_string*40       ! String to output
+      integer node                    ! node counter variable
+      integer solnum                  ! solute counter
+      double precision newSW(0:M)
+      double precision iniSWDep(0:M)
+      double precision satDep(0:M)
+      double precision PondSolute(nsol)
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -664,15 +670,393 @@
       Event_string = 'Refreshing soil type '
       call Write_string (Event_string)
 
-      ! calculate anything swim needs from input parameters
-      call apswim_init_calc ()
+      ! Save water balance state and pond variables
+      do 17 node=0,p%n
+         iniSWDep(node) = g%th(node) * g%dlayer(node)
+   17 continue
+
+      do 18 solnum = 1,p%num_solutes
+         PondSolute(solnum) = g%cslsur(solnum) * g%h
+   18 continue
+
+      ! Get new parameters and calculate anything swim needs from input parameters
+      call apswim_read_horz_param ()
 
       ! check all inputs for errors
       call apswim_check_inputs()
 
+      ! Update the water balance variables and the pond
+
+      do 19 node=0,p%n
+         satDep(node) = g%SAT(node) * g%dlayer(node)
+         if (iniSWDep(node).gt.satDep(node)) then
+            newSW(node) = g%SAT(node)
+
+            ! Assuming any excess water will go to pond
+            g%h = g%h + (iniSWDep(node) - satDep(node))
+            PondSolute(solnum) = PondSolute(solnum)
+     :           + (iniSWDep(node) - satDep(node)) * g%csl(solnum,node)
+         else
+            newSW(node) = iniSWDep(node) / g%dlayer(node)
+         endif
+   19 continue
+
+      call apswim_reset_water_balance (1,newSW)
+      if (g%h .gt. 0) then
+         g%cslsur(solnum) = PondSolute(solnum) / g%h
+      endif
+
+      ! Advertise new profile specifications
       call apswim_New_Profile_Event()
 
       call pop_routine (myname)
+      return
+      end subroutine
+
+
+* ====================================================================
+       subroutine apswim_read_horz_param ()
+* ====================================================================
+
+      implicit none
+
+*+  Purpose
+*      Read in all parameters for soil layers from parameter file.
+
+*+  Changes
+*     Added by RCichota (Dec/2015)
+
+*+  Constant Values
+       character myname*(*)
+       parameter (myname = 'apswim_read_horz_param')
+
+*+  Local Variables
+       integer node                    ! node counter variable
+       integer num_nodes               ! number of specified nodes
+       integer numvals                 ! number of values read from file
+       integer num_sl
+       integer num_psi
+       integer num_theta
+       integer point
+       double precision temp_sl  (MP)
+       double precision temp_hkl (MP)
+       double precision temp_hkld (MP)
+       double precision temp_wc (MP)
+       double precision temp_wcd(MP)
+       integer solnum
+       integer solnum2
+       logical found
+       character table_name (nsol)*(strsize)
+       double precision table_exco(nsol)
+       double precision table_fip(nsol)
+       double precision table_dis(nsol)
+      double precision fraction
+      double precision hklg
+      double precision hklgd
+      integer i                        ! simple counter variable
+      integer j
+      integer k
+      integer l
+      integer          nslj, nslk, nsli
+      double precision slj(MP), slk(MP), sli(MP)
+      double precision suction
+      double precision thd
+      double precision thetaj, thetak, dthetaj, dthetak
+      double precision hklgj, hklgk, dhklgj, dhklgk
+
+*- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+      if (p%specification_type .eq. 1) then
+         ! Read in soil water characteristics for each node
+         !            from parameter file
+         do 100 node = 0, p%n
+
+            if (p%soil_type(node) .ne. interp_key) then
+
+               call Read_double_array (
+     :              p%soil_type(node),
+     :              'sl',
+     :              MP,
+     :              '(?)',
+     :              temp_sl,
+     :              num_sl,
+     :              p%slmin,
+     :              p%slmax)
+
+               call Read_double_array (
+     :              p%soil_type(node),
+     :              'wc',
+     :              MP,
+     :              '(cc/cc)',
+     :              temp_wc,
+     :              numvals,
+     :              0.d0,
+     :              1.d0)
+
+               call Read_double_array (
+     :              p%soil_type(node),
+     :              'wcd',
+     :              MP,
+     :              '(?)',
+     :              temp_wcd,
+     :              numvals,
+     :              -100.d0,
+     :              100.d0)
+
+               call Read_double_array (
+     :              p%soil_type(node),
+     :              'hkl',
+     :              MP,
+     :              '(?)',
+     :              temp_hkl,
+     :              numvals,
+     :              -100.d0,
+     :              100.d0)
+
+               call Read_double_array (
+     :              p%soil_type(node),
+     :              'hkld',
+     :              MP,
+     :              '(?)',
+     :              temp_hkld,
+     :              numvals,
+     :              -200.d0,
+     :              100.d0)
+
+                  do 90 point=1,num_sl
+                     p%sl(node,point) = temp_sl(point)
+                     p%wc(node,point) = temp_wc(point)
+                     p%wcd(node,point) = temp_wcd(point)
+                     p%hkl(node,point) = temp_hkl(point)
+                     p%hkld(node,point) = temp_hkld(point)
+   90             continue
+
+               call Read_double_var(
+     :              p%soil_type(node),
+     :              'bulk_density',
+     :              '()',
+     :              p%rhob(node),
+     :              numvals,
+     :              0d0,
+     :              2d0)
+
+               numvals = 0
+               call Read_char_array(
+     :              p%soil_type(node),
+     :              'solute_name',
+     :              nsol,
+     :              '()',
+     :              table_name,
+     :              numvals)
+
+               call Read_double_array(
+     :              p%soil_type(node),
+     :              'exco',
+     :              nsol,
+     :              '()',
+     :              table_exco,
+     :              numvals,
+     :              c%lb_exco,
+     :              c%ub_exco)
+
+               call Read_double_array(
+     :              p%soil_type(node),
+     :              'fip',
+     :              nsol,
+     :              '()',
+     :              table_fip,
+     :              numvals,
+     :              c%lb_fip,
+     :              c%ub_fip)
+
+               call Read_double_array(
+     :              p%soil_type(node),
+     :              'dis',
+     :              nsol,
+     :              '()',
+     :              table_dis,
+     :              numvals,
+     :              c%lb_dis,
+     :              c%ub_dis)
+
+               do 200 solnum = 1,p%num_solutes
+                  found = .false.
+                  do 150 solnum2 = 1, nsol
+                     if (table_name(solnum2).eq.p%solute_names(solnum))
+     :               then
+                        found = .true.
+                        p%exco(solnum,node) = table_exco(solnum2)
+                        p%fip(solnum,node) = table_fip(solnum2)
+                        p%dis(solnum,node) = table_dis(solnum2)
+                     else
+                     endif
+  150          continue
+                  if (.not.found) then
+                     call fatal_error(Err_User,p%solute_names(solnum)
+     :                   //'not defined in solute section')
+                  else
+                    ! Do nothing
+                  endif
+  200          continue
+
+            else
+                 ! Do nothing here, interpolate latter
+            endif
+
+  100       continue
+
+         elseif (p%specification_type .eq. 2) then
+            call Read_double_array (
+     :              init_section,
+     :              'll15',
+     :              M+1,
+     :              '(mm/mm)',
+     :              p%ll15(0),
+     :              numvals,  ! get number of nodes from here
+     :              0.0d0,
+     :              1.0d0)
+            call Read_double_array (
+     :              init_section,
+     :              'dul',
+     :              M+1,
+     :              '(mm/mm)',
+     :              p%dul(0),
+     :              numvals,  ! get number of nodes from here
+     :              0.0d0,
+     :              1.0d0)
+            call Read_double_array (
+     :              init_section,
+     :              'sat',
+     :              M+1,
+     :              '(mm/mm)',
+     :              p%sat(0),
+     :              numvals,  ! get number of nodes from here
+     :              0.0d0,
+     :              1.0d0)
+            call Read_double_array (
+     :              init_section,
+     :              'ks',
+     :              M+1,
+     :              '(cm/h)',
+     :              p%ks(0),
+     :              numvals,  ! get number of nodes from here
+     :              0.0d0,
+     :              1.0d2)
+
+         else
+             call fatal_error(Err_User, 'Unknown specification type')
+         endif
+
+* -------- INTERPOLATE SPECIFICATIONS FOR NON-SPECIFIED NODES --------
+
+      do 20 i=0,p%n-1
+         if(p%soil_type(i).eq.interp_key) then
+            ! need to interpolate soil characteristics
+
+            ! find previous soil characteristics definition
+            do 11 j=i-1,1,-1
+               if (p%soil_type(j).ne.interp_key) goto 12
+   11       continue
+   12       continue
+
+            ! find next soil characteristics definition
+            do 13 k=i+1,p%n
+               if (p%soil_type(k).ne.interp_key) goto 14
+   13       continue
+   14       continue
+
+            ! calculate the relative distance between the specified nodes
+            fraction = (p%x(i) - p%x(j)) / (p%x(k)-p%x(j))
+
+            if (p%specification_type .eq. 1) then
+               do 45 l=1,MP
+                  slj(l) = p%sl(j,l)
+                  slk(l) = p%sl(k,l)
+                  if (Doubles_are_equal(p%sl(j,l),p%slmax)) nslj = l
+                  if (Doubles_are_equal(p%sl(k,l),p%slmax)) nslk = l
+   45          continue
+               call union_double_arrays (slj,nslj,slk,nslk,sli,nsli,MP)
+
+               do 15 l=1,nsli
+                  p%sl(i,l) = sli(l)
+                  suction = -1.0 * exp(dlog(10d0)*p%sl(i,l))
+                  ! find characteristics for same suction in node k
+                  call apswim_interp
+     :                 (j,suction,thetaj,dthetaj,hklgj,dhklgj)
+                  call apswim_interp
+     :                 (k,suction,thetak,dthetak,hklgk,dhklgk)
+
+                  p%wc(i,l) = thetaj + fraction*(thetak-thetaj)
+                  p%wcd(i,l) = dthetaj + fraction*(dthetak-dthetaj)
+                  p%hkl(i,l) = hklgj + fraction*(hklgk-hklgj)
+                  p%hkld(i,l) =dhklgj + fraction*(dhklgk-dhklgj)
+   15          continue
+            endif
+
+           ! Interpolate bulk density and soil characteristics for each solute
+
+            p%rhob(i) = p%rhob(j)+fraction*(p%rhob(k)-p%rhob(j))
+
+            do 16 solnum = 1, p%num_solutes
+               p%exco(solnum,i) = p%exco(solnum,j)+
+     :                    fraction*(p%exco(solnum,k)-p%exco(solnum,j))
+               p%fip (solnum,i) = p%fip (solnum,j)+
+     :                    fraction*(p%fip (solnum,k)-p%fip (solnum,j))
+               p%dis (solnum,i) = p%dis (solnum,j)+
+     :                    fraction*(p%dis (solnum,k)-p%dis (solnum,j))
+               p%alpha(solnum,i) = p%alpha(solnum,j)+
+     :                    fraction*(p%alpha(solnum,k)-p%alpha(solnum,j))
+               p%beta(solnum,i) = p%beta(solnum,j)+
+     :                    fraction*(p%beta(solnum,k)-p%beta(solnum,j))
+   16       continue
+
+         else
+            ! no need to interpolate soil characteristics
+         endif
+   20 continue
+
+* -------CALCULATE g%LL15, g%DUL AND g%SAT FROM MOISTURE CHARACTERISTICS -----
+
+      ! First, calculate g%LL15, g%DUL and g%SAT for each node
+
+      do 25 i=0,p%n
+         if (p%specification_type .eq. 1) then
+            call apswim_interp
+     :           (i,psi_ll15,g%LL15(i),thd,hklg,hklgd)
+            call apswim_interp
+     :           (i,psi_dul,g%DUL(i),thd,hklg,hklgd)
+            g%SAT(i) = p%wc(i,1)
+         else
+            g%LL15(i) = p%LL15(i)
+            g%DUL(i) = p%DUL(i)
+            g%SAT(i) = p%SAT(i)
+
+* ------- IF USING SIMPLE SOIL SPECIFICATION CALCULATE PROPERTIES -----
+            p%b(i) = -log(psi_dul/psi_ll15)
+     :                   /log(p%dul(i)/p%ll15(i))
+            p%psie(i) = psi_dul*(p%dul(i)/p%sat(i))
+     :                   **(p%b(i))
+            p%a(i) = (2.*p%b(i))/(2.*p%b(i)+1.)
+
+            p%psii(i) = p%psie(i)*p%a(i) **(-p%b(i))
+            p%psii(i) = min(p%psii(i), 0.0)
+            p%c(i) = (1.-p%a(i))/(p%psii(i)**2.)
+
+         endif
+   25 continue
+
+      ! Calculate the solute/soil parameters from inputs
+
+      do 40 node = 0,p%n
+         do 30 solnum = 1,p%num_solutes
+            p%ex(solnum,node) = p%rhob(node)*p%exco(solnum,node)
+            p%betaex(solnum,node) = p%beta(solnum,node)
+     :                            * p%ex(solnum,node)
+   30    continue
+   40 continue
+
+      call pop_Routine (myname)
       return
       end subroutine
 
@@ -1673,6 +2057,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
        logical          flow_found
        double precision infiltration
        double precision water_table
+       double precision conc_solute_pond
 
 *- Implementation Section ----------------------------------
 
@@ -2025,6 +2410,18 @@ cnh added as per request by Dr Val Snow
      :            Variable_name,
      :            '(kg/ha)',
      :            g%TD_slssof(solnum))
+         endif
+      else if (index(Variable_name,'pond_').eq.1) then
+         solname = Variable_name(6:)
+         solnum = apswim_solute_number(solname)
+         if (solnum .ne.0) then
+            conc_solute_pond = g%cslsur(solnum)   ! ug/cc soil
+     :                * (g%h*1d8)                 ! cc soil/ha
+     :                * 1d-9                      ! kg/ug
+            call respond2Get_double_var (
+     :            Variable_name,
+     :            '(kg/ha)',
+     :            conc_solute_pond)
          endif
       else if (Variable_name .eq. 'water_table') then
          water_table = apswim_water_table()
@@ -3995,7 +4392,7 @@ cnh
 !````````````````````````````````````````````````````````````````````````````````
               !Test for negative values of g%csl coming from the thomas algorithm.
               ! disregard if very small, else cause fatal error
-cRC            Changes by RCichota, 30/Jan/2010, ammended in 10/Jul/2010
+cRC            Changes by RCichota, 30/Jan/2010, amended in 10/Jul/2010
 
                do 55 solnum = 1,p%num_solutes
                   do 56 node = 0, p%n
