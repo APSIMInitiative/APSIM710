@@ -10818,10 +10818,6 @@ cRC            Changes by RCichota, 30/Jan/2010
          call apswim_reset ()
          call apswim_sum_report ()
 
-      else if (Action.eq.ACTION_RefreshSoilType) then
-         call apswim_RefreshSoilType ()
-         call apswim_sum_report ()
-
       else if (action.eq.ACTION_sum_report) then
          call apswim_sum_report ()
 
