@@ -142,6 +142,7 @@
          double precision ll15(0:M)
          double precision dul(0:M)
          double precision sat(0:M)
+         double precision ks(0:M)
          double precision dlayer(0:M)
 
          double precision t
@@ -1027,10 +1028,12 @@
             call apswim_interp
      :           (i,psi_dul,g%DUL(i),thd,hklg,hklgd)
             g%SAT(i) = p%wc(i,1)
+            g%KS(i) = exp(dlog(10d0)*p%hkl(i,1))
          else
             g%LL15(i) = p%LL15(i)
             g%DUL(i) = p%DUL(i)
             g%SAT(i) = p%SAT(i)
+            g%KS(i) = p%KS(i)
 
 * ------- IF USING SIMPLE SOIL SPECIFICATION CALCULATE PROPERTIES -----
             p%b(i) = -log(psi_dul/psi_ll15)
@@ -2037,6 +2040,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
        double precision dummy1
        double precision dummy2
        double precision dummy3
+       double precision dummyK
        double precision eo
        double precision h_mm
        double precision hmin_mm
@@ -2058,6 +2062,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
        double precision infiltration
        double precision water_table
        double precision conc_solute_pond
+       double precision esw
 
 *- Implementation Section ----------------------------------
 
@@ -2076,13 +2081,13 @@ c      read(ret_string, *, iostat = err_code) g%rain
       else if (Variable_name .eq. 'bd') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(g/cc)',
+     :            '(g/cm^3)',
      :            p%rhob(0),
      :            p%n+1)
       else if (Variable_name .eq. 'sw') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            g%th(0),
      :            p%n+1)
       else if (Variable_name .eq. 'swf') then
@@ -2103,7 +2108,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
       else if (Variable_name .eq. 'll15') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            g%LL15(0),
      :            p%n+1)
       else if (Variable_name .eq. 'll15_dep') then
@@ -2118,7 +2123,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
       else if (Variable_name .eq. 'dul') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            g%DUL(0),
      :            p%n+1)
       else if (Variable_name .eq. 'dul_dep') then
@@ -2133,7 +2138,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
       else if (Variable_name .eq. 'sat') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(cc/cc)',
+     :            '(cm^3/cm^3)',
      :            g%SAT(0),
      :            p%n+1)
       else if (Variable_name .eq. 'sat_dep') then
@@ -2145,6 +2150,15 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            '(mm)',
      :            dummy(0),
      :            p%n+1)
+      else if (Variable_name .eq. 'esw') then
+         esw = 0d0
+         do 15 node=0,p%n
+            esw = esw+max(0d0,(g%th(node)-g%LL15(node))*g%dlayer(node))
+   15    continue
+         call respond2Get_double_var (
+     :            Variable_name,
+     :            '(mm)',
+     :            esw)
       else if (Variable_name .eq. 'wp') then
          call respond2Get_double_var (
      :            Variable_name,
@@ -2153,7 +2167,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
       else if (Variable_name .eq. 'p') then
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(??)',
+     :            '()',
      :            g%p(0),
      :            p%n+1)
       else if (Variable_name .eq. 'psi') then
@@ -2162,8 +2176,15 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            '(cm)',
      :            g%psi(0),
      :            p%n+1)
+      else if (Variable_name .eq. 'ks') then
+         dummyK = g%Ks(0)*10*24
+         call respond2Get_double_array (
+     :            Variable_name,
+     :            '(mm/d)',
+     :            g%Ks(0),
+     :            p%n+1)
       else if (Variable_name .eq. 'hyd_cond') then
-         do 15 node=0,p%n
+         do 16 node=0,p%n
             call apswim_interp (
      :            node, 
      :            g%psi(node),
@@ -2172,7 +2193,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            dummy(node),
      :            dummy3)
             dummy(node) = exp(dlog(10d0)*dummy(node))
-   15    continue
+   16    continue
          call respond2Get_double_array (
      :            Variable_name,
      :            '(mm/h)',
@@ -2299,13 +2320,13 @@ c      read(ret_string, *, iostat = err_code) g%rain
          ! and so start at node 1 (not 0)
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(kg/ha)',
+     :            '(mm)',
      :            g%TD_wflow(1),
      :            p%n+1)
       else if (Variable_name .eq. 'salb') then
          call respond2Get_real_var (
      :            Variable_name,
-     :            '(??)',
+     :            '(0-1)',
      :            p%salb)
       else if (Variable_name .eq. 'hmin') then
          if (p%isbc.eq.2) then
@@ -2474,7 +2495,7 @@ cnh added as per request by Dr Val Snow
          call collect_double_array (
      :              'sw',
      :              p%n+1,
-     :              '(cc/cc)',
+     :              '(cm^3/cm^3)',
      :              theta(0),
      :              numvals,
      :              0d0,

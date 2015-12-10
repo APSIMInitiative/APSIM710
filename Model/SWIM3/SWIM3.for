@@ -1081,6 +1081,9 @@ c     :              1d0)
        double precision dble_exco(0:M)
        double precision dr              ! timestep rainfall (during g%dt)(mm)
        double precision dummy(0:M)
+       double precision dummy1
+       double precision dummy2
+       double precision dummy3
        double precision eo
        double precision h_mm
        double precision hmin_mm
@@ -1101,6 +1104,7 @@ c     :              1d0)
        logical          flow_found
        double precision infiltration
        double precision water_table
+       double precision conc_solute_pond
        double precision esw
 *- Implementation Section ----------------------------------
 
@@ -1121,6 +1125,22 @@ c     :              1d0)
      :            Variable_name,
      :            '(mm/d)',
      :            p%Ks(0),
+     :            p%n+1)
+      else if (Variable_name .eq. 'hyd_cond') then
+         do 10 node=0,p%n
+            call apswim_interp (
+     :            node, 
+     :            g%psi(node),
+     :            dummy1,
+     :            dummy2,
+     :            dummy(node),
+     :            dummy3)
+            dummy(node) = exp(dlog(10d0)*dummy(node))
+   10    continue
+         call respond2Get_double_array (
+     :            Variable_name,
+     :            '(mm/h)',
+     :            dummy(0),
      :            p%n+1)
       else if (Variable_name .eq. 'sw') then
          call respond2Get_double_array (
@@ -1367,7 +1387,7 @@ c     :              1d0)
          ! and so start at node 1 (not 0)
          call respond2Get_double_array (
      :            Variable_name,
-     :            '(kg/ha)',
+     :            '(mm)',
      :            g%TD_wflow(1),
      :            p%n+1)
 
@@ -1488,6 +1508,19 @@ cnh added as per request by Dr Val Snow
      :            '(kg/ha)',
      :            g%TD_slssof(solnum))
 
+         endif
+
+      else if (index(Variable_name,'pond_').eq.1) then
+         solname = Variable_name(6:)
+         solnum = apswim_solute_number(solname)
+         if (solnum .ne.0) then
+            conc_solute_pond = g%cslsur(solnum)   ! ug/cc soil
+     :                * (g%h*1d8)                 ! cc soil/ha
+     :                * 1d-9                      ! kg/ug
+            call respond2Get_double_var (
+     :            Variable_name,
+     :            '(kg/ha)',
+     :            conc_solute_pond)
          endif
 
       else if (Variable_name .eq. 'watertable') then
