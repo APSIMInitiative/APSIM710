@@ -1423,6 +1423,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer modNameID                ! ID for module.
       logical ok
       integer regID
+      integer n
 
 !- Implementation Section ----------------------------------
 
@@ -1513,6 +1514,14 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :                     ,Variable_name
      :                     ,Value)
       else
+         n = len_trim(Action)
+         do while (n.gt.1 .and. Action(n:n).eq.',')
+           msg = 'Trimming invalid comma from event name "'
+     :            //Action(:n)//'"'
+           Action = Action(1:n-1)
+           n = len_trim(Action)
+           call Warning_error(ERR_user, msg)
+         enddo
          call ProcessEvent(Module_name, Action, Data_string)
       endif
       return
