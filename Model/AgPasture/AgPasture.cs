@@ -4519,11 +4519,11 @@ public class AgPasture
     /// <summary>
     /// Respond to a Kill event
     /// </summary>
-    /// <param name="PKill">Kill</param>
+    /// <param name="KillData">Kill</param>
     [EventHandler]
-    public void OnKillCrop(KillCropType PKill)
+    public void OnKillCrop(KillCropType KillData)
     {
-        double frac = PKill.KillFraction;
+        double frac = KillData.KillFraction;
         //always complete kill for pasture, ignore fraction
 
         //Above_ground part returns to surface OM comletey (frac = 1.0)
@@ -4548,6 +4548,37 @@ public class AgPasture
         if (swardTotalLAI > 0.0)
         {
             Console.WriteLine("Pasture is not completely killed.");
+        }
+    }
+
+    /// <summary>
+    /// Respond to a EndCrop event
+    /// </summary>
+    [EventHandler]
+    public void OnEndCrop()
+    {
+        //Above_ground part returns to surface OM comletey (frac = 1.0)
+        DoSurfaceOMReturn(swardShootDM, AboveGroundN, 1.0);    //n_shoot
+
+        //Incorporate root mass in soil fresh organic matter
+        DoIncorpFomEvent(swardRootDM, BelowGroundN);         //n_root);
+
+        ZeroVars();
+
+        // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+        for (int s = 0; s < NumSpecies; s++)
+        {
+            mySpecies[s].UpdateAggregatedVariables();
+            mySpecies[s].bSown = false;
+        }
+
+        // Update aggregated variables (whole sward)
+        UpdateAggregatedVariables();
+
+        isAlive = false;
+        if (swardTotalLAI > 0.0)
+        {
+            Console.WriteLine("Pasture is now ended.");
         }
     }
 
