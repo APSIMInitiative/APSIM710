@@ -181,6 +181,7 @@ namespace CSUserInterface
             try
             {
                 int Row = 0;
+                Grid.EndEditMode(); // If editing is still in progress, ensure updated contents are saved
                 foreach (PropertyInfo Property in OurObject.GetType().GetProperties())
                 {
 
