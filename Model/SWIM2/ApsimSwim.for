@@ -304,7 +304,7 @@
          double precision hkl(0:M,MP)
          double precision hkld(0:M,MP)
 
-         double precision ll15(0:M),DUL(0:M),SAT(0:M),Ks(0:M)
+         double precision ll15(0:M),DUL(0:M),SAT(0:M),KS(0:M)
          double precision a(0:M), b(0:M), c(0:M), psii(0:M), psie(0:M)
 
          integer          ivap
@@ -2178,12 +2178,12 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            p%n+1)
       else if (Variable_name .eq. 'ks') then
          do 16 node=0,p%n
-            dummyK(node) = g%Ks(node)*10*24
+            dummyK(node) = g%KS(node)*10*24
    16    continue
          call respond2Get_double_array (
      :            Variable_name,
      :            '(mm/d)',
-     :            dummyK,
+     :            dummyK(0),
      :            p%n+1)
       else if (Variable_name .eq. 'hyd_cond') then
          do 17 node=0,p%n
