@@ -2040,7 +2040,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
        double precision dummy1
        double precision dummy2
        double precision dummy3
-       double precision dummyK
+       double precision dummyK(0:M)
        double precision eo
        double precision h_mm
        double precision hmin_mm
@@ -2177,14 +2177,16 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            g%psi(0),
      :            p%n+1)
       else if (Variable_name .eq. 'ks') then
-         dummyK = g%Ks(0)*10*24
+         do 16 node=0,p%n
+            dummyK(node) = g%Ks(node)*10*24
+   16    continue
          call respond2Get_double_array (
      :            Variable_name,
      :            '(mm/d)',
-     :            g%Ks(0),
+     :            dummyK,
      :            p%n+1)
       else if (Variable_name .eq. 'hyd_cond') then
-         do 16 node=0,p%n
+         do 17 node=0,p%n
             call apswim_interp (
      :            node, 
      :            g%psi(node),
@@ -2192,8 +2194,8 @@ c      read(ret_string, *, iostat = err_code) g%rain
      :            dummy2,
      :            dummy(node),
      :            dummy3)
-            dummy(node) = exp(dlog(10d0)*dummy(node))
-   16    continue
+            dummy(node) = 10*exp(dlog(10d0)*dummy(node))
+   17    continue
          call respond2Get_double_array (
      :            Variable_name,
      :            '(mm/h)',

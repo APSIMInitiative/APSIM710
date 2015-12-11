@@ -1135,7 +1135,7 @@ c     :              1d0)
      :            dummy2,
      :            dummy(node),
      :            dummy3)
-            dummy(node) = exp(dlog(10d0)*dummy(node))
+            dummy(node) = 10*exp(dlog(10d0)*dummy(node))
    10    continue
          call respond2Get_double_array (
      :            Variable_name,
