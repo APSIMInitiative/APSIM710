@@ -773,6 +773,11 @@ public class AgPasture
     private double[] soilSatFactor;
 
     [Param]
+    [Description("Minimum macroporosity (pores>30um) for optimum plant growth")]
+    [Units("0-1")]
+    private double[] MinMacroPorosity;
+ 
+    [Param]
     [Description("Generic growth limiting factor")]
     [Units("0-1")]
     private double[] GenericGLF;
@@ -1104,12 +1109,14 @@ public class AgPasture
 
     /// <summary>Amount of N fixed by legumes</summary>
     private double swardNFixed = 0.0;
+    /// <summary>Growth limiting factor due to ambient temperature</summary>
+    private double swardGLFTemp;
     /// <summary>Growth limiting factor due to soil nitrogen</summary>
     private double swardGLFN;
     /// <summary>Growth limiting factor due to soil water</summary>
     private double swardGLFWater;
-    /// <summary>Growth limiting factor due to ambient temperature</summary>
-    private double swardGLFTemp;
+    /// <summary>Growth limiting factor due to soil aeration</summary>
+    private double swardGLFAeration;
 
     /// <summary>Amount of DM harvested</summary>
     private double swardHarvestedDM;
@@ -1657,6 +1664,8 @@ public class AgPasture
             breakCode("waterStressFactor");
         if (soilSatFactor.Length < NumSpecies)
             breakCode("soilSatFactor");
+        if (MinMacroPorosity.Length < NumSpecies)
+            breakCode("MinMacroPorosity");
         if (GenericGLF.Length < NumSpecies)
             breakCode("GenericGLF");
         if (SFertilityGLF.Length < NumSpecies)
@@ -1857,6 +1866,7 @@ public class AgPasture
         mySpecies[s1].NdilutCoeff = NdilutCoeff[s2];
         mySpecies[s1].waterStressFactor = waterStressFactor[s2];
         mySpecies[s1].soilSatFactor = soilSatFactor[s2];
+        mySpecies[s1].minMacroPorosity = MinMacroPorosity[s2];
         mySpecies[s1].GLFSFertility = SFertilityGLF[s2];
         mySpecies[s1].GLFGeneric = GenericGLF[s2];
 
@@ -2269,8 +2279,9 @@ public class AgPasture
         WaterBudgetAndUptake();
 
 
-        // Calculate and set the growth limiting factor due to soil moisture
+        // Calculate and set the growth limiting factor due to soil moisture and aeration
         SetSpeciesGLFWater();
+        SetSpeciesGLFAeration();
 
         // Consider water effects (before considering other nutrient limitation)
         swardPotGrowthWater = 0.0;
@@ -4346,25 +4357,6 @@ public class AgPasture
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     mySpecies[s].glfWater = mySpecies[s].soilWaterUptake.Sum() / mySpecies[s].WaterDemand;
-                    if (mySpecies[s].glfWater > 0.999)
-                    {
-                        double mySW = 0.0;       //soil water content
-                        double mySat = 0.0;      //water content at saturation
-                        double myDUL = 0.0;      //water content at field capacity
-                        for (int layer = 0; layer <= mySpecies[s].layerBottomRootZone; layer++)
-                        {
-                            double layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
-                            mySW += sw_dep[layer] * layerFrac;
-                            mySat += SAT_dep[layer] * layerFrac;
-                            myDUL += DUL_dep[layer] * layerFrac;
-                        }
-
-                        if (mySW > myDUL)
-                        { // soil close to saturation
-                            mySpecies[s].glfWater = 1 - (mySpecies[s].soilSatFactor * (mySW - myDUL) / (mySat - myDUL));
-                        }
-                    }
-
                     accum_gfwater += mySpecies[s].glfWater * mySpecies[s].greenLAI;
                 }
 
@@ -4376,42 +4368,84 @@ public class AgPasture
             else
             {
                 swardGLFWater = soilWaterUptake.Sum() / swardWaterDemand;
-                if (swardGLFWater > 0.999)  //possible saturation
-                {
-                    // calculate soil moisture content in root zone
-                    double mySW = 0.0;       //soil water content
-                    double mySat = 0.0;      //water content at saturation
-                    double myDUL = 0.0;      //water content at field capacity
-                    for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
-                    {
-                        double layerFrac = LayerFractionForRoots(layer, swardRootDepth);
-                        mySW += sw_dep[layer] * layerFrac;
-                        mySat += SAT_dep[layer] * layerFrac;
-                        myDUL += DUL_dep[layer] * layerFrac;
-                    }
-
-                    if (mySW > myDUL)
-                    { // soil close to saturation
-                        double accum_gfwater = 0.0;
-                        for (int s = 0; s < NumSpecies; s++)
-                        {
-                            mySpecies[s].glfWater = 1 - (mySpecies[s].soilSatFactor * (mySW - myDUL) / (mySat - myDUL));
-                            accum_gfwater += mySpecies[s].glfWater * mySpecies[s].greenLAI;
-                        }
-
-                        if (swardGreenLAI > 0.0)
-                            swardGLFWater = accum_gfwater / swardGreenLAI;
-                        else
-                            swardGLFWater = 1.0;
-                        return;
-                    }
-                }
 
                 // pass the glf to each species
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     mySpecies[s].glfWater = swardGLFWater;
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Set soil moisture stress factor to each species
+    /// </summary>
+    /// <remarks>Separated from GLFwater (RCichota, Dec/2015)</remarks>
+    private void SetSpeciesGLFAeration()
+    {
+        double mySW = 0.0;       //soil water content
+        double mySat = 0.0;      //water content at saturation
+        double myMPL = 0.0;      //water content for full aeration (approx. field capacity)
+        double layerFrac = 1.0;
+        double accum_glfair = 0.0;
+
+        //if (swardGLFWater>0.999)
+        //{
+        if (usingWUptakeBySpecies)
+        {
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                for (int layer = 0; layer <= mySpecies[s].layerBottomRootZone; layer++)
+                {
+                    layerFrac = LayerFractionForRoots(layer, mySpecies[s].rootDepth);
+                    mySW += sw_dep[layer] * layerFrac;
+                    mySat += SAT_dep[layer] * layerFrac;
+                    if (mySpecies[s].minMacroPorosity > 0.0)
+                        myMPL += SAT_dep[layer] * (1.0 - mySpecies[s].minMacroPorosity) * layerFrac;
+                    else
+                        myMPL += DUL_dep[layer] * layerFrac;
+                }
+
+                if (mySW > myMPL)
+                { // soil close to saturation
+                    mySpecies[s].glfAeration = 1.0 - (mySpecies[s].soilSatFactor * (mySW - myMPL) / (mySat - myMPL));
+                }
+                else
+                    mySpecies[s].glfAeration = 1.0;
+
+                accum_glfair += mySpecies[s].glfAeration * mySpecies[s].greenLAI;
+            }
+
+            if (swardGreenLAI > 0.0)
+                swardGLFAeration = accum_glfair / swardGreenLAI;
+            else
+                swardGLFAeration = 1.0;
+        }
+        else
+        {
+            for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
+            {
+                layerFrac = LayerFractionForRoots(layer, swardRootDepth);
+                mySW += sw_dep[layer] * layerFrac;
+                mySat += SAT_dep[layer] * layerFrac;
+                if (mySpecies[0].minMacroPorosity > 0.0)
+                    myMPL += SAT_dep[layer] * (1.0 - mySpecies[0].minMacroPorosity) * layerFrac;
+                else
+                    myMPL += DUL_dep[layer] * layerFrac;
+            }
+
+            if (mySW > myMPL)
+            { // soil close to saturation
+                swardGLFAeration = 1.0 - (mySpecies[0].soilSatFactor * (mySW - myMPL) / (mySat - myMPL));
+            }
+            else
+                swardGLFAeration = 1.0;
+
+            // pass the glf to each species
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                mySpecies[s].glfAeration = swardGLFAeration;
             }
         }
     }
@@ -6582,6 +6616,15 @@ public class AgPasture
     public double GLFwater
     {
         get { return swardGLFWater; }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Plant growth limiting factor due to aeration deficit in the soil")]
+    [Units("0-1")]
+    public double GLFaeration
+    {
+        get { return swardGLFAeration; }
     }
 
     //** other growth stress factors
@@ -8782,6 +8825,21 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].glfWater;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Growth limiting factor due to aeration deficit, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesGLFA
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].glfAeration;
             return result;
         }
     }

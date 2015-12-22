@@ -739,6 +739,9 @@ public class Species
     /// <summary>Some Description</summary>
     internal double soilSatFactor;
 
+    /// <summary>Some Description</summary>
+    internal double minMacroPorosity;
+
     /// <summary>Amount of NH4 available for uptake</summary>
     internal double[] soilAvailableNH4;
 
@@ -757,9 +760,6 @@ public class Species
     internal double NdilutCoeff;
 
     //// > growth limiting factors  >>>
-
-    /// <summary>Some Description</summary>
-    internal double glfWater = 1.0;  //from water stress
 
     /// <summary>Some Description</summary>
     internal double glfTemp = 1.0;   //from temperature
@@ -781,6 +781,12 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal double NcFactor;
+
+    /// <summary>Some Description</summary>
+    internal double glfWater = 1.0;  //from water stress
+
+    /// <summary>Some Description</summary>
+    internal double glfAeration = 1.0;
 
     /// <summary>Some Description</summary>
     internal double GLFSFertility;
@@ -1409,7 +1415,7 @@ public class Species
     /// <returns>Pot growth</returns>
     internal double DailyGrowthW()
     {
-        dGrowthW = dGrowthPot * Math.Pow(glfWater, waterStressFactor);
+        dGrowthW = dGrowthPot * Math.Pow(Math.Min(glfWater, glfAeration), waterStressFactor);
 
         return dGrowthW;
     }
@@ -1530,7 +1536,7 @@ public class Species
         swFacTTurnover = MoistureEffectOnTissueTurnover();
 
         // Get the moisture factor for littering rate
-        double swFacTTDead = Math.Pow(glfWater, exponentGLFW2dead);
+        double swFacTTDead = Math.Pow(Math.Min(glfWater, glfAeration), exponentGLFW2dead);
 
         // Consider the number of leaves
         double leafFac = 3.0 / liveLeavesPerTiller;       // three refers to the number of stages used in the model
@@ -1549,7 +1555,7 @@ public class Species
         gamaD += stockParameter * stockingRate;
 
         // Roots turnover rate
-        gamaR = tempFacTTurnover * (2 - glfWater) * rateRootSen;
+        gamaR = tempFacTTurnover * (2 - Math.Min(glfWater, glfAeration)) * rateRootSen;
 
         if (gama == 0.0)
         { //if gama ==0 due to gftt or gfwt, then skip "turnover" part
@@ -2472,8 +2478,8 @@ public class Species
     private double MoistureEffectOnTissueTurnover()
     {
         double result = 1.0;
-        if (glfWater < massFluxWopt)
-            result = 1.0 + (massFluxW0 - 1.0) * ((massFluxWopt - glfWater) / massFluxWopt);
+        if (Math.Min(glfWater, glfAeration) < massFluxWopt)
+            result = 1.0 + (massFluxW0 - 1.0) * ((massFluxWopt - Math.Min(glfWater, glfAeration)) / massFluxWopt);
 
         return Math.Max(1.0, Math.Min(massFluxW0, result));
     }
