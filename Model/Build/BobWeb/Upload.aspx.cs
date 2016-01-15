@@ -1,19 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Net;
 using System.IO;
-using System.Text;
-using System.Security.Authentication;
-using UIUtility;
+using RestSharp;
+using System.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BobWeb
 {
     public partial class Upload : System.Web.UI.Page
     {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            RestClient client = new RestClient("https://www.apsim.info/REST/api");
+            RestRequest req = new RestRequest();
+            req.Resource = "BT";
+            IRestResponse response = client.Execute(req);
+            string xml = response.Content;
+            xml = xml.Substring(1, xml.Length - 2);
+            DataSet ds = new DataSet();
+            DataTable Data;
+            using (StringReader sr = new StringReader(xml))
+            {
+                ds.ReadXml(sr);
+                Data = ds.Tables[0];
+            }
+
+            List<string> tasks = Data.AsEnumerable().Select(dt => dt[0].ToString()).ToList();
+            BugList.DataSource = tasks;
+            BugList.DataBind();
+        }
 
         protected void UploadButton_Click(object sender, EventArgs e)
         {

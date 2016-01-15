@@ -25,9 +25,7 @@
     </div>
     <p>
        Task ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-       <asp:DropDownList ID="BugList" runat="server" 
-          DataSourceID="BugTrackerDataSource" DataTextField="Description" 
-          DataValueField="Description" Height="30px" Width="462px">
+       <asp:DropDownList ID="BugList" runat="server" Height="30px" Width="462px">
        </asp:DropDownList>
     </p>
     <p>
@@ -50,13 +48,6 @@
        <asp:Button ID="UploadButton" runat="server" onclick="UploadButton_Click" 
           Text="Upload patch" />
     </p>
-    <asp:SqlDataSource ID="BugTrackerDataSource" runat="server" 
-       ConnectionString="<%$ ConnectionStrings:BugTrackerConnectionString %>" 
-       SelectCommand="SELECT CONVERT (VARCHAR, bg_id) + ' - ' + bg_short_desc AS Description, bg_id FROM bugs WHERE (bg_status &lt;&gt; @bg_status) ORDER BY bg_id DESC">
-       <SelectParameters>
-          <asp:Parameter DefaultValue="5" Name="bg_status" Type="Int32" />
-       </SelectParameters>
-    </asp:SqlDataSource>
     </form>
 </body>
 </html>
