@@ -205,6 +205,17 @@ public class Species
     /// <summary>Some Description</summary>
     internal double respTref;
 
+    //// > Germination and emergence >>>
+
+    /// <summary>Some Description</summary>
+    internal double DDSEmergence;
+
+    /// <summary>Some Description</summary>
+    internal double[] emergenceDM_grass;
+
+    /// <summary>Some Description</summary>
+    internal double[] emergenceDM_legume;
+
     //// > DM partition >>>
 
     /// <summary>Some Description</summary>
@@ -972,25 +983,33 @@ public class Species
     /// </summary>
     private void SetEmergentState()
     {
-        dmleaf1 = 10.0;   //(kg/ha)
-        dmleaf2 = 20.0;
-        dmleaf3 = 20.0;
-        dmleaf4 = 0.0;
-        if (!isLegume)
+       if (isLegume)
         {
-            dmstem1 = 5.0;
-            dmstem2 = 10.0;
-            dmstem3 = 0.0;
-            dmstem4 = 0.0;
-            dmroot = 50.0;
+            dmleaf1 = emergenceDM_legume[0];
+            dmleaf2 = emergenceDM_legume[1];
+            dmleaf3 = emergenceDM_legume[2];
+            dmleaf4 = emergenceDM_legume[3];
+            dmstem1 = emergenceDM_legume[4];
+            dmstem2 = emergenceDM_legume[5];
+            dmstem3 = emergenceDM_legume[6];
+            dmstem4 = emergenceDM_legume[7];
+            dmstol1 = emergenceDM_legume[8];
+            dmstol2 = emergenceDM_legume[9];
+            dmstol3 = emergenceDM_legume[10];
+            dmroot = emergenceDM_legume[11];
         }
-        else
-        {
-            dmstol1 = 5.0;
-            dmstol2 = 10.0;
-            dmstol3 = 0.0;
-            dmroot = 25.0;
-        }
+       else
+       {
+           dmleaf1 = emergenceDM_grass[0];
+           dmleaf2 = emergenceDM_grass[1];
+           dmleaf3 = emergenceDM_grass[2];
+           dmleaf4 = emergenceDM_grass[3];
+           dmstem1 = emergenceDM_grass[4];
+           dmstem2 = emergenceDM_grass[5];
+           dmstem3 = emergenceDM_grass[6];
+           dmstem4 = emergenceDM_grass[7];
+           dmroot = emergenceDM_grass[11];
+       }
 
         //Init total N in each pool
         Nleaf1 = dmleaf1 * Ncleaf1;
@@ -1022,8 +1041,6 @@ public class Species
     /// <returns>Phenology index</returns>
     internal int Phenology()
     {
-        const double DDSEmergence = 150;   // to be an input parameter
-
         if (bSown && phenoStage == 0)            //  before emergence
         {
             DDSfromSowing += Tmean;

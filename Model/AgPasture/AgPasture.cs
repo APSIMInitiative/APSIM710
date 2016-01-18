@@ -441,6 +441,12 @@ public class AgPasture
     [Units("")]
     private double[] maxTeffectResp;
 
+
+    [Param]
+    [Description("Degrees-day from sowing to emergence")]
+    [Units("oC")]
+    private double[] DDSowEmergence;
+
     ////  >> Partition of new growth  >>>
     // - Shoot:root partition
     [Param]
@@ -682,6 +688,16 @@ public class AgPasture
     [Description("Fractions of initial dmshoot for each biomass pool, for legume species")]
     [Units("0-1")]
     private double[] initialDMFractions_legume;
+
+    [Param]
+    [Description("Dry matter amount for each biomass pool at emergence, for non-legumes")]
+    [Units("kg/ha")]
+    private double[] EmergenceDM_grass;
+
+    [Param]
+    [Description("Dry matter amount for each biomass pool at emergence, for legume species")]
+    [Units("kg/ha")]
+    private double[] EmergenceDM_legume;
 
     ////  >> N concentration in plant tissues >>>
     [Param]
@@ -1297,7 +1313,7 @@ public class AgPasture
                 LL_dep[layer] = LL15_dep[layer];
         }
 
-        // check whether valkues for kNO3 and kNH4 were given for all layers
+        // check whether values for kNO3 and kNH4 were given for all layers
         if (kNH4.Length == 1)
         { // if only one value was given, assume homogeneous over the profile
             Array.Resize(ref kNH4, nLayers);
@@ -1761,6 +1777,11 @@ public class AgPasture
         mySpecies[s1].dRootDepth = 1; //(int)dRootDepth[s];
         mySpecies[s1].maxRootDepth = 10; //(int)maxRootDepth[s];
         //// ------------------------------------------------------------------------------------------------
+
+        //// >> Parameter for germination and emergence
+        mySpecies[s1].emergenceDM_grass = EmergenceDM_grass;
+        mySpecies[s1].emergenceDM_legume = EmergenceDM_legume;
+        mySpecies[s1].DDSEmergence = DDSowEmergence[s2];
 
         //// >> Potential growth (photosynthesis)  >>>
         mySpecies[s1].Pm = Pm[s2];                            //reference leaf co2 mg/m^2/s maximum
@@ -4655,6 +4676,9 @@ public class AgPasture
     /// <param name="frac">Fraction=1</param>
     private void DoSurfaceOMReturn(double amtDM, double amtN, double frac)
     {
+        if (amtDM < 0.000001)
+            return;
+
         float dDM = (float)amtDM;
 
         BiomassRemovedType BR = new BiomassRemovedType();
@@ -4686,6 +4710,9 @@ public class AgPasture
     /// <param name="NinRootSen">N amount</param>
     private void DoIncorpFomEvent(double rootSen, double NinRootSen)
     {
+        if (rootSen < 0.000001)
+            return;
+
         FOMLayerLayerType[] fomLL = new FOMLayerLayerType[dlayer.Length];
 
         // ****  RCichota, Jun, 2014 change how RootFraction (rlvp) is used in here ****************************************
