@@ -632,6 +632,10 @@ public partial class SoilNitrogen
 
 				// get the actual rate of nitrification
 				double nitrif_rate = pot_nitrif_rate_ppm * pni * Math.Max(0.0, 1.0 - g.InhibitionFactor_Nitrification[layer]);
+
+                // check that the nitrification rate is not greater than nh4 content
+                nitrif_rate = Math.Min(nitrif_rate, nh4ppm);
+
 				result = MathUtility.Divide(nitrif_rate, g.convFactor[layer], 0.0);	  // convert back to kg/ha
 			}
 			else
@@ -710,7 +714,10 @@ public partial class SoilNitrogen
 
 				// calculate denitrification rate  - kg/ha
 				result = pot_denit_rate * no3[layer] * swf * stf;
-			}
+
+                // check that the denitrification rate is not greater than no3 content
+                result = Math.Min(result, no3[layer]);
+            }
 			else
 				result = 0.0;
 

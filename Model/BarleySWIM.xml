@@ -1,15 +1,15 @@
 <Type name="BarleySWIM">
   <MetaData>
-    <UItype>CSUserInterface.EmptyUI</UItype>
+    <UItype>CSUserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\barley.jpg</Image>
     <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
     <Documentation name="Barley science documentation">%apsim%\Documentation\4 Module Reference\Barley.htm</Documentation>
     <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\plant.htm</Documentation>
-    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
-    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
-    <dll>%apsim%\Model\Plant.%dllext%</dll>
+    <LargeIcon>%apsim%\UserInterface\Images\wheat32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\wheat16.png</SmallIcon>
+    <dll>%apsim%/Model/Plant.%dllext%</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
@@ -20,15 +20,24 @@
       <component name="[BarleySWIM.name]" executable="[dll]" class="Plant.BarleySWIM">
         <executable name="[dll]" version="1.0"/>
         <initdata>
-               [Model]
-               [BarleySWIM.innerxml]
-               [if "[soil.SoilType]"]
-                  <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf>
-               [endif]
-           <uptake_source>apsim</uptake_source>
-           <n_source>calc</n_source>
-		</initdata>
-	  </component>
+          [Model]
+          <ModifyKL>[BarleySWIM.ModifyKL]</ModifyKL>
+          <MaxRootDepth>[BarleySWIM.MaxRootDepth]</MaxRootDepth>
+          [if "[soil.SoilType]"]
+            <ll>[soil.[InstanceName] ll]</ll>
+            <kl>[soil.[InstanceName] kl]</kl>
+            <xf>[soil.[InstanceName] xf]</xf>
+          [else]
+            <ll>[BarleySWIM.LL]</ll>
+            <kl>[BarleySWIM.KL]</kl>
+            <xf>[BarleySWIM.XF]</xf>
+            <uptake_source>[BarleySWIM.Wsource]</uptake_source>
+          [endif]
+          [if [soil.Analysis.CL]]<cl>[soil.Analysis.CL]</cl>[endif]
+          [if [soil.Analysis.ESP]]<esp>[soil.Analysis.ESP]</esp>[endif]
+          [if [soil.Analysis.EC]]<ec>[soil.Analysis.EC]</ec>[endif]
+        </initdata>
+      </component>
     </ApsimToSim>
   </MetaData>
   <Model>
@@ -59,9 +68,8 @@
       <Parts name="Grain1">
         <Head.Cohort1.Grain />
       </Parts>
-	</options>
-    
-	<RadiationPartitioningOrder>head leaf</RadiationPartitioningOrder>
+    </options>
+    <RadiationPartitioningOrder>head leaf</RadiationPartitioningOrder>
     <crop_type>barley</crop_type>
     <default_crop_class>plant</default_crop_class>
     <default_cultivar>grimmett</default_cultivar>
@@ -123,13 +131,7 @@
     <n_stress>end_of_juvenile(0.3) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <plant class="yes">
-         <rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 </rlvp>
-         <ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 </ll>
-         <kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 </kl>
-         <xf>1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 </xf>
-         <soilSatFactor>0.1 0.1 0.1</soilSatFactor>
-    <!--	 <WaterUptakeSource>apsim</WaterUptakeSource>         -->
-         <partition_option>2</partition_option> 
+      <partition_option>2</partition_option>
       <partitionparts>root  head  leaf stem</partitionparts>
       <partitionrules>magic demand frac remainder</partitionrules>
       <n_retrans_option>2</n_retrans_option>
@@ -286,6 +288,7 @@
          __________________________________________________________________________________________________________-
          GRAIN FILLING
          -->
+      <grain_no_determinant>stem</grain_no_determinant>
       <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
       <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
       <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
@@ -336,7 +339,7 @@
          sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
          stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
          -->
-      <root_depth_rate units="mm/d">0      5.0  30    30    30    30    30      0.0   0.0   0.0    0</root_depth_rate>
+      <root_depth_rate units="mm/d">0      5.0  30    30    30    30    0.0      0.0   0.0   0.0    0</root_depth_rate>
       <!-- Effect of sw_supply_demand_ratio on root depth increase
          -->
       <x_ws_root description="sw_supply_demand_ratio">0   1   </x_ws_root>
@@ -376,7 +379,7 @@
          Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
          -->
       <svp_fract description="(0-1)">0.75  </svp_fract>
-      <eo_crop_factor_default description="default crop factor for limiting soil">100  </eo_crop_factor_default>
+      <eo_crop_factor_default description="default crop factor for limiting soil">1.5  </eo_crop_factor_default>
       <!--  water demand to some fraction/multiple
          of atmospheric potential.
          __________________________________________________________________________________________________________-
@@ -582,6 +585,20 @@
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
       <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
       <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
+      
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION - Root KL modifiers:
+         Hochman et. al. (2007) Simulating the effects of saline and sodic subsoils on wheat
+         crops growing on Vertosols. Australian Journal of Agricultural Research, 58, 802:810
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      -->
+      <ClA>4.0</ClA>
+      <ClB>-0.005</ClB>
+      <ESPA>10.0</ESPA>
+      <ESPB>-0.15</ESPB>
+      <ECA>3.0</ECA>
+      <ECB>-1.3</ECB>
+      
     </plant>
     <!-- ***********************************************************************************************************
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES
@@ -636,6 +653,40 @@
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.0</photop_sens>
     </Mackay>
+    <bass cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation>280.0</tt_floral_initiation>
+      <vern_sens>1</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </bass>
+    <Flinders cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation>230.0</tt_floral_initiation>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Flinders>
+    <Henley cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation>230.0</tt_floral_initiation>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Henley>
+    <Navigator cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation>230.0</tt_floral_initiation>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Navigator>
+    <Westminster cultivar="yes">
+      <derived_from>gairdner</derived_from>
+    </Westminster>
+    <Wimmera cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation>230.0</tt_floral_initiation>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Wimmera>
+    
     <Koru cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <vern_sens>1.5</vern_sens>
@@ -659,6 +710,9 @@
       <vern_sens>1.00</vern_sens>
       <photop_sens>3.50</photop_sens>
     </schooner>
+    <Compass cultivar="yes">
+      <derived_from>schooner</derived_from>
+    </Compass>
     <FlagShip cultivar="yes">
       <derived_from>schooner</derived_from>
     </FlagShip>
@@ -684,6 +738,10 @@
       <vern_sens>1.00</vern_sens>
       <photop_sens>2.90</photop_sens>
     </franklin>
+    <oxford cultivar="yes">
+      <derived_from>franklin</derived_from>
+    </oxford>
+    
     <!--  __________________
       -->
     <sloop cultivar="yes">
@@ -720,6 +778,12 @@
     <Buloke cultivar="yes">
       <derived_from>Sloop_VIC</derived_from>
     </Buloke>
+    <Scope cultivar="yes">
+      <derived_from>Sloop_VIC</derived_from>
+    </Scope>    
+    <Fleet>
+      <derived_from>Sloop_VIC</derived_from>
+    </Fleet>
     <!--  __________________
       -->
     <gairdner cultivar="yes">
@@ -731,6 +795,33 @@
       <vern_sens>1.00</vern_sens>
       <photop_sens>3.50</photop_sens>
     </gairdner>
+    <SYRattler cultivar="yes">
+      <derived_from>gairdner</derived_from>
+    </SYRattler>   
+    <Vlaming  cultivar="yes">
+      <derived_from>gairdner</derived_from>
+    </Vlaming >     
+    <Grange  cultivar="yes">
+      <derived_from>gairdner</derived_from>
+    </Grange>      
+   <gairdner_TAS cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+      <tt_floral_initiation>280.0</tt_floral_initiation>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>4.05</photop_sens>
+      
+      <!--
+      tt_flowering = 120.0
+      startgf_to_mat = 650
+      tt_end_grain_fill = (0.05 * (tt_flowering + startgf_to_mat))
+                        = 38.5
+      tt_start_grain_fill = startgf_to_mat - tt_end_grain_fill
+                          = 611.5
+      -->
+      <tt_start_grain_fill units="oCd">611.5</tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">38.5</tt_end_grain_fill>   
+   </gairdner_TAS>       
     <barque cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
@@ -749,6 +840,39 @@
       <vern_sens>1.00</vern_sens>
       <photop_sens>3.50</photop_sens>
     </capstan>
+    <fitzory>
+      <derived_from>capstan</derived_from>
+    </fitzory>
+    <Fairview>
+      <derived_from>capstan</derived_from>
+    </Fairview>
+    <Flinders>
+      <derived_from>capstan</derived_from>
+    </Flinders>
+    <GrangeR>
+      <derived_from>capstan</derived_from>
+    </GrangeR>    
+    <Navigator>
+      <derived_from>capstan</derived_from>
+    </Navigator>
+    <Oxford>
+      <derived_from>capstan</derived_from>
+    </Oxford> 
+    <Wimmera>
+      <derived_from>capstan</derived_from>
+    </Wimmera>     
+    <commander cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+      <tt_floral_initiation>230.0</tt_floral_initiation>
+      <tt_start_grain_fill units="oCd">550.0</tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
+      <vern_sens>1.00</vern_sens>
+      <photop_sens>3.50</photop_sens>
+   </commander>    
+   <compass cultivar="yes">
+      <derived_from>commander</derived_from>
+   </compass>
     <!--  __________________
       -->
     <maritime cultivar="yes">
@@ -759,7 +883,10 @@
       <tt_floral_initiation>230.0</tt_floral_initiation>
       <vern_sens>1.00</vern_sens>
       <photop_sens>3.30</photop_sens>
-    </maritime>
+    </maritime>    
+    <LaTrobe cultivar="yes">
+      <derived_from>maritime</derived_from>
+    </LaTrobe>
     <!--  __________________
       -->
     <baudin cultivar="yes">
@@ -793,6 +920,9 @@
       <vern_sens>1.00</vern_sens>
       <photop_sens>2.90</photop_sens>
     </keel>
+    <Fathom cultivar="yes">
+       <derived_from>keel</derived_from>
+    </Fathom>
     <!--  __________________
       -->
     <hamelin cultivar="yes">
@@ -813,6 +943,15 @@
       <vern_sens>1.00</vern_sens>
       <photop_sens>3.30</photop_sens>
     </hindmarsh>
+    <Litmus cultivar="yes">
+       <derived_from>hindmarsh</derived_from>
+    </Litmus>
+    <Skipper cultivar="yes">
+       <derived_from>hindmarsh</derived_from>
+    </Skipper>
+    <LaTrobe cultivar="yes">
+       <derived_from>hindmarsh</derived_from>
+    </LaTrobe> 
     <yagen cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
@@ -839,10 +978,10 @@
     <!-- Dash varitey description is based on sowing data trial validation HEB June 2009-->
     <Dash cultivar="yes">
       <derived_from>NewZealand_base_cultivar</derived_from>
-      <tt_floral_initiation>130.0</tt_floral_initiation>
-      <vern_sens>0</vern_sens>
-      <photop_sens>4</photop_sens>
-    </Dash>
+      <vern_sens>0</vern_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+      <photop_sens>4</photop_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+	  <tt_floral_initiation>260.0</tt_floral_initiation> !Used same as DASH, CPT data shows very little difference between barley cultivars
+       </Dash>
     <!-- Cask variety description is based on MTT trial data  HEB Oct 2009-->
     <Cask cultivar="yes">
       <derived_from>NewZealand_base_cultivar</derived_from>
@@ -853,5 +992,45 @@
       <tt_floral_initiation>260.0</tt_floral_initiation>
       <!-- Used same as DASH, CPT data shows very little difference between barley cultivars -->
     </Cask>
+
+<!-- Excel variety description is a copy of cask ED 3may11-->
+   <Excel cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>0</vern_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+      <photop_sens>4</photop_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+	  <tt_floral_initiation>260.0</tt_floral_initiation> !Used same as DASH, CPT data shows very little difference between barley cultivars
+   </Excel>
+<!-- Valetta variety description is a copy of cask ED 3may11-->
+   <Valetta cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>0</vern_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+      <photop_sens>4</photop_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+	  <x_stage_no_partition>1      2    3     4    4.9       5     5.4   6       6.9    7      8     9    10     11</x_stage_no_partition>
+	  <x_node_no_app>0    20</x_node_no_app>
+      <y_node_app_rate>75   75</y_node_app_rate>
+      <x_node_no_leaf>0    2.5    10</x_node_no_leaf>
+      <y_leaves_per_node>1    1    10</y_leaves_per_node>
+	  <x_node_no>1     5    8    10</x_node_no>
+      <y_leaf_size>1400 3700 4800 5600</y_leaf_size>
+	  <x_lai>0     5</x_lai>
+      <y_sla_max description="maximum specific leaf area for delta LAI">30000   25000       </y_sla_max>
+      <sla_min description="minimum specific leaf area for delta LAI">18000            </sla_min>
+	  <tt_end_of_juvenile units="oCd">400.0</tt_end_of_juvenile>
+     <tt_floral_initiation>260.0</tt_floral_initiation> !Used same as DASH, CPT data shows very little difference between barley cultivars
+      <tt_flowering units="oCd">120.0</tt_flowering>
+	  <root_depth_rate units="mm/d">0      5.0  33    33    33    33    33      0.0   0.0   0.0    0</root_depth_rate>
+   </Valetta>
+ <!-- Triumph variety description is a copy of cask ED 3may11-->
+   <Triumph cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>0</vern_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+      <photop_sens>4</photop_sens>  !Used same as DASH, CPT data shows very little difference between barley cultivars
+	  <tt_end_of_juvenile units="oCd">550.0</tt_end_of_juvenile>
+      <tt_flowering units="oCd">200.0</tt_flowering>
+	  <tt_floral_initiation>200.0</tt_floral_initiation> !Used same as DASH, CPT data shows very little difference between barley cultivars
+	  <x_stage_no_partition>1      2    3     4    4.9       5     5.8   6       6.9    7      8     9    10     11</x_stage_no_partition>
+	  <y_frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">0      0    0.6   0.4  0.6       0.6  0.0   0.0     0.0    0      0     0     0      0</y_frac_leaf>
+	  <root_depth_rate units="mm/d">0      5.0  23    23    23    23    23      0.0   0.0   0.0    0</root_depth_rate>
+   </Triumph> 
   </Model>
 </Type>

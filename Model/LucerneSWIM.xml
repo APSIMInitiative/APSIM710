@@ -1,46 +1,36 @@
 <Type name="LucerneSWIM">
   <MetaData>
-    <UItype>CSUserInterface.EmptyUI</UItype>
+    <UItype>CSUserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\lucerne.jpg</Image>
     <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <Documentation name="Lucerne science documentation">../apsim/lucerne/docs/lucerne_science.htm</Documentation>
-    <Documentation name="Generic plant">../apsim/plant/docs/plant_science.htm</Documentation>
-    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
-    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
-    <dll>%apsim%\Model\Plant.%dllext%</dll>
+    <Documentation>%apsim%\Documentation\4 Module Reference\lucerne.htm</Documentation>
+    <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\lucerne32.png</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\lucerne16.png</SmallIcon>
+    <dll>%apsim%/Model/Plant.%dllext%</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
-    <class name="plant" />
-    <class name="lucerne_regrowth" />
-    <class name="dormancy" />
-    <class name="lucerne_delayed" />
-    <class name="lucerne_reduced" />
-    <class name="lucerne_sprayed" /><cultivar name="hunter_river" />
-    <cultivar name="trifecta" />
-    <cultivar name="kaituna" />
-    <cultivar name="sceptre" />
-    <cultivar name="aquarius" />
-    <cultivar name="dingxi" />
-    <cultivar name="Longdong" />
-    <variables link="%apsim%\Documentation\ModelInfo\lucerne.xml" />
-    <events link="%apsim%\Documentation\ModelInfo\lucerne.xml" />
     <ApsimToSim>
       <component name="[LucerneSWIM.name]" executable="[dll]" class="Plant.LucerneSWIM">
         <executable name="[dll]" version="1.0" />
         <initdata>
-               [Model]
-               [LucerneSWIM.innerxml]
-               [if "[soil.SoilType]"]
-                  <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf>
-               [endif]
-           <uptake_source>apsim</uptake_source>
-           <n_source>calc</n_source>
+          [Model]
+          [if "[soil.SoilType]"]
+            <ll>[soil.[InstanceName] ll]</ll>
+            <kl>[soil.[InstanceName] kl]</kl>
+            <xf>[soil.[InstanceName] xf]</xf>
+          [else]
+            <ll>[LucerneSWIM.LL]</ll>
+            <kl>[LucerneSWIM.KL]</kl>
+            <xf>[LucerneSWIM.XF]</xf>
+            <uptake_source>[LucerneSWIM.Wsource]</uptake_source>
+          [endif]
 		</initdata>
 	  </component>
     </ApsimToSim>
@@ -164,12 +154,7 @@
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
-    <plant>
-         <rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00</rlvp>
-         <ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23</ll>
-         <kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06</kl>
-         <xf>1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00</xf>
-         <soilSatFactor>0.1 0.1 0.1</soilSatFactor>
+    <plant class="yes">
       <class_action>harvest   spray   delay   reduce  spring   dormancy     kill_stem</class_action>
       <class_change>regrowth  sprayed delayed reduced regrowth dormant      regrowth</class_change>
       <partition_option>1</partition_option>
@@ -391,9 +376,9 @@
          Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
          -->
       <svp_fract description="(0-1)">0.75  </svp_fract>
-      <eo_crop_factor_default description="default crop factor for limiting soil">1.1   </eo_crop_factor_default>
+      <eo_crop_factor_default description="default crop factor for limiting soil">100.0   </eo_crop_factor_default>
       <!--  water demand to some fraction/multiple
-         of atmospheric potential - value adopted from old 5.2 runs
+         of atmospheric potential.
          __________________________________________________________________________________________________________-
          WATER STRESS FACTORS FOR PHOTOSYNTHESIS, EXPANSION AND DEVELOPMENT
          swdef_photo for photosynthesis is calculated in the code as = sw_supply_sum/sw_demand - function crop_swdef_photo
@@ -668,7 +653,7 @@
       !! section for parameters for lucerne regrowth!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <regrowth>
+    <regrowth class="yes">
       <derived_from>plant</derived_from>
       <class_action>harvest   spray   delay   reduce  spring    dormancy     kill_stem</class_action>
       <class_change>unchanged sprayed delayed reduced unchanged dormant      unchanged</class_change>
@@ -694,7 +679,7 @@
       set root_depth_rate = 0 to stop root growth because it is not linked to dlt_dm
       set phyllochron to large number - stop node appearance - is this needed?
       -->
-    <dormancy>
+    <dormant class="yes">
       <derived_from>plant</derived_from>
       <class_action>harvest    spray   delay   reduce  spring   dormancy     kill_stem</class_action>
       <class_change>unchanged  sprayed delayed reduced regrowth unchanged    unchanged</class_change>
@@ -711,19 +696,19 @@
       <x_stage_rue>1       11</x_stage_rue>
       <y_rue units="g/MJ">0.0     0.0</y_rue>
       <transp_eff_cf units="Pa">0.0  0.0 0.000 0.000 0.000 0.000 0.000  0.000 0.000    0.00     0</transp_eff_cf>
-    </dormancy>
+    </dormant>
     <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       !! section for parameters for lucerne growth in Autumn!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
-    <delayed>
+    <delayed class="yes">
       <derived_from>regrowth</derived_from>
       <class_action>harvest   spray   delay     reduce    spring   dormancy     kill_stem</class_action>
       <class_change>unchanged sprayed unchanged reduced   regrowth dormant      unchanged</class_change>
       <x_node_no_app>0    3   20</x_node_no_app>
       <y_node_app_rate>51   51  51</y_node_app_rate>
     </delayed>
-    <reduced>
+    <reduced class="yes">
       <derived_from>delayed</derived_from>
       <class_action>harvest   spray   delay   reduce    spring   dormancy     kill_stem</class_action>
       <class_change>unchanged sprayed delayed unchanged regrowth dormant      unchanged</class_change>
@@ -735,7 +720,7 @@
       <x_stage_rue description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9      10    11</x_stage_rue>
       <y_rue units="g/MJ">0      0  0.60  0.60  0.50  0.20  0.20   0.0    0.0    0.00     0</y_rue>
     </reduced>
-    <sprayed>
+    <sprayed class="yes">
       <derived_from>delayed</derived_from>
       <!-- frosted = lucerne_frosted regrowth lucerne
          class_action = harvest   frost   delay   reduce  spring   spray
@@ -755,7 +740,7 @@
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES
       ***********************************************************************************************************
       -->
-    <hunter_river>
+    <hunter_river cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -776,7 +761,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      2                </x_stem_wt>
       <y_height description="plant height (mm)">0      500              </y_height>
     </hunter_river>
-    <trifecta>
+    <trifecta cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -797,7 +782,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      2                </x_stem_wt>
       <y_height description="plant height (mm)">0      500              </y_height>
     </trifecta>
-    <kaituna>
+    <kaituna cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -818,7 +803,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      2                </x_stem_wt>
       <y_height description="plant height (mm)">0      500              </y_height>
     </kaituna>
-    <sceptre>
+    <sceptre cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -839,7 +824,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      2                </x_stem_wt>
       <y_height description="plant height (mm)">0      500              </y_height>
     </sceptre>
-    <aquarius>
+    <aquarius cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -860,7 +845,7 @@
       <x_stem_wt description="stem weight (g/plant)">0      2                </x_stem_wt>
       <y_height description="plant height (mm)">0      500              </y_height>
     </aquarius>
-    <dingxi>
+    <dingxi cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>
@@ -885,7 +870,7 @@
       x_stem_wt                  = 0      7      ! stem weight (g/stem)
       y_height                   = 0      2000   ! plant height (mm)
       -->
-    <Longdong description="! tested and revised on 21th March, further revised on 5th Sept. 2002 by Wen and Mike">
+    <Longdong description="! tested and revised on 21th March, further revised on 5th Sept. 2002 by Wen and Mike" cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0001 0.0001</y_hi_incr>
       <x_hi_max_pot_stress description="maximum harvest index potential">0.0 1.0</x_hi_max_pot_stress>

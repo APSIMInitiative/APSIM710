@@ -1,9 +1,9 @@
 <Type name="WheatSWIM">
   <MetaData>
-    <UItype>CSUserInterface.EmptyUI</UItype>
+    <UItype>CSUserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\wheat.jpg</Image>
+    <Image>%apsim%\UserInterface\Images\Wheat.jpg</Image>
     <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
     <Documentation>%apsim%\Documentation\4 Module Reference\Wheat.htm</Documentation>
     <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
@@ -26,15 +26,24 @@
       <component name="[WheatSWIM.name]" executable="[dll]" class="Plant.WheatSWIM">
         <executable name="[dll]" version="1.0" />
         <initdata>
-               [Model]
-               [WheatSWIM.innerxml]
-               [if "[soil.SoilType]"]
-                  <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf>
-               [endif]
-           <uptake_source>apsim</uptake_source>
-           <n_source>calc</n_source>
-		</initdata>
-	  </component>
+          [Model]
+          <ModifyKL>[WheatSWIM.ModifyKL]</ModifyKL>
+          <MaxRootDepth>[WheatSWIM.MaxRootDepth]</MaxRootDepth>
+          [if "[soil.SoilType]"]
+            <ll>[soil.[InstanceName] ll]</ll>
+            <kl>[soil.[InstanceName] kl]</kl>
+            <xf>[soil.[InstanceName] xf]</xf>
+          [else]
+            <ll>[WheatSWIM.LL]</ll>
+            <kl>[WheatSWIM.KL]</kl>
+            <xf>[WheatSWIM.XF]</xf>
+            <uptake_source>[WheatSWIM.Wsource]</uptake_source>
+          [endif]
+          [if [soil.Analysis.CL]]<cl>[soil.Analysis.CL]</cl>[endif]
+          [if [soil.Analysis.ESP]]<esp>[soil.Analysis.ESP]</esp>[endif]
+          [if [soil.Analysis.EC]]<ec>[soil.Analysis.EC]</ec>[endif]
+        </initdata>
+      </component>
     </ApsimToSim>
   </MetaData>
   <Model>
@@ -130,11 +139,6 @@
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>end_of_juvenile(0.3) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
     <plant class="yes">
-         <rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00</rlvp>
-         <ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23</ll>
-         <kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06</kl>
-         <xf>1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00</xf>
-         <soilSatFactor>0.1 0.1 0.1</soilSatFactor>
       <partition_option>2</partition_option>
       <partitionparts>root  head  leaf stem</partitionparts>
       <partitionrules>magic demand frac remainder</partitionrules>
@@ -282,11 +286,11 @@
       <!-- __________________________________________________________________________________________________________-
          TRANSLOCATION PARTS
          -->
-      <stemGrowthStructuralFractionStage>  7 7.01</stemGrowthStructuralFractionStage>
-      <stemGrowthStructuralFraction>  .65 0.0</stemGrowthStructuralFraction>
+      <stemGrowthStructuralFractionStage>  5.6 6.01</stemGrowthStructuralFractionStage>
+      <stemGrowthStructuralFraction>  .70 0.0</stemGrowthStructuralFraction>
       <!-- __________________________________________________________________________________________________________-
          BIOMASS PARTITIONING
-         sow    ger   eme  juv   endjuv    fi    flag  flow  endhead st_gf end_gf  mat hv_rpe  end
+                            sow    ger   eme  juv   endjuv    fi    flag  flow  endhead st_gf end_gf  mat hv_rpe  end
          -->
       <x_stage_no_partition>1      2    3     4    4.9       5     5.4   6       6.9    7      8     9    10     11</x_stage_no_partition>
       <!-- y_ratio_root_shoot         = 0      0    1.0   0.6  0.3       0.25  0.10  0.08          0      0     0     0      0   (0-1)
@@ -300,7 +304,8 @@
          __________________________________________________________________________________________________________-
          GRAIN FILLING
          -->
-      <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
+      <grain_no_determinant>stem</grain_no_determinant>
+		 <sw_fac_max description="soil water stress factor maximum">1.125</sw_fac_max>
       <temp_fac_min description="temperature stress factor minimum">0.69</temp_fac_min>
       <sfac_slope description="soil water stress factor slope">-0.125</sfac_slope>
       <tfac_slope description="temperature stress factor slope">0.0125</tfac_slope>
@@ -355,7 +360,7 @@
          stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
          root_depth_rate       = 0      5.0  40    40    40    40    0      0.0   0.0   0.0    0  (mm/d)
          -->
-      <root_depth_rate units="mm/d">0      5.0  30    30    30    30    30      0.0   0.0   0.0    0</root_depth_rate>
+      <root_depth_rate units="mm/d">0      5.0  30    30    30    30    0.0      0.0   0.0   0.0    0</root_depth_rate>
       <!-- Effect of sw_supply_demand_ratio on root depth increase
          -->
       <x_ws_root description="sw_supply_demand_ratio">0   1   </x_ws_root>
@@ -395,7 +400,7 @@
          Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
          -->
       <svp_fract description="(0-1)">0.75  </svp_fract>
-      <eo_crop_factor_default description="default crop factor for limiting soil">1.1  </eo_crop_factor_default>
+      <eo_crop_factor_default description="default crop factor for limiting soil">1.5  </eo_crop_factor_default>
       <!--  water demand to some fraction/multiple
          of atmospheric potential.
          __________________________________________________________________________________________________________-
@@ -453,11 +458,11 @@
          g_n_fact_pheno    = N_fact_pheno * N_conc_ratio
          g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf
          -->
-      <n_stress_option>2</n_stress_option>
+      <n_stress_option>1</n_stress_option>
       <N_fact_photo description="multipler for N deficit effect on photosynthesis">1.5    </N_fact_photo>
       <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0    </N_fact_expansion>
       <N_fact_pheno description="multipler for N deficit effect on phenology">100    </N_fact_pheno>
-      <N_fact_grain description="multipler for N deficit effect on grain filling">1    </N_fact_grain>
+      <N_fact_grain description="multipler for N deficit effect on grain filling">1.5    </N_fact_grain>
       <!-- ______________________________________________________________________________
          NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
          emerg   endjuv fi    flow   end gf maturity
@@ -549,8 +554,9 @@
       <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-15.0 -5.0     </x_temp_senescence>
       <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">0    0       </y_senescence_fac>
       <x_maxt_senescence description="minimum temperature for heat senescence table (oC)">34.0 34.1 45.0     </x_maxt_senescence>
-      <y_heatsenescence_fac description="daily fraction of leaf area senesced due to heat (0-1)">0  0.0  0.0       </y_heatsenescence_fac> 	  
+      <y_heatsenescence_fac description="daily fraction of leaf area senesced due to heat (0-1)">0  0.05  0.40       </y_heatsenescence_fac> 
       <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
+	  
       <!-- ______________________________________________________________________________
          DETACHMENT
          root
@@ -598,7 +604,7 @@
          green
          -->
       <XLeafGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMaxStageCode>
-      <YLeafGreenDigestibilityMax>0.92  0.92  0.92   0.92  0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
+      <YLeafGreenDigestibilityMax>0.85  0.85  0.85   0.85  0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
       <XLeafGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityAvgStageCode>
       <YLeafGreenDigestibilityAvg>0.82  0.82  0.82   0.82  0.7  0.68  0.68  0.68</YLeafGreenDigestibilityAvg>
       <XLeafGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMinStageCode>
@@ -616,17 +622,17 @@
       <XPodGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMinStageCode>
       <YPodGreenDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMin>
       <XMealGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMaxStageCode>
-      <YMealGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMax>
+      <YMealGreenDigestibilityMax>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YMealGreenDigestibilityMax>
       <XMealGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityAvgStageCode>
-      <YMealGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityAvg>
+      <YMealGreenDigestibilityAvg>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YMealGreenDigestibilityAvg>
       <XMealGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMinStageCode>
-      <YMealGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMin>
+      <YMealGreenDigestibilityMin>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YMealGreenDigestibilityMin>
       <XOilGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMaxStageCode>
-      <YOilGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMax>
+      <YOilGreenDigestibilityMax>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YOilGreenDigestibilityMax>
       <XOilGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityAvgStageCode>
-      <YOilGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityAvg>
+      <YOilGreenDigestibilityAvg>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YOilGreenDigestibilityAvg>
       <XOilGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMinStageCode>
-      <YOilGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMin>
+      <YOilGreenDigestibilityMin>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YOilGreenDigestibilityMin>
       <!-- senesced
          -->
       <XLeafSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMaxStageCode>
@@ -648,17 +654,17 @@
       <XPodSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMinStageCode>
       <YPodSenescedDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMin>
       <XMealSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMaxStageCode>
-      <YMealSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMax>
+      <YMealSenescedDigestibilityMax>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YMealSenescedDigestibilityMax>
       <XMealSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityAvgStageCode>
-      <YMealSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityAvg>
+      <YMealSenescedDigestibilityAvg>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YMealSenescedDigestibilityAvg>
       <XMealSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMinStageCode>
-      <YMealSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMin>
+      <YMealSenescedDigestibilityMin>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YMealSenescedDigestibilityMin>
       <XOilSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMaxStageCode>
-      <YOilSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMax>
+      <YOilSenescedDigestibilityMax>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YOilSenescedDigestibilityMax>
       <XOilSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityAvgStageCode>
-      <YOilSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityAvg>
+      <YOilSenescedDigestibilityAvg>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YOilSenescedDigestibilityAvg>
       <XOilSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMinStageCode>
-      <YOilSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMin>
+      <YOilSenescedDigestibilityMin>0.85   0.85   0.85   0.85   0.85  0.85  0.85  0.85</YOilSenescedDigestibilityMin>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          SECTION - VALUE LIMITS - MAX AND MINS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -678,6 +684,20 @@
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
       <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
       <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
+      
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION - Root KL modifiers:
+         Hochman et. al. (2007) Simulating the effects of saline and sodic subsoils on wheat
+         crops growing on Vertosols. Australian Journal of Agricultural Research, 58, 802:810
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      -->
+      <ClA>4.0</ClA>
+      <ClB>-0.005</ClB>
+      <ESPA>10.0</ESPA>
+      <ESPB>-0.15</ESPB>
+      <ECA>3.0</ECA>
+      <ECB>-1.3</ECB>
+      
     </plant>
     <!-- ***********************************************************************************************************
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES
@@ -715,8 +735,10 @@
       <est_days_emerg_to_init units="d">83</est_days_emerg_to_init>
       <x_pp_endjuv_to_init>10.8   16.3</x_pp_endjuv_to_init>
       <y_tt_endjuv_to_init>50     50</y_tt_endjuv_to_init>
-      <x_pp_init_to_flower units="h">10.8   16.3</x_pp_init_to_flower>
+      <!--<x_pp_init_to_flower units="h">10.8   16.3</x_pp_init_to_flower>
       <y_tt_init_to_flower units="oCd">450    200</y_tt_init_to_flower>
+      <x_pp_init_to_flower units="h">  10-0  10.9  11.0  15.5  18.0</x_pp_init_to_flower>
+      <y_tt_init_to_flower units="oCd">130   130   300   150   150</y_tt_init_to_flower>-->
       <x_pp_flower_to_start_grain units="h">1      24</x_pp_flower_to_start_grain>
       <y_tt_flower_to_start_grain units="oCd">120     120</y_tt_flower_to_start_grain>
       <x_pp_start_to_end_grain units="h">1      24</x_pp_start_to_end_grain>
@@ -877,11 +899,23 @@
       <photop_sens>3.5</photop_sens>
       <y_height units="mm" description="plant canopy height">50  1500</y_height>
       <!-- 4 micromet rfz -->
+      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">120.0</node_sen_rate>
+      <!-- I have reduced to reduce the rate of senescence following flag leaf to get the canopy duration that is observed in NZ HEB Jun 2011 -->
       <root_depth_rate units="mm/d">0      5.0  20    20    20    20    0      0.0   0.0   0.0    0 </root_depth_rate>
+      <x_stage_no_partition>1      2    3     4    4.9       5     5.4   6       6.9    7      8     9    10     11</x_stage_no_partition>
+      <y_frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">0      0    0.6   0.6  0.3       0.3  0.0   0.0     0.0    0      0     0     0      0</y_frac_leaf>
       <!-- roots were going down to fast so reduced rate HEB I don't really believe they grow slower that australian varieties, probably an error in temperature response of root extension this is a short term solution -->
       <!-- Some NZ cultivars are using base cultivar instead of NewZealand_base_cultivar to avoid causing problems with the validation set.  These will need to be reconciled in the future-->
-    </NewZealand_base_cultivar>
-    <Advantage>
+      <x_node_no_leaf>0    2.5   6</x_node_no_leaf>
+      <y_leaves_per_node>1    1   1</y_leaves_per_node>
+      <!-- I have reduced the branching rate for NZ varieties to account for the higher tyical sowing rates (150 300 plants / m2) HEB June 2011-->
+      <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>
+      <!-- I have reduced the rate of senescence during water stress to improve predictions of LAI under water stress-->
+	  <x_pp_init_to_flower units="h">  10-0  10.9  11.0  15.5  18.0</x_pp_init_to_flower>
+      <y_tt_init_to_flower units="oCd">130   130   300   150   150</y_tt_init_to_flower>
+      <!--Based on measurements from CPT-->
+	</NewZealand_base_cultivar>
+    <Advantage cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
@@ -903,7 +937,7 @@
       <vern_sens>5.0</vern_sens>
       <photop_sens>3.0</photop_sens>
     </Aspiring>
-    <Avalon>
+    <Avalon cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
@@ -915,14 +949,24 @@
       <vern_sens>1.0</vern_sens>
       <photop_sens>4.0</photop_sens>
     </BAKKER_GOLD>
-    <Batten>
+    <Batten cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
       <vern_sens>1.0</vern_sens>
       <photop_sens>4.0</photop_sens>
     </Batten>
-    <Bounty>
+    <Batten_winter cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+    </Batten_winter>
+    <Batten_spring cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>0</vern_sens>
+      <photop_sens>5</photop_sens>
+    </Batten_spring>	
+    <Bounty cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
@@ -934,6 +978,13 @@
       <vern_sens>5.0</vern_sens>
       <photop_sens>4.0</photop_sens>
     </Buster>
+	<Cassius cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+	  <grains_per_gram_stem>50.0 </grains_per_gram_stem>
+      <max_grain_size>0.06</max_grain_size>
+    </Cassius>
     <Cellar cultivar="yes">
       <derived_from>NewZealand_base_cultivar</derived_from>
       <vern_sens>4.0</vern_sens>
@@ -964,7 +1015,7 @@
       <vern_sens>5.0</vern_sens>
       <photop_sens>4.5</photop_sens>
     </Consort>
-    <CR137>
+    <CR137 cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
@@ -996,7 +1047,7 @@
       <vern_sens>1.0</vern_sens>
       <photop_sens>4.0</photop_sens>
     </Kohika>
-    <Kopara>
+    <Kopara cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
@@ -1028,7 +1079,7 @@
       <vern_sens>1.0</vern_sens>
       <photop_sens>4.5</photop_sens>
     </Morph>
-    <Moulin>
+    <Moulin cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
       <max_grain_size>0.047</max_grain_size>
@@ -1117,7 +1168,228 @@
       <vern_sens>5.0</vern_sens>
       <photop_sens>4.0</photop_sens>
     </Weston>
-    <!-- x_pp_endjuv_to_init =           10.8   16.3
+    
+	<!-- Generic flowering types -->
+	<V0_P0 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>0</vern_sens>
+<photop_sens>0</photop_sens>
+</V0_P0>
+
+<V1_P0 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>1</vern_sens>
+<photop_sens>0</photop_sens>
+</V1_P0>
+
+<V2_P0 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>2</vern_sens>
+<photop_sens>0</photop_sens>
+</V2_P0>
+
+<V3_P0 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>3</vern_sens>
+<photop_sens>0</photop_sens>
+</V3_P0>
+
+<V4_P0 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>4</vern_sens>
+<photop_sens>0</photop_sens>
+</V4_P0>
+
+<V5_P0 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>5</vern_sens>
+<photop_sens>0</photop_sens>
+</V5_P0>
+
+<V0_P1 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>0</vern_sens>
+<photop_sens>1</photop_sens>
+</V0_P1>
+
+<V1_P1 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>1</vern_sens>
+<photop_sens>1</photop_sens>
+</V1_P1>
+
+<V2_P1 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>2</vern_sens>
+<photop_sens>1</photop_sens>
+</V2_P1>
+
+<V3_P1 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>3</vern_sens>
+<photop_sens>1</photop_sens>
+</V3_P1>
+
+<V4_P1 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>4</vern_sens>
+<photop_sens>1</photop_sens>
+</V4_P1>
+
+<V5_P1 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>5</vern_sens>
+<photop_sens>1</photop_sens>
+</V5_P1>
+
+<V0_P2 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>0</vern_sens>
+<photop_sens>2</photop_sens>
+</V0_P2>
+
+<V1_P2 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>1</vern_sens>
+<photop_sens>2</photop_sens>
+</V1_P2>
+
+<V2_P2 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>2</vern_sens>
+<photop_sens>2</photop_sens>
+</V2_P2>
+
+<V3_P2 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>3</vern_sens>
+<photop_sens>2</photop_sens>
+</V3_P2>
+
+<V4_P2 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>4</vern_sens>
+<photop_sens>2</photop_sens>
+</V4_P2>
+
+<V5_P2 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>5</vern_sens>
+<photop_sens>2</photop_sens>
+</V5_P2>
+
+<V0_P3 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>0</vern_sens>
+<photop_sens>3</photop_sens>
+</V0_P3>
+
+<V1_P3 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>1</vern_sens>
+<photop_sens>3</photop_sens>
+</V1_P3>
+
+<V2_P3 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>2</vern_sens>
+<photop_sens>3</photop_sens>
+</V2_P3>
+
+<V3_P3 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>3</vern_sens>
+<photop_sens>3</photop_sens>
+</V3_P3>
+
+<V4_P3 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>4</vern_sens>
+<photop_sens>3</photop_sens>
+</V4_P3>
+
+<V5_P3 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>5</vern_sens>
+<photop_sens>3</photop_sens>
+</V5_P3>
+
+<V0_P4 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>0</vern_sens>
+<photop_sens>4</photop_sens>
+</V0_P4>
+
+<V1_P4 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>1</vern_sens>
+<photop_sens>4</photop_sens>
+</V1_P4>
+
+<V2_P4 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>2</vern_sens>
+<photop_sens>4</photop_sens>
+</V2_P4>
+
+<V3_P4 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>3</vern_sens>
+<photop_sens>4</photop_sens>
+</V3_P4>
+
+<V4_P4 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>4</vern_sens>
+<photop_sens>4</photop_sens>
+</V4_P4>
+
+<V5_P4 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>5</vern_sens>
+<photop_sens>4</photop_sens>
+</V5_P4>
+
+<V0_P5 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>0</vern_sens>
+<photop_sens>5</photop_sens>
+</V0_P5>
+
+<V1_P5 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>1</vern_sens>
+<photop_sens>5</photop_sens>
+</V1_P5>
+
+<V2_P5 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>2</vern_sens>
+<photop_sens>5</photop_sens>
+</V2_P5>
+
+<V3_P5 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>3</vern_sens>
+<photop_sens>5</photop_sens>
+</V3_P5>
+
+<V4_P5 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>4</vern_sens>
+<photop_sens>5</photop_sens>
+</V4_P5>
+
+<V5_P5 cultivar="yes">
+<derived_from>NewZealand_base_cultivar</derived_from>
+<vern_sens>5</vern_sens>
+<photop_sens>5</photop_sens>
+</V5_P5>
+
+	
+	
+	
+	<!-- x_pp_endjuv_to_init =           10.8   16.3
       y_tt_endjuv_to_init =           700    600
 
       x_pp_init_to_flower        =   1      24   (h)
@@ -1162,10 +1434,12 @@
       Very Early maturing
       __________________
       -->
-    <axe>
+    <axe cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>1.5</photop_sens>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.0</photop_sens>
+      <!-- <tt_end_of_juvenile units="oCd">450.0</tt_end_of_juvenile>
+      <tt_start_grain_fill units="oCd">560</tt_start_grain_fill> -->
     </axe>
     <h45 cultivar="yes">
       <derived_from>base_cultivar</derived_from>
@@ -1207,99 +1481,91 @@
       <vern_sens>1.5</vern_sens>
       <photop_sens>1.5</photop_sens>
     </waagan>
+    <saintly cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </saintly>
+
+    
     <!--  Early maturing
       __________________
       -->
-    <arrino cultivar="yes">
+    <early>
       <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <vern_sens>2.3</vern_sens>
+      <photop_sens>3.2</photop_sens>
+    </early>
+    <arrino cultivar="yes">
+      <derived_from>early</derived_from>
     </arrino>
     <ruby cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </ruby>
     <kirchauff cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </kirchauff>
     <kalka cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </kalka>
     <kukri cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </kukri>
     <hybrid_mercury cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </hybrid_mercury>
     <ouyen cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </ouyen>
     <tamaroi cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </tamaroi>
     <wyalkatchem cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </wyalkatchem>
+    <hunter cultivar="yes">
+      <derived_from>early</derived_from>
+    </hunter>    
     <mace cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </mace>
     <young cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </young>
     <bowerbird cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </bowerbird>
     <drysdale cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </drysdale>
     <bonnie_rock cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </bonnie_rock>
     <perengori cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </perengori>
     <agtscythe cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </agtscythe>
     <livingston cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </livingston>
     <crusader cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.6</vern_sens>
-      <photop_sens>1.8</photop_sens>
+      <derived_from>early</derived_from>
     </crusader>
+    <hyperno cultivar="yes">
+       <derived_from>early</derived_from>
+    </hyperno> 
+    <dart cultivar="yes">
+       <derived_from>early</derived_from>
+    </dart>  
+    <emurock cultivar="yes">
+       <derived_from>early</derived_from>
+    </emurock>  
+    <imposeclplus cultivar="yes">
+       <derived_from>early</derived_from>
+    </imposeclplus>  
+   
     <!--  Early-Mid maturing
       __________________
       -->
@@ -1348,6 +1614,17 @@
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.0</photop_sens>
     </carnamah>
+    <estoc cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </estoc>    
+    <scout cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.8</vern_sens>
+      <photop_sens>3.5</photop_sens>
+	  <tt_start_grain_fill units="oCd">550</tt_start_grain_fill>
+    </scout>    
     <sunstate cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <vern_sens>1.5</vern_sens>
@@ -1395,14 +1672,83 @@
     </pugsley>
     <lincoln cultivar="yes">
       <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.8</vern_sens>
+      <photop_sens>3.5</photop_sens>
+<!--	  <tt_floral_initiation units="oCd">550.0</tt_floral_initiation>
+	  <tt_flowering units="oCd">150.0</tt_flowering>
+	  <tt_start_grain_fill units="oCd">550</tt_start_grain_fill> -->
+    </lincoln>
+    <impala cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.0</photop_sens>
-    </lincoln>
+    </impala>
+    <spitfire cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </spitfire>
     <correll cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.0</photop_sens>
     </correll>
+    <peake cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </peake>
+    <Sunmate cultivar="yes">
+      <derived_from>spitfire</derived_from>
+    </Sunmate>
+    <WID802 cultivar="yes">
+      <derived_from>spitfire</derived_from>
+    </WID802>    
+    <justica cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </justica>
+    <kord cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </kord>
+    <cobra cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </cobra>    
+    <corack cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </corack>    
+    <grenadeclplus cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </grenadeclplus>    
+    <merlin cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </merlin>
+    <shield cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </shield>
+    <sunguard cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </sunguard>
+    <yawa cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </yawa>    
     <!--  Mid maturing
       ____________
       -->
@@ -1461,6 +1807,27 @@
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.5</photop_sens>
     </carinya>
+    <wallup cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </wallup>      
+    <elmoreclplus cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </elmoreclplus>
+    <justicaclplus cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </justicaclplus>
+    <DBAAurora cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </DBAAurora>
+        
     <!--  Mid+ maturing
       ________________-
       -->
@@ -1474,6 +1841,16 @@
       <vern_sens>2.0</vern_sens>
       <photop_sens>3.5</photop_sens>
     </lang>
+    <caparoi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </caparoi> 
+    <suntop cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </suntop> 
     <!--  Mid-late maturing
       ________________-
       -->
@@ -1519,15 +1896,53 @@
     </sunvale>
     <gregory cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <vern_sens>2.8</vern_sens>
-      <photop_sens>3.0</photop_sens>
+      <vern_sens>2.7</vern_sens>
+      <photop_sens>3.2</photop_sens>
+	 <!-- <tt_start_grain_fill units="oCd">650</tt_start_grain_fill> -->
     </gregory>
+    <Lancer cultivar="yes">
+        <derived_from>gregory</derived_from>
+    </Lancer>
     <magenta cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <vern_sens>2.8</vern_sens>
       <photop_sens>3.0</photop_sens>
     </magenta>
-    <!--  Late Maturing
+    <sentinel cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </sentinel>    
+    <envoy cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </envoy>    
+    <gauntlet cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </gauntlet>    
+    <gazelle cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </gazelle>    
+    <phantom cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </phantom>
+    <Harper cultivar="yes">
+        <derived_from>sunvale</derived_from>
+    </Harper>
+    <Mitch cultivar="yes">
+        <derived_from>sunvale</derived_from>
+    </Mitch>
+    <Trojan cultivar="yes">
+        <derived_from>sunvale</derived_from>
+    </Trojan>
+   <!--  Late Maturing
       ____________-
       -->
     <kelallac cultivar="yes">
@@ -1535,6 +1950,9 @@
       <vern_sens>2.5</vern_sens>
       <photop_sens>4.0</photop_sens>
     </kelallac>
+    <preston>
+      <derived_from>kelallac</derived_from>
+    </preston>
     <strzelecki cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <vern_sens>2.5</vern_sens>
@@ -1546,6 +1964,21 @@
     <beaufort cultivar="yes">
       <derived_from>kelallac</derived_from>
     </beaufort>
+	<eaglehawk cultivar="yes">
+	  <derived_from>base_cultivar</derived_from>
+	  <vern_sens>2.5</vern_sens>
+      <photop_sens>2.5</photop_sens>
+	  <tt_end_of_juvenile units="oCd">500.0</tt_end_of_juvenile>
+	  <tt_floral_initiation units="oCd">655.0</tt_floral_initiation>
+	  <tt_flowering units="oCd">250.0</tt_flowering>
+	  <tt_start_grain_fill units="oCd">500</tt_start_grain_fill>
+	</eaglehawk>	
+    <forrest cultivar="yes">
+      <derived_from>kelallac</derived_from>
+    </forrest>
+    <Scenario cultivar="yes">
+      <derived_from>kelallac</derived_from>
+    </Scenario>	
     <!--  Winter Wheat
       ____________
       Based on data in Penrose et al 2003 (AJAR)
@@ -1609,12 +2042,37 @@
       <vern_sens>3.9</vern_sens>
       <photop_sens>4.3</photop_sens>
     </mackellar>
+    <mackellar_TAS cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+      <vern_sens>3.2</vern_sens>
+      <photop_sens>3.5</photop_sens>
+      <!--
+      tt_flowering = 120.0
+      startgf_to_mat = 750
+      tt_end_grain_fill = (0.05 * (tt_flowering + startgf_to_mat))
+                        = 43.5
+      tt_start_grain_fill = startgf_to_mat - tt_end_grain_fill
+                          = 706.5
+      -->
+      <tt_start_grain_fill units="oCd">706.5</tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">43.5</tt_end_grain_fill>   
+    </mackellar_TAS>
     <revenue cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
       <vern_sens>3.9</vern_sens>
       <photop_sens>4.3</photop_sens>
     </revenue>
+    <manning>
+      <derived_from>revenue</derived_from>
+    </manning>
+    <adagio cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.3</photop_sens>
+    </adagio>    
     <brennan cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
@@ -1649,12 +2107,88 @@
       <vern_sens>3.9</vern_sens>
       <photop_sens>4.5</photop_sens>
     </wills>
-    <janzjl>
+  	<!--  bangladesh version PLP...
+    -->
+    <bangladesh cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <startgf_to_mat>700</startgf_to_mat>
-      <vern_sens>0.5</vern_sens>
+      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+      <grains_per_gram_stem>34.0</grains_per_gram_stem>
+      <phyllochron>80.0</phyllochron>
+      <startgf_to_mat>690</startgf_to_mat>
+      <max_grain_size>0.042</max_grain_size>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </bangladesh>
+    <shatabdi cultivar="yes">
+     <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+      <grains_per_gram_stem>28.0</grains_per_gram_stem>
+      <tt_end_of_juvenile units="oCd400 340">400</tt_end_of_juvenile>
+      <tt_floral_initiation units="oCd555">450.0</tt_floral_initiation>
+      <tt_flowering units="oCd120">120.0</tt_flowering>
+      <tt_start_grain_fill units="oCd 690">540</tt_start_grain_fill>
+      <max_grain_size>0.039</max_grain_size>
+      <vern_sens>1.8</vern_sens>
+      <photop_sens>2.8</photop_sens>
+     </shatabdi>
+     <prodip cultivar="yes">
+     <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+      <grains_per_gram_stem>27.0</grains_per_gram_stem>
+      <tt_end_of_juvenile units="oCd400 340">365</tt_end_of_juvenile>
+      <tt_floral_initiation units="oCd555">450.0</tt_floral_initiation>
+      <tt_flowering units="oCd120">120.0</tt_flowering>
+      <tt_start_grain_fill units="oCd 640">580</tt_start_grain_fill>
+      <max_grain_size>0.046</max_grain_size>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>3.2</photop_sens>
+     </prodip> 
+    <sufi cultivar="yes">
+     <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+      <grains_per_gram_stem>28.0</grains_per_gram_stem>
+      <tt_end_of_juvenile units="oCd400 365">305</tt_end_of_juvenile>
+      <tt_floral_initiation units="oCd450">400.0</tt_floral_initiation>
+      <tt_flowering units="oCd120">120.0</tt_flowering>
+      <tt_start_grain_fill units="oCd">400</tt_start_grain_fill>
+      <max_grain_size>0.036</max_grain_size>
+      <vern_sens>2.0</vern_sens>
       <photop_sens>3.0</photop_sens>
-    </janzjl>
+    </sufi>  
+     <shatabdi_x cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+      <grains_per_gram_stem>28.0</grains_per_gram_stem>
+      <tt_end_of_juvenile units="oCd400 340">400</tt_end_of_juvenile>
+      <tt_floral_initiation units="oCd555">555.0</tt_floral_initiation>
+      <tt_flowering units="oCd120">120.0</tt_flowering>
+      <tt_start_grain_fill units="oCd 690">690</tt_start_grain_fill>
+      <max_grain_size>0.042</max_grain_size>
+      <vern_sens>1.3</vern_sens>
+      <photop_sens>2.6</photop_sens>
+     </shatabdi_x>
+     <shatabdi_early cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0035</potential_grain_filling_rate>
+      <grains_per_gram_stem>25.0</grains_per_gram_stem>
+      <tt_end_of_juvenile units="oCd400">430.0</tt_end_of_juvenile>
+      <tt_floral_initiation units="oCd555">475.0</tt_floral_initiation>
+      <tt_flowering units="oCd120">180.0</tt_flowering>
+      <tt_start_grain_fill units="oCd 690">570</tt_start_grain_fill>
+      <max_grain_size>0.046</max_grain_size>
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>3.50</photop_sens>
+    </shatabdi_early>
+    <shatabdi_old cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <potential_grain_filling_rate>0.0035</potential_grain_filling_rate>
+      <grains_per_gram_stem>26.0</grains_per_gram_stem>
+      <phyllochron>70.0</phyllochron>
+      <startgf_to_mat>520</startgf_to_mat>
+      <max_grain_size>0.042</max_grain_size>
+      <vern_sens>1.90</vern_sens>
+      <photop_sens>3.00</photop_sens>
+   </shatabdi_old>     
   </Model>
   
 </Type>
