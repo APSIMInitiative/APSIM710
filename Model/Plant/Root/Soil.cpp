@@ -485,7 +485,7 @@ void Soil::crop_check_sw()
         {
             sprintf(err_msg,
                 " Soil water of %8.2f in layer %d is below acceptable value of %8.2f",
-                sw, layer, sw_lb);
+                sw, layer+1, sw_lb);
             scienceAPI.warning(err_msg);
         }
     }
@@ -536,7 +536,7 @@ void Soil::crop_check_sw_params()
         {
             sprintf(err_msg,
                 " lower limit of %8.2f in layer %d is below acceptable value of %8.2f",
-                ll, layer, sw_lb);
+                ll, layer+1, sw_lb);
             scienceAPI.warning(err_msg);
         }
 
@@ -544,7 +544,7 @@ void Soil::crop_check_sw_params()
         {
             sprintf(err_msg,
                 "The lower limit of %8.2f in layer %d is below the air_dry value of %8.2f",
-                ll, layer, divide (air_dry_dep[layer], dlayer[layer], 0.0));
+                ll, layer+1, divide (air_dry_dep[layer], dlayer[layer], 0.0));
             throw std::runtime_error(err_msg); // this one is fatal
         }
 
@@ -552,7 +552,7 @@ void Soil::crop_check_sw_params()
         {
             sprintf(err_msg,
                 " lower limit of %8.2f in layer %d is below the -15 bar value of %8.2f",
-                ll, layer, divide(ll15_dep[layer], dlayer[layer], 0.0));
+                ll, layer+1, divide(ll15_dep[layer], dlayer[layer], 0.0));
             scienceAPI.warning(err_msg);
         }
 
@@ -560,7 +560,7 @@ void Soil::crop_check_sw_params()
         {
             sprintf(err_msg,
                 " Drained upper limit of %8.2f in layer %d is at or below lower limit of %8.2f",
-                dul,layer, ll);
+                dul,layer+1, ll);
             scienceAPI.warning(err_msg);
         }
     }
