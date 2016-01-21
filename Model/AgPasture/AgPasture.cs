@@ -1126,13 +1126,13 @@ public class AgPasture
     /// <summary>Amount of N fixed by legumes</summary>
     private double swardNFixed = 0.0;
     /// <summary>Growth limiting factor due to ambient temperature</summary>
-    private double swardGLFTemp;
+    private double swardGLFTemp = 1.0;
     /// <summary>Growth limiting factor due to soil nitrogen</summary>
-    private double swardGLFN;
+    private double swardGLFN = 1.0;
     /// <summary>Growth limiting factor due to soil water</summary>
-    private double swardGLFWater;
+    private double swardGLFWater = 1.0;
     /// <summary>Growth limiting factor due to soil aeration</summary>
-    private double swardGLFAeration;
+    private double swardGLFAeration = 1.0;
 
     /// <summary>Amount of DM harvested</summary>
     private double swardHarvestedDM;
@@ -1472,9 +1472,7 @@ public class AgPasture
 
         //// Weighted average of lightExtCoeff for the sward (should be updated daily)
         double sumkLAI = mySpecies.Sum(x => x.lightExtCoeff * x.totalLAI);
-        swardLightExtCoeff = 1.0;
-        if (swardTotalLAI > 0.0)
-            swardLightExtCoeff = sumkLAI / swardTotalLAI;
+        swardLightExtCoeff = MathUtility.Divide(sumkLAI, swardTotalLAI, 1.0);
 
         FractionToHarvest = new double[NumSpecies];
     }
@@ -2081,14 +2079,7 @@ public class AgPasture
         // get sward light extinction coefficient
         if (updateLightExtCoeffAllowed)
         {
-            if (swardTotalLAI > 0.0)
-            {
-                swardLightExtCoeff = sumkLAI / swardGreenLAI;
-            }
-            else
-            {
-                swardLightExtCoeff = 1.0;
-            }
+            swardLightExtCoeff = MathUtility.Divide(sumkLAI, swardGreenLAI, 1.0);
         }
 
         // get the average plant height for sward
@@ -2100,7 +2091,8 @@ public class AgPasture
                 swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
             }
 
-            swardHeight /= AboveGroundWt;
+            if (AboveGroundWt > 0)
+                swardHeight /= AboveGroundWt;
         }
         else
         { // only sward height is considered
@@ -2120,7 +2112,10 @@ public class AgPasture
                 {
                     RootFraction[layer] += mySpecies[s].dmroot * mySpecies[s].rootFraction[layer];
                 }
-                RootFraction[layer] /= RootWt;
+                if (RootWt > 0.0)
+                    RootFraction[layer] /= RootWt;
+                else
+                    RootFraction[layer] = 0.0;
             }
         }
         //else  root distribution does not change 
@@ -4377,18 +4372,15 @@ public class AgPasture
                 double accum_gfwater = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    mySpecies[s].glfWater = mySpecies[s].soilWaterUptake.Sum() / mySpecies[s].WaterDemand;
+                    mySpecies[s].glfWater = MathUtility.Divide(mySpecies[s].soilWaterUptake.Sum(), mySpecies[s].WaterDemand, 1.0);
                     accum_gfwater += mySpecies[s].glfWater * mySpecies[s].greenLAI;
                 }
 
-                if (swardGreenLAI > 0.0)
-                    swardGLFWater = accum_gfwater / swardGreenLAI;
-                else
-                    swardGLFWater = 1.0;
+                swardGLFWater = MathUtility.Divide(accum_gfwater, swardGreenLAI, 1.0);
             }
             else
             {
-                swardGLFWater = soilWaterUptake.Sum() / swardWaterDemand;
+                swardGLFWater = MathUtility.Divide(soilWaterUptake.Sum(), swardWaterDemand, 1.0);
 
                 // pass the glf to each species
                 for (int s = 0; s < NumSpecies; s++)
@@ -4400,7 +4392,7 @@ public class AgPasture
     }
 
     /// <summary>
-    /// Set soil moisture stress factor to each species
+    /// Set soil aeration stress factor to each species
     /// </summary>
     /// <remarks>Separated from GLFwater (RCichota, Dec/2015)</remarks>
     private void SetSpeciesGLFAeration()
@@ -4438,10 +4430,7 @@ public class AgPasture
                 accum_glfair += mySpecies[s].glfAeration * mySpecies[s].greenLAI;
             }
 
-            if (swardGreenLAI > 0.0)
-                swardGLFAeration = accum_glfair / swardGreenLAI;
-            else
-                swardGLFAeration = 1.0;
+            swardGLFAeration = MathUtility.Divide(accum_glfair, swardGreenLAI, 1.0);
         }
         else
         {
@@ -4482,15 +4471,8 @@ public class AgPasture
             swardGLFN = 0.0;
             for (int s = 0; s < NumSpecies; s++)
             {
-                if (mySpecies[s].NdemandOpt > 0.0)
-                {
-                    mySpecies[s].glfN = Math.Min(1.0, Math.Max(0.0, mySpecies[s].newGrowthN / mySpecies[s].NdemandOpt));
-                }
-                else
-                {
-                    mySpecies[s].glfN = 1.0;
-                }
-                swardGLFN += mySpecies[s].glfN * mySpecies[s].dGrowthW / swardPotGrowthWater;
+                mySpecies[s].glfN = Math.Min(1.0, Math.Max(0.0, MathUtility.Divide(mySpecies[s].newGrowthN, mySpecies[s].NdemandOpt, 1.0)));
+                swardGLFN += mySpecies[s].glfN * MathUtility.Divide(mySpecies[s].dGrowthW, swardPotGrowthWater, 1.0);
             }
         }
         else
@@ -5071,7 +5053,7 @@ public class AgPasture
 
             // get root depth
             if (NewSetState.rootDepth.Length > 0)
-                NewState.RootDepth = myRootDepth[s];
+                NewState.RootDepth = NewSetState.rootDepth[s];
             else
                 NewState.RootDepth = mySpecies[s].rootDepth;
 
@@ -5093,17 +5075,34 @@ public class AgPasture
             }
             else
             {
-                NewState.DMFraction[0] = mySpecies[s].dmleaf1 / mySpecies[s].dmshoot;
-                NewState.DMFraction[1] = mySpecies[s].dmleaf2 / mySpecies[s].dmshoot;
-                NewState.DMFraction[2] = mySpecies[s].dmleaf3 / mySpecies[s].dmshoot;
-                NewState.DMFraction[3] = mySpecies[s].dmleaf4 / mySpecies[s].dmshoot;
-                NewState.DMFraction[4] = mySpecies[s].dmstem1 / mySpecies[s].dmshoot;
-                NewState.DMFraction[5] = mySpecies[s].dmstem2 / mySpecies[s].dmshoot;
-                NewState.DMFraction[6] = mySpecies[s].dmstem3 / mySpecies[s].dmshoot;
-                NewState.DMFraction[7] = mySpecies[s].dmstem4 / mySpecies[s].dmshoot;
-                NewState.DMFraction[8] = mySpecies[s].dmstol1 / mySpecies[s].dmshoot;
-                NewState.DMFraction[9] = mySpecies[s].dmstol2 / mySpecies[s].dmshoot;
-                NewState.DMFraction[10] = mySpecies[s].dmstol3 / mySpecies[s].dmshoot;
+                if (mySpecies[s].dmshoot > 0.0)
+                {
+                    NewState.DMFraction[0] = mySpecies[s].dmleaf1 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[1] = mySpecies[s].dmleaf2 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[2] = mySpecies[s].dmleaf3 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[3] = mySpecies[s].dmleaf4 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[4] = mySpecies[s].dmstem1 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[5] = mySpecies[s].dmstem2 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[6] = mySpecies[s].dmstem3 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[7] = mySpecies[s].dmstem4 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[8] = mySpecies[s].dmstol1 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[9] = mySpecies[s].dmstol2 / mySpecies[s].dmshoot;
+                    NewState.DMFraction[10] = mySpecies[s].dmstol3 / mySpecies[s].dmshoot;
+                }
+                else
+                {
+                    NewState.DMFraction[0] = InitialState[s].DMFraction[0];
+                    NewState.DMFraction[1] = InitialState[s].DMFraction[1];
+                    NewState.DMFraction[2] = InitialState[s].DMFraction[2];
+                    NewState.DMFraction[3] = InitialState[s].DMFraction[3];
+                    NewState.DMFraction[4] = InitialState[s].DMFraction[4];
+                    NewState.DMFraction[5] = InitialState[s].DMFraction[5];
+                    NewState.DMFraction[6] = InitialState[s].DMFraction[6];
+                    NewState.DMFraction[7] = InitialState[s].DMFraction[7];
+                    NewState.DMFraction[8] = InitialState[s].DMFraction[8];
+                    NewState.DMFraction[9] = InitialState[s].DMFraction[9];
+                    NewState.DMFraction[10] = InitialState[s].DMFraction[10];
+                }
             }
 
             // get N concentrations
@@ -5189,7 +5188,8 @@ public class AgPasture
                         else
                             result[layer] = (myRootDepth - DepthTop);
                         DepthTop += dlayer[layer];
-                        result[layer] /= sumProportion;
+                        if (sumProportion > 0.0)
+                            result[layer] /= sumProportion;
                     }
 
                     break;
@@ -5251,7 +5251,11 @@ public class AgPasture
                             }
                         }
 
-                        result[layer] /= sumProportion;
+                        if (sumProportion > 0)
+                            result[layer] /= sumProportion;
+                        else
+                            result[layer] = 0.0;
+
                         depthTop += dlayer[layer];
                     }
 
@@ -6228,7 +6232,7 @@ public class AgPasture
 
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].digestHerbage * (mySpecies[s].dmstem + mySpecies[s].dmleaf) / (StemWt + LeafWt);
+                result += mySpecies[s].digestHerbage * MathUtility.Divide(mySpecies[s].dmstem + mySpecies[s].dmleaf, StemWt + LeafWt, 0.0);
             return result;
         }
     }
