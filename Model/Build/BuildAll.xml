@@ -831,18 +831,6 @@
          <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
-      <Job name="Update DB Setup Bootleg">
-         <DependsOn>Create Bootleg MSI</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>UpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileNameShort%.bootleg.exe</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-      <Job name="Update DB Setup">
-         <DependsOn>Create Release MSI</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>UpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileNameShort%.apsimsetup.exe</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
       <Job name="Create SFX Binaries">
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
        <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
@@ -877,23 +865,9 @@
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %APSIM%</CommandLine>
 		</Job>
-		<Job name="Update DB Build tree">
-         <DependsOn>Create Build Tree Zip</DependsOn>
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe BuildTreeFileName http://bob.apsim.info/files/%PatchFileNameShort%.buildtree.zip</CommandLine>
-		</Job>
 		<Job name="CreateBinariesZip">
 			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
-		</Job>
-		<Job name="Update DB Binaries">
-         <DependsOn>CreateBinariesZip</DependsOn>
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.binaries.zip</CommandLine>
-		</Job>
-      <Job name="Update DB Details">
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileNameShort%.txt</CommandLine>
 		</Job>
    </Target>
 
@@ -904,11 +878,6 @@
       <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
       <CommandLineUnix>curl -T %PatchFileNameShort%.binaries.LINUX.X86_64.exe -u bob:seg ftp://bob.apsim.info/Files/</CommandLineUnix>
     </Job>
-    <Job name="Update X64 DB SFX Binaries">
-      <DependsOn IgnoreErrors="true">Upload X64 SFX Binaries</DependsOn>
-      <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-      <CommandLine>UpdateFieldInDB.exe linuxBinariesFileName http://bob.apsim.info/files/%PatchFileNameShort%.LINUX.X86_64.exe</CommandLine>
-    </Job>
     <Job name="Create X64 Diff Zip">
       <WorkingDirectory>%APSIM%</WorkingDirectory>
       <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
@@ -917,11 +886,6 @@
        <DependsOn IgnoreErrors="true">Create X64 Diff Zip</DependsOn>
        <WorkingDirectory>%APSIM%</WorkingDirectory>
        <CommandLineUnix>curl -T %PatchFileNameShort%.diffs.zip -u bob:seg ftp://bob.apsim.info/Files/%PatchFileNameShort%.Linux.diffs.zip</CommandLineUnix>
-    </Job>
-    <Job name="Update X64 DB Diff Zip">
-      <DependsOn IgnoreErrors="true">Upload X64 Diff Zip</DependsOn>
-      <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-      <CommandLine>UpdateFieldInDB.exe linuxDiffsFileName http://bob.apsim.info/files/%PatchFileNameShort%.Linux.diffs.zip</CommandLine>
     </Job>
    </Target>
 

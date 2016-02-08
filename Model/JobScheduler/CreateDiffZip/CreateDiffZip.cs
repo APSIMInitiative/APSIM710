@@ -330,26 +330,20 @@ class Program
         }
 
         // Now we should have a list of the "real" diffs.
-        ApsimBuildsDB Db = new ApsimBuildsDB();
-        Db.Open();
         int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
-        Db.SetNumDiffs(JobID, ModifiedFiles.Count);
+        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
+                             "?JobID=" + JobID +
+                             "&NumDiffs=" + ModifiedFiles.Count +
+                             "&DbConnectPassword=" + Utils.REST.GetValidPassword();
+        Utils.REST.CallService<object>(url);
         if (ModifiedFiles.Count != 0)
         {
             Console.WriteLine("Files that are different:");
             foreach (string FileName in ModifiedFiles)
                 Console.WriteLine(FileName);
-
-            if (Environment.MachineName.ToUpper() == "BOB") 
-                {
-                string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip";
-                Db.UpdateDiffFileName(JobID, DiffsFileName);
-                }                
-            Db.Close();
+               
             throw new Exception("Build is not clean");
         }
-
-        Db.Close();
     }
 
     /// <summary>

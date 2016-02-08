@@ -11,154 +11,174 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Serialization;
 
 class Bob
 {
-   static public string svnExe = "svn.exe";
-   static public string sevenZipExe = "C:\\Program Files\\7-Zip\\7z.exe";
+    static public string svnExe = "svn.exe";
+    static public string sevenZipExe = "C:\\Program Files\\7-Zip\\7z.exe";
 
-   /// <summary>
-   /// This is Bob's main program. It takes a single argument being the name of a child script
-   ///    to execute once a new patch has been extracted. It assumes that the current working
-   ///    directory is the APSIM directory.
-   /// This script provides 3 environment variables to the child script.
-   ///    JobID - the ID in the builds database of the job being run.
-   ///    PatchFileName - the file name part of the patch .zip file (no path or extension).
-   ///    PatchFileNameFull - the full name of the patch .zip file.
-   /// </summary>
-   static int Main(string[] args)
-   {
-      int ReturnCode = 0;
-      string CWD = Directory.GetCurrentDirectory();
+    /// <summary>
+    /// This is Bob's main program. It takes a single argument being the name of a child script
+    ///    to execute once a new patch has been extracted. It assumes that the current working
+    ///    directory is the APSIM directory.
+    /// This script provides 3 environment variables to the child script.
+    ///    JobID - the ID in the builds database of the job being run.
+    ///    PatchFileName - the file name part of the patch .zip file (no path or extension).
+    ///    PatchFileNameFull - the full name of the patch .zip file.
+    /// </summary>
+    static int Main(string[] args)
+    {
+        int ReturnCode = 0;
+        string CWD = Directory.GetCurrentDirectory();
 
-      if (Path.DirectorySeparatorChar == '/')
-         {
-       	 svnExe = "svn"; sevenZipExe = "unzip";
-         }
+        if (Path.DirectorySeparatorChar == '/')
+        {
+            svnExe = "svn"; sevenZipExe = "unzip";
+        }
 
-      string  pwfile = "C:\\dbConnect.txt";
-      if (!File.Exists(pwfile)) {pwfile = "/etc/dbConnect.txt";}
-      string ConnectionString = File.ReadAllText(pwfile).TrimEnd(new char [] {'\r', '\n'});
-      SqlConnection Connection = new SqlConnection(ConnectionString);
+        string pwfile = "C:\\dbConnect.txt";
+        if (!File.Exists(pwfile)) { pwfile = "/etc/dbConnect.txt"; }
+        string ConnectionString = File.ReadAllText(pwfile).TrimEnd(new char[] { '\r', '\n' });
 
-      try
-      {
-         Console.WriteLine("Waiting for a patch...");
+        string DbConnectPassword = GetValidPassword();
 
-         Connection.Open();
-         do
-         {
-            int JobID = FindNextJob(Connection);
-            if (JobID != -1)
+        try
+        {
+            Console.WriteLine("Waiting for a patch...");
+
+            do
             {
-               Directory.SetCurrentDirectory(CWD);
+                string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/FindNextJob";
+                int JobID = CallRESTService<int>(url);
 
-               // The current working directory will be the APSIM root directory - set the environment variable.
-               string APSIMDir = Directory.GetCurrentDirectory();
-               System.Environment.SetEnvironmentVariable("APSIM", APSIMDir);
+                if (JobID != -1)
+                {
+                    Directory.SetCurrentDirectory(CWD);
 
-               if (System.Environment.MachineName.ToUpper() == "BOB")
-                  {
-                  // Update the builds database.
-                  DBUpdate("Status", "Running", Connection, JobID);
-   
-                  string PatchFileName = DBGet("PatchFileName", Connection, JobID).ToString();
-                  PatchFileName = PatchFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-                  Console.WriteLine("Running patch: " + PatchFileName);
-   
-                  // Open log file.
-                  string LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
-   
-                  string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileName(PatchFileName), ".txt"));
-                  StreamWriter Log = new StreamWriter(LogFileName);
-   
-                  // Clean the tree.
-                  RemoveUnwantedFiles(Directory.GetCurrentDirectory());
-                  Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
-                  Run("SVN update", svnExe, "update %APSIM%", Log);
-                  Log.Flush();
-   
-                  // Extract the patch (already on local filesystem)
-                  Run("Extracting patch: " + PatchFileName,
-                      sevenZipExe,
-                      "x -y " + PatchFileName,
-                      Log);
+                    // The current working directory will be the APSIM root directory - set the environment variable.
+                    string APSIMDir = Directory.GetCurrentDirectory();
+                    System.Environment.SetEnvironmentVariable("APSIM", APSIMDir);
+                    System.Environment.SetEnvironmentVariable("JOBID", JobID.ToString());
 
-                  Log.Flush();
-                  // Set some environment variables.
-                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                  System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
-                  System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
-   
-                  // Run the patch.
-                  Run("Running patch...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.Combine(APSIMDir,"Model/Build/BobMain.cs") , Log);
-   
-                  // Close log file.
-                  Log.Close();
-				          }
-				       else 
-				          {
-                  // Linux builds only check "passed" patches - ie revisions
-                  string revision = DBGet("RevisionNumber", Connection, JobID).ToString();
-                  if (revision == "") { Thread.Sleep(1 * 60 * 1000); continue;}  // The job may have "passed" but not yet committed to svn
-                  DBUpdate("linuxStatus", "Running", Connection, JobID);
-                  string LogFileName = "/tmp/Apsim7.7-r" + revision + ".linux.txt";
-                  StreamWriter Log = new StreamWriter(LogFileName);
+                    if (System.Environment.MachineName.ToUpper() == "BOB")
+                    {
+                        // Update the builds database.
+                        DBUpdateStatus("Running", JobID, DbConnectPassword);
 
-                  // Clean the tree.
-                  RemoveUnwantedFiles(Directory.GetCurrentDirectory());
-                  Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
-                  Run("SVN update", svnExe, "update -r " + revision + " %APSIM%", Log);
-                  Log.Flush();
+                        string PatchFileName = GetPatchFileName(JobID);
 
-                  // Set some environment variables.
-                  System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-                  System.Environment.SetEnvironmentVariable("PatchFileName", "Apsim7.7-r"+revision);
-                  System.Environment.SetEnvironmentVariable("PatchFileNameShort", "Apsim7.7-r"+revision);
+                        Console.WriteLine("Running patch: " + PatchFileName);
 
-                  // Run the patch.
-                  Console.WriteLine("Running revision r" + revision);
-                  try 
-                  {
-                     Run("Running revision...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.Combine(APSIMDir,"Model/Build/BobMain.cs") , Log);
-                  } 
-                  catch (Exception e) 
-                  {
-                     Log.WriteLine(e.Message);
-                  }
-                  // Close log file.
-                  Log.Close();
-                  Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.7-r" + revision + ".linux.txt");
-                  Run("Updating details...", Path.Combine(APSIMDir, "Model/UpdateFieldInDB.exe"), 
-                                           "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.7-r" + revision + ".linux.txt");
-				       	
-				          }
-				   
-               Console.WriteLine("Waiting for a patch...");
+                        // Open log file.
+                        string LogDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(PatchFileName), ".."));
+
+                        string LogFileName = Path.Combine(LogDirectory, Path.ChangeExtension(Path.GetFileName(PatchFileName), ".txt"));
+                        StreamWriter Log = new StreamWriter(LogFileName);
+
+                        // Clean the tree.
+                        RemoveUnwantedFiles(Directory.GetCurrentDirectory());
+                        Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
+                        Run("SVN update", svnExe, "update %APSIM%", Log);
+                        Log.Flush();
+
+                        // Extract the patch (already on local filesystem)
+                        Run("Extracting patch: " + PatchFileName,
+                            sevenZipExe,
+                            "x -y " + PatchFileName,
+                            Log);
+
+                        Log.Flush();
+                        // Set some environment variables.
+                        System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
+                        System.Environment.SetEnvironmentVariable("PatchFileName", PatchFileName);
+                        System.Environment.SetEnvironmentVariable("PatchFileNameShort", Path.GetFileNameWithoutExtension(PatchFileName));
+
+                        // Run the patch.
+                        Run("Running patch...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.Combine(APSIMDir, "Model/Build/BobMain.cs"), Log);
+
+                        // Close log file.
+                        Log.Close();
+                    }
+                    else
+                    {
+                        // Linux builds only check "passed" patches - ie revisions
+                        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetRevisionNumber?JobID=" + JobID;
+                        string revision = CallRESTService<string>(url);
+
+                        if (revision == "") { Thread.Sleep(1 * 60 * 1000); continue; }  // The job may have "passed" but not yet committed to svn
+                        DBUpdateLinuxStatus("Running", JobID, DbConnectPassword);
+                        string LogFileName = "/tmp/Apsim7.7-r" + revision + ".linux.txt";
+                        StreamWriter Log = new StreamWriter(LogFileName);
+
+                        // Clean the tree.
+                        RemoveUnwantedFiles(Directory.GetCurrentDirectory());
+                        Run("SVN revert", svnExe, "revert -R %APSIM%", Log);
+                        Run("SVN update", svnExe, "update -r " + revision + " %APSIM%", Log);
+                        Log.Flush();
+
+                        // Set some environment variables.
+                        System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
+                        System.Environment.SetEnvironmentVariable("PatchFileName", "Apsim7.7-r" + revision);
+                        System.Environment.SetEnvironmentVariable("PatchFileNameShort", "Apsim7.7-r" + revision);
+
+                        // Run the patch.
+                        Console.WriteLine("Running revision r" + revision);
+                        try
+                        {
+                            Run("Running revision...", Path.Combine(APSIMDir, "Model/cscs.exe"), Path.Combine(APSIMDir, "Model/Build/BobMain.cs"), Log);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.WriteLine(e.Message);
+                        }
+                        // Close log file.
+                        Log.Close();
+                        Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.7-r" + revision + ".linux.txt");
+                        Run("Updating details...", Path.Combine(APSIMDir, "Model/UpdateFieldInDB.exe"),
+                                                 "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.7-r" + revision + ".linux.txt");
+
+                    }
+
+                    Console.WriteLine("Waiting for a patch...");
+                }
+                else
+                    Thread.Sleep(1 * 60 * 1000); // 1 minutes
+
             }
-            else
-               Thread.Sleep(1 * 60 * 1000); // 1 minutes
+            while (true);
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.Message);
+            ReturnCode = 1;
+        }
 
-         }
-         while (true);
-      }
-      catch (Exception err)
-      {
-         Console.WriteLine(err.Message);
-         ReturnCode = 1;
-      }
-      finally
-      {
-         if (Connection != null)
-            Connection.Close();
-      }
+        Console.WriteLine("Press return to exit");
+        Console.ReadLine();
+        return ReturnCode;
+    }
 
-      Console.WriteLine("Press return to exit");
-      Console.ReadLine();
-      return ReturnCode;
-   }
+    /// <summary>
+    /// Get the patch file name.
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    private static string GetPatchFileName(int JobID)
+    {
+        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPatchFileName?JobID=" + JobID;
+
+        string downloadURL = CallRESTService<string>(url);
+        string destination = @"C:\inetpub\wwwroot\Files\Upload\" + Path.GetFileName(downloadURL);
+
+        WebClient webClient = new WebClient();
+        webClient.DownloadFile(downloadURL, destination);
+
+
+        return destination;
+    }
 
     /// <summary>
     /// This program removes all SVN unversioned files from a specified directory.
@@ -166,175 +186,160 @@ class Bob
     /// </summary>
     static void RemoveUnwantedFiles(string directory)
     {
-    string StdOut = Run("SVN status", svnExe, "status --non-interactive --no-ignore");
-    string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        string StdOut = Run("SVN status", svnExe, "status --non-interactive --no-ignore");
+        string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-		// Loop through all lines the SVN process produced.
-		foreach (string line in StdOutLines)
-		{
-			if (line.Length > 8)
-			{
-				string relativePath = line.Substring(8);
-				string path = Path.Combine(directory, relativePath);
+        // Loop through all lines the SVN process produced.
+        foreach (string line in StdOutLines)
+        {
+            if (line.Length > 8)
+            {
+                string relativePath = line.Substring(8);
+                string path = Path.Combine(directory, relativePath);
 
-				bool DoDelete = false;
-				DoDelete = line[0] == '?' || line[0] == 'I';
-				if (DoDelete)
-				{
+                bool DoDelete = false;
+                DoDelete = line[0] == '?' || line[0] == 'I';
+                if (DoDelete)
+                {
 
-					if (Directory.Exists(path))
-						Directory.Delete(path, true);
-					else if (File.Exists(path))
-					{
-						try
-						{
-							File.Delete(path);
-						}
-						catch (Exception)
-						{
-							// Must be a locked or readonly file - ignore.
-						}
-					}
-				}
-			}
-		}
+                    if (Directory.Exists(path))
+                        Directory.Delete(path, true);
+                    else if (File.Exists(path))
+                    {
+                        try
+                        {
+                            File.Delete(path);
+                        }
+                        catch (Exception)
+                        {
+                            // Must be a locked or readonly file - ignore.
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
 
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
-      /// <summary>
-      /// Find the next job to run. Returns the ID.
-      /// </summary>
-      static int FindNextJob(SqlConnection Connection)
-      {
-      	 string SQL;
-         if (System.Environment.MachineName.ToUpper() == "BOB")
-            SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Queued' ORDER BY ID";
-         else 
-            {
-            MarkFailedJobs(Connection);
-            SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Pass' AND linuxStatus = 'Queued' ORDER BY ID";
-            }
-         using (SqlCommand Command = new SqlCommand(SQL, Connection))
-         using (SqlDataReader Reader = ExecuteReader(Command))
-            {
-            if (Reader.Read())
-               return Convert.ToInt32(Reader[0]);
-            }
-         return -1;
-      }
+    /// <summary>
+    /// Update the status of the specified build job.
+    /// </summary>
+    static void DBUpdateStatus(string status, int JobID, string DbConnectPassword)
+    {
+        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStatus" +
+            "?JobID=" + JobID +
+            "&NewStatus=" + status +
+            "&DbConnectPassword=" + DbConnectPassword;
+        CallRESTService<object>(url);
+    }
 
-      /// <summary>
-      /// Mark "failed" jobs 
-      /// </summary>
-      static void MarkFailedJobs(SqlConnection Connection)
-      {
-         if (System.Environment.MachineName.ToUpper() != "BOB") 
-         {
-            string SQL = "SELECT ID FROM BuildJobs WHERE (Status = 'Fail' OR Status = 'Aborted') AND linuxStatus = 'Queued' ORDER BY ID";
-            List<int> ignoredJobs = new List<int>();
-            using (SqlCommand Command = new SqlCommand(SQL, Connection))
-            using (SqlDataReader Reader = ExecuteReader(Command))
-            {
-               while (Reader.Read()) 
-                  ignoredJobs.Add(Convert.ToInt32(Reader[0]));
-            }
+    /// <summary>
+    /// Update the status of the specified build job.
+    /// </summary>
+    static void DBUpdateLinuxStatus(string status, int JobID, string DbConnectPassword)
+    {
+        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateLinuxStatus" +
+            "?JobID=" + JobID +
+            "&NewStatus=" + status +
+            "&DbConnectPassword=" + DbConnectPassword;
+        CallRESTService<object>(url);
+    }
 
-            foreach (int jobID in ignoredJobs) 
-                DBUpdate("linuxStatus", "Ignored", Connection, jobID);
-         }
-      }
-
-      /// <summary>
-      /// Return the patch file name of the specified job.
-      /// </summary>
-      static object DBGet(string FieldName, SqlConnection Connection, int JobID)
-      {
-         string SQL = "SELECT " + FieldName + " FROM BuildJobs WHERE ID = " + JobID.ToString();
-
-         using (SqlCommand Command = new SqlCommand(SQL, Connection))
-         using (SqlDataReader Reader = ExecuteReader(Command))
-            {
-            if (Reader.Read())
-                return Reader[0];
-            }
-         return(null);
-      }
-
-      /// <summary>
-      /// Update the status of the specified build job.
-      /// </summary>
-      static void DBUpdate(string FieldName, object Value, SqlConnection Connection, int JobID)
-      {
-         string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + Value.ToString() + "' WHERE ID = " + JobID.ToString();
-
-         using (SqlCommand Command = new SqlCommand(SQL, Connection))
-            Command.ExecuteNonQuery();
-      }
-
-      /// <summary>
-      /// Execute the specified SqlCommand.
-      /// </summary>
-      static SqlDataReader ExecuteReader(SqlCommand Cmd)
-      {
-         // There are often network intermittent issues so try 5 times to execute a reader query
-         for (int i = 0; i < 5; i++)
-         {
-             try
-             {
-                 return Cmd.ExecuteReader();
-             }
-             catch (Exception)
-             {
-                 Thread.Sleep(3 * 60 * 1000); // 3 minutes
-             }
-         }
-         throw new Exception("Cannot execute reader query to SQL server: www.apsim.info");
-      }
-
-      // Returns StdOut.
-      static string Run(string Name, string Executable, string Arguments, StreamWriter Log = null)
-      {
-         Executable = CSGeneral.Utility.ReplaceEnvironmentVariables(Executable);
-         if (!File.Exists(Executable))
-         {
+    // Returns StdOut.
+    static string Run(string Name, string Executable, string Arguments, StreamWriter Log = null)
+    {
+        Executable = CSGeneral.Utility.ReplaceEnvironmentVariables(Executable);
+        if (!File.Exists(Executable))
+        {
             Executable = CSGeneral.Utility.FindFileOnPath(Executable);
-         }
-         Arguments = CSGeneral.Utility.ReplaceEnvironmentVariables(Arguments);
-         Process P = CSGeneral.Utility.RunProcess(Executable, Arguments, Directory.GetCurrentDirectory());
-         string StdOut = CheckProcessExitedProperly(P);
-		 if (Log != null)
-		 {
-			 if (P.ExitCode != 0)
-			 {
-				Log.WriteLine(Name + " [Fail]");
-				Log.WriteLine(CSGeneral.StringManip.IndentText(StdOut, 4));
-			 }
-			 else
-			 {
-				Log.WriteLine(Name + " [Pass]");
-				Log.WriteLine(CSGeneral.StringManip.IndentText(StdOut, 4));
-			 }
-		}
-         return StdOut;
-      }
+        }
+        Arguments = CSGeneral.Utility.ReplaceEnvironmentVariables(Arguments);
+        Process P = CSGeneral.Utility.RunProcess(Executable, Arguments, Directory.GetCurrentDirectory());
+        string StdOut = CheckProcessExitedProperly(P);
+        if (Log != null)
+        {
+            if (P.ExitCode != 0)
+            {
+                Log.WriteLine(Name + " [Fail]");
+                Log.WriteLine(CSGeneral.StringManip.IndentText(StdOut, 4));
+            }
+            else
+            {
+                Log.WriteLine(Name + " [Pass]");
+                Log.WriteLine(CSGeneral.StringManip.IndentText(StdOut, 4));
+            }
+        }
+        return StdOut;
+    }
 
-      static string CheckProcessExitedProperly(Process PlugInProcess)
-      {
-         if (!PlugInProcess.StartInfo.UseShellExecute)
-         {
-             string msg = PlugInProcess.StandardOutput.ReadToEnd();
-             PlugInProcess.WaitForExit();
-             if (PlugInProcess.ExitCode != 0)
-                 msg += PlugInProcess.StandardError.ReadToEnd();
-             return msg;
-         }
-         else
-             return "";
-      }
+    static string CheckProcessExitedProperly(Process PlugInProcess)
+    {
+        if (!PlugInProcess.StartInfo.UseShellExecute)
+        {
+            string msg = PlugInProcess.StandardOutput.ReadToEnd();
+            PlugInProcess.WaitForExit();
+            if (PlugInProcess.ExitCode != 0)
+                msg += PlugInProcess.StandardError.ReadToEnd();
+            return msg;
+        }
+        else
+            return "";
+    }
 
-   }
+    /// <summary>Call REST web service.</summary>
+    /// <typeparam name="T">The return type</typeparam>
+    /// <param name="url">The URL of the REST service.</param>
+    /// <returns>The return data</returns>
+    public static T CallRESTService<T>(string url)
+    {
+        WebRequest wrGETURL;
+        wrGETURL = WebRequest.Create(url);
+        wrGETURL.Method = "GET";
+        wrGETURL.ContentType = @"application/xml; charset=utf-8";
+        wrGETURL.ContentLength = 0;
+        using (HttpWebResponse webresponse = wrGETURL.GetResponse() as HttpWebResponse)
+        {
+            Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
+            // read response stream from response object
+            using (StreamReader loResponseStream = new StreamReader(webresponse.GetResponseStream(), enc))
+            {
+                string st = loResponseStream.ReadToEnd();
+                if (typeof(T).Name == "Object")
+                    return default(T);
+
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+                //ResponseData responseData;
+                return (T)serializer.Deserialize(new NamespaceIgnorantXmlTextReader(new StringReader(st)));
+            }
+        }
+    }
+
+    /// <summary>Return the valid password for this web service.</summary>
+    public static string GetValidPassword()
+    {
+        string connectionString = File.ReadAllText(@"C:\inetpub\wwwroot\ChangeDBPassword.txt");
+        int posPassword = connectionString.IndexOf("Password=");
+        return connectionString.Substring(posPassword + "Password=".Length);
+    }
+
+    /// <summary>Helper class to ignore namespaces when de-serializing</summary>
+    public class NamespaceIgnorantXmlTextReader : XmlTextReader
+    {
+        /// <summary>Constructor</summary>
+        /// <param name="reader">The text reader.</param>
+        public NamespaceIgnorantXmlTextReader(System.IO.TextReader reader) : base(reader) { }
+
+        /// <summary>Override the namespace.</summary>
+        public override string NamespaceURI
+        {
+            get { return ""; }
+        }
+    }
+
+}

@@ -262,7 +262,7 @@ public partial class MainForm : Form
                     Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
 
                     if (MessageBox.Show("Patch file successfully created. Upload to Bob?", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                        Process.Start("http://bob.apsim.info/BobWeb/Upload.aspx");
+                        Process.Start("http://www.apsim.info/APSIM.Builds.Portal/Upload.aspx");
                     Close();
                 }
             }
