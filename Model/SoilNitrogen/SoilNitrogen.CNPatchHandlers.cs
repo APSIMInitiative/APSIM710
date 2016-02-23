@@ -789,13 +789,16 @@ public partial class SoilNitrogen
 
 					// 3.4- calculate the actual partitioning weights
 					double TotalWeight = baseWeight.Sum();
-					for (int k = 0; k < nPatches; k++)
-					{
-						if (TotalWeight >= epsilon)
-							partitionWeight[k] = MathUtility.Divide(baseWeight[k], TotalWeight, 0.0);
-						else
-							throw new Exception(" could not resolve the partitioning");
-					}
+                    if (TotalWeight > 0.0)
+                    {
+                        for (int k = 0; k < nPatches; k++)
+                        {
+                            if (TotalWeight >= epsilon)
+                                partitionWeight[k] = MathUtility.Divide(baseWeight[k], TotalWeight, 0.0);
+                            else
+                                throw new Exception(" could not resolve the partitioning, value of delta is too small");
+                        }
+                    }
 					
 					// 4- Compute the partitioned values for each patch
 					for (int k = 0; k < nPatches; k++)

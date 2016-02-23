@@ -1940,6 +1940,24 @@ public partial class SoilNitrogen
 		}
 	}
 
+    /// <summary>
+    /// Nitrogen coverted by nitrification (from NH4 to either NO3 or N2O)
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("Nitrogen coverted by nitrification")]
+    private double[] dlt_rntrf
+    {
+        get
+        {
+            double[] result = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                for (int k = 0; k < Patch.Count; k++)
+                    result[layer] += Patch[k].dlt_nitrification[layer] * Patch[k].RelativeArea;
+            return result;
+        }
+    }
+
 	/// <summary>
 	/// Nitrogen coverted by nitrification (from NH4 to either NO3 or N2O)
 	/// </summary>
@@ -2003,6 +2021,15 @@ public partial class SoilNitrogen
 	private double[] dlt_nh4_dnit
 	{ get { return dlt_n2o_nitrif; } }
 
+    /// <summary>
+    /// N2O N produced during nitrification
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("NH4 N denitrified")]
+    private double[] n2o_atm_nitrification
+    { get { return dlt_n2o_nitrif; } }
+
 	/// <summary>
 	/// NO3 N denitrified
 	/// </summary>
@@ -2038,6 +2065,25 @@ public partial class SoilNitrogen
 			return result;
 		}
 	}
+
+    /// <summary>
+    /// N2O N produced during denitrification
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("N2O N produced during denitrification")]
+    private double[] n2o_atm_denitrification
+    {
+        get
+        {
+            double[] result = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; ++layer)
+                for (int k = 0; k < Patch.Count; k++)
+                    result[layer] += Patch[k].dlt_n2o_dnit[layer] * Patch[k].RelativeArea;
+            return result;
+        }
+    }
+
 	/// <summary>
 	/// Total N2O amount produced today
 	/// </summary>
@@ -2316,7 +2362,8 @@ public partial class SoilNitrogen
 			return result;
 		}
 	}
-	/// <summary>
+
+    /// <summary>
 	/// Soil biomass nitrogen
 	/// </summary>
 	[Output]
@@ -2350,28 +2397,53 @@ public partial class SoilNitrogen
 					result[layer] += (Patch[k].urea[layer] + Patch[k].nh4[layer] + Patch[k].no3[layer]) * Patch[k].RelativeArea;
 			return result;
 		}
-	}	/// <summary>
-	/// Soil organic nitrogen
-	/// </summary>
-	[Output]
-	[Units("kg/ha")]
-	[Description("Soil organic nitrogen")]
-	private double[] organic_n
-	{
-		get
-		{
-			double[] result = new double[dlayer.Length];
-			for (int layer = 0; layer < dlayer.Length; layer++)
-				for (int k = 0; k < Patch.Count; k++)
-					result[layer] += (Patch[k].fom_n[0][layer] 
-						           + Patch[k].fom_n[1][layer] 
-								   + Patch[k].fom_n[2][layer] 
-								   + Patch[k].hum_n[layer] 
-								   + Patch[k].biom_n[layer]) * Patch[k].RelativeArea;
-			return result;
-		}
 	}
-	/// <summary>
+
+    /// <summary>
+    /// Soil organic nitrogen, old style
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("Soil organic nitrogen")]
+    private double[] org_n
+    {
+        get
+        {
+            double[] result = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                for (int k = 0; k < Patch.Count; k++)
+                    result[layer] += (Patch[k].fom_n[0][layer]
+                                   + Patch[k].fom_n[1][layer]
+                                   + Patch[k].fom_n[2][layer]
+                                   + Patch[k].hum_n[layer]
+                                   + Patch[k].biom_n[layer]) * Patch[k].RelativeArea;
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Soil organic nitrogen
+    /// </summary>
+    [Output]
+    [Units("kg/ha")]
+    [Description("Soil organic nitrogen")]
+    private double[] organic_n
+    {
+        get
+        {
+            double[] result = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                for (int k = 0; k < Patch.Count; k++)
+                    result[layer] += (Patch[k].fom_n[0][layer]
+                                   + Patch[k].fom_n[1][layer]
+                                   + Patch[k].fom_n[2][layer]
+                                   + Patch[k].hum_n[layer]
+                                   + Patch[k].biom_n[layer]) * Patch[k].RelativeArea;
+            return result;
+        }
+    }
+
+    /// <summary>
 	/// Total N in soil
 	/// </summary>
 	[Output]
@@ -3011,7 +3083,6 @@ public partial class SoilNitrogen
 			return result;
 		}
 	}
-
 
 	/// <summary>
 	/// Soil temperature (oC), values actually used in the model
