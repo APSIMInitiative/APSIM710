@@ -295,13 +295,13 @@
      :                        'sw_supply_sum', floatTypeDDML, 'mm')
       dummy = add_registration_with_units(respondToGetReg,
      :              'sw_supply_demand_ratio', floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToGetReg,
+      dummy = add_registration_with_units(respondToGetSetReg,
      :                        'll', floatarrayTypeDDML, '%')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'll_dep', floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg,
+      dummy = add_registration_with_units(respondToGetSetReg,
      :                        'kl', floatarrayTypeDDML, '')
-      dummy = add_registration_with_units(respondToGetReg,
+      dummy = add_registration_with_units(respondToGetSetReg,
      :                        'xf', floatarrayTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :              'leaf_nd', floatTypeDDML, 'g/m^2')

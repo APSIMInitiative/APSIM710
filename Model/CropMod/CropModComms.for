@@ -2406,6 +2406,9 @@ c      end if
 
 *+  Local Variables
       integer numvals
+      integer layer
+      real       ll (max_layer)        ! lower limit of plant-extractable
+                                       ! soil water for soil layer l
 
 *- Implementation Section ----------------------------------
 
@@ -2518,6 +2521,26 @@ c         g%co2level = c%co2level
      :                                    , g%arb_water_uptake, numvals
      :                                    , 0.0, 10.0)
 
+	  else if (variable_name .eq. 'll') then
+         call collect_real_array (variable_name, max_layer
+     :                                    , '(mm/mm)'
+     :                                    , ll, numvals
+     :                                    , 0.0, 10.0)
+         if (numvals .gt. 0) then
+            do layer = 1, numvals
+               p%ll_dep(layer) = ll(layer)*g%dlayer(layer)
+            enddo
+        endif
+	  else if (variable_name .eq. 'kl') then
+         call collect_real_array (variable_name, max_layer
+     :                                    , '(/day)'
+     :                                    , p%kl, numvals
+     :                                    , 0.0, c%kl_ub)
+	  else if (variable_name .eq. 'xf') then
+         call collect_real_array (variable_name, max_layer
+     :                                    , '(0-1)'
+     :                                    , p%xf, numvals
+     :                                    , 0.0, 1.0)
       else
          ! don't know this variable name
          call Message_Unused()
