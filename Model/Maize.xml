@@ -38,6 +38,137 @@
       ***********************************************************************************************************
       -->
     <crop_type>maize</crop_type>
+    
+    <base_cultivar>
+        <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
+        <leaf_app_rate units="oCd" description="not used, currently using leaf_app_rate1 and leaf_app_rate2">41</leaf_app_rate>
+        <leaf_app_rate1 units="oCd" description="Growing deg day required to develop the most leaf ligules. (deg day).">65.0</leaf_app_rate1>
+        <leaf_app_rate2 units="oCd" description="Growing deg day required to develop last leaf ligules. (deg day).">36.0</leaf_app_rate2>
+        <leaf_no_rate_change description="Leaf no below flag above which leaf appearance rate changes from rate1 to rate2.">11</leaf_no_rate_change>
+        <!--  RELATIVE to FLAG
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          STAGE DEPENDENT RUE  - The following rue values were used in i_wheat (Meinke et al, 1998)
+          sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+          stage_code       = 1   2   3    4     5     6    7    8     9     10    11   12
+          -->
+        <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+        <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
+        <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.50   0.40</y_extinct_coef>
+        <y_extinct_coef_dead description="extinction coefficient for dead material">0.3    0.3    0.3</y_extinct_coef_dead>
+        <!-- __________________________________________________________________________________________________________-
+          BIOMASS PARTITIONING
+          stage_name       = sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+          stage_code       = 1   2   3    4      5     6     7    8    9    10   11   12
+          -->
+        <ratio_root_shoot>0   0   1    1     0.33  0.33  0.087 0    0     0    0    0</ratio_root_shoot>
+        <!-- __________________________________________________________________________________________________________-
+          GRAIN NUMBER DETERMINATION
+          -->
+        <grno_grate description="average growth rate per plant (g/day) during grain-number sensitive phase">0.5   3    6             </grno_grate>
+        <grno_fract description="multiplier on potential grain number per plant">0  0.6   1               </grno_fract>
+        <temp_grain_crit_stress units="oC" description="Tmax above which grain no. is reduced">38.0</temp_grain_crit_stress> <!-- PLP? Carberry et al. 1989 38.0 -->
+        <!-- __________________________________________________________________________________________________________-
+          GRAIN FILLING
+          -->
+        <x_temp_grain units="oC">6.0 10. 16. 22. 30. 56.3</x_temp_grain> <!-- PLP? Carberry et al. 1989 optimum set to 30 -->
+        <y_grain_rate>0.0 .40 .75 1.0 1.0 0.0</y_grain_rate>
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          __________________________________________________________________________________________________________-
+          ROOTING DEPTH
+          stage_name       sow  ger  eme  juv    fi   flag    fl  st_gf end_gf   mat  hv_rpe  end_crop
+          stage_code      = 1    2    3    4      5     6     7    8      9      10   11   12
+          -->
+        <root_depth_rate>0  10    15    33     33    33    33   0      0       0    0    0</root_depth_rate>
+        <!-- x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
+          -->
+        <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
+        <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+        <!-- __________________________________________________________________________________________________________-
+          ROOT LENGTH CALCULATION
+          -->
+        <initial_root_depth units="mm" description="initial depth of roots (mm)">50</initial_root_depth>
+        <specific_root_length units="mm/g">100000</specific_root_length>
+        <!-- The following can increase or decrease the root length density in a layer based on the rld per plant
+          -->
+        <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+        <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+        <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          STAGE DEPENDENT ??? TRANSPIRATION COEFFICIENTS
+          Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
+          The following transp_eff_cf values are from i_wheat model  - ew
+          in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
+          sow    ger     eme    juv      fi      flag   fl  st_gf end_gf mat hv_rpe end_crop
+          stage_code       = 1    2       3       4       5       6      7      8      9      10     11     12
+          -->
+        <transp_eff_cf units="kpa">0.009 0.009 0.009 0.009    0.009  0.009  0.009   0.009  0.009  0.009  0.009  0.009</transp_eff_cf>
+        <!-- g_nfact_grain_conc = n_conc_ratio
+          ______________________________________________________________________________
+          NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
+          emerg   juv     fi      flower  maturity
+          -->
+        <x_stage_code>3       4       5       7      10</x_stage_code>
+        <!-- y_n_conc_min_leaf    = 0.0125  0.0105  0.0065  0.0045  0.0020 ()
+          -->
+        <y_n_conc_min_leaf>0.0125  0.0105  0.0065  0.005   0.005</y_n_conc_min_leaf>
+        <!-- y_n_conc_crit_leaf   = 0.0390  0.0330  0.0280  0.0240  0.0180 () ! from CM-Ken and originally Ceres-Maize
+          -->
+        <y_n_conc_crit_leaf description="from CM-Ken and originally Ceres-Maize">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_crit_leaf>
+        <y_n_conc_max_leaf description="max">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_max_leaf>
+        <!-- y_n_conc_min_stem    = 0.0125  0.0105  0.0065  0.0045  0.0020 ()
+          -->
+        <y_n_conc_min_stem>0.0125  0.0105  0.0065  0.0045  0.004</y_n_conc_min_stem>
+        <!-- y_n_conc_crit_stem   = 0.0390  0.0330  0.0280  0.0240  0.0180 () ! from CM-Ken and originally Ceres-Maize
+          -->
+        <y_n_conc_crit_stem description="from CM-Ken and originally Ceres-Maize">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_crit_stem>
+        <y_n_conc_max_stem>0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_max_stem>
+        <y_n_conc_min_flower>0.0125  0.0105  0.0065  0.0045  0.0020</y_n_conc_min_flower>
+        <!-- y_n_conc_crit_flower = 0.0390  0.0330  0.0280  0.0240  0.0180 () ! from CM-Ken and originally Ceres-Maize
+          -->
+        <y_n_conc_crit_flower description="from CM-Ken and originally Ceres-Maize">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_crit_flower>
+        <y_n_conc_max_flower>0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_max_flower>
+        <n_conc_min_grain>0.010</n_conc_min_grain>
+        <n_conc_crit_grain>0.015</n_conc_crit_grain>
+        <n_conc_max_grain description="MEP 0.016    ()">0.020 </n_conc_max_grain>
+        <n_conc_min_root>0.00795</n_conc_min_root>
+        <n_conc_crit_root>0.01060</n_conc_crit_root>
+        <n_conc_max_root>0.01060</n_conc_max_root>
+        <y_n_conc_min_root>0.00795  0.00795  0.00795  0.00795  0.00795</y_n_conc_min_root>
+        <y_n_conc_crit_root>0.01060  0.01060  0.01060  0.01060  0.01060</y_n_conc_crit_root>
+        <y_n_conc_max_root>0.01060  0.01060  0.01060  0.01060  0.01060</y_n_conc_max_root>
+        <!-- ______________________________________________________________________________
+          INITIAL NITROGEN CONCENTRATION OF ORGANS
+          root   leaf   stem   flower  grain
+          -->
+        <n_init_conc>0.022  0.044  0.044  0.000   0.000</n_init_conc>
+        <!-- ______________________________________________________________________________
+          NITROGEN CONCENTRATION IN SENESCENCED ORGANS
+          This means that as soon as leaves fall off, all N except for the amount below is
+          instantly transferred from leaves to stem (need to stop this occuring if you 'kill' crop)
+          root  leaf  stem  flower grain
+          n_sen_conc = 0.001 0.001 0.001 0.001  0.001
+          MEP
+          -->
+        <n_sen_conc>0.010 0.005 0.004 0.001  0.001</n_sen_conc>
+        <!-- ______________________________________________________________________________
+          LEAF NUMBER AND AREA SENESCENCE
+          -->
+        <leaf_no_dead_const description="coefficients for rate of leaf number senescence following flowering">-0.025</leaf_no_dead_const>
+        <leaf_no_dead_slope>0.00035</leaf_no_dead_slope>
+        <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-2.0 2.0           </x_temp_senescence>
+        <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1   0              </y_senescence_fac>
+        <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>
+
+    </base_cultivar>
+    
     <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       SECTION 1 - CROP PHENOLOGY: DEVELOPMENT PARAMETERS
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,32 +215,12 @@
     <leaf_no_seed description="number of leaf primordia present in seed">6.0     </leaf_no_seed>
     <leaf_no_min description="minimum leaf number">5.0</leaf_no_min>
     <leaf_no_max description="maximum leaf number">40.0</leaf_no_max>
-    <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
-    <leaf_app_rate units="oCd" description="not used, currently using leaf_app_rate1 and leaf_app_rate2">41</leaf_app_rate>
-    <leaf_app_rate1 units="oCd" description="Growing deg day required to develop the most leaf ligules. (deg day).">65.0</leaf_app_rate1>
-    <leaf_app_rate2 units="oCd" description="Growing deg day required to develop last leaf ligules. (deg day).">36.0</leaf_app_rate2>
-    <leaf_no_rate_change description="Leaf no below flag above which leaf appearance rate changes from rate1 to rate2.">11</leaf_no_rate_change>
-    <!--  RELATIVE to FLAG
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      STAGE DEPENDENT RUE  - The following rue values were used in i_wheat (Meinke et al, 1998)
-      sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
-      stage_code       = 1   2   3    4     5     6    7    8     9     10    11   12
-      -->
-    <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
     <!-- __________________________________________________________________________________________________________-
       EXTINCTION COEFFICIENT BEFORE ANTHESIS
       ROW SPACING DETERMINED
       -->
     <row_spacing_default>1.0</row_spacing_default>
     <skiprow_default>0</skiprow_default>
-    <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
-    <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.50   0.40</y_extinct_coef>
-    <y_extinct_coef_dead description="extinction coefficient for dead material">0.3    0.3    0.3</y_extinct_coef_dead>
     <!-- __________________________________________________________________________________________________________-
       TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
       -->
@@ -128,31 +239,15 @@
       -->
     <stem_trans_frac description="fraction of stem used in translocation to grain - not used for i_wheat option">0.20</stem_trans_frac>
     <leaf_trans_frac description="fraction of leaf used in translocation to grain">0.15</leaf_trans_frac>
-    <!-- __________________________________________________________________________________________________________-
-      BIOMASS PARTITIONING
-      stage_name       = sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
-      stage_code       = 1   2   3    4      5     6     7    8    9    10   11   12
-      -->
-    <ratio_root_shoot>0   0   1    1     0.33  0.33  0.087 0    0     0    0    0</ratio_root_shoot>
     <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.0182</partition_rate_leaf>
     <frac_stem2flower description="fraction of dm allocated to stem that goes to developing head">0.17</frac_stem2flower>
-    <!-- __________________________________________________________________________________________________________-
-      GRAIN NUMBER DETERMINATION
-      -->
-    <grno_grate description="average growth rate per plant (g/day) during grain-number sensitive phase">0.5   3    6             </grno_grate>
-    <grno_fract description="multiplier on potential grain number per plant">0  0.6   1               </grno_fract>
-    <temp_grain_crit_stress units="oC" description="Tmax above which grain no. is reduced">38.0</temp_grain_crit_stress> <!-- PLP? Carberry et al. 1989 38.0 -->
+
     <htstress_coeff description="coeff for conversion of heat stress during flowering to heat stress factor on grain number development.">0.05</htstress_coeff>
     <grain_n_conc_min description="minimum nitrogen concentration of grain">0.0007</grain_n_conc_min>
     <seed_wt_min units="g/seed" description="minimum grain weight (g/seed)">0.02</seed_wt_min>
     <swdf_grain_min description="minimum of water stress factor">0.45</swdf_grain_min>
     <head_grain_no_crit description="grains per head minimum, below which all heads are barren">0</head_grain_no_crit>
     <barren_crit description="fraction of maximum grains per plant below which barrenness occurs (0-1)">0.0</barren_crit>
-    <!-- __________________________________________________________________________________________________________-
-      GRAIN FILLING
-      -->
-    <x_temp_grain units="oC">6.0 10. 16. 22. 30. 56.3</x_temp_grain> <!-- PLP? Carberry et al. 1989 optimum set to 30 -->
-    <y_grain_rate>0.0 .40 .75 1.0 1.0 0.0</y_grain_rate>
     <!-- __________________________________________________________________________________________________________-
       GRAIN WATER CONTENT
       -->
@@ -186,39 +281,7 @@
       TPLA  - USED TO INTIALISE THE INITIAL LAI
       -->
     <initial_tpla units="mm^2/plant">380</initial_tpla>
-    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      __________________________________________________________________________________________________________-
-      ROOTING DEPTH
-      stage_name       sow  ger  eme  juv    fi   flag    fl  st_gf end_gf   mat  hv_rpe  end_crop
-      stage_code      = 1    2    3    4      5     6     7    8      9      10   11   12
-      -->
-    <root_depth_rate>0  10    15    33     33    33    33   0      0       0    0    0</root_depth_rate>
-    <!-- x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
-      -->
-    <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
-    <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
-    <!-- __________________________________________________________________________________________________________-
-      ROOT LENGTH CALCULATION
-      -->
-    <initial_root_depth units="mm" description="initial depth of roots (mm)">50</initial_root_depth>
-    <specific_root_length units="mm/g">100000</specific_root_length>
-    <!-- The following can increase or decrease the root length density in a layer based on the rld per plant
-      -->
-    <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
-    <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
-    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      STAGE DEPENDENT ??? TRANSPIRATION COEFFICIENTS
-      Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
-      The following transp_eff_cf values are from i_wheat model  - ew
-      in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
-      sow    ger     eme    juv      fi      flag   fl  st_gf end_gf mat hv_rpe end_crop
-      stage_code       = 1    2       3       4       5       6      7      8      9      10     11     12
-      -->
-    <transp_eff_cf units="kpa">0.009 0.009 0.009 0.009    0.009  0.009  0.009   0.009  0.009  0.009  0.009  0.009</transp_eff_cf>
+
     <!-- __________________________________________________________________________________________________________-
       VPD FRACTION
       Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
@@ -276,54 +339,6 @@
     <N_fact_photo description="multipler for N deficit effect on photosynthesis">1.25    </N_fact_photo>
     <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0     </N_fact_expansion>
     <N_fact_pheno description="multipler for N deficit effect on phenology">10     </N_fact_pheno>
-    <!-- g_nfact_grain_conc = n_conc_ratio
-      ______________________________________________________________________________
-      NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
-      emerg   juv     fi      flower  maturity
-      -->
-    <x_stage_code>3       4       5       7      10</x_stage_code>
-    <!-- y_n_conc_min_leaf    = 0.0125  0.0105  0.0065  0.0045  0.0020 ()
-      -->
-    <y_n_conc_min_leaf>0.0125  0.0105  0.0065  0.005   0.005</y_n_conc_min_leaf>
-    <!-- y_n_conc_crit_leaf   = 0.0390  0.0330  0.0280  0.0240  0.0180 () ! from CM-Ken and originally Ceres-Maize
-      -->
-    <y_n_conc_crit_leaf description="from CM-Ken and originally Ceres-Maize">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_crit_leaf>
-    <y_n_conc_max_leaf description="max">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_max_leaf>
-    <!-- y_n_conc_min_stem    = 0.0125  0.0105  0.0065  0.0045  0.0020 ()
-      -->
-    <y_n_conc_min_stem>0.0125  0.0105  0.0065  0.0045  0.004</y_n_conc_min_stem>
-    <!-- y_n_conc_crit_stem   = 0.0390  0.0330  0.0280  0.0240  0.0180 () ! from CM-Ken and originally Ceres-Maize
-      -->
-    <y_n_conc_crit_stem description="from CM-Ken and originally Ceres-Maize">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_crit_stem>
-    <y_n_conc_max_stem>0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_max_stem>
-    <y_n_conc_min_flower>0.0125  0.0105  0.0065  0.0045  0.0020</y_n_conc_min_flower>
-    <!-- y_n_conc_crit_flower = 0.0390  0.0330  0.0280  0.0240  0.0180 () ! from CM-Ken and originally Ceres-Maize
-      -->
-    <y_n_conc_crit_flower description="from CM-Ken and originally Ceres-Maize">0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_crit_flower>
-    <y_n_conc_max_flower>0.0460  0.0380  0.0360  0.0220  0.0090</y_n_conc_max_flower>
-    <n_conc_min_grain>0.010</n_conc_min_grain>
-    <n_conc_crit_grain>0.015</n_conc_crit_grain>
-    <n_conc_max_grain description="MEP 0.016    ()">0.020 </n_conc_max_grain>
-    <n_conc_min_root>0.00795</n_conc_min_root>
-    <n_conc_crit_root>0.01060</n_conc_crit_root>
-    <n_conc_max_root>0.01060</n_conc_max_root>
-    <y_n_conc_min_root>0.00795  0.00795  0.00795  0.00795  0.00795</y_n_conc_min_root>
-    <y_n_conc_crit_root>0.01060  0.01060  0.01060  0.01060  0.01060</y_n_conc_crit_root>
-    <y_n_conc_max_root>0.01060  0.01060  0.01060  0.01060  0.01060</y_n_conc_max_root>
-    <!-- ______________________________________________________________________________
-      INITIAL NITROGEN CONCENTRATION OF ORGANS
-      root   leaf   stem   flower  grain
-      -->
-    <n_init_conc>0.022  0.044  0.044  0.000   0.000</n_init_conc>
-    <!-- ______________________________________________________________________________
-      NITROGEN CONCENTRATION IN SENESCENCED ORGANS
-      This means that as soon as leaves fall off, all N except for the amount below is
-      instantly transferred from leaves to stem (need to stop this occuring if you 'kill' crop)
-      root  leaf  stem  flower grain
-      n_sen_conc = 0.001 0.001 0.001 0.001  0.001
-      MEP
-      -->
-    <n_sen_conc>0.010 0.005 0.004 0.001  0.001</n_sen_conc>
     <!-- ______________________________________________________________________________
       GRAIN NITROGEN CONCENTRATION
       -->
@@ -340,18 +355,10 @@
     <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
     <dm_leaf_sen_frac description="fraction of senescing leaf dry matter remaining in leaf (0-1)">1.0</dm_leaf_sen_frac>
     <tpla_min description="lower limit of total plant leaf area">0.0</tpla_min>
-    <!-- ______________________________________________________________________________
-      LEAF NUMBER AND AREA SENESCENCE
-      -->
-    <leaf_no_dead_const description="coefficients for rate of leaf number senescence following flowering">-0.025</leaf_no_dead_const>
-    <leaf_no_dead_slope>0.00035</leaf_no_dead_slope>
     <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
     <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
-    <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-2.0 2.0           </x_temp_senescence>
-    <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1   0              </y_senescence_fac>
-      <x_maxt_senescence description="minimum temperature for heat senescence table (oC)">34.0 34.1 45.0     </x_maxt_senescence>
-      <y_heatsenescence_fac description="daily fraction of leaf area senesced due to heat (0-1)">0  0.0  0.0       </y_heatsenescence_fac> 	
-    <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>
+    <x_maxt_senescence description="minimum temperature for heat senescence table (oC)">34.0 34.1 45.0     </x_maxt_senescence>
+    <y_heatsenescence_fac description="daily fraction of leaf area senesced due to heat (0-1)">0  0.0  0.0       </y_heatsenescence_fac> 	
     <!-- ______________________________________________________________________________
       DETACHMENT
       root leaf stem flower grain
@@ -500,6 +507,7 @@
       - Malawi genotypes malawi_local,MH12,MH16,MH17,MH19
       -->
     <katumani cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -528,6 +536,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </katumani>
     <makueni cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -556,10 +565,11 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </makueni>
     <dekalb_xl82 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH
-         ________________________________________________________________________________________________________
-         -->
+       <derived_from>base_cultivar</derived_from>
+        <!-- ________________________________________________________________________________________________________
+             GRAIN GROWTH
+             ________________________________________________________________________________________________________
+             -->
       <head_grain_no_max>610</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
       <!-- ________________________________________________________________________________________________________
@@ -584,6 +594,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </dekalb_xl82>
     <usa_18leaf cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -612,6 +623,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </usa_18leaf>
     <Pioneer_3237 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <head_grain_no_max description="750 ! 650 ()">850 </head_grain_no_max>
       <grain_gth_rate description="9.17 (mg/grain/day)">8.0 </grain_gth_rate>
       <tt_emerg_to_endjuv units="oC">270</tt_emerg_to_endjuv>
@@ -647,6 +659,7 @@
     <!--  inflection point of senescence function
       -->
     <Pioneer_3527 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <head_grain_no_max>750</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">8.0</grain_gth_rate>
       <tt_emerg_to_endjuv units="oC">240</tt_emerg_to_endjuv>
@@ -682,6 +695,7 @@
     <!--  inflection point of senescence function
       -->
     <Pioneer_3153 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <head_grain_no_max>750</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">8.0</grain_gth_rate>
       <tt_emerg_to_endjuv units="oC">300</tt_emerg_to_endjuv>
@@ -717,6 +731,7 @@
     <!--  inflection point of senescence function
       -->
     <Hycorn_424 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <head_grain_no_max>770</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">8.0</grain_gth_rate>
       <tt_emerg_to_endjuv units="oC">330</tt_emerg_to_endjuv>
@@ -752,6 +767,7 @@
     <!--  inflection point of senescence function
       -->
     <hybred511 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -780,6 +796,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </hybred511>
     <hybred614 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -836,6 +853,7 @@
       ****************************************************
       -->
     <NSCM_41 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -864,6 +882,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </NSCM_41>
     <sc401 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -892,6 +911,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sc401>
     <r201 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -924,6 +944,7 @@
       ***********************************************************
       -->
     <sc501 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -952,6 +973,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sc501>
     <sr52 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -980,6 +1002,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sr52>
     <r215 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1008,6 +1031,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </r215>
     <mh18 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1036,6 +1060,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </mh18>
     <CG4141 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1068,6 +1093,7 @@
       **********************************************************
       -->
     <mh12 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1096,6 +1122,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </mh12>
     <mh16 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1124,6 +1151,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </mh16>
     <mh17 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1152,6 +1180,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </mh17>
     <mh19 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1180,6 +1209,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </mh19>
     <sc601 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1208,6 +1238,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sc601>
     <sc625 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1236,6 +1267,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sc625>
     <sc623 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1264,6 +1296,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sc623>
     <mwi_local cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1296,6 +1329,7 @@
       ***************************************************
       -->
     <sc709 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1324,6 +1358,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </sc709>
     <_19leaf cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1352,6 +1387,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </_19leaf>
     <C33a63 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- parameters estimated By DGaydon for Pioneer variety 33a63 - Riverina variety _______________________
           GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1382,6 +1418,7 @@
     <!--  Chinese variety
       -->
     <Zhongdan2 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1412,6 +1449,7 @@
     <!--  RSA varieties
       -->
     <pan6479 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1440,6 +1478,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </pan6479>
     <pan6671 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1468,6 +1507,7 @@
       <tt_maturity_to_ripe units="oC days">1</tt_maturity_to_ripe>
     </pan6671>
     <cresemillas cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- CIAT variety for Pescador, Colombia based on SC401
          MEP changes to cause earlier maturity and high HI
          MEP june 2005 put grain_gth_rate back to 9 as for other hybrids and make a little later (tt_emerg_to_endjuv 220)
@@ -1501,6 +1541,7 @@
         <!--  West Timor variety
       -->
     <timor_local cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1529,6 +1570,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </timor_local>
     <timor_biloto cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1557,6 +1599,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </timor_biloto>
     <timor_open-poll cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1585,6 +1628,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </timor_open-poll>
     <timor_kakaniuk cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1613,6 +1657,7 @@
       <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
     </timor_kakaniuk>
     <timor_oebola cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
       <!-- ________________________________________________________________________________________________________
          GRAIN GROWTH
          ________________________________________________________________________________________________________
@@ -1660,8 +1705,9 @@
 	<!-- Iowa, USA -->
 	
 	<Pioneer_35P12_104 cultivar="yes">
-	<tt_emerg_to_endjuv units="oC">250</tt_emerg_to_endjuv>
-	<tt_flower_to_maturity>802</tt_flower_to_maturity>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">250</tt_emerg_to_endjuv>
+	  <tt_flower_to_maturity>802</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
@@ -1677,8 +1723,9 @@
 	</Pioneer_35P12_104>
 
 	<Pioneer_P04612XR_106 cultivar="yes">
-	<tt_emerg_to_endjuv units="oC">250</tt_emerg_to_endjuv>
-	<tt_flower_to_maturity>812</tt_flower_to_maturity>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">250</tt_emerg_to_endjuv>
+	  <tt_flower_to_maturity>812</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
@@ -1695,8 +1742,9 @@
 	
 			
 	<DKC_6018_110 cultivar="yes">
-	<tt_emerg_to_endjuv units="oC">250</tt_emerg_to_endjuv>
-	<tt_flower_to_maturity>832</tt_flower_to_maturity>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">250</tt_emerg_to_endjuv>
+	  <tt_flower_to_maturity>832</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
@@ -1712,8 +1760,9 @@
 	</DKC_6018_110>
 	
 	<DKC_5139_101 cultivar="yes">
-	<tt_emerg_to_endjuv units="oC">210</tt_emerg_to_endjuv>
-	<tt_flower_to_maturity>785</tt_flower_to_maturity>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">210</tt_emerg_to_endjuv>
+	  <tt_flower_to_maturity>785</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
@@ -1743,7 +1792,8 @@
 	
 	
 	<A_80 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">162</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">162</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>615</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1760,7 +1810,8 @@
 	</A_80>
 	
 	<A_90 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">185</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">185</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>691</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1778,7 +1829,8 @@
 	
 		
 	<A_100 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">207</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">207</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>766</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1795,7 +1847,8 @@
 	</A_100>
 		
 	<A_105 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">218</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">218</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>804</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1813,7 +1866,8 @@
 	
 	
 	<A_110 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">229</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">229</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>842</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1830,7 +1884,8 @@
 	</A_110>
 	
 	<A_115 cultivar="yes">
-	  <tt_emerg_to_endjuv units="oC">240</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">240</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>879</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1848,7 +1903,8 @@
 	
 	
 	<A_120 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">251</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">251</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>917</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1866,7 +1922,8 @@
 	
 	
 	<A_130 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">274</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">274</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>992</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1887,7 +1944,8 @@
 	
 	
 	<B_80 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">168</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">168</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>599</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1905,7 +1963,8 @@
 	
 
 	<B_90 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">183</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">183</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>695</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1924,7 +1983,8 @@
 
 	
 	<B_100 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">198</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">198</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>790</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1941,7 +2001,8 @@
 	</B_100>
 		
 	<B_105 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">206</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">206</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>838</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1959,7 +2020,8 @@
 	
 	
 	<B_110 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">214</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">214</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>885</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1976,7 +2038,8 @@
 	</B_110>
 	
 	<B_115 cultivar="yes">
-	  <tt_emerg_to_endjuv units="oC">221</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">221</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>933</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -1994,7 +2057,8 @@
 	
 	
 	<B_120 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">229</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">229</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>981</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>
@@ -2012,7 +2076,8 @@
 	
 	
 	<B_130 cultivar="yes">
-	 <tt_emerg_to_endjuv units="oC">244</tt_emerg_to_endjuv>
+	  <derived_from>base_cultivar</derived_from>
+      <tt_emerg_to_endjuv units="oC">244</tt_emerg_to_endjuv>
 	  <tt_flower_to_maturity>1078</tt_flower_to_maturity>
       <head_grain_no_max>800</head_grain_no_max>
       <grain_gth_rate units="mg/grain/day">9.17</grain_gth_rate>

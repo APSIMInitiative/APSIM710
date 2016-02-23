@@ -261,7 +261,273 @@ cnh      call Maize_water_stress(1)
      :                     , p%y_height, p%num_stem_wt
      :                     , 0.0, 5000.0)
 
+     
+      call read_real_var (cultivar
+     :                    , 'leaf_init_rate', '(oC)'
+     :                    , c%leaf_init_rate, numvals
+     :                    , 0.0, 100.0)
+ 
+      call read_real_var (cultivar
+     :                    , 'leaf_app_rate', '(oC)'
+     :                    , c%leaf_app_rate, numvals
+     :                    , 0.0, 100.0)
 
+      call read_real_var (cultivar
+     :                    , 'leaf_app_rate1', '(oC)'
+     :                    , c%leaf_app_rate1, numvals
+     :                    , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                    , 'leaf_app_rate2', '(oC)'
+     :                    , c%leaf_app_rate2, numvals
+     :                    , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                    , 'leaf_no_rate_change', '()'
+     :                    , c%leaf_no_rate_change, numvals
+     :                    , 0.0, 30.0)
+     
+      call read_real_array (cultivar
+     :                     , 'rue', max_stage, '(g dm/mj)'
+     :                     , c%rue, numvals
+     :                     , 0.0, 1000.0)
+
+      call read_real_array (cultivar
+     :                     , 'x_row_spacing', max_table, '(mm)'
+     :                     , c%x_row_spacing, c%num_row_spacing
+     :                     , 0.0, 2000.0)
+      call read_real_array (cultivar
+     :                     , 'y_extinct_coef', max_table, '()'
+     :                     , c%y_extinct_coef, c%num_row_spacing
+     :                     , 0.0, 1.0)
+       call read_real_array (cultivar
+     :                     , 'y_extinct_coef_dead', max_table, '()'
+     :                     , c%y_extinct_coef_dead, c%num_row_spacing
+     :                     , 0.0, 1.0)
+
+      call read_real_array (cultivar
+     :                     , 'ratio_root_shoot', max_stage, '()'
+     :                     , c%ratio_root_shoot, numvals
+     :                     , 0.0, 1000.0)
+
+         ! ANOTHER TEMPLATE OPTION!!!!!
+
+      call read_real_array (cultivar
+     :                    , 'grno_grate', max_table, '()'
+     :                    , c%grno_grate, c%num_grno_grate
+     :                    , 0.0, 10.0)
+      call read_real_array (cultivar
+     :                    , 'grno_fract', max_table, '()'
+     :                    , c%grno_fract, c%num_grno_grate
+     :                    , 0.0, 1.0)
+         ! TEMPLATE OPTION
+         !    Maize_heat_stress
+
+      call read_real_var (cultivar
+     :                   , 'temp_grain_crit_stress', '(oC)'
+     :                   , c%temp_grain_crit_stress, numvals
+     :                   , 20.0, 50.0)
+         ! TEMPLATE OPTION
+         !    Maize_dm_grain
+
+      call read_real_array (cultivar
+     :                     , 'x_temp_grain', max_table, '(oC)'
+     :                     , c%x_temp_grain, c%num_temp_grain
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_grain_rate', max_table, '()'
+     :                     , c%y_grain_rate, c%num_temp_grain
+     :                     , 0.0, 1.0)
+
+      call read_real_array (cultivar
+     :                     , 'root_depth_rate', max_stage, '(mm)'
+     :                     , c%root_depth_rate, numvals
+     :                     , 0.0, 1000.0)
+
+      call read_real_array (cultivar
+     :                     , 'x_sw_ratio', max_table, '()'
+     :                     , c%x_sw_ratio, c%num_sw_ratio
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_sw_fac_root', max_table, '()'
+     :                     , c%y_sw_fac_root, c%num_sw_ratio
+     :                     , 0.0, 100.0)
+
+         !    Maize_root_depth
+
+      call read_real_var (cultivar
+     :                    , 'initial_root_depth', '(mm)'
+     :                    , c%initial_root_depth, numvals
+     :                    , 0.0, 1000.0)
+      call read_real_var (cultivar
+     :                    , 'specific_root_length', '(mm/g)'
+     :                    , c%specific_root_length, numvals
+     :                    , 0.0, 1.e6)
+
+      call read_real_array (cultivar
+     :                     , 'x_plant_rld', max_table, '(mm)'
+     :                     , c%x_plant_rld, c%num_plant_rld
+     :                     , 0.0, 0.1)
+      call read_real_array (cultivar
+     :                     , 'y_rel_root_rate', max_table, '()'
+     :                     , c%y_rel_root_rate, c%num_plant_rld
+     :                     , 0.0, 1.0)
+
+      call read_real_array (cultivar
+     :                     , 'transp_eff_cf', max_stage, '(kpa)'
+     :                     , c%transp_eff_cf, numvals
+     :                     , 0.0, 1.0)
+
+         !    Maize_N_conc_limits
+
+      call read_real_array (cultivar
+     :                     , 'x_stage_code', max_stage, '()'
+     :                     , c%x_stage_code, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_crit_leaf', max_stage, '()'
+     :                     , c%y_N_conc_crit_leaf, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_max_leaf', max_stage, '()'
+     :                     , c%y_N_conc_max_leaf, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_min_leaf', max_stage, '()'
+     :                     , c%y_N_conc_min_leaf, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_crit_stem', max_stage, '()'
+     :                     , c%y_N_conc_crit_stem, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_max_stem', max_stage, '()'
+     :                     , c%y_N_conc_max_stem, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_min_stem', max_stage, '()'
+     :                     , c%y_N_conc_min_stem, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_crit_flower', max_stage, '()'
+     :                     , c%y_N_conc_crit_flower, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_max_flower', max_stage, '()'
+     :                     , c%y_N_conc_max_flower, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_min_flower', max_stage, '()'
+     :                     , c%y_N_conc_min_flower, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                   , 'n_conc_crit_grain', '()'
+     :                   , c%N_conc_crit_grain, numvals
+     :                   , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                   , 'n_conc_max_grain', '()'
+     :                   , c%N_conc_max_grain, numvals
+     :                   , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                   , 'n_conc_min_grain', '()'
+     :                   , c%N_conc_min_grain, numvals
+     :                   , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                   , 'n_conc_crit_root', '()'
+     :                   , c%N_conc_crit_root, numvals
+     :                   , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                   , 'n_conc_max_root', '()'
+     :                   , c%N_conc_max_root, numvals
+     :                   , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                   , 'n_conc_min_root', '()'
+     :                   , c%N_conc_min_root, numvals
+     :                   , 0.0, 100.0)
+
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_min_root', max_stage, '()'
+     :                     , c%y_N_conc_min_root, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_crit_root', max_stage, '()'
+     :                     , c%y_N_conc_crit_root, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_n_conc_max_root', max_stage, '()'
+     :                     , c%y_N_conc_max_root, c%num_N_conc_stage
+     :                     , 0.0, 100.0)
+
+
+         !    Maize_N_init
+
+      call read_real_array (cultivar
+     :                     , 'n_init_conc', max_part, '()'
+     :                     , c%n_init_conc, numvals
+     :                     , 0.0, 100.0)
+
+         !    Maize_N_senescence
+
+      call read_real_array (cultivar
+     :                     , 'n_sen_conc', max_part, '()'
+     :                     , c%n_sen_conc, numvals
+     :                     , 0.0, 1.0)
+
+         !    Maize_leaf_death
+
+cSCC changed lower limit from 10.0 to 0.0
+c      call read_real_var (cultivar
+c     :                    , 'leaf_no_dead_const', '()'
+c     :                    , c%leaf_no_dead_const, numvals
+c     :                    , 0.0, 100.0)
+
+      call read_real_var (cultivar
+     :                    , 'leaf_no_dead_slope', '()'
+     :                    , c%leaf_no_dead_slope, numvals
+     :                    , 0.0, 100.0)
+
+         ! TEMPLATE OPTION
+         !    Maize_leaf_area_sen_frost
+
+      call read_real_array (cultivar
+     :                   , 'x_temp_senescence', max_table, '(oC)'
+     :                   , c%x_temp_senescence, c%num_temp_senescence
+     :                   , -20.0, 20.0)
+
+      call read_real_array (cultivar
+     :                   , 'y_senescence_fac', max_table, '()'
+     :                   , c%y_senescence_fac, c%num_temp_senescence
+     :                   , 0.0, 1.0)
+
+         ! TEMPLATE OPTION
+         !    Maize_leaf_area_sen_water
+
+      call read_real_var (cultivar
+     :                    , 'sen_rate_water', '()'
+     :                    , c%sen_rate_water, numvals
+     :                    , 0.0, 100.0)
+
+     
              ! report
 
       string = '    ------------------------------------------------'
@@ -329,7 +595,6 @@ cnh      call Maize_water_stress(1)
      :               , (p%y_height(i), i=1,p%num_stem_wt)
       call write_string (string)
 
-
       string = '    ------------------------------------------------'
       call write_string (string)
 
@@ -394,38 +659,10 @@ cnh      call Maize_water_stress(1)
      :                     , c%stage_code_list, numvals
      :                     , 0.0, 1000.0)
 
-      call read_real_array (section_name
-     :                     , 'rue', max_stage, '(g dm/mj)'
-     :                     , c%rue, numvals
-     :                     , 0.0, 1000.0)
-
-      call read_real_array (section_name
-     :                     , 'root_depth_rate', max_stage, '(mm)'
-     :                     , c%root_depth_rate, numvals
-     :                     , 0.0, 1000.0)
-
-      call read_real_array (section_name
-     :                     , 'ratio_root_shoot', max_stage, '()'
-     :                     , c%ratio_root_shoot, numvals
-     :                     , 0.0, 1000.0)
-
       call read_real_var (section_name
      :                    , 'row_spacing_default', '(m)'
      :                    , c%row_spacing_default, numvals
      :                    , 0.0, 2.0)
-
-      call read_real_array (section_name
-     :                     , 'x_row_spacing', max_table, '(mm)'
-     :                     , c%x_row_spacing, c%num_row_spacing
-     :                     , 0.0, 2000.0)
-      call read_real_array (section_name
-     :                     , 'y_extinct_coef', max_table, '()'
-     :                     , c%y_extinct_coef, c%num_row_spacing
-     :                     , 0.0, 1.0)
-       call read_real_array (section_name
-     :                     , 'y_extinct_coef_dead', max_table, '()'
-     :                     , c%y_extinct_coef_dead, c%num_row_spacing
-     :                     , 0.0, 1.0)
 
          ! crop failure
 
@@ -459,26 +696,6 @@ cnh      call Maize_water_stress(1)
      :                    , c%swdf_photo_rate, numvals
      :                    , 0.0, 1.0)
 
-
-         !    Maize_root_depth
-
-      call read_real_var (section_name
-     :                    , 'initial_root_depth', '(mm)'
-     :                    , c%initial_root_depth, numvals
-     :                    , 0.0, 1000.0)
-      call read_real_var (section_name
-     :                    , 'specific_root_length', '(mm/g)'
-     :                    , c%specific_root_length, numvals
-     :                    , 0.0, 1.e6)
-
-      call read_real_array (section_name
-     :                     , 'x_plant_rld', max_table, '(mm)'
-     :                     , c%x_plant_rld, c%num_plant_rld
-     :                     , 0.0, 0.1)
-      call read_real_array (section_name
-     :                     , 'y_rel_root_rate', max_table, '()'
-     :                     , c%y_rel_root_rate, c%num_plant_rld
-     :                     , 0.0, 1.0)
 
          !    Maize_leaf_area_init
 
@@ -562,11 +779,6 @@ cnh      call Maize_water_stress(1)
      :                    , 0.0, 100.)
 
       call read_real_array (section_name
-     :                     , 'transp_eff_cf', max_stage, '(kpa)'
-     :                     , c%transp_eff_cf, numvals
-     :                     , 0.0, 1.0)
-
-      call read_real_array (section_name
      :                     , 'n_fix_rate', max_stage, '()'
      :                     , c%n_fix_rate, numvals
      :                     , 0.0, 1.0)
@@ -616,17 +828,6 @@ cnh      call Maize_water_stress(1)
      :                    , 0.0, 100.0)
 
 
-         ! ANOTHER TEMPLATE OPTION!!!!!
-
-      call read_real_array (section_name
-     :                    , 'grno_grate', max_table, '()'
-     :                    , c%grno_grate, c%num_grno_grate
-     :                    , 0.0, 10.0)
-      call read_real_array (section_name
-     :                    , 'grno_fract', max_table, '()'
-     :                    , c%grno_fract, c%num_grno_grate
-     :                    , 0.0, 1.0)
-
          !    Maize_leaf_appearance
 
       call read_real_var (section_name
@@ -657,25 +858,6 @@ cnh      call Maize_water_stress(1)
      :                    , c%shoot_rate, numvals
      :                    , 0.0, 100.0)
 
-      call read_real_var (section_name
-     :                    , 'leaf_app_rate', '(oC)'
-     :                    , c%leaf_app_rate, numvals
-     :                    , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                    , 'leaf_app_rate1', '(oC)'
-     :                    , c%leaf_app_rate1, numvals
-     :                    , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                    , 'leaf_app_rate2', '(oC)'
-     :                    , c%leaf_app_rate2, numvals
-     :                    , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                    , 'leaf_no_rate_change', '()'
-     :                    , c%leaf_no_rate_change, numvals
-     :                    , 0.0, 30.0)
 
          !    Maize_dm_init
 
@@ -707,11 +889,6 @@ cnh      call Maize_water_stress(1)
      :                    , 0.0, 1000.0)
 
          !    Maize_leaf_no_final
-
-      call read_real_var (section_name
-     :                    , 'leaf_init_rate', '(oC)'
-     :                    , c%leaf_init_rate, numvals
-     :                    , 0.0, 100.0)
 
       call read_real_var (section_name
      :                    , 'leaf_no_seed', '(leaves)'
@@ -782,19 +959,6 @@ c     :                    , 0.0, 100.0)
       call read_real_var (section_name
      :                    , 'tfac_slope', '()'
      :                    , c%tfac_slope, numvals
-     :                    , 0.0, 100.0)
-
-         !    Maize_leaf_death
-
-cSCC changed lower limit from 10.0 to 0.0
-c      call read_real_var (section_name
-c     :                    , 'leaf_no_dead_const', '()'
-c     :                    , c%leaf_no_dead_const, numvals
-c     :                    , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                    , 'leaf_no_dead_slope', '()'
-     :                    , c%leaf_no_dead_slope, numvals
      :                    , 0.0, 100.0)
 
          !    Maize_get_other_variables
@@ -1054,28 +1218,6 @@ c     :                    , 0.0, 100.0)
      :                    , 0.0, 100.0)
 
 
-         ! TEMPLATE OPTION
-         !    Maize_leaf_area_sen_frost
-
-      call read_real_array (section_name
-     :                   , 'x_temp_senescence', max_table, '(oC)'
-     :                   , c%x_temp_senescence, c%num_temp_senescence
-     :                   , -20.0, 20.0)
-
-      call read_real_array (section_name
-     :                   , 'y_senescence_fac', max_table, '()'
-     :                   , c%y_senescence_fac, c%num_temp_senescence
-     :                   , 0.0, 1.0)
-
-         ! TEMPLATE OPTION
-         !    Maize_leaf_area_sen_water
-
-      call read_real_var (section_name
-     :                    , 'sen_rate_water', '()'
-     :                    , c%sen_rate_water, numvals
-     :                    , 0.0, 100.0)
-
-
          !    Maize_phenology_init
 
       call read_real_var (section_name
@@ -1083,127 +1225,6 @@ c     :                    , 0.0, 100.0)
      :                   , c%twilight, numvals
      :                   , -90.0, 90.0)
 
-         ! TEMPLATE OPTION
-         !    Maize_heat_stress
-
-      call read_real_var (section_name
-     :                   , 'temp_grain_crit_stress', '(oC)'
-     :                   , c%temp_grain_crit_stress, numvals
-     :                   , 20.0, 50.0)
-
-         !    Maize_N_conc_limits
-
-      call read_real_array (section_name
-     :                     , 'x_stage_code', max_stage, '()'
-     :                     , c%x_stage_code, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_crit_leaf', max_stage, '()'
-     :                     , c%y_N_conc_crit_leaf, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_max_leaf', max_stage, '()'
-     :                     , c%y_N_conc_max_leaf, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_min_leaf', max_stage, '()'
-     :                     , c%y_N_conc_min_leaf, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_crit_stem', max_stage, '()'
-     :                     , c%y_N_conc_crit_stem, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_max_stem', max_stage, '()'
-     :                     , c%y_N_conc_max_stem, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_min_stem', max_stage, '()'
-     :                     , c%y_N_conc_min_stem, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_crit_flower', max_stage, '()'
-     :                     , c%y_N_conc_crit_flower, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_max_flower', max_stage, '()'
-     :                     , c%y_N_conc_max_flower, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_min_flower', max_stage, '()'
-     :                     , c%y_N_conc_min_flower, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                   , 'n_conc_crit_grain', '()'
-     :                   , c%N_conc_crit_grain, numvals
-     :                   , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                   , 'n_conc_max_grain', '()'
-     :                   , c%N_conc_max_grain, numvals
-     :                   , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                   , 'n_conc_min_grain', '()'
-     :                   , c%N_conc_min_grain, numvals
-     :                   , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                   , 'n_conc_crit_root', '()'
-     :                   , c%N_conc_crit_root, numvals
-     :                   , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                   , 'n_conc_max_root', '()'
-     :                   , c%N_conc_max_root, numvals
-     :                   , 0.0, 100.0)
-
-      call read_real_var (section_name
-     :                   , 'n_conc_min_root', '()'
-     :                   , c%N_conc_min_root, numvals
-     :                   , 0.0, 100.0)
-
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_min_root', max_stage, '()'
-     :                     , c%y_N_conc_min_root, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_crit_root', max_stage, '()'
-     :                     , c%y_N_conc_crit_root, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_n_conc_max_root', max_stage, '()'
-     :                     , c%y_N_conc_max_root, c%num_N_conc_stage
-     :                     , 0.0, 100.0)
-
-
-
-         !    Maize_N_init
-
-      call read_real_array (section_name
-     :                     , 'n_init_conc', max_part, '()'
-     :                     , c%n_init_conc, numvals
-     :                     , 0.0, 100.0)
-
-         !    Maize_N_senescence
-
-      call read_real_array (section_name
-     :                     , 'n_sen_conc', max_part, '()'
-     :                     , c%n_sen_conc, numvals
-     :                     , 0.0, 1.0)
 
          !    nfact
 
@@ -1281,18 +1302,6 @@ c     :                    , 0.0, 100.0)
      :                     , c%y_stress_photo, c%num_factors
      :                     , 0.0, 1.0)
 
-         ! TEMPLATE OPTION
-         !    Maize_dm_grain
-
-      call read_real_array (section_name
-     :                     , 'x_temp_grain', max_table, '(oC)'
-     :                     , c%x_temp_grain, c%num_temp_grain
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_grain_rate', max_table, '()'
-     :                     , c%y_grain_rate, c%num_temp_grain
-     :                     , 0.0, 1.0)
 
          !    Maize_tt
 
@@ -1392,16 +1401,6 @@ c     :                    , 0.0, 100.0)
       call read_real_array (section_name
      :                     , 'y_swdef_pheno', max_table, '()'
      :                     , c%y_swdef_pheno, c%num_sw_avail_ratio
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'x_sw_ratio', max_table, '()'
-     :                     , c%x_sw_ratio, c%num_sw_ratio
-     :                     , 0.0, 100.0)
-
-      call read_real_array (section_name
-     :                     , 'y_sw_fac_root', max_table, '()'
-     :                     , c%y_sw_fac_root, c%num_sw_ratio
      :                     , 0.0, 100.0)
 
       call read_real_var_optional (section_name
