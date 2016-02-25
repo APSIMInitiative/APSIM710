@@ -358,7 +358,9 @@ class BobMain
     /// <summary>Return the valid password for this web service.</summary>
     public static string GetValidPassword()
     {
-        string connectionString = File.ReadAllText(@"C:\inetpub\wwwroot\ChangeDBPassword.txt");
+        string pwfile = @"C:\ChangeDBPassword.txt";
+        if (!File.Exists(pwfile)) { pwfile = "/etc/dbConnect.txt"; }
+        string connectionString = File.ReadAllText(pwfile).TrimEnd(new char[] { '\r', '\n' });
         int posPassword = connectionString.IndexOf("Password=");
         return connectionString.Substring(posPassword + "Password=".Length);
     }
