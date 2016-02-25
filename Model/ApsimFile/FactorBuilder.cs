@@ -678,9 +678,9 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
     }
     public class Factor
     {
-        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, 
-		                                               Component FactorComponent, string SimulationPath, string destFolder = "")
+		public static SimFactorItem ProcessSimulationFactorials(ApsimFile copiedFile,  Component FactorComponent, string SimulationPath, string destFolder = "")
         {
+			SimFactorItem result = new SimFactorItem();
             if (FactorComponent == null)
                 throw new Exception("Error initialising Factorials");
 
@@ -699,12 +699,12 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                 {
                     FactorBuilder builder = new FactorBuilder();
                     List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
-					
                     int counter = 0;
                     int totalCount = 0;
                     foreach (FactorItem item in items)
                         totalCount += item.CalcCount();
                     
+					List<SimFactorItem> SimFiles = new List<SimFactorItem>();					
                     foreach (FactorItem item in items)
                     {
                         SortedDictionary<string, string> factors = new SortedDictionary<string, string>();
@@ -714,18 +714,19 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
                     if (SimFiles.Count == 0 && myFactors != null) 
 						throw new Exception(" Factor level '" + FactorItem.ToKVString(myFactors) + "' isnt present");
 
-                    if (SimFiles.Count != 1 && myFactors != null)
+                    if (SimFiles.Count > 1 && myFactors != null)
                     {
-                        Console.WriteLine(" Whoops - '" + SimulationPath + "@" + FactorItem.ToKVString(myFactors) + "' produced " +
+                        Console.WriteLine(" Whoops - '" + SimulationPath + "@" + FactorItem.ToKVString(myFactors) + "' is not unique - produced " +
                                             SimFiles.Count + " sim files");
-                        SimFiles = SimFiles.GetRange(0,1);
                     }
+					result = SimFiles[0];
                 }
                 catch (Exception ex)
                 {
                     throw new Exception("Error encountered creating Factorials\n" + ex.Message);
                 }
             }
+			return(result);
         }
 
         private static ApsimFile CreateCopy(ApsimFile apsimfile)
@@ -745,7 +746,7 @@ public static bool FactorsMatch<TKey, TValue>(IDictionary<TKey, TValue> first, I
             //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
             ApsimFile tmpFile = CreateCopy(_F);
             foreach (String SimulationPath in SimsToRun)
-                Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath, destFolder);
+				SimFiles.Add(Factor.ProcessSimulationFactorials(tmpFile, tmpFile.FactorComponent, SimulationPath, destFolder));
             return SimFiles;
         }
 

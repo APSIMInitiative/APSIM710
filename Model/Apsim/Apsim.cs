@@ -89,8 +89,23 @@ public class Apsim
             
 			// Check for "simulation" on commandline.
             List<string> SimulationPaths = new List<string>();
-            if (Macros.ContainsKey("Simulation"))
+            if (Macros.ContainsKey("Simulation")) 
+            {
+				if (Macros["Simulation"][0] == '@')  
+				{
+					// "Simulation=@filename" - read paths from a file
+					System.IO.StreamReader file = new System.IO.StreamReader( Macros["Simulation"].Substring(1) );
+				    string line;
+				    while((line = file.ReadLine()) != null)
+					   SimulationPaths.Add(line);
+                    file.Close();
+				}
+				else 
+				{
+				// "Simulation=/xmlpath/to/node"
 			    SimulationPaths.Add(Macros["Simulation"]);
+			    }
+			}
 
             // Run
             ApsimFile.RunApsim Run = new ApsimFile.RunApsim();
