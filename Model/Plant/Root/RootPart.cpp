@@ -94,6 +94,9 @@ void RootPart::onInit1(protocol::Component *system)
    setupGetFunction(system, "rlv", protocol::DTsingle, true,
                     &RootPart::get_rlv, "mm/mm^3", "Root length density");
 
+   setupGetFunction(system, "relativeroothealth", protocol::DTsingle, true,
+                    &RootPart::get_relativeroothealth, "-", "Relative Root Health");
+
    setupGetFunction(system, "rld", protocol::DTsingle, true,
                     &RootPart::get_rlv, "mm/mm^3", "Root length density");
 
@@ -174,6 +177,11 @@ void RootPart::read()
                          "x_sw_ratio", "()", 0.0f, 100.0f,
                          "y_sw_fac_root", "()", 0.0f, 100.0f);
 
+   afps_fac_root.read(scienceAPI,
+                         "x_afps", "()", 0.0f, 1.0f,
+                         "y_afps_fac_root", "()", 0.0f, 1.0f);
+                         
+                         
    rel_root_advance.read(scienceAPI,
                          "x_temp_root_advance", "(oc)", -10.0f, 60.0f,
                          "y_rel_root_advance", "()", 0.0, 1.0f);
@@ -358,8 +366,9 @@ void RootPart::plant_root_depth (void)
    fasw2 = (float)min(1.0,max(0.0, fasw2));
 
    float fasw = weighting_factor * fasw2 + (1.0f - weighting_factor) * fasw1;
-
+   
    float sw_avail_factor = sw_fac_root.value(fasw);
+   float afps_factor = afps_fac_root.value(afps(layer));
 
    float RelRFV=-1.0;
    scienceAPI.getOptional("RelRFV", "-", RelRFV,0.0,1.0);
@@ -377,7 +386,7 @@ void RootPart::plant_root_depth (void)
    // to affect the daily increase in rooting depth.
    dltRootDepth  = plant->phenology().doInterpolation(root_depth_rate) *
                      temp_factor *
-                       min(ws_factor, sw_avail_factor) *
+                       min(ws_factor, min(sw_avail_factor,afps_factor)) *
                          (*soil[0]).xf[layer];
 
    // prevent roots partially entering layers where xf == 0
@@ -711,6 +720,18 @@ void RootPart::get_rlv(protocol::Component *system, protocol::QueryValueData &qd
        rlv[layer] = (float)divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
        }
     system->sendVariable(qd, std::vector<float>(rlv,rlv+(*soil[0]).num_layers));
+}
+
+void RootPart::get_relativeroothealth(protocol::Component *system, protocol::QueryValueData &qd)
+//=======================================================================================
+// Getter Function for Relative Root Health
+{
+    float rrh[max_layer];
+    for (int layer = 0; layer < (*soil[0]).num_layers; layer++)
+       {
+       rrh[layer] = (float)afps_fac_root.value(afps(layer));;
+       }
+    system->sendVariable(qd, std::vector<float>(rrh,rrh+(*soil[0]).num_layers));
 }
 
 void RootPart::get_root_length_senesced(protocol::Component *system, protocol::QueryValueData &qd)
@@ -1062,3 +1083,14 @@ float RootPart::sw_avail_ratio(int layer)  //(INPUT) soil profile layer number
    sw_avail_ratio = (float)divide (pesw, pesw_capacity, 10.0);
    return sw_avail_ratio;
    }
+   
+float RootPart::afps(int layer)  //(INPUT) soil profile layer number
+//===========================================================================
+   {
+   return (float)divide(((*soil[0]).sat_dep[layer] - (*soil[0]).sw_dep[layer]),(*soil[0]).dlayer[layer],0.0);
+   }
+   
+   
+   
+   
+   

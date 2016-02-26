@@ -940,6 +940,7 @@ void Soil::plant_nit_supply(float root_depth, float *root_length)
                          , sw_avail
                          , no3gsm_diffn_pot);
 
+
     else if (n_uptake_option == 2)
         cproc_n_supply3 (dlayer
                          , no3gsm

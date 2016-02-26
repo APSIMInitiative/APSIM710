@@ -39,6 +39,7 @@ class RootPart : public RootBase
       virtual void root_length_growth (void) = 0;
       virtual void plant_root_depth (void);
       float sw_avail_ratio(int layer);
+      float afps(int layer);
 
       void collectDetachedForResidue(vector<string> &part_name
                                           , vector<float> &dm_residue
@@ -80,6 +81,7 @@ class RootPart : public RootBase
       float specificRootLength;
       interpolationFunction rel_root_rate;
       interpolationFunction sw_fac_root;
+      interpolationFunction afps_fac_root;
 
    private:
 
@@ -114,6 +116,7 @@ class RootPart : public RootBase
       void get_nh4gsm_uptake_pot(protocol::Component *, protocol::QueryValueData &);
       void get_n_supply_soil(protocol::Component *system, protocol::QueryValueData &qd);
       void get_rlv(protocol::Component *system, protocol::QueryValueData &qd);
+      void get_relativeroothealth(protocol::Component *system, protocol::QueryValueData &qd);
       void get_root_length(protocol::Component *system, protocol::QueryValueData &qd);
       void get_root_length_senesced(protocol::Component *system, protocol::QueryValueData &qd);
 

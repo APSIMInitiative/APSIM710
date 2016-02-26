@@ -15,7 +15,7 @@ class Soil
       float waterUptake (void);
       float WFPS(int layer);
       void UpdateOtherVariables(string uptake_source);
-      void plant_nit_supply(float root_depth, float *root_lengt);
+      void plant_nit_supply(float root_depth, float *root_length);
       float pesw(int depth);
       float fasw(int depth);
       float peswTotal(float root_depth);
@@ -35,7 +35,8 @@ class Soil
       vector<float> xf;                                 // root exploration factor (0-1)
       vector<float> ll_dep;                          // lower limit of plant-extractable
       float dul_dep[max_layer];                        // drained upper limit soil water content for soil layer L (mm water)
-
+      float sat_dep[max_layer];
+      
       float sw_dep[max_layer];                         // soil water content of layer L (mm)
       float dlt_sw_dep[max_layer];                      // water uptake in each layer (mm water)
       float sw_avail_pot[max_layer];                    // potential extractable soil water (mm)
@@ -81,7 +82,7 @@ class Soil
 
       float air_dry_dep[max_layer];
       float ll15_dep[max_layer];
-      float sat_dep[max_layer];
+
       float bd[max_layer];
       
       float sw_avail[max_layer];                        // actual extractable soil water (mm)

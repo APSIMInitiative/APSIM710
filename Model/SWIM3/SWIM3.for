@@ -4280,6 +4280,7 @@ c      eqr0  = 0.d0
 
 *+  Local Variables
       double precision rlv_l(M+1)
+      double precision rrh(M+1)
       double precision pep
       integer vegnum                   ! solute array index counter
       integer layer                    ! layer number specifier
@@ -4337,10 +4338,26 @@ c      eqr0  = 0.d0
      :          'no sw demand returned from '//g%crop_names(vegnum))
            endif
 
+
+             call get_double_array_optional(
+     :               id,
+     :               'relativeroothealth',
+     :               p%n+1,
+     :               '(0-1)',
+     :               rrh,
+     :               numvals,
+     :               0d0,
+     :               1d0)
+            if (numvals.eq.0) then
+               do 10 layer = 1,M+1
+                  rrh(layer) = 1d0
+   10          continue
+            endif
+            
            ! Initialise tempory varaibles to zero
-             do 10 layer = 1,M+1
+             do 11 layer = 1,M+1
                 rlv_l(layer) = 0d0
-   10        continue
+   11        continue
      
              call get_double_array_optional(
      :               id,
@@ -4364,10 +4381,12 @@ c      eqr0  = 0.d0
 
 
              endif
+             
+             
              if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
                 length = 0d0
                 do 60 layer = 1,p%n+1            !       /
-                   g%rld(layer-1,vegnum) = rlv_l(layer)*100d0
+                   g%rld(layer-1,vegnum) = rlv_l(layer)*100d0*rrh(layer)
                    length = length + rlv_l(layer) * p%dlayer(layer-1)
    60           continue
                 if ((length.gt.0.).and.

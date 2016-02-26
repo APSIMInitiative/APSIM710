@@ -49,6 +49,7 @@ void rootGrowthOption2::root_length_growth (void)
       branching_factor = rel_root_rate.value(plant_rld);
 
       rlv_factor[layer] = (float)(sw_fac_root.value(sw_avail_ratio(layer)) *
+                            afps_fac_root.value(afps(layer)) *
                             branching_factor *
                              (*soil[0]).xf [layer] *
                              divide((*soil[0]).dlayer[layer], root_depth, 0.0) *

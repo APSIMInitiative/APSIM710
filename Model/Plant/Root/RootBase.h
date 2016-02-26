@@ -47,6 +47,7 @@ class RootBase : public SimplePart
 //      virtual int find_layer_no(float,const vector<float>&){};
 //      virtual int find_layer_no(float, float *, int){};
       virtual float sw_avail_ratio(int layer) {return 0;};
+      virtual float afps(int layer) {return 0;};
 
       virtual void doPlantWaterStress (float sw_demand, SWStress *swStress) {};
 
