@@ -1742,7 +1742,10 @@ cnh added following declarations
       qdrainpsi(0:M) = 0d0
       dlayer(1:M+1) = p%dlayer(0:M)
 
-      if (p%subsurface_drain.eq.'on') then
+      
+      
+      if (p%subsurface_drain.eq.'on' .and. 
+     :    g%subsurface_drain_open) then 
          drain_node = find_layer_no(real(p%drain_depth)
      :                             ,dlayer(1)
      :                             ,p%n+1)

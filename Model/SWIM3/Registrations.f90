@@ -67,7 +67,8 @@ module Registrations
          dummy = add_reg(respondToGetSetReg, 'sw', doubleArrayTypeDDML, 'cm^3/cm^3', 'Soil water content')   
          dummy = add_reg(respondToGetSetReg, 'psi', doublearrayTypeDDML, 'cm', '')
          dummy = add_reg(respondToGetSetReg, 'scon', doubleTypeDDML, '/h', '')
-		 
+         dummy = add_reg(respondToGetSetReg, 'subsurface_drain_open', stringTypeDDML, '-', 'Sub-surface water drain open')
+         
     ! variables we own and make available to other modules (gettable)
          dummy = add_reg(respondToGetReg, 'dlayer', doubleArrayTypeDDML, 'mm', 'Thickness of profile layer')   
          dummy = add_reg(respondToGetReg, 'bd', doubleArrayTypeDDML, 'g/cm^3', 'Bulk density')   

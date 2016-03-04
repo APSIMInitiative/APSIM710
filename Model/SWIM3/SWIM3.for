@@ -89,6 +89,7 @@
          double precision TD_evap
          double precision TD_pevap
          double precision TD_drain
+         logical          subsurface_drain_open         
          double precision TD_subsurface_drain
          double precision TD_soldrain(nsol)
          double precision TD_slssof(nsol)
@@ -900,7 +901,8 @@ c     :              1d0)
 
       if (numvals.gt.0) then
          p%subsurface_drain = 'on'
-
+         g%subsurface_drain_open = .true.
+                  
          call Read_double_var (
      :              parameters_section,
      :              'drainspacing',
@@ -940,6 +942,7 @@ c     :              1d0)
       else
          ! Do nothing
           p%subsurface_drain = 'off'
+          g%subsurface_drain_open = .false.
       endif
 
       return
@@ -1106,6 +1109,8 @@ c     :              1d0)
        double precision water_table
        double precision conc_solute_pond
        double precision esw
+       character        string*10
+       
 *- Implementation Section ----------------------------------
 
       if (Variable_name .eq. 'dlayer') then
@@ -1497,6 +1502,18 @@ cnh added as per request by Dr Val Snow
      :            '(mm)',
      :            g%TD_subsurface_drain)
 
+      else if (Variable_name .eq. 'subsurface_drain_open') then
+         if (g%subsurface_drain_open) then
+            string = 'true'
+         else
+            string = 'false'
+         endif
+         
+         call respond2Get_char_var (
+     :            Variable_name,
+     :            '(-)',
+     :            string)     
+     
       else if (index(Variable_name,'subsurface_drain_').eq.1) then
 
          solname = Variable_name(18:)
@@ -1541,6 +1558,8 @@ cnh added as per request by Dr Val Snow
      :            Variable_name,
      :            '(-)',
      :            1.0)
+
+
       else
          call Message_Unused ()
       endif
@@ -1573,6 +1592,7 @@ cnh added as per request by Dr Val Snow
       integer solnum
       double precision sol_exco(0:M)  ! solute exchange coefficient
       double precision sol_dis(0:M)   ! solute dispersion coefficient
+      character        string*10
 
 *- Implementation Section ----------------------------------
 
@@ -1732,6 +1752,25 @@ cnh added as per request by Dr Val Snow
      :         ('Bottom boundary condition now constant gradient')
          endif
 
+      elseif (Variable_name .eq. 'subsurface_drain_open') then
+         
+         call collect_char_var (
+     :              Variable_name,
+     :              '()',
+     :              string,
+     :              numvals)
+     
+         if (string.eq.'true') then
+            g%subsurface_drain_open = .true.
+            call Write_string
+     :         ('Subsurface drain has been opened')
+         else
+            g%subsurface_drain_open = .false.
+            call Write_string
+     :         ('Subsurface drain has been closed')
+         
+         endif
+         
       else
          ! Don't know this variable name
          call Message_Unused ()
@@ -3327,6 +3366,8 @@ c      eqr0  = 0.d0
       ! No storage of water on soil surface
       p%isbc = 0
 
+      g%subsurface_drain_open = .false.
+      
       return
       end subroutine
 
