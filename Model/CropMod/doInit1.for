@@ -155,6 +155,8 @@
       dummy = add_registration_with_units(respondToGetReg,
      :                        'rlv', floatarrayTypeDDML, 'mm/mm^3')
       dummy = add_registration_with_units(respondToGetReg,
+     :             'relativeroothealth', floatarrayTypeDDML, '0-1')
+      dummy = add_registration_with_units(respondToGetReg,
      :                        'leaf_part', floatTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
      :                        'stem_part', floatTypeDDML, '')

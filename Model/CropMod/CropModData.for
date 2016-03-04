@@ -1001,7 +1001,7 @@
         real      y_temp_root_fac(max_table)
         integer   num_temp_root
 
-        real      x_ws_root(max_table)
+        real      x_ws_root(max_table) 
         real      y_ws_root_fac(max_table)
         integer   num_ws_root
 
@@ -1010,6 +1010,10 @@
         real      y_sw_fac_root(max_table)     !water stress factor for root depth growth
         integer   num_sw_ratio                 !size of the table
 
+        real      x_afps(max_table)        ! afps for effects on root depth growth
+        real      y_afps_fac_root(max_table)     !afps stress factor for root depth growth
+        integer   num_afps                 !size of the table        
+        
         real      x_plant_rld     (max_table)  !root branching factor, (mm/mm3/plant)
         real      y_rel_root_rate (max_table)  !effect of root branching on root depth rate
         integer   num_plant_rld                !size of the table

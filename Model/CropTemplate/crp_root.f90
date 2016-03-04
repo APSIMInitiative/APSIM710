@@ -63,6 +63,45 @@
       return
       end function
 
+      !     ===========================================================
+      real function crop_afps_fac(num_afps, x_afps,          &
+              y_afps_fac_root, sat_dep, sw_dep, dul_dep, dlayer, layer)
+!     ===========================================================
+
+
+      implicit none
+
+!+  Sub-Program Arguments
+      INTEGER    num_afps        ! (INPUT)
+      REAL       x_afps(*)       ! (INPUT)
+      REAL       y_afps_fac_root(*)    ! (INPUT)
+      REAL       sat_dep(*)          ! (INPUT) 
+      REAL       sw_dep(*)           ! (INPUT) soil water content of layer L (mm)
+      REAL       dul_dep(*)           ! (INPUT)
+      REAL       dlayer(*)
+      INTEGER    layer               ! (INPUT) soil profile layer number
+
+
+
+!+  Constant Values
+      character  my_name*(*)         ! name of procedure
+      parameter (my_name = 'crop_afps_fac')
+
+!+  Local Variables
+      real       afps
+
+!- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+      afps = (sat_dep(layer) - sw_dep(layer))/dlayer(layer)
+      crop_afps_fac = linear_interp_real (afps          &
+                           , x_afps, y_afps_fac_root          &
+                           , num_afps)
+
+      call pop_routine (my_name)
+      return
+      end function
 
 
 ! ====================================================================
@@ -218,7 +257,7 @@
 
 
 !     ===========================================================
-      subroutine cproc_root_depth1 (          &
+      subroutine cproc_root_depth1 (          &   
                               g_dlayer          &
                              ,C_num_sw_ratio          &
                              ,C_x_sw_ratio          &
@@ -304,7 +343,118 @@
       return
       end subroutine
 
+!     ===========================================================
+      subroutine cproc_root_depth3 (          & 
+                              g_dlayer          &
+                             ,C_num_sw_ratio          &
+                             ,C_x_sw_ratio          &
+                             ,C_y_sw_fac_root          &
+                             ,C_num_afps          &
+                             ,C_x_afps          &
+                             ,C_y_afps_fac_root          &
+                             ,G_sat_dep          &
+                             ,G_dul_dep          &
+                             ,G_sw_dep          &
+                             ,P_ll_dep          &
+                             ,C_root_depth_rate          &
+                             ,G_current_stage          &
+                             ,p_xf          &
+                             ,g_dlt_root_depth          &
+                             ,g_root_depth          &
+                             )
+!     ===========================================================
 
+!      dll_export cproc_root_depth3
+      implicit none
+
+!+  Sub-Program Arguments
+      real    g_dlayer(*)             ! (INPUT)  layer thicknesses (mm)
+      integer C_num_sw_ratio          ! (INPUT) number of sw lookup pairs
+      real    C_x_sw_ratio(*)         ! (INPUT) sw factor lookup x
+      real    C_y_sw_fac_root(*)      ! (INPUT) sw factor lookup y
+      integer C_num_afps          ! (INPUT) number of sw lookup pairs
+      real    C_x_afps(*)         ! (INPUT) sw factor lookup x
+      real    C_y_afps_fac_root(*)      ! (INPUT) sw factor lookup y
+      real    G_sat_dep(*)            ! (INPUT) SAT (mm)
+      real    G_dul_dep(*)            ! (INPUT) DUL (mm)
+      real    G_sw_dep(*)             ! (INPUT) SW (mm)
+      real    P_ll_dep(*)             ! (INPUT) LL (mm)
+      real    C_root_depth_rate(*)    ! (INPUT) root front velocity (mm)
+      real    G_current_stage         ! (INPUT) current growth stage
+      real    p_xf(*)                 ! (INPUT) exploration factor
+      real    g_dlt_root_depth        ! (OUTPUT) increase in rooting depth (mm)
+      real    g_root_Depth            ! (OUTPUT) root depth (mm)
+
+!+  Purpose
+!       Calculate plant rooting depth through time limited by soil water content
+!       in layer through which roots are penetrating.
+
+!+  Mission Statement
+!   Calculate today's rooting depth
+
+!+  Changes
+!     170498 nih specified and programmed
+
+!+  Calls
+
+
+!+  Constant Values
+      character  my_name*(*)           ! name of procedure
+      parameter (my_name = 'cproc_root_depth3')
+
+!+  Local Variables
+      integer    deepest_layer         ! deepest layer in which the roots are
+                                       ! growing
+      real sw_avail_fac_deepest_layer  !
+      real afps_fac_deepest_layer  !
+      real wf
+      
+!- Implementation Section ----------------------------------
+      call push_routine (my_name)
+
+      deepest_layer = find_layer_no (g_root_depth, g_dlayer          &
+                              , crop_max_layer)
+
+      sw_avail_fac_deepest_layer = crop_sw_avail_fac                   &
+              (          &
+                C_num_sw_ratio          &
+              , C_x_sw_ratio          &
+              , C_y_sw_fac_root          &
+              , G_dul_dep          &
+              , G_sw_dep          &
+              , P_ll_dep          &
+              , deepest_layer          &
+               )
+
+      afps_fac_deepest_layer = crop_afps_fac                   &
+              (          &
+                C_num_afps          &
+              , C_x_afps          &
+              , C_y_afps_fac_root          &
+              , G_sat_dep          &
+              , G_sw_dep          &
+              , G_dul_dep          &
+              , g_dlayer  &
+              , deepest_layer          &
+               )
+             
+             
+         wf = min(sw_avail_fac_deepest_layer,afps_fac_deepest_layer) 
+         
+         call crop_root_depth_increase          &
+               (          &
+                C_root_depth_rate          &
+              , G_current_stage          &
+              , G_dlayer          &
+              , G_root_depth          &
+              , sw_avail_fac_deepest_layer                     &
+              , p_xf          &
+              , g_dlt_root_depth          &
+               )
+
+      call pop_routine (my_name)
+      return
+      end subroutine
 
 !     ===========================================================
       subroutine crop_root_depth_increase          &
@@ -597,6 +747,7 @@
       real    plant_rld
       real    rld
 
+
 !- Implementation Section ----------------------------------
       call push_routine (myname)
       if (max_layer .gt. crop_max_layer) then
@@ -641,7 +792,7 @@
                   * divide(g_dlayer(layer)    &  ! space weighting
                           ,g_root_depth       &  !       factor
                           ,0.0)
-
+              
             rlv_factor(layer) = l_bound(rlv_factor(layer),1e-6)
             rlv_factor_tot = rlv_factor_tot + rlv_factor (layer)
   100    continue
@@ -663,6 +814,177 @@
       return
       end subroutine
 
+      ! ====================================================================
+       subroutine cproc_root_length_growth3          &
+               (          &
+                C_specific_root_length          &
+              , G_dlayer          &
+              , G_dlt_root_wt          &
+              , G_dlt_root_length          &
+              , G_dlt_root_depth          &
+              , G_root_depth          &
+              , G_root_length          &
+              , g_plants          &
+              , P_xf          &
+              , C_num_sw_ratio          &
+              , C_x_sw_ratio          &
+              , C_y_sw_fac_root          &
+              , C_num_afps          &
+              , C_x_afps          &
+              , C_y_afps_fac_root          &              
+              , c_x_plant_rld          &
+              , c_y_rel_root_rate          &
+              , c_num_plant_rld          &
+              , G_sat_dep &
+              , G_dul_dep          &
+              , G_sw_dep          &
+              , P_ll_dep          &
+              , max_layer          &
+               )
+! ====================================================================
+
+!      dll_export cproc_root_length_growth3
+      implicit none
+
+!+  Sub-Program Arguments
+      REAL       C_specific_root_length ! (INPUT) length of root per unit wt (mm
+      REAL       G_dlayer(*)           ! (INPUT)  thickness of soil layer I (mm)
+      REAL       G_dlt_root_wt         ! (INPUT)  plant root biomass growth (g/m
+      REAL       G_dlt_root_length(*)  ! (OUTPUT) increase in root length (mm/mm
+      REAL       G_dlt_root_depth      ! (INPUT)  increase in root depth (mm)
+      REAL       G_root_depth          ! (INPUT)  depth of roots (mm)
+      REAL       g_root_length(*)      ! (INPUT)
+      REAL       g_plants              ! (INPUT)
+      REAL       P_xf(*)               ! (INPUT)  eXtension rate Factor (0-1)
+      INTEGER    C_num_sw_ratio        ! (INPUT)
+      REAL       C_x_sw_ratio(*)       ! (INPUT)
+      REAL       C_y_sw_fac_root(*)    ! (INPUT)
+      INTEGER    C_num_afps        ! (INPUT)
+      REAL       C_x_afps(*)       ! (INPUT)
+      REAL       C_y_afps_fac_root(*)    ! (INPUT)      
+      REAL       c_x_plant_rld (*)     ! (INPUT)
+      REAL       c_y_rel_root_rate(*)  ! (INPUT)
+      INTEGER    c_num_plant_rld       ! (INPUT)
+      REAL       G_sat_dep(*)
+      REAL       G_dul_dep(*)          ! (INPUT)  drained upper limit soil water
+      REAL       G_sw_dep(*)           ! (INPUT)  soil water content of layer L
+      REAL       P_ll_dep(*)           ! (INPUT)  lower limit of plant-extractab
+      INTEGER    max_layer             ! (INPUT)  maximum number of soil laye
+
+!+  Purpose
+!   Calculate the increase in root length density in each rooted
+!   layer based upon soil hospitality, moisture and fraction of
+!   layer explored by roots.
+
+!+  Mission Statement
+!   Calculate the root length growth for each layer
+
+!+  Changes
+!   neilh - 13-06-1995 - Programmed and Specified
+!   neilh - 28-02-1997 - Made root factor constraint
+
+!+  Calls
+
+!+  Constant Values
+      character*(*) myname               ! name of current procedure
+      parameter (myname = 'crop_root_length_growth1')
+
+!+  Local Variables
+      integer deepest_layer     ! deepest rooted later
+      real    dlt_length_tot    ! total root length increase (mm/m^2)
+      integer layer             ! simple layer counter variable
+      real    rlv_factor (crop_max_layer)! relative rooting factor for a layer
+      real    rlv_factor_tot    ! total rooting factors across profile
+      real    branching_factor     !
+      real    plant_rld
+      real    rld
+      real    sw_avail_fac_layer
+      real    afps_fac_layer
+      real    wf
+!- Implementation Section ----------------------------------
+      call push_routine (myname)
+      if (max_layer .gt. crop_max_layer) then
+         call fatal_error (Err_Internal          &
+                    ,'Too many layers for crop routines')
+
+      else
+         call fill_real_array (g_dlt_root_length, 0.0, max_layer)
+
+         deepest_layer = find_layer_no (g_root_depth+g_dlt_root_depth          &
+                                   , g_dlayer          &
+                                  , max_layer)
+         rlv_factor_tot = 0.0
+         do 100 layer = 1, deepest_layer
+
+            rld       = divide (g_root_length(layer)          &
+                         ,g_dlayer(layer)          &
+                         ,0.0)
+
+            plant_rld = divide (rld          &
+                         ,g_plants          &
+                         ,0.0)
+
+            branching_factor = linear_interp_real          &
+                            (plant_rld          &
+                            ,c_x_plant_rld          &
+                            ,c_y_rel_root_rate          &
+                            ,c_num_plant_rld)
+
+                            
+            sw_avail_fac_layer =   crop_sw_avail_fac          &
+                  (C_num_sw_ratio          &
+                 , C_x_sw_ratio          &
+                 , C_y_sw_fac_root          &
+                 , G_dul_dep          &
+                 , G_sw_dep          &
+                 , P_ll_dep          &
+                 , layer          &
+                  )
+           afps_fac_layer = crop_afps_fac                   &
+              (          &
+                C_num_afps          &
+              , C_x_afps          &
+              , C_y_afps_fac_root          &
+              , G_sat_dep          &
+              , G_sw_dep          &
+              , G_dul_dep          &
+              , g_dlayer  &
+              , layer          &
+               )
+
+               
+            wf = min(sw_avail_fac_layer,afps_fac_layer)
+                  
+            rlv_factor(layer) =          &
+                    wf  &
+                  * branching_factor          &  ! branching factor
+                  * p_xf (layer)              &  ! growth factor
+                  * divide(g_dlayer(layer)    &  ! space weighting
+                          ,g_root_depth       &  !       factor
+                          ,0.0)
+              
+            rlv_factor(layer) = l_bound(rlv_factor(layer),1e-6)
+            rlv_factor_tot = rlv_factor_tot + rlv_factor (layer)
+  100    continue
+
+         dlt_length_tot = g_dlt_root_wt/sm2smm * c_specific_root_length
+
+         do 200 layer = 1, deepest_layer
+
+            g_dlt_root_length (layer) = dlt_length_tot          &
+                                * divide (rlv_factor(layer)          &
+                                         ,rlv_factor_tot          &
+                                         ,0.0)
+
+  200    continue
+
+      endif
+
+      call pop_routine (myname)
+      return
+      end subroutine
+      
+      
 !     ===========================================================
       subroutine crop_root_dist          &
                (          &

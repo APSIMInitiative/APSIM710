@@ -763,6 +763,7 @@ c      end if
       REAL       RWU(max_layer)
       REAL       EP
       REAL       stress
+      REAL       rrh(max_layer)
 
 *- Implementation Section ----------------------------------
 
@@ -1141,6 +1142,26 @@ c      end if
      :                               , rlv
      :                               , num_layers)
 
+      elseif (variable_name .eq. 'relativeroothealth') then
+         num_layers = count_of_real_vals (g%dlayer, max_layer)
+         do layer = 1, num_layers
+            rrh(layer) = crop_afps_fac                   
+     :         (          
+     :          c%num_afps          
+     :         , c%x_afps          
+     :         , c%y_afps_fac_root          
+     :         , g%sat_dep          
+     :         , g%sw_dep          
+     :         , g%dul_dep          
+     :         , g%dlayer  
+     :         , layer          
+     :          )        
+         enddo
+         call respond2get_real_array (variable_name
+     :                               , '(0-1)'
+     :                               , rrh
+     :                               , num_layers)
+     
 
       !===============================================================
       !plant biomass partition

@@ -355,6 +355,16 @@ cnh      call Maize_water_stress(1)
      :                     , c%y_sw_fac_root, c%num_sw_ratio
      :                     , 0.0, 100.0)
 
+      call read_real_array (cultivar
+     :                     , 'x_afps', max_table, '()'
+     :                     , c%x_afps, c%num_afps
+     :                     , 0.0, 1.0)
+
+      call read_real_array (cultivar
+     :                     , 'y_afps_fac_root', max_table, '()'
+     :                     , c%y_afps_fac_root, c%num_afps
+     :                     , 0.0, 1.0)     
+     
          !    Maize_root_depth
 
       call read_real_var (cultivar
@@ -5553,11 +5563,15 @@ cpsc need to develop leaf senescence functions for crop
       call push_routine (my_name)
 
       if (Option .eq. 1) then
-         call cproc_root_depth1 (
+         call cproc_root_depth3 ( 
      :                              g%dlayer
      :                             , c%num_sw_ratio
      :                             , c%x_sw_ratio
      :                             , c%y_sw_fac_root
+     :                             , c%num_afps
+     :                             , c%x_afps
+     :                             , c%y_afps_fac_root     
+     :                             , g%sat_dep
      :                             , g%dul_dep
      :                             , g%sw_dep
      :                             , p%ll_dep
@@ -5567,6 +5581,21 @@ cpsc need to develop leaf senescence functions for crop
      :                             , g%dlt_root_depth
      :                             , g%root_depth
      :                             )
+
+c              call cproc_root_depth1 ( 
+c     :                              g%dlayer
+c     :                             , c%num_sw_ratio
+c     :                             , c%x_sw_ratio
+c     :                             , c%y_sw_fac_root
+c     :                             , g%dul_dep
+c     :                             , g%sw_dep
+c     :                             , p%ll_dep
+c     :                             , c%root_depth_rate
+c     :                             , g%current_stage
+c     :                             , p%xf
+c     :                             , g%dlt_root_depth
+c     :                             , g%root_depth
+c     :                             )
 
       else
          call Fatal_error (ERR_internal, 'Invalid template option')
@@ -6039,7 +6068,7 @@ cpsc need to develop leaf senescence functions for crop
 
       if (Option .eq. 1) then
 
-         call cproc_root_length_growth1
+         call cproc_root_length_growth3
      :               (
      :                c%specific_root_length
      :              , g%dlayer
@@ -6053,15 +6082,43 @@ cpsc need to develop leaf senescence functions for crop
      :              , c%num_sw_ratio
      :              , c%x_sw_ratio
      :              , c%y_sw_fac_root
+     :              , c%num_afps
+     :              , c%x_afps
+     :              , c%y_afps_fac_root
      :              , c%x_plant_rld
      :              , c%y_rel_root_rate
      :              , c%num_plant_rld
+     :              , g%sat_dep
      :              , g%dul_dep
      :              , g%sw_dep
      :              , p%ll_dep
      :              , max_layer
      :               )
 
+c         call cproc_root_length_growth1
+c     :               (
+c     :                c%specific_root_length
+c     :              , g%dlayer
+c     :              , g%dlt_dm_green(root)
+c     :              , g%dlt_root_length
+c     :              , g%dlt_root_depth
+c     :              , g%root_depth
+c     :              , g%root_length
+c     :              , g%plants
+c     :              , p%xf
+c     :              , c%num_sw_ratio
+c     :              , c%x_sw_ratio
+c     :              , c%y_sw_fac_root
+c     :              , c%x_plant_rld
+c     :              , c%y_rel_root_rate
+c     :              , c%num_plant_rld
+c     :              , g%dul_dep
+c     :              , g%sw_dep
+c     :              , p%ll_dep
+c     :              , max_layer
+c     :               )     
+     
+     
       else
          call Fatal_error (ERR_internal, 'Invalid template option')
       endif
