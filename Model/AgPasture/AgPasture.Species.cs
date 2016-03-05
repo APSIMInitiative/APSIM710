@@ -1860,6 +1860,46 @@ public class Species
     }
 
     /// <summary>
+    /// Move a given amount of DM and N from live to dead pools
+    /// </summary>
+    /// <param name="KillFaction">The fraction of each live pool to be moved into dead</param>
+    internal void KillCrop(double KillFaction)
+    {
+        double fractionRemaining = 1.0 - KillFaction;
+        dmleaf4 += (dmleaf1 + dmleaf2 + dmleaf3)*KillFaction;
+        dmleaf1 *= fractionRemaining;
+        dmleaf2 *= fractionRemaining;
+        dmleaf3 *= fractionRemaining;
+        dmstem4 += (dmstem1 + dmstem2 + dmstem3)*KillFaction;
+        dmstem1 *= fractionRemaining;
+        dmstem2 *= fractionRemaining;
+        dmstem3 *= fractionRemaining;
+        dLitter += (dmstol1 + dmstol2 + dmstol3)*KillFaction;
+        dmstol1 *= fractionRemaining;
+        dmstol2 *= fractionRemaining;
+        dmstol3 *= fractionRemaining;
+        dRootSen += dmroot*KillFaction;
+        dmroot *= fractionRemaining;
+
+        Nleaf4 += (Nleaf1 + Nleaf2 + Nleaf3) * KillFaction;
+        Nleaf1 *= fractionRemaining;
+        Nleaf2 *= fractionRemaining;
+        Nleaf3 *= fractionRemaining;
+        Nstem4 += (Nstem1 + Nstem2 + Nstem3) * KillFaction;
+        Nstem1 *= fractionRemaining;
+        Nstem2 *= fractionRemaining;
+        Nstem3 *= fractionRemaining;
+        dNLitter += (Nstol1 + Nstol2 + Nstol3) * KillFaction;
+        Nstol1 *= fractionRemaining;
+        Nstol2 *= fractionRemaining;
+        Nstol3 *= fractionRemaining;
+        dNrootSen += Nroot * KillFaction;
+        Nroot *= fractionRemaining;
+
+        UpdateAggregatedVariables();
+        SetPrevPools();
+    }
+    /// <summary>
     /// Store state of various pools
     /// </summary>
     internal void SetPrevPools()

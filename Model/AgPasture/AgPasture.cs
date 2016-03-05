@@ -4560,33 +4560,33 @@ public class AgPasture
     [EventHandler]
     public void OnKillCrop(KillCropType KillData)
     {
-        double frac = KillData.KillFraction;
-        //always complete kill for pasture, ignore fraction
+        if (KillData.KillFraction < 0.0)
+            KillData.KillFraction = 0.0f;
 
-        //Above_ground part returns to surface OM comletey (frac = 1.0)
-        DoSurfaceOMReturn(swardShootDM, AboveGroundN, 1.0);    //n_shoot
-
-        //Incorporate root mass in soil fresh organic matter
-        DoIncorpFomEvent(swardRootDM, BelowGroundN);         //n_root);
-
-        ZeroVars();
-
-        // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
-        for (int s = 0; s < NumSpecies; s++)
+        if (KillData.KillFraction < 1.0)
         {
-            mySpecies[s].UpdateAggregatedVariables();
-            mySpecies[s].bSown = false;
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                mySpecies[s].KillCrop(KillData.KillFraction);
+                mySpecies[s].UpdateAggregatedVariables();
+            }
+
+            // Update aggregated variables (whole sward)
+            UpdateAggregatedVariables();
+
+            //Let user know (via summary) that a fraction of plants was killed
+            Console.WriteLine(myClock.Today.ToString("dd MMMM yyyy") + " (Day of year=" +
+                              myClock.Today.DayOfYear + "), " + thisCropName + ":");
+            Console.WriteLine("     Pasture is being partially killed, " +
+                              (KillData.KillFraction*100.0).ToString("#0.0") + "% of live biomass in now dead");
         }
-
-        // Update aggregated variables (whole sward)
-        UpdateAggregatedVariables();
-
-        isAlive = false;
-        if (swardTotalLAI > 0.0)
+        else
         {
-            Console.WriteLine("Pasture is not completely killed.");
+            // the pasture will be ended
+            OnEndCrop();
         }
     }
+
 
     /// <summary>
     /// Respond to a EndCrop event
@@ -4595,10 +4595,10 @@ public class AgPasture
     public void OnEndCrop()
     {
         //Above_ground part returns to surface OM comletey (frac = 1.0)
-        DoSurfaceOMReturn(swardShootDM, AboveGroundN, 1.0);    //n_shoot
+        DoSurfaceOMReturn(swardShootDM, AboveGroundN, 1.0);
 
         //Incorporate root mass in soil fresh organic matter
-        DoIncorpFomEvent(swardRootDM, BelowGroundN);         //n_root);
+        DoIncorpFomEvent(swardRootDM, BelowGroundN);
 
         ZeroVars();
 
@@ -4613,10 +4613,11 @@ public class AgPasture
         UpdateAggregatedVariables();
 
         isAlive = false;
-        if (swardTotalLAI > 0.0)
-        {
-            Console.WriteLine("Pasture is now ended.");
-        }
+
+        //Let user know (via summary) that the pasture has end
+        Console.WriteLine(myClock.Today.ToString("dd MMMM yyyy") + " (Day of year=" +
+                          myClock.Today.DayOfYear + "), " + thisCropName + ":");
+        Console.WriteLine("     EndCrop - Pasture is now dead");
     }
 
     /// <summary>
