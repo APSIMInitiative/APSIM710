@@ -120,7 +120,7 @@ class BobMain
                     Run("Make Symlink 2", "%ComSpec%", "/c mklink " + revFileName + " " + sfxFileName, "%APSIM%\\Model");
                 }
                 catch (Exception err)
-                { }
+                { Console.WriteLine("Error creating symlinks in BobMain.cs: " + err.Message); }
             }
         }
         catch (Exception err)
