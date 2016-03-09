@@ -47,13 +47,9 @@ namespace CSUserInterface
                     TreeNode treeNode = treeSims.Nodes.Add(tmpComp.Name + " (" + iCount.ToString() + ")");
                     treeNode.ImageIndex = 0;
                     treeNode.SelectedImageIndex = 0;
-                    foreach(FactorItem item in items)
-                    {
-                       List<String> factorials = new List<string>();
-                       item.CalcFactorialList(factorials);
-                       AddFactorsToTreeNode(item, treeNode, factorials);
-                       tmpCounter += factorials.Count;
-                    }
+                    List<String> factorials = ApsimFile.Factor.CalcFactorialList(Controller.ApsimData, SimulationPath);
+                    AddFactorsToTreeNode(treeNode, factorials);
+                    tmpCounter += factorials.Count;
                 }
                 iTotalCount += tmpCounter;
                 txtTotalSims.Text = iTotalCount.ToString();
@@ -76,14 +72,13 @@ namespace CSUserInterface
             else
                 radSingle.Checked = true;
         }
-        public void AddFactorsToTreeNode(FactorItem factor, TreeNode parentNode, List<string> factorials)
+        public void AddFactorsToTreeNode(TreeNode parentNode, List<string> factorials)
         {
             foreach(string factorial in factorials)
             {
                 TreeNode node = parentNode.Nodes.Add(factorial);
                 node.ImageIndex = 1;
                 node.SelectedImageIndex = 1;
-                //AddFactorsToTreeNode(factor.NextItem, parentNode);
             }
         }
 
@@ -128,7 +123,7 @@ namespace CSUserInterface
                 {
                     try
                     {
-                        List<SimFactorItem> SimFiles = ApsimFile.Factor.CreateSimFiles(Controller.ApsimData, SimsToConvert.ToArray(), FolderChooser.SelectedPath);
+                        List<string> SimFiles = ApsimFile.Factor.CreateSimFiles(Controller.ApsimData, SimsToConvert.ToArray(), FolderChooser.SelectedPath);
                         if (SimFiles.Count == 1)
                             UserMsg = "1 Simulation created.";
                         else

@@ -124,14 +124,7 @@ namespace ApsimFile
 					{
 						ApsimFile F = new ApsimFile ();
 						F.OpenFile (FileName);
-						FactorBuilder builder = new FactorBuilder ();
-						foreach (FactorItem item in builder.BuildFactorItems(F.FactorComponent, XmlHelper.FullPath (simulation))) 
-						{
-							List<String> factorials = new List<string> ();
-							item.CalcFactorialList (factorials);
-							foreach (string factorial in factorials) 
-								simsToRun.Add(XmlHelper.FullPath (simulation) + "@factorial='" + factorial + "'");
-						}
+						simsToRun =	Factor.CreateSimFiles (F, new string []{ XmlHelper.FullPath (simulation) });
 					}
 					foreach (string simToRun in simsToRun) {					
 						XmlNode simulationNode = apsimFileNode.AppendChild (apsimFileNode.OwnerDocument.CreateElement ("simulation"));
@@ -221,8 +214,6 @@ namespace ApsimFile
 			SubWriter.WriteLine ("executable = Apsim.$$(OpSys).$$(Arch).bat");
 			//SubWriter.WriteLine ("environment = \"NUMBER_OF_PROCESSORS=1\"");  // FIXME!!!
 			// see https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=WholeMachineSlots
-			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
-			PBSWriter.WriteLine ("# Prologue <here>");
 
 			// Create a top level batch file.
 			StreamWriter ExeWriter;
@@ -261,8 +252,41 @@ namespace ApsimFile
 			ExeWriter.WriteLine ("GOTO TOP");
 			ExeWriter.WriteLine (":END");
 			ExeWriter.WriteLine ("DEL /s /q /f Temp");
-			
 			ExeWriter.Close ();
+
+			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
+			PBSWriter.WriteLine ("#!/bin/bash");
+			PBSWriter.WriteLine ("# Construct a PBS job for each apsim job.");
+			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
+			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
+			PBSWriter.WriteLine ("while IFS='' read -r line || [[ -n \"$line\" ]]; do"); 
+			PBSWriter.WriteLine (" IFS=\\| read jobname inputfiles command <<< $line");
+			PBSWriter.WriteLine (" cat <<EOF | qsub");
+			PBSWriter.WriteLine ("######  Select resources #####");
+			PBSWriter.WriteLine ("#PBS -N $jobname");
+			PBSWriter.WriteLine ("#PBS -l ncpus=??");
+			PBSWriter.WriteLine ("#PBS -l mem=?? ");
+			PBSWriter.WriteLine ("#PBS -A ??");
+			PBSWriter.WriteLine ("#PBS -o \\$TMPDIR/$jobname.out");
+			PBSWriter.WriteLine ("#PBS -e \\$TMPDIR/$jobname.err");
+			PBSWriter.WriteLine (" cd \\$TMPDIR");
+			PBSWriter.WriteLine (" for x in Apsim7.7-r3814.X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
+			PBSWriter.WriteLine ("  tar xfz \\$HOME/\\$x");
+			PBSWriter.WriteLine (" done");
+			PBSWriter.WriteLine ("# get the job specific data");
+			PBSWriter.WriteLine (" IFS=',' ; for x in $inputfiles; do ");
+			PBSWriter.WriteLine ("  cp \"\\$HOME/\\$x\" .");
+			PBSWriter.WriteLine (" done");
+			PBSWriter.WriteLine (" chmod +x $command");
+			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
+			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
+			PBSWriter.WriteLine (" echo > .mark");
+			PBSWriter.WriteLine (" $command");
+			PBSWriter.WriteLine (" tar cfz \\$HOME/$jobname.output.tar.gz -N .mark .");
+			PBSWriter.WriteLine ("EOF");
+			PBSWriter.WriteLine ("done <<XXX");
+
+									
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
 
 			List<string> inputfiles = new List<string> ();
@@ -301,9 +325,7 @@ namespace ApsimFile
 						LinuxExeWriter.NewLine = "\n";
 						LinuxExeWriter.WriteLine ("#!/bin/bash");
 						LinuxExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
-						LinuxExeWriter.WriteLine ("./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\""); // SaveProfileOutput=true
-
-						PBSWriter.WriteLine ("./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+						LinuxExeWriter.WriteLine ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
 					}
 
 					SimsWriter.WriteLine (XmlHelper.Attribute (simNode, "name"));
@@ -317,6 +339,10 @@ namespace ApsimFile
 						SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 						SubWriter.WriteLine ("queue");
 						SubWriter.WriteLine ();
+						PBSWriter.WriteLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+						                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
+						                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
+
 						SimsWriter.Close ();
 						WinExeWriter.Close ();
 						LinuxExeWriter.Close ();
@@ -335,6 +361,7 @@ namespace ApsimFile
 			LinuxExeWriter.Close ();
 			SubWriter.Close ();
 			SimsWriter.Close ();
+			PBSWriter.WriteLine ("XXX");
 			PBSWriter.Close();
 		}
 		private string zipUp ()

@@ -265,12 +265,12 @@ namespace ApsimFile
         /// </summary>
         private int FillProjectWithFactorialJobs(ApsimFile AFile, string[] SimulationPaths, ref List<Job> ApsimJobs)
         {
-			List<SimFactorItem> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
-            foreach (SimFactorItem item in SimFiles)
+			List<string> SimFiles = Factor.CreateSimFiles(AFile, SimulationPaths);
+			foreach (string item in SimFiles)
             {
-                Job J = CreateJob(item.SimFileName, Path.ChangeExtension(item.SimFileName, ".sum"));
+                Job J = CreateJob(item, Path.ChangeExtension(item, ".sum"));
                 ApsimJobs.Add(J);
-                J = CleanupJob(item.SimFileName, J.Name);
+                J = CleanupJob(item, J.Name);
                 ApsimJobs.Add(J);
             }
             return SimFiles.Count;
