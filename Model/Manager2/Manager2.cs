@@ -112,9 +112,11 @@ public class Manager2
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
                 Params.ReferencedAssemblies.Add("System.Xml.dll");
-                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
-                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
-                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CMPServices.dll"));
+                Params.ReferencedAssemblies.Add("System.Core.dll");
+                Params.ReferencedAssemblies.Add("System.Data.Linq.dll");
+                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
+                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
+                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CMPServices.dll"));
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
 
                 foreach (string v in XmlHelper.ValuesRecursive(Manager2Xml.ParentNode, "Reference"))
