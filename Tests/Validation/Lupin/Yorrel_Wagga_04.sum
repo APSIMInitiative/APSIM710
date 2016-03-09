@@ -1,0 +1,412 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.7
+Title                  = Yorrel_Wagga_04
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component               "outputfileHarv" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                 "lupin sow_04" = %apsim%\Model\Manager.dll
+   Component              "Required output" = %apsim%\Model\Manager.dll
+   Component              "LupinHarvesting" = %apsim%\Model\Manager.dll
+   Component "Grey Sodosol (Wagga Wagga No549-YP) Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component "Grey Sodosol (Wagga Wagga No549-YP) Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                        "lupin" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2004
+     Simulation end date   = 31/12/2004
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: waggaAgri.met
+
+------- outputfileHarv Initialisation -----------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        year
+        AntDAS
+        MatDAS
+        biomass
+        yield
+        dd/mm/yyyy as date
+        stagename
+        daysaftersowing
+
+     Output file = Yorrel_Wagga_04 outputfileHarv.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.lupin sow_04 Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+               if (today = date('1-jun') then
+       lupin sow plants =36, sowing_depth = 30, cultivar = yorrel, row_spacing = 250, crop_class = plant
+               endif
+     END of rules
+     
+
+------- paddock.Required output Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     antdas=0
+     matdas=0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if lupin.stage=6 then
+        antdas=daysaftersowing
+     endif
+     if lupin.stage=9 then
+        matdas=daysaftersowing
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : antdas = 0.00000
+     Manager creating a new local real variable : matdas = 0.00000
+
+------- paddock.LupinHarvesting Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if lupin.stagename = 'harvest_ripe' or lupin.plant_status = 'dead' then
+       lupin  harvest
+       lupin  end_crop
+                endif
+     END of rules
+     
+
+------- paddock.Grey Sodosol (Wagga Wagga No549-YP) Water Initialisation ------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.055  0.110  0.220  0.370  0.181  1.450  0.856  0.500
+          200.-  400.  0.088  0.110  0.210  0.360  0.112  1.550  0.135  0.500
+          400.-  600.  0.220  0.220  0.350  0.410  0.221  1.450  0.009  0.300
+          600.-  800.  0.220  0.220  0.330  0.390  0.221  1.500  0.000  0.100
+          800.- 1000.  0.220  0.220  0.300  0.370  0.221  1.550  0.000  0.100
+         1000.- 1200.  0.220  0.220  0.300  0.350  0.220  1.600  0.000  0.200
+         1200.- 1400.  0.220  0.220  0.280  0.350  0.220  1.600  0.000  0.200
+         1400.- 1500.  0.220  0.220  0.280  0.350  0.220  1.600  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      22.00      14.20      22.00      30.00
+          200.-  400.      22.00       0.40      20.00      30.00
+          400.-  600.      44.00       0.20      26.00      12.00
+          600.-  800.      44.00       0.20      22.00      12.00
+          800.- 1000.      44.00       0.20      16.00      14.00
+         1000.- 1200.      44.00       0.00      16.00      10.00
+         1200.- 1400.      44.00       0.00      12.00      14.00
+         1400.- 1500.      22.00       0.00       6.00       7.00
+          ---------------------------------------------------------
+               Totals     286.00      15.20     140.00     129.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13      140.00       30.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              84.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- paddock.Grey Sodosol (Wagga Wagga No549-YP) Nitrogen Initialisation ---
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type ?
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.20  1.70   19.28    3.48    0.00
+             2     5.00  0.62    6.60    2.50    0.00
+             3     7.00  0.42   11.93    0.44    0.00
+             4     7.00  0.19    6.54    0.46    0.00
+             5     7.20  0.17    6.95    0.47    0.00
+             6     7.20  0.15    3.26    0.16    0.00
+             7     7.40  0.12    3.00    0.06    0.00
+             8     7.40  0.10    3.00    0.06    0.00
+          ------------------------------------------------
+           Totals               60.57    7.63    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      48720.0  3897.6   580.0    72.5   205.3     4.6
+             2      19106.9  1528.6   113.1    14.1   137.6     3.1
+             3      12155.9   972.5    24.1     3.0    92.2     2.0
+             4       5694.4   455.5     5.6     0.7    61.8     1.4
+             5       5270.0   421.6     0.0     0.0    41.4     0.9
+             6       4800.0   384.0     0.0     0.0    27.8     0.6
+             7       3840.0   307.2     0.0     0.0    18.6     0.4
+             8       1600.0   128.0     0.0     0.0    15.2     0.3
+          ---------------------------------------------------------
+           Totals  101187.2  8095.0   722.8    90.4   600.0    13.3
+          ---------------------------------------------------------
+
+------- paddock.Cl Initialisation ---------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+1 June 2004(Day of year=153), paddock.lupin sow_04: 
+     Manager sending message :- lupin sow  plants = 36, sowing_depth = 30, cultivar = yorrel, row_spacing = 250, crop_class = plant
+1 June 2004(Day of year=153), paddock.lupin: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = yorrel
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      20 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               = 369.768 369.768 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       = 10.3037 14.4558 (h)
+              y_tt_end_of_juvenile       = 609.563       1 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     145     145 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     400     400 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      50 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.35       0.35
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         200.0     0.060          0.112       1.000
+         200.0     0.060          0.112       1.000
+         200.0     0.060          0.221       1.000
+         200.0     0.060          0.221       1.000
+         200.0     0.060          0.221       1.000
+         200.0     0.060          0.220       1.000
+         200.0     0.060          0.220       1.000
+         100.0     0.060          0.220       1.000
+         -----------------------------------------------
+         Extractable SW:   139mm in  1500mm total depth (  9%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   30.0   36.0  250.0   0.0   0.0 yorrel
+         ------------------------------------------------
+     
+2 June 2004(Day of year=154), paddock.lupin: 
+      stage 2.0 germination
+9 June 2004(Day of year=161), paddock.lupin: 
+      stage 3.0 emergence
+                     biomass =           7.20 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   14.47 (mm)
+24 July 2004(Day of year=206), paddock.lupin: 
+      stage 4.0 end_of_juvenile
+                     biomass =           9.02 (g/m^2)   lai          =   0.029 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   44.62 (mm)
+29 August 2004(Day of year=242), paddock.lupin: 
+      stage 5.0 floral_initiation
+                     biomass =          54.94 (g/m^2)   lai          =   0.609 (m^2/m^2)
+                     stover N conc =     3.92 (%)    extractable sw =   45.22 (mm)
+13 September 2004(Day of year=257), paddock.lupin: 
+      stage 6.0 flowering
+                     biomass =         126.78 (g/m^2)   lai          =   1.267 (m^2/m^2)
+                     stover N conc =     3.29 (%)    extractable sw =   78.46 (mm)
+20 October 2004(Day of year=294), paddock.lupin: 
+      stage 7.0 start_grain_fill
+                     biomass =         440.88 (g/m^2)   lai          =   1.770 (m^2/m^2)
+                     stover N conc =     2.32 (%)    extractable sw =   11.47 (mm)
+19 November 2004(Day of year=324), paddock.lupin: 
+      stage 8.0 end_grain_fill
+                     biomass =         569.19 (g/m^2)   lai          =   0.370 (m^2/m^2)
+                     stover N conc =     1.68 (%)    extractable sw =   24.15 (mm)
+22 November 2004(Day of year=327), paddock.lupin: 
+      stage 9.0 maturity
+                     biomass =         578.11 (g/m^2)   lai          =   0.236 (m^2/m^2)
+                     stover N conc =     1.66 (%)    extractable sw =   26.33 (mm)
+23 November 2004(Day of year=328), paddock.lupin: 
+      stage 10.0 harvest_ripe
+                     biomass =         578.11 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.72 (%)    extractable sw =   22.83 (mm)
+23 November 2004(Day of year=328), paddock.LupinHarvesting: 
+     Manager sending message :- lupin harvest
+     
+      flowering day          =  257                           stover (kg/ha)         =     4527.6
+      maturity day           =  327                           grain yield (kg/ha)    =     1253.5
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1424.4
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.443
+      total above ground biomass (kg/ha)    =     5781.1
+      live above ground biomass (kg/ha)     =     5781.1
+      green above ground biomass (kg/ha)    =     4068.3
+      senesced above ground biomass (kg/ha) =     1712.9
+      number of leaves       =    268.7
+      DM Root:Shoot ratio    =     0.29                       Harvest Index          =       0.22
+      Stover C:N ratio       =    31.85                       Root C:N ratio         =      18.76
+      grain N percent        =     5.33                       total N content (kg/ha)=     123.63
+      grain N uptake (kg/ha) =    66.77                       senesced N content (kg/ha)=    8.56
+      green N content (kg/ha)=    48.29
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.004
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.037
+         floral_initiation    to flowering               0.000        0.000        0.000        0.010
+         flowering            to start_grain_fill        0.294        0.353        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.518        0.594        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4527.6                     0.0
+                          N  (kg/ha) =                  56.85                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1253.5                     0.0
+                          N  (kg/ha) =                  66.77                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- lupin end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1677.9
+                          N  (kg/ha) =                   0.00                   35.78
+     
+31 December 2004(Day of year=366), clock: 
+     Simulation is terminating due to end criteria being met.
+
