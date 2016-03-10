@@ -88,9 +88,13 @@ void Water::readParams (void)
    swPhenoTable.read(    scienceAPI,"x_sw_avail_ratio", "y_swdef_pheno");
    swExpansionTable.read(scienceAPI,"x_sw_demand_ratio","y_swdef_leaf");
 
+   vector<float> ll15, dul;
+   
    scienceAPI.read("kl", "", 0, kl);
    scienceAPI.read("xf", "", 0, xf);
    scienceAPI.read("ll","mm/mm", 0, ll);
+   scienceAPI.get("ll15","mm/mm", 0, ll15);
+   scienceAPI.get("dul","mm/mm", 0, dul);
 
    if (ll.size() != (unsigned int)nLayers)
       {
@@ -101,6 +105,10 @@ void Water::readParams (void)
       msg += ").";
       throw std::runtime_error(msg);
       }
+      
+   // Bound check LL
+   for (unsigned int layer = 0; layer != ll.size(); layer++)
+      checkRange(scienceAPI, ll[layer], ll15[layer], dul[layer], "CLL");
 
    llDep.clear();
    eswCap.clear();

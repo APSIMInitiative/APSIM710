@@ -2183,7 +2183,10 @@ cnh     :                 ' Initialising')
       real       ll (max_layer)        ! lower limit of plant-extractable
                                        ! soil water for soil layer l
                                        ! (mm water/mm soil)
+      real       ll15 (max_layer)      ! lower limit 15-bar (mm water/mm soil)
+      real       dul (max_layer)       ! drained upper limit(mm water/mm soil)
       integer    num_layers            ! number of layers in profile
+      integer    num_ll15_layers
       integer    numvals               !
       character  string*200            ! output string
       real       rlv (max_layer)
@@ -2232,34 +2235,43 @@ cnh     :                 ' Initialising')
 
          !       sugar_sw_supply
 
+      ! Get LL15
+      call get_real_array_optional (unknown_module
+     :                            , 'll15'
+     :                            , max_layer, '()'
+     :                            , ll15, num_layers
+     :                            , 0.0, c%ll_ub)
+
+      ! Get DUL
+      call get_real_array_optional (unknown_module
+     :                            , 'dul'
+     :                            , max_layer, '()'
+     :                            , dul, num_ll15_layers
+     :                            , 0.0, 1000.0)
+      
+      ! Try to read in CLL
       call fill_real_array (p%ll_dep, 0.0, max_layer)
       call read_real_array_optional (section_name
      :                     , 'll', max_layer, '()'
      :                     , ll, num_layers
      :                     , 0.0, c%ll_ub)
-
-      if (num_layers .gt. 0) then
-          do layer = 1, num_layers
-             p%ll_dep(layer) = ll(layer)*g%dlayer(layer)
-          enddo
-      else
-          call get_real_array_optional (unknown_module
-     :                                  , 'll15'
-     :                                  , max_layer, '()'
-     :                                  , ll, num_layers
-     :                                  , 0.0, c%ll_ub)
-          if (num_layers .gt. 0) then
-             do layer = 1, num_layers
-               p%ll_dep(layer) = ll(layer)*g%dlayer(layer)
-             enddo
-             call Write_String(
-     :            'Using externally supplied Lower Limit (ll15)')
-          else
-             call Fatal_error (ERR_internal,
-     :                         'No Crop Lower Limit found')
-          endif
+      if (num_layers .eq. 0) then
+         ! No CLL found - use LL15
+         num_layers = num_ll15_layers
+         do layer = 1, num_layers
+           ll(layer) = ll15(layer)
+         enddo
+         call Write_String(
+     :        'Using externally supplied Lower Limit (ll15)')
       endif
 
+      ! Bound check
+      do layer = 1, num_layers
+         call bound_check_real_var(ll(layer), ll15(layer)
+     :                           , dul(layer)
+     :                           , 'CLL')
+           p%ll_dep(layer) = ll(layer)*g%dlayer(layer)
+      enddo
       call read_real_array (section_name
      :                     , 'kl', max_layer, '()'
      :                     , p%kl, num_layers

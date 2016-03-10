@@ -139,6 +139,13 @@
       ! -----------------------------------
 
       call unpack_IrrigationApplication(variant, irrigation)
+
+      if (irrigation%Amount < 0) then
+         write(err_string,*)
+     :      'Irrigation amount of ', irrigation%Amount, 
+     :      ' must be greater than 0.'
+         call fatal_error (ERR_USER, err_string)
+      endif
 	  
       g%amount = irrigation%Amount
       call irrigate_check_allocation(g%amount)
