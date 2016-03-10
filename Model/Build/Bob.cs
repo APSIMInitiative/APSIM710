@@ -162,9 +162,16 @@ private static void doLINUX ()
       }
       // Close log file.
       Log.Close();
+      try
+      {
       Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.7-r" + revision + ".linux.txt");
       Run("Updating details...", Path.Combine(APSIMDir, "Model/UpdateFieldInDB.exe"),
                                "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.7-r" + revision + ".linux.txt");
+      }
+      catch (Exception e)
+      {
+          Console.WriteLine(e.Message);
+      }
    }
 }
 
