@@ -466,7 +466,8 @@ namespace CSUserInterface
                     string header = Grid.Columns[e.ColumnIndex].HeaderText;
                     if (header.Contains("DUL") || header.Contains("Depth"))
                     {
-                        Soil.Water.Thickness = MathUtility.RemoveMissingValuesFromBottom(Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0)));
+                        if (OurComponent.Type == "Soil")
+                            Soil.Water.Thickness = MathUtility.RemoveMissingValuesFromBottom(Soil.ToThickness(GridUtility.GetColumnAsStrings(Grid, 0)));
                         if (header.Contains("DUL"))
                            Soil.Water.DUL = GridUtility.GetColumnAsDoubles(Grid, e.ColumnIndex);
 
@@ -666,23 +667,49 @@ namespace CSUserInterface
                     colIndex = 2;
                 double total = MathUtility.Sum(GridUtility.GetColumnAsDoubles(Grid, colIndex));
                 string newTotalString = InputDialog.InputBox("Enter total " + name + " (" + units + ")", name, total.ToString("f1"), false);
-                if (newTotalString != total.ToString("f1") && total != 0)
+                if (newTotalString != total.ToString("f1"))
                 {
                     double newTotal = Convert.ToDouble(newTotalString);
-                    double scale = newTotal / total; 
-                    // Need to scale the values.
-                    double[] values = GridUtility.GetColumnAsDoubles(Grid, colIndex);
-                    double[] newValues = MathUtility.Multiply_Value(values, scale);
+                    
+
+                    // Make sure we have thickness values.
+                    string[] gridThicknessStrings = GridUtility.GetColumnAsStrings(Grid, 0);
+                    double[] gridThickness = Soil.ToThickness(gridThicknessStrings);
+                    double totalGridThickness = MathUtility.Sum(gridThickness);
+                    if (totalGridThickness == 0 || totalGridThickness == MathUtility.MissingValue || double.IsNaN(totalGridThickness))
+                    {
+                        gridThickness = new double[1];
+                        gridThickness[0] = MathUtility.Sum(Soil.Thickness);
+                    }
+                    
+                    double[] newValues;
                     Sample sample = OurObject as Sample;
+                    if (total == 0 || double.IsNaN(total))
+                    {
+                        // evenly distributed.
+                        newValues = new double[gridThickness.Length];
+                        for (int i = 0; i < newValues.Length; i++)
+                            newValues[i] = newTotal / newValues.Length;
+                    }
+                    else
+                    {
+                        double scale = newTotal / total;
+                        // Need to scale the values.
+                        double[] values = GridUtility.GetColumnAsDoubles(Grid, colIndex);
+                        newValues = MathUtility.Multiply_Value(values, scale);
+                    }
+                    sample.Thickness = gridThickness;
                     if (name == "NO3")
                         sample.NO3 = newValues;
                     else
                         sample.NH4 = newValues;
+
                     OnRefresh();
                 }
             }
             else
             {
+                OnSave();
                 object Units = e.ClickedItem.Tag;
                 MethodInfo UnitChangeMethod = (sender as ContextMenuStrip).Tag as MethodInfo;
                 if (UnitChangeMethod.GetParameters().Length == 1)
