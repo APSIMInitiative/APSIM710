@@ -912,12 +912,11 @@ public class Species
             stems.tissue[1].DM = emergenceDM_grass[5];
             stems.tissue[2].DM = emergenceDM_grass[6];
             stems.tissue[3].DM = emergenceDM_grass[7];
-            roots.tissue[0].DM = emergenceDM_grass[11];
             stolons.tissue[0].DM = 0.0;
             stolons.tissue[1].DM = 0.0;
             stolons.tissue[2].DM = 0.0;
             stolons.tissue[3].DM = 0.0;
-            roots.tissue[0].DM = 0.0;
+            roots.tissue[0].DM = emergenceDM_grass[11];
             roots.tissue[1].DM = 0.0;
             roots.tissue[2].DM = 0.0;
             roots.tissue[3].DM = 0.0;
