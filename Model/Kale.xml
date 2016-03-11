@@ -1,9 +1,9 @@
 <Type name="kale">
   <MetaData>
-    <UItype>CSUserInterface.EmptyUI</UItype>
+    <UItype>CSUserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\Canola.jpg</Image>
+    <Image>%apsim%\UserInterface\Images\kale.jpg</Image>
     <Description>This is a copy of canola that I have been playing around with to make kale</Description>
     <Documentation>%apsim%\Documentation\4 Module Reference\Canola.htm</Documentation>
     <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
@@ -21,7 +21,12 @@
         <executable>[dll]</executable>
         <initdata>
                [Model]
-               <ll>[soil.[InstanceName] ll]</ll><kl>[soil.[InstanceName] kl]</kl><xf>[soil.[InstanceName] xf]</xf></initdata>
+               <ModifyKL>no</ModifyKL>
+               <MaxRootDepth>[kale.MaxRootDepth]</MaxRootDepth>
+               <ll>[soil.[InstanceName] ll]</ll>
+               <kl>[soil.[InstanceName] kl]</kl>
+               <xf>[soil.[InstanceName] xf]</xf>
+        </initdata>
       </component>
     </ApsimToSim>
   </MetaData>
@@ -136,6 +141,10 @@
          -->
       <co2_default units="ppm">350</co2_default>
       <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
+      <x_co2_te_modifier units="ppm co2">350</x_co2_te_modifier>
+      <y_co2_te_modifier>1.0</y_co2_te_modifier>
+      <x_co2_nconc_modifier units="ppm co2">350</x_co2_nconc_modifier>
+      <y_co2_nconc_modifier>1.0</y_co2_nconc_modifier>
       <stage_names description="stage names">sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop </stage_names>
       <stage_code description="numeric code for phenological stages">1      2           3         4               5                 6         7                8              9        10           11</stage_code>
       <!-- __________________________________________________________________________________________________________-
@@ -153,9 +162,7 @@
       <!-- __________________________________________________________________________________________________________-
          EMERGENCE
          -->
-
-	  <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
-
+      <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
       <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">12.0</shoot_rate> <!--I have increased this because emergence for kale was predicted early using the rape defalt.  May be a local soil temp effect.-->
       <!-- Water stress factor for emergence
          -->
@@ -177,7 +184,10 @@
          Thermal time calculation
          -->
       <x_temp units="oC" description="temperature table for thermal time">2.0  20.0  35.0</x_temp>
-      <y_tt units="oCd" description="thermal time">0.0 20.0   0.0</y_tt>
+      <y_tt units="oCd" description="thermal time">0.0  20.0   0.0</y_tt>
+      <x_removeBiomPheno description="fraction of above ground biomass removed">0.0  0.1   0.4  0.5  1.0</x_removeBiomPheno>
+      <y_removeFractPheno description="fraction of above ground thermal time removed">0.0  0.08  0.4  0.5  1.0</y_removeFractPheno>
+
       <!-- __________________________________________________________________________________________________________-
          LEAF NUMBER DEVELOPMENT
          currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
@@ -185,13 +195,8 @@
       <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">0.1     </leaf_no_at_emerg>
 	  <x_node_no_app>  0     8       12    20 </x_node_no_app>
       <y_node_app_rate>108   108     220   400</y_node_app_rate>
-	  	  
-	  <x_node_no_leaf>   0    5    8   14</x_node_no_leaf>
-      <y_leaves_per_node>1    1    1   1 </y_leaves_per_node>
-	  
-     <!-- <x_node_no_leaf>0    5    8    14</x_node_no_leaf>
-      <y_leaves_per_node>1    1    1.5  2.0</y_leaves_per_node> -->
-	  
+      <x_node_no_leaf>0    5    8    14</x_node_no_leaf>
+      <y_leaves_per_node>1    1    1.5  2.0</y_leaves_per_node>
       <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.01 0.8 1.0</x_lai_ratio>
       <y_leaf_no_frac description="reduction in leaf appearance ()">0.0  1.0 1.0 1.0</y_leaf_no_frac>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -247,16 +252,16 @@
       <!-- __________________________________________________________________________________________________________-
          BIOMASS PARTITIONING
          sow    ger   eme  juv    fi    fl    st_gf end_gf  mat hv_rpe  end
-         stage_code           =                                                                                           1      2    3     4     5     6      7      8     9    10     11   () -->
+         stage_code           =                                                                                           1      2    3     4     5     6      7      8     9       10     11   () -->
 	   <!--I have reduced root to shoot ratio substantially but dosn't seem to have effect, need to recude root N% to conpensate
 	       This will help get the N balance correct but will need to be corrected to get the C balance right  -->
-	  <x_stage_no_partition>                                                                                              1      2    3.0 3.5  3.6  3.7  4    5      6      7      8     9    10     11    </x_stage_no_partition>
-	  <y_ratio_root_shoot units="0-1">                                                                                    0      0    .3   .3    .1    .1     .1  0.05  0.05   0.05   0     0     0      0</y_ratio_root_shoot>
-	  <y_frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">                                0      0    0.7 0.4  0.1  0.1  0.05 0.05  0.0    0.0    0     0     0      0</y_frac_leaf>
+	  <x_stage_no_partition>                                                                                              1      2    3.0   3.5   3.6   3.7    4      5      6      7      8     9    10     11    </x_stage_no_partition>
+	  <y_ratio_root_shoot units="0-1">                                                                                    0      0    .3     .3    .1    .1     .1    0.05   0.05   0.05   0     0     0      0</y_ratio_root_shoot>
+	  <y_frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">                                0      0    0.7   0.4   0.1   0.1    0.05   0.05   0.0    0.0    0     0     0      0</y_frac_leaf>
       
-	  <frac_pod units="0-1" description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0      0    0      0    0  0.60   0.2    0     0     0      0</frac_pod>
-      
-	  <!-- __________________________________________________________________________________________________________-
+      <frac_pod units="0-1" description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0      0    0     0     0     0.60   0.2    0      0      0      0</frac_pod>
+      <!-- __________________________________________________________________________________________________________-
+
          __________________________________________________________________________________________________________-
          GRAIN NUMBER DETERMINATION
          __________________________________________________________________________________________________________-
@@ -280,8 +285,6 @@
          -->
       <node_no_correction>0.0</node_no_correction>
       <x_node_no>  1    3    5    10     12 20    30   </x_node_no>
-      <!--
-	  <y_leaf_size>100  1000 5000 30000  30000 30000</y_leaf_size>-->
 	  <y_leaf_size>500  5000 30000 35000  25000 5000 5000</y_leaf_size>
       <!-- ______________________________________________________________________________
          SPECIFIC LEAF AREA - SLA
@@ -481,7 +484,7 @@
       <x_dm_sen_frac_root description="root">0    1     </x_dm_sen_frac_root>
       <y_dm_sen_frac_root>0.005 0.005</y_dm_sen_frac_root>
       <x_dm_sen_frac_leaf description="leaf">0    1     </x_dm_sen_frac_leaf>
-      <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>  <!-- I have changed this to test its effects on N response <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf> -->
+      <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>
       <x_dm_sen_frac_stem description="stem">0    1     </x_dm_sen_frac_stem>
       <y_dm_sen_frac_stem>0    0</y_dm_sen_frac_stem>
       <x_dm_sen_frac_pod description="flower">0    1     </x_dm_sen_frac_pod>
@@ -543,6 +546,73 @@
          SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 11 - DIGESTIBILITY
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         green
+         -->
+      <XLeafGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMaxStageCode>
+      <YLeafGreenDigestibilityMax>0.8   0.8   0.8    0.8   0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
+      <XLeafGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityAvgStageCode>
+      <YLeafGreenDigestibilityAvg>0.8   0.8   0.8    0.8   0.7  0.68  0.68  0.68</YLeafGreenDigestibilityAvg>
+      <XLeafGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMinStageCode>
+      <YLeafGreenDigestibilityMin>0.72  0.72  0.72   0.72  0.6  0.58  0.58  0.58</YLeafGreenDigestibilityMin>
+      <XStemGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMaxStageCode>
+      <YStemGreenDigestibilityMax>0.8   0.8   0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMax>
+      <XStemGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityAvgStageCode>
+      <YStemGreenDigestibilityAvg>0.8   0.8   0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityAvg>
+      <XStemGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMinStageCode>
+      <YStemGreenDigestibilityMin>0.8   0.8   0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMin>
+      <XPodGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMaxStageCode>
+      <YPodGreenDigestibilityMax>0.8  0.8  0.8  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMax>
+      <XPodGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityAvgStageCode>
+      <YPodGreenDigestibilityAvg>0.8  0.8  0.8  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityAvg>
+      <XPodGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMinStageCode>
+      <YPodGreenDigestibilityMin>0.8  0.8 0.8  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMin>
+      <XMealGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMaxStageCode>
+      <YMealGreenDigestibilityMax>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YMealGreenDigestibilityMax>
+      <XMealGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityAvgStageCode>
+      <YMealGreenDigestibilityAvg>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YMealGreenDigestibilityAvg>
+      <XMealGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMinStageCode>
+      <YMealGreenDigestibilityMin>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YMealGreenDigestibilityMin>
+      <XOilGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMaxStageCode>
+      <YOilGreenDigestibilityMax>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YOilGreenDigestibilityMax>
+      <XOilGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityAvgStageCode>
+      <YOilGreenDigestibilityAvg>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YOilGreenDigestibilityAvg>
+      <XOilGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMinStageCode>
+      <YOilGreenDigestibilityMin>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YOilGreenDigestibilityMin>
+      <!-- senesced
+         -->
+      <XLeafSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMaxStageCode>
+      <YLeafSenescedDigestibilityMax>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMax>
+      <XLeafSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityAvgStageCode>
+      <YLeafSenescedDigestibilityAvg>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityAvg>
+      <XLeafSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMinStageCode>
+      <YLeafSenescedDigestibilityMin>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMin>
+      <XStemSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMaxStageCode>
+      <YStemSenescedDigestibilityMax>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMax>
+      <XStemSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityAvgStageCode>
+      <YStemSenescedDigestibilityAvg>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityAvg>
+      <XStemSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMinStageCode>
+      <YStemSenescedDigestibilityMin>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMin>
+      <XPodSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMaxStageCode>
+      <YPodSenescedDigestibilityMax>0.8   0.8   0.8   0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMax>
+      <XPodSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityAvgStageCode>
+      <YPodSenescedDigestibilityAvg>0.8   0.8   0.8   0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityAvg>
+      <XPodSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMinStageCode>
+      <YPodSenescedDigestibilityMin>0.8   0.8   0.8   0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMin>
+      <XMealSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMaxStageCode>
+      <YMealSenescedDigestibilityMax>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YMealSenescedDigestibilityMax>
+      <XMealSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityAvgStageCode>
+      <YMealSenescedDigestibilityAvg>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YMealSenescedDigestibilityAvg>
+      <XMealSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMinStageCode>
+      <YMealSenescedDigestibilityMin>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YMealSenescedDigestibilityMin>
+      <XOilSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMaxStageCode>
+      <YOilSenescedDigestibilityMax>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YOilSenescedDigestibilityMax>
+      <XOilSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityAvgStageCode>
+      <YOilSenescedDigestibilityAvg>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YOilSenescedDigestibilityAvg>
+      <XOilSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMinStageCode>
+      <YOilSenescedDigestibilityMin>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YOilSenescedDigestibilityMin>         
+      <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          SECTION - VALUE LIMITS - MAX AND MINS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          ______________________________________________________________________________
@@ -569,7 +639,7 @@
 	       kale cultivar variables
 	       *********************** -->
 	  
-    <Grunner>
+    <Cultivar name="Grunner">
       
 	  <!--- I dont have the phenology response correct in here.  Talking the Stuart Gowers there should be a basic vegetative phase when the crop will not vernalise followed by a vernalisation 
 	  sensitative phase and then a photoperiod sensitive phase.  Need to investigate further and implement.  It is giveing adequate descriptions of flowering times to use for predicting forage 
@@ -617,7 +687,7 @@
 	  <x_ave_temp units="oC" description="mean daily temperature">0  11 19 30</x_ave_temp> ! I have made temperature response with a higher optium to reduce early season growth
       <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
 	  -->
-   </Grunner>
+   </Cultivar>
   </Model>
   
 </Type>
