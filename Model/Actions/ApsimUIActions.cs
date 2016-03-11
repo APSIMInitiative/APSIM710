@@ -306,6 +306,8 @@ namespace Actions
                             Directory.CreateDirectory(F.OutputFolder);
                         c.DestinationFolder = F.OutputFolder;
                         c.numberSimsPerJob = F.simsPerJobNumber;
+                        c.useSingleCPU = F.useSingleCPU;
+
                         c.Go(FilesToRun, UpdateProgress);
 
                         if (!c.doUpload)

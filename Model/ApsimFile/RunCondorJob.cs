@@ -45,6 +45,9 @@ namespace ApsimFile
 		// Where to write the zipfile. 
 		public string DestinationFolder = Directory.GetCurrentDirectory ();
 
+        // Whether to ask for single CPU or entire machine
+        public bool useSingleCPU = false;
+
 		public CondorJob ()
 		{
 		}
@@ -200,7 +203,7 @@ namespace ApsimFile
 			SubWriter.WriteLine ("periodic_remove = (((CurrentTime - EnteredCurrentStatus) > 600) && JobStatus == 5)"); // Abort if held (missing files)
 			SubWriter.WriteLine ("nice_user = " + (NiceUser ? "TRUE" : "FALSE"));
 
-			SubWriter.WriteLine ("+RequiresWholeMachine = True");
+			if (!useSingleCPU) SubWriter.WriteLine ("+RequiresWholeMachine = True");
 			SubWriter.Write ("requirements = ");
 			if (arch == Configuration.architecture.unix)
 				SubWriter.Write (" OpSys == \"LINUX\"");
@@ -210,10 +213,14 @@ namespace ApsimFile
 				SubWriter.Write (" ((OpSys == \"LINUX\") || Regexp(\"^WIN\", OpSys))");
 			else
 				throw new Exception ("Please select at least one Operating System to run on");
-			SubWriter.WriteLine (" && ((Arch == \"INTEL\") || (Arch == \"X86_64\")) && (Target.CAN_RUN_WHOLE_MACHINE =?= True)");
+            SubWriter.Write(" && ((Arch == \"INTEL\") || (Arch == \"X86_64\")) ");
+
+            // see https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=WholeMachineSlots
+            if (!useSingleCPU) SubWriter.Write (" && (Target.CAN_RUN_WHOLE_MACHINE =?= True)");
+            SubWriter.WriteLine ("");
+
 			SubWriter.WriteLine ("executable = Apsim.$$(OpSys).$$(Arch).bat");
-			//SubWriter.WriteLine ("environment = \"NUMBER_OF_PROCESSORS=1\"");  // FIXME!!!
-			// see https://htcondor-wiki.cs.wisc.edu/index.cgi/wiki?p=WholeMachineSlots
+            if (useSingleCPU) SubWriter.WriteLine ("environment = \"NUMBER_OF_PROCESSORS=1\"");
 
 			// Create a top level batch file.
 			StreamWriter ExeWriter;

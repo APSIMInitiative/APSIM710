@@ -34,6 +34,7 @@
              this.CanclButton = new System.Windows.Forms.Button();
              this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
              this.groupBox1 = new System.Windows.Forms.GroupBox();
+             this.useSingleCPUCheckbox = new System.Windows.Forms.CheckBox();
              this.label4 = new System.Windows.Forms.Label();
              this.NiceUserCheckBox = new System.Windows.Forms.CheckBox();
              this.HlpButton = new System.Windows.Forms.Button();
@@ -89,6 +90,7 @@
              // 
              // groupBox1
              // 
+             this.groupBox1.Controls.Add(this.useSingleCPUCheckbox);
              this.groupBox1.Controls.Add(this.label4);
              this.groupBox1.Controls.Add(this.NiceUserCheckBox);
              this.groupBox1.Controls.Add(this.HlpButton);
@@ -108,6 +110,18 @@
              this.groupBox1.TabIndex = 3;
              this.groupBox1.TabStop = false;
              this.groupBox1.Text = "What do you want to run?";
+             // 
+             // useSingleCPUCheckbox
+             // 
+             this.useSingleCPUCheckbox.AutoSize = true;
+             this.useSingleCPUCheckbox.Checked = true;
+             this.useSingleCPUCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+             this.useSingleCPUCheckbox.Location = new System.Drawing.Point(245, 153);
+             this.useSingleCPUCheckbox.Name = "useSingleCPUCheckbox";
+             this.useSingleCPUCheckbox.Size = new System.Drawing.Size(98, 17);
+             this.useSingleCPUCheckbox.TabIndex = 36;
+             this.useSingleCPUCheckbox.Text = "Use Single Slot";
+             this.useSingleCPUCheckbox.UseVisualStyleBackColor = true;
              // 
              // label4
              // 
@@ -374,5 +388,6 @@
       private System.Windows.Forms.TextBox password;
       private System.Windows.Forms.Label label3;
       private System.Windows.Forms.Label label4;
+      private System.Windows.Forms.CheckBox useSingleCPUCheckbox;
       }
    }
