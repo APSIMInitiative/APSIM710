@@ -394,43 +394,52 @@ namespace Graph
 
         private void AddDataToSeries(DataTable DataSource, string XFieldName, bool XDataPresent, bool CumulativeY, bool CumulativeX, string YColumnName, string XColumnName, DataView View, Steema.TeeChart.Styles.Series NewSeries, ref double CumulativeXSoFar, ref double CumulativeYSoFar, int Row, Error ErrorBarSeries)
         {
-            // Now feed new x and y data to our series.
-            if (!Convert.IsDBNull(View[Row][YColumnName]))
+            try
             {
-                double YValue = Convert.ToDouble(View[Row][YColumnName], new CultureInfo("en-US"));
-                if (CumulativeY)
+                // Now feed new x and y data to our series.
+                if (!Convert.IsDBNull(View[Row][YColumnName]))
                 {
-                    CumulativeYSoFar += YValue;
-                    YValue = CumulativeYSoFar;
-                }
-                if (XDataPresent)
-                {
-                    if (!Convert.IsDBNull(View[Row][YColumnName]))
+                    double YValue = Convert.ToDouble(View[Row][YColumnName], new CultureInfo("en-US"));
+                    if (CumulativeY)
                     {
-                        NewSeries.XValues.Name = XFieldName;
-                        string PointName = "";
-                        if (DataSource.Columns.Contains("PointName"))
-                            PointName = View[Row]["PointName"].ToString();
-                        if (ErrorBarSeries != null)
-                            AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
-                                          View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
-                                          ErrorBarSeries, View[Row][YColumnName + "Error"],
-                                          PointName);
-                        else
-                            AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
-                                          View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
-                                          ErrorBarSeries, null,
-                                          PointName);
+                        CumulativeYSoFar += YValue;
+                        YValue = CumulativeYSoFar;
+                    }
+                    if (XDataPresent)
+                    {
+                        if (!Convert.IsDBNull(View[Row][YColumnName]))
+                        {
+                            NewSeries.XValues.Name = XFieldName;
+                            string PointName = "";
+                            if (DataSource.Columns.Contains("PointName"))
+                                PointName = View[Row]["PointName"].ToString();
+                            if (ErrorBarSeries != null)
+                                AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
+                                              View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
+                                              ErrorBarSeries, View[Row][YColumnName + "Error"],
+                                              PointName);
+                            else
+                                AddXYToSeries(NewSeries, DataSource.Columns[XColumnName].DataType,
+                                              View[Row][XColumnName], YValue, CumulativeX, ref CumulativeXSoFar,
+                                              ErrorBarSeries, null,
+                                              PointName);
 
+                        }
+                    }
+                    else
+                    {
+                        NewSeries.Add(YValue);
+                        if (NewSeries.Count == 1)
+                            Chart.Axes.Bottom.Labels.Items.Add(Chart.Series.Count, NewSeries.Title);
+                        Chart.Axes.Bottom.Visible = true;
                     }
                 }
-                else
-                {
-                    NewSeries.Add(YValue);
-                    if (NewSeries.Count == 1)
-                        Chart.Axes.Bottom.Labels.Items.Add(Chart.Series.Count, NewSeries.Title);
-                    Chart.Axes.Bottom.Visible = true;
-                }
+            }
+            catch (Exception err)
+            {
+                string message = err.Message;
+                message += " Value: " + View[Row][YColumnName].ToString();
+                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -476,7 +485,8 @@ namespace Graph
             {
                 // X as datetime
                 NewSeries.XValues.DateTime = true;
-                NewSeries.Add(Convert.ToDateTime(XValue), YValue);
+                if (!Convert.IsDBNull(XValue))
+                    NewSeries.Add(Convert.ToDateTime(XValue), YValue);
             }
             else if (!Convert.IsDBNull(XValue))
             {
