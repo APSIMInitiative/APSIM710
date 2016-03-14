@@ -619,6 +619,61 @@
       return
       end subroutine
 
+! ====================================================================
+       subroutine read_real_array_error &
+         (section_name, variable_name, size_of, &
+          units, variable, numvals, &
+          lower_limit, upper_limit)
+! ====================================================================
+      implicit none
+
+!+ Sub-Program Arguments
+      character section_name*(*)       ! (INPUT) section name to search for
+      character variable_name*(*)      ! (INPUT) Variable name to search for
+      integer size_of                  ! (INPUT) size_of of array
+      character units*(*)              ! (INPUT) Units required by caller
+      real variable(*)                 ! (OUTPUT) Variable returned to caller
+      integer numvals                 ! (OUTPUT) Number of values returned
+      real lower_limit                 ! (INPUT) Lower limit for bounds check
+      real upper_limit                 ! (INPUT) Upper limit for bounds check
+
+!+ Purpose
+!     High level routine to read in a real value from a parameter file.
+!     This routine also checks the bounds of the returned variable.
+!     Fatal_error will be called if any err is encountered.
+
+!+  Mission Statement
+!     Read %5 from file (Lower Bound = %6, Upper Bound = %7)
+
+!+ Changes
+!     DPH 18/10/94
+!     271094 jngh added split_off_units to remove units
+!     23/9/96 dph added if statement to check for blank
+!     13/7/99 dph reworked to use new Read_parameter routine
+
+!+ Calls
+
+!+ Constant Values
+
+!+ Local Variables
+      character return_string*(function_string_len)
+                                       ! String returned from read_file_string
+      logical found
+
+!- Implementation Section ----------------------------------
+
+      found = read_parameter (variable_name, section_name,  &
+                              return_string, .false.)
+
+      if (found) then
+         call string_to_real_array &
+            (return_string, variable, size_of, numvals)
+         call bound_check_real_array_error &
+          (variable, lower_limit, upper_limit, variable_name, numvals)
+      endif
+
+      return
+      end subroutine
 
 ! ====================================================================
        subroutine read_integer_array &

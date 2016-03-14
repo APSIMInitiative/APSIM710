@@ -247,6 +247,11 @@ module Soiln2Module
 ! ====================================================================
    type Soiln2Constants
       sequence
+      real         fbiom_lb               ! lower bound for FBIOM
+      real         fbiom_ub               ! upper bound for FBIOM
+      real         finert_lb              ! lower bound for FINERT
+      real         finert_ub              ! upper bound for FINERT
+      
       real         CNrf_coeff             ! coeff. to determine the magnitude
                                           ! of C:N effects on decomposition of
                                           ! FOM ()
@@ -397,10 +402,10 @@ subroutine soiln2_reset ()
 
    ! Get all parameters from parameter file
    call soiln2_read_param ()
-
+   
    ! Get all coefficients from parameter file
    call soiln2_read_constants ()
-
+   
    ! Perform initial calculations from inputs
    call soiln2_init_calc()
 
@@ -583,6 +588,14 @@ subroutine soiln2_read_param ()
 
    call write_string (  new_line//'   - Reading Parameters')
 
+   call read_real_var ('standard', 'fbiom_lb', '()', c%fbiom_lb, numvals, 0.0, 1.0)
+
+   call read_real_var ('standard', 'fbiom_ub', '()', c%fbiom_ub, numvals, 0.0, 1.0)
+
+   call read_real_var ('standard', 'finert_lb', '()', c%finert_lb, numvals, 0.0, 1.0)
+
+   call read_real_var ('standard', 'finert_ub', '()', c%finert_ub, numvals, 0.0, 1.0)
+   
    ! read in setting for soil type which is used to determine the mineralisation
    ! model parameters section from the ini file.
    g%soiltype = ' '
@@ -652,10 +665,10 @@ subroutine soiln2_read_param ()
       call read_real_array (section_name, 'ph', max_layer, '()', g%ph, numvals, 3.5, 11.0)
    endif
 
-   call read_real_array (section_name, 'fbiom', max_layer, '()', g%fr_biom_c, numvals, 0.0, 1.0)
-
-   call read_real_array ( &
-              section_name, 'finert', max_layer, '()', g%fr_inert_c, numvals, 0.0, 1.0)
+   call read_real_array_error (section_name, 'fbiom', max_layer, '()', g%fr_biom_c, numvals, c%fbiom_lb, c%fbiom_ub)
+  
+   call read_real_array_error ( &
+              section_name, 'finert', max_layer, '()', g%fr_inert_c, numvals, c%finert_lb, c%finert_ub)
 
    call read_real_array (section_name, 'no3ppm', max_layer, '(ppm)', no3, numvals, 0.0, 300.0)
 
@@ -2209,7 +2222,7 @@ subroutine soiln2_read_constants ()
          call write_string ('Using soil mineralisation specification for '//g%soiltype)
       endif
    endif
-
+   
    call read_real_var (section_name, 'ef_fom', '()', c%ef_fom, numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'fr_fom_biom', '()', c%fr_fom_biom, numvals, 0.0, 1.0)

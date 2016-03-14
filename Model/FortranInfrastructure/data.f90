@@ -397,6 +397,103 @@
       return
       end subroutine
 
+  ! ===========================================================
+      subroutine bound_check_real_var_error (value, lower, upper, vname)
+   ! ===========================================================
+      use ConstantsModule
+      use ErrorModule
+      implicit none
+
+   !+ Sub-Program Arguments
+      real       lower                 ! (INPUT) lower limit of value
+      real       upper                 ! (INPUT) upper limit of value
+      real       value                 ! (INPUT) value to be validated
+      character  vname *(*)            ! (INPUT) variable name to be validated
+
+   !+ Purpose
+   !     checks if a variable lies outside lower and upper bounds.
+   !     Reports a fatal err if it does.
+
+   !+  Definition
+   !     This subroutine will issue a warning message using the
+   !     name of "value", "vname", if "value" is greater than
+   !     ("upper" + 2 * error_margin("upper")) or if "value" is less than
+   !     ("lower" - 2 *error_margin("lower")).  If  "lower" is greater
+   !     than ("upper" + 2 * error_margin("upper")) , then a warning
+   !     message will be flagged to that effect.
+
+   !+ Notes
+   !     reports err if value > upper or value < lower or lower > upper
+
+   !+  Mission Statement
+   !     Check that %1 lies between %2 and %3
+
+   !+ Local Variables
+      character  e_messg*400           ! err message
+      real       margin_lower          ! margin for precision err of lower
+      real       margin_upper          ! margin for precision err of upper
+      real       margin_val            ! margin for precision err of value
+
+   !- Implementation Section ----------------------------------
+
+            ! calculate a margin for precision err of lower.
+
+      margin_lower = error_margin (lower)
+
+            ! calculate a margin for precision err of upper.
+
+      margin_upper = error_margin (upper)
+
+            ! calculate a margin for precision err of value.
+
+      margin_val = error_margin (value)
+
+            ! are the upper and lower bounds valid?
+
+      if (lower - margin_lower.gt.upper + margin_upper) then
+         e_messg = blank
+         write (e_messg, '(a, g16.7e2, a, g16.7e2, 3a)') &
+                          'Lower bound ('                &
+                         , lower                         &
+                         ,') exceeds upper bound ('      &
+                         , upper                         &
+                         ,')'                            &
+                         ,new_line                       &
+                         ,'        Variable is not checked'
+         call fatal_error (ERR_User, e_messg)
+
+            ! is the value too big?
+
+      else if (value - margin_val.gt.upper + margin_upper) then
+         e_messg = blank
+         write (e_messg, '(2a, g16.7e2, 2a, g16.7e2)')     &
+                           trim(vname)                     &
+                         , ' = '                           &
+                         , value                           &
+                         , new_line                        &
+                         ,'        exceeds upper limit of' &
+                         , upper
+         call fatal_error (ERR_User, e_messg)
+
+            ! is the value too small?
+
+      else if (value + margin_val.lt.lower - margin_lower) then
+         e_messg = blank
+         write (e_messg, '(2a, g16.7e2, 2a, g16.7e2)')        &
+                           trim(vname)                        &
+                         , ' = '                              &
+                         , value                              &
+                         , new_line                           &
+                         ,'        less than lower limit of'  &
+                         , lower
+         call fatal_error (ERR_User, e_messg)
+
+      else
+            ! all ok!
+      endif
+
+      return
+      end subroutine
 
 
    ! ================================================================
@@ -460,6 +557,67 @@
       return
       end subroutine
 
+
+   ! ================================================================
+      subroutine bound_check_real_array_error &
+         (array, lower_bound, upper_bound, array_name, array_size)
+   ! ================================================================
+      use ErrorModule
+      implicit none
+
+   !+ Sub-Program Arguments
+      real       array(*)              ! (INPUT) array to be checked
+      character  array_name*(*)        ! (INPUT) key string of array
+      integer    array_size            ! (INPUT) array size_of
+      real       lower_bound           ! (INPUT) lower bound of values
+      real       upper_bound           ! (INPUT) upper bound of values
+
+   !+ Purpose
+   !     check bounds of values in an array
+
+   !+  Definition
+   !     This subroutine will issue a warning message using the
+   !     name of "array", "name", for each element of "array" that is
+   !     greater than  ("upper" + 2 * error_margin("upper")) or less
+   !     than ("lower" - 2 *error_margin("lower")).  If
+   !     ("lower" - 2 *error_margin("lower")) is greater than "upper",
+   !     then a warning message will be flagged to that effect "size"
+   !     times.
+
+   !+ Assumptions
+   !      each element has same bounds.
+
+   !+  Mission Statement
+   !      Check that all %1 lies between %2 and %3
+
+   !+ Changes
+   !     010794 PdeV.      initial coding
+   !     19/10/94 DPH Changed name from bndchk_array
+
+   !+ Calls
+
+   !+ Constant Values
+      character  myname*(*)            ! name of subroutine
+      parameter (myname = 'Bound_check_single_array')
+
+   !+ Local Variables
+      integer    indx                  ! array index
+
+   !- Implementation Section ----------------------------------
+
+
+      if (array_size.ge.1) then
+
+         do 1000 indx = 1, array_size
+            call Bound_check_real_var_error (array(indx), lower_bound, &
+                 upper_bound, array_name)
+ 1000    continue
+      else
+
+      endif
+
+      return
+      end subroutine
 
 
    ! ===========================================================
