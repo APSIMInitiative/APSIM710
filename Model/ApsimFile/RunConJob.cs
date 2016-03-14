@@ -33,8 +33,14 @@ public class RunConJob : RunApsimJob
 
       _ConFileName = Path.Combine(Directory.GetCurrentDirectory(), _ConFileName);
       _ConToSimProcess = new ProcessCaller(Application.OpenForms[0]);
-      _ConToSimProcess.FileName = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe")); ;
-      _ConToSimProcess.Arguments = StringManip.DQuote(_ConFileName) + " " + StringManip.DQuote(_SimulationName);
+      if (Configuration.getArchitecture() == Configuration.architecture.unix) {
+          _ConToSimProcess.FileName = "mono";
+          _ConToSimProcess.Arguments = StringManip.DQuote(Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe"))) 
+                                         + " " + StringManip.DQuote(_ConFileName) + " " + StringManip.DQuote(_SimulationName);
+      } else {
+         _ConToSimProcess.FileName = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe"));
+         _ConToSimProcess.Arguments = StringManip.DQuote(_ConFileName) + " " + StringManip.DQuote(_SimulationName);
+      } 
       _ConToSimProcess.AllFinished += OnConToSimExited;
       _ConToSimProcess.StdOutReceived += OnStdOut;
       _ConToSimProcess.StdErrReceived += OnStdError;

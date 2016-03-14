@@ -32,11 +32,13 @@ public class RunApsimJob : RunExternalJob
          _SumFileName = Path.Combine(Path.GetDirectoryName(_SimFileName),
                         Path.GetFileNameWithoutExtension(_SimFileName) + ".sum");
          _SumFile = new StreamWriter(_SumFileName);
-         if (Configuration.getArchitecture() == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
-             _Executable = Path.Combine("%apsim%", "Model", "Apsim.x");
-         else
+         if (Configuration.getArchitecture() == Configuration.architecture.unix) {
+             _Executable = "mono";
+             _Arguments =  StringManip.DQuote(Path.Combine("%apsim%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(_SimFileName);
+         } else {
              _Executable = Path.Combine("%apsim%", "Model", "Apsim.exe");
-         _Arguments = StringManip.DQuote(_SimFileName);
+             _Arguments = StringManip.DQuote(_SimFileName);
+         }    
          }
       }
    public string SumFileName

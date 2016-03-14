@@ -33,7 +33,14 @@ public class RunApsimFileJob : RunApsimJob
                                   SimulationName + ".sim");
 
       _ApsimToSimProcess = new ProcessCaller(System.Windows.Forms.Application.OpenForms[0]);
-      _ApsimToSimProcess.FileName = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe")); ;
+      if (Configuration.getArchitecture() == Configuration.architecture.unix) 
+         _ApsimToSimProcess.FileName = "mono";
+         _ApsimToSimProcess.Arguments = StringManip.DQuote(Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe")))
+        _                               + " " + StringManip.DQuote(_ApsimFileName) + " " + StringManip.DQuote(_SimulationPath);
+      } else {
+         _ApsimToSimProcess.FileName = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe")); ;
+         _ApsimToSimProcess.Arguments = StringManip.DQuote(_ApsimFileName) + " " + StringManip.DQuote(_SimulationPath);
+      }
       _ApsimToSimProcess.Arguments = StringManip.DQuote(_ApsimFileName) + " " + StringManip.DQuote(_SimulationPath);
       _ApsimToSimProcess.AllFinished += OnApsimToSimExited;
       _ApsimToSimProcess.StdOutReceived += OnStdOut;

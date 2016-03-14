@@ -221,8 +221,14 @@ public class JobScheduler
 
             RunnerProcess = new Process();
             RunnerProcess.StartInfo.WorkingDirectory = BinDir;
-            RunnerProcess.StartInfo.FileName = Path.Combine(BinDir, "JobRunner.exe");
-            RunnerProcess.StartInfo.Arguments = "Server=" + listenIP.ToString() + " Port=" + listenPort + " AutoClose=Yes";
+
+            if (Path.DirectorySeparatorChar == '/') {
+                 RunnerProcess.StartInfo.FileName = "mono";
+                 RunnerProcess.StartInfo.Arguments = Path.Combine(BinDir, "JobRunner.exe") + " Server=" + listenIP.ToString() + " Port=" + listenPort + " AutoClose=Yes";
+            } else {
+                 RunnerProcess.StartInfo.FileName = Path.Combine(BinDir, "JobRunner.exe");
+                 RunnerProcess.StartInfo.Arguments = "Server=" + listenIP.ToString() + " Port=" + listenPort + " AutoClose=Yes";
+            }
             RunnerProcess.StartInfo.CreateNoWindow = true;
             RunnerProcess.StartInfo.UseShellExecute = false;
             RunnerProcess.StartInfo.RedirectStandardOutput = true;

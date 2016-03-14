@@ -13,8 +13,13 @@ public class RunEntireApsimFileJob : RunExternalJob
       : base(Path.GetFileName(ApsimFileName), JobRunner)
       {
       _ApsimFileName = ApsimFileName;
-      _Executable = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe"));
-      _Arguments = StringManip.DQuote(_ApsimFileName);
+      if (Configuration.getArchitecture() == Configuration.architecture.unix) {
+          _Executable = "mono";
+          _Arguments = StringManip.DQuote(_Executable) + " " + StringManip.DQuote(_ApsimFileName);
+       } else {   
+         _Executable = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe"));
+         _Arguments = StringManip.DQuote(_ApsimFileName);
+       }
       }
    protected override void OnExited(object sender)
       {

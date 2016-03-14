@@ -73,10 +73,15 @@ namespace ConToApsim
       /// </summary>
       private static void ConvertConToSims(string ConFileName)
          {
-         string Exe = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe"));
          Process PlugInProcess = new Process();
-         PlugInProcess.StartInfo.FileName = Exe;
-         PlugInProcess.StartInfo.Arguments = Path.GetFileName(ConFileName);
+         string Exe = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe"));
+         if (Configuration.getArchitecture() == Configuration.architecture.unix)  {
+            PlugInProcess.StartInfo.FileName = "mono";
+            PlugInProcess.StartInfo.Arguments = StringManip.DQuote(Exe) + " " + Path.GetFileName(ConFileName);
+         } else {
+            PlugInProcess.StartInfo.FileName = Exe;
+            PlugInProcess.StartInfo.Arguments = Path.GetFileName(ConFileName);
+         }
          // Determine whether or not the file is an executable; execute from the shell if it's not
          PlugInProcess.StartInfo.UseShellExecute = false;
          PlugInProcess.StartInfo.CreateNoWindow = true;
