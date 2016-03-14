@@ -147,19 +147,6 @@ namespace CSGeneral
                 while (Grid.RowCount < Values.Count)
                     Grid.Rows.Add(new DataGridViewRow());
 
-                for (int Row = 0; Row < Values.Count; Row++)
-                {
-                    if (Values[Row] is double && double.IsNaN((double)Values[Row]))
-                        Grid.Rows[Row].Cells[Col].Value = null;
-                    else
-                        Grid.Rows[Row].Cells[Col].Value = Values[Row];
-                    if (ToolTips != null && ToolTips[Row] != "")
-                    {
-                        Grid.Rows[Row].Cells[Col].ToolTipText = ToolTips[Row];
-                        if (!ForegroundColour.HasValue)
-                            Grid.Columns[Col].DefaultCellStyle.ForeColor = Color.Blue;
-                    }
-                }
                 if (Format != null)
                     Grid.Columns[Col].DefaultCellStyle.Format = Format;
                 if (BackgroundColour.HasValue)
@@ -169,6 +156,20 @@ namespace CSGeneral
                 else if (ReadOnly)
                     Grid.Columns[Col].DefaultCellStyle.ForeColor = Color.Gray;
                 Grid.Columns[Col].ReadOnly = ReadOnly;
+
+                for (int Row = 0; Row < Values.Count; Row++)
+                {
+                    if (Values[Row] is double && double.IsNaN((double)Values[Row]))
+                        Grid.Rows[Row].Cells[Col].Value = null;
+                    else
+                        Grid.Rows[Row].Cells[Col].Value = Values[Row];
+                    if (ToolTips != null && ToolTips[Row] != "")
+                    {
+                        Grid.Rows[Row].Cells[Col].ToolTipText = ToolTips[Row];
+                        Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
+                    }
+                }
+               
                 
             }
             return Grid.Columns[Col];

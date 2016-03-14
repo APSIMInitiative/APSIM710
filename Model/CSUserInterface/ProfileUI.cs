@@ -83,7 +83,8 @@ namespace CSUserInterface
                 TopPanel.Height = Convert.ToInt32(SplitterPositionString);
 
             // add some extra items to the context menu.
-            if (Grid.ContextMenuStrip != null && Grid.ContextMenuStrip.Items.Count != 8)
+            if (Grid.ContextMenuStrip != null && Grid.ContextMenuStrip.Items.Count != 8 &&
+                (OurComponent.Type == "Water" || OurComponent.Type == "Analysis"))
             {
                 Grid.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 
@@ -642,11 +643,13 @@ namespace CSUserInterface
             {
                 CurrentMetadata = Grid.SelectedCells[0].ToolTipText;
             
-                string NewMetadata = UIBits.InputDialog.InputBox("Enter metadata:", "Metadata", CurrentMetadata, false);
+                string NewMetadata = UIBits.InputDialog.InputBox("Enter metadata for selected cells:", "Metadata", CurrentMetadata, false);
                 if (NewMetadata != CurrentMetadata)
                 {
                     foreach (DataGridViewCell Cell in Grid.SelectedCells)
                         Cell.ToolTipText = NewMetadata;
+                    OnSave();
+                    OnRefresh();
                 }
             }
         }
