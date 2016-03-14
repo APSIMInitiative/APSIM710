@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------------------------
 #include <stdio.h>
 
+#include <limits>
 #include <ComponentInterface2/ScienceAPI2.h>
 using namespace std;
 

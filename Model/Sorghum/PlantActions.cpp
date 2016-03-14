@@ -231,7 +231,7 @@ void Plant::onEndCrop(void)     // Field a End crop event
       }
    else
       {
-      sprintf(msg,"                    P  (kg/ha) =                  0.00\t\t    0.00\n",0,0);
+      sprintf(msg,"                    P  (kg/ha) =                  0.00\t\t    0.00\n");
       scienceAPI.write(msg);
       }
 
