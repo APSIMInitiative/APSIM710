@@ -437,10 +437,13 @@ float InputComponent::getVariableValue(const string& name)
    Variables::iterator i = findVariable(name);
    if (i != variables.end())
    {
+      float value = i->second.asFloat(); 
       if ((name == "vp") && (i->second.getUnits() == "kPa"))
-        return i->second.asFloat() * 10.0;   // Special case - if vp is in kPa, convert to hPa
-      else 
-        return i->second.asFloat();
+        return value * 10.0;   // Special case - if vp is in kPa, convert to hPa
+      else if ((ToLower(name) == "radn" || ToLower(name) == "rain") && value < 0)
+         error("Cannot have a negative value for " + name, true);
+
+      return value;
    }
    else
       return 0.0;

@@ -1,7 +1,7 @@
 module Soiln2Module
    use DataTypes
    use infrastructure
-
+     
 ! ====================================================================
 !      SoilN variables
 ! ====================================================================
@@ -632,10 +632,11 @@ subroutine soiln2_read_param ()
             call fatal_error (err_internal, 'External AMP with default TAV not permitted.')
          endif
       endif
-
+ 
    endif
 
    call read_real_var (section_name, 'root_cn', '()', g%root_cn, numvals, 0.0, 500.0)
+   call lbound_check_real_var_error(g%root_cn, 0.0, 'root_cn')
 
 
    !dsg   Optionally read in CN ratio in each of the fractions
@@ -650,6 +651,7 @@ subroutine soiln2_read_param ()
 
 
    call read_real_var (section_name, 'root_wt', '(kg/ha)', g%root_wt, numvals, 0.0, 100000.0)
+   call lbound_check_real_var_error(g%root_wt, 0.0, 'root_wt')
 
    call read_real_var_optional (section_name, 'root_depth', '(kg/ha)', g%root_depth, numvals, 0.0, 10000.0)
      ! dsg 180604 if 'root_depth' not provided, assume that 'root_wt' is distributed over whole profile
@@ -658,11 +660,14 @@ subroutine soiln2_read_param ()
      endif
 
    call read_real_var (section_name, 'soil_cn', '()', g%soil_cn, numvals, 5.0, 30.0)
+   call lbound_check_real_var_error(g%soil_cn, 0.0, 'soil_cn')
 
    call read_real_array (section_name, 'oc', max_layer, '(%)', g%oc, numvals, 0.01, 10.0)
+   call lbound_check_real_array_error(g%oc, 0.0, 'oc', numvals)
 
    if (.not. g%use_external_ph) then
       call read_real_array (section_name, 'ph', max_layer, '()', g%ph, numvals, 3.5, 11.0)
+      call lbound_check_real_array_error(g%ph, 0.0, 'ph', numvals)
    endif
 
    call read_real_array_error (section_name, 'fbiom', max_layer, '()', g%fr_biom_c, numvals, c%fbiom_lb, c%fbiom_ub)
@@ -671,14 +676,18 @@ subroutine soiln2_read_param ()
               section_name, 'finert', max_layer, '()', g%fr_inert_c, numvals, c%finert_lb, c%finert_ub)
 
    call read_real_array (section_name, 'no3ppm', max_layer, '(ppm)', no3, numvals, 0.0, 300.0)
+   call lbound_check_real_array_error(no3, 0.0, 'no3', numvals)
 
    call read_real_array (section_name, 'nh4ppm', max_layer, '(ppm)', nh4, numvals, 0.0, 300.0)
+   call lbound_check_real_array_error(g%nh4, 0.0, 'nh4', numvals)
 
    call read_real_array_optional (section_name, 'ureappm', max_layer, '(ppm)', ureappm, numvals, 0.0, 600.0)
 
    call read_real_var (section_name, 'enr_a_coeff', '()', c%enr_a_coeff, numvals, 1.0, 20.0)
+   call lbound_check_real_var_error(c%enr_a_coeff, 0.0, 'enr_a_coeff')
 
    call read_real_var (section_name, 'enr_b_coeff', '()', c%enr_b_coeff, numvals, 0.0, 20.0)
+   call lbound_check_real_var_error(c%enr_b_coeff, 0.0, 'enr_b_coeff')
    string = ' '
    call read_char_var (section_name, 'profile_reduction', '()', string, numvals)
 

@@ -556,6 +556,8 @@ subroutine surfom_read_param ()
       ! Read in residue weight from parameter file
       !         --------------
    call read_real_array (section_name, 'mass', max_residues, '(kg/ha)', temp_wt, numvals1, 0.0, 20000.0)
+   call lbound_check_real_array_error(temp_wt, 0.0, 'mass', numvals1)
+   
    if (g%num_surfom.ne.numvals1) then
       call fatal_error (ERR_USER,'Number of residue names and weights do not match')
    endif
@@ -564,6 +566,7 @@ subroutine surfom_read_param ()
       ! Read in 'standing_fraction' from parameter file
       !         --------------
    call read_real_array_optional (section_name, 'standing_fraction', max_residues, '()', p%standing_fraction, numvals1, 0.0, 1.0)
+   call bound_check_real_array_error(p%standing_fraction, 0.0, 1.0, 'standing_fraction', numvals1)
    if (numvals1 .eq. 0) then
       p%standing_fraction(:) = c%default_standing_fraction
    endif
@@ -571,11 +574,13 @@ subroutine surfom_read_param ()
       ! Read in Nutrient Information from parameter file
       !         --------------------
     call read_real_array (section_name, 'cnr ', max_residues, '()', temp_residue_cnr, numvals1, 0.0, 200.0)
+    call lbound_check_real_array_error(temp_residue_cnr, 0.0, 'cnr', numvals1)
     call read_real_array_optional (section_name, 'cpr ', max_residues, '()', temp_residue_cpr, numvals1, 0.0, 200.0)
     if (numvals1 .eq. 0) then
         temp_residue_cpr(:) = c%default_cpr
     else
        g%phosphorus_aware = .true.
+       call lbound_check_real_array_error(temp_residue_cpr, 0.0, 'cpr', numvals1)
     endif
 
 

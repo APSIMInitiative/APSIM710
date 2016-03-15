@@ -495,6 +495,53 @@
       return
       end subroutine
 
+  ! ===========================================================
+      subroutine lbound_check_real_var_error (value, lower, vname)
+   ! ===========================================================
+      use ConstantsModule
+      use ErrorModule
+      implicit none
+
+   !+ Sub-Program Arguments
+      real       lower                 ! (INPUT) lower limit of value
+      real       value                 ! (INPUT) value to be validated
+      character  vname *(*)            ! (INPUT) variable name to be validated
+
+   !+ Purpose
+   !     checks if a variable lies below a lower bound.
+   !     Reports a fatal err if it does.
+
+   !+ Local Variables
+      character  e_messg*400           ! err message
+      real       margin_lower          ! margin for precision err of lower
+      real       margin_upper          ! margin for precision err of upper
+      real       margin_val            ! margin for precision err of value
+
+   !- Implementation Section ----------------------------------
+
+      ! calculate a margin for precision err of lower.
+      margin_lower = error_margin (lower)
+
+      ! calculate a margin for precision err of value.
+      margin_val = error_margin (value)
+
+      if (value + margin_val.lt.lower - margin_lower) then
+         e_messg = blank
+         write (e_messg, '(2a, g16.7e2, 2a, g16.7e2)')        &
+                           trim(vname)                        &
+                         , ' = '                              &
+                         , value                              &
+                         , new_line                           &
+                         ,'        less than lower limit of'  &
+                         , lower
+         call fatal_error (ERR_User, e_messg)
+
+      else
+            ! all ok!
+      endif
+
+      return
+      end subroutine      
 
    ! ================================================================
       subroutine bound_check_real_array &
@@ -619,6 +666,38 @@
       return
       end subroutine
 
+   ! ================================================================
+      subroutine lbound_check_real_array_error &
+         (array, lower_bound, array_name, array_size)
+   ! ================================================================
+      use ErrorModule
+      implicit none
+
+   !+ Sub-Program Arguments
+      real       array(*)              ! (INPUT) array to be checked
+      character  array_name*(*)        ! (INPUT) key string of array
+      integer    array_size            ! (INPUT) array size_of
+      real       lower_bound           ! (INPUT) lower bound of values
+
+   !+ Purpose
+   !     check lower bounds of values in an array
+
+   !+ Local Variables
+      integer    indx                  ! array index
+
+   !- Implementation Section ----------------------------------
+
+
+      if (array_size.ge.1) then
+
+         do 1000 indx = 1, array_size
+            call lbound_check_real_var_error (array(indx), lower_bound, &
+                 array_name)
+ 1000    continue
+      endif
+
+      return
+      end subroutine
 
    ! ===========================================================
       subroutine bound_check_integer_var (value, lower, upper, vname)

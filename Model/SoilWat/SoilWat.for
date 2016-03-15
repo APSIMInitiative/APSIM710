@@ -2966,37 +2966,45 @@ cjh
      :                   , 'diffus_const', '()'
      :                   , p%diffus_const, numvals
      :                   , 0.0, 1000.0)
+      call lbound_check_real_var_error(p%diffus_const, 0.0
+     :                   , 'diffus_const')
 
       call read_real_var (section_name
      :                   , 'diffus_slope', '()'
      :                   , p%diffus_slope, numvals
      :                   , 0.0, 100.0)
+      call lbound_check_real_var_error(p%diffus_slope, 0.0
+     :                   , 'diffus_slope')
 
       call read_real_var (section_name
      :                   , 'cn2_bare', '()'
      :                   , p%cn2_bare, numvals
      :                   , 1.0, 100.0)
+      call lbound_check_real_var_error(p%cn2_bare, 1.0, 'cn2_bare')
 
       call read_real_var (section_name
      :                   , 'cn_red', '()'
      :                   , p%cn_red, numvals
      :                   , 0.0, p%cn2_bare - 0.00009)
+      call lbound_check_real_var_error(p%cn_red, 0.0, 'cn_red')
 
       call read_real_var (section_name
      :                   , 'cn_cov', '()'
      :                   , p%cn_cov, numvals
      :                   , 0.0, 1.0)
+      call lbound_check_real_var_error(p%cn_cov, 0.0, 'cn_cov')
 
       call read_real_var_optional (section_name
      :                   , 'max_pond', '()'
      :                   , p%max_pond, numvals
      :                   , 0.0, 1000.0)
-
+      call lbound_check_real_var_error(p%max_pond, 0.0, 'max_pond')
 
       call read_real_var (section_name
      :                   , 'salb', '()'
      :                   , p%salb, numvals
      :                   , 0.0001, 1.0)
+      call lbound_check_real_var_error(p%salb, 0.0, 'salb')
 
 *     Extra parameters for evaporation models:
       if (c%evap_method .eq. ritchie_method) then
@@ -3004,6 +3012,7 @@ cjh
      :        , 'u', '()'
      :        , p%u, numvals
      :        , 0.0001, 40.0)
+     
          if (numvals.le.0) then
             call read_real_var_optional (section_name
      :        , 'summeru', '()'
@@ -3226,41 +3235,51 @@ cjh
      :                     , 'dlayer', max_layer, '(mm)'
      :                     , p%dlayer, numvals
      :                     , 0.0, 10000.0)
+      call lbound_check_real_array_error(p%dlayer, 0.0, 'dlayer' 
+     :                     , numvals)
 
       call read_real_array (section_name
      :                     , 'sat', max_layer, '()'
      :                     , sat, numvals
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(sat, 0.0, 'sat', numvals)
 
       call read_real_array (section_name
      :                     , 'dul', max_layer, '()'
      :                     , dul, numvals
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(dul, 0.0, 'dul', numvals)
 
       call read_real_array_optional (section_name
      :                     , 'sw', max_layer, '()'
      :                     , sw, g%numvals_sw
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(sw, 0.0, 'sw', g%numvals_sw)
 
       call read_real_array (section_name
      :                     , 'll15', max_layer, '()'
      :                     , ll15, numvals
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(ll15, 0.0, 'll15', numvals)
 
       call read_real_array (section_name
      :                     , 'air_dry', max_layer, '()'
      :                     , air_dry, numvals
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(air_dry, 0.0, 'air_dry'
+     :                     , numvals)
 
       call read_real_array (section_name
      :                     , 'swcon', max_layer, '()'
      :                     , p%swcon, numvals
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(p%swcon, 0.0, 'swcon', numvals)
 
       call read_real_array_optional (section_name
      :                     , 'mwcon', max_layer, '()'
      :                     , p%mwcon, numvals
      :                     , 0.0, 1.0)
+      call lbound_check_real_array_error(p%mwcon, 0.0, 'mwcon', numvals)
 
 c dsg - if there is no impermeable layer specified, then mwcon must
 c       be set to '1' in all layers by default
@@ -3288,6 +3307,7 @@ c       be set to '1' in all layers by default
      :                     , 'bd', max_layer, '(g/cc)'
      :                     , g%bd, numvals
      :                     , 0.01, 3.0)
+      call lbound_check_real_array_error(g%bd, 0.0, 'bd', numvals)
 
       num_layers = count_of_real_vals (p%dlayer, max_layer)
       do 1010 layer = 1,num_layers
