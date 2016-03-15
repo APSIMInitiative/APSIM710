@@ -584,5 +584,35 @@ namespace CSGeneral
             return Options;
         }
 
+		  /// <summary>
+          /// Helper to return the real name of the file on disk (readlink() equivalent) - preserves
+          /// upper/lower case
+          /// </summary>
+          public static string[] realNamesOfFiles(string filename)
+          {
+              string[] Files = null;
+              if (Directory.Exists(filename))  // we've been given a directory name, not a file name; find everything in it.
+              {
+                  List<string> fileList = new List<string>();
+                  Utility.FindFiles(filename, "*", ref fileList);
+                  Files = fileList.ToArray();
+              }
+              else
+              {
+                  string dirName = Path.GetDirectoryName(filename);
+                  if (String.IsNullOrEmpty(dirName))
+                      dirName = Directory.GetCurrentDirectory();
+                  if (Directory.Exists(dirName))
+                  {
+                      List<string> fileList = new List<string>();
+                      Utility.FindFiles(dirName, Path.GetFileName(filename), ref fileList);
+                      Files = fileList.ToArray();
+                  }
+              }
+         if (Files != null)
+             for (int i = 0; i < Files.Length; ++i)
+                  Files[i] = Path.GetFullPath(Files[i].Replace("\"", ""));
+         return Files; // probably undefined 
+         }
     }
 }
