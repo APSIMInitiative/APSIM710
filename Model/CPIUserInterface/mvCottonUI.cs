@@ -5,11 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Xml;
+using System.Windows.Forms;
 
 using ApsimFile;
+using CMPServices;
 using Controllers;
 using CSGeneral;
-using CMPServices;
 
 namespace CPIUserInterface
 {
@@ -34,6 +35,55 @@ namespace CPIUserInterface
         {
             InitializeComponent();
             typedvals = new List<TTypedValue>();
+
+            this.afTreeViewColumns1.reloadTreeEvent += new AFTreeViewColumns.reloadTree(afTreeViewColumns1_reloadTreeEvent);
+            this.afTreeViewColumns1.saveChangesEvent += new AFTreeViewColumns.onDataChange(afTreeViewColumns1_saveChangesEvent);
+
+            ListView.ColumnHeaderCollection lvColumns = afTreeViewColumns1.Columns;
+
+            lvColumns.Clear();
+
+            ColumnHeader ch1 = new ColumnHeader();
+            ch1.Name = "Variable";
+            ch1.Text = "Variable";
+            ch1.Width = 150;
+            lvColumns.Add(ch1);
+
+            ColumnHeader ch2 = new ColumnHeader();
+            ch2.Name = "Value";
+            ch2.Text = "Value";
+            ch2.Width = 150;
+            lvColumns.Add(ch2);
+
+            ColumnHeader ch3 = new ColumnHeader();
+            ch3.Name = "Type";
+            ch3.Text = "Type";
+            ch3.Width = 50;
+            lvColumns.Add(ch3);
+
+            ColumnHeader ch4 = new ColumnHeader();
+            ch4.Name = "Unit";
+            ch4.Text = "Unit";
+            ch4.Width = 50;
+            lvColumns.Add(ch4);
+
+            ColumnHeader ch5 = new ColumnHeader();
+            ch5.Name = "default";
+            ch5.Text = "default";
+            ch5.Width = 50;
+            lvColumns.Add(ch5);
+
+            ColumnHeader ch6 = new ColumnHeader();
+            ch6.Name = "min";
+            ch6.Text = "min";
+            ch6.Width = 50;
+            lvColumns.Add(ch6);
+
+            ColumnHeader ch7 = new ColumnHeader();
+            ch7.Name = "max";
+            ch7.Text = "max";
+            ch7.Width = 50;
+            lvColumns.Add(ch7);
         }
         //=====================================================================
         /// <summary>
@@ -42,7 +92,19 @@ namespace CPIUserInterface
         //=====================================================================
         protected override void OnLoad()
         {
+            panel1.Visible = true;
+            panel2.Visible = false;
+
+            base.OnLoad();
+
             base.HelpText = " Cotton component";
+            
+            //find the full path to the dll for the component (normally use InitFromComponentDescription() )
+            String ComponentType = Controller.ApsimData.Find(NodePath).Type;
+            List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
+            FDllFileName = DllFileNames[0];
+            FDllFileName = Configuration.RemoveMacros(FDllFileName);
+
             InitFromComponentDescription(); //fills the propertyList with init properties
         }
         //=====================================================================
@@ -61,7 +123,7 @@ namespace CPIUserInterface
         public override void OnRefresh()
         {
             label1.Text = XmlHelper.Type(Data);
-            this.HelpText = "This module does not have any editable properties.";
+            SetHelpMsg();
 
             String imagefile = Types.Instance.MetaData(Data.Name, "image");
             if (File.Exists(imagefile))
@@ -79,13 +141,161 @@ namespace CPIUserInterface
 
             if (initSection != null)
             {
-                TInitParser initPsr = new TInitParser(initSection.OuterXml);
+                InitFromInitSection(initSection.OuterXml);
+            }
+
+        }
+        //=======================================================================
+        /// <summary>
+        /// Initialise the lists of properties with values from the init section
+        /// SDML. And reload the tree with the values.
+        /// </summary>
+        /// <param name="initXML">The init section which is <code><initsection>...</initsection></code></param>
+        //=======================================================================
+        private Boolean InitFromInitSection(String initXML)
+        {
+            if (initXML.Length > 0)
+            {
+                typedvals.Clear();
+                TInitParser initPsr = new TInitParser(initXML);
 
                 for (int i = 1; i <= initPsr.initCount(); i++)
                 {
                     String initText = initPsr.initText((uint)i);
                     TSDMLValue sdmlinit = new TSDMLValue(initText, "");
                     typedvals.Add(sdmlinit);
+                }
+            }
+            //if the component description is valid then use it.
+            if (propertyList.Count > 0)
+            {
+                foreach (TTypedValue value in typedvals)    //for every init section value
+                {
+                    //find the property in the component description list
+                    int i = 0;
+                    TCompProperty prop = propertyList[i];
+                    while ((prop != null) && (i < propertyList.Count))
+                    {
+                        if (value.Name.ToLower() == prop.Name.ToLower())
+                        {
+                            prop.InitValue.setValue(value); //set the property's value
+                        }
+                        i++;
+                        if (i < propertyList.Count)
+                            prop = propertyList[i];
+                    }
+                }
+            }
+            if (propertyList.Count > 0)
+                populateTreeModel(propertyList);            //can populate with the full list
+            else
+                populateTreeModel();                        //use init section only
+
+            return (initXML.Length > 0) || (propertyList.Count > 0);
+        }
+        //=======================================================================
+        /// <summary>
+        /// Populate the tree based on the list of typed values found only in
+        /// the init section for the component.
+        /// </summary>
+        private void populateTreeModel()
+        {
+            afTreeViewColumns1.SuspendLayout();
+            afTreeViewColumns1.TreeView.BeginUpdate();
+            afTreeViewColumns1.TreeView.Nodes.Clear();
+
+            foreach (TTypedValue prop in typedvals)
+            {
+                if (makePropertyVisible(prop.Name) == true)
+                {
+                    TreeNode trNode2 = new TreeNode();
+                    afTreeViewColumns1.TreeView.Nodes.Add(trNode2);
+                    addTreeModelNode(trNode2, prop.Name, prop);
+                }
+            }
+            afTreeViewColumns1.TreeView.EndUpdate();
+            afTreeViewColumns1.ResumeLayout();
+        }
+        //=======================================================================
+        /// <summary>
+        /// CPI components also include some properties that may not need to be shown to the user.
+        /// </summary>
+        /// <param name="propName">Name of the property</param>
+        /// <returns>True if the property should be shown.</returns>
+        //=======================================================================
+        private Boolean makePropertyVisible(String propName)
+        {
+            Boolean bPropVisible = true;
+            //check if this variable should be hidden
+            if ((propName == STRSUBEVENT_ARRAY))
+                bPropVisible = false;
+            if ((propName == STRPUBEVENT_ARRAY))
+                bPropVisible = false;
+            if ((propName == STRDRIVER_ARRAY))
+                bPropVisible = false;
+
+            return bPropVisible;
+        }
+        //=======================================================================
+        /// <summary>
+        /// Populate the tree based on the TCompProperty list gained from the
+        /// component description.
+        /// </summary>
+        private void populateTreeModel(List<TCompProperty> compProperties)
+        {
+            afTreeViewColumns1.SuspendLayout();
+            afTreeViewColumns1.TreeView.BeginUpdate();
+            afTreeViewColumns1.TreeView.Nodes.Clear();
+
+            TCompProperty prop;
+            for (int i = 0; i <= compProperties.Count - 1; i++)
+            {
+                prop = compProperties[i];
+                if (prop.bInit == true)
+                {
+                    if (makePropertyVisible(prop.Name) == true)
+                    {
+                        TreeNode trNode2 = new TreeNode();
+                        afTreeViewColumns1.TreeView.Nodes.Add(trNode2);
+                        addTreeModelNode(trNode2, prop.InitValue.Name, prop.InitValue);
+                    }
+                }
+            }
+            afTreeViewColumns1.TreeView.EndUpdate();
+            afTreeViewColumns1.ResumeLayout();
+        }
+        //=======================================================================
+        private void addTreeModelNode(TreeNode parentNode, String name, TTypedValue typedValue)
+        {
+            uint i = 1;
+            uint j = 1;
+
+            parentNode.Name = name;
+            parentNode.Text = name;
+            parentNode.Tag = new TAFTreeViewColumnTag(typedValue);
+
+            if ((typedValue.isArray()) || (typedValue.isRecord()))
+            {
+                uint iCount = typedValue.count();
+                while (i <= iCount)
+                {
+                    TTypedValue typedValueChild = typedValue.item(i);
+
+                    if (typedValueChild != null)
+                    {
+                        TreeNode trNode2 = new TreeNode();
+                        parentNode.Nodes.Add(trNode2);
+                        string sVarName = j.ToString();
+                        if (typedValue.isArray())
+                            sVarName = "[" + sVarName + "]";
+                        j++;
+                        if (typedValueChild.Name.Length > 0)
+                        {
+                            sVarName = typedValueChild.Name;
+                        }
+                        addTreeModelNode(trNode2, sVarName, typedValueChild);
+                    }
+                    i++;
                 }
             }
         }
@@ -212,5 +422,48 @@ namespace CPIUserInterface
             return writer.getText(CultivarValues, 0, 2);
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            panel2.Visible = true;
+            panel1.Visible = false;
+            SetHelpMsg();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            panel1.Visible = true;
+            panel2.Visible = false;
+            SetHelpMsg();
+        }
+        private void SetHelpMsg()
+        {
+            if (panel1.Visible == true)
+                this.HelpText = "This module does not require editing of it's properties.";
+            else
+                this.HelpText = "Edit these values with care.";
+        }
+        //=======================================================================
+        private void afTreeViewColumns1_saveChangesEvent()
+        {
+            this.afTreeViewColumns1.Focus();
+        }
+        //=======================================================================
+        /// <summary>
+        /// Called from the tree when arrays are resized.
+        /// Using the selected node, just recreate it's child nodes.
+        /// </summary>
+        //=======================================================================
+        private void afTreeViewColumns1_reloadTreeEvent()
+        {
+            if (afTreeViewColumns1.TreeView.SelectedNode != null)
+            {
+                TAFTreeViewColumnTag changedValue = (TAFTreeViewColumnTag)afTreeViewColumns1.TreeView.SelectedNode.Tag;
+                afTreeViewColumns1.TreeView.BeginUpdate();
+                afTreeViewColumns1.TreeView.SelectedNode.Nodes.Clear();
+                addTreeModelNode(afTreeViewColumns1.TreeView.SelectedNode, changedValue.TypedValue.Name, changedValue.TypedValue);
+                afTreeViewColumns1.TreeView.SelectedNode.Expand();
+                afTreeViewColumns1.TreeView.EndUpdate();
+            }
+        }
     }
 }
