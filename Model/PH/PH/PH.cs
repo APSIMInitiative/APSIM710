@@ -13,7 +13,7 @@ public class PHmodel
     public double NH4ph;
     [Output]
     public double H2S;
-    [Output]
+    [Input]
     public double CO2;
     [Output]
     public double FG;

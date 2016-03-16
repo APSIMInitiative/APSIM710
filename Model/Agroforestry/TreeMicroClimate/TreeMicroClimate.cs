@@ -64,9 +64,13 @@ public class TreeMicroClimate
         }
     }
 
+    [Output]
+    public double co2 { get; set; }
+
     [EventHandler]
     public void OnInitialised()
     {
+        co2 = 350;
         inputFile.Open(inputFilename);
         MaxTIndex = StringManip.IndexOfCaseInsensitive(inputFile.Headings, "Maxt");
         MinTIndex = StringManip.IndexOfCaseInsensitive(inputFile.Headings, "Mint");

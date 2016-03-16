@@ -43,7 +43,6 @@ class Environment : public plantThing
                                                         // lies. (0-1)
       string vpSource;                                  // if "apsim", use external vp value to calculate vpd 
       float _co2;
-      float co2_default;
       float twilight; 					 // (PFR)
       float _rootActivityTemperature;                     // Soil temperature at the active zone of roots (PFR)
       interpolationFunction DiffuseLightFactorTable;    // (PFR)

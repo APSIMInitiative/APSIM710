@@ -657,7 +657,7 @@ public class AgPasture
     // -----------------------------------------------------------------------------
 
     /// <summary>CO2 in atmosphere</summary>
-    [Input(IsOptional = true)] [Description("Actual CO2, updated from met and ClimateControl")] [Units("")] public
+    [Input] [Description("Actual CO2, updated from met and ClimateControl")] [Units("")] public
         double co2 = 380;
 
     /// <summary>

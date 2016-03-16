@@ -39,8 +39,6 @@ void Co2Modifier::zero_co2_variables (void)
 //     ===========================================================
 void Co2Modifier::read_co2_constants (void)
 {
-    scienceAPI.read("co2_default", co2_default, 0.0f, 1000.0f);
-
     cTE.readOptional(scienceAPI, "x_co2_te_modifier", "()", 0.0, 1000.0,
                          "y_co2_te_modifier", "()", 0.0, 10.0);
 

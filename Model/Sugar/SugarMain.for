@@ -2602,22 +2602,24 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       call push_routine (my_name)
 
       !sv- CO2 changes the RUE & Transpiration Efficiency
-        call get_real_var_optional (unknown_module, 'co2', '(ppm)'
+        call get_real_var (unknown_module, 'co2', '(ppm)'
      :                                  , g%co2, g%co2_exists
      :                                  , 0.0, 10000.0)
 
       !if  co2 manager is plugged into the simulation and there is no co2 response specified in the ini file
-      if  ((g%co2_exists.ne.0)
-     :     .and. (c%transp_eff_cf_fact_numvals.eq.0)) then
-           call fatal_error (ERR_USER, 
-     : 'co2 detected -> add x_co2 and y_trans_eff_cf_fact to ini file')
-      endif     
-      if  ((g%co2_exists.ne.0)
-     :     .and. (c%rue_co2_fact_numvals.eq.0)) then
-           call fatal_error (ERR_USER, 
+      if  (g%co2 .ne. 350) then
+         g%co2_exists = 1
+         if (c%transp_eff_cf_fact_numvals.eq.0) then
+            call fatal_error (ERR_USER, 
+     :' co2 detected -> add x_co2 and y_trans_eff_cf_fact to ini file')
+         endif
+         if (c%rue_co2_fact_numvals.eq.0) then
+            call fatal_error (ERR_USER, 
      : 'co2 detected -> add x2_co2 and y_rue_co2_fact to ini file')
-      endif      
-
+         endif      
+      else
+         g%co2_exists = 0
+      endif     
       
       !sv- Hourly Met values from "C# Manager" module (if it exists)
       !    ------------------------------------------

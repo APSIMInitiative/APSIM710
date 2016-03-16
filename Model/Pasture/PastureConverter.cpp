@@ -73,6 +73,7 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
       // get
    maxtID =       addRegistration(::get, 0, "maxt", singleTypeDDML);
    mintID =       addRegistration(::get, 0, "mint", singleTypeDDML);
+   co2ID =       addRegistration(::get, 0, "co2", singleTypeDDML);
 
    /* We want to direct these events to ONLY our associated AusFarm pasture component, so delay registration until init2
       // event
@@ -403,12 +404,10 @@ void PastureConverter::readParameters ( void )
    cDebug = readParameter (section_name, "debug");
    readParameter (section_name, "sand",      pSandLayer, 0.0, 1.0);
    readParameter (section_name, "svp_fract", cSVPFract, 0.0, 1.0);
-   readParameter (section_name, "co2_ppm",   cCO2ppm, 0.0, 1000.0);
 
    ostringstream msg;
    msg << "debug = " << cDebug << endl;
    msg << "svp_fract = " << cSVPFract << endl;
-   msg << "co2_ppm = " << cCO2ppm << endl;
    msg << "sand (kg/kg) = ";
    for (unsigned int layer = 0; layer < pSandLayer.size(); layer++)
       msg << pSandLayer[layer] << " ";
@@ -452,7 +451,9 @@ void PastureConverter::sendVPD (protocol::QueryValueData& queryData)
 void PastureConverter::sendCO2 (protocol::QueryValueData& queryData)
 //==========================================================================
 {
-    sendVariable(queryData, cCO2ppm);
+    float co2;
+    getVariable(co2ID, co2, 300.0f, 1000.0f);
+    sendVariable(queryData, co2);
 }
 
 float PastureConverter::vpd(float cSVPFract, float maxt, float mint) //(INPUT)

@@ -1413,18 +1413,6 @@ c     :                    , 0.0, 100.0)
      :                     , c%y_swdef_pheno, c%num_sw_avail_ratio
      :                     , 0.0, 100.0)
 
-      call read_real_var_optional (section_name
-     :                    , 'co2level', '(ppm)'
-     :                    , c%co2level, numvals
-     :                    , 0.0, 1000.0)
-
-      if (numvals .eq. 0) then
-         c%co2switch = 0
-         c%co2level = 350.0
-      else
-         c%co2switch = 1
-      end if
-
       call read_real_array_optional (section_name
      :                   , 'co2_level_te', max_table, '(ppm)'
      :                   , c%co2_level_te, c%num_co2_level_te

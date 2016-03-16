@@ -39,7 +39,7 @@ class EXPORT StringVariant
       std::string getUnits(void);
       void setTemporalValue(Value* value);
       void setValue(string newVal);
-
+      
    private:
       protocol::Component* parent;
       Value* value;

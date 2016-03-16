@@ -64,6 +64,7 @@ class PastureConverter : public protocol::Component
       unsigned co2ppmID;
       unsigned maxtID;
       unsigned mintID;
+      unsigned co2ID;
       unsigned fomAddedID;
       unsigned incorpFOMID;
 
@@ -84,7 +85,6 @@ class PastureConverter : public protocol::Component
       vector <float> pSandLayer;
 
       float cSVPFract;
-      float cCO2ppm;
 
    PastureUptake *SW;
    PastureUptake *NO3;

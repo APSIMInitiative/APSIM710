@@ -2452,20 +2452,7 @@ c      end if
 
 
 
-      if (variable_name .eq. 'co2_switch') then
-         call collect_integer_var (variable_name, '()'
-     :                             , c%co2switch, numvals
-     :                             , 0, 1)
-
-      elseif (variable_name .eq. 'co2_level') then
-         call collect_real_var (variable_name, '()'
-     :                             , c%co2level, numvals
-     :                             , 0.0, 2000.0)
-
-c         g%co2level = c%co2level
-
-
-      elseif (variable_name .eq. 'vern_sens') then
+      if (variable_name .eq. 'vern_sens') then
          call collect_real_var (variable_name, '()'
      :                             , p%vern_sen, numvals
      :                             , 0.0, 2000.0)
@@ -2629,15 +2616,11 @@ c         g%co2level = c%co2level
 
       !-------------------------------------------------------------------
       ! Co2 and climate change
-       CALL get_real_var_optional(unknown_module, 'co2', '(ppm)',
-     :                                            g%co2level, numvals,
-     :                                            0.0, 1000.0)
+       CALL get_real_var(unknown_module, 'co2', '(ppm)',
+     :                                g%co2level, numvals,
+     :                                0.0, 1000.0)
 
-	  if (c%co2switch .ne. 0 .and. numvals .eq. 0) then
-	      g%co2level = c%co2level
-      end if
-	  if (c%co2switch .ne. 0 .and.
-     :    abs(g%co2level - c%co2level) .gt. 0.1 .and.
+       if (abs(g%co2level - c%co2level) .gt. 0.1 .and.
      :    c%num_co2_level_te .eq. 0) then
          write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level,
      :                       ' ppm is not the default ', c%co2level,
@@ -2646,8 +2629,7 @@ c         g%co2level = c%co2level
          call fatal_error(err_user, msg)
       end if
 
-      if (c%co2switch .ne. 0 .and.
-     :    abs(g%co2level - c%co2level) .gt. 0.1 .and.
+      if (abs(g%co2level - c%co2level) .gt. 0.1 .and.
      :    c%num_co2_level_nconc .eq. 0) then
          write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level,
      :                       ' ppm is not the default ', c%co2level,
@@ -4399,8 +4381,7 @@ c         if (istage.lt.emerg) then
 
 
 
-      if (c%co2switch .ne. 0 .and.
-     :    c%num_co2_level_nconc .gt. 0) then
+      if (c%num_co2_level_nconc .gt. 0) then
 
 
          co2_modifier = linear_interp_real(g%co2level,
@@ -5875,7 +5856,6 @@ c      g%dlt_n_uptake_stover=0.0
 
 
       !co2 level
-      c%co2switch  = 0
       c%co2level   = 350.0
 
       call fill_real_array(c%co2_level_te,       0.0, max_stage)
@@ -6614,15 +6594,6 @@ c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c       VARIABLES ADDED FOR CLIMATE CHANGE
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-      call read_real_var_optional (section_name
-     :                    , 'co2level', '(ppm)'
-     :                    , c%co2level, numvals
-     :                    , 0.0, 1000.0)
-
-
-      if (numvals .eq. 0) then
-         c%co2switch = 0
          call read_real_array_optional (section_name
      :                   , 'co2_level_te', max_table, '(ppm)'
      :                   , c%co2_level_te, c%num_co2_level_te
@@ -6643,30 +6614,6 @@ c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      :                   , 'nconc_co2_modifier', max_table, '()'
      :                   , c%nconc_co2_modifier, c%num_co2_level_nconc
      :                   , 0.0, 10.0)
-      else
-         c%co2switch = 1
-         call read_real_array (section_name
-     :                   , 'co2_level_te', max_table, '(ppm)'
-     :                   , c%co2_level_te, c%num_co2_level_te
-     :                   , 0.0, 1000.0)
-
-         call read_real_array (section_name
-     :                   , 'te_co2_modifier', max_table, '()'
-     :                   , c%te_co2_modifier, c%num_co2_level_te
-     :                   , 0.0, 10.0)
-
-
-         call read_real_array (section_name
-     :                   , 'co2_level_nconc', max_table, '(ppm)'
-     :                   , c%co2_level_nconc, c%num_co2_level_nconc
-     :                   , 0.0, 1000.0)
-
-         call read_real_array (section_name
-     :                   , 'nconc_co2_modifier', max_table, '()'
-     :                   , c%nconc_co2_modifier, c%num_co2_level_nconc
-     :                   , 0.0, 10.0)
-      end if
-
 
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c       CROP PHENOLOGY: DEVELOPMENT PARAMETERS

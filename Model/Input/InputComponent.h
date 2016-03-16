@@ -36,6 +36,9 @@ class EXPORT InputComponent : public protocol::Component
       unsigned haveReadTodaysDataID;
       unsigned vpID;
       unsigned metDataID;
+      unsigned co2ID;
+      float co2Default;
+
       protocol::NewMetType MetData;
       
       GDate gTodaysDate;
@@ -59,6 +62,7 @@ class EXPORT InputComponent : public protocol::Component
    private:
       unsigned getDataMethodID;
       unsigned returnDataMethodID;
+      Value co2Value; 
 
    };
 #endif

@@ -24,6 +24,8 @@ static const char* dayLengthType =
    "<type kind=\"double\" unit=\"h\"/>";
 static const char* vpType =
    "<type kind=\"single\" unit=\"hPa\"/>";
+static const char* co2Type =
+   "<type kind=\"single\" unit=\"ppm\"/>";
 static const char* startDateType =
    "<type kind=\"integer4\" unit=\"julian days\"/>";
 static const char* endDateType =
@@ -95,6 +97,7 @@ InputComponent::InputComponent(void)
    : gTodaysDate(infin), gFileDate(infin),
      gStartDate(infin), gEndDate(infin)
    {
+       co2Default = 350;
    }
 
 // ------------------------------------------------------------------
@@ -159,6 +162,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
           addRegistration(::respondToGetSet, 0, "Radn", singleType);       
           addRegistration(::respondToGetSet, 0, "Rain", singleType); 
           addRegistration(::respondToGetSet, 0, "vp", singleType); 
+          addRegistration(::respondToGetSet, 0, "CO2", singleType); 
           addRegistration(::respondToGet, 0, "Latitude", singleType);
           addRegistration(::respondToGet, 0, "tav", singleType);
           addRegistration(::respondToGet, 0, "amp", singleType);
@@ -230,6 +234,17 @@ void InputComponent::registerAllVariables(void)
            addVariable(*i, true);
        for (ApsimDataFile::iterator i = data.fieldsBegin(); i != data.fieldsEnd(); i++)
            addVariable(*i, false);
+       
+       // Register a CO2 variable if necessary.
+       if (iAmMet && findVariable("CO2") == variables.end())
+       {
+           co2Value.name = "CO2";
+           co2Value.units = "ppm";
+           co2Value.values.push_back(ftoa(co2Default, 2));
+           addVariable(co2Value, true);
+       }
+       else
+           co2Default = getVariableValue("CO2");
    }
 // ------------------------------------------------------------------
 // Check to see if we need to handle sparse data or not.
@@ -257,6 +272,11 @@ GDate InputComponent::advanceToTodaysData(void)
       {
            variables[vpID].setValue("0.0");
       }
+      
+      // Special handling to set co2 to default, in case it was set externally yesterday.
+      if (iAmMet)
+          findVariable("CO2")->second.setValue(ftoa(co2Default, 2));
+
       while (!data.eof() && data.getDate() < gTodaysDate)
          data.next();
       if (data.eof())

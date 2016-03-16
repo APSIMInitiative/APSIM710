@@ -21,7 +21,6 @@ Environment::Environment(ScienceAPI& api, const std::string& name)
    NewMet.vp = 0.0;
 
    scienceAPI.read("svp_fract", svp_fract, 0.0f, 1.0f);
-   scienceAPI.read("co2_default", co2_default, 0.0f, 1000.0f);
    scienceAPI.read("twilight", twilight, -90.0f, 90.0f);  			// originally was in RUEModel(PFR)
    scienceAPI.readOptional("vp_source", vpSource);
    To_lower(vpSource);
@@ -47,8 +46,7 @@ void Environment::OnTick(protocol::TimeType &Tick)
    if (latitude == 0.0)
       scienceAPI.get("latitude", "deg", latitude, -90., 90.);
 
-   if (!scienceAPI.getOptional("co2", "mg/kg", _co2, 0.0, 1500.0))
-      _co2 = co2_default;
+   scienceAPI.get("co2", "mg/kg", _co2, 0.0, 1500.0);
    }
 void Environment::process (void)
 //=======================================================================================

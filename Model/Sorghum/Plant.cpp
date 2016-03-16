@@ -249,11 +249,10 @@ void Plant::onSowCrop(SowType &sow)
 //------------------------------------------------------------------------------------------------
 void Plant::prepare (void)
    {
-   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
-       co2 = 350.0;
-   else 
-       if (fabs(co2 - 350.0) > 0.1 && co2_te_modifier.x.size() == 0) 
-	       throw std::runtime_error("CO2 is not 350ppm and there is no CO2xTE parameterisation");
+   scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f);
+   
+   if (fabs(co2 - 350.0) > 0.1 && co2_te_modifier.x.size() == 0) 
+       throw std::runtime_error("CO2 is not 350ppm and there is no CO2xTE parameterisation");
 		   
    tempStress = tempStressTable.value(today.avgT);
 
