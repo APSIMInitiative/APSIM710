@@ -275,7 +275,9 @@ namespace ApsimFile
 			PBSWriter.WriteLine ("######  Select resources #####");
 			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
 			PBSWriter.WriteLine ("#PBS -N $jobname");
-			PBSWriter.WriteLine ("#PBS -l nodes=1:intel");
+			PBSWriter.WriteLine ("#PBS -l amd");
+			PBSWriter.WriteLine ("#PBS -l nodes=1");
+			PBSWriter.WriteLine ("#PBS -l ppn=8");
 			PBSWriter.WriteLine ("#PBS -l mem=20Gb");
 			PBSWriter.WriteLine ("#PBS -l vmem=20Gb");
 			PBSWriter.WriteLine ("#PBS -l walltime=1:00:00");
@@ -296,16 +298,17 @@ namespace ApsimFile
 			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
 			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
 			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
+			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=\\$PBS_NUM_PPN");
 
  			PBSWriter.WriteLine ("# get the job specific datafiles");
 
 			PBSWriter.WriteLine (" IFS=','");
 			PBSWriter.WriteLine ("  for x in \\$inputfiles ; do cp \"\\$srcdir/\\$x\" ./ ; done");
 			PBSWriter.WriteLine (" unset IFS");
-			PBSWriter.WriteLine (" chmod +x $command");
-			PBSWriter.WriteLine (" echo > .mark");
+			PBSWriter.WriteLine (" chmod +x $command; touch $command");
 			PBSWriter.WriteLine (" ./$command");
-			PBSWriter.WriteLine (" tar cfz \\$srcdir/$jobname.output.tar.gz -N .mark .");
+			PBSWriter.WriteLine (" rm -rf \\$TMPDIR/mono \\$TMPDIR/Temp");
+			PBSWriter.WriteLine (" tar cfz \\$srcdir/$jobname.output.tar.gz --newer=$command --no-recursion .");
 			PBSWriter.WriteLine ("EOF");
 			PBSWriter.WriteLine ("done <<XXX__ABC");
 
