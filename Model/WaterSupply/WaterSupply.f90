@@ -1076,11 +1076,13 @@ end subroutine
 
 
 !  ===========================================================
-subroutine WaterSupply_ONtop_up ()
+subroutine WaterSupply_ONtop_up (variant)
 !  ===========================================================
 
    implicit none
 
+   integer, intent(in) :: variant
+   
 !+ Purpose
 !  Respond to 'top_up' request from manager by sending out a gimme_water action
 
@@ -1102,28 +1104,30 @@ subroutine WaterSupply_ONtop_up ()
    real       top_up_required        ! water amount required for top-up
    integer    counter
    logical ok
+   type(TopUpType) :: topup          ! Top up structure
+
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
 
-   !****** collect information on top_up amount required and preferred sources ****************
-
-   call collect_real_var ('amount', '(Ml)', top_up_required, numvals, 0.0, 10000.0)
-   if (numvals .ne. 1) then
+   call unpack_topup(variant, topup)
+   if (topup%amount .eq. 0) then
       call fatal_error (ERR_USER,'No top-up water amount information provided')
    endif
 
-   call collect_char_array ('source',max_sources, '()', g%top_up_source, g%tot_num_sources)
-   if (g%tot_num_sources .eq. 0) then
+   if (topup%num_source .eq. 0) then
          call fatal_error (ERR_USER,'No top-up water source information provided')
    endif
-
+   
+   do i = 1, topup%num_source
+      g%top_up_source(i) = topup%source(i)
+   enddo
 
    !  Now send out a gimme_water method call to the first specified source
    call new_postbox()
    call get_fq_name(water_requester)
    call post_char_var ('water_requester', '()', water_requester)
-   call post_real_var ('amount', '(Ml)', top_up_required)
+   call post_real_var ('amount', '(Ml)', topup%amount)
    g%source_counter = 1
    ok = component_name_to_id(g%top_up_source(g%source_counter), id)
    call Event_send(id, 'gimme_water')
@@ -1819,9 +1823,6 @@ subroutine Main (action, data_string)
    else if (action.eq.ACTION_gimme_water) then
       call WaterSupply_ONgimme_water ()
 
-   else if (action.eq.ACTION_top_up) then
-      call WaterSupply_ONtop_up ()
-
    else if (action.eq.'water_supplied') then
       call WaterSupply_ONwater_supplied ()
 
@@ -1867,9 +1868,11 @@ subroutine respondToEvent(fromID, eventID, variant)
    elseif (eventID .eq. id%new_solute) then
       call WaterSupply_ONnew_solute (variant)
 	   
-  elseif (eventID .eq. id%runoffEvent) then
+   elseif (eventID .eq. id%runoffEvent) then
       call WaterSupply_ONrunoff (fromID, variant)
-
+   
+   elseif (eventID .eq. id%topup) then
+      call WaterSupply_ONtop_up (variant)      
    endif
    return
 end subroutine respondToEvent
