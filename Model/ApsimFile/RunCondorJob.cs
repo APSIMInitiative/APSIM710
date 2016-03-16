@@ -266,32 +266,48 @@ namespace ApsimFile
 			PBSWriter.WriteLine ("# Construct a PBS job for each apsim job.");
 			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
 			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
+			PBSWriter.WriteLine ("srcdir=`dirname $(readlink -f $0)`");
 			PBSWriter.WriteLine ("while IFS='' read -r line || [[ -n \"$line\" ]]; do"); 
-			PBSWriter.WriteLine (" IFS=\\| read jobname inputfiles command <<< $line");
+			PBSWriter.WriteLine (" jobname=$(echo $line | cut -d\\| -f1)");
+			PBSWriter.WriteLine (" inputfiles=$(echo $line | cut -d\\| -f2)");
+			PBSWriter.WriteLine (" command=$(echo $line | cut -d\\| -f3)");
 			PBSWriter.WriteLine (" cat <<EOF | qsub");
 			PBSWriter.WriteLine ("######  Select resources #####");
+			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
 			PBSWriter.WriteLine ("#PBS -N $jobname");
-			PBSWriter.WriteLine ("#PBS -l ncpus=??");
-			PBSWriter.WriteLine ("#PBS -l mem=?? ");
-			PBSWriter.WriteLine ("#PBS -A ??");
-			PBSWriter.WriteLine ("#PBS -o \\$TMPDIR/$jobname.out");
-			PBSWriter.WriteLine ("#PBS -e \\$TMPDIR/$jobname.err");
+			PBSWriter.WriteLine ("#PBS -l nodes=1:intel");
+			PBSWriter.WriteLine ("#PBS -l mem=20Gb");
+			PBSWriter.WriteLine ("#PBS -l vmem=20Gb");
+			PBSWriter.WriteLine ("#PBS -l walltime=1:00:00");
+			PBSWriter.WriteLine ("######                   #####");
+			PBSWriter.WriteLine (" jobname=$jobname");
+			PBSWriter.WriteLine (" inputfiles=$inputfiles");
+			PBSWriter.WriteLine (" command=$command");
+			PBSWriter.WriteLine (" srcdir=$srcdir");
 			PBSWriter.WriteLine (" cd \\$TMPDIR");
-			PBSWriter.WriteLine (" for x in Apsim7.7-r3814.X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
+			PBSWriter.WriteLine (" for x in Apsim7.8-rXXXX.X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
 			PBSWriter.WriteLine ("  tar xfz \\$HOME/\\$x");
 			PBSWriter.WriteLine (" done");
-			PBSWriter.WriteLine ("# get the job specific data");
-			PBSWriter.WriteLine (" IFS=',' ; for x in $inputfiles; do ");
-			PBSWriter.WriteLine ("  cp \"\\$HOME/\\$x\" .");
-			PBSWriter.WriteLine (" done");
-			PBSWriter.WriteLine (" chmod +x $command");
+
+			PBSWriter.WriteLine ("# extra environment settings");
+			PBSWriter.WriteLine (" module load GCC/4.8.4");
+			PBSWriter.WriteLine (" export MONO_PATH=\\$TMPDIR/mono/lib/mono/4.5/:\\$TMPDIR/mono/lib/mono/4.0");
+			PBSWriter.WriteLine (" export MONO_CFG_DIR=\\$TMPDIR/mono/etc");
+			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
 			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
 			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
+
+ 			PBSWriter.WriteLine ("# get the job specific datafiles");
+
+			PBSWriter.WriteLine (" IFS=','");
+			PBSWriter.WriteLine ("  for x in \\$inputfiles ; do cp \"\\$srcdir/\\$x\" ./ ; done");
+			PBSWriter.WriteLine (" unset IFS");
+			PBSWriter.WriteLine (" chmod +x $command");
 			PBSWriter.WriteLine (" echo > .mark");
-			PBSWriter.WriteLine (" $command");
-			PBSWriter.WriteLine (" tar cfz \\$HOME/$jobname.output.tar.gz -N .mark .");
+			PBSWriter.WriteLine (" ./$command");
+			PBSWriter.WriteLine (" tar cfz \\$srcdir/$jobname.output.tar.gz -N .mark .");
 			PBSWriter.WriteLine ("EOF");
-			PBSWriter.WriteLine ("done <<XXX");
+			PBSWriter.WriteLine ("done <<XXX__ABC");
 
 									
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
@@ -363,12 +379,15 @@ namespace ApsimFile
 			if (numSims > 0) {
 				SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 				SubWriter.WriteLine ("queue");
+				PBSWriter.WriteLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+				                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
+				                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
 			}
 			WinExeWriter.Close ();
 			LinuxExeWriter.Close ();
 			SubWriter.Close ();
 			SimsWriter.Close ();
-			PBSWriter.WriteLine ("XXX");
+			PBSWriter.WriteLine ("XXX__ABC");
 			PBSWriter.Close();
 		}
 		private string zipUp ()
