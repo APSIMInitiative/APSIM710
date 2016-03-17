@@ -267,24 +267,15 @@ namespace ApsimFile
 			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
 			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
 			PBSWriter.WriteLine ("srcdir=`dirname $(readlink -f $0)`");
-			PBSWriter.WriteLine ("while IFS='' read -r line || [[ -n \"$line\" ]]; do"); 
-			PBSWriter.WriteLine (" jobname=$(echo $line | cut -d\\| -f1)");
-			PBSWriter.WriteLine (" inputfiles=$(echo $line | cut -d\\| -f2)");
-			PBSWriter.WriteLine (" command=$(echo $line | cut -d\\| -f3)");
-			PBSWriter.WriteLine (" cat <<EOF | qsub");
+			PBSWriter.WriteLine ("cat <<EOF | qsub");
 			PBSWriter.WriteLine ("######  Select resources #####");
 			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
-			PBSWriter.WriteLine ("#PBS -N $jobname");
-			PBSWriter.WriteLine ("#PBS -l amd");
-			PBSWriter.WriteLine ("#PBS -l nodes=1");
-			PBSWriter.WriteLine ("#PBS -l ppn=8");
+			PBSWriter.WriteLine ("#PBS -N Apsim");
+			PBSWriter.WriteLine ("#PBS -l nodes=1:amd:ppn=8");
 			PBSWriter.WriteLine ("#PBS -l mem=20Gb");
 			PBSWriter.WriteLine ("#PBS -l vmem=20Gb");
-			PBSWriter.WriteLine ("#PBS -l walltime=1:00:00");
+
 			PBSWriter.WriteLine ("######                   #####");
-			PBSWriter.WriteLine (" jobname=$jobname");
-			PBSWriter.WriteLine (" inputfiles=$inputfiles");
-			PBSWriter.WriteLine (" command=$command");
 			PBSWriter.WriteLine (" srcdir=$srcdir");
 			PBSWriter.WriteLine (" cd \\$TMPDIR");
 			PBSWriter.WriteLine (" for x in Apsim7.8-rXXXX.X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
@@ -298,21 +289,9 @@ namespace ApsimFile
 			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
 			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
 			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
-			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=\\$PBS_NUM_PPN");
+			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
+			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");
 
- 			PBSWriter.WriteLine ("# get the job specific datafiles");
-
-			PBSWriter.WriteLine (" IFS=','");
-			PBSWriter.WriteLine ("  for x in \\$inputfiles ; do cp \"\\$srcdir/\\$x\" ./ ; done");
-			PBSWriter.WriteLine (" unset IFS");
-			PBSWriter.WriteLine (" chmod +x $command; touch $command");
-			PBSWriter.WriteLine (" ./$command");
-			PBSWriter.WriteLine (" rm -rf \\$TMPDIR/mono \\$TMPDIR/Temp");
-			PBSWriter.WriteLine (" tar cfz \\$srcdir/$jobname.output.tar.gz --newer=$command --no-recursion .");
-			PBSWriter.WriteLine ("EOF");
-			PBSWriter.WriteLine ("done <<XXX__ABC");
-
-									
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
 
 			List<string> inputfiles = new List<string> ();
@@ -390,7 +369,25 @@ namespace ApsimFile
 			LinuxExeWriter.Close ();
 			SubWriter.Close ();
 			SimsWriter.Close ();
-			PBSWriter.WriteLine ("XXX__ABC");
+
+ 			PBSWriter.WriteLine ("XXXXXX");
+ 			PBSWriter.WriteLine ("#PBS -t 0-" + Convert.ToString (jobCounter));
+ 			PBSWriter.WriteLine ("#PBS -l walltime=" + Convert.ToString (5 * (1 + jobCounter)) + ":00:00");
+
+			PBSWriter.WriteLine (" jobname=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f1)");
+			PBSWriter.WriteLine (" inputfiles=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f2)");
+			PBSWriter.WriteLine (" command=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f3)");
+
+ 			PBSWriter.WriteLine ("# copy the job specific datafiles");
+			PBSWriter.WriteLine (" IFS=','");
+			PBSWriter.WriteLine ("  for x in \\$inputfiles ; do cp \"\\$srcdir/\\$x\" ./ ; done");
+			PBSWriter.WriteLine (" unset IFS");
+			PBSWriter.WriteLine (" chmod +x \\$command; touch \\$command");
+			PBSWriter.WriteLine (" ./\\$command");
+			PBSWriter.WriteLine (" rm -rf \\$TMPDIR/mono \\$TMPDIR/Temp");
+			PBSWriter.WriteLine (" tar cfz \\$srcdir/\\$jobname.output.tar.gz --newer=\\$command --no-recursion .");
+			PBSWriter.WriteLine ("EOF");
+
 			PBSWriter.Close();
 		}
 		private string zipUp ()
