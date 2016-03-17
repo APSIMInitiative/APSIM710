@@ -1,75 +1,25 @@
 <html>
    <head>
-      <title>APSIM 7.7 Release Notes</title>
+      <title>APSIM 7.8 Release Notes</title>
       <link href="ApsimWebStyle.css" rel="stylesheet" type="text/css">
    </head>
    <body>
-      <h1>APSIM 7.7 release notes</h1>
+      <h1>APSIM 7.8 release notes</h1>
    
      <h2>Stability release</h2>
-     <p>This release of APSIM fixes many issues found in APSIM 7.6. No major new functionality has been added.
+     <p>This release of APSIM fixes many issues found in APSIM 7.7. No major new functionality has been added.
      </p>
-     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=29">The complete list of defects fixed can be found here</a></a>.
+     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=XXXXX">The complete list of defects fixed can be found here</a></a>.
      </p>
    
-   
-      <h1>APSIM 7.6 release notes</h1>
-      <p>21st March 2014</p>
+...   
 
-     <h2>SWIM 3 included</h2>
-     <p>Swim version 2 has been in APSIM for many years, however various elements of it's complex parameterisation 
-        have precluded it from incorporation into the GUI. Swim version 3 has been developed from V2. 
-        The approach taken in V3 enables SWIM3 to run using properties as provided in the APSoil database.  
-     </p>
-     <p>This model was meant to be released in APSIM 7.5 but a key .dll file was missing. That has been fixed.</p>
-
-     <h2>New Oil Palm module</h2>
-     <p>The APSIM-Oil Palm model simulates the growth, frond development and bunch dynamics of oil palm 
-        and the water, carbon and nitrogen cycling within a plantation. The model also provides a 
-        simple capability for simulating an understory cover crop.</p>
-     
-     <h2>New RLink module</h2>
-     <p>An RLink module has been added that links the apsim framework to the R dll. 
-        The RLink module is a pluggable component that provides users with
-        the ability to write R script.</p>
-
-     <h2>Defects fixed for non-admin users</h2>
-     <p>When APSIM 7.5 was run on a computer where the user didn't have administrative privileges,
-        the user interface would produce errors when toolboxes were selected. This has
-        now been fixed.</p>
-
-     <h2>Changed "Run on Cluster" form</h2>
-     <p>The Apsim JV computing cluster has been upgraded and several things have changed.
-<ul><li>The pool is accessible via the internet
-<li>The condor version is now 8.0.6.
-<li>There are now 64 bit Linux and Windows execute nodes in the pool (it was all 32bit windows).
-</ul>	
-To use it, open the ApsimUI to submit a job via the "run on cluster" button. 
-Enter your username/password. Later on, open ftp://&lt;username&gt;:&lt;password&gt;@apsrunet.apsim.info: and look for an .out.zip file.
-</p><p>
-More detail is <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2014"> in the documentation</a>.
+     <h2>Changes to "Run on Cluster" form</h2>
+     <p>Cluster jobs have been rearranged. Instead of running "one simulation per CPU", the system attempts to run several simulations in parallel, using all available CPUs on a single machine, significantly reducing the amount of network traffic for each job. This changes the interpretation of "number of simulations per job" - as the throughput is now related to the number of CPU cores as well as their speed. On the toowoomba cluster, Linux hosts have 8 or 16 CPUs per machine, the Windows hosts have 12, so simply multiplying the existing number by 12 or 16 should suffice to keep runtime the same. The general principle is that the longer a job runs, the higher its throughput - as less time is spent setting up and tearing down the job. However, longer running jobs have a higher chance of being interrupted if a higher priority user enters the queue.
+<p>
+More detail is in the <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2016"> online documentation</a>.
 </p>
 
-     <h2>Changes to "user_defined" tillage</h2>
-	  <p>The SurfaceOM and Soilwat modules treat arguments to the tillage event slightly differently. Both modules
-	    accept an optional "type" parameter that can be used as a key in a lookup table of tillage parameters. To now, 
-	    if this key was defined and had an entry in the table, then the optional parameters (f_incorp, cn_red etc)
-	    were used as overides if they were defined. Using structures in these events instead of 
-	    ApsimVariants loses the ability to define optional parameters. So now, if the key is defined, it must 
-	    specify a valid section in the table, or the special key "user_defined" which will skip reading the table, and 
-	    the module will use whatever parameters the user specifies. Any parameter that isnt defined it is either zero 
-	    or blank.</p>
-	  <p>.NET and CI2 modules that use structures (cf. ApsimVariant) to pass the message have no way to specify
-	    optional parameters, and are unaffected.
-	  </p>
-      
-      <h2>Improvements to user interface factorials</h2>
-      <p>Factorials in APSIM 7.6 are now more flexible. A list of weather files or station numbers can 
-      now be provided in a grid, making it easier to specify a large number of files or numbers. 
-      In addition, Initial Water components can be part of a factorial. Numerous 
-      defects have also been fixed.      
-      </p>
-
-     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=28">The complete list of defects fixed can be found here</a></h3>
+     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=XXXXX">The complete list of defects fixed can be found here</a></h3>
    </body>
 </html>
