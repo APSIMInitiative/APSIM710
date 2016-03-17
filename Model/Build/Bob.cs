@@ -137,7 +137,7 @@ private static void doLINUX ()
       
       Console.WriteLine("Running revision r" + revision);
       DBUpdateLinuxStatus("Running", JobID);
-      string LogFileName = "/tmp/Apsim7.7-r" + revision + ".linux.txt";
+      string LogFileName = "/tmp/Apsim7.8-r" + revision + ".linux.txt";
       StreamWriter Log = new StreamWriter(LogFileName);
       
       // Clean the tree.
@@ -148,8 +148,8 @@ private static void doLINUX ()
       
       // Set some environment variables.
       System.Environment.SetEnvironmentVariable("JobID", JobID.ToString());
-      System.Environment.SetEnvironmentVariable("PatchFileName", "Apsim7.7-r" + revision);
-      System.Environment.SetEnvironmentVariable("PatchFileNameShort", "Apsim7.7-r" + revision);
+      System.Environment.SetEnvironmentVariable("PatchFileName", "Apsim7.8-r" + revision);
+      System.Environment.SetEnvironmentVariable("PatchFileNameShort", "Apsim7.8-r" + revision);
       
       // Run the patch.
       try
@@ -164,9 +164,9 @@ private static void doLINUX ()
       Log.Close();
       try
       {
-      Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.7-r" + revision + ".linux.txt");
+      Run("Uploading details...", "/usr/bin/curl", " -T " + LogFileName + " -u bob:seg ftp://bob.apsim.info/Files/Apsim7.8-r" + revision + ".linux.txt");
       Run("Updating details...", Path.Combine(APSIMDir, "Model/UpdateFieldInDB.exe"),
-                               "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.7-r" + revision + ".linux.txt");
+                               "linuxDetailsFileName http://bob.apsim.info/files/Apsim7.8-r" + revision + ".linux.txt");
       }
       catch (Exception e)
       {
