@@ -157,11 +157,14 @@ Paddock:
         if (cotton2.crop_in <> 0) then
            report do_output
         endif
-        if (cotton2.ozcot_status > 0) then
-          report_harvest do_output
-          cotton2 harvest
-          cotton2 end_crop
-        endif
+         if (cotton2.stagename = 'mature'  and  cotton2.defol_das = 0) then
+             cotton2 defoliate
+         endif
+         if (cotton2.stagename = 'harvestmature') then
+            report_harvest do_output
+            cotton2 harvest
+            cotton2 end_crop
+         endif
      END of rules
      
 
@@ -355,6 +358,9 @@ Paddock:
          background_retention =  0.80
 
 
+         co2 at  0 ppm
+
+
 
                       Crop Sowing Data
          ------------------------------------------------
@@ -382,149 +388,15 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 27 October 1984 (Day of year=301), cotton:
     *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
 
-23 February 1985(Day of year=54): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.219976      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-24 February 1985(Day of year=55): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.220304      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.212909      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-25 February 1985(Day of year=56): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.213237      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.209061      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-26 February 1985(Day of year=57): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.209389      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.200255      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 February 1985(Day of year=58): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.200583      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 February 1985 (Day of year=58), cotton: 
-         Defoliant spray   1
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.191818      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-28 February 1985(Day of year=59): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.192146      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.188000      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-1 March 1985(Day of year=60): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.189226      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.188000      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
 2 March 1985(Day of year=61): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188749      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.188000      in layer   2
+      soil water of     0.226643      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -534,7 +406,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188531      in layer   2
+      soil water of     0.227626      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -543,7 +415,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188000      in layer   2
+      soil water of     0.220808      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -553,7 +425,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188404      in layer   2
+      soil water of     0.221593      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -562,7 +434,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188000      in layer   2
+      soil water of     0.215675      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -572,7 +444,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188316      in layer   2
+      soil water of     0.216297      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -581,7 +453,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188000      in layer   2
+      soil water of     0.209719      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -591,7 +463,289 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.188167      in layer   2
+      soil water of     0.210229      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.204959      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 March 1985(Day of year=66): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.225810      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.221626      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 March 1985(Day of year=81): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.227133      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 March 1985(Day of year=82): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.227383      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.223322      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 March 1985(Day of year=83): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.223530      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 March 1985 (Day of year=83), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.219295      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 March 1985(Day of year=83), paddock.manager: 
+     Manager sending message :- cotton2 defoliate
+24 March 1985 (Day of year=83), cotton: 
+         Defoliant spray   1
+25 March 1985(Day of year=84): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.219469      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.215407      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 March 1985(Day of year=85): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.215506      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.211237      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 March 1985(Day of year=86): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.211335      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.206676      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 March 1985(Day of year=87): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.206773      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.203012      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 March 1985(Day of year=88): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.203109      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.198826      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 March 1985(Day of year=89): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.198922      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.195073      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 March 1985(Day of year=90): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.195168      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.193575      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 April 1985(Day of year=91): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.193669      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.190915      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 April 1985(Day of year=92): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.191009      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.189763      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 April 1985(Day of year=93): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.189857      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188526      in layer   2
+              is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 April 1985(Day of year=94): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188619      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -606,660 +760,11 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-7 March 1985(Day of year=66): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.191271      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.188173      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-8 March 1985(Day of year=67): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.205660      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.205262      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 March 1985(Day of year=68): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.207216      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 March 1985 (Day of year=68), cotton: 
-         Crop to be picked and terminated.
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.206848      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 March 1985(Day of year=68), paddock.manager: 
-     Manager sending message :- cotton2 harvest
-
-      Harvest
-
-
-      Days after sowing      =   142
-      bolls/m2               =   73.8        Lint (kg/ha)            =   1318.6
-      N uptake (kg/ha)       =    144.6        bolls sc (g/boll)       =      4.6
-      max squares das (days) =   84          max lai das (days)      =    120
-      maximum squares/m2     =   130.5        maximum lai (m2/m2)     =      1.81
-      Total above ground biomass (kg/ha) =  9157.2
-
-
-     Manager sending message :- cotton2 end_crop
-10 March 1985(Day of year=69): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.208147      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -10.83313    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.208147      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-11 March 1985(Day of year=70): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.209223      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -9.800438    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.209223      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-12 March 1985(Day of year=71): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.210071      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -8.004308    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.210071      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-13 March 1985(Day of year=72): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.211244      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -15.28049    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.211244      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-14 March 1985(Day of year=73): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.212201      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -14.13574    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.212201      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-15 March 1985(Day of year=74): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.212859      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -11.29989    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.212859      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-16 March 1985(Day of year=75): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.213417      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -8.235741    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.213417      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-17 March 1985(Day of year=76): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.213897      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -5.275583    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.213897      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-18 March 1985(Day of year=77): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.214317      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -2.272493    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.214317      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-19 March 1985(Day of year=78): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.214687      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.214687      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-20 March 1985(Day of year=79): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215018      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215018      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-21 March 1985(Day of year=80): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215314      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215314      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-22 March 1985(Day of year=81): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215583      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215583      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-23 March 1985(Day of year=82): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215827      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.215827      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-24 March 1985(Day of year=83): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216050      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216050      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-25 March 1985(Day of year=84): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216256      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216256      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-26 March 1985(Day of year=85): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216445      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216445      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-27 March 1985(Day of year=86): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216621      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216621      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-28 March 1985(Day of year=87): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216785      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216785      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-29 March 1985(Day of year=88): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216896      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.216896      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-30 March 1985(Day of year=89): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217008      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217008      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-31 March 1985(Day of year=90): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217168      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217168      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-1 April 1985(Day of year=91): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217280      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217280      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-2 April 1985(Day of year=92): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217392      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217392      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-3 April 1985(Day of year=93): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217504      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217504      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-4 April 1985(Day of year=94): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217616      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-      soil water of     0.217616      in layer   2
-              is below air-dry value of     0.228000
-     Component name: paddock.soil Water
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
 5 April 1985(Day of year=95): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.217728      in layer   2
+      soil water of     0.188089      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1268,8 +773,17 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.217728      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.278193      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1278,7 +792,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.217841      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1287,8 +801,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.217841      in layer   2
+      soil water of     0.278325      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275163      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1297,7 +829,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.217953      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1306,8 +838,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.217953      in layer   2
+      soil water of     0.275299      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272257      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1316,7 +866,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218066      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1325,17 +875,62 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218066      in layer   2
+      soil water of     0.272396      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 April 1985 (Day of year=98), cotton: 
+         Crop ready for harvest.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.269560      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 April 1985(Day of year=98), paddock.manager: 
+     Manager sending message :- cotton2 harvest
+
+      Harvest
+
+
+      Days after sowing      =   172
+      bolls/m2               =   118.6        Lint (kg/ha)            =   2282.2
+      N uptake (kg/ha)       =   198.8        bolls sc (g/boll)       =      4.9
+      max squares das (days) =   86          max lai das (days)      =    120
+      maximum squares/m2     =   144.7        maximum lai (m2/m2)     =      2.38
+      Total above ground biomass (kg/ha) =  19272.1
+
+
+      Total green biomass (g/m2) =  1338.0
+      Total sensced biomass (g/m2) =  4.0
+      Total shed biomass (g/m2) =  312.1
+      (Total fruit shed biomass (g/m2) =  145.4)
+      Total harvested biomass (g/m2) =  585.2
+
+
+     Manager sending message :- cotton2 end_crop
+ 
+ ** Cotton Component Reset 
+ 
 9 April 1985(Day of year=99): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218178      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1344,8 +939,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218178      in layer   2
+      soil water of     0.269701      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.269701      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1354,7 +967,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218291      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1363,8 +976,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218291      in layer   2
+      soil water of     0.269842      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.269842      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1373,7 +1004,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218404      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1382,8 +1013,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218404      in layer   2
+      soil water of     0.269983      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.269983      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1392,7 +1041,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218517      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1401,8 +1050,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218517      in layer   2
+      soil water of     0.270124      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270124      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1411,7 +1078,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218630      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1420,8 +1087,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218630      in layer   2
+      soil water of     0.270265      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270265      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1430,7 +1115,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218744      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1439,8 +1124,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218744      in layer   2
+      soil water of     0.270405      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270405      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1449,7 +1152,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218857      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1458,8 +1161,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218857      in layer   2
+      soil water of     0.270545      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270545      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1468,7 +1189,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218970      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1477,8 +1198,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.218970      in layer   2
+      soil water of     0.270685      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270685      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1487,7 +1226,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219084      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1496,8 +1235,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219084      in layer   2
+      soil water of     0.270824      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270824      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1506,7 +1263,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219198      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1515,8 +1272,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219198      in layer   2
+      soil water of     0.270963      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.270963      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1525,7 +1300,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219312      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1534,8 +1309,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219312      in layer   2
+      soil water of     0.271103      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271103      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1544,7 +1337,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219425      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1553,8 +1346,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219425      in layer   2
+      soil water of     0.271241      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271241      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1563,7 +1374,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219539      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1572,8 +1383,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219539      in layer   2
+      soil water of     0.271380      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271380      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1582,7 +1411,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219709      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1591,17 +1420,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -9.177845    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.271518      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.219709      in layer   2
+      soil water of     0.188000      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271518      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1610,7 +1448,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220003      in layer   2
+      soil water of     0.188205      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1619,17 +1457,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -12.17177    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.271657      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220003      in layer   2
+      soil water of     0.188205      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271657      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1638,7 +1485,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220208      in layer   2
+      soil water of     0.188366      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1647,17 +1494,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -12.21653    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.271794      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220208      in layer   2
+      soil water of     0.188366      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271794      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1666,7 +1522,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220369      in layer   2
+      soil water of     0.188489      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1675,17 +1531,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -10.59137    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.271932      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220369      in layer   2
+      soil water of     0.188489      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.271932      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1694,7 +1559,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220483      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1703,17 +1568,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -8.536017    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.272070      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220483      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272070      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1722,7 +1596,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220597      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1731,17 +1605,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -6.023546    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.272207      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220597      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272207      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1750,7 +1633,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220712      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1759,17 +1642,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -3.408884    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.272344      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220712      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272344      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1778,7 +1670,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220826      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1787,17 +1679,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.8234633    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.272481      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220826      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272481      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1806,7 +1707,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220940      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1815,8 +1716,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.220940      in layer   2
+      soil water of     0.272617      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272617      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1825,7 +1744,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221055      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1834,8 +1753,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221055      in layer   2
+      soil water of     0.272754      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272754      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1844,7 +1781,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221169      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1853,8 +1790,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221169      in layer   2
+      soil water of     0.272890      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.272890      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1863,7 +1818,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221284      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1872,8 +1827,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221284      in layer   2
+      soil water of     0.273026      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273026      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1882,7 +1855,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221399      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1891,8 +1864,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221399      in layer   2
+      soil water of     0.273161      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273161      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1901,7 +1892,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221513      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1910,8 +1901,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221513      in layer   2
+      soil water of     0.273297      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273297      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1920,7 +1929,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221628      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1929,8 +1938,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221628      in layer   2
+      soil water of     0.273432      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273432      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1939,7 +1966,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221840      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1948,17 +1975,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -15.28049    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.273567      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.221840      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273567      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1967,7 +2003,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222033      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1976,17 +2012,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -14.68992    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.273702      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222033      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273702      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -1995,7 +2040,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222147      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2004,17 +2049,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -12.46710    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.273837      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222147      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273837      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2023,7 +2077,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222262      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2032,17 +2086,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -9.942776    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.273971      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222262      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.273971      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2051,7 +2114,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222378      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2060,17 +2123,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -6.213252    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.274105      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222378      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274105      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2079,7 +2151,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222493      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2088,17 +2160,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -5.262596    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.274239      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222493      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274239      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2107,7 +2188,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222608      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2116,17 +2197,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -3.061641    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.274373      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222608      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274373      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2135,7 +2225,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222723      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2144,17 +2234,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -1.742254    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.274506      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222723      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274506      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2163,7 +2262,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222839      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2172,17 +2271,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.5430267E-01)
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.274639      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222839      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274639      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2191,7 +2299,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222954      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2200,8 +2308,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.222954      in layer   2
+      soil water of     0.274772      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274772      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2210,7 +2336,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223070      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2219,17 +2345,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -15.28049    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.274905      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223070      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.274905      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2238,7 +2373,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223185      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2247,17 +2382,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -13.02045    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275038      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223185      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275038      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2266,7 +2410,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223301      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2275,17 +2419,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -10.72536    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275170      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223301      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275170      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2294,7 +2447,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223417      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2303,17 +2456,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -4.109232    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275303      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223417      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275303      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2322,7 +2484,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223533      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2331,17 +2493,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -3.580309    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275435      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223533      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275435      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2350,7 +2521,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223648      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2359,17 +2530,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -3.895046    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275566      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223648      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275566      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2378,7 +2558,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223764      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2387,17 +2567,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -2.852482    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275698      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223764      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275698      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2406,7 +2595,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223880      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2415,17 +2604,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (  -0.3576119    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.275829      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223880      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275829      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2434,7 +2632,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223997      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2443,8 +2641,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.223997      in layer   2
+      soil water of     0.275960      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.275960      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2453,7 +2669,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224113      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2462,8 +2678,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224113      in layer   2
+      soil water of     0.276091      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276091      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2472,7 +2706,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224229      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2481,17 +2715,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -14.45162    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.276222      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224229      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276222      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2500,7 +2743,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224345      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2509,17 +2752,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -10.05890    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.276353      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224345      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276353      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2528,7 +2780,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224462      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2537,17 +2789,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -10.69150    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.276483      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224462      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276483      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2556,7 +2817,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224578      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2565,17 +2826,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -10.44623    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.276613      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224578      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276613      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2584,7 +2854,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224694      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2593,17 +2863,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -7.824380    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.276743      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224694      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276743      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2612,7 +2891,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224811      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2621,17 +2900,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -5.948506    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.276873      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224811      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.276873      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2640,7 +2928,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224927      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2649,17 +2937,26 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -4.653227    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.277002      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-      soil water of     0.224927      in layer   2
+      soil water of     0.188585      in layer   2
               is below air-dry value of     0.228000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.277002      in layer   3
+              is below air-dry value of     0.280000
      Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
@@ -2668,9 +2965,18 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -11.04165    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.277131      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.277131      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -2678,9 +2984,18 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -6.775910    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.278280      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.278280      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
@@ -2688,59 +3003,18 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -4.547618    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.279453      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-6 June 1985(Day of year=157): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -2.530113    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-7 June 1985(Day of year=158): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -2.536588    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-8 June 1985(Day of year=159): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -2.450241    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 June 1985(Day of year=160): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -1.819496    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-10 June 1985(Day of year=161): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Lower bound (    0.000000    ) exceeds upper bound (   -1.125971    )
-             Variable is not checked
-     Component name: paddock.SurfaceOM
+      soil water of     0.279453      in layer   3
+              is below air-dry value of     0.280000
+     Component name: paddock.soil Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      

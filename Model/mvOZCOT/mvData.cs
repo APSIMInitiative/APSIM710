@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace ManagedComponent.MvOZCOT
 {
@@ -600,4 +601,30 @@ namespace ManagedComponent.MvOZCOT
 
 
     }
+
+    public class FixedSizedQueue<T> : Queue<T>
+    {
+        readonly Queue<T> queue = new Queue<T>();
+
+        public int Size { get; private set; }
+
+        public FixedSizedQueue(int size)
+        {
+            Size = size;
+        }
+
+        public new void Enqueue(T obj)
+        {
+            queue.Enqueue(obj);
+
+                while (queue.Count > Size)
+                {
+                    // T outObj;
+                    queue.Dequeue();
+                }
+        }
+
+    }
+
+
 }

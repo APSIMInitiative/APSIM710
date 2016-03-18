@@ -112,7 +112,7 @@ Paddock:
 ------- paddock.Operations Initialisation -------------------------------------
      Operations Schedule
      ===================
-      03/09/1969  Prepare      fertiliser apply amount = 130. (kg/ha), type = nh4_n, depth = 10
+      03/09/1969  Prepare      fertiliser apply amount = 120. (kg/ha), type = nh4_n, depth = 10
       02/09/1969  Prepare      'soil nitrogen' set no3 = 11.9 23.9 19.4 18.4 18.4 16.2 0.1
       29/11/1969  Post         Cotton2 sow cultivar = dp16, sowing_depth = 50. (mm), row_spacing = 1000. (mm), plants_pm = 15. , skiprow = 0
 
@@ -146,11 +146,14 @@ Paddock:
         if (cotton2.crop_in <> 0) then
            report do_output
         endif
-        if (cotton2.ozcot_status > 0) then
-          report_harvest do_output
-          cotton2 harvest
-          cotton2 end_crop
-        endif
+         if (cotton2.stagename = 'mature'  and  cotton2.defol_das = 0) then
+             cotton2 defoliate
+         endif
+         if (cotton2.stagename = 'harvestmature') then
+            report_harvest do_output
+            cotton2 harvest
+            cotton2 end_crop
+         endif
      END of rules
      
 
@@ -263,14 +266,14 @@ Paddock:
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
              1     7.60  1.00   19.45    0.41    0.00
-             2     7.70  1.00   34.52    0.82    0.00
-             3     7.80  0.45   18.76    0.83    0.00
-             4     7.80  0.45   16.20    1.35    0.00
-             5     7.90  0.45   16.08    1.34    0.00
+             2     7.70  1.00   20.00    0.82    0.00
+             3     7.80  0.45   18.40    0.83    0.00
+             4     7.80  0.45   16.00    1.35    0.00
+             5     7.90  0.45   14.00    1.34    0.00
              6     8.00  0.45   10.88    1.36    0.00
              7     8.00  0.45    5.17    1.36    0.00
           ------------------------------------------------
-           Totals              121.07    7.47    0.00
+           Totals              103.90    7.47    0.00
           ------------------------------------------------
      
      
@@ -311,7 +314,7 @@ Paddock:
 3 September 1969(Day of year=246), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       130.00 of N as ammonium (nh4_n)
+       120.00 of N as ammonium (nh4_n)
                                          added at depth   10.00 (layer   1)
 17 September 1969(Day of year=260), paddock.manager: 
      Manager creating a new local real variable : deficit = 64.40338
@@ -344,6 +347,9 @@ Paddock:
          background_retention =  0.80
 
 
+         co2 at  360 ppm
+
+
 
                       Crop Sowing Data
          ------------------------------------------------
@@ -371,24 +377,49 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using DDSum 
 9 December 1969 (Day of year=343), cotton:
     *** Crop emerged with 15.0 plants per m sq, 100% of target population of 15.0
 
+5 May 1970 (Day of year=125), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
 5 May 1970(Day of year=125), paddock.manager: 
+     Manager sending message :- cotton2 defoliate
+5 May 1970 (Day of year=125), cotton: 
+         Defoliant spray   1
+8 May 1970 (Day of year=128), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+19 May 1970 (Day of year=139), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+20 May 1970 (Day of year=140), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+20 May 1970 (Day of year=140), cotton: 
+         Crop ready for harvest.
+20 May 1970(Day of year=140), paddock.manager: 
      Manager sending message :- cotton2 harvest
 
       Harvest
 
 
-      Days after sowing      =   157
-      bolls/m2               =   45.1        Lint (kg/ha)            =   937.0
-      N uptake (kg/ha)       =    127.7        bolls sc (g/boll)       =      5.3
-      max squares das (days) =   84          max lai das (days)      =    157
-      maximum squares/m2     =   147.8        maximum lai (m2/m2)     =      4.09
-      Total above ground biomass (kg/ha) =  11704.5
+      Days after sowing      =   172
+      bolls/m2               =   90.4        Lint (kg/ha)            =   1555.3
+      N uptake (kg/ha)       =   106.5        bolls sc (g/boll)       =      4.4
+      max squares das (days) =   84          max lai das (days)      =    126
+      maximum squares/m2     =   132.1        maximum lai (m2/m2)     =      3.73
+      Total above ground biomass (kg/ha) =  10002.0
+
+
+      Total green biomass (g/m2) =  569.0
+      Total sensced biomass (g/m2) =  32.3
+      Total shed biomass (g/m2) =  243.6
+      (Total fruit shed biomass (g/m2) =  51.1)
+      Total harvested biomass (g/m2) =  398.8
 
 
      Manager sending message :- cotton2 end_crop
+ 
+ ** Cotton Component Reset 
+ 
 30 June 1970(Day of year=181), clock: 
      Simulation is terminating due to end criteria being met.
 

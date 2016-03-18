@@ -146,11 +146,14 @@ Paddock:
         if (cotton2.crop_in <> 0) then
            report do_output
         endif
-        if (cotton2.ozcot_status > 0) then
-          report_harvest do_output
-          cotton2 harvest
-          cotton2 end_crop
-        endif
+         if (cotton2.stagename = 'mature'  and  cotton2.defol_das = 0) then
+             cotton2 defoliate
+         endif
+         if (cotton2.stagename = 'harvestmature') then
+            report_harvest do_output
+            cotton2 harvest
+            cotton2 end_crop
+         endif
      END of rules
      
 
@@ -344,6 +347,9 @@ Paddock:
          background_retention =  0.80
 
 
+         co2 at  400 ppm
+
+
 
                       Crop Sowing Data
          ------------------------------------------------
@@ -371,30 +377,43 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 20 October 1969 (Day of year=293), cotton:
     *** Crop emerged with 15.0 plants per m sq, 100% of target population of 15.0
 
-8 April 1970 (Day of year=98), cotton: 
+6 April 1970 (Day of year=96), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+6 April 1970(Day of year=96), paddock.manager: 
+     Manager sending message :- cotton2 defoliate
+6 April 1970 (Day of year=96), cotton: 
          Defoliant spray   1
-18 April 1970 (Day of year=108), cotton: 
-         Defoliant spray   2
-28 April 1970 (Day of year=118), cotton: 
-         Crop to be picked and terminated.
-28 April 1970(Day of year=118), paddock.manager: 
+21 April 1970 (Day of year=111), cotton: 
+         Crop ready for harvest.
+21 April 1970(Day of year=111), paddock.manager: 
      Manager sending message :- cotton2 harvest
 
       Harvest
 
 
-      Days after sowing      =   200
-      bolls/m2               =   90.1        Lint (kg/ha)            =   1890.6
-      N uptake (kg/ha)       =    128.8        bolls sc (g/boll)       =      5.4
+      Days after sowing      =   193
+      bolls/m2               =   85.4        Lint (kg/ha)            =   1913.2
+      N uptake (kg/ha)       =   128.7        bolls sc (g/boll)       =      5.7
       max squares das (days) =   93          max lai das (days)      =    135
-      maximum squares/m2     =   109.3        maximum lai (m2/m2)     =      3.03
-      Total above ground biomass (kg/ha) =  9677.2
+      maximum squares/m2     =   139.4        maximum lai (m2/m2)     =      3.31
+      Total above ground biomass (kg/ha) =  13575.8
+
+
+      Total green biomass (g/m2) =  857.9
+      Total sensced biomass (g/m2) =  9.1
+      Total shed biomass (g/m2) =  325.8
+      (Total fruit shed biomass (g/m2) =  68.5)
+      Total harvested biomass (g/m2) =  490.6
 
 
      Manager sending message :- cotton2 end_crop
+ 
+ ** Cotton Component Reset 
+ 
 30 June 1970(Day of year=181), clock: 
      Simulation is terminating due to end criteria being met.
 

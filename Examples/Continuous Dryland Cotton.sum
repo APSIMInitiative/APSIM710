@@ -98,12 +98,13 @@ Paddock:
      
      SECTION:- end_of_day
                 if ('cotton' = 'cotton') then
-       if (cotton.ozcot_status > 0) then
-           cotton harvest
-       endif
-                elseif (cotton.stagename = 'harvest_ripe' or cotton.plantstatus = 'dead') then
-       cotton  harvest
-       cotton  end_crop
+         if (cotton.stagename = 'mature'  and  cotton.defol_das = 0) then
+             cotton defoliate
+         endif
+         if (cotton.stagename = 'harvestmature' or cotton.plantstatus = 'dead') then
+            cotton harvest
+            cotton end_crop
+         endif
                 endif
      END of rules
      
@@ -335,6 +336,9 @@ Paddock:
          rate_emergence       =  1.0
          background_retention =  0.90
 
+
+         co2 at  0 ppm
+
 15 October 2000(Day of year=289), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
 15 October 2000(Day of year=289), fertiliser: 
@@ -374,37 +378,51 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 25 October 2000 (Day of year=299), cotton:
-    *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
+    *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 15 December 2000(Day of year=350), paddock.Fertilise on days after sowing - top up: 
-     Manager creating a new local real variable : n_deficit = 95.51801
-     Manager sending message :- fertiliser apply  amount = 95.51801 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : n_deficit = 92.27449
+     Manager sending message :- fertiliser apply  amount = 92.27449 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 2000(Day of year=350), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        95.52 of N as urea (urea_n)
+        92.27 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
-21 February 2001 (Day of year=52), cotton: 
+12 February 2001 (Day of year=43), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+12 February 2001(Day of year=43), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+12 February 2001 (Day of year=43), cotton: 
          Defoliant spray   1
-3 March 2001 (Day of year=62), cotton: 
-         Defoliant spray   2
-13 March 2001 (Day of year=72), cotton: 
-         Crop to be picked and terminated.
-13 March 2001(Day of year=72), paddock.Harvesting rule: 
+19 February 2001 (Day of year=50), cotton: 
+         Crop ready for harvest.
+19 February 2001(Day of year=50), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   149
-      bolls/m2               =   33.5        Lint (kg/ha)            =   356.1
-      N uptake (kg/ha)       =    101.9        bolls sc (g/boll)       =      2.7
-      max squares das (days) =   79          max lai das (days)      =    129
-      maximum squares/m2     =   95.6        maximum lai (m2/m2)     =      0.52
-      Total above ground biomass (kg/ha) =  4351.8
+      Days after sowing      =   127
+      bolls/m2               =   19.3        Lint (kg/ha)            =   240.3
+      N uptake (kg/ha)       =   43.5        bolls sc (g/boll)       =      3.1
+      max squares das (days) =   79          max lai das (days)      =    85
+      maximum squares/m2     =   56.0        maximum lai (m2/m2)     =      0.22
+      Total above ground biomass (kg/ha) =  2242.5
 
 
+      Total green biomass (g/m2) =  154.1
+      Total sensced biomass (g/m2) =  10.0
+      Total shed biomass (g/m2) =  35.3
+      (Total fruit shed biomass (g/m2) =  26.0)
+      Total harvested biomass (g/m2) =  60.1
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 15 October 2001(Day of year=288), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -432,6 +450,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 15 October 2001(Day of year=288), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -472,25 +493,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 26 October 2001 (Day of year=299), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 15 December 2001(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -96.46557 (kg/ha), depth = 50 (mm), type = urea_n
-18 April 2002(Day of year=108), paddock.Harvesting rule: 
+     Manager sending message :- fertiliser apply  amount = -103.43729 (kg/ha), depth = 50 (mm), type = urea_n
+19 February 2002 (Day of year=50), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+19 February 2002(Day of year=50), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+19 February 2002 (Day of year=50), cotton: 
+         Defoliant spray   1
+27 February 2002 (Day of year=58), cotton: 
+         Crop ready for harvest.
+27 February 2002(Day of year=58), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   185
-      bolls/m2               =   46.5        Lint (kg/ha)            =   766.2
-      N uptake (kg/ha)       =    91.6        bolls sc (g/boll)       =      4.1
-      max squares das (days) =   91          max lai das (days)      =    99
-      maximum squares/m2     =   78.6        maximum lai (m2/m2)     =      0.45
-      Total above ground biomass (kg/ha) =  4315.2
+      Days after sowing      =   135
+      bolls/m2               =   42.3        Lint (kg/ha)            =   659.7
+      N uptake (kg/ha)       =   76.5        bolls sc (g/boll)       =      3.9
+      max squares das (days) =   93          max lai das (days)      =    99
+      maximum squares/m2     =   82.7        maximum lai (m2/m2)     =      0.51
+      Total above ground biomass (kg/ha) =  4397.6
 
 
+      Total green biomass (g/m2) =  254.7
+      Total sensced biomass (g/m2) =  20.1
+      Total shed biomass (g/m2) =  76.4
+      (Total fruit shed biomass (g/m2) =  51.1)
+      Total harvested biomass (g/m2) =  164.9
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 10 November 2002(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -518,6 +559,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 10 November 2002(Day of year=314), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -558,25 +602,47 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 17 November 2002 (Day of year=321), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-10 January 2003(Day of year=10), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -306.31754 (kg/ha), depth = 50 (mm), type = urea_n
-6 March 2003(Day of year=65), paddock.Harvesting rule: 
+17 November 2002 (Day of year=321), cotton: 
+         Crop failed - status 'dead'.
+18 November 2002 (Day of year=322), cotton: 
+         Crop failed - status 'dead'.
+19 November 2002 (Day of year=323), cotton: 
+         Crop failed - status 'dead'.
+20 November 2002 (Day of year=324), cotton: 
+         Crop failed - status 'dead'.
+21 November 2002 (Day of year=325), cotton: 
+         Crop failed - status 'dead'.
+22 November 2002 (Day of year=326), cotton: 
+         Crop failed - status 'dead'.
+22 November 2002(Day of year=326), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   116
-      bolls/m2               =   2.7        Lint (kg/ha)            =   25.3
-      N uptake (kg/ha)       =    16.8        bolls sc (g/boll)       =      2.3
-      max squares das (days) =   73          max lai das (days)      =    116
-      maximum squares/m2     =   52.1        maximum lai (m2/m2)     =      0.13
-      Total above ground biomass (kg/ha) =  844.8
+      Days after sowing      =   12
+      bolls/m2               =   0.0        Lint (kg/ha)            =   0.0
+      N uptake (kg/ha)       =   0.0        bolls sc (g/boll)       =      0.0
+      max squares das (days) =   0          max lai das (days)      =    12
+      maximum squares/m2     =   0.0        maximum lai (m2/m2)     =      0.00
+      Total above ground biomass (kg/ha) =  1.1
 
 
+      Total green biomass (g/m2) =  0.1
+      Total sensced biomass (g/m2) =  0.0
+      Total shed biomass (g/m2) =  0.0
+      (Total fruit shed biomass (g/m2) =  0.0)
+      Total harvested biomass (g/m2) =  0.0
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 10 November 2003(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -604,6 +670,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 10 November 2003(Day of year=314), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -644,31 +713,53 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 18 November 2003 (Day of year=322), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 10 January 2004(Day of year=10), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -438.65717 (kg/ha), depth = 50 (mm), type = urea_n
-29 April 2004 (Day of year=120), cotton: 
+     Manager sending message :- fertiliser apply  amount = -457.70761 (kg/ha), depth = 50 (mm), type = urea_n
+25 May 2004 (Day of year=146), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+25 May 2004(Day of year=146), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+25 May 2004 (Day of year=146), cotton: 
          Defoliant spray   1
-9 May 2004 (Day of year=130), cotton: 
-         Defoliant spray   2
-19 May 2004 (Day of year=140), cotton: 
-         Crop to be picked and terminated.
-19 May 2004(Day of year=140), paddock.Harvesting rule: 
+28 May 2004 (Day of year=149), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+30 May 2004 (Day of year=151), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+31 May 2004 (Day of year=152), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+1 June 2004 (Day of year=153), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+9 June 2004 (Day of year=161), cotton: 
+         Crop ready for harvest.
+9 June 2004(Day of year=161), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   191
-      bolls/m2               =   89.9        Lint (kg/ha)            =   1506.5
-      N uptake (kg/ha)       =    145.0        bolls sc (g/boll)       =      4.2
-      max squares das (days) =   144          max lai das (days)      =    145
-      maximum squares/m2     =   66.9        maximum lai (m2/m2)     =      1.00
-      Total above ground biomass (kg/ha) =  7016.9
+      Days after sowing      =   212
+      bolls/m2               =   103.2        Lint (kg/ha)            =   1909.9
+      N uptake (kg/ha)       =   184.9        bolls sc (g/boll)       =      4.6
+      max squares das (days) =   212          max lai das (days)      =    204
+      maximum squares/m2     =   73.8        maximum lai (m2/m2)     =      1.33
+      Total above ground biomass (kg/ha) =  14619.8
 
 
+      Total green biomass (g/m2) =  971.6
+      Total sensced biomass (g/m2) =  12.9
+      Total shed biomass (g/m2) =  98.6
+      (Total fruit shed biomass (g/m2) =  40.9)
+      Total harvested biomass (g/m2) =  477.5
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 20 October 2004(Day of year=294), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -696,6 +787,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 20 October 2004(Day of year=294), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -736,29 +830,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 29 October 2004 (Day of year=303), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 20 December 2004(Day of year=355), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -173.45232 (kg/ha), depth = 50 (mm), type = urea_n
-8 March 2005 (Day of year=67), cotton: 
+     Manager sending message :- fertiliser apply  amount = -155.83817 (kg/ha), depth = 50 (mm), type = urea_n
+1 March 2005 (Day of year=60), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+1 March 2005(Day of year=60), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+1 March 2005 (Day of year=60), cotton: 
          Defoliant spray   1
-18 March 2005 (Day of year=77), cotton: 
-         Crop to be picked and terminated.
-18 March 2005(Day of year=77), paddock.Harvesting rule: 
+9 March 2005 (Day of year=68), cotton: 
+         Crop ready for harvest.
+9 March 2005(Day of year=68), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   149
-      bolls/m2               =   91.7        Lint (kg/ha)            =   1568.4
-      N uptake (kg/ha)       =    133.3        bolls sc (g/boll)       =      4.3
-      max squares das (days) =   92          max lai das (days)      =    109
-      maximum squares/m2     =   93.1        maximum lai (m2/m2)     =      1.02
-      Total above ground biomass (kg/ha) =  6248.4
+      Days after sowing      =   140
+      bolls/m2               =   59.1        Lint (kg/ha)            =   891.0
+      N uptake (kg/ha)       =   103.3        bolls sc (g/boll)       =      3.8
+      max squares das (days) =   90          max lai das (days)      =    102
+      maximum squares/m2     =   92.4        maximum lai (m2/m2)     =      0.83
+      Total above ground biomass (kg/ha) =  5740.0
 
 
+      Total green biomass (g/m2) =  320.9
+      Total sensced biomass (g/m2) =  30.4
+      Total shed biomass (g/m2) =  69.2
+      (Total fruit shed biomass (g/m2) =  35.2)
+      Total harvested biomass (g/m2) =  222.8
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 10 November 2005(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -786,6 +896,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 10 November 2005(Day of year=314), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -826,25 +939,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 19 November 2005 (Day of year=323), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 10 January 2006(Day of year=10), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -303.47562 (kg/ha), depth = 50 (mm), type = urea_n
-9 May 2006(Day of year=129), paddock.Harvesting rule: 
+     Manager sending message :- fertiliser apply  amount = -315.21167 (kg/ha), depth = 50 (mm), type = urea_n
+18 March 2006 (Day of year=77), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+18 March 2006(Day of year=77), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+18 March 2006 (Day of year=77), cotton: 
+         Defoliant spray   1
+20 March 2006 (Day of year=79), cotton: 
+         Crop ready for harvest.
+20 March 2006(Day of year=79), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   180
-      bolls/m2               =   67.3        Lint (kg/ha)            =   1368.1
-      N uptake (kg/ha)       =    86.6        bolls sc (g/boll)       =      5.1
-      max squares das (days) =   74          max lai das (days)      =    87
-      maximum squares/m2     =   65.5        maximum lai (m2/m2)     =      0.39
-      Total above ground biomass (kg/ha) =  4391.1
+      Days after sowing      =   130
+      bolls/m2               =   52.8        Lint (kg/ha)            =   1091.7
+      N uptake (kg/ha)       =   67.8        bolls sc (g/boll)       =      5.2
+      max squares das (days) =   74          max lai das (days)      =    86
+      maximum squares/m2     =   65.3        maximum lai (m2/m2)     =      0.35
+      Total above ground biomass (kg/ha) =  6993.0
 
 
+      Total green biomass (g/m2) =  417.7
+      Total sensced biomass (g/m2) =  8.6
+      Total shed biomass (g/m2) =  49.4
+      (Total fruit shed biomass (g/m2) =  31.5)
+      Total harvested biomass (g/m2) =  272.9
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 10 November 2006(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -872,6 +1005,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 10 November 2006(Day of year=314), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -912,25 +1048,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 19 November 2006 (Day of year=323), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 10 January 2007(Day of year=10), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -495.59280 (kg/ha), depth = 50 (mm), type = urea_n
-9 March 2007(Day of year=68), paddock.Harvesting rule: 
+     Manager sending message :- fertiliser apply  amount = -554.12750 (kg/ha), depth = 50 (mm), type = urea_n
+1 March 2007 (Day of year=60), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+1 March 2007(Day of year=60), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+1 March 2007 (Day of year=60), cotton: 
+         Defoliant spray   1
+8 March 2007 (Day of year=67), cotton: 
+         Crop ready for harvest.
+8 March 2007(Day of year=67), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   119
-      bolls/m2               =   17.0        Lint (kg/ha)            =   274.5
-      N uptake (kg/ha)       =    36.3        bolls sc (g/boll)       =      4.0
-      max squares das (days) =   65          max lai das (days)      =    8
-      maximum squares/m2     =   51.5        maximum lai (m2/m2)     =      0.29
-      Total above ground biomass (kg/ha) =  1726.7
+      Days after sowing      =   118
+      bolls/m2               =   38.0        Lint (kg/ha)            =   588.8
+      N uptake (kg/ha)       =   56.3        bolls sc (g/boll)       =      3.9
+      max squares das (days) =   72          max lai das (days)      =    83
+      maximum squares/m2     =   74.3        maximum lai (m2/m2)     =      0.33
+      Total above ground biomass (kg/ha) =  3797.7
 
 
+      Total green biomass (g/m2) =  219.8
+      Total sensced biomass (g/m2) =  12.8
+      Total shed biomass (g/m2) =  60.3
+      (Total fruit shed biomass (g/m2) =  41.5)
+      Total harvested biomass (g/m2) =  147.2
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 27 October 2007(Day of year=300), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -958,6 +1114,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 27 October 2007(Day of year=300), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -998,27 +1157,49 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 3 November 2007 (Day of year=307), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 27 December 2007(Day of year=361), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -666.12274 (kg/ha), depth = 50 (mm), type = urea_n
-29 April 2008 (Day of year=120), cotton: 
+     Manager sending message :- fertiliser apply  amount = -761.10175 (kg/ha), depth = 50 (mm), type = urea_n
+28 April 2008 (Day of year=119), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+28 April 2008(Day of year=119), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+28 April 2008 (Day of year=119), cotton: 
          Defoliant spray   1
-29 April 2008(Day of year=120), paddock.Harvesting rule: 
+29 April 2008 (Day of year=120), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+30 April 2008 (Day of year=121), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+6 May 2008 (Day of year=127), cotton: 
+         Crop ready for harvest.
+6 May 2008(Day of year=127), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   185
-      bolls/m2               =   67.7        Lint (kg/ha)            =   1328.8
-      N uptake (kg/ha)       =    156.7        bolls sc (g/boll)       =      4.9
-      max squares das (days) =   79          max lai das (days)      =    138
-      maximum squares/m2     =   70.9        maximum lai (m2/m2)     =      0.90
-      Total above ground biomass (kg/ha) =  7600.2
+      Days after sowing      =   192
+      bolls/m2               =   86.0        Lint (kg/ha)            =   1767.5
+      N uptake (kg/ha)       =   205.2        bolls sc (g/boll)       =      5.1
+      max squares das (days) =   80          max lai das (days)      =    144
+      maximum squares/m2     =   80.8        maximum lai (m2/m2)     =      1.32
+      Total above ground biomass (kg/ha) =  11903.1
 
 
+      Total green biomass (g/m2) =  686.1
+      Total sensced biomass (g/m2) =  62.3
+      Total shed biomass (g/m2) =  105.6
+      (Total fruit shed biomass (g/m2) =  41.1)
+      Total harvested biomass (g/m2) =  441.9
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 7 October 2008(Day of year=281), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1046,6 +1227,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 7 October 2008(Day of year=281), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1086,29 +1270,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 18 October 2008 (Day of year=292), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 7 December 2008(Day of year=342), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -536.83795 (kg/ha), depth = 50 (mm), type = urea_n
-22 February 2009 (Day of year=53), cotton: 
+     Manager sending message :- fertiliser apply  amount = -708.19489 (kg/ha), depth = 50 (mm), type = urea_n
+18 February 2009 (Day of year=49), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+18 February 2009(Day of year=49), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+18 February 2009 (Day of year=49), cotton: 
          Defoliant spray   1
-4 March 2009 (Day of year=63), cotton: 
-         Crop to be picked and terminated.
-4 March 2009(Day of year=63), paddock.Harvesting rule: 
+26 February 2009 (Day of year=57), cotton: 
+         Crop ready for harvest.
+26 February 2009(Day of year=57), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   148
-      bolls/m2               =   67.3        Lint (kg/ha)            =   1120.7
-      N uptake (kg/ha)       =    124.5        bolls sc (g/boll)       =      4.2
-      max squares das (days) =   96          max lai das (days)      =    10
-      maximum squares/m2     =   80.6        maximum lai (m2/m2)     =      0.98
-      Total above ground biomass (kg/ha) =  5571.4
+      Days after sowing      =   142
+      bolls/m2               =   42.6        Lint (kg/ha)            =   689.4
+      N uptake (kg/ha)       =   91.3        bolls sc (g/boll)       =      4.0
+      max squares das (days) =   96          max lai das (days)      =    97
+      maximum squares/m2     =   83.9        maximum lai (m2/m2)     =      0.65
+      Total above ground biomass (kg/ha) =  4844.9
 
 
+      Total green biomass (g/m2) =  274.6
+      Total sensced biomass (g/m2) =  37.6
+      Total shed biomass (g/m2) =  61.3
+      (Total fruit shed biomass (g/m2) =  44.5)
+      Total harvested biomass (g/m2) =  172.3
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 29 October 2009(Day of year=302), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1136,6 +1336,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 29 October 2009(Day of year=302), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1176,29 +1379,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 6 November 2009 (Day of year=310), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 29 December 2009(Day of year=363), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -621.12238 (kg/ha), depth = 50 (mm), type = urea_n
-25 March 2010 (Day of year=84), cotton: 
+     Manager sending message :- fertiliser apply  amount = -832.53308 (kg/ha), depth = 50 (mm), type = urea_n
+29 March 2010 (Day of year=88), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+29 March 2010(Day of year=88), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+29 March 2010 (Day of year=88), cotton: 
          Defoliant spray   1
-4 April 2010 (Day of year=94), cotton: 
-         Crop to be picked and terminated.
-4 April 2010(Day of year=94), paddock.Harvesting rule: 
+10 April 2010 (Day of year=100), cotton: 
+         Crop ready for harvest.
+10 April 2010(Day of year=100), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   157
-      bolls/m2               =   81.4        Lint (kg/ha)            =   1626.3
-      N uptake (kg/ha)       =    140.7        bolls sc (g/boll)       =      5.0
-      max squares das (days) =   89          max lai das (days)      =    121
-      maximum squares/m2     =   82.2        maximum lai (m2/m2)     =      0.88
-      Total above ground biomass (kg/ha) =  6631.7
+      Days after sowing      =   163
+      bolls/m2               =   73.2        Lint (kg/ha)            =   1562.1
+      N uptake (kg/ha)       =   146.6        bolls sc (g/boll)       =      5.3
+      max squares das (days) =   89          max lai das (days)      =    136
+      maximum squares/m2     =   78.0        maximum lai (m2/m2)     =      0.84
+      Total above ground biomass (kg/ha) =  11126.7
 
 
+      Total green biomass (g/m2) =  718.1
+      Total sensced biomass (g/m2) =  4.1
+      Total shed biomass (g/m2) =  116.8
+      (Total fruit shed biomass (g/m2) =  52.8)
+      Total harvested biomass (g/m2) =  390.5
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 9 November 2010(Day of year=313), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1226,6 +1445,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 9 November 2010(Day of year=313), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1266,25 +1488,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 16 November 2010 (Day of year=320), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 9 January 2011(Day of year=9), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -244.52330 (kg/ha), depth = 50 (mm), type = urea_n
-25 April 2011(Day of year=115), paddock.Harvesting rule: 
+     Manager sending message :- fertiliser apply  amount = -314.60547 (kg/ha), depth = 50 (mm), type = urea_n
+11 March 2011 (Day of year=70), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+11 March 2011(Day of year=70), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+11 March 2011 (Day of year=70), cotton: 
+         Defoliant spray   1
+16 March 2011 (Day of year=75), cotton: 
+         Crop ready for harvest.
+16 March 2011(Day of year=75), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   167
-      bolls/m2               =   82.3        Lint (kg/ha)            =   1397.3
-      N uptake (kg/ha)       =    104.9        bolls sc (g/boll)       =      4.2
+      Days after sowing      =   127
+      bolls/m2               =   60.7        Lint (kg/ha)            =   929.5
+      N uptake (kg/ha)       =   87.2        bolls sc (g/boll)       =      3.8
       max squares das (days) =   87          max lai das (days)      =    90
-      maximum squares/m2     =   94.9        maximum lai (m2/m2)     =      0.67
-      Total above ground biomass (kg/ha) =  4970.5
+      maximum squares/m2     =   97.4        maximum lai (m2/m2)     =      0.65
+      Total above ground biomass (kg/ha) =  5785.4
 
 
+      Total green biomass (g/m2) =  342.8
+      Total sensced biomass (g/m2) =  3.3
+      Total shed biomass (g/m2) =  114.2
+      (Total fruit shed biomass (g/m2) =  73.8)
+      Total harvested biomass (g/m2) =  232.4
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 1 October 2011(Day of year=274), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1312,6 +1554,9 @@ Paddock:
          fburr      =  1.23
          rate_emergence       =  1.0
          background_retention =  0.90
+
+
+         co2 at  400 ppm
 
 1 October 2011(Day of year=274), paddock.Sowing fertiliser: 
      Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
@@ -1352,31 +1597,45 @@ Paddock:
         -----------------------------
 
 
+Cotton development to First Square using RateOfDevelopment 
 15 October 2011 (Day of year=288), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 1 December 2011(Day of year=335), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -383.72687 (kg/ha), depth = 50 (mm), type = urea_n
-27 March 2012 (Day of year=87), cotton: 
+     Manager sending message :- fertiliser apply  amount = -467.87140 (kg/ha), depth = 50 (mm), type = urea_n
+5 April 2012 (Day of year=96), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+5 April 2012(Day of year=96), paddock.Harvesting rule: 
+     Manager sending message :- cotton defoliate
+5 April 2012 (Day of year=96), cotton: 
          Defoliant spray   1
-6 April 2012 (Day of year=97), cotton: 
-         Defoliant spray   2
-16 April 2012 (Day of year=107), cotton: 
-         Crop to be picked and terminated.
-16 April 2012(Day of year=107), paddock.Harvesting rule: 
+13 April 2012 (Day of year=104), cotton: 
+         Crop ready for harvest.
+13 April 2012(Day of year=104), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   198
-      bolls/m2               =   64.1        Lint (kg/ha)            =   1339.7
-      N uptake (kg/ha)       =    144.7        bolls sc (g/boll)       =      5.2
-      max squares das (days) =   106          max lai das (days)      =    161
-      maximum squares/m2     =   91.1        maximum lai (m2/m2)     =      1.32
-      Total above ground biomass (kg/ha) =  6042.1
+      Days after sowing      =   195
+      bolls/m2               =   77.9        Lint (kg/ha)            =   1491.0
+      N uptake (kg/ha)       =   165.8        bolls sc (g/boll)       =      4.8
+      max squares das (days) =   110          max lai das (days)      =    147
+      maximum squares/m2     =   97.4        maximum lai (m2/m2)     =      1.66
+      Total above ground biomass (kg/ha) =  9236.3
 
 
+      Total green biomass (g/m2) =  517.4
+      Total sensced biomass (g/m2) =  33.4
+      Total shed biomass (g/m2) =  148.6
+      (Total fruit shed biomass (g/m2) =  58.9)
+      Total harvested biomass (g/m2) =  372.8
+
+
+     Manager sending message :- cotton end_crop
+ 
+ ** Cotton Component Reset 
+ 
 31 August 2012(Day of year=244), clock: 
      Simulation is terminating due to end criteria being met.
 

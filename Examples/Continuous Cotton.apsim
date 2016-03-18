@@ -1,4 +1,4 @@
-<folder version="36" name="Cotton Simulations">
+<folder version="36" creator="Apsim 7.8-r3857" name="Cotton Simulations">
   <simulation name="Continuous Dryland Cotton">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\WeeWaa1889_2012.met</filename>
@@ -1429,7 +1429,7 @@
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">0</esw_amount>
             <category type="category" description="Sowing parameters" />
             <crop type="crop" description="Enter name of crop to sow : ">cotton</crop>
-            <density type="text" description="Enter sowing density  (plants/m2 in row) : ">10</density>
+            <density type="text" description="Enter sowing density  (plants/m in row) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">S71BR</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
@@ -1460,14 +1460,20 @@
           <script>
             <text>
            if ('[crop]' = 'cotton') then
-              if ([crop].ozcot_status &gt; 0) then
-                  [crop] harvest
-              endif
-           elseif ([crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
-</text>
+
+               !!  cotton defoliation
+                if ([crop].stageName = 'Mature'  and  [crop].defol_das = 0) then
+                    [crop] defoliate
+                endif
+          
+                !! cotton harvest
+                if ([crop].stageName = 'HarvestMature' or [crop].PlantStatus = 'dead') then
+                   !!report_harvest do_output
+                   [crop] harvest
+                   [crop] end_crop
+                endif
+
+           endif</text>
             <event>end_of_day</event>
           </script>
         </manager>
@@ -2989,7 +2995,7 @@
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">0</esw_amount>
             <category type="category" description="Sowing parameters" />
             <crop type="crop" description="Enter name of crop to sow : ">cotton</crop>
-            <density type="text" description="Enter sowing density  (plants/m2 in row) : ">12</density>
+            <density type="text" description="Enter sowing density  (plants/m in row) : ">12</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">S71BR</cultivar>
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
@@ -3019,13 +3025,21 @@
           </ui>
           <script>
             <text>
+
            if ('[crop]' = 'cotton') then
-              if ([crop].ozcot_status &gt; 0) then
-                  [crop] harvest
-              endif
-           elseif ([crop].StageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then
-              [crop]  harvest
-              [crop]  end_crop
+
+               !!  cotton defoliation
+                if ([crop].stageName = 'Mature'  and  [crop].defol_das = 0) then
+                    [crop] defoliate
+                endif
+          
+                !! cotton harvest
+                if ([crop].stageName = 'HarvestMature' or [crop].PlantStatus = 'dead') then
+                   !!report_harvest do_output
+                   [crop] harvest
+                   [crop] end_crop
+                endif
+
            endif
 </text>
             <event>end_of_day</event>
