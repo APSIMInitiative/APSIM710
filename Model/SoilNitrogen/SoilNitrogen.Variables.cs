@@ -1214,6 +1214,14 @@ public partial class SoilNitrogen
     }
 
     /// <summary>
+    /// Patch age for forced merging (years)
+    /// </summary>
+    [Param]
+    [Units("years")]
+    [Description("Relative difference in total organic carbon")]
+    public double ageForForcedMerge;
+
+    /// <summary>
     /// Relative difference in total organic carbon (0-1)
     /// </summary>
     [Param]

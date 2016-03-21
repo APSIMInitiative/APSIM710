@@ -575,6 +575,7 @@ public partial class SoilNitrogen
         {
             if ((PatchAmalgamationApproach.ToLower() == "CompareAll".ToLower()) ||
                 (PatchAmalgamationApproach.ToLower() == "CompareBase".ToLower()) ||
+                (PatchAmalgamationApproach.ToLower() == "CompareAge".ToLower()) ||
                 (PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower()))
             {
                 CheckPatchAutoAmalgamation();

@@ -85,6 +85,9 @@ public partial class SoilNitrogen
             // Existing area is smaller than new patch area, cannot continue
             writeMessage(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
                                + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command will be ignored");
+            // VOS altered to prevent users inadvertently doing things they should not
+            //throw new Exception(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
+            //                   + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command cannot be executed");
         }
         else
         {  // check the area for each patch
@@ -99,6 +102,9 @@ public partial class SoilNitrogen
                         + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddCNPatch:");
                     Console.WriteLine("   attempt to create a new patch with area too small or negative ("
                         + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created.");
+                    // VOS altered to prevent users inadvertently doing things they should not
+                    //throw new Exception("   attempt to create a new patch with area too small or negative ("
+                    //    + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created. Command cannot be executed");
                 }
                 else if (OldPatch_NewArea < MinimumPatchArea)
                 {  // remaining area is too small or negative, patch will be created but old one will be deleted
@@ -276,6 +282,48 @@ public partial class SoilNitrogen
                     k += 1; // go to next patch
                 }
             } while (k < nPatches - 1);
+        }
+        else if ((PatchAmalgamationApproach.ToLower() == "CompareAge".ToLower()) && Clock.is_end_month)
+        {
+            // VOS added 2016-03-19 an additional option to simple merge if the patches are greater than 4 years old - should make this user resettable
+            // VOS suspects that RC will want to tidy this up!
+
+            // B2. initialise the list of patches to be merged/deleted
+            List<int> PatchesToDelete = new List<int>();
+
+            // B3. go through all patches and check whether they are similar enough to any other
+            int k = 0;  // will always merge into patch 0
+            //do
+            //{
+                //for (int j = k + 1; j < nPatches; j++)  // compare to all other subsequent patches
+                for (int j = 1; j < nPatches; j++)  // compare to all other subsequent patches
+                {
+                    double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
+                    if (thisPatchAge > (ageForForcedMerge * 366.0))
+                        PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
+                }
+
+                // B4. do the actual merging (copy values from and deleted merging patches)
+                if (PatchesToDelete.Count > 0)
+                {
+                    // B4.1. Copy values between patches
+                    for (int i = 0; i < PatchesToDelete.Count; i++)
+                    {
+                        int j = PatchesToDelete[i];
+                        MergeCNValues(k, j);
+                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+                        ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
+                    }
+                    // B4.2. Delete merged patches
+                    DeletePatches(PatchesToDelete);
+                    PatchesToDelete.Clear();
+                    nPatches = Patch.Count;
+                }
+                //else
+                //{
+                //    k += 1; // go to next patch
+                //}
+            //} while (k < nPatches - 1);
         }
         else if (PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower())
         {
