@@ -24,7 +24,7 @@ Paddock:
    Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                      "Cotton2" = %apsim%\model\mvOZCOT.dll
+   Component                      "Cotton2" = %apsim%\model\Cotton.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -160,7 +160,7 @@ Paddock:
          if (cotton2.stagename = 'mature'  and  cotton2.defol_das = 0) then
              cotton2 defoliate
          endif
-         if (cotton2.stagename = 'harvestmature') then
+         if (cotton2.stagename = 'harvest_ripe') then
             report_harvest do_output
             cotton2 harvest
             cotton2 end_crop

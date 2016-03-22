@@ -26,7 +26,7 @@ Paddock:
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component            "Irrigate on event" = %apsim%\Model\Manager2.dll
-   Component                       "Cotton" = %apsim%\model\mvOZCOT.dll
+   Component                       "Cotton" = %apsim%\model\Cotton.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -113,7 +113,7 @@ Paddock:
          if (cotton.stagename = 'mature'  and  cotton.defol_das = 0) then
              cotton defoliate
          endif
-         if (cotton.stagename = 'harvestmature' or cotton.plantstatus = 'dead') then
+         if (cotton.stagename = 'harvest_ripe' or cotton.plantstatus = 'dead') then
             cotton harvest
             cotton end_crop
          endif
@@ -420,10 +420,10 @@ Cotton development to First Square using RateOfDevelopment
       N uptake (kg/ha)       =   145.0        bolls sc (g/boll)       =      3.9
       max squares das (days) =   93          max lai das (days)      =    93
       maximum squares/m2     =   143.3        maximum lai (m2/m2)     =      0.97
-      Total above ground biomass (kg/ha) =  7905.1
+      Total above ground biomass (kg/ha) =  7905.0
 
 
-      Total green biomass (g/m2) =  479.8
+      Total green biomass (g/m2) =  479.7
       Total sensced biomass (g/m2) =  47.0
       Total shed biomass (g/m2) =  128.6
       (Total fruit shed biomass (g/m2) =  83.6)
@@ -510,7 +510,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2001(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -61.62388 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -61.91814 (kg/ha), depth = 50 (mm), type = urea_n
 19 February 2002 (Day of year=50), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 19 February 2002(Day of year=50), paddock.Harvesting rule: 
@@ -620,7 +620,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2002(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -167.91566 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -168.01140 (kg/ha), depth = 50 (mm), type = urea_n
 22 February 2003 (Day of year=53), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 22 February 2003(Day of year=53), paddock.Harvesting rule: 
@@ -730,7 +730,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2003(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -200.89035 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -200.88795 (kg/ha), depth = 50 (mm), type = urea_n
 29 April 2004 (Day of year=120), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 29 April 2004(Day of year=120), paddock.Harvesting rule: 
@@ -750,10 +750,10 @@ Cotton development to First Square using RateOfDevelopment
       N uptake (kg/ha)       =   240.0        bolls sc (g/boll)       =      4.7
       max squares das (days) =   84          max lai das (days)      =    179
       maximum squares/m2     =   146.9        maximum lai (m2/m2)     =      1.76
-      Total above ground biomass (kg/ha) =  20837.2
+      Total above ground biomass (kg/ha) =  20837.4
 
 
-      Total green biomass (g/m2) =  1403.8
+      Total green biomass (g/m2) =  1403.9
       Total sensced biomass (g/m2) =  18.0
       Total shed biomass (g/m2) =  225.4
       (Total fruit shed biomass (g/m2) =  103.8)
@@ -840,7 +840,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2004(Day of year=350), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -124.80109 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -124.79221 (kg/ha), depth = 50 (mm), type = urea_n
 15 April 2005 (Day of year=105), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 15 April 2005(Day of year=105), paddock.Harvesting rule: 
@@ -950,7 +950,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2005(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -232.21182 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -232.20641 (kg/ha), depth = 50 (mm), type = urea_n
 10 February 2006 (Day of year=41), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 10 February 2006(Day of year=41), paddock.Harvesting rule: 
@@ -1060,7 +1060,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2006(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -508.36325 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -508.35831 (kg/ha), depth = 50 (mm), type = urea_n
 20 February 2007 (Day of year=51), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 20 February 2007(Day of year=51), paddock.Harvesting rule: 
@@ -1170,7 +1170,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2007(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -549.27655 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -549.27228 (kg/ha), depth = 50 (mm), type = urea_n
 22 March 2008 (Day of year=82), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 22 March 2008(Day of year=82), paddock.Harvesting rule: 
@@ -1280,7 +1280,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2008(Day of year=350), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -369.73953 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -369.73560 (kg/ha), depth = 50 (mm), type = urea_n
 26 February 2009 (Day of year=57), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 26 February 2009(Day of year=57), paddock.Harvesting rule: 
@@ -1390,7 +1390,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2009(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -507.91016 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -507.90625 (kg/ha), depth = 50 (mm), type = urea_n
 30 March 2010 (Day of year=89), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 30 March 2010(Day of year=89), paddock.Harvesting rule: 
@@ -1500,7 +1500,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2010(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -344.81796 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -344.81406 (kg/ha), depth = 50 (mm), type = urea_n
 12 March 2011 (Day of year=71), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 12 March 2011(Day of year=71), paddock.Harvesting rule: 
@@ -1610,7 +1610,7 @@ Cotton development to First Square using RateOfDevelopment
     *** Crop emerged with 12.0 plants per m sq, 100% of target population of 12.0
 
 15 December 2011(Day of year=349), paddock.Fertilise on days after sowing - top up: 
-     Manager sending message :- fertiliser apply  amount = -416.49487 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = -416.49088 (kg/ha), depth = 50 (mm), type = urea_n
 15 April 2012 (Day of year=106), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
 15 April 2012(Day of year=106), paddock.Harvesting rule: 

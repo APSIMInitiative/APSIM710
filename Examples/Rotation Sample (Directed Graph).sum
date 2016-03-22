@@ -21,7 +21,7 @@ Paddock:
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                     "chickpea" = %apsim%\Model\Plant.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
-   Component                       "cotton" = %apsim%\Model\Ozcot.dll
+   Component                       "cotton" = %apsim%\model\Cotton.dll
    Component                      "Manager" = %apsim%\Model\TclLink.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -180,32 +180,9 @@ Paddock:
            Totals  201965.9 16157.3   831.1   103.9    80.0     2.0
           ---------------------------------------------------------
 
-------- Paddock.cotton Initialisation -----------------------------------------
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
+
+------- OZCOT Initialisation ----------------------------------
+
 Manager: 
      Copyright (C) 1991-1994 The Regents of the University of California.
      Copyright (C) 1996-1997 Sun Microsystems, Inc.
@@ -255,10 +232,13 @@ stateGraph arc lappend "arc1" actions {sow_wheat}
 stateGraph arc lappend "arc1" rules {[canPlant_wheat]}
 stateGraph arc insert "Cotton" "F1" "arc5"
 stateGraph arc lappend "arc5" actions {apsimSendMessage cotton harvest}
+stateGraph arc lappend "arc5" actions {apsimSendMessage cotton end_crop}
 stateGraph arc lappend "arc5" rules {[apsimGet ozcot_status] > 0}
 stateGraph arc insert "SummerFallow2" "WinterFallow" "arc9"
 stateGraph arc lappend "arc9" actions {}
 stateGraph arc lappend "arc9" rules {[apsimGet day]  == 74}
+if {[info exists config(<self>,graphNames)]} {lappend config(<self>,graphNames) stateGraph} else {set config(<self>,graphNames) stateGraph}
+set config(<self>,initialState) ""
 
 # Support procedures
 # Can we plant a crop today?
@@ -290,28 +270,28 @@ proc canPlant_cotton {} {
 
 # Plant a crop now
 proc sow_cotton {} {
-  if {"ozcot" == "plant"} {
+  if {"cotton" == "plant"} {
      apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
              {cultivar Siok} {row_spacing 1000} \
              {skipplant 0} {skiprow 0} {crop_class plant}
-  } elseif {"ozcot" == "cropmod"} {
+  } elseif {"cotton" == "cropmod"} {
      apsimSendMessage cotton sow {plants [density]} {sowing_depth [depth]} \
              {cultivar Siok} {row_spacing 1000} {skiprow 0}
-  } elseif {"ozcot" == "growth"} {
+  } elseif {"cotton" == "growth"} {
      apsimSendMessage cotton ???
-  } elseif {"ozcot" == "ozcot"} {
+  } elseif {"cotton" == "cotton"} {
      apsimSendMessage cotton sow {plants_pm 10} {sowing_depth 30} \
              {row_spacing 1000} {skiprow 0} {cultivar Siok}
-  } elseif {"ozcot" == "oryza"} {
+  } elseif {"cotton" == "oryza"} {
      apsimSendMessage cotton sow {cultivar Siok}
-  } elseif {"ozcot" == "sorghum"} {
+  } elseif {"cotton" == "sorghum"} {
      apsimSendMessage cotton sow {plants 100} {sowing_depth 30} \
              {cultivar Siok} {row_spacing 1000} {skiprow 0} \
              {tiller_no_fertile [tiller_no_fertile]}
-  } elseif {"ozcot" == "sugar"} {
+  } elseif {"cotton" == "sugar"} {
      apsimSendMessage cotton sow {plants 100} {cultivar Siok} {sowing_depth 30}
   } else {
-    error "Unknown crop module \"ozcot\"."
+    error "Unknown crop module \"cotton\"."
   }
 }
 
@@ -355,7 +335,7 @@ proc sow_chickpea {} {
              {cultivar amethyst} {row_spacing 500} {skiprow 0}
   } elseif {"plant" == "growth"} {
      apsimSendMessage chickpea ???
-  } elseif {"plant" == "ozcot"} {
+  } elseif {"plant" == "cotton"} {
      apsimSendMessage chickpea sow {plants_pm } {sowing_depth 30} \
              {row_spacing 500} {skiprow 0} {cultivar amethyst}
   } elseif {"plant" == "oryza"} {
@@ -411,7 +391,7 @@ proc sow_wheat {} {
              {cultivar hartog} {row_spacing 250} {skiprow 0}
   } elseif {"plant" == "growth"} {
      apsimSendMessage wheat ???
-  } elseif {"plant" == "ozcot"} {
+  } elseif {"plant" == "cotton"} {
      apsimSendMessage wheat sow {plants_pm [plants_pm]} {sowing_depth 30} \
              {row_spacing 250} {skiprow 0} {cultivar hartog}
   } elseif {"plant" == "oryza"} {
@@ -434,1067 +414,166 @@ doProcess
 
      --->End
 ------- Start of simulation  --------------------------------------------------
-1 December 1940(Day of year=336), Paddock.cotton: 
-     Sow
-     
+
+1 December 1940 (Day of year=336), cotton:  
+      Sowing
+
+
         - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
+         ---------------------------------------
+         Cultivar   =  SIOK
+         percent_L  =  42.00
+         scboll     =  4.5
+         respcon    =  0.016
+         sqcon      =  0.023
          fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
+         flai       =  0.5
+         ddisq      =  420.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  180  350  380  520  660  870  1100  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+
+         co2 at  400 ppm
+
+
+
                       Crop Sowing Data
          ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            336   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-6 December 1940(Day of year=341), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
-12 May 1941(Day of year=132), Paddock.cotton: 
-         Defoliant spray    1
-22 May 1941(Day of year=142), Paddock.cotton: 
-         First Pick  172 days from sowing. There are enough bolls for a 2nd pick.
-         Crop terminated: first pick.
-     harvest
-     
-     
-     
-      Days after sowing      =    172
-      bolls/m2               =  86.77        Lint (kg/ha)           =     1391.3
-      N uptake (kg/ha)       = 157.66        bolls sc (g/boll)      =        3.8
-      max squares das (days) =     82        max lai das (days)     =    119
-      maximum squares/m2     = 176.39        maximum lai (m2/m2)    =  2.114
-      total above ground biomass (kg/ha) =     7890.5
-23 May 1941(Day of year=143), Paddock.cotton: 
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
-15 December 1941(Day of year=349), Paddock.cotton: 
-     Sow
-     
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           336    30.0    10.0    1000.0      SIOK      0
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.210 
+             15.0          0.210 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.310 
+             30.0          0.360 
+        -----------------------------
+
+
+Cotton development to First Square using RateOfDevelopment 
+6 December 1940 (Day of year=341), cotton:
+    *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
+
+29 April 1941 (Day of year=119), cotton: 
+   Crop has reached the percent open bolls as defined for maturity. Crop mature.
+11 June 1941 (Day of year=162), cotton: 
+   *** crop with open bolls frosted:  crop stage forced to 'maturity'.
+
+      Harvest
+
+
+      Days after sowing      =   192
+      bolls/m2               =   137.6        Lint (kg/ha)            =   1597.8
+      N uptake (kg/ha)       =   149.9        bolls sc (g/boll)       =      2.8
+      max squares das (days) =   86          max lai das (days)      =    120
+      maximum squares/m2     =   181.2        maximum lai (m2/m2)     =      2.08
+      Total above ground biomass (kg/ha) =  9418.4
+
+
+      Total green biomass (g/m2) =  561.4
+      Total sensced biomass (g/m2) =  0.0
+      Total shed biomass (g/m2) =  160.7
+      (Total fruit shed biomass (g/m2) =  42.7)
+      Total harvested biomass (g/m2) =  380.4
+
+
+ 
+ ** Cotton Component Reset 
+ 
+
+15 December 1941 (Day of year=349), cotton:  
+      Sowing
+
+
         - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
+         ---------------------------------------
+         Cultivar   =  SIOK
+         percent_L  =  42.00
+         scboll     =  4.5
+         respcon    =  0.016
+         sqcon      =  0.023
          fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
+         flai       =  0.5
+         ddisq      =  420.0
+         dlds_max   =  0.12
+         popcon     =  0.03633
+         acotyl     =  525.0
+         rlai       =  0.010
+         frudd      =  50  180  350  380  520  660  870  1100  
+         bltme      =  0.00  0.00  0.00  0.07  0.21  0.33  0.55  1.00  
+         wt         =  0.0104  0.0272  0.1441  0.0988  0.5042  0.9617  1.0000  0.5785  
+         fburr      =  1.23
+         rate_emergence       =  1.0
+         background_retention =  0.90
+
+
+         co2 at  400 ppm
+
+
+
                       Crop Sowing Data
          ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            349   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-20 December 1941(Day of year=354), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
-27 June 1942(Day of year=178), Paddock.cotton: 
-      *** All bolls open; crop finished.
-     harvest
-     
-     
-     
-      Days after sowing      =    194
-      bolls/m2               =   2.50        Lint (kg/ha)           =       13.9
-      N uptake (kg/ha)       =  15.38        bolls sc (g/boll)      =        1.3
-      max squares das (days) =    106        max lai das (days)     =    194
-      maximum squares/m2     =  61.05        maximum lai (m2/m2)    =  0.145
-      total above ground biomass (kg/ha) =      788.0
-28 June 1942(Day of year=179), Paddock.cotton: 
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
-14 December 1942(Day of year=348), Paddock.cotton: 
-     Sow
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
-         fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            348   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-20 December 1942(Day of year=354), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
-5 May 1943(Day of year=125), Paddock.cotton: 
-      *** All bolls open; crop finished.
-     harvest
-     
-     
-     
-      Days after sowing      =    142
-      bolls/m2               =  34.56        Lint (kg/ha)           =      352.1
-      N uptake (kg/ha)       =  70.06        bolls sc (g/boll)      =        2.4
-      max squares das (days) =     65        max lai das (days)     =     75
-      maximum squares/m2     = 119.79        maximum lai (m2/m2)    =  0.728
-      total above ground biomass (kg/ha) =     3822.4
-6 May 1943(Day of year=126), Paddock.cotton: 
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
-2 June 1943(Day of year=153), Paddock.chickpea: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = amethyst
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       2 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     515     515 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    10.7      17 (h)
-              y_tt_end_of_juvenile       =     446       0 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      33      33 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     450     450 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     690     690 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      60 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.50       0.50
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.100          0.210       1.000
-         150.0     0.100          0.210       1.000
-         300.0     0.080          0.220       1.000
-         300.0     0.060          0.270       1.000
-         300.0     0.040          0.290       1.000
-         300.0     0.020          0.340       1.000
-         300.0     0.010          0.380       1.000
-         -----------------------------------------------
-         Extractable SW:   198mm in  1800mm total depth ( 11%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            153   30.0   25.0  500.0   0.0   0.0 amethyst
-         ------------------------------------------------
-     
-4 June 1943(Day of year=155), Paddock.chickpea: 
-      stage 2.0 germination
-10 June 1943(Day of year=161), Paddock.chickpea: 
-      stage 3.0 emergence
-                     biomass =           5.00 (g/m^2)   lai          =   0.025 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =    6.96 (mm)
-29 July 1943(Day of year=210), Paddock.chickpea: 
-      stage 4.0 end_of_juvenile
-                     biomass =          12.72 (g/m^2)   lai          =   0.153 (m^2/m^2)
-                     stover N conc =     4.38 (%)    extractable sw =    7.66 (mm)
-27 August 1943(Day of year=239), Paddock.chickpea: 
-      stage 5.0 floral_initiation
-                     biomass =          62.61 (g/m^2)   lai          =   1.083 (m^2/m^2)
-                     stover N conc =     2.57 (%)    extractable sw =   14.99 (mm)
-29 August 1943(Day of year=241), Paddock.chickpea: 
-      stage 6.0 flowering
-                     biomass =          70.20 (g/m^2)   lai          =   1.172 (m^2/m^2)
-                     stover N conc =     2.39 (%)    extractable sw =   13.58 (mm)
-26 September 1943(Day of year=269), Paddock.chickpea: 
-      stage 7.0 start_grain_fill
-                     biomass =         148.97 (g/m^2)   lai          =   0.627 (m^2/m^2)
-                     stover N conc =     1.96 (%)    extractable sw =    3.44 (mm)
-30 October 1943(Day of year=303), Paddock.chickpea: 
-      stage 8.0 end_grain_fill
-                     biomass =         161.07 (g/m^2)   lai          =   0.065 (m^2/m^2)
-                     stover N conc =     1.29 (%)    extractable sw =    0.44 (mm)
-2 November 1943(Day of year=306), Paddock.chickpea: 
-      stage 9.0 maturity
-                     biomass =         161.21 (g/m^2)   lai          =   0.050 (m^2/m^2)
-                     stover N conc =     1.29 (%)    extractable sw =    0.36 (mm)
-3 November 1943(Day of year=307), Paddock.chickpea: 
-      stage 10.0 harvest_ripe
-                     biomass =         161.23 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.29 (%)    extractable sw =    0.33 (mm)
-     
-      flowering day          =  241                           stover (kg/ha)         =     1303.1
-      maturity day           =  306                           grain yield (kg/ha)    =      309.2
-      grain % water content  =   12.0                         grain yield wet (kg/ha)=      351.3
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      1.725
-      total above ground biomass (kg/ha)    =     1612.3
-      live above ground biomass (kg/ha)     =     1612.3
-      green above ground biomass (kg/ha)    =     1014.8
-      senesced above ground biomass (kg/ha) =      597.5
-      number of leaves       =    218.6
-      DM Root:Shoot ratio    =     0.40                       Harvest Index          =       0.19
-      Stover C:N ratio       =    28.95                       Root C:N ratio         =      26.32
-      grain N percent        =     3.60                       total N content (kg/ha)=      29.14
-      grain N uptake (kg/ha) =    11.13                       senesced N content (kg/ha)=    8.89
-      green N content (kg/ha)=     9.12
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.107        0.136        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.007        0.010        0.038        0.000
-         floral_initiation    to flowering               0.000        0.027        0.259        0.000
-         flowering            to start_grain_fill        0.424        0.491        0.070        0.000
-         start_grain_fill     to end_grain_fill          0.639        0.727        0.296        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                1303.1                     0.0
-                          N  (kg/ha) =                  18.01                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                 309.2                     0.0
-                          N  (kg/ha) =                  11.13                    0.00
-     
-      stage 11.0 end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                   648.3
-                          N  (kg/ha) =                   0.00                    9.85
-     
-28 October 1944(Day of year=302), Paddock.cotton: 
-     Sow
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
-         fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            302   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-3 November 1944(Day of year=308), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
-10 March 1945(Day of year=69), Paddock.cotton: 
-      *** All bolls open; crop finished.
-     harvest
-     
-     
-     
-      Days after sowing      =    133
-      bolls/m2               =  42.51        Lint (kg/ha)           =      603.9
-      N uptake (kg/ha)       =  83.10        bolls sc (g/boll)      =        3.4
-      max squares das (days) =     67        max lai das (days)     =     70
-      maximum squares/m2     = 144.97        maximum lai (m2/m2)    =  0.599
-      total above ground biomass (kg/ha) =     4149.1
-11 March 1945(Day of year=70), Paddock.cotton: 
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
-2 June 1945(Day of year=153), Paddock.chickpea: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = amethyst
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       2 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     515     515 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    10.7      17 (h)
-              y_tt_end_of_juvenile       =     446       0 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      33      33 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     450     450 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     690     690 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      60 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.50       0.50
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.100          0.210       1.000
-         150.0     0.100          0.210       1.000
-         300.0     0.080          0.220       1.000
-         300.0     0.060          0.270       1.000
-         300.0     0.040          0.290       1.000
-         300.0     0.020          0.340       1.000
-         300.0     0.010          0.380       1.000
-         -----------------------------------------------
-         Extractable SW:   198mm in  1800mm total depth ( 11%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            153   30.0   25.0  500.0   0.0   0.0 amethyst
-         ------------------------------------------------
-     
-4 June 1945(Day of year=155), Paddock.chickpea: 
-      stage 2.0 germination
-8 June 1945(Day of year=159), Paddock.chickpea: 
-      stage 3.0 emergence
-                     biomass =           5.00 (g/m^2)   lai          =   0.025 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   24.97 (mm)
-19 July 1945(Day of year=200), Paddock.chickpea: 
-      stage 4.0 end_of_juvenile
-                     biomass =          15.57 (g/m^2)   lai          =   0.245 (m^2/m^2)
-                     stover N conc =     4.46 (%)    extractable sw =  157.46 (mm)
-17 August 1945(Day of year=229), Paddock.chickpea: 
-      stage 5.0 floral_initiation
-                     biomass =          84.06 (g/m^2)   lai          =   1.438 (m^2/m^2)
-                     stover N conc =     3.78 (%)    extractable sw =  149.84 (mm)
-19 August 1945(Day of year=231), Paddock.chickpea: 
-      stage 6.0 flowering
-                     biomass =          96.30 (g/m^2)   lai          =   1.557 (m^2/m^2)
-                     stover N conc =     3.53 (%)    extractable sw =  146.01 (mm)
-17 September 1945(Day of year=260), Paddock.chickpea: 
-      stage 7.0 start_grain_fill
-                     biomass =         325.59 (g/m^2)   lai          =   3.150 (m^2/m^2)
-                     stover N conc =     1.85 (%)    extractable sw =  100.15 (mm)
-25 October 1945(Day of year=298), Paddock.chickpea: 
-      stage 8.0 end_grain_fill
-                     biomass =         585.64 (g/m^2)   lai          =   0.881 (m^2/m^2)
-                     stover N conc =     1.78 (%)    extractable sw =   12.25 (mm)
-27 October 1945(Day of year=300), Paddock.chickpea: 
-      stage 9.0 maturity
-                     biomass =         588.78 (g/m^2)   lai          =   0.755 (m^2/m^2)
-                     stover N conc =     1.82 (%)    extractable sw =   10.90 (mm)
-28 October 1945(Day of year=301), Paddock.chickpea: 
-      stage 10.0 harvest_ripe
-                     biomass =         590.56 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.83 (%)    extractable sw =   10.29 (mm)
-     
-      flowering day          =  231                           stover (kg/ha)         =     3556.9
-      maturity day           =  300                           grain yield (kg/ha)    =     2348.7
-      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2668.9
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      3.469
-      total above ground biomass (kg/ha)    =     5905.6
-      live above ground biomass (kg/ha)     =     5905.6
-      green above ground biomass (kg/ha)    =     4484.6
-      senesced above ground biomass (kg/ha) =     1421.0
-      number of leaves       =    311.2
-      DM Root:Shoot ratio    =     0.23                       Harvest Index          =       0.40
-      Stover C:N ratio       =    23.59                       Root C:N ratio         =      26.14
-      grain N percent        =     3.60                       total N content (kg/ha)=     144.87
-      grain N uptake (kg/ha) =    84.55                       senesced N content (kg/ha)=   21.31
-      green N content (kg/ha)=    39.00
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.000        0.000        0.000        0.000
-         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.358        0.424        0.000        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                3556.9                     0.0
-                          N  (kg/ha) =                  60.32                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                2348.7                     0.0
-                          N  (kg/ha) =                  84.55                    0.00
-     
-      stage 11.0 end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  1352.1
-                          N  (kg/ha) =                   0.00                   20.69
-     
-19 November 1946(Day of year=323), Paddock.cotton: 
-     Sow
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
-         fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            323   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-25 November 1946(Day of year=329), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
-31 May 1947(Day of year=151), Paddock.cotton: 
-         Defoliant spray    1
-10 June 1947(Day of year=161), Paddock.cotton: 
-         Defoliant spray    2
-12 June 1947(Day of year=163), Paddock.cotton: 
-      *** Crop terminated by frost.
-     harvest
-     
-     
-     
-      Days after sowing      =    205
-      bolls/m2               = 103.90        Lint (kg/ha)           =     1354.0
-      N uptake (kg/ha)       =  87.16        bolls sc (g/boll)      =        3.1
-      max squares das (days) =     71        max lai das (days)     =    119
-      maximum squares/m2     = 152.98        maximum lai (m2/m2)    =  1.560
-      total above ground biomass (kg/ha) =     9998.7
-13 June 1947(Day of year=164), Paddock.cotton: 
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
-16 October 1947(Day of year=289), Paddock.cotton: 
-     Sow
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
-         fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            289   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-23 October 1947(Day of year=296), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
-7 April 1948(Day of year=98), Paddock.cotton: 
-      *** All bolls open; crop finished.
-     harvest
-     
-     
-     
-      Days after sowing      =    174
-      bolls/m2               =  47.83        Lint (kg/ha)           =      485.1
-      N uptake (kg/ha)       =  67.47        bolls sc (g/boll)      =        2.4
-      max squares das (days) =     97        max lai das (days)     =    102
-      maximum squares/m2     = 148.47        maximum lai (m2/m2)    =  1.515
-      total above ground biomass (kg/ha) =     4563.4
-8 April 1948(Day of year=99), Paddock.cotton: 
-     Initialising
-     
-         - Reading constants
-     
-        - Reading root profile parameters
-     
-     
-     
-             Root Profile
-     ------------------------
-          Layer       Lower
-          Depth       Limit
-          (cm)      (mm/mm)
-     ------------------------
-           15.0          0.210
-           15.0          0.210
-           30.0          0.220
-           30.0          0.250
-           30.0          0.270
-           30.0          0.310
-           30.0          0.360
-     ------------------------
-     
-     
-     
-9 June 1948(Day of year=161), Paddock.chickpea: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = amethyst
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       2 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     515     515 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    10.7      17 (h)
-              y_tt_end_of_juvenile       =     446       0 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      33      33 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     450     450 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     690     690 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      60 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0100     0.0100
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.50       0.50
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.100          0.210       1.000
-         150.0     0.100          0.210       1.000
-         300.0     0.080          0.220       1.000
-         300.0     0.060          0.270       1.000
-         300.0     0.040          0.290       1.000
-         300.0     0.020          0.340       1.000
-         300.0     0.010          0.380       1.000
-         -----------------------------------------------
-         Extractable SW:   198mm in  1800mm total depth ( 11%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            161   30.0   25.0  500.0   0.0   0.0 amethyst
-         ------------------------------------------------
-     
-11 June 1948(Day of year=163), Paddock.chickpea: 
-      stage 2.0 germination
-16 June 1948(Day of year=168), Paddock.chickpea: 
-      stage 3.0 emergence
-                     biomass =           5.00 (g/m^2)   lai          =   0.025 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   29.72 (mm)
-1 August 1948(Day of year=214), Paddock.chickpea: 
-      stage 4.0 end_of_juvenile
-                     biomass =          19.70 (g/m^2)   lai          =   0.329 (m^2/m^2)
-                     stover N conc =     4.37 (%)    extractable sw =   80.37 (mm)
-26 August 1948(Day of year=239), Paddock.chickpea: 
-      stage 5.0 floral_initiation
-                     biomass =         101.11 (g/m^2)   lai          =   1.596 (m^2/m^2)
-                     stover N conc =     3.39 (%)    extractable sw =   57.49 (mm)
-29 August 1948(Day of year=242), Paddock.chickpea: 
-      stage 6.0 flowering
-                     biomass =         119.58 (g/m^2)   lai          =   1.754 (m^2/m^2)
-                     stover N conc =     3.13 (%)    extractable sw =   52.72 (mm)
-27 September 1948(Day of year=271), Paddock.chickpea: 
-      stage 7.0 start_grain_fill
-                     biomass =         326.63 (g/m^2)   lai          =   2.656 (m^2/m^2)
-                     stover N conc =     1.86 (%)    extractable sw =   24.16 (mm)
-1 November 1948(Day of year=306), Paddock.chickpea: 
-      stage 8.0 end_grain_fill
-                     biomass =         367.38 (g/m^2)   lai          =   0.143 (m^2/m^2)
-                     stover N conc =     1.41 (%)    extractable sw =    0.41 (mm)
-4 November 1948(Day of year=309), Paddock.chickpea: 
-      stage 9.0 maturity
-                     biomass =         367.61 (g/m^2)   lai          =   0.108 (m^2/m^2)
-                     stover N conc =     1.41 (%)    extractable sw =    0.33 (mm)
-5 November 1948(Day of year=310), Paddock.chickpea: 
-      stage 10.0 harvest_ripe
-                     biomass =         367.65 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.42 (%)    extractable sw =    0.31 (mm)
-     
-      flowering day          =  242                           stover (kg/ha)         =     2816.4
-      maturity day           =  309                           grain yield (kg/ha)    =      860.0
-      grain % water content  =   12.0                         grain yield wet (kg/ha)=      977.3
-      grain wt (g)           =    0.000                       grains/m^2             =        0.0
-      grains/plant           =    0.0                         maximum lai            =      2.817
-      total above ground biomass (kg/ha)    =     3676.5
-      live above ground biomass (kg/ha)     =     3676.5
-      green above ground biomass (kg/ha)    =     2428.6
-      senesced above ground biomass (kg/ha) =     1247.9
-      number of leaves       =    274.5
-      DM Root:Shoot ratio    =     0.35                       Harvest Index          =       0.23
-      Stover C:N ratio       =    27.55                       Root C:N ratio         =      24.65
-      grain N percent        =     3.60                       total N content (kg/ha)=      71.85
-      grain N uptake (kg/ha) =    30.96                       senesced N content (kg/ha)=   18.70
-      green N content (kg/ha)=    22.20
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation    to flowering               0.000        0.000        0.000        0.000
-         flowering            to start_grain_fill        0.097        0.133        0.000        0.000
-         start_grain_fill     to end_grain_fill          0.805        0.898        0.178        0.000
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                2816.4                     0.0
-                          N  (kg/ha) =                  40.89                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                 860.0                     0.0
-                          N  (kg/ha) =                  30.96                    0.00
-     
-      stage 11.0 end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  1295.9
-                          N  (kg/ha) =                   0.00                   21.03
-     
-3 June 1949(Day of year=154), Paddock.wheat: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = hartog
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     545 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
-     
-        grains_per_gram_stem           =       25.0 (/g)
-        potential_grain_filling_rate   =     0.0020 (g/grain/day)
-        potential_grain_growth_rate    =     0.0010 (g/grain/day)
-        max_grain_size                 =     0.0410 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.100          0.210       1.000
-         150.0     0.100          0.210       1.000
-         300.0     0.080          0.250       1.000
-         300.0     0.060          0.280       1.000
-         300.0     0.040          0.310       1.000
-         300.0     0.020          0.370       1.000
-         300.0     0.010          0.380       1.000
-         -----------------------------------------------
-         Extractable SW:   171mm in  1800mm total depth ( 10%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            154   30.0  100.0  250.0   0.0   0.0 hartog
-         ------------------------------------------------
-     
-5 June 1949(Day of year=156), Paddock.wheat: 
-      stage 2.0 germination
-11 June 1949(Day of year=162), Paddock.wheat: 
-      stage 3.0 emergence
-                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   16.97 (mm)
-12 June 1949(Day of year=163), Paddock.wheat: 
-      stage 4.0 end_of_juvenile
-                     biomass =           0.61 (g/m^2)   lai          =   0.022 (m^2/m^2)
-                     stover N conc =     5.83 (%)    extractable sw =   16.40 (mm)
-13 August 1949(Day of year=225), Paddock.wheat: 
-      stage 5.0 floral_initiation
-                     biomass =         184.38 (g/m^2)   lai          =   2.329 (m^2/m^2)
-                     stover N conc =     1.81 (%)    extractable sw =   65.95 (mm)
-19 September 1949(Day of year=262), Paddock.wheat: 
-      stage 6.0 flowering
-                     biomass =         477.34 (g/m^2)   lai          =   1.447 (m^2/m^2)
-                     stover N conc =     0.79 (%)    extractable sw =   27.05 (mm)
-26 September 1949(Day of year=269), Paddock.wheat: 
-      stage 7.0 start_grain_fill
-                     biomass =         521.94 (g/m^2)   lai          =   1.086 (m^2/m^2)
-                     stover N conc =     0.55 (%)    extractable sw =   16.07 (mm)
-23 October 1949(Day of year=296), Paddock.wheat: 
-      stage 8.0 end_grain_fill
-                     biomass =         553.48 (g/m^2)   lai          =   0.202 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =   74.98 (mm)
-25 October 1949(Day of year=298), Paddock.wheat: 
-      stage 9.0 maturity
-                     biomass =         553.49 (g/m^2)   lai          =   0.169 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =   84.86 (mm)
-26 October 1949(Day of year=299), Paddock.wheat: 
-      stage 10.0 harvest_ripe
-                     biomass =         553.49 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.31 (%)    extractable sw =   82.63 (mm)
-     
-      flowering day          =  262                           stover (kg/ha)         =     3597.1
-      maturity day           =  298                           grain yield (kg/ha)    =     1937.8
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     2214.7
-      grain wt (g)           =    0.029                       grains/m^2             =     6737.6
-      grains/plant           =   67.4                         maximum lai            =      2.411
-      total above ground biomass (kg/ha)    =     5534.9
-      live above ground biomass (kg/ha)     =     5534.9
-      green above ground biomass (kg/ha)    =     4345.3
-      senesced above ground biomass (kg/ha) =     1189.6
-      number of leaves       =     43.6
-      DM Root:Shoot ratio    =     0.19                       Harvest Index          =       0.35
-      Stover C:N ratio       =   106.58                       Root C:N ratio         =      42.62
-      grain N percent        =     1.42                       total N content (kg/ha)=      41.11
-      grain N uptake (kg/ha) =    27.61                       senesced N content (kg/ha)=    5.95
-      green N content (kg/ha)=     7.55
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.203        0.203
-         floral_initiation    to flowering               0.027        0.046        0.357        0.357
-         flowering            to start_grain_fill        0.397        0.469        0.006        0.006
-         start_grain_fill     to end_grain_fill          0.089        0.104        0.763        0.763
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                3597.1                     0.0
-                          N  (kg/ha) =                  13.50                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                1937.8                     0.0
-                          N  (kg/ha) =                  27.61                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =   82.63 (mm)
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                  1043.0
-                          N  (kg/ha) =                   0.00                    9.79
-     
-20 October 1950(Day of year=293), Paddock.cotton: 
-     Sow
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar   = Siok
-         percent_L  =   42.00
-         scboll     =     4.5
-         respcon    =   0.016
-         sqcon      =   0.023
-         fcutout    =  0.5411
-         flai       =     0.5
-         ddisq      =   420.0
-         popcon     = 0.03633
-         acotyl     =    525.
-         rlai       = 0.01000
-         frudd      =     50.   180.   350.   380.   520.   660.   870.  1100.
-         bltme      =    0.00   0.00   0.00   0.07   0.21   0.33   0.55   1.00
-         wt         =  0.0104 0.0272 0.1441 0.0988 0.5042 0.9617 1.0000 0.5785
-         fburr      =    1.23
-         dLdS_max  =    0.12
-         rate_emergence  =    1.00
-         Background_Retention (default) =    0.80
-         ------------------------------------------------
-     
-     
-     
-     
-     
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Cultivar
-         Day no   mm     m       mm     Name
-         ------------------------------------------------
-            293   30.0  10.0   1000.0 Siok
-         ------------------------------------------------
-28 October 1950(Day of year=301), Paddock.cotton: 
-      *** Crop emerged with 10.0 plants per m sq,100.% of target population of  10.0
+         Sowing  Depth  Plants   Spacing    Cultivar   Skip 
+         Day no    mm     /m        mm        Name     Row  
+         ---------------------------------------------------
+           349    30.0    10.0    1000.0      SIOK      0
+         ---------------------------------------------------
+
+
+
+               Root Profile
+        -----------------------------
+            Layer          Lower 
+            Depth          Limit 
+             (cm)         (mm/mm) 
+        -----------------------------
+             15.0          0.210 
+             15.0          0.210 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.310 
+             30.0          0.360 
+        -----------------------------
+
+
+Cotton development to First Square using RateOfDevelopment 
+20 December 1941 (Day of year=354), cotton:
+    *** Crop emerged with 10.0 plants per m sq, 100% of target population of 10.0
+
+20 December 1941 (Day of year=354), cotton: 
+         Crop failed - status 'dead'.
+21 December 1941 (Day of year=355), cotton: 
+         Crop failed - status 'dead'.
+22 December 1941 (Day of year=356), cotton: 
+         Crop failed - status 'dead'.
+23 December 1941 (Day of year=357), cotton: 
+         Crop failed - status 'dead'.
+24 December 1941 (Day of year=358), cotton: 
+         Crop failed - status 'dead'.
+25 December 1941 (Day of year=359), cotton: 
+         Crop failed - status 'dead'.
 31 December 1950(Day of year=365), clock: 
      Simulation is terminating due to end criteria being met.
 
