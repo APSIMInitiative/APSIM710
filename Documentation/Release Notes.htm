@@ -5,21 +5,143 @@
    </head>
    <body>
       <h1>APSIM 7.8 release notes</h1>
+      <p>24th March 2015</p>
+      <h2>Enhancements and bug fixes to the cotton model</h2>
+      <p>Cotton.dll replaces both OZCOT.dll and mvOZCOT.dll and is installed by default.</p>
+      <p>Crop stages are now reported by 'stageName'  or  numerically by 'stage'.</p>
+      <table>
+        <tr><td>Stage</td><td>Description</td></tr>
+        <tr><td>1 = germination  </td><td>period from sowing to emergence</td></tr>
+        <tr><td>2 = presquaring  </td><td>emergence to first square</td></tr>
+        <tr><td>3 = squaring     </td><td>first square to first flower</td></tr>
+        <tr><td>4 = flowering    </td><td>first flower to first open boll</td></tr>
+        <tr><td>5 = openbolls    </td><td>first open boll to %OpenBolls marking maturity (default= 60% boll open)</td></tr>
+        <tr><td>6 = mature       </td><td>%OpenBolls to end of leaf drop (defoliation period)</td></tr>
+        <tr><td>7 = harvest_ripe </td><td>crop defoliated and ready to harvest</td></tr>
+      </table>
+      <p>           
+        Use of crop stages removes the necessity to monitor 'ozcot_status > 0' to determine when a crop is ready to harvest
+        and improves management and reporting flexibility.			
+      </p>
+      <p>
+        Cotton manager scripts now need to explicitly call 'defoliate' as well as 'harvest' and 'end_crop'. E.G.
+      </p>
+      <code>
+         if ('[crop]' = 'cotton') then<br/>
+         &nbsp;&nbsp;&nbsp;!!  cotton defoliation<br/>
+         &nbsp;&nbsp;&nbsp;if ([crop].stageName = 'mature'  and  [crop].defol_das = 0) then<br/>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] defoliate<br/>
+         &nbsp;&nbsp;&nbsp;endif<br/>
+          <br/>
+          &nbsp;&nbsp;&nbsp;!! cotton harvest<br/>
+          &nbsp;&nbsp;&nbsp;if ([crop].stageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!!report_harvest do_output<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] harvest<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] end_crop<br/>
+          &nbsp;&nbsp;&nbsp;endif<br/>
+         endif<br/>
+       </code>
+       <p>PlantStatus = 'dead'  has been added  as well as a 'kill_crop' event.</p>
+       <p>Bug fixes:</p>
+       <p>(<a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=2023">Task 2023</a>) 'ep' plant transpiration matches expected value reported as 'ozcot_rwu' (root water use).</p>
+       <p>(<a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=2025">Task 2025</a>) Max rooting depth of crop limited to value of 'rtdep_max'.</p>
+       <p>(<a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=2026">Task 2026</a>) plant_status = 'dead'  added.</p>
+       <p>(<a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=2074">Task 2074</a>) crop height now estimated from a function based on crop LAI (based on traditional cotton growing regions in Australia).</p>
+       <p>(<a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=4088">Task 4088</a>) surfaceOM_wt_cotton reports dry weight pool from cotton based on crop_type = 'cotton'.</p>
+       <p>(<a href="http://www.apsim.info/BugTracker/edit_bug.aspx?id=4095">Task 4095</a>) Above ground biomass reported in Summary file corrected to exclude dry weight of roots.</p>
+
+
+       <h2>CO2</h2>
+       <p>The ownership of CO2 has moved to the Input (Met) module. If no CO2 is specified in the weather file then a 
+          value of 350ppm is assumed. If a value is supplied in the weather file then that will replace the default value. 
+          The CO2 value in input is settable from other modules e.g. manager script. If CO2 is set from another module then 
+          it's value only lasts for the day that it is set. At the beginning of the next day the value is reset to the value 
+          in the file or the default value if none was supplied.</p>
+
+       <p>The result of this change is that CO2 is ALWAYS present in every simulation. The crop modules check to see if the CO2
+          value is different from 350ppm. If it is and the crop doesn't have a CO2 parameterisation, an error is given to that effect. 
+          This is the same behavour as previously. All values of co2_default have been removed from all crop XML files.</p>
+       
+       <h2>Changes to "Run on Cluster" form</h2>
+       <p>Cluster jobs have been rearranged. Instead of running "one simulation per CPU", the system attempts to run several simulations in 
+          parallel, using all available CPUs on a single machine, significantly reducing the amount of network traffic for each job. This changes the 
+          interpretation of "number of simulations per job" - as the throughput is now related to the number of CPU cores as well as their speed. On 
+          the toowoomba cluster, Linux hosts have 8 or 16 CPUs per machine, the Windows hosts have 12, so simply multiplying the existing number by 
+          12 or 16 should suffice to keep runtime the same. The general principle is that the longer a job runs, the higher its throughput - as less time 
+          is spent setting up and tearing down the job. However, longer running jobs have a higher chance of being interrupted if a higher priority user 
+          enters the queue.</p>
+        <p>More detail is in the <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2016"> online documentation</a>.
+        </p>
+
+       <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=30">The complete list of changes to APSIM can be found here</a></p>
+      <hr/>
+      <h1>APSIM 7.7 release notes</h1>
    
      <h2>Stability release</h2>
-     <p>This release of APSIM fixes many issues found in APSIM 7.7. No major new functionality has been added.
+     <p>This release of APSIM fixes many issues found in APSIM 7.6. No major new functionality has been added.
      </p>
-     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=XXXXX">The complete list of defects fixed can be found here</a></a>.
+     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=29">The complete list of defects fixed can be found here</a></a>.
      </p>
    
-...   
+   
+      <hr/>
+      <h1>APSIM 7.6 release notes</h1>
+      <p>21st March 2014</p>
 
-     <h2>Changes to "Run on Cluster" form</h2>
-     <p>Cluster jobs have been rearranged. Instead of running "one simulation per CPU", the system attempts to run several simulations in parallel, using all available CPUs on a single machine, significantly reducing the amount of network traffic for each job. This changes the interpretation of "number of simulations per job" - as the throughput is now related to the number of CPU cores as well as their speed. On the toowoomba cluster, Linux hosts have 8 or 16 CPUs per machine, the Windows hosts have 12, so simply multiplying the existing number by 12 or 16 should suffice to keep runtime the same. The general principle is that the longer a job runs, the higher its throughput - as less time is spent setting up and tearing down the job. However, longer running jobs have a higher chance of being interrupted if a higher priority user enters the queue.
-<p>
-More detail is in the <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2016"> online documentation</a>.
+     <h2>SWIM 3 included</h2>
+     <p>Swim version 2 has been in APSIM for many years, however various elements of it's complex parameterisation 
+        have precluded it from incorporation into the GUI. Swim version 3 has been developed from V2. 
+        The approach taken in V3 enables SWIM3 to run using properties as provided in the APSoil database.  
+     </p>
+     <p>This model was meant to be released in APSIM 7.5 but a key .dll file was missing. That has been fixed.</p>
+
+     <h2>New Oil Palm module</h2>
+     <p>The APSIM-Oil Palm model simulates the growth, frond development and bunch dynamics of oil palm 
+        and the water, carbon and nitrogen cycling within a plantation. The model also provides a 
+        simple capability for simulating an understory cover crop.</p>
+     
+     <h2>New RLink module</h2>
+     <p>An RLink module has been added that links the apsim framework to the R dll. 
+        The RLink module is a pluggable component that provides users with
+        the ability to write R script.</p>
+
+     <h2>Defects fixed for non-admin users</h2>
+     <p>When APSIM 7.5 was run on a computer where the user didn't have administrative privileges,
+        the user interface would produce errors when toolboxes were selected. This has
+        now been fixed.</p>
+
+     <h2>Changed "Run on Cluster" form</h2>
+     <p>The Apsim JV computing cluster has been upgraded and several things have changed.
+<ul><li>The pool is accessible via the internet
+<li>The condor version is now 8.0.6.
+<li>There are now 64 bit Linux and Windows execute nodes in the pool (it was all 32bit windows).
+</ul>	
+To use it, open the ApsimUI to submit a job via the "run on cluster" button. 
+Enter your username/password. Later on, open ftp://&lt;username&gt;:&lt;password&gt;@apsrunet.apsim.info: and look for an .out.zip file.
+</p><p>
+More detail is <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2014"> in the documentation</a>.
 </p>
 
-     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=XXXXX">The complete list of defects fixed can be found here</a></h3>
+     <h2>Changes to "user_defined" tillage</h2>
+	  <p>The SurfaceOM and Soilwat modules treat arguments to the tillage event slightly differently. Both modules
+	    accept an optional "type" parameter that can be used as a key in a lookup table of tillage parameters. To now, 
+	    if this key was defined and had an entry in the table, then the optional parameters (f_incorp, cn_red etc)
+	    were used as overides if they were defined. Using structures in these events instead of 
+	    ApsimVariants loses the ability to define optional parameters. So now, if the key is defined, it must 
+	    specify a valid section in the table, or the special key "user_defined" which will skip reading the table, and 
+	    the module will use whatever parameters the user specifies. Any parameter that isnt defined it is either zero 
+	    or blank.</p>
+	  <p>.NET and CI2 modules that use structures (cf. ApsimVariant) to pass the message have no way to specify
+	    optional parameters, and are unaffected.
+	  </p>
+      
+      <h2>Improvements to user interface factorials</h2>
+      <p>Factorials in APSIM 7.6 are now more flexible. A list of weather files or station numbers can 
+      now be provided in a grid, making it easier to specify a large number of files or numbers. 
+      In addition, Initial Water components can be part of a factorial. Numerous 
+      defects have also been fixed.      
+      </p>
+
+     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=28">The complete list of defects fixed can be found here</a></h3>
    </body>
 </html>

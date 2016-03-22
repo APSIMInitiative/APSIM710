@@ -225,7 +225,7 @@ namespace ConToApsim
                TransferParameter(Child, "InitData/d0_cl", NewNode, "d0");
                TransferParameter(Child, "InitData/cl", NewNode, "layers");
                }
-            else if (ModuleName == "plant" || ModuleName == "growth" || ModuleName == "sorghum")
+            else if (ModuleName == "plant" || ModuleName == "growth" || ModuleName == "sorghum" || ModuleName == "cropmod")
                {
                CreateChildNode(NewPaddockNode, XmlHelper.Name(Child).ToLower(), "");
                XmlNode ProfileNode = XmlHelper.Find(NewPaddockNode, "soil/profile");
