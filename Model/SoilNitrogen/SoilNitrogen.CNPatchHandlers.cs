@@ -83,11 +83,11 @@ public partial class SoilNitrogen
         if (AreaAffected < PatchtoAdd.AreaNewPatch)
         {
             // Existing area is smaller than new patch area, cannot continue
-            writeMessage(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
-                               + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command will be ignored");
-            // VOS altered to prevent users inadvertently doing things they should not
-            //throw new Exception(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
-            //                   + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command cannot be executed");
+            //writeMessage(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
+            //                   + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command will be ignored");
+            // VOS altered to prevent users inadvertently doing things they should not - RC will want to look at this I expect
+            throw new Exception(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
+                               + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command cannot be executed");
         }
         else
         {  // check the area for each patch
@@ -100,11 +100,11 @@ public partial class SoilNitrogen
                 {  // area to create is too small, patch will not be created
                     Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year="
                         + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddCNPatch:");
-                    Console.WriteLine("   attempt to create a new patch with area too small or negative ("
-                        + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created.");
-                    // VOS altered to prevent users inadvertently doing things they should not
-                    //throw new Exception("   attempt to create a new patch with area too small or negative ("
-                    //    + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created. Command cannot be executed");
+                    //Console.WriteLine("   attempt to create a new patch with area too small or negative ("
+                    //    + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created.");
+                    // VOS altered to prevent users inadvertently doing things they should not  - RC will want to look at this I expect
+                    throw new Exception("   attempt to create a new patch with area too small or negative ("
+                        + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created. Command cannot be executed");
                 }
                 else if (OldPatch_NewArea < MinimumPatchArea)
                 {  // remaining area is too small or negative, patch will be created but old one will be deleted
@@ -295,34 +295,38 @@ public partial class SoilNitrogen
             int k = 0;  // will always merge into patch 0
             //do
             //{
-                //for (int j = k + 1; j < nPatches; j++)  // compare to all other subsequent patches
-                for (int j = 1; j < nPatches; j++)  // compare to all other subsequent patches
+            for (int j = 1; j < 2; j++)  // only compare the oldest (lowest ranking) patch - the next oldest can potentially get caught tomorrow
+            {
+                double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
+                //Console.WriteLine(Clock.Today + " patch " + j + " is " + thisPatchAge + " days old and the target age is " + (ageForForcedMerge * 364.0) + " days");
+                if (thisPatchAge > (ageForForcedMerge * 364.0))
                 {
-                    double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
-                    if (thisPatchAge > (ageForForcedMerge * 366.0))
-                        PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
+                    //Console.WriteLine("   Merging patch " + j + " of area " + Patch[j].RelativeArea.ToString("#0.00#") + " into patch 0 of area " + Patch[0].RelativeArea.ToString("#0.00#"));
+                    PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
                 }
+            }
 
-                // B4. do the actual merging (copy values from and deleted merging patches)
-                if (PatchesToDelete.Count > 0)
+            // B4. do the actual merging (copy values from and deleted merging patches)
+            if (PatchesToDelete.Count > 0)
+            {
+                // B4.1. Copy values between patches
+                for (int i = 0; i < PatchesToDelete.Count; i++)
                 {
-                    // B4.1. Copy values between patches
-                    for (int i = 0; i < PatchesToDelete.Count; i++)
-                    {
-                        int j = PatchesToDelete[i];
-                        MergeCNValues(k, j);
-                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
-                        ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
-                    }
-                    // B4.2. Delete merged patches
-                    DeletePatches(PatchesToDelete);
-                    PatchesToDelete.Clear();
-                    nPatches = Patch.Count;
+                    int j = PatchesToDelete[i];
+                    MergeCNValues(k, j);
+                    writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+                    // VOS - I think that this might be causign an error when there is more than one patch to delete at a time - error seems to be that base pathc area will be >1
+                    ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
                 }
-                //else
-                //{
-                //    k += 1; // go to next patch
-                //}
+                // B4.2. Delete merged patches
+                DeletePatches(PatchesToDelete);
+                PatchesToDelete.Clear();
+                nPatches = Patch.Count;
+            }
+            //else
+            //{
+            //    k += 1; // go to next patch
+            //}
             //} while (k < nPatches - 1);
         }
         else if (PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower())
@@ -582,7 +586,7 @@ public partial class SoilNitrogen
             // test M. biomass
             deltaValue = MathUtility.Divide(Math.Abs(Patch[k].biom_c[layer] - Patch[j].biom_c[layer]), convFactor[layer], 0.0);
             TotalValueBase = MathUtility.Divide(Patch[k].biom_c[layer], convFactor[layer], 0.0);
-            TestedCount += 1; 
+            TestedCount += 1;
             AgreedCount += TestDelta(deltaValue, TotalValueBase, relativeDiff_LayerBiomC, absoluteDiff_LayerBiomC, AdjustFactor);
 
             // test urea
