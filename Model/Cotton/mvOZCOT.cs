@@ -3251,7 +3251,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     else if (iState == GROWTH_STATE_EXECUTE) 
                     {
-                        if (crop_in)
+                        if ((crop_in) & (plant_status == status_alive))
                         {
                             if (jdate != isow)
                             {
@@ -3264,9 +3264,11 @@ namespace ManagedComponent.MvOZCOT
 
                         ozcot2();                        // CALL OZCOT GROWTH MODEL
 
-                        if ((iend != 0 & DAS > 400))
+                        if ((iend != 0 & DAS >= max_cohort))   //
                         {
-                            fatal_error("Crop remains unharvested at 400 das. Check that manager harvest criteria contains a test for status > 0 OR ozcot_status > 0");
+                            terminateCropError(" ***  Crop remains unterminated at 300 DAS. Check that manager harvest criteria contains an 'end_crop' event.");
+                            // force a call of end_crop
+                            ozcot_end_crop();
                         }
                         else
                         {
@@ -3386,12 +3388,12 @@ namespace ManagedComponent.MvOZCOT
         }
         //==========================================================================
         /// <summary>
-        /// Handles a fatal error
+        /// Handles a terminateCrop error
         /// </summary>
         //==========================================================================
-        public void fatal_error(string errText)
+        public void terminateCropError(string errText)
         {
-            System.Console.WriteLine("Fatal Error: " + errText);
+            System.Console.WriteLine("Terminal Crop Error: " + errText);
             // TODO dbj  call terminate crop? or simulation?
         }
 
