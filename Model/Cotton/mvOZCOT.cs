@@ -2032,14 +2032,17 @@ namespace ManagedComponent.MvOZCOT
 
                // Climate Change Drivers
                case DRV_CO2:
-                   double temp_co2 = aValue.asDouble();
-                    if (temp_co2 > 300.0)
+                   double system_co2 = aValue.asDouble();
+                    if (system_co2 > 300.0)       // if system value is above 300 (reasonable value)  then use it
                     {
-                        co2 = temp_co2;
+                        co2 = system_co2;
                     }
                     else
                     {
-                        co2 = co2_default;
+                        if (co2 < 300.0)     //  if no reasonable value currently set
+                        {
+                            co2 = co2_default;   // use the cotton default value 
+                        }
                     }
                    break;
 
@@ -3045,7 +3048,7 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_lint_kg: aValue.setValue(alint);
                     break;
 
-                case PROP_cottonCO2: aValue.setValue(co2);  //CO2 needs to be read from ClimateChange component in APSIM. This read response confuses the issue.
+                case PROP_cottonCO2: aValue.setValue(co2);  //Reports what value of CO2 cotton is using
                     break;
 
                 //case PROP_x_co2_fert: //greenhouse gas
@@ -3742,6 +3745,9 @@ namespace ManagedComponent.MvOZCOT
             // 
 
             //- implementation section ----------------------------------
+
+            // CO2 from Met file if specified
+            sendDriverRequest(DRV_CO2, iEventID);
 
             // SOIL WATER
             // get depth of each soil water layer
