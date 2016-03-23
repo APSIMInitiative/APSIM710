@@ -86,13 +86,15 @@ namespace ApsimFile
 						//replace each target that is within the provided simulation with the child's xml
 						foreach (string target in Targets) {
 							//need to remove the path of this simulation from the target to get the relative path
-							string relativePath = target.Substring (Simulation.FullPath.Length + 1);
+							string relativePath = target.Substring (target.IndexOf(Simulation.FullPath) + Simulation.FullPath.Length + 1);
 							Component targetComp = Simulation.Find (relativePath);
 							if (targetComp != null) {
 								//replace target nodes with factor nodes - add child factor nodes if they don't exist 
 								//don't remove any children from the target
 								ReplaceComponent (targetComp, child);
-							}
+							} else {
+                throw new Exception("target " + target + ", path " + relativePath + " was not found in factor " + FactorComponent.Name);
+              }  
 						}
 					}
 				}
@@ -204,7 +206,7 @@ namespace ApsimFile
 				if (factorsToMatch.Contains (new KeyValuePair<string, string> (Variable.Name, par))) {
 					//replace each target that is within the provided simulation with the child's xml
 					foreach (string target in Targets) {
-						string sRelativeTarget = target.Substring (Simulation.Name.Length + 1);
+						string sRelativeTarget = target.Substring (target.IndexOf(Simulation.Name) + Simulation.Name.Length + 1);
 						Component targetComp = Simulation.Find (sRelativeTarget);
 						if (targetComp != null) {
 							//find name of var in ui or CustomUI nodes
@@ -224,6 +226,8 @@ namespace ApsimFile
 								}//TODO if else then record as an error
 							}
 							targetComp.Contents = variablesNode.OuterXml;
+						} else {
+							throw new Exception("target " + target + ", rel path" + sRelativeTarget + " was not found in factor " + Variable.Name);
 						}
 					}
 				}
@@ -528,6 +532,31 @@ namespace ApsimFile
 						var sequenceNumber = 1 + allFactorials.FindIndex (x => x == str);
 						SimFiles.Add (Factor.ProcessSingleSimulation (CreateCopy (_F), simXmlPath, myFactors, sequenceNumber, destFolder));
 					}
+				}
+			}
+			return SimFiles;
+		}
+		public static List<string> CreateSimulationNames (ApsimFile _F, string[] SimsToRun, ProgressNotifier Notifier)
+		{
+
+			List<string> SimFiles = new List<string> ();
+			foreach (string FullSimulationPath in SimsToRun) {
+				Notifier(0, "Opening " + FullSimulationPath);
+				FactorBuilder builder = new FactorBuilder ();
+				List<string> allFactorials = new List<string> ();
+				int totalCount = 0;
+				foreach (FactorItem item in builder.BuildFactorItems(_F.FactorComponent, FullSimulationPath)) {
+					totalCount += item.CalcCount ();
+					var scratch = new SortedDictionary<string, string> ();
+					item.CalcFactorialList (allFactorials, scratch);
+				}
+
+				string FullSimulationPathName = _F.Find (FullSimulationPath).Name;
+				int sequenceNumber = 0;
+				foreach (string str in allFactorials) {
+					SimFiles.Add (FullSimulationPath + "@factorial=" + str);
+					Notifier((int) (100 * ((double)sequenceNumber / totalCount)) , "Found factorial " + sequenceNumber.ToString());
+					sequenceNumber++;
 				}
 			}
 			return SimFiles;

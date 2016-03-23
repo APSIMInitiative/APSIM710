@@ -127,8 +127,9 @@ namespace ApsimFile
 					{
 						ApsimFile F = new ApsimFile ();
 						F.OpenFile (FileName);
-						simsToRun =	Factor.CreateSimFiles (F, new string []{ XmlHelper.FullPath (simulation) });
+						simsToRun =	Factor.CreateSimulationNames (F, new string []{ XmlHelper.FullPath (simulation)}, Notifier);
 					}
+				    Notifier (99, "Creating batch files");
 					foreach (string simToRun in simsToRun) {					
 						XmlNode simulationNode = apsimFileNode.AppendChild (apsimFileNode.OwnerDocument.CreateElement ("simulation"));
 						XmlHelper.SetAttribute (simulationNode, "name", simToRun);

@@ -124,6 +124,7 @@ public class  BundleApsim
 
 	private static void UpdateProgress(int Percent, string Msg)
 		{
+		Console.WriteLine(Msg);
 		}
 	private static int Usage()
 		{
