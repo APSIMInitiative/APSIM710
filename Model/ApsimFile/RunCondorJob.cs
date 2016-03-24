@@ -136,11 +136,8 @@ namespace ApsimFile
 						XmlHelper.SetAttribute (simulationNode, "source", XmlHelper.Attribute (apsimFileNode, "source"));
 
 						var filenames = new List<XmlNode>();
-						if (factorialNode == null)
-                        {
-						    filenames = simulation.SelectNodes(".//filename").Cast<XmlNode>().ToList();
-					    } 
-					    else 
+					    filenames = simulation.SelectNodes(".//filename").Cast<XmlNode>().ToList();
+                        if (factorialNode != null)
 					    {
 							// Send all input files to each job
                             foreach (XmlNode n in factorialNode.SelectNodes(".//filename"))
@@ -168,7 +165,7 @@ namespace ApsimFile
 							string dest = Path.GetFileName (src);
 							XmlNode input = simulationNode.AppendChild (simulationNode.OwnerDocument.CreateElement ("input"));
 
-                            if (!File.Exists(src))
+                            if (!File.Exists(src) && !File.Exists(Path.Combine(WorkingFolder, dest)))
                             {
                                 // When this is called by web service then can't assume src is relative to working
                                 // directory. Instead see if the file is relative to where the main file file.
