@@ -29,7 +29,7 @@ class VersionStamper
             {
                 // Start an SVN process and get head revision number
                 string SVNFileName = FindFileOnPath(svnexe);
-                string Arguments = "log -q -r HEAD " + Macros["Directory"];
+                string Arguments = "log -q -r HEAD:1 --limit 1 " + Macros["Directory"];
                 
                 Process P = RunProcess(SVNFileName, Arguments, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                 string StdOut = CheckProcessExitedProperly(P);
