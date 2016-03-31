@@ -259,36 +259,7 @@ namespace ApsimFile
 			ExeWriter.WriteLine ("DEL /s /q /f Temp");
 			ExeWriter.Close ();
 
-			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
-			PBSWriter.WriteLine ("#!/bin/bash");
-			PBSWriter.WriteLine ("# Construct a PBS job for each apsim job.");
-			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
-			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
-			PBSWriter.WriteLine ("srcdir=`dirname $(readlink -f $0)`");
-			PBSWriter.WriteLine ("cat <<EOF | qsub");
-			PBSWriter.WriteLine ("######  Select resources #####");
-			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
-			PBSWriter.WriteLine ("#PBS -N Apsim");
-			PBSWriter.WriteLine ("#PBS -l nodes=1:amd:ppn=8");
-			PBSWriter.WriteLine ("#PBS -l mem=20Gb");
-			PBSWriter.WriteLine ("#PBS -l vmem=20Gb");
-
-			PBSWriter.WriteLine ("######                   #####");
-			PBSWriter.WriteLine (" srcdir=$srcdir");
-			PBSWriter.WriteLine (" cd \\$TMPDIR");
-			PBSWriter.WriteLine (" for x in Apsim7.8-rXXXX.X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
-			PBSWriter.WriteLine ("  tar xfz \\$HOME/\\$x");
-			PBSWriter.WriteLine (" done");
-
-			PBSWriter.WriteLine ("# extra environment settings");
-			PBSWriter.WriteLine (" module load GCC/4.8.4");
-			PBSWriter.WriteLine (" export MONO_PATH=\\$TMPDIR/mono/lib/mono/4.5/:\\$TMPDIR/mono/lib/mono/4.0");
-			PBSWriter.WriteLine (" export MONO_CFG_DIR=\\$TMPDIR/mono/etc");
-			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
-			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
-			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
-			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
-			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");
+			StringBuilder PBSJobList = new StringBuilder();
 
 			File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
 
@@ -342,7 +313,7 @@ namespace ApsimFile
 						SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 						SubWriter.WriteLine ("queue");
 						SubWriter.WriteLine ();
-						PBSWriter.WriteLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+						PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
 						                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
 						                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
 
@@ -359,7 +330,7 @@ namespace ApsimFile
 			if (numSims > 0) {
 				SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 				SubWriter.WriteLine ("queue");
-				PBSWriter.WriteLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+				PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
 				                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
 				                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
 			}
@@ -368,9 +339,38 @@ namespace ApsimFile
 			SubWriter.Close ();
 			SimsWriter.Close ();
 
+			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
+			PBSWriter.WriteLine ("#!/bin/bash");
+			PBSWriter.WriteLine ("# Construct a PBS job for each apsim job.");
+			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
+			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
+			PBSWriter.WriteLine ("srcdir=`dirname $(readlink -f $0)`");
+			PBSWriter.WriteLine ("cat <<EOF | qsub -t 0-" + Convert.ToString (jobCounter));
+			PBSWriter.WriteLine ("######  Select resources #####");
+			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
+			PBSWriter.WriteLine ("#PBS -N Apsim");
+			PBSWriter.WriteLine ("#PBS -l nodes=1:amd:ppn=8");
+			PBSWriter.WriteLine ("#PBS -l mem=20Gb");
+			PBSWriter.WriteLine ("#PBS -l vmem=20Gb");
+			PBSWriter.WriteLine ("#PBS -l walltime=" + Convert.ToString (5 * (1 + jobCounter)) + ":00:00");
+
+			PBSWriter.WriteLine ("######                   #####");
+			PBSWriter.WriteLine (" srcdir=$srcdir");
+			PBSWriter.WriteLine (" cd \\$TMPDIR");
+			PBSWriter.WriteLine (" for x in Apsim"+ Configuration.Instance.ApsimVersion() + "-" + Configuration.Instance.ApsimBuildNumber() + ".X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
+			PBSWriter.WriteLine ("  tar xfz \\$HOME/\\$x");
+			PBSWriter.WriteLine (" done");
+
+			PBSWriter.WriteLine ("# extra environment settings");
+			PBSWriter.WriteLine (" module load GCC/4.8.4");
+			PBSWriter.WriteLine (" export MONO_PATH=\\$TMPDIR/mono/lib/mono/4.5/:\\$TMPDIR/mono/lib/mono/4.0");
+			PBSWriter.WriteLine (" export MONO_CFG_DIR=\\$TMPDIR/mono/etc");
+			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
+			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
+			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
+			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");
+			PBSWriter.WriteLine (PBSJobList.ToString());
  			PBSWriter.WriteLine ("XXXXXX");
- 			PBSWriter.WriteLine ("#PBS -t 0-" + Convert.ToString (jobCounter));
- 			PBSWriter.WriteLine ("#PBS -l walltime=" + Convert.ToString (5 * (1 + jobCounter)) + ":00:00");
 
 			PBSWriter.WriteLine (" jobname=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f1)");
 			PBSWriter.WriteLine (" inputfiles=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f2)");

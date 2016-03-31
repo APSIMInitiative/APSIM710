@@ -155,7 +155,6 @@ namespace ApsimFile
 			if (Types.Instance.TypeNames.Length == 0)
 				PlugIns.LoadAll ();
 
-			// If no paths were specified then get a list of all paths.
 			ApsimFile AFile = new ApsimFile (FileName);
 
 			// Look for factorials.
@@ -166,6 +165,7 @@ namespace ApsimFile
 
 			// No factorials. 
 			if (SimulationPaths == null || SimulationPaths.Length == 0) {
+			    // No simulation specified. Run everything.
 				List<String> AllPaths = new List<String> ();
 				ApsimFile.ExpandSimsToRun (AFile.RootComponent, ref AllPaths);
 				SimulationPaths = AllPaths.ToArray ();
