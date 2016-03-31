@@ -56,7 +56,7 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
    if (simulationName != "")
       if (simulationName.find_first_of(' ') != string::npos)
          CommandLine += " \"" + simulationName + "\"";
-	  else
+      else
          CommandLine += " " + simulationName;
 
    // We need to send StdErr from ApsimToSim to a unique filename. Create that filename now.
@@ -82,7 +82,11 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
 #endif
 
    // exec ApsimToSim and read its stdout as the .sim file name.
-   system(CommandLine.c_str());
+   if (system(CommandLine.c_str()) < 0) {
+       cout << "APSIM  Fatal  Error" << endl;
+       cout << "-------------------" << endl;
+       cout << "Error finding simulation " << simulationName << " in apsim file " << apsimPath << endl;
+   }
    ifstream in(uniqueFileName.c_str());
    string simPath;
    getline(in, simPath);

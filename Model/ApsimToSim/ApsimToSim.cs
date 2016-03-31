@@ -18,40 +18,42 @@ class ApsimToSimExe
     {
         // Main entry point into application.
         // Firstly parse all arguments.
-        string ApsimFileName = null;
-        List<string> SimNames = new List<string>();
-        if (args.Length > 0)
-        {
-            ApsimFileName = args[0];
-            for (int i = 1; i != args.Length; i++)
-            {
-                if (!args[i].Contains("="))
-                    SimNames[i - 1] = args[i];
-            }
-        }
-
-        Dictionary<string, string> Arguments = Utility.ParseCommandLine(args);
-        if (Arguments.ContainsKey("simulation"))
-            SimNames.Add(Arguments["simulation"]);
         try
         {
-            if (ApsimFileName == null)
+            string ApsimFileName = null;
+            if (args.Length > 0)
+                ApsimFileName = args[0].Replace("\"", "");
+            else
                 throw new Exception("No .apsim file specified on the command line");
 
+            Dictionary<string, string> Macros = new Dictionary<string, string>();
+            for (int i = 1; i < args.Length; i++)
+            {
+                int pos = args[i].IndexOf('=');
+                if (pos > 0)
+                {
+                    string name = args[i].Substring(0, pos).Replace("\"", "");
+                    string value = args[i].Substring(pos + 1).Replace("\"", "");
+                    Macros.Add(name, value);
+                }
+            }
+            string simName = "";
+
+            if (Macros.ContainsKey("Simulation"))
+                simName = Macros["Simulation"];
+
             ApsimToSimExe SimCreator = new ApsimToSimExe();
-            if (SimCreator.ConvertApsimToSim(ApsimFileName, SimNames.ToArray()))
-                return 1;
-            else
-                return 0;
+            SimCreator.ConvertApsimToSim(ApsimFileName, simName);
         }
         catch (Exception err)
         {
             Console.WriteLine(err.Message);
             return 1;
         }
+        return 0;
     }
 
-    private bool ConvertApsimToSim(string ApsimFileName, string[] SimNames)
+    private void ConvertApsimToSim(string ApsimFileName, string SimName)
     {
         //if the filename is not 'rooted' then assume that the user intends to use the current working directory as the root
         ApsimFileName = ApsimFileName.Replace("\"", "");
@@ -71,55 +73,34 @@ class ApsimToSimExe
         ApsimFile.ApsimFile Apsim = new ApsimFile.ApsimFile();
         Apsim.OpenFile(ApsimFileName);
 
-        // FIXME WRONG!!!
-        // In case the file is now dirty due to .apsim file converter then save it
-        //if (Apsim.IsDirty)
-        //    Apsim.Save();
-        // FIXME WRONG!!!
-
-        return FindSimsAndConvert(Apsim.RootComponent, SimNames);
+        if (Apsim.FactorComponent == null )
+			FindSimsAndConvert(Apsim.RootComponent, SimName);
+        else
+            {
+			if (SimName.Contains("@factorial="))
+               foreach (string simFileName in Factor.CreateSimFiles(Apsim, new string[] { SimName }, Directory.GetCurrentDirectory()))
+                   Console.Error.WriteLine("Written " + simFileName);
+            else 
+               FindSimsAndConvert(Apsim.RootComponent, SimName);
+        } 
     }
-    private bool FindSimsAndConvert(ApsimFile.Component Apsim, string[] SimPaths)
-    {
-        bool ErrorsFound = false;
 
+    private void FindSimsAndConvert(ApsimFile.Component Apsim, string SimPath)
+    {
         // Iterate through all nested simulations and convert them to
         // .sim format if necessary.
         foreach (ApsimFile.Component Child in Apsim.ChildNodes)
         {
             if (Child.Type.ToLower() == "simulation" && Child.Enabled)
             {
-                string SimName = Child.Name;
-                bool convertSim = SimPaths.Length == 0;
-                foreach (string SimPath in SimPaths)
+				if (SimPath == "" || string.Equals(Child.FullPath, SimPath, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (SimPath.Contains("/"))
-                        convertSim = string.Equals(Child.FullPath, SimPath, StringComparison.CurrentCultureIgnoreCase);
-                    else
-                        convertSim = string.Equals(SimName, SimPath, StringComparison.CurrentCultureIgnoreCase);
-                    if (convertSim)
-                        break;
+                    string SimFileName = ApsimToSim.WriteSimFile(Child);
+					Console.Error.WriteLine("Written " + SimFileName);
                 }
-                if (convertSim)
-                {
-                    try
-                    {
-                        string SimFileName = ApsimToSim.WriteSimFile(Child);
-                        Console.Error.WriteLine("Written " + SimFileName);
-                    }
-                    catch (Exception err)
-                    {
-                        Console.WriteLine(SimName + ": " + err.Message);
-                        ErrorsFound = true;
-                    }
-                }
-            }
-            if (Child.Type.ToLower() == "folder")
-                FindSimsAndConvert(Child, SimPaths);
+            } else if (Child.Type.ToLower() == "folder") 
+                FindSimsAndConvert(Child, SimPath);
         }
-        return ErrorsFound;
     }
-
-
 }
-   
+

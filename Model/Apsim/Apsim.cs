@@ -107,10 +107,17 @@ public class Apsim
 			    }
 			}
 
+			bool doAllFactors = true;
+			foreach (string s in SimulationPaths) 
+			   if (s.Contains("@factorial=")) 
+                   doAllFactors = false; // Dont do all factorials if they've asked for an instance.
+			if (Macros.ContainsKey("doAllFactors")) 
+				doAllFactors = bool.Parse(Macros["doAllFactors"]);
+
             // Run
             ApsimFile.RunApsim Run = new ApsimFile.RunApsim();
             Run.MaxLinesInSummaryFile = maxLines;
-			bool doAllFactors = true;
+
 			Run.Start(FileNames, SimulationPaths.ToArray(), doAllFactors);
             Run.WaitUntilFinished();
             if (Macros.ContainsKey("SaveProfileOutput"))

@@ -4,6 +4,17 @@
       <link href="ApsimWebStyle.css" rel="stylesheet" type="text/css">
    </head>
    <body>
+      <h1>APSIM 7.9 release notes</h1>
+      <p>...unreleased...</p>
+      <h2>Changes to command line programs</h2>
+      <p>The syntax of several command line programs has been extended to allow specification of factorial instances. These instances are additions to the simulation path argument, of the form</p><p><code>Simulation=/path/to/simulation<i>@factorial=factor1=level1;factor2=level2</i> </code></p>
+      <p>The program Apsim.exe accepts multiple .apsim, .con and .sim filenames, one optional simulation argument, and optional doAllFactors=(bool), and MaxOutputLines=(int) arguments. If the simulation arguments first character is the &quot;@&quot; character, it is interpreted as a filename containing a list of simulations to perform - one per line.</p>
+      <p>The program ApsimToSim.exe accepts the first argument as an apsim file for conversion, and one optional simulation argument. It writes the name of the output file written to standard error.</p>
+      <p>The program ApsimModel.exe accepts the first argument as an .apsim or .sim file, and one optional simulation argument. If no simulation argument is given, only the first simulation will be run. The standard output stream is the summary information of that simulation, which Apsim.exe usually saves.</p>
+      <p>Apsim.exe attempts to convert (via ApsimToSim) and run (via ApsimModel) simulations in parallel. The number of parallel instances is determined by the environment variable NUMBER_OF_PROCESSORS.</p>
+      <p>The program BundleApsim.exe creates a zipfile for submission to remote batch processors such as condor or PBS. Its default parameters are taken from the GUI's "Run On Cluster" form. Inside are a .sub file for condor, and a .pbs file for PBS, both may require hand edits for the local installation.</p>
+
+
       <h1>APSIM 7.8 release notes</h1>
       <p>24th March 2015</p>
       <h2>Enhancements and bug fixes to the cotton model</h2>
