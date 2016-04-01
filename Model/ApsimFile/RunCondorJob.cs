@@ -367,10 +367,10 @@ namespace ApsimFile
 			PBSWriter.WriteLine (" export MONO_CFG_DIR=\\$TMPDIR/mono/etc");
 			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
 			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
+			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
 			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
 			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");
-			PBSWriter.WriteLine (PBSJobList.ToString());
- 			PBSWriter.WriteLine ("XXXXXX");
+			PBSWriter.WriteLine (PBSJobList.ToString() + "XXXXXX");
 
 			PBSWriter.WriteLine (" jobname=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f1)");
 			PBSWriter.WriteLine (" inputfiles=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f2)");
