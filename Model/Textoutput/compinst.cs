@@ -54,10 +54,9 @@ namespace CMPComp
         /// <param name="parentCompID"></param>
         /// <param name="messageCallback"></param>
         //============================================================================
-        // Note that we are assuming that an "IntPtr" can be stored within a uint
-        // value. That is, we're assuming the native caller is 32-bit.
-        // This value is cast to an IntPtr, then mashalled to a delegate
-        public TGCComponent(uint compID, uint parentCompID, uint messageCallback)
+        // Note that we are assuming that an "IntPtr" can be stored within a ulong
+        // value. This value is cast to an IntPtr, then mashalled to a delegate.
+        public TGCComponent(uint compID, uint parentCompID, ulong messageCallback)
             : base(compID, parentCompID,
             messageCallback == 0 ? null :
             (MessageFromLogic)Marshal.GetDelegateForFunctionPointer((IntPtr)messageCallback, typeof(MessageFromLogic)))
@@ -154,11 +153,11 @@ namespace CMPComp
         /// which includes taking a copy of the data referenced by the data pointer
         /// </summary>
         /// <param name="inVal">Message that will be sent to the engine.
-        /// The value passed in, although described as a "uint", is actually
+        /// The value passed in, although described as a "ulong", is actually
         /// a pointer to a native TMsgHeader
         /// </param>
         //==============================================================================
-        public void handleMessage(uint inVal)
+        public void handleMessage(ulong inVal)
         {
             // We need to copy the "native" message point into a managed object.
             TNativeMsgHeader src = (TNativeMsgHeader)Marshal.PtrToStructure((IntPtr)inVal, typeof(TNativeMsgHeader));
