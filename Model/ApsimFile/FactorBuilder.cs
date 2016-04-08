@@ -57,15 +57,15 @@ namespace ApsimFile
 
         // calculate a list of complete factorial "names" - one string for each instance
 
-        public virtual void CalcFactorialList(List<string> factorials, SortedDictionary<string, string> scratch)
+		public virtual void CalcFactorialList(List<string> factorials, string prefix, SortedDictionary<string, string> scratch)
         {
             if (FactorComponent.Type == "folder")
             {
                 SortedDictionary<string, string> s = scratch;
-                s[FactorComponent.Name] = FolderLevel;
+				s[pfx(prefix) + FactorComponent.Name] = FolderLevel;
                 if (NextItem != null)
                 {
-                    NextItem.CalcFactorialList(factorials, s);
+					NextItem.CalcFactorialList(factorials, (Builder.useFQKeys ? pfx(prefix) + FactorComponent.Name + "." + FolderLevel : ""), s);
                 }
                 else
                 {
@@ -77,10 +77,10 @@ namespace ApsimFile
                 foreach (Component child in FactorComponent.ChildNodes)
                 {
                     SortedDictionary<string, string> s = scratch;
-                    s[FactorComponent.Name] = child.Name;
+					s[pfx(prefix) + FactorComponent.Name] = child.Name;
                     if (NextItem != null)
                     {
-                        NextItem.CalcFactorialList(factorials, s);
+						NextItem.CalcFactorialList(factorials, prefix, s);
                     }
                     else
                     {
@@ -89,14 +89,16 @@ namespace ApsimFile
                 }
             }
         }
-
-        public virtual void Process(Component Simulation, SortedDictionary<string, string> factorsToMatch)
+        protected string pfx (string s) {
+			return(Builder.useFQKeys ? ((s != "") ? s + "." : s) : "");
+        }
+		public virtual void Process(Component Simulation, string prefix, SortedDictionary<string, string> factorsToMatch)
         {
             if (FactorComponent.Type != "folder")
             {
                 foreach (Component child in FactorComponent.ChildNodes)
                 {
-                    if (factorsToMatch.Contains(new KeyValuePair<string, string>(FactorComponent.Name, child.Name)))
+					if (factorsToMatch.Contains(new KeyValuePair<string, string>(pfx(prefix) + FactorComponent.Name, child.Name)))
                     {
                         //replace each target that is within the provided simulation with the child's xml
                         foreach (string target in Targets)
@@ -112,14 +114,14 @@ namespace ApsimFile
                             }
                             else
                             {
-                                throw new Exception("target " + target + ", path " + relativePath + " was not found in factor " + FactorComponent.Name);
+								throw new Exception("target " + target + ", path " + relativePath + " was not found in factor " + pfx(prefix) + FactorComponent.Name);
                             }
                         }
                     }
                 }
                 if (NextItem != null)
                 {
-					NextItem.Process(Simulation,factorsToMatch);
+					NextItem.Process(Simulation, prefix, factorsToMatch);
                 }
             }
             else
@@ -129,7 +131,7 @@ namespace ApsimFile
                     if (NextItem != null)
                     {
                         //call next factor in the list
-						NextItem.Process(Simulation, factorsToMatch);
+						NextItem.Process(Simulation, (Builder.useFQKeys ? pfx(prefix) + FactorComponent.Name + "." + FolderLevel : ""), factorsToMatch);
                     }
                 }
             }
@@ -211,16 +213,16 @@ namespace ApsimFile
             return Parameters.Count;
         }
 
-        public override void CalcFactorialList(List<string> factorials, SortedDictionary<string, string> scratch)
+		public override void CalcFactorialList(List<string> factorials, string prefix, SortedDictionary<string, string> scratch)
         {
             foreach (string par in Parameters)
             {
                 SortedDictionary<string, string> s = scratch;
-                s[Variable.Name] = par;
+				s[(Builder.useFQKeys ? pfx(prefix) + FactorComponent.Name + "." : "") + Variable.Name] = par;
 
                 if (NextItem != null)
                 {
-                    NextItem.CalcFactorialList(factorials, s);
+					NextItem.CalcFactorialList(factorials, prefix, s);
                 }
                 else
                 {
@@ -229,12 +231,12 @@ namespace ApsimFile
             }
         }
 
-        public override void Process(Component Simulation, SortedDictionary<string, string> factorsToMatch)
+        public override void Process(Component Simulation, string prefix, SortedDictionary<string, string> factorsToMatch)
         {
 
             foreach (string par in Parameters)
             {
-                if (factorsToMatch.Contains(new KeyValuePair<string, string>(Variable.Name, par)))
+				if (factorsToMatch.Contains(new KeyValuePair<string, string>((Builder.useFQKeys ? pfx(prefix) + FactorComponent.Name + "." : "") + Variable.Name, par)))
                 {
                     //replace each target that is within the provided simulation with the child's xml
                     foreach (string target in Targets)
@@ -268,7 +270,7 @@ namespace ApsimFile
                         }
                         else
                         {
-                            throw new Exception("target " + target + ", rel path" + sRelativeTarget + " was not found in factor " + Variable.Name);
+							throw new Exception("target " + target + ", rel path" + sRelativeTarget + " was not found in factor " + (Builder.useFQKeys ? pfx(prefix) + FactorComponent.Name + "." : "") + Variable.Name);
                         }
                     }
 				}
@@ -276,7 +278,7 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(Simulation, factorsToMatch);
+                    NextItem.Process(Simulation, prefix, factorsToMatch);
                 }
         }
     }
@@ -287,40 +289,40 @@ namespace ApsimFile
 
         public bool SaveExtraInfoInFilename { get; set; }
 
+		public bool useFQKeys { get; set; } // keys are fully qualified (a.b.c... vs c)
+
 		public FactorBuilder() 
         {
+			useFQKeys = false;
 			TitleIsSingleLine = true;
             SaveExtraInfoInFilename = false;
         }
         public FactorBuilder(Component factorial) 
         {
+			useFQKeys = false;
 			TitleIsSingleLine = true;
             SaveExtraInfoInFilename = false;
             XmlNode varNode = factorial.ContentsAsXML.SelectSingleNode("//settings");
-            string s = "";
-            if (varNode != null)
-                s = XmlHelper.Attribute(varNode, "fn");
-            if (s == "1")
+			if (XmlHelper.Attribute(varNode, "fn") == "1")
                 SaveExtraInfoInFilename = true;
+			if (XmlHelper.Attribute(varNode, "fqKeys") == "1")
+				useFQKeys = true;
         }
         public List<FactorItem> BuildFactorItems(Component factorial, string SimulationPath)
         {
-            //read file saving options - 2 bools at this stage - single line title, add factor/level to filename
+            //read options 
             XmlNode varNode = factorial.ContentsAsXML.SelectSingleNode("//settings");
-            TitleIsSingleLine = true;
             SaveExtraInfoInFilename = false;
-
-            string s = "";
-            if (varNode != null)
-                s = XmlHelper.Attribute(varNode, "fn");
-            if (s == "1")
+			if (XmlHelper.Attribute(varNode, "fn") == "1")
                 SaveExtraInfoInFilename = true;
 
-            s = "";
-            if (varNode != null)
-                s = XmlHelper.Attribute(varNode, "tl");
-            if (s == "1")
+			TitleIsSingleLine = true;
+			if (XmlHelper.Attribute(varNode, "tl") == "1")
                 TitleIsSingleLine = false;
+
+			useFQKeys = false;
+			if (XmlHelper.Attribute(varNode, "fqKeys") == "1")
+				useFQKeys = true;
 
             List<FactorItem> factorItems = new List<FactorItem>();
             List<Component> leaves = new List<Component>();
@@ -573,7 +575,7 @@ namespace ApsimFile
                 foreach (FactorItem item in items)
                 {
                     totalCount += item.CalcCount();
-                    item.Process(Simulation, factorInstance);
+                    item.Process(Simulation, "", factorInstance);
                 }
 
                 Simulation.Name = simulationName(builder.SaveExtraInfoInFilename, rootName, factorInstance, uniqueId, totalCount);
@@ -602,7 +604,7 @@ namespace ApsimFile
             foreach (FactorItem item in builder.BuildFactorItems(_F.FactorComponent, SimulationPath))
             {
                 var scratch = new SortedDictionary<string, string>();
-                item.CalcFactorialList(allFactorials, scratch);
+                item.CalcFactorialList(allFactorials, "", scratch);
             }
             return (allFactorials);
         }
@@ -623,7 +625,7 @@ namespace ApsimFile
                 foreach (FactorItem item in builder.BuildFactorItems(_F.FactorComponent, simXmlPath))
                 {
                     var scratch = new SortedDictionary<string, string>();
-                    item.CalcFactorialList(allFactorials, scratch);
+                    item.CalcFactorialList(allFactorials, "", scratch);
                 }
 
                 if (simPathFactorInstance != "")
@@ -660,7 +662,7 @@ namespace ApsimFile
                 {
                     totalCount += item.CalcCount();
                     var scratch = new SortedDictionary<string, string>();
-                    item.CalcFactorialList(allFactorials, scratch);
+                    item.CalcFactorialList(allFactorials, "", scratch);
                 }
 
                 string FullSimulationPathName = _F.Find(FullSimulationPath).Name;
@@ -687,7 +689,7 @@ namespace ApsimFile
                 {
                     totalCount += item.CalcCount();
                     var scratch = new SortedDictionary<string, string>();
-                    item.CalcFactorialList(allFactorials, scratch);
+                    item.CalcFactorialList(allFactorials, "",  scratch);
                 }
 
 

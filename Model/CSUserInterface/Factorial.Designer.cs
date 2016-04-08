@@ -82,6 +82,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.radMultiple = new System.Windows.Forms.RadioButton();
             this.radSingle = new System.Windows.Forms.RadioButton();
+            this.fqKeys = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -110,9 +111,9 @@
             // 
             // treeSims
             // 
-            this.treeSims.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeSims.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.treeSims.ImageIndex = 0;
             this.treeSims.ImageList = this.imageList1;
             this.treeSims.Location = new System.Drawing.Point(3, 105);
@@ -267,8 +268,19 @@
             this.radSingle.Text = "Use a single line";
             this.radSingle.UseVisualStyleBackColor = true;
             // 
+            // fqKeys
+            // 
+            this.fqKeys.AutoSize = true;
+            this.fqKeys.Location = new System.Drawing.Point(7, 62);
+            this.fqKeys.Name = "fqKeys";
+            this.fqKeys.Size = new System.Drawing.Size(144, 17);
+            this.fqKeys.TabIndex = 15;
+            this.fqKeys.Text = "Use folder names in keys";
+            this.fqKeys.UseVisualStyleBackColor = true;
+            // 
             // Factorial
             // 
+            this.Controls.Add(this.fqKeys);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txtTotalSims);
@@ -285,6 +297,7 @@
             this.Controls.SetChildIndex(this.txtTotalSims, 0);
             this.Controls.SetChildIndex(this.groupBox1, 0);
             this.Controls.SetChildIndex(this.groupBox2, 0);
+            this.Controls.SetChildIndex(this.fqKeys, 0);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -307,5 +320,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton radMultiple;
         private System.Windows.Forms.RadioButton radSingle;
+        private System.Windows.Forms.CheckBox fqKeys;
     }
 }

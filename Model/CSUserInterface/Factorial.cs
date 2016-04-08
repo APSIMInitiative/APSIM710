@@ -34,20 +34,14 @@ namespace CSUserInterface
             double iTotalCount = 0;
             foreach (string SimulationPath in SimsToRun)
             {
-                double iCount = 0;
-                List<FactorItem> items = builder.BuildFactorItems(Controller.ApsimData.FactorComponent, SimulationPath);
-                foreach (FactorItem item in items)
-                {
-                    iCount += item.CalcCount();
-                }
                 int tmpCounter = 0;
                 ApsimFile.Component tmpComp = Controller.ApsimData.Find(SimulationPath);
                 if (tmpComp != null)
                 {
-                    TreeNode treeNode = treeSims.Nodes.Add(tmpComp.Name + " (" + iCount.ToString() + ")");
+					List<string> factorials = ApsimFile.Factor.CalcFactorialList(Controller.ApsimData, SimulationPath);
+					TreeNode treeNode = treeSims.Nodes.Add(tmpComp.Name + " (" + factorials.Count.ToString() + ")");
                     treeNode.ImageIndex = 0;
                     treeNode.SelectedImageIndex = 0;
-                    List<String> factorials = ApsimFile.Factor.CalcFactorialList(Controller.ApsimData, SimulationPath);
                     AddFactorsToTreeNode(treeNode, factorials);
                     tmpCounter += factorials.Count;
                 }
@@ -56,21 +50,20 @@ namespace CSUserInterface
             }
             //double tmp = treeSims.Nodes[0].Nodes.Count;
             XmlNode varNode = Data.SelectSingleNode("//settings");
-            string s = "";
-            if(varNode != null)
-                s = XmlHelper.Attribute(varNode, "fn");
-            if (s == "1")
+			if (XmlHelper.Attribute(varNode, "fn") == "1")
                 radDesc.Checked = true;
             else
                 radCount.Checked = true;
 
-            s = "";
-            if (varNode != null)
-                s = XmlHelper.Attribute(varNode, "tl");
-            if (s == "1")
+			if (XmlHelper.Attribute(varNode, "tl") == "1")
                 radMultiple.Checked = true;
             else
                 radSingle.Checked = true;
+
+			if (XmlHelper.Attribute(varNode, "fqKeys") == "1")
+                fqKeys.Checked = true;
+			else 
+				fqKeys.Checked = false;
         }
         public void AddFactorsToTreeNode(TreeNode parentNode, List<string> factorials)
         {
@@ -100,6 +93,13 @@ namespace CSUserInterface
             {
                 XmlHelper.SetAttribute(node, "tl", "1");
             }
+			if (fqKeys.Checked)
+				XmlHelper.SetAttribute(node, "fqKeys", "1");
+        }
+
+		private void fqKeys_Click(object sender, EventArgs e)
+        {
+			fqKeys.Checked = ! fqKeys.Checked ;
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -113,7 +113,6 @@ namespace CSUserInterface
             foreach (String SimulationPath in PathsToConvert)
                 ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.Find(SimulationPath), ref SimsToConvert);
             
-            String UserMsg = "No simulations selected!";
             if (SimsToConvert.Count > 0)
             {
                 FolderBrowserDialog FolderChooser = new FolderBrowserDialog();
@@ -125,11 +124,9 @@ namespace CSUserInterface
                     {
                         List<string> SimFiles = ApsimFile.Factor.CreateSimFiles(Controller.ApsimData, SimsToConvert.ToArray(), FolderChooser.SelectedPath);
                         if (SimFiles.Count == 1)
-                            UserMsg = "1 Simulation created.";
+							MessageBox.Show("1 Simulation created.", "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         else
-                        {
-                            UserMsg = SimFiles.Count + " Simulations created.";
-                        }
+							MessageBox.Show(SimFiles.Count + " Simulations created.", "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception err)
                     {
@@ -137,9 +134,6 @@ namespace CSUserInterface
                     }
                 }
             }
-            MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-
     }
 }
