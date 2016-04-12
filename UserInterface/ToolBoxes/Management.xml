@@ -1418,77 +1418,81 @@ endif</text>
     </manager>
   </folder>
   <folder name="Manager.NET (common tasks)">
-    <manager2 name="Plant1 Defoliation Rule">
-      <ui>
-        <DefoliationDateString type="text" description="Date of defoliation">05/9/1998</DefoliationDateString>
-        <ResidualStem type="text" description="Amount of stem remaining after defoliation (g/m2)">10</ResidualStem>
-        <ResidualLeaf type="text" description="Amount of leaf remaining after defoliation (g/m2)">10</ResidualLeaf>
-        <Crop2Defoliate type="crop" description="Name of crop to defoliate (must be a Plant1 crop)">wheat</Crop2Defoliate>
-      </ui>
-      <text>
-   using System;
-   using ModelFramework;
+        <manager2 name="Plant 1 defoliation">
+          <ui>
+            <DefoliationDateString type="text" description="Date of defoliation">1-jun</DefoliationDateString>
+            <ResidualStem type="text" description="Amount of stem remaining after defoliation (g/m2)">10</ResidualStem>
+            <ResidualLeaf type="text" description="Amount of leaf remaining after defoliation (g/m2)">10</ResidualLeaf>
+            <Crop2Defoliate type="crop" description="Name of crop to defoliate (must be a Plant1 crop)">wheat</Crop2Defoliate>
+          </ui>
+          <text>
+using System;
+using ModelFramework;
+using CSGeneral;
 
-   public class Script 
+public class Script
+{
+   [Param()] private string DefoliationDateString;
+   [Param()] private double ResidualStem;
+   [Param()] private double ResidualLeaf;
+   [Param()] private string Crop2Defoliate;
+   
+   [Link()]
+   public Paddock MyPaddock;
+   [Input()] private DateTime Today;
+   
+   private double GreenLeaf = 0.0;
+   private double GreenStem = 0.0;
+   private double dlt_GreenLeaf = 0.0;
+   private double dlt_GreenStem = 0.0;
+   private double Grazed = 0.0;
+   
+   [Output()]
+   private DateTime DefoliationDate;
+   
+   [EventHandler]
+   public void OnInitialised()
+   {
+      DefoliationDate = DateUtility.GetDate(DefoliationDateString);
+
+   }
+      
+   [EventHandler] public void OnPrepare()
+   {
+      if ((Today.Day == DefoliationDate.Day &amp;&amp; Today.Month == DefoliationDate.Month))   
       {
-      [Param()] private string DefoliationDateString;
-      [Param()] private double ResidualStem;
-      [Param()] private double ResidualLeaf;
-      [Param()] private string Crop2Defoliate;
+         Grazed = 1;
+         MyPaddock.Get(Crop2Defoliate + "." + "leafgreenwt", out GreenLeaf);
+         MyPaddock.Get(Crop2Defoliate + "." + "stemgreenwt", out GreenStem);
 
-      [Link()]
-      public Paddock MyPaddock;
-      [Input()] private DateTime Today;
-
-      private double GreenLeaf = 0.0;
-      private double GreenStem = 0.0;
-      private double dlt_GreenLeaf = 0.0;
-      private double dlt_GreenStem = 0.0;
-      private double Grazed = 0.0;
-
-      [Output()]
-      private DateTime DefoliationDate;
-
-      [EventHandler] public void OnInitialised()
-      {
-         DefoliationDate = DateTime.ParseExact(DefoliationDateString, "d/M/yyyy", null);
-      }
-
-      [EventHandler] public void OnPrepare()
-      {
-         if ((Today &gt;= DefoliationDate) &amp;&amp; (Grazed == 0))   
-            {
-               Grazed = 1;
-               MyPaddock.Get(Crop2Defoliate + ".leafgreenwt", out GreenLeaf);
-               MyPaddock.Get(Crop2Defoliate + ".stemgreenwt", out GreenStem);
-
-               dlt_GreenLeaf = Math.Max(0, GreenLeaf - ResidualLeaf);
-               dlt_GreenStem = Math.Max(0, GreenStem - ResidualStem);
-
-               RemoveCropBiomassdmType GreenRemoveCropDmDm = new RemoveCropBiomassdmType();
-
-               GreenRemoveCropDmDm.pool = "green";
-               GreenRemoveCropDmDm.part = new string[]
-                  {"leaf","stem"};
-               GreenRemoveCropDmDm.dlt = new double[] 
-                  {dlt_GreenLeaf, dlt_GreenStem};
-
-               RemoveCropBiomassType MyRemoveCropDM = new RemoveCropBiomassType();
-
-               MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };
-
-               MyPaddock.Publish(Crop2Defoliate + ".remove_crop_biomass", MyRemoveCropDM);
-
-            Console.WriteLine(Today.ToShortDateString() + " - " + "Plant1 Defoliation Rule Invoked");
-            Console.WriteLine("          - " + Crop2Defoliate + " has been defoliated");
-            Console.WriteLine("          - Removed " + dlt_GreenLeaf + " g/m2 of Leaf");
-            Console.WriteLine("          - Removed " + dlt_GreenStem + " g/m2 of Stem");
-            Console.WriteLine(" ");
-            }
+         dlt_GreenLeaf = Math.Max(0, GreenLeaf - ResidualLeaf);
+         dlt_GreenStem = Math.Max(0, GreenStem - ResidualStem);
+ 
+         RemoveCropBiomassdmType GreenRemoveCropDmDm = new RemoveCropBiomassdmType();
+         
+         GreenRemoveCropDmDm.pool = "green";
+         GreenRemoveCropDmDm.part = new string[]
+            {"leaf","stem"};
+         GreenRemoveCropDmDm.dlt = new double[] 
+            {dlt_GreenLeaf, dlt_GreenStem};
+         
+         RemoveCropBiomassType MyRemoveCropDM = new RemoveCropBiomassType();
+        
+         MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };
+         
+         Component Crop = MyPaddock.LinkByName(Crop2Defoliate) as Component;
+         Crop.Publish("remove_crop_biomass", MyRemoveCropDM);
+         
+         Console.WriteLine(Today.ToShortDateString() + " - " + "Plant1 Defoliation Rule Invoked");
+         Console.WriteLine("          - " + Crop2Defoliate + " has been defoliated");
+         Console.WriteLine("          - Removed " + dlt_GreenLeaf + " g/m2 of Leaf");
+         Console.WriteLine("          - Removed " + dlt_GreenStem + " g/m2 of Stem");
+         Console.WriteLine(" ");
       }
    }
-			</text>
-    </manager2>
+}
+      </text>
+        </manager2>
     <manager2 name="FertiliseOnFixedDates">
       <ui>
         <category type="category" description="Fertiliser will be applied on the date(s) below" />
