@@ -1,0 +1,1512 @@
+<folder version="36" creator="Apsim 7.8-r3874" name="simulations">
+  <simulation name="GriddedGrazedPaddock">
+    <memo>This is an example simulation for a ‘gridded paddock’.  A conference and journal paper describing the gridding are in preparation and will be referenced here when published.  The gridding refers to that there are multiple patches within the soil carbon/nitrogen module that can be used to reflect the variation in mineral and organic nitrogen caused by patchy urinary N returns from the grazing animal.
+
+The user sets the number of patches in the paddock in the component “ManageGriddedPaddock” in the field “How many patches should there be in the grid?”  The 1-ha paddock is evenly divided into that number of patches so a grid of 10,000 will produce patches of 1 m2 while a 100-patch paddock would have 100 m2 patches.  Note that the higher the number of patches the slower that the simulation will run.
+
+The example here is for a rotationally-grazed single paddock.  When animals arrive in the simulation to graze the paddock a user-set proportion of the ingested N is removed from the simulation and the remainder is divided up into dung and urine.  In this simulation dung is uniformly returned to the paddock but urine is returned in patches.  The area of new urine patches at each grazing is determined by the amount of grazable dry matter and the user settings for the intake per animal, urinations per animal per day and the wetted area of soil per urination.  These settings and the simulated pasture growth decide the total area (m2) of new urine patch for each grazing event.  That area is compared to the area per patch to give the number of patches that are used for urine return for that grazing.  A few examples are provided below:
+
+User settings				
+# patches (-)	                                                10000      5000        50            50
+DM ingested per animal (kgDM/head/day)              15           15            15            15
+Urinations per animal (-)                                            12           12            12            12
+Wetted area per urination (m2)                                 0.25         0.25         0.25         0.25
+				
+Calculated during simulation in “ManageGriddedPaddock”
+Biomass grazed (kgDM/ha)                                      1000        1000        1000        1500
+Number of animals (-)                                                 66.67       66.67       66.67      100
+Total area of urine patches for this grazing (m2)        200          200          200          300
+Area of each simulation grid patch (m2)                    1              2              200          200
+Number of grid patches used for urine return (-)         200         100          1              2
+
+The actual patches used are selected by one of three options:
+-	RotatingInOrder – each patch is used in turn in strict order, there are no double-applications at a single grazing event;
+-	Random – the patches used are selected at random, if there are multiple patches used for a single grazing event then there is some probability that a patch will receive a double (or greater) application of urine and the same patch(es) could be selected for another grazing in the near future.  The likelihood of the patches overlapping increases as the number of patches needed for the urination area increases.
+-	PseudoRandom – as for “Random” but a constant seed is used for the random selection of patches so that the simulation is repeatable.
+The actual patches selected is provided in the string output “ListOfPatches” where, for example “234|562|556|” would indicate that the urine was returned to three patches, numbers 234, 562 and 556.
+
+The “ReportingWithPatches” manager assists with reporting data from the simulation.  The user options are the name of the output component, the interval between reporting (amounts are sensibly accumulated between reporting events) and the ‘sampling’ of patches.  The latter is included as the user may wish to see some data from individual patches but perhaps not all patches (e.g. from 10,000-patch simulations).  The sampling setting sets the number of patches to sample.  Additional outputs from this manager component include:
+-	patchesNO3 - quantity of the no3 in the patch
+-	patchesNH4 - quantity of the nh4 in the patch
+-	SamplePatchesNO3 - as for patchesNO3 but only the sampled patches (for simulations with many patches)
+-	SamplePatchesNH4 - as for patchesNH4 but only the sampled patches (for simulations with many patches)
+-	patchesNO3conc600 - concentration of no3-n in the water at 600 mm deep
+-	SampleConc600 - as for patchesNO3conc600 but only the sampled patches (for simulations with many patches)
+-	PercNH4 - percentiles of NH4 in the patches 1=P0, 2=P5, 3=P10, 4=P25, 5=P50, 6=P75, 7=P90, 8=P95, 9=P100
+-	PercNO3 - percentiles of NO3 in the patches 1=P0, 2=P5, 3=P10, 4=P25, 5=P50, 6=P75, 7=P90, 8=P95, 9=P100
+-	PercNO3Conc - percentiles of NO3-N concentration in the patches 1=P0, 2=P5, 3=P10, 4=P25, 5=P50, 6=P75, 7=P90, 8=P95, 9=P100
+The amounts of NH4 or NO3 are those summed for the entire soil depth.  The percentiles are given as an array with the probabilities expressed in each element as shown above (e.g. PercNH4(7) would give the 70th percentile of NH4 amount).
+
+
+</memo>
+    <PlugIns name="PlugInSoilNitrogen">
+      <PlugIn enabled="yes">%apsim%\UserInterface\ApsimUIPlugIn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\SoilTypes.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\GenericFunctionsIDE.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\Graph.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\Ausfarm.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\UserInterface\DevelopersPlugIn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SlurryTank.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\WHEATSTRAW.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\WASHWATER.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\animalSection.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\floor.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\PigHousing.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\PHmodel.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\simpleBuilding.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\atmosphere.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Accum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\AgPasture.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Bambatsi.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Barley.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Br.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Bore.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Broccoli.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\ButterflyPea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Canola.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Canopy.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Centro.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Channel.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Chickpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Chicory.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Cl2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Climatechange.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Clock.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Cotton2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Cowpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\CPIManager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\CropUI.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Dam.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\DCD.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\dcd1.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\dcd2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\dcd3.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Dymex_StripeRust.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\EGrandis.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\EMelliodora.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Eo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\EPopulnea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Erosion.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Events.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Fababean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Factorial.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Factor.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\FactorComplex.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\FrenchBean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Fertiliser.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Fieldpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Gcm_data.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Grasp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Graz.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Growth.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Horsegram.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Ini.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\InitWater.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Input.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Irrigation.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\KWTest.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lablab.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lettuce.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Log.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lentil.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lucerne.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Lupin.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Maize.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\MaizeZ.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Manager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Map.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Memo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\MetFile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\MicroMet.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet1.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet3.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet4.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Millet5.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Mucuna.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Mungbean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Navybean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\NitrificationInhibitor2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Oats.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Ocean_data.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\OilPalm.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Operations.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Orobanche.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Oryza.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Oryza2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\OutputFile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Ozcot.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Patchinput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\PatchData.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Peanut.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Pigeonpea.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Pond.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Potato.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\RLink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\RotPlot.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\RugPlotUI.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Root.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Rule.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Script.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Seedling.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SiloInput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Slurp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soi.xml</PlugIn>
+      <PlugIn enabled="no">%apsim%\Model\Soil.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SoilNui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SoilTemp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Solute.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM3SubsurfaceDrain.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM3SoluteParameters.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM3.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM3WaterTable.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tracer.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sorghum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SorghumConstants.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SorghumGenotype.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soybean.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Stylo.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sugar.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SugarCane.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SurfaceTemp.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Summaryfile.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sunflower.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SurfaceOM.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SweetCorn.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SweetSorghum.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SWIM2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Sysbal.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\SysBal2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tcllink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tclmanager.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tclui.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\TextOutput.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tracker.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Tree.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\UreaseInhibitor2.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Variables.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Venlink.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\vine.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\WaterSupply.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Weed.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Wheat.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\YPCalc.xml</PlugIn>
+      <PlugIn enabled="yes">%apsim%\Model\Soil with new nitrogen model.xml</PlugIn>
+    </PlugIns>
+    <manager2 name="ManageGriddedPaddock">
+      <ui>
+        <Verbose type="yesno" description="Verbose mode - write many informational statements to the Summary file">no</Verbose>
+        <dummy type="category" description="Grazing parameters" />
+        <GrazingFrequency type="text" description="Frequency of grazing (days) (0 will be interpreted as the end of each month)">0</GrazingFrequency>
+        <GrazingResidual type="text" description="Residual pasture mass after grazing (kg DM /ha)">1000</GrazingResidual>
+        <MinGrazable type="text" description="Minimum grazeable dry matter to trigger grazing (kg DM/ha)">500</MinGrazable>
+        <dummy type="category" description="Excreta return parameters" />
+        <GrazedDMPerHead type="text" description="Amount of DM ingested per animal per grazing day (used to calculate stocking density) (kgDM/head/day)">15</GrazedDMPerHead>
+        <UrinationsPerHead type="text" description="Number of urinations per animal per day">12</UrinationsPerHead>
+        <SingleUrinePatchArea type="text" description="Area (use the wetted area) of each urine patch created (m2)">0.25</SingleUrinePatchArea>
+        <PropIngestedNExported type="text" description="Proportion of the ingested N that is retained in the body or exported from the paddock">0.15</PropIngestedNExported>
+        <PropExcretedNAsUrine type="text" description="Proportion of the excreted N that is voided as urine">0.7</PropExcretedNAsUrine>
+        <UrineDepth type="text" description="Depth band (0 mm to X mm) for urine N deposition (mm)">200</UrineDepth>
+        <dummy type="category" description="Patch characteristics" />
+        <UrineReturnPattern type="list" listvalues="RotatingInOrder,Random,PseudoRandom" description="Pattern for urine N return (PseudoRandom uses a constant seed to all for repeatable simulations)">PseudoRandom</UrineReturnPattern>
+        <NumPatches type="text" description="How many patches should there be in the grid?">15</NumPatches>
+        <dummy type="category" description="Fertiliser management" />
+        <GeneralFertAmt type="text" description="Annual amount of urea-N fertiliser to apply (kg N /ha) - application on the 1st of the month">150</GeneralFertAmt>
+        <GeneralFertType type="list" listvalues="AllYear,NoWinter" description="Apply fertiliser all year or not in winter (May, June, July)?">NoWinter</GeneralFertType>
+      </ui>
+      <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Link] Simulation Simulation;
+   [Link] Clock Clock;   
+
+   [Param] public string Verbose; // yes/no
+   
+   // grazing parameters
+   [Param] [Output] [Units("days")] public int GrazingFrequency; // in days - 0 is to be interpreted as the end of each month (days)
+   [Param] [Output] [Units("kgDM/ha")] public double GrazingResidual; // residual pasture after grazing (kg DM /ha)
+   [Param] [Output] [Units("kgDM/ha")] public double MinGrazable; // minimum amount of pasture to trigger grazing (kg DM /ha)
+
+   // excreta return parameters
+   [Param] [Units("kgDM/head/day")] public double GrazedDMPerHead; // amount of DM ingested per animal
+   [Param] [Units("-")] public double UrinationsPerHead; // number of urine patches per animal per day
+   [Param] [Units("m2")] public double SingleUrinePatchArea; // area of each urine patch
+   [Param] [Units("-")] public double PropIngestedNExported; // proportion of ingested N that is either retained in the body or exported from the paddock (only relevant for FromGrazing option)
+   [Param] [Units("-")] public double PropExcretedNAsUrine; // proportion of excreted N that is voided as urine (only relevant for FromGrazing option)
+   [Param] [Output] [Units("mm")] public double UrineDepth; // depth of urine deposition 
+
+   // urine patch characteristics
+   [Param] [Output] [Units("-")] public string UrineReturnPattern; // how the urine is returned to the soil
+   [Param] [Output] [Units("-")] public int NumPatches; // if a gridded paddock then how many patches?
+   
+   // fertiliser parameters
+   [Param] [Output] [Units("-")] public string GeneralFertType;
+   [Param] [Output] [Units("kgN/ha/yr")] public double GeneralFertAmt;
+
+   [Event] public event AddSoilCNPatchDelegate AddSoilCNPatch;
+
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   
+   [Output] [Units("-")] public int DaysSinceGraze;
+   [Output] [Units("-")] public string ListOfPatches;  // a list (string) of patch numbers that the urine is returned to today using "|" as a seperator
+   [Output] [Units("-")] public int NumPatchesForUrine;  //number of patches used for urine return (depends on the amount of herbage grazed)
+   [Output] [Units("kgDM /ha")] public double Grazed;  // DM grazed
+   [Output] [Units("kgN/ha")] public double GrazedN;   // N in the DM grazed
+   [Output] [Units("kgN/ha")] public double AmountUrineNReturned;
+   [Output] [Units("kgN/ha")] public double AmountDungNReturned;
+   
+   [Output] [Units("kgN/ha")] public double UrineNReturned;  // is this needed?
+   
+   AgPasture AgPasture;
+   Fertiliser Fertiliser;
+   SoilWat SoilWat;
+   SoilN SoilNitrogen;
+   SurfaceOM SurfaceOM;
+
+   int PatchNumForUrine = -1;
+   double AmountDungCReturned = 0.0;
+   double iniOrgC;
+   double iniOrgN;
+   double[] UrineDepthPlacement;
+
+   bool GrazeNow = false;
+   bool ReportToday = false;
+   
+   Random rndConstSeed = new Random((int) 666);
+   Random rndRandom = new Random();
+
+      
+   [EventHandler] public void OnInitialised()
+   {
+      if (Verbose == "yes")
+         Console.WriteLine("Initialising the Manager for grazing, urine return and reporting");
+      
+      // nothing required at initialisation
+      
+      if (Verbose == "yes")
+         Console.WriteLine("Finished initialising the Manager for grazing, urine return and reporting");
+
+   } // end of Initialisation
+
+
+   [EventHandler] public void OnPrepare()
+   {
+      // if this is the start of the simulation then sort out the depth for the urine placement, can't do this in initialisation because of the module order
+      if (Clock.is_start_simulation)
+      {
+         CalcUrinePlacementDepth();
+         foreach (Paddock Paddock in Simulation.ChildPaddocks)
+         {
+            SoilNitrogen = (SoilN) Paddock.LinkByType("SoilN");
+            SoilNitrogen.Set("MaximumNitrogenAvailableToPlants", 3.0);
+            SoilNitrogen.Set("allowPatchAmalgamation", "No");
+            SoilNitrogen.Set("basePatchApproach", "IDBased");
+            SoilNitrogen.Set("AutoAmalgamationApproach", "CompareAge");
+            SoilNitrogen.Set("ageForForcedMerge", 3.0);
+            SoilNitrogen.Set("NPartitionApproach", "BasedOnConcentrationAndDelta");
+            //mySoilNitrogen.Set("allowNewPools", "yes");  // this changes the calculation of soluble carbon for denitrification to use only the active pools (sometimes needed to prevent excessive denitrifciation when N from urine patches gets deep in the soil where all the carbon is inactive)
+      
+            int[] PatchToAddTo = new int[1];  //need an array variable for this
+            int nPatchesAdded = 0;
+            double NewArea = 1.0 / NumPatches;
+
+            while(nPatchesAdded &lt; NumPatches - 1)
+            {
+               AddSoilCNPatchType NewPatch = new AddSoilCNPatchType();
+               NewPatch.DepositionType = "ToNewPatch";
+               NewPatch.AreaFraction = NewArea;
+               PatchToAddTo[0] = 0;
+               NewPatch.AffectedPatches_id = PatchToAddTo;
+      
+               AddSoilCNPatch.Invoke(NewPatch);
+               nPatchesAdded += 1;
+            }
+         }
+      }
+         
+      DaysSinceGraze += 1;
+      Grazed = 0.0;
+      GrazedN = 0.0;
+      UrineNReturned = 0.0;
+      ListOfPatches = "";
+      GrazeNow = false;
+      
+      if (((GrazingFrequency == 0) &amp;&amp; (Clock.is_end_month)) || ((DaysSinceGraze &gt;= GrazingFrequency) &amp;&amp; (GrazingFrequency &gt; 0)))
+      {
+         // see if there is enough biomass to do the grazing, can set this to 0 in the UI if needed
+         double StandingBiomass = 0.0;
+         foreach (Paddock Paddock in Simulation.ChildPaddocks)
+         {
+            AgPasture = (AgPasture) Paddock.LinkByType("AgPasture");
+            StandingBiomass += AgPasture.AboveGroundWt;
+         }
+         if (StandingBiomass &gt; (GrazingResidual + MinGrazable))  
+            GrazeNow = true;
+      }
+
+      if (GrazeNow)
+      {
+         if (Verbose == "yes")
+            Console.WriteLine("Doing grazing");
+         DaysSinceGraze = 0;
+
+         foreach (Paddock Paddock in Simulation.ChildPaddocks)
+         {
+            AgPasture = (AgPasture) Paddock.LinkByType("AgPasture");
+
+            GrazeType GZ = new GrazeType();
+            GZ.amount = (float) GrazingResidual;
+            GZ.type = "SetResidueAmount";
+            GZ.sender = "DoGrazing";
+            AgPasture.Graze(GZ);
+
+            Grazed += AgPasture.HarvestWt;
+            GrazedN += AgPasture.HarvestN;
+         }
+            
+         AmountUrineNReturned = GrazedN * (1.0 - PropIngestedNExported) * PropExcretedNAsUrine;  
+         AmountDungNReturned = GrazedN * (1.0 - PropIngestedNExported) * (1.0 - PropExcretedNAsUrine);  // 
+         AmountDungCReturned = AmountDungNReturned * 20;  // or could take this from digestibility
+
+         // calculate the number of patches based on the patch size and the /cow pasture amount of 15 kg DM /cow /day and 12 urine patchs per cow per day * 0.25 m2 /patch
+         double AreaUrinePatchesToday = Grazed / GrazedDMPerHead * UrinationsPerHead * SingleUrinePatchArea;  // units are m2
+         double AreaSingleGPPatch = 10000.0 / NumPatches; // units are m2
+         NumPatchesForUrine = Math.Max(1, Convert.ToInt32(AreaUrinePatchesToday / AreaSingleGPPatch));
+         double UrineNPerPatch = AmountUrineNReturned / NumPatchesForUrine; // units are kg N /patch
+
+         if (Verbose == "yes")
+         {
+            Console.WriteLine("Grazing urine return summary:");
+            Console.WriteLine("    Pasture Grazed          :   " + Grazed);
+            Console.WriteLine("    Number of cows          :   " + (Grazed / 15.0));
+            Console.WriteLine("    Number of urine patches :   " + (Grazed / 15.0 * 12.0));
+            Console.WriteLine("    Area of urine patches   :   " + (Grazed / 15.0 * 12.0 * 0.25));
+            Console.WriteLine("    Number of GP patches    :   " + NumPatchesForUrine);
+            Console.WriteLine("    Urine N per patch       :   " + UrineNPerPatch + " in kg N / patch");
+            Console.WriteLine("    Urine N per patch       :   " + (UrineNPerPatch / AreaSingleGPPatch * 10000) + " in kg N / ha within patch");
+            Console.WriteLine("");
+            Console.WriteLine("The amount of urea fertiliser to be returned to the whole paddock is " + AmountUrineNReturned);
+         }            
+        
+         DoUrineReturn();
+
+         DoTramplingAndDungReturn();
+         
+         if (Verbose == "yes")
+            Console.WriteLine("Finished grazing");
+
+      } // this is the end of the GrazeNow section
+
+      if ((GeneralFertAmt &gt; 0.0) &amp;&amp; (Clock.day_of_month == 1))
+      {
+         DoFertiliser();
+      }
+
+   } // this is the end of Prepare
+
+
+   [EventHandler] public void OnPost()
+   {
+      // nothing to do here
+   } // end of Post
+
+   public void CalcUrinePlacementDepth()
+   {
+    // calculates what proportion of the urinary N to put in each layer of the soil
+      
+      foreach (Paddock Paddock in Simulation.ChildPaddocks)
+      {
+         SoilWat = (SoilWat) Paddock.LinkByType("SoilWat");
+         double tempDepth = 0.0;
+         UrineDepthPlacement = new double[SoilWat.dlayer.Length];
+         for (int i = 0; i &lt;= (SoilWat.dlayer.Length - 1); i++)
+         {
+            tempDepth += SoilWat.dlayer[i];
+            if (tempDepth &lt;= UrineDepth)
+            {
+               UrineDepthPlacement[i] = SoilWat.dlayer[i] / UrineDepth;
+            }
+            else
+            {
+               UrineDepthPlacement[i] = (UrineDepth - (tempDepth - SoilWat.dlayer[i])) / (tempDepth - (tempDepth - SoilWat.dlayer[i])) * SoilWat.dlayer[i] / UrineDepth;
+               UrineDepthPlacement[i] = Math.Max(0.0, Math.Min(1.0, UrineDepthPlacement[i]));
+            }
+            if (Verbose == "yes")
+               Console.WriteLine("The proportion of urinary-N deposited into the " + i + "th layer will be " + UrineDepthPlacement[i]);
+         }
+      }
+
+   } // this is the end of CalcUrinePlacementDepth
+
+   public void GetPatchForUrineReturn()
+   {
+      if (UrineReturnPattern == "UniformAcrossAllPatches")
+         PatchNumForUrine = 0;  
+      else if (UrineReturnPattern == "RotatingInOrder")
+      {
+         PatchNumForUrine += 1;  //increment the patch number
+         if (PatchNumForUrine &gt;= NumPatches)
+            PatchNumForUrine = 0;  // but reset back to the first patch if needed
+         if (Verbose == "yes")
+            Console.WriteLine("The patch for urine return is " + PatchNumForUrine);
+      }
+      if (UrineReturnPattern == "Random")
+      {
+         PatchNumForUrine = rndRandom.Next(0, NumPatches);
+         if (Verbose == "yes")
+            Console.WriteLine("The next random number patch for urine return is " + PatchNumForUrine);
+      }
+      else if (UrineReturnPattern == "PseudoRandom")
+      {
+         PatchNumForUrine = rndConstSeed.Next(0, NumPatches);
+         if (Verbose == "yes")
+            Console.WriteLine("The next pseudo-random number patch for urine return is " + PatchNumForUrine);
+      }
+   } // this is the end of GetPatchForUrineReturn
+
+   public void DoUrineReturn()
+   {
+      ListOfPatches = "";
+      double UrineNPerPatch = AmountUrineNReturned / NumPatchesForUrine; // units are kg N /patch
+         
+      for (int j = 0; j &lt; NumPatchesForUrine; j++)
+      {
+         GetPatchForUrineReturn();  //gets the value for PatchNumForUrine
+         ListOfPatches += (PatchNumForUrine + 1) + "|";  // add 1 here because the output component uses 1-based rather than 0-based arrays
+            
+         int[] PatchToAddTo = new int[1];  //need an array variable for this
+         double[] UreaToAdd = new double[SoilWat.dlayer.Length];  
+
+         for (int ii = 0; ii &lt;= (SoilWat.dlayer.Length - 1); ii++)
+            UreaToAdd[ii] = UrineDepthPlacement[ii] * (UrineNPerPatch / (10000.0 / NumPatches) * 10000);
+
+         UrineNReturned += AmountUrineNReturned / NumPatchesForUrine;
+         
+         AddSoilCNPatchType CurrentPatch = new AddSoilCNPatchType();
+         CurrentPatch.Sender = "manager";
+         CurrentPatch.DepositionType = "ToSpecificPatch";
+         PatchToAddTo[0] = PatchNumForUrine;
+         CurrentPatch.AffectedPatches_id = PatchToAddTo;
+         CurrentPatch.Urea = UreaToAdd;
+      
+         AddSoilCNPatch.Invoke(CurrentPatch);
+      }
+      // decided to leave the trailing "|" on the string because a single patch would be treated as a double by the output component
+      // ListOfPatches = ListOfPatches.Substring(0, (ListOfPatches.Length - 1)); 
+      if (Verbose == "yes") 
+         Console.WriteLine("Returned urine to " + NumPatchesForUrine + " patches, these being: " + ListOfPatches);
+      
+   } // end of DoUrineReturn
+   
+   public void DoTramplingAndDungReturn()
+   {
+      foreach (Paddock Paddock in Simulation.ChildPaddocks)
+      {
+         SoilNitrogen = (SoilN) Paddock.LinkByType("SoilN");
+         SurfaceOM = (SurfaceOM) Paddock.LinkByType("SurfaceOM");
+
+         // accelerate the movement of surface litter into the soil - do this before the dung is added
+         double temp = SurfaceOM.surfaceom_wt * 0.1;
+
+         TillageType trampling = new TillageType();
+         trampling.tillage_depth = (float) 100.0;
+         trampling.f_incorp = (float) 0.1;
+         SurfaceOM.Tillage(trampling);
+         if (Verbose == "yes")
+            Console.WriteLine("The amount of litter trampled was " + temp + " and the remaining litter is " + (SurfaceOM.surfaceom_wt));
+
+         // move the dung to litter - assume dung is 40% of that grazed and a C:N ratio of 
+         BiomassRemovedType dung = new BiomassRemovedType();
+         dung.crop_type = "RuminantDung_PastureFed";
+         dung.dm_type = new string[] { "RuminantDung_PastureFed" };
+         dung.dlt_crop_dm = new float[] { Convert.ToSingle(AmountDungCReturned / 0.4) };  // 
+         dung.dlt_dm_n = new float[] { Convert.ToSingle(AmountDungNReturned) };    // 
+         dung.dlt_dm_p = new float[] { 0.0F };
+         dung.fraction_to_residue = new float[] { 1.0F };
+         SurfaceOM.BiomassRemoved(dung);
+         if (Verbose == "yes")
+            Console.WriteLine("The amount of dung DM added to the litter was " + (AmountDungCReturned / 0.4) + " and the amount of N added in the dung was " + (AmountDungNReturned));
+
+      } 
+   } // this is the end of the trampling and dung patch/paddock section
+   
+   public void DoFertiliser()
+   {
+      bool ApplyFert = false; // the test for first day of the month has already been done, this will only test to make sure no fertiliser in winter etc
+      double NumMonths;
+      
+      if (GeneralFertType == "Monthly")
+      {
+         NumMonths = 12;
+         ApplyFert = true;
+      }
+      else if (GeneralFertType == "NoWinter")
+      {
+         NumMonths = 9;
+         if ((Clock.month &lt; 5) || (Clock.month &gt; 7))
+            ApplyFert = true;
+         else
+            ApplyFert = false;
+      }
+      else
+         throw new Exception("Wrong fertiliser setting");
+
+      if (ApplyFert)
+      {
+         foreach (Paddock MyPatch in Simulation.ChildPaddocks)  
+         {
+            Fertiliser = (Fertiliser) MyPatch.LinkByType("Fertiliser");
+            Fertiliser.Apply((float)(GeneralFertAmt / NumMonths), (float) (0.0), "urea_n");
+            if (Verbose == "yes")
+               Console.WriteLine("Applying " + (GeneralFertAmt / NumMonths) + " kg of fertiliser to the whole paddock");
+         }
+      }
+   }
+}
+</text>
+    </manager2>
+    <manager2 name="ReportingWithPatches">
+      <ui>
+        <Verbose type="yesno" description="Verbose mode - write many informational statements to the Summary file" />
+        <dummy type="category" description="Parameters to control the reporting" />
+        <OutputModule type="modulename" description="Name of the output component for reporting">WholePaddock</OutputModule>
+        <ReportingFreq type="list" listvalues="Daily,TenDaily,Monthly,Annual,OnGrazing" description="Frequency of reporting">Monthly</ReportingFreq>
+        <NumberPatchesToSample type="text" description="How many patches should be sampled for output? (enter a large number for all patches)">10</NumberPatchesToSample>
+      </ui>
+      <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Link] Simulation Simulation;
+   [Link] Clock Clock;   
+   
+   [Param] public string Verbose; 
+   [Param] public string OutputModule; 
+   [Param] public string ReportingFreq;
+   [Param] int NumberPatchesToSample;  // number of patches to sample for output
+
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   [Input] double UrineNReturned; //Amount of urineary N returned (from the paddock manager)
+   [Input] public int NumPatches;  // the number of gridded patches in the paddock
+   [Input] public double Grazed;
+   [Input] public double GrazedN;
+   
+   [Output] public int DaysSinceReport;
+   [Output] public double NHA;
+   [Output] public double PGR;
+   [Output] public double HerbageGrazed;
+   [Output] public double HerbageGrazedN;
+   [Output] public double UreaReturned;  
+   [Output] public double Fixation;
+   [Output] public double LeachN;
+   [Output] public double Denit;
+   [Output] public double DenitN2O;
+   [Output] public double OrgC;
+   [Output] public double OrgN;
+   [Output] public double dltOrgC;
+   [Output] public double dltOrgN;
+   [Output] public double MinN;
+   [Output] public double UreaN;
+   [Output] public double NH4N;
+   [Output] public double NO3N;
+   [Output] public double UreaAddedInGrazing;
+   public int PatchCount;
+   
+   //patch type outputs etc.
+   private int myPatchCount;
+   [Output][Units("kgN/ha")] double[] patchesNO3;   // quantity of the no3 in the patch
+   [Output][Units("kgN/ha")] double[] patchesNH4;   // quantity of the nh4 in the patch
+   [Output][Units("kgN/ha")] double[] SamplePatchesNO3;  // as for patchesNO3 but only the sampled patches (for simulations with many patches)
+   [Output][Units("kgN/ha")] double[] SamplePatchesNH4;  // as for patchesNH4 but only the sampled patches (for simulations with many patches)
+   [Output][Units("ugN/g_water")] double[] patchesNO3conc600;  // concentration of no3-n in the water at 600 mm deep
+   [Output][Units("ugN/g_water")] double[] SampleConc600;  // as for patchesNO3conc600 but only the sampled patches (for simulations with many patches)
+   [Output][Units("kgN/ha")] double[] PercNH4;  // percentiles of NH4 in the patches 1=P0, 2=P5, 3=P10, 4=P25, 5=P50, 6=P75, 7=P90, 8=P95, 9=P100
+   [Output][Units("kgN/ha")] double[] PercNO3;  // percentiles of NO3 in the patches 1=P0, 2=P5, 3=P10, 4=P25, 5=P50, 6=P75, 7=P90, 8=P95, 9=P100
+   [Output][Units("kgN/ha")] double[] PercNO3Conc;  // percentiles of NO3-N concentration in the patches 1=P0, 2=P5, 3=P10, 4=P25, 5=P50, 6=P75, 7=P90, 8=P95, 9=P100
+   int z600;  // index to 60 cm layer
+   double[] PercentilesToCalc;
+   
+   private CNPatchVariableType myPatchNO3 = new CNPatchVariableType();
+   private CNPatchVariableType myPatchNH4 = new CNPatchVariableType();
+   
+   int FirstSample;
+   int LastSample;
+
+   AgPasture AgPasture;
+   SoilWat SoilWat;
+   SoilN SoilNitrogen;
+   Outputfile OutputComponent;
+   
+   double iniOrgC;
+   double iniOrgN;
+   
+   bool ReportToday = false;
+      
+   [EventHandler] public void OnInitialised()
+   {
+      if (Verbose == "yes")
+         Console.WriteLine("Initialising the Manager for grazing, urine return and reporting");
+      
+      DaysSinceReport = 0;
+      PercentilesToCalc = new double[] { 0.0, 0.05, 0.01, 0.25, 0.50, 0.75, 0.9, 0.95, 1.0 };
+      
+      if (Verbose == "yes")
+         Console.WriteLine("Finished initialising the Manager for grazing, urine return and reporting");
+
+   } // end of Initialisation
+
+
+   [EventHandler] public void OnPrepare()
+   {
+      if (Verbose == "yes")
+         Console.WriteLine("In Prepare for the Reporting Manager on " + Clock.Today);
+
+      // if this is the start of the simulation then sort out the depth for the urine placement, can't do this in initialisation because of the module order
+      if (Clock.is_start_simulation)
+      {
+         iniOrgC = 0.0; 
+         iniOrgN = 0.0;
+         foreach (Paddock Paddock in Simulation.ChildPaddocks)
+         {
+            SoilNitrogen = (SoilN) Paddock.LinkByType("SoilN");
+            SoilWat = (SoilWat) Paddock.LinkByType("SoilWat");
+
+            SoilNitrogen.Get("PatchCount", out PatchCount); 
+
+            for (int ii = 0; ii &lt; SoilWat.dlayer.Length; ii++)
+            {
+               iniOrgC += SoilNitrogen.carbon_tot[ii]; 
+               iniOrgN += SoilNitrogen.org_n[ii];
+            }
+         }
+      }
+
+      // should reporting be done today?  
+      if (ReportingFreq == "Daily")
+         ReportToday = true;
+      else if ((ReportingFreq == "TenDaily") &amp;&amp; ((Clock.day_of_month == 10) || (Clock.day_of_month == 20) || (Clock.is_end_month)))
+         ReportToday = true;
+      else if ((ReportingFreq == "Monthly") &amp;&amp; (Clock.is_end_month))
+         ReportToday = true;
+      else if ((ReportingFreq == "Annual") &amp;&amp; (Clock.is_end_year))
+         ReportToday = true;
+      else
+         ReportToday = false;
+      
+      if (Verbose == "yes")
+         Console.WriteLine("Finished Prepare for the Reporting Manager on " + Clock.Today);
+
+   } // this is the end of Prepare
+
+
+   [EventHandler] public void OnPost()
+   {
+      DaysSinceReport += 1;
+
+      // each day gather data for the accumulations
+      foreach (Paddock Paddock in Simulation.ChildPaddocks)
+      {
+         AgPasture = (AgPasture) Paddock.LinkByType("AgPasture");
+         SoilWat = (SoilWat) Paddock.LinkByType("SoilWat");
+         SoilNitrogen = (SoilN) Paddock.LinkByType("SoilN");
+
+         SoilNitrogen.Get("PatchCount", out myPatchCount);
+         
+         if (Clock.is_start_simulation)
+         {
+            patchesNO3 = new double[myPatchCount];
+            patchesNH4 = new double[myPatchCount];
+            patchesNO3conc600 = new double[myPatchCount];
+            NumberPatchesToSample = Math.Min(NumberPatchesToSample, myPatchCount); 
+            SampleConc600 = new double[NumberPatchesToSample];
+            SamplePatchesNO3 = new double[NumberPatchesToSample];
+            SamplePatchesNH4 = new double[NumberPatchesToSample];
+            PercNH4 = new double[9];
+            PercNO3 = new double[9];
+            PercNO3Conc = new double[9];
+            
+            // find the layer for 60 cm depth
+            z600 = 0;
+            double CumDepth = 0.0;
+            for (int z = 0; z &lt; SoilWat.dlayer.Length; z++)
+            {
+               if ((CumDepth &lt;= 600.0) &amp;&amp; ((CumDepth + SoilWat.dlayer[z]) &gt;= 600.0))
+                  z600 = z;
+               CumDepth += SoilWat.dlayer[z];
+            }
+
+            // find out which patches to sample
+            FirstSample = (myPatchCount / 2) - (NumberPatchesToSample / 2);  // this is integer division so is an implicit floor
+            LastSample = FirstSample + NumberPatchesToSample - 1;
+            if (Verbose == "yes")
+               Console.WriteLine(NumberPatchesToSample + " patches will be sampled, these will be patches " + FirstSample + " to " + LastSample);
+         }
+
+         NHA += AgPasture.HerbageGrowthWt;
+         PGR = NHA;  // divide this by the number of days just before reporting
+         Fixation += AgPasture.PlantFixedN;
+         
+         double[] tempArray = new double[SoilWat.dlayer.Length];
+         SoilWat.Get("flow_no3", out tempArray);
+         LeachN += tempArray[SoilWat.dlayer.Length - 1];
+
+         for (int ii = 0; ii &lt;= (SoilWat.dlayer.Length - 1); ii++)
+         {
+            Denit += SoilNitrogen.dnit[ii];
+            DenitN2O += SoilNitrogen.n2o_atm[ii];
+         }
+         
+         // get the patch level data sorted
+         SoilNitrogen.GetObject("PatchNO3", ref myPatchNO3);
+         SoilNitrogen.GetObject("PatchNH4", ref myPatchNH4);
+         for(int j = 0; j &lt; NumberPatchesToSample;j++)
+            SampleConc600[j] = 0.0;
+
+         int jj = 0;  // this is the sample number
+         for(int k = 0; k &lt; myPatchCount;k++)
+         {
+            patchesNO3[k] = 0.0;
+            patchesNH4[k] = 0.0;
+            patchesNO3conc600[k] = 0.0;
+
+            for (int z = 0; z &lt; SoilWat.dlayer.Length; z++)
+            {
+               patchesNO3[k] += myPatchNO3.Patch[k].Value[z];
+               patchesNH4[k] += myPatchNH4.Patch[k].Value[z];
+            }
+            patchesNO3conc600[k] = myPatchNO3.Patch[k].Value[z600] * 100.0 / (SoilWat.sw_dep[z600]);
+            
+            if ((k &gt;= FirstSample) &amp;&amp; (k &lt;= LastSample))
+            {
+               SampleConc600[jj] = patchesNO3conc600[k];
+               SamplePatchesNO3[jj] = patchesNO3[k];
+               SamplePatchesNH4[jj] = patchesNH4[k];
+               jj += 1;  // this is the sampling counter
+            }
+
+         }
+         
+         // calculate percentiles
+         for(int j = 0; j &lt; 9; j++)
+         {
+            PercNH4[j] = Percentile(patchesNH4, PercentilesToCalc[j]);
+            PercNO3[j] = Percentile(patchesNO3, PercentilesToCalc[j]);
+            PercNO3Conc[j] = Percentile(patchesNO3conc600, PercentilesToCalc[j]);
+         }
+      }
+      
+      // Things that come from other Managers or modules at the current level
+      HerbageGrazed += Grazed;
+      HerbageGrazedN += GrazedN;
+      UreaReturned += UrineNReturned;
+
+      if (ReportToday)
+      {
+         OrgC = 0.0;
+         OrgN = 0.0;
+         UreaN = 0.0;
+         NH4N = 0.0;
+         NO3N = 0.0;
+         MinN = 0.0;
+
+         foreach (Paddock Paddock in Simulation.ChildPaddocks)
+         {
+            AgPasture = (AgPasture) Paddock.LinkByType("AgPasture");
+            SoilWat = (SoilWat) Paddock.LinkByType("SoilWat");
+            SoilNitrogen = (SoilN) Paddock.LinkByType("SoilN");
+
+            for (int ii = 0; ii &lt;= (SoilWat.dlayer.Length - 1); ii++)
+            {
+               OrgC += SoilNitrogen.carbon_tot[ii]; 
+               OrgN += SoilNitrogen.org_n[ii];
+               UreaN += SoilNitrogen.urea[ii];
+               NH4N += SoilNitrogen.nh4[ii];
+               NO3N += SoilNitrogen.no3[ii];
+               MinN = UreaN + NH4N + NO3N;
+            }
+            dltOrgC = OrgC - iniOrgC; 
+            dltOrgN = OrgN - iniOrgN;
+            iniOrgC = OrgC; // ready for the next calculation of change in pools
+            iniOrgN = OrgN;
+         }
+
+         PGR = NHA / DaysSinceReport;  
+
+         // do the patch outputs here
+         
+         OutputComponent = (Outputfile) Simulation.LinkByName(OutputModule);  // should make the output component name a parameter
+         OutputComponent.DoOutput();
+
+         // now zero the reported variables
+         DaysSinceReport = 0;
+         HerbageGrazed = 0.0;
+         HerbageGrazedN = 0.0;
+         DaysSinceReport = 0;
+         NHA = 0;
+         PGR = 0;
+         UreaReturned = 0;
+         Fixation = 0;
+         LeachN = 0;
+         Denit = 0;
+         DenitN2O = 0;
+         OrgC = 0;
+         OrgN = 0;
+         MinN = 0;
+         UreaN = 0;
+         NH4N = 0;
+         NO3N = 0;
+      }
+   } // end of Post
+
+   public double Percentile(double[] sequence, double excelPercentile)
+   {
+      Array.Sort(sequence);
+      int N = sequence.Length;
+      double n = (N - 1) * excelPercentile + 1;
+
+      if (n == 1d) return sequence[0];
+      else if (n == N) return sequence[N - 1];
+      else
+      {
+         int k = (int) n;
+         double d = n - k;
+         return sequence[k - 1] + d * (sequence[k] - sequence[k - 1]);
+      }
+   }
+
+}
+</text>
+    </manager2>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\WinchmoreMet.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1972</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/03/1972</end_date>
+    </clock>
+    <summaryfile />
+    <outputfile name="WholePaddock">
+      <filename output="yes">GriddedGrazedPaddock WholePaddock.out</filename>
+      <title>GriddedGrazedPaddock WholePaddock</title>
+      <events name="Freq" />
+      <variables name="Headers">
+        <variable>NumPatches</variable>
+        <variable>dd/mmm/yyyy as Date</variable>
+        <variable>Year</variable>
+        <variable>Month</variable>
+      </variables>
+      <variables name="Data">
+        <variable>UreaReturned as UrineNReturned</variable>
+        <variable>NumPatchesForUrine as PatchesUsed</variable>
+        <variable>HerbageGrazed</variable>
+        <variable>HerbageGrazedN</variable>
+        <variable>LeachN</variable>
+        <variable>Denit</variable>
+        <variable>Fixation</variable>
+        <variable>MinN</variable>
+        <variable>UreaN</variable>
+        <variable>NH4N</variable>
+        <variable>NO3N</variable>
+        <variable>dltOrgC</variable>
+        <variable>dltOrgN</variable>
+      </variables>
+      <variables name="Percentiles">
+        <variable>PercNH4</variable>
+        <variable>PercNO3</variable>
+        <variable>PercNO3Conc</variable>
+      </variables>
+      <variables name="Concentrations">
+        <variable>SampleConc600</variable>
+      </variables>
+      <variables name="Amounts">
+        <variable>SamplePatchesNO3</variable>
+        <variable>SamplePatchesNH4</variable>
+      </variables>
+      <variables name="ListOfPatches">
+        <variable>ListOfPatches</variable>
+      </variables>
+    </outputfile>
+    <area name="Paddock">
+      <folder name="Manager folder">
+        <manager2 name="CentrePivot">
+          <ui>
+            <SetIrrigation type="yesno" description="Turn irrigation component on or off">yes</SetIrrigation>
+            <Dummy type="category" description="All Soils" />
+            <IrrigStart type="ddmmmdate" description="Start of irrigation season start (dd-mmm):">1-sep</IrrigStart>
+            <IrrigEnd type="ddmmmdate" description="End of irrigation season (dd-mmm):">30-apr</IrrigEnd>
+            <SoilDepth type="text" description="Enter the depth to which water deficit is computed (mm):">500</SoilDepth>
+            <CritPAWForShallow type="text" description="PAW below which soil is considered &quot;shallow&quot; (mm)">60</CritPAWForShallow>
+            <CritRainToPause type="text" description="Amount of rainfall over the last 3 days to cause pause to irrigator (mm)">30</CritRainToPause>
+            <DaysToPauseOnCritRain type="text" description="Number of days to pause irrigator after critical rainfall (days)">3</DaysToPauseOnCritRain>
+            <Dummy type="category" description="Shallow Soils" />
+            <IrrigReturnShallow type="text" description="Irrigation return period for shallow soils (days)">2</IrrigReturnShallow>
+            <IrrigAmtShallow type="text" description="Effective irrigation amount for shallow soils (mm)">10</IrrigAmtShallow>
+            <PercPAWIrrigDeficitShallow type="text" description="Percentage of PAW at which to irrigate shallow soils (%)">30</PercPAWIrrigDeficitShallow>
+            <IrrigEffShallow type="text" description="Irrigation efficiency for shallow soils (%)">100</IrrigEffShallow>
+            <Dummy type="category" description="Deep Soils" />
+            <IrrigReturnDeep type="text" description="Irrigation return period (days)">4</IrrigReturnDeep>
+            <IrrigAmtDeep type="text" description="Effective irrigation amount (mm)">20</IrrigAmtDeep>
+            <IrrigDeficitDeep type="text" description="Deficit at which to irrigate (mm)">25</IrrigDeficitDeep>
+            <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%)">100</IrrigEffDeep>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+Public Class Script 
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   &lt;Link()&gt; Dim MyIrrig As Irrigation
+   &lt;Link()&gt; Dim MySWIM as SoilWat
+
+   
+   'Parameter variables:
+   '&lt;param&gt; Private IrrigOn As String
+   &lt;param&gt; Private SetIrrigation As String
+   
+   &lt;param&gt; Private IrrigStart As String
+   &lt;param&gt; Private IrrigEnd As String
+   &lt;param&gt; Private SoilDepth As Double
+   &lt;param&gt; Private IrrigDeficitDeep As Double
+   &lt;param&gt; Private IrrigReturnDeep As Double
+   &lt;param&gt; Private IrrigAmtDeep As Double
+   &lt;param&gt; Private PercPAWIrrigDeficitShallow As Double
+   &lt;param&gt; Private IrrigReturnShallow As Double
+   &lt;param&gt; Private IrrigAmtShallow As Double
+   &lt;param&gt; Private CritPAWForShallow As Double
+   &lt;param&gt; Private IrrigEffShallow As Double
+   &lt;param&gt; Private IrrigEffDeep As Double
+
+   &lt;param&gt; Private CritRainToPause As Double
+   &lt;param&gt; Private DaysToPauseOnCritRain As Double
+   
+   
+   'Variables read from other modules
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Double()      'mm
+   &lt;Input&gt; Private rain As Double      'mm
+
+   'Output variables
+   &lt;Output&gt;&lt;Units("mm")&gt; Public TodayDeficit As Double      '
+   &lt;Output&gt;&lt;Units("mm")&gt; Public TodayDeficit_nve As Double      '
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigDay As Double      '
+   &lt;Output&gt;&lt;Units("")&gt; Public SoilPAW As Double      '
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigDeficit As Double
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigReturn As Double
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigAmt As Double
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigEff As Double
+   &lt;Output&gt;&lt;Units("mm")&gt; Public Rain3 As Double
+   &lt;Output&gt;&lt;Units("mm")&gt; Public Rain_3(2) As Double
+   &lt;Output&gt;&lt;Units("")&gt; Public Days2Pause As Double
+
+
+   Private StartDate As Date               'The date when irrigation start (in date format)
+   Private EndDate As Date                 'The date when irrigation finish (in date format)
+   Private IrrigDeficitShallow As Double
+   
+ 
+   
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+      Console.writeline("============================================")
+      Console.writeline("           CentrePivot initialising         ")
+      Console.writeline()
+
+      IrrigDay = 5000  'so will reset to 1 on first day
+      StartDate = Date.Parse(IrrigStart)
+      EndDate = Date.Parse(IrrigEnd)
+      
+      Rain3 = 0.0
+      Rain_3(0) = 0.0: Rain_3(1) = 0.0: Rain_3(2) = 0.0
+      
+      SoilPAW = 0.0
+      Dim sw_dul As Single() = MySwim.dul_dep
+      Dim sw_15 As Single() = MySwim.ll15_dep         'sw at LL15 
+      Dim MySoilDepth As Integer = 0
+      For z As Integer = 0 To dlayer.length - 1
+         MySoilDepth = MySoilDepth + dlayer(z)
+         If MySoilDepth &lt;= SoilDepth Then
+            SoilPAW = SoilPAW + sw_dul(z) - sw_15(z)
+         End If
+      Next
+      If SoilPAW &lt;= CritPAWForShallow Then
+         
+         IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
+         IrrigReturn = IrrigReturnShallow
+         IrrigAmt = IrrigAmtShallow
+         IrrigEff = IrrigEffShallow            
+         Console.writeline("  Soil is considered to be shallow " &amp; CritPAWForShallow &amp; " " &amp; SoilPAW)
+      Else
+         IrrigDeficit = IrrigDeficitDeep
+         IrrigReturn = IrrigReturnDeep
+         IrrigAmt = IrrigAmtDeep
+         IrrigEff = IrrigEffDeep
+         Console.writeline("  Soil is considered to be deep")
+      End If
+
+      Console.writeline("  Irrigation critical deficit (mm): " &amp; IrrigDeficit.ToString)
+      Console.writeline("          Irrigation return (days): " &amp; IrrigReturn.ToString)
+      Console.writeline("     Irrigation pumped amount (mm): " &amp; IrrigAmt.ToString)
+      Console.writeline("         Irrigation efficiency (%): " &amp; IrrigEff.ToString)
+      Console.writeline()
+      Console.writeline("           CentrePivot initialised          ")
+      Console.writeline("============================================")
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+
+      Rain_3(2) = Rain_3(1)
+      Rain_3(1) = Rain_3(0)
+      Rain_3(0) = rain
+      Rain3 = Rain_3(0) + Rain_3(1) + Rain_3(2)
+      If Rain3 &gt;= CritRainToPause Then
+         Days2Pause = DaysToPauseOnCritRain
+      Else
+         Days2Pause = Days2Pause - 1
+      End If
+      
+      'Dim MyPaddock As New PaddockType(Me)
+      Dim sw_dul As Single() = MySwim.dul_dep
+      Dim sw_sw As Single() = MySwim.sw_dep         'sw at LL 
+      Dim sw_15 As Single() = MySwim.ll15_dep         'sw at LL15 
+      
+      TodayDeficit = 0.0
+      SoilPAW = 0.0
+      Dim MySoilDepth As Integer = 0
+         
+      For z As Integer = 0 To dlayer.length - 1
+         MySoilDepth = MySoilDepth + dlayer(z)
+         If MySoilDepth &lt;= SoilDepth Then
+            SoilPAW = SoilPAW + sw_dul(z) - sw_15(z)
+            TodayDeficit = TodayDeficit + sw_dul(z) - math.Min(sw_dul(z), sw_sw(z))
+         End If
+      Next
+      TodayDeficit_nve = -1 * TodayDeficit 
+
+      
+      Dim today As Date = Date.Parse(dd_mmm_yyyy.Replace("_", "/"))
+      If (isBetween(today, StartDate, EndDate)) Then
+                  
+         If SoilPAW &lt;= CritPAWForShallow Then
+            IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
+            IrrigReturn = IrrigReturnShallow
+            IrrigAmt = IrrigAmtShallow
+            IrrigEff = IrrigEffShallow            
+         Else
+            IrrigDeficit = IrrigDeficitDeep
+            IrrigReturn = IrrigReturnDeep
+            IrrigAmt = IrrigAmtDeep
+            IrrigEff = IrrigEffDeep
+         End If
+         
+         If Days2Pause &lt; 0.5 Then
+            IrrigDay = IrrigDay + 1
+            If IrrigDay &gt; IrrigReturn Then
+               IrrigDay = 1  ' and day = 1 is when the irrigation happens
+            End If
+      
+            If (TodayDeficit &gt;= IrrigDeficit) And (SetIrrigation.ToLower = "yes") Then
+               If IrrigDay = 1 Then
+                  Dim IrrigData As IrrigationApplicationType = New IrrigationApplicationType()
+                  IrrigData.Amount = (IrrigAmt / (IrrigEff / 100.0))
+                  MyIrrig.Apply(IrrigData)
+                  'Console.WriteLine("Applying " &amp; (IrrigAmt / (IrrigEff / 100.0)) &amp; " mm of irrigation")
+               End If
+            End If
+         End If
+      End If
+         
+
+   End Sub
+
+   Private Function isBetween(ByVal today As Date, ByVal start As Date, ByVal finish As Date) As Boolean
+      Dim a As Date = New Date(today.Year, start.Month, start.Day)
+      Dim b As Date = New Date(today.Year, finish.Month, finish.Day)
+
+      If (a &gt; b) Then
+         Return (today &gt;= a Or today &lt;= b)
+      Else
+         Return (today &gt;= a And today &lt;= b)
+      End If
+   End Function
+   
+End Class
+</text>
+        </manager2>
+      </folder>
+      <SoilTemperature2>
+        <MaxTTimeDefault type="text" description="MaxTTimeDefault">14</MaxTTimeDefault>
+        <BoundaryLayerConductanceSource type="text" description="BoundaryLayerConductanceSource">calc</BoundaryLayerConductanceSource>
+        <BoundaryLayerConductance type="text" description="BoundaryLayerConductance">20</BoundaryLayerConductance>
+        <BoundaryLayerConductanceIterations type="text" description="BoundaryLayerConductanceIterations">1</BoundaryLayerConductanceIterations>
+        <NetRadiationSource type="text" description="NetRadiationSource">calc</NetRadiationSource>
+        <DefaultWindSpeed type="text" description="DefaultWindSpeed">3</DefaultWindSpeed>
+        <DefaultAltitude type="text" description="DefaultAltitude">18</DefaultAltitude>
+        <DefaultInstrumentHeight type="text" description="DefaultInstrumentHeight">1.2</DefaultInstrumentHeight>
+        <BareSoilHeight type="text" description="BareSoilHeight">57</BareSoilHeight>
+      </SoilTemperature2>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">grass</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">500</mass>
+        <cnr type="text" description="C:N ratio of initial residue">10</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">300</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.85</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1.0</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in ML">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <fertiliser />
+      <AgPasture>
+        <Dummy1 type="category" description="Initial values for each species to be simulated" />
+        <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
+        <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">750   250</iniShootDM>
+        <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
+        <iniRootDepth type="text" description="  Initial rooting depth (mm):">900     300</iniRootDepth>
+        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
+        <Dummy2 type="category" description="Detailed parameters for each species (overwrites the xml file)" />
+        <useHeatStress type="list" listvalues="yes    yes,no     no" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">yes    yes</useHeatStress>
+        <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0    30.0</heatOnsetT>
+        <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">32.5    35.0</heatFullT>
+        <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">20.0    20.0</heatSumT>
+        <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">25.0    25.0</heatRecoverT>
+        <useColdStress type="list" listvalues="yes    yes,no     no" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">yes    yes</useColdStress>
+        <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">0.0      0.0</coldOnsetT>
+        <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-10.0     -5.0</coldFullT>
+        <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">10.0    10.0</coldSumT>
+        <coldRecoverT type="text" description="  Base temperature for recovery from cold effects (oC):">0.0      0.0</coldRecoverT>
+      </AgPasture>
+      <Soil name="HE_140mm">
+        <RecordNumber>0</RecordNumber>
+        <SoilType>MergeAge40</SoilType>
+        <Site>-</Site>
+        <NearestTown>-</NearestTown>
+        <Region>Plains</Region>
+        <State>Canterbury</State>
+        <Country>New Zealand</Country>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <YearOfSampling>0</YearOfSampling>
+        <DataSource>Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
+        <Comments>Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
+        <Water>
+          <Thickness>
+            <double>200</double>
+            <double>150</double>
+            <double>200</double>
+            <double>350</double>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.3105</double>
+            <double>1.524</double>
+            <double>1.42</double>
+            <double>1.424</double>
+            <double>1.424</double>
+            <double>1.601</double>
+            <double>1.601</double>
+          </BD>
+          <AirDry>
+            <double>0.07675</double>
+            <double>0.201</double>
+            <double>0.2985</double>
+            <double>0.308</double>
+            <double>0.308</double>
+            <double>0.162</double>
+            <double>0.162</double>
+          </AirDry>
+          <LL15>
+            <double>0.1535</double>
+            <double>0.201</double>
+            <double>0.2985</double>
+            <double>0.308</double>
+            <double>0.308</double>
+            <double>0.162</double>
+            <double>0.162</double>
+          </LL15>
+          <DUL>
+            <double>0.3735</double>
+            <double>0.332</double>
+            <double>0.426</double>
+            <double>0.446</double>
+            <double>0.446</double>
+            <double>0.325</double>
+            <double>0.325</double>
+          </DUL>
+          <SAT>
+            <double>0.456165</double>
+            <double>0.39432</double>
+            <double>0.441525</double>
+            <double>0.4557</double>
+            <double>0.456</double>
+            <double>0.376</double>
+            <double>0.376</double>
+          </SAT>
+          <KS>
+            <double>4832.03882317437</double>
+            <double>389.229035400118</double>
+            <double>21.6</double>
+            <double>19.0511637721759</double>
+            <double>19.051</double>
+            <double>97.995</double>
+            <double>97.995</double>
+          </KS>
+          <SoilCrop name="AgPasture">
+            <Thickness>
+              <double>200</double>
+              <double>150</double>
+              <double>200</double>
+              <double>350</double>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.154</double>
+              <double>0.201</double>
+              <double>0.299</double>
+              <double>0.308</double>
+              <double>0.308</double>
+              <double>0.162</double>
+              <double>0.162</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.05</double>
+              <double>0.05</double>
+              <double>0.05</double>
+              <double>0.05</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>0.8</double>
+              <double>0.8</double>
+              <double>0.3</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+        </Water>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>1000</RootWt>
+          <SoilCN>11</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>200</double>
+            <double>150</double>
+            <double>200</double>
+            <double>350</double>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>4.502</double>
+            <double>1.91</double>
+            <double>0.772</double>
+            <double>0.422</double>
+            <double>0.422</double>
+            <double>0.402</double>
+            <double>0.4</double>
+          </OC>
+          <FBiom>
+            <double>0.048</double>
+            <double>0.027</double>
+            <double>0.0195</double>
+            <double>0.015</double>
+            <double>0.015</double>
+            <double>0.015</double>
+            <double>0.015</double>
+          </FBiom>
+          <FInert>
+            <double>0.382</double>
+            <double>0.634</double>
+            <double>0.784</double>
+            <double>0.924</double>
+            <double>0.924</double>
+            <double>0.971</double>
+            <double>0.985</double>
+          </FInert>
+          <OCUnits>Total</OCUnits>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>200</double>
+            <double>150</double>
+            <double>200</double>
+            <double>350</double>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+          </Thickness>
+          <Rocks>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </Rocks>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+            <double>6</double>
+          </PH>
+          <CEC>
+            <double>13</double>
+            <double>9</double>
+            <double>19</double>
+            <double>19</double>
+            <double>19</double>
+            <double>9</double>
+            <double>9</double>
+          </CEC>
+          <ParticleSizeSand>
+            <double>14.5</double>
+            <double>18</double>
+            <double>13</double>
+            <double>1</double>
+            <double>1</double>
+            <double>15</double>
+            <double>15</double>
+          </ParticleSizeSand>
+          <ParticleSizeSilt>
+            <double>65.5</double>
+            <double>58</double>
+            <double>48</double>
+            <double>55</double>
+            <double>55</double>
+            <double>66</double>
+            <double>66</double>
+          </ParticleSizeSilt>
+          <ParticleSizeClay>
+            <double>20</double>
+            <double>24</double>
+            <double>39</double>
+            <double>44</double>
+            <double>44</double>
+            <double>19</double>
+            <double>19</double>
+          </ParticleSizeClay>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <SoilWater>
+          <SummerCona>4.4</SummerCona>
+          <SummerU>9</SummerU>
+          <SummerDate>1-Oct</SummerDate>
+          <WinterCona>3</WinterCona>
+          <WinterU>6</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>NaN</Slope>
+          <DischargeWidth>NaN</DischargeWidth>
+          <CatchmentArea>NaN</CatchmentArea>
+          <MaxPond>NaN</MaxPond>
+          <Thickness>
+            <double>200</double>
+            <double>150</double>
+            <double>200</double>
+            <double>350</double>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.496441652363301</double>
+            <double>0.365575319464424</double>
+            <double>0.373877122593127</double>
+            <double>0.0758548332020159</double>
+            <double>0.076</double>
+            <double>0.306</double>
+            <double>0.306</double>
+          </SWCON>
+        </SoilWater>
+        <InitialWater>
+          <FractionFull>1</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Thickness>
+            <double>80</double>
+            <double>50</double>
+            <double>200</double>
+            <double>670</double>
+          </Thickness>
+          <NO3>
+            <double>25</double>
+            <double>20</double>
+            <double>15</double>
+            <double>10</double>
+          </NO3>
+          <NO3Units>kgha</NO3Units>
+          <NH4>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </NH4>
+          <NH4Units>kgha</NH4Units>
+        </Sample>
+      </Soil>
+    </area>
+  </simulation>
+</folder>

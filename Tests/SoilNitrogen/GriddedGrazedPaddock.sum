@@ -1,0 +1,352 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.8
+Title                  = GriddedGrazedPaddock
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                 "WholePaddock" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component         "ManageGriddedPaddock" = %apsim%\Model\Manager2.dll
+   Component         "ReportingWithPatches" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component               "HE_140mm Water" = %apsim%\Model\SoilWat.dll
+   Component             "SoilTemperature2" = %apsim%\Model\SoilTemp2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component            "HE_140mm Nitrogen" = %apsim%\Model\SoilNitrogen.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                  "CentrePivot" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1972
+     Simulation end date   = 31/03/1972
+     Time step =           = 1440 (mins)
+
+------- WholePaddock Initialisation -------------------------------------------
+     Output variables:
+        NumPatches
+        dd/mmm/yyyy as Date
+        Year
+        Month
+        UreaReturned as UrineNReturned
+        NumPatchesForUrine as PatchesUsed
+        HerbageGrazed
+        HerbageGrazedN
+        LeachN
+        Denit
+        Fixation
+        MinN
+        UreaN
+        NH4N
+        NO3N
+        dltOrgC
+        dltOrgN
+        PercNH4
+        PercNO3
+        PercNO3Conc
+        SampleConc600
+        SamplePatchesNO3
+        SamplePatchesNH4
+        ListOfPatches
+
+     Output file = GriddedGrazedPaddock WholePaddock.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\WinchmoreMet.met
+
+------- ManageGriddedPaddock Initialisation -----------------------------------
+
+------- ReportingWithPatches Initialisation -----------------------------------
+
+------- Paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- Paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.85
+           depth for calculating available soil water =     300.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Paddock.Micromet Initialisation ---------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Paddock.HE_140mm Water Initialisation ---------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  200.  0.077  0.154  0.374  0.456  0.374  1.311  0.856  0.496*******
+          200.-  350.  0.201  0.201  0.332  0.394  0.332  1.524  0.120  0.366389.229
+          350.-  550.  0.299  0.299  0.426  0.442  0.426  1.420  0.024  0.374 21.600
+          550.-  900.  0.308  0.308  0.446  0.456  0.446  1.424  0.000  0.076 19.051
+          900.- 1050.  0.308  0.308  0.446  0.456  0.446  1.424  0.000  0.076 19.051
+         1050.- 1200.  0.162  0.162  0.325  0.376  0.325  1.601  0.000  0.306 97.995
+         1200.- 1500.  0.162  0.162  0.325  0.376  0.325  1.601  0.000  0.306 97.995
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      30.80      44.00      44.00      16.40
+          200.-  350.      30.15      19.65      19.65       9.30
+          350.-  550.      59.80      25.40      25.40       3.20
+          550.-  900.     107.80      48.30      48.30       3.50
+          900.- 1050.      46.20      20.70      20.70       1.50
+         1050.- 1200.      24.30      24.45      24.45       7.65
+         1200.- 1500.      48.60      48.90      48.90      15.30
+          ---------------------------------------------------------
+               Totals     347.65     231.40     231.40      56.85
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- SoilTemperature2 Initialisation ---------------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- Paddock.surface organic matter Initialisation -------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          grass     grass          500.0   200.0    20.0     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- HE_140mm Nitrogen Initialisation --------------------------------------
+
+        - Reading/checking parameters
+
+          - Using standard SoilN parameter set specification
+           + Soil temperature supplied by apsim
+           + Soil pH supplied by apsim
+           + No values were supplied for the initial content of urea - zero will be assumed
+
+
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  4.50   49.77    2.32    0.00
+             2     6.00  1.91   10.57    0.72    0.00
+             3     6.00  0.77    2.97    0.30    0.00
+             4     6.00  0.42    5.22    0.52    0.00
+             5     6.00  0.42    1.50    0.16    0.00
+             6     6.00  0.40    0.02    0.02    0.00
+             7     6.00  0.40    0.05    0.05    0.00
+          ------------------------------------------------
+           Totals               70.10    4.08    0.00
+          ------------------------------------------------
+
+
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1     114701.2 10427.4  3341.2   417.7   139.1     3.5
+             2      43242.5  3931.1   420.1    52.5   103.0     2.6
+             3      21831.9  1984.7    92.9    11.6    69.1     1.7
+             4      21008.9  1909.9    23.6     3.0    34.3     0.9
+             5       9003.8   818.5    10.1     1.3    25.4     0.6
+             6       9649.9   877.3     4.1     0.5    18.8     0.5
+             7      19207.7  1746.2     4.3     0.5    10.3     0.3
+          ---------------------------------------------------------
+           Totals  238645.9 21695.1  3896.4   487.0   400.0    10.0
+          ---------------------------------------------------------
+
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          ryegrass        1200.0    750.0   450.0  1.26   480.0     32.9       900.0
+          whiteclover      400.0    250.0   150.0  0.36   160.0     12.4       900.0
+         -----------------------------------------------------------------------------
+          Totals          1600.0   1000.0   600.0  1.62   640.0     45.3       900.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-200      0.631
+            1     200-350      0.235
+            2     350-550      0.114
+            3     550-900      0.020
+            4    900-1050      0.000
+            5   1050-1200      0.000
+            6   1200-1500      0.000
+         -----------------------------
+
+------- CentrePivot Initialisation --------------------------------------------
+============================================
+           CentrePivot initialising         
+
+  Soil is considered to be deep
+  Irrigation critical deficit (mm): 25
+          Irrigation return (days): 4
+     Irrigation pumped amount (mm): 20
+         Irrigation efficiency (%): 100
+
+           CentrePivot initialised          
+============================================
+------- Start of simulation  --------------------------------------------------
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 1.00, new area = 0.933
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.933, new area = 0.867
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.867, new area = 0.80
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.80, new area = 0.733
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.733, new area = 0.667
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.667, new area = 0.60
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.60, new area = 0.533
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.533, new area = 0.467
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.467, new area = 0.40
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.40, new area = 0.333
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.333, new area = 0.267
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.267, new area = 0.20
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.20, new area = 0.133
+01 January 1972 (Day of year=1), SoilNitrogen:
+  create new patch, with area = 0.067, based on existing patch(0) - Old area = 0.133, new area = 0.067
+1 January 1972(Day of year=1), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.67 of N as urea (urea_n)
+                                         added at depth    0.00 (layer   1)
+31 January 1972(Day of year=31), Paddock.surface organic matter: 
+     Residue removed using
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =   100.00
+1 February 1972(Day of year=32), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.67 of N as urea (urea_n)
+                                         added at depth    0.00 (layer   1)
+29 February 1972(Day of year=60), Paddock.surface organic matter: 
+     Residue removed using
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =   100.00
+1 March 1972(Day of year=61), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.67 of N as urea (urea_n)
+                                         added at depth    0.00 (layer   1)
+31 March 1972(Day of year=91), Paddock.surface organic matter: 
+     Residue removed using
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =   100.00
+31 March 1972(Day of year=91), clock: 
+     Simulation is terminating due to end criteria being met.
+
