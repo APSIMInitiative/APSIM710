@@ -299,7 +299,7 @@ public partial class SoilNitrogen
             {
                 double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
                 //Console.WriteLine(Clock.Today + " patch " + j + " is " + thisPatchAge + " days old and the target age is " + (ageForForcedMerge * 364.0) + " days");
-                if (thisPatchAge > (ageForForcedMerge * 364.0))
+                if (thisPatchAge > (ForcedMergeAge * 364.0))
                 {
                     //Console.WriteLine("   Merging patch " + j + " of area " + Patch[j].RelativeArea.ToString("#0.00#") + " into patch 0 of area " + Patch[0].RelativeArea.ToString("#0.00#"));
                     PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k

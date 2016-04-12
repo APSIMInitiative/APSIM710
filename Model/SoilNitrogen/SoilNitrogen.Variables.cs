@@ -1217,9 +1217,14 @@ public partial class SoilNitrogen
     /// Patch age for forced merging (years)
     /// </summary>
     [Param]
+    [Output]
     [Units("years")]
-    [Description("Relative difference in total organic carbon")]
-    public double ageForForcedMerge;
+    [Description("Age in years after which to merge the patch back into the paddock base")]  
+    public double ageForForcedMerge
+    {
+        get { return ForcedMergeAge; }
+        set { ForcedMergeAge = value; } 
+    }
 
     /// <summary>
     /// Relative difference in total organic carbon (0-1)
@@ -6181,6 +6186,12 @@ public partial class SoilNitrogen
     /// Approach used in auto amalgamation of patches
     /// </summary>
     private string PatchAmalgamationApproach = "CompareAll";
+
+
+    /// <summary>
+    /// Age at which patches are amalgmated if age-based amalgamation is true
+    /// </summary>
+    private double ForcedMergeAge;
 
     /// <summary>
     /// Approach used to define 'base' patch
