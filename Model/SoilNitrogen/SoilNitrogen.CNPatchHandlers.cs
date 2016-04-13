@@ -159,11 +159,13 @@ public partial class SoilNitrogen
                     }
                     Patch[k].CreationDate = Clock.Today;
                     idPatchesJustAdded.Add(k);
-                    writeMessage("create new patch, with area = " + NewPatch_NewArea.ToString("#0.00#") +
-                                 ", based on existing patch("
-                                 + idPatchesAffected[i].ToString() + ") - Old area = " +
-                                 OldPatch_OldArea.ToString("#0.00#") + ", new area = "
-                                 + OldPatch_NewArea.ToString("#0.00#"));
+                    if (PatchtoAdd.SuppressMessages.ToLower() != "yes")
+                    {
+                        writeMessage("create new patch, with area = " + NewPatch_NewArea.ToString("#0.00#") +
+                                     ", based on existing patch(" + idPatchesAffected[i].ToString() +
+                                     ") - Old area = " + OldPatch_OldArea.ToString("#0.00#") +
+                                     ", new area = " + OldPatch_NewArea.ToString("#0.00#"));
+                    }
                 }
             }
         }
@@ -380,7 +382,7 @@ public partial class SoilNitrogen
     /// Controls the merging of a list of patches into a single one
     /// </summary>
     /// <param name="PatchesToMerge">List of patches to merge</param>
-    private void AmalgamatePatches(List<int> PatchesToMerge)
+    private void AmalgamatePatches(List<int> PatchesToMerge, string SuppressMessages)
     {
         List<int> PatchesToDelete = new List<int>();
         int k = PatchesToMerge[0];  // receiver patch
@@ -389,7 +391,11 @@ public partial class SoilNitrogen
             //MergePatches(PatchesToMerge[0], PatchesToMerge[1]); 
             int j = PatchesToMerge[1];  // Patch being merged
             MergeCNValues(k, j);
-            writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+            if (SuppressMessages.ToLower() != "yes")
+            {
+                writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
+                             Patch[k].RelativeArea.ToString("#0.00#"));
+            }
             PatchesToDelete.Add(j);                             // add reference to patch to be deleted
             PatchesToMerge.RemoveAt(1);                         // delete reference to patch[j]
         }

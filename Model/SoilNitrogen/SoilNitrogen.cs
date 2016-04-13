@@ -1179,7 +1179,7 @@ public partial class SoilNitrogen
         //}
     }
 
-        /// <summary>
+    /// <summary>
     /// Passes and handles the information about new patch and add it to patch list
     /// </summary>
     /// <param name="PatchtoAdd">Patch data</param>
@@ -1188,6 +1188,7 @@ public partial class SoilNitrogen
     {
         // data passed with this event:
         //.Sender: the name of the module that raised this event
+        //.SuppressMessages: flags wheter massages are suppressed or not (default is not)
         //.DepositionType: the type of deposition:
         //  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
         //  - ToSpecificPatch: No patch is created, add stuff to given patches;
@@ -1215,10 +1216,11 @@ public partial class SoilNitrogen
         //.FOM_C_pool3: amount of carbon in fom_pool3 to add per layer (kgC/ha)
         //.FOM_N.: amount of nitrogen in fom to add per layer (kgN/ha)
 
-        // - here we'll just convert to AddSoilCNPatchwithFOM and raise that event  - This will be deleted in the near future
-
+        // - here we'll just convert to AddSoilCNPatchwithFOM and raise that event  - This will be deleted in the future
 
         AddSoilCNPatchwithFOMType PatchData = new AddSoilCNPatchwithFOMType();
+        PatchData.Sender = PatchtoAdd.Sender;
+        PatchData.SuppressMessages = PatchtoAdd.SuppressMessages;
         PatchData.DepositionType = PatchtoAdd.DepositionType;
         PatchData.AreaNewPatch = PatchtoAdd.AreaFraction;
         PatchData.AffectedPatches_id = PatchtoAdd.AffectedPatches_id;
@@ -1246,6 +1248,7 @@ public partial class SoilNitrogen
     {
         // data passed with this event:
         //.Sender: the name of the module that raised this event
+        //.SuppressMessages: flags wheter massages are suppressed or not (default is not)
         //.DepositionType: the type of deposition:
         //  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
         //  - ToSpecificPatch: No patch is created, add stuff to given patches;
@@ -1373,7 +1376,7 @@ public partial class SoilNitrogen
 
         // send the list to merger - all values are copied to first patch in the list, remaining will be deleted
         if (PatchesToMerge.Count > 0)
-            AmalgamatePatches(PatchesToMerge);
+            AmalgamatePatches(PatchesToMerge, MergeCNPatch.SuppressMessages);
     }
     /// <summary>
     /// Comunicate other components that C amount in the soil has changed
