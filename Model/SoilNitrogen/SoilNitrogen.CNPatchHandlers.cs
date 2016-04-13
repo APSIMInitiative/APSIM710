@@ -283,52 +283,6 @@ public partial class SoilNitrogen
                 }
             } while (k < nPatches - 1);
         }
-        else if ((PatchAmalgamationApproach.ToLower() == "CompareAge".ToLower()) && Clock.is_end_month)
-        {
-            // VOS added 2016-03-19 an additional option to simple merge if the patches are greater than 4 years old - should make this user resettable
-            // VOS suspects that RC will want to tidy this up!
-
-            // B2. initialise the list of patches to be merged/deleted
-            List<int> PatchesToDelete = new List<int>();
-
-            // B3. go through all patches and check whether they are similar enough to any other
-            int k = 0;  // will always merge into patch 0
-            //do
-            //{
-            for (int j = 1; j < 2; j++)  // only compare the oldest (lowest ranking) patch - the next oldest can potentially get caught tomorrow
-            {
-                double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
-                //Console.WriteLine(Clock.Today + " patch " + j + " is " + thisPatchAge + " days old and the target age is " + (ageForForcedMerge * 364.0) + " days");
-                if (thisPatchAge > (ForcedMergeAge * 364.0))
-                {
-                    //Console.WriteLine("   Merging patch " + j + " of area " + Patch[j].RelativeArea.ToString("#0.00#") + " into patch 0 of area " + Patch[0].RelativeArea.ToString("#0.00#"));
-                    PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
-                }
-            }
-
-            // B4. do the actual merging (copy values from and deleted merging patches)
-            if (PatchesToDelete.Count > 0)
-            {
-                // B4.1. Copy values between patches
-                for (int i = 0; i < PatchesToDelete.Count; i++)
-                {
-                    int j = PatchesToDelete[i];
-                    MergeCNValues(k, j);
-                    writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
-                    // VOS - I think that this might be causign an error when there is more than one patch to delete at a time - error seems to be that base pathc area will be >1
-                    ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
-                }
-                // B4.2. Delete merged patches
-                DeletePatches(PatchesToDelete);
-                PatchesToDelete.Clear();
-                nPatches = Patch.Count;
-            }
-            //else
-            //{
-            //    k += 1; // go to next patch
-            //}
-            //} while (k < nPatches - 1);
-        }
         else if (PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower())
         {
             // C2. initialise the list of patches to be deleted
@@ -360,6 +314,41 @@ public partial class SoilNitrogen
                     k += 1; // go to next patch
                 }
             } while (k < nPatches - 1);
+        }
+
+        if ((AllowPatchAmalgamationByAge.ToLower() == "yes") && Clock.is_end_month)
+        {
+            // VOS added 2016-03-19 an additional option to simple merge if the patches are greater than 4 years old - should make this user resettable
+
+            // B2. initialise the list of patches to be merged/deleted
+            List<int> PatchesToDelete = new List<int>();
+
+            // B3. go through all patches and check whether they are similar enough to any other
+            int k = 0;  // will always merge into patch 0
+            for (int j = 1; j < nPatches; j++)  // only compare the oldest (lowest ranking) patch - the next oldest can potentially get caught tomorrow
+            {
+                double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
+                if (thisPatchAge > (ForcedMergeAge * 364.0))
+                    PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
+            }
+
+            // B4. do the actual merging (copy values from and deleted merging patches)
+            if (PatchesToDelete.Count > 0)
+            {
+                // B4.1. Copy values between patches
+                for (int i = 0; i < PatchesToDelete.Count; i++)
+                {
+                    int j = PatchesToDelete[i];
+                    MergeCNValues(k, j);
+                    writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+                    // VOS - I think that this might be causign an error when there is more than one patch to delete at a time - error seems to be that base pathc area will be >1
+                    ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
+                }
+                // B4.2. Delete merged patches
+                DeletePatches(PatchesToDelete);
+                PatchesToDelete.Clear();
+                nPatches = Patch.Count;
+            }
         }
     }
 
