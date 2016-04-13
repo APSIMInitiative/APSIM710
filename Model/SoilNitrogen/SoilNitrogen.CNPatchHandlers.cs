@@ -21,13 +21,14 @@ public partial class SoilNitrogen
     {
         // Data passed from OnAddSoilCNPatch event:
         //.Sender: the name of the module that raised this event
+        //.SuppressMessages: flags wheter massages are suppressed or not (default is not)
         //.DepositionType: the type of deposition:
         //  - ToAllPaddock: No patch is created, add stuff as given to all patches. It is the default;
         //  - ToSpecificPatch: No patch is created, add stuff to given patches;
         //      (recipient patch is given using its index or name; if not supplied, defaults to homogeneous)
         //  - ToNewPatch: create new patch based on an existing patch, add stuff to created patch;
         //      - recipient or base patch is given using index or name; if not supplied, new patch will be based on the base/Patch[0];
-        //      - patches are only created is area is larger than a minimum (minPatchArea);
+        //      - patches are only created if area is larger than a minimum (minPatchArea);
         //      - new areas are proportional to existing patches;
         //  - NewOverlappingPatches: create new patch(es), these overlap with all existing patches, add stuff to created patches;
         //      (new patches are created only if their area is larger than a minimum (minPatchArea))
@@ -56,19 +57,21 @@ public partial class SoilNitrogen
 
 
         List<int> idPatchesJustAdded = new List<int>(); // list of IDs of patches created (exclude patches that would be too small)
-        List<int> idPatchesToDelete = new List<int>();  //list of IDs of existing patches that became too small and need to be deleted
-        List<int> idPatchesAffected;                    //list of IDs of patches affected by new addition
+        List<int> idPatchesToDelete = new List<int>(); //list of IDs of existing patches that became too small and need to be deleted
+        List<int> idPatchesAffected; //list of IDs of patches affected by new addition
 
         // 1. get the list of id's of patches which are affected by this addition, and the area affected
         double AreaAffected = 0;
         if (PatchtoAdd.DepositionType.ToLower() == "ToNewPatch".ToLower())
-        {  // check which patches are affected
+        {
+            // check which patches are affected
             idPatchesAffected = CheckPatchIDs(PatchtoAdd.AffectedPatches_id, PatchtoAdd.AffectedPatches_nm);
             for (int i = 0; i < idPatchesAffected.Count; i++)
                 AreaAffected += Patch[idPatchesAffected[i]].RelativeArea;
         }
         else if (PatchtoAdd.DepositionType.ToLower() == "NewOverlappingPatches".ToLower())
-        {  // all patches are affected
+        {
+            // all patches are affected
             idPatchesAffected = new List<int>();
             for (int k = 0; k < Patch.Count; k++)
                 idPatchesAffected.Add(k);
@@ -82,37 +85,40 @@ public partial class SoilNitrogen
         // check that total area of affected patches is larger than new patch area
         if (AreaAffected < PatchtoAdd.AreaNewPatch)
         {
-            // Existing area is smaller than new patch area, cannot continue
-            //writeMessage(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
-            //                   + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command will be ignored");
-            // VOS altered to prevent users inadvertently doing things they should not - RC will want to look at this I expect
             throw new Exception(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
-                               + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") + "). Command cannot be executed");
+                                + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") +
+                                "). Command cannot be executed");
         }
         else
-        {  // check the area for each patch
+        {
+            // check the area for each patch
             for (int i = 0; i < idPatchesAffected.Count; i++)
             {
                 double OldPatch_OldArea = Patch[idPatchesAffected[i]].RelativeArea;
                 double NewPatch_NewArea = PatchtoAdd.AreaNewPatch * (OldPatch_OldArea / AreaAffected);
                 double OldPatch_NewArea = OldPatch_OldArea - NewPatch_NewArea;
                 if (NewPatch_NewArea < MinimumPatchArea)
-                {  // area to create is too small, patch will not be created
-                    Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year="
-                        + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddCNPatch:");
-                    //Console.WriteLine("   attempt to create a new patch with area too small or negative ("
-                    //    + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created.");
-                    // VOS altered to prevent users inadvertently doing things they should not  - RC will want to look at this I expect
+                {
+                    // area of patch to create is too small, patch will not be created
                     throw new Exception("   attempt to create a new patch with area too small or negative ("
-                        + NewPatch_NewArea.ToString("#0.00#") + "). The patch will not be created. Command cannot be executed");
+                                        + NewPatch_NewArea.ToString("#0.00#") +
+                                        "). The patch will not be created. Command cannot be executed");
+                }
+                else if (OldPatch_NewArea < -MinimumPatchArea)
+                {
+                    // area of patch to create is too big, patch will not be created
+                    throw new Exception("   attempt to create a new patch with area greater than the existing patch area ("
+                                        + NewPatch_NewArea.ToString("#0.00#") +
+                                        "). The patch will not be created. Command cannot be executed");
                 }
                 else if (OldPatch_NewArea < MinimumPatchArea)
-                {  // remaining area is too small or negative, patch will be created but old one will be deleted
+                {
+                    // remaining area is too small or negative, patch will be created but old one will be deleted
                     Console.WriteLine(Clock.Today.ToString("dd MMMM yyyy") + "(Day of year="
-                        + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddCNPatch:");
+                                      + Clock.Today.DayOfYear.ToString() + "), SoilNitrogen.AddCNPatch:");
                     Console.WriteLine(" attempt to set the area of existing patch(" + idPatchesAffected[i].ToString()
-                        + ") to a value too small or negative (" + OldPatch_NewArea.ToString("#0.00#")
-                        + "). The patch will be eliminated.");
+                                      + ") to a value too small or negative (" + OldPatch_NewArea.ToString("#0.00#")
+                                      + "). The patch will be eliminated.");
 
                     // mark old patch for deletion
                     idPatchesToDelete.Add(idPatchesAffected[i]);
@@ -122,11 +128,13 @@ public partial class SoilNitrogen
                     int k = Patch.Count - 1;
                     Patch[k].RelativeArea = NewPatch_NewArea;
                     if (PatchtoAdd.AreaNewPatch > 0)
-                    {  // a name was supplied
+                    {
+                        // a name was supplied
                         Patch[k].PatchName = PatchtoAdd.PatchName + "_" + i.ToString();
                     }
                     else
-                    {  // use default naming
+                    {
+                        // use default naming
                         Patch[k].PatchName = "patch" + k.ToString();
                     }
                     Patch[k].CreationDate = Clock.Today;
@@ -140,18 +148,22 @@ public partial class SoilNitrogen
                     int k = Patch.Count - 1;
                     Patch[k].RelativeArea = NewPatch_NewArea;
                     if (PatchtoAdd.PatchName.Length > 0)
-                    {  // a name was supplied
+                    {
+                        // a name was supplied
                         Patch[k].PatchName = PatchtoAdd.PatchName + "_" + i.ToString();
                     }
                     else
-                    {  // use default naming
+                    {
+                        // use default naming
                         Patch[k].PatchName = "patch" + k.ToString();
                     }
                     Patch[k].CreationDate = Clock.Today;
                     idPatchesJustAdded.Add(k);
-                    writeMessage("create new patch, with area = " + NewPatch_NewArea.ToString("#0.00#") + ", based on existing patch("
-                        + idPatchesAffected[i].ToString() + ") - Old area = " + OldPatch_OldArea.ToString("#0.00#") + ", new area = "
-                        + OldPatch_NewArea.ToString("#0.00#"));
+                    writeMessage("create new patch, with area = " + NewPatch_NewArea.ToString("#0.00#") +
+                                 ", based on existing patch("
+                                 + idPatchesAffected[i].ToString() + ") - Old area = " +
+                                 OldPatch_OldArea.ToString("#0.00#") + ", new area = "
+                                 + OldPatch_NewArea.ToString("#0.00#"));
                 }
             }
         }
@@ -168,7 +180,7 @@ public partial class SoilNitrogen
     /// <summary>
     /// Clone an existing patch. That is, creates a new patch (k) based on an existing one (j)
     /// </summary>
-    /// <param name="k">id of patch to be cloned</param>
+    /// <param name="j">id of patch to be cloned</param>
     private void ClonePatch(int j)
     {
         // create new patch
@@ -209,18 +221,19 @@ public partial class SoilNitrogen
                 MergingPatches.Add(new List<int>());
 
             // A3. go through all patches and check whether they are similar enough to any other
-            List<int> SelectedPatches = new List<int>();  // list of patches selected for deletion
-            for (int k = 0; k < nPatches - 1; k++)   //  this will go to all but the last patch, as it has no other patch to be compared with
+            List<int> SelectedPatches = new List<int>(); // list of patches selected for deletion
+            for (int k = 0; k < nPatches - 1; k++)
+                //  this will go to all but the last patch, as it has no other patch to be compared with
             {
-                if (!SelectedPatches.Contains(k))   // skip patches already selected for deletion
+                if (!SelectedPatches.Contains(k)) // skip patches already selected for deletion
                 {
-                    for (int j = k + 1; j < nPatches; j++)  // compare to all other subsequent patches
+                    for (int j = k + 1; j < nPatches; j++) // compare to all other subsequent patches
                     {
-                        if (!SelectedPatches.Contains(j))   // skip patches already selected for deletion
+                        if (!SelectedPatches.Contains(j)) // skip patches already selected for deletion
                         {
                             if (PatchesAreEqual(k, j))
                             {
-                                MergingPatches[k].Add(j);       // add patch j to the list being merged into patch k
+                                MergingPatches[k].Add(j); // add patch j to the list being merged into patch k
                                 SelectedPatches.Add(j);
                             }
                         }
@@ -241,7 +254,8 @@ public partial class SoilNitrogen
                         int j = MergingPatches[k][i];
                         MergeCNValues(k, j);
                         PatchesToDelete.Add(j);
-                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
+                                     Patch[k].RelativeArea.ToString("#0.00#"));
                     }
                 }
                 // A4.2. Delete merged patches
@@ -257,9 +271,9 @@ public partial class SoilNitrogen
             int k = 0;
             do
             {
-                for (int j = k + 1; j < nPatches; j++)  // compare to all other subsequent patches
+                for (int j = k + 1; j < nPatches; j++) // compare to all other subsequent patches
                     if (PatchesAreEqual(k, j))
-                        PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
+                        PatchesToDelete.Add(j); // add patch j to the list being merged into patch k
 
                 // B4. do the actual merging (copy values from and deleted merging patches)
                 if (PatchesToDelete.Count > 0)
@@ -269,8 +283,9 @@ public partial class SoilNitrogen
                     {
                         int j = PatchesToDelete[i];
                         MergeCNValues(k, j);
-                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
-                        ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
+                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
+                                     Patch[k].RelativeArea.ToString("#0.00#"));
+                        ExistingPatches.RemoveAt(j); // remove name of patch j from the reference list
                     }
                     // B4.2. Delete merged patches
                     DeletePatches(PatchesToDelete);
@@ -298,7 +313,8 @@ public partial class SoilNitrogen
                     {
                         // C4.1. Copy values between patches
                         MergeCNValues(k, j);
-                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
+                        writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
+                                     Patch[k].RelativeArea.ToString("#0.00#"));
                         PatchesToDelete.Add(j);
                     }
                 }
@@ -315,40 +331,48 @@ public partial class SoilNitrogen
                 }
             } while (k < nPatches - 1);
         }
+    }
 
-        if ((AllowPatchAmalgamationByAge.ToLower() == "yes") && Clock.is_end_month)
+    /// <summary>
+    /// Check patch age and merge them if patches are old
+    /// </summary>
+    private void CheckPatchAgeAmalgamation()
+    {
+        // 1. get the list of names of existing patches, this will be used as reference and adjusted as patches are merged
+        int nPatches = Patch.Count;
+        int k;
+        List<string> ExistingPatches = new List<string>();
+        for (k = 0; k < nPatches; k++)
+            ExistingPatches.Add(Patch[k].PatchName);
+        
+        // 2. initialise the list of patches to be merged/deleted
+        List<int> PatchesToDelete = new List<int>();
+        
+        // 3. go through all patches and check whether they are old enough to be merged
+        k = 0; // will always merge into patch 0
+        for (int j = 1; j < nPatches; j++)
         {
-            // VOS added 2016-03-19 an additional option to simple merge if the patches are greater than 4 years old - should make this user resettable
+            double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
+            if (thisPatchAge > (forcedMergePatchAge * 364.0))
+                PatchesToDelete.Add(j); // add patch j to the list being merged into patch k
+        }
 
-            // B2. initialise the list of patches to be merged/deleted
-            List<int> PatchesToDelete = new List<int>();
-
-            // B3. go through all patches and check whether they are similar enough to any other
-            int k = 0;  // will always merge into patch 0
-            for (int j = 1; j < nPatches; j++)  // only compare the oldest (lowest ranking) patch - the next oldest can potentially get caught tomorrow
+        // 4. do the actual merging (copy values from and deleted merging patches)
+        if (PatchesToDelete.Count > 0)
+        {
+            // 4.1. Copy values between patches
+            for (int i = 0; i < PatchesToDelete.Count; i++)
             {
-                double thisPatchAge = (Clock.Today - Patch[j].CreationDate).TotalDays + 1;
-                if (thisPatchAge > (ForcedMergeAge * 364.0))
-                    PatchesToDelete.Add(j);     // add patch j to the list being merged into patch k
+                int j = PatchesToDelete[i];
+                MergeCNValues(k, j);
+                writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
+                             Patch[k].RelativeArea.ToString("#0.00#"));
+                // VOS - I think that this might be causign an error when there is more than one patch to delete at a time - error seems to be that base pathc area will be >1
+                ExistingPatches.RemoveAt(j); // remove name of patch j from the reference list
             }
-
-            // B4. do the actual merging (copy values from and deleted merging patches)
-            if (PatchesToDelete.Count > 0)
-            {
-                // B4.1. Copy values between patches
-                for (int i = 0; i < PatchesToDelete.Count; i++)
-                {
-                    int j = PatchesToDelete[i];
-                    MergeCNValues(k, j);
-                    writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " + Patch[k].RelativeArea.ToString("#0.00#"));
-                    // VOS - I think that this might be causign an error when there is more than one patch to delete at a time - error seems to be that base pathc area will be >1
-                    ExistingPatches.RemoveAt(j);    // remove name of patch j from the reference list
-                }
-                // B4.2. Delete merged patches
-                DeletePatches(PatchesToDelete);
-                PatchesToDelete.Clear();
-                nPatches = Patch.Count;
-            }
+            // 4.2. Delete merged patches
+            DeletePatches(PatchesToDelete);
+            PatchesToDelete.Clear();
         }
     }
 
@@ -820,7 +844,7 @@ public partial class SoilNitrogen
                                     thisLayerPatchSolute[k] += existingSoluteAmount[k][z] * Patch[k].RelativeArea;
                                 }
                                 layerUsed += dlayer[z];
-                                if ((LayerNPartition > epsilon) && (layerUsed >= LayerNPartition))  // stop if thickness reaches a defined value
+                                if ((layerNPartition > epsilon) && (layerUsed >= layerNPartition))  // stop if thickness reaches a defined value
                                     z = 0;
                             }
                         }

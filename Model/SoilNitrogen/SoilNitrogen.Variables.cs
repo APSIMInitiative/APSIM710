@@ -1076,6 +1076,7 @@ public partial class SoilNitrogen
         set { PatchNPartitionApproach = value; }
     }
 
+    private double layerNPartition = -99;
     /// <summary>
     /// Layer thickness to consider when N partiton is BasedOnSoilConcentration (mm)
     /// </summary>
@@ -1083,7 +1084,11 @@ public partial class SoilNitrogen
     [Output]
     [Units("mm")]
     [Description("Layer thickness to use when N partiton is BasedOnSoilConcentration")]
-    public double LayerNPartition = -99;
+    public double LayerNPartition
+    {
+        get { return layerNPartition; }
+        set { layerNPartition=value;}
+    }
 
     /// <summary>
     /// Minimum relative area (fraction of paddock) for any patch
@@ -1170,10 +1175,10 @@ public partial class SoilNitrogen
     [Output]
     [Units("yes/no")]
     [Description("whether auto amalgamation of CN patches is allowed")]
-    public string allowPatchAmalgamation
+    public string AllowPatchAutoAmalgamation
     {
-        get { return (PatchAmalgamationAllowed) ? "yes" : "no"; }
-        set { PatchAmalgamationAllowed = value.ToLower().Contains("yes"); }
+        get { return (PatchAutoAmalgamationAllowed) ? "yes" : "no"; }
+        set { PatchAutoAmalgamationAllowed = value.ToLower().Contains("yes"); }
     }
 
     /// <summary>
@@ -1212,7 +1217,7 @@ public partial class SoilNitrogen
         get { return PatchbasePatchApproach; }
         set { PatchbasePatchApproach = value.Trim(); }
     }
-    
+
     /// <summary>
     /// Should an age check be used to force amalgamation of patches? (yes/no)
     /// </summary>
@@ -1220,7 +1225,11 @@ public partial class SoilNitrogen
     [Output]
     [Units("yes/no")]
     [Description("Allow age-based merging of patches")]
-    public string AllowPatchAmalgamationByAge;
+    public string AllowPatchAmalgamationByAge
+    {
+        get { return (PatchAmalgamationByAgeAllowed) ? "yes" : "no"; }
+        set { PatchAmalgamationByAgeAllowed = value.ToLower().Contains("yes"); }
+    }
 
     /// <summary>
     /// Patch age for forced merging (years)
@@ -1229,10 +1238,10 @@ public partial class SoilNitrogen
     [Output]
     [Units("years")]
     [Description("Age in years after which to merge the patch back into the paddock base")]  
-    public double ageForForcedMerge
+    public double PatchAgeForForcedMerge
     {
-        get { return ForcedMergeAge; }
-        set { ForcedMergeAge = value; } 
+        get { return forcedMergePatchAge; }
+        set { forcedMergePatchAge = value; } 
     }
 
     /// <summary>
@@ -1242,7 +1251,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in total organic carbon")]
-    public double relativeDiff_TotalOrgC;
+    public double relativeDiff_TotalOrgC
+    { get; set; }
 
     /// <summary>
     /// Relative difference in total organic nitrogen (0-1)
@@ -1251,7 +1261,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in total organic nitrogen")]
-    public double relativeDiff_TotalOrgN;
+    public double relativeDiff_TotalOrgN
+    { get; set; }
 
     /// <summary>
     /// Relative difference in total organic nitrogen (0-1)
@@ -1260,7 +1271,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in total organic nitrogen")]
-    public double relativeDiff_TotalBiomC;
+    public double relativeDiff_TotalBiomC
+    { get; set; }
 
     /// <summary>
     /// Relative difference in total urea N amount (0-1)
@@ -1269,7 +1281,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in total urea N amount")]
-    public double relativeDiff_TotalUrea;
+    public double relativeDiff_TotalUrea
+    { get; set; }
 
     /// <summary>
     /// Relative difference in total NH4 N amount (0-1)
@@ -1278,7 +1291,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in total NH4 N amount")]
-    public double relativeDiff_TotalNH4;
+    public double relativeDiff_TotalNH4
+    { get; set; }
 
     /// <summary>
     /// Relative difference in total NO3 N amount (0-1)
@@ -1287,7 +1301,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in total NO3 N amount")]
-    public double relativeDiff_TotalNO3;
+    public double relativeDiff_TotalNO3
+    { get; set; }
 
     /// <summary>
     /// Relative difference in urea N amount at any layer (0-1)
@@ -1296,7 +1311,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in urea N amount at any layer")]
-    public double relativeDiff_LayerBiomC;
+    public double relativeDiff_LayerBiomC
+    { get; set; }
 
     /// <summary>
     /// Relative difference in urea N amount at any layer (0-1)
@@ -1305,7 +1321,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in urea N amount at any layer")]
-    public double relativeDiff_LayerUrea;
+    public double relativeDiff_LayerUrea
+    { get; set; }
 
     /// <summary>
     /// Relative difference in NH4 N amount at any layer (0-1)
@@ -1314,7 +1331,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in NH4 N amount at any layer")]
-    public double relativeDiff_LayerNH4;
+    public double relativeDiff_LayerNH4
+    { get; set; }
 
     /// <summary>
     /// Relative difference in NO3 N amount at any layer (0-1)
@@ -1323,7 +1341,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("Relative difference in NO3 N amount at any layer")]
-    public double relativeDiff_LayerNO3;
+    public double relativeDiff_LayerNO3
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in total organic carbon (kg/ha)
@@ -1332,7 +1351,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in total organic carbon")]
-    public double absoluteDiff_TotalOrgC;
+    public double absoluteDiff_TotalOrgC
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in total organic nitrogen (kg/ha)
@@ -1341,7 +1361,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in total organic nitrogen")]
-    public double absoluteDiff_TotalOrgN;
+    public double absoluteDiff_TotalOrgN
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in total organic nitrogen (kg/ha)
@@ -1350,7 +1371,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in total organic nitrogen")]
-    public double absoluteDiff_TotalBiomC;
+    public double absoluteDiff_TotalBiomC
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in total urea N amount (kg/ha)
@@ -1359,7 +1381,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in total urea N amount")]
-    public double absoluteDiff_TotalUrea;
+    public double absoluteDiff_TotalUrea
+    { get; set; }
     /// <summary>
     /// Absolute difference in total NH4 N amount (kg/ha)
     /// </summary>
@@ -1367,7 +1390,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in total NH4 N amount")]
-    public double absoluteDiff_TotalNH4;
+    public double absoluteDiff_TotalNH4
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in total NO3 N amount (kg/ha)
@@ -1376,7 +1400,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in total NO3 N amount")]
-    public double absoluteDiff_TotalNO3;
+    public double absoluteDiff_TotalNO3
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in urea N amount at any layer (kg/ha)
@@ -1385,7 +1410,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in urea N amount at any layer")]
-    public double absoluteDiff_LayerBiomC;
+    public double absoluteDiff_LayerBiomC
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in urea N amount at any layer (kg/ha)
@@ -1394,7 +1420,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in urea N amount at any layer")]
-    public double absoluteDiff_LayerUrea;
+    public double absoluteDiff_LayerUrea
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in NH4 N amount at any layer (kg/ha)
@@ -1403,7 +1430,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in NH4 N amount at any layer")]
-    public double absoluteDiff_LayerNH4;
+    public double absoluteDiff_LayerNH4
+    { get; set; }
 
     /// <summary>
     /// Absolute difference in NO3 N amount at any layer (kg/ha)
@@ -1412,7 +1440,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("kg/ha")]
     [Description("Absolute difference in NO3 N amount at any layer")]
-    public double absoluteDiff_LayerNO3;
+    public double absoluteDiff_LayerNO3
+    { get; set; }
 
     /// <summary>
     /// Depth to consider when testing diffs by layer, if -ve soil depth is used (mm)
@@ -1421,7 +1450,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("mm")]
     [Description("Depth to consider when testing diffs by layer, if -ve soil depth is used")]
-    public double DepthToTestByLayer;
+    public double DepthToTestByLayer
+    { get; set; }
 
     /// <summary>
     /// Factor to adjust the tests between patches other than base (0-1)
@@ -1430,7 +1460,8 @@ public partial class SoilNitrogen
     [Output]
     [Units("0-1")]
     [Description("factor to adjust the tests between patches other than base")]
-    public double DiffAdjustFactor;
+    public double DiffAdjustFactor
+    { get; set; }
 
     #endregion amalgamating patches
 
@@ -6211,18 +6242,22 @@ public partial class SoilNitrogen
     /// <summary>
     /// Whether auto amalgamation of patches is allowed
     /// </summary>
-    private bool PatchAmalgamationAllowed = false;
+    private bool PatchAutoAmalgamationAllowed = false;
 
     /// <summary>
     /// Approach used in auto amalgamation of patches
     /// </summary>
     private string PatchAmalgamationApproach = "CompareAll";
 
+    /// <summary>
+    /// Whether amalgamation of patches by age is allowed
+    /// </summary>
+    private bool PatchAmalgamationByAgeAllowed = false;
 
     /// <summary>
     /// Age at which patches are amalgmated if age-based amalgamation is true
     /// </summary>
-    private double ForcedMergeAge;
+    private double forcedMergePatchAge;
 
     /// <summary>
     /// Approach used to define 'base' patch

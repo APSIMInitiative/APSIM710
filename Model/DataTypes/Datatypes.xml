@@ -999,6 +999,7 @@
    <!-- used to send data to SoilNitrogen, which will add CNPatches if appropriate -->
    <type name="AddSoilCNPatch">
       <field name="Sender"             unit="-"      kind="string"   array="F"  descr="name of module raising the event"/>
+	  <field name="SuppressMessages"   unit="-"      kind="string"   array="F"  descr="wheter messages are suppressed while creating patches"/>
       <field name="DepositionType"     unit="-"      kind="string"   array="F"  descr="ToAllPaddock,ToSpecificPatch,ToNewPatch,NewOverlappingPatches"/>
       <field name="AffectedPatches_nm" unit="-"      kind="string"   array="T"  descr="the name of patches affected by new patch"/>
       <field name="AffectedPatches_id" unit="-"      kind="integer4" array="T"  descr="the id of patches affected by new patch"/>
@@ -1020,6 +1021,7 @@
 
    <type name="AddSoilCNPatchwithFOM">
       <field name="Sender"             unit="-"       kind="string"    array="F"  descr="name of module raising the event"/>
+	  <field name="SuppressMessages"   unit="-"       kind="string"    array="F"  descr="wheter messages are suppressed while creating patches"/>
       <field name="DepositionType"     unit="-"       kind="string"    array="F"  descr="ToAllPaddock,ToSpecificPatch,ToNewPatch,NewOverlappingPatches"/>
       <field name="AffectedPatches_nm" unit="-"       kind="string"    array="T"  descr="the name of patches affected by new patch"/>
       <field name="AffectedPatches_id" unit="-"       kind="integer4"  array="T"  descr="the id of patches affected by new patch"/>
@@ -1043,6 +1045,7 @@
    <!-- used to send tell SoilNitrogen to merge CNPatches -->
    <type name="MergeSoilCNPatch">
       <field name="Sender"               unit="-"   kind="string"    array="F"  descr="name of module raising the event"/>
+	  <field name="SuppressMessages"     unit="-"   kind="string"    array="F"  descr="wheter messages are suppressed while merging patches"/>
       <field name="AffectedPatches_nm"   unit="-"   kind="string"    array="T"  descr="the name of patches that will be merged"/>
       <field name="AffectedPatches_id"   unit="-"   kind="integer4"  array="T"  descr="the id of patches that will be merged"/>
       <field name="MergeAll"             unit="-"   kind="boolean"   array="F"  descr="define whether all patches will be merged"/>

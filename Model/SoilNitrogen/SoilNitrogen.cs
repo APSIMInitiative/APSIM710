@@ -570,8 +570,8 @@ public partial class SoilNitrogen
     [EventHandler(EventName = "post")]
     public void OnPost()
     {
-        // Check whether patch amalgamation is allowed
-        if ((Patch.Count > 1) && (PatchAmalgamationAllowed))
+        // Check whether patch auto amalgamation is allowed
+        if ((Patch.Count > 1) && (PatchAutoAmalgamationAllowed))
         {
             if ((PatchAmalgamationApproach.ToLower() == "CompareAll".ToLower()) ||
                 (PatchAmalgamationApproach.ToLower() == "CompareBase".ToLower()) ||
@@ -581,6 +581,11 @@ public partial class SoilNitrogen
                 CheckPatchAutoAmalgamation();
             }
         }
+
+        // Check whether patch amalgamation by age is allowed (done on a monthly basis)
+        if ((AllowPatchAmalgamationByAge.ToLower() == "yes") && Clock.is_end_month)
+            CheckPatchAgeAmalgamation();
+
     }
 
     /// <summary>
