@@ -210,19 +210,14 @@ public partial class SoilNitrogen
     {
         int nPatches = Patch.Count;
 
-        // 1. get the list of names of existing patches, this will be used as reference and adjusted as patches are merged
-        List<string> ExistingPatches = new List<string>();
-        for (int k = 0; k < nPatches; k++)
-            ExistingPatches.Add(Patch[k].PatchName);
-
         if (PatchAmalgamationApproach.ToLower() == "CompareAll".ToLower())
         {
-            // A2. initialise the lists, for each existing patch, of patches to be merged to it
+            // A1. initialise the lists, for each existing patch, of patches to be merged to it
             List<List<int>> MergingPatches = new List<List<int>>();
             for (int k = 0; k < nPatches; k++)
                 MergingPatches.Add(new List<int>());
 
-            // A3. go through all patches and check whether they are similar enough to any other
+            // A2. go through all patches and check whether they are similar enough to any other
             List<int> SelectedPatches = new List<int>(); // list of patches selected for deletion
             for (int k = 0; k < nPatches - 1; k++)
                 //  this will go to all but the last patch, as it has no other patch to be compared with
@@ -244,11 +239,11 @@ public partial class SoilNitrogen
                 // else {} go to next patch
             }
 
-            // A4. do the actual merging (copy values from and deleted merging patches)
+            // A3. do the actual merging (copy values from and deleted merging patches)
             if (SelectedPatches.Count > 0)
             {
                 List<int> PatchesToDelete = new List<int>();
-                // A4.1. Copy values between patches
+                // A3.1. Copy values between patches
                 for (int k = 0; k < Patch.Count - 1; k++)
                 {
                     for (int i = 0; i < MergingPatches[k].Count; i++)
@@ -260,16 +255,16 @@ public partial class SoilNitrogen
                                      Patch[k].RelativeArea.ToString("#0.00#"));
                     }
                 }
-                // A4.2. Delete merged patches
+                // A3.2. Delete merged patches
                 DeletePatches(PatchesToDelete);
             }
         }
         else if (PatchAmalgamationApproach.ToLower() == "CompareBase".ToLower())
         {
-            // B2. initialise the list of patches to be merged/deleted
+            // B1. initialise the list of patches to be merged/deleted
             List<int> PatchesToDelete = new List<int>();
 
-            // B3. go through all patches and check whether they are similar enough to any other
+            // B2. go through all patches and check whether they are similar enough to any other
             int k = 0;
             do
             {
@@ -277,19 +272,18 @@ public partial class SoilNitrogen
                     if (PatchesAreEqual(k, j))
                         PatchesToDelete.Add(j); // add patch j to the list being merged into patch k
 
-                // B4. do the actual merging (copy values from and deleted merging patches)
+                // B3. do the actual merging (copy values from and deleted merging patches)
                 if (PatchesToDelete.Count > 0)
                 {
-                    // B4.1. Copy values between patches
+                    // B3.1. Copy values between patches
                     for (int i = 0; i < PatchesToDelete.Count; i++)
                     {
                         int j = PatchesToDelete[i];
                         MergeCNValues(k, j);
                         writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
                                      Patch[k].RelativeArea.ToString("#0.00#"));
-                        ExistingPatches.RemoveAt(j); // remove name of patch j from the reference list
                     }
-                    // B4.2. Delete merged patches
+                    // B3.2. Delete merged patches
                     DeletePatches(PatchesToDelete);
                     PatchesToDelete.Clear();
                     nPatches = Patch.Count;
@@ -302,25 +296,26 @@ public partial class SoilNitrogen
         }
         else if (PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower())
         {
-            // C2. initialise the list of patches to be deleted
+            // C1. initialise the list of patches to be deleted
             List<int> PatchesToDelete = new List<int>();
 
-            // C3. go through all patches and check whether they are similar enough to any other, merge if they are
+            // C2. go through all patches and check whether they are similar enough to any other, merge if they are
             int k = 0;
             do
             {
                 for (int j = k + 1; j < nPatches; j++)
                 {
+                    // C3. do the actual merging (copy values from and deleted merging patches)
                     if (PatchesAreEqual(k, j))
                     {
-                        // C4.1. Copy values between patches
+                        // C3.1. Copy values between patches
                         MergeCNValues(k, j);
                         writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
                                      Patch[k].RelativeArea.ToString("#0.00#"));
                         PatchesToDelete.Add(j);
                     }
                 }
-                // C4.2. Delete merged patches
+                // C3.2. Delete merged patches
                 if (PatchesToDelete.Count > 0)
                 {
                     DeletePatches(PatchesToDelete);
@@ -340,17 +335,13 @@ public partial class SoilNitrogen
     /// </summary>
     private void CheckPatchAgeAmalgamation()
     {
-        // 1. get the list of names of existing patches, this will be used as reference and adjusted as patches are merged
         int nPatches = Patch.Count;
         int k;
-        List<string> ExistingPatches = new List<string>();
-        for (k = 0; k < nPatches; k++)
-            ExistingPatches.Add(Patch[k].PatchName);
         
-        // 2. initialise the list of patches to be merged/deleted
+        // D1. initialise the list of patches to be merged/deleted
         List<int> PatchesToDelete = new List<int>();
         
-        // 3. go through all patches and check whether they are old enough to be merged
+        // D2. go through all patches and check whether they are old enough to be merged
         k = 0; // will always merge into patch 0
         for (int j = 1; j < nPatches; j++)
         {
@@ -359,20 +350,19 @@ public partial class SoilNitrogen
                 PatchesToDelete.Add(j); // add patch j to the list being merged into patch k
         }
 
-        // 4. do the actual merging (copy values from and deleted merging patches)
+        // D3. do the actual merging (copy values from and deleted merging patches)
         if (PatchesToDelete.Count > 0)
         {
-            // 4.1. Copy values between patches
+            // D3.1. Copy values between patches
             for (int i = 0; i < PatchesToDelete.Count; i++)
             {
                 int j = PatchesToDelete[i];
                 MergeCNValues(k, j);
                 writeMessage("merging patch(" + j + ") into patch(" + k + "). New patch area = " +
                              Patch[k].RelativeArea.ToString("#0.00#"));
-                // VOS - I think that this might be causign an error when there is more than one patch to delete at a time - error seems to be that base pathc area will be >1
-                ExistingPatches.RemoveAt(j); // remove name of patch j from the reference list
             }
-            // 4.2. Delete merged patches
+
+            // D3.2. Delete merged patches
             DeletePatches(PatchesToDelete);
             PatchesToDelete.Clear();
         }
@@ -459,6 +449,9 @@ public partial class SoilNitrogen
     {
 
         double NewPatchArea = Patch[k].RelativeArea + Patch[j].RelativeArea;
+        if (1.0 - NewPatchArea < -MinimumPatchArea)
+            throw new Exception("THe merge of patch " + j + " into patch " + k + " resulted in area greater than one");
+
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
             // Mineral N
