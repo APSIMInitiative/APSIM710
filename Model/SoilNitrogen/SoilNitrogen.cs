@@ -191,7 +191,6 @@ public partial class SoilNitrogen
             convFactor[layer] = MathUtility.Divide(100.0, SoilDensity[layer] * dlayer[layer], 0.0);
 
         // Check parameters for patches
-        PatchNPartitionApproach = PatchNPartitionApproach.Trim();
         if (DepthToTestByLayer <= epsilon)
             LayerDepthToTestDiffs = dlayer.Length - 1;
         else
@@ -690,8 +689,6 @@ public partial class SoilNitrogen
             SurfaceOrganicMatterDecompType SurfOMDecomposed = new SurfaceOrganicMatterDecompType();
             SurfOMDecomposed.Pool = new SurfaceOrganicMatterDecompPoolType[nResidues];
 
-            double[] c_summed_layer = new double[nLayers];
-
             for (int residue = 0; residue < nResidues; residue++)
             {
                 // get the total amount decomposed over all existing patches
@@ -1001,7 +998,7 @@ public partial class SoilNitrogen
         senderModule = NitrogenChanges.SenderType.ToLower();
 
         // get the total amount of N in root zone (for partition of plant uptake)
-        for (int k = 0; k < Patch.Count; k++) 
+        for (int k = 0; k < Patch.Count; k++)
             Patch[k].CalcTotalMineralNInRootZone();
 
         // check whether there are significant values, if so pass them to appropriate dlt

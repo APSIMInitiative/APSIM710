@@ -1073,7 +1073,7 @@ public partial class SoilNitrogen
     public string NPartitionApproach
     {
         get { return PatchNPartitionApproach; }
-        set { PatchNPartitionApproach = value; }
+        set { PatchNPartitionApproach = value.Trim(); }
     }
 
     private double layerNPartition = -99;

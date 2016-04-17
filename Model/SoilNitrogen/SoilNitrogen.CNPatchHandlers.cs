@@ -83,7 +83,7 @@ public partial class SoilNitrogen
         }
 
         // check that total area of affected patches is larger than new patch area
-        if (AreaAffected < PatchtoAdd.AreaNewPatch)
+        if (AreaAffected - PatchtoAdd.AreaNewPatch < -MinimumPatchArea)
         {
             throw new Exception(" AddSoilCNPatch - area of selected patches (" + AreaAffected.ToString("#0.00#")
                                 + ") is smaller than area of new patch(" + PatchtoAdd.AreaNewPatch.ToString("#0.00#") +
@@ -485,6 +485,7 @@ public partial class SoilNitrogen
     private void AddStuffToPatches(List<int> PatchesToAdd, AddSoilCNPatchwithFOMType StuffToAdd)
     {
         // Relevant data passed from OnAddSoilCNPatch event - these are all considered deltas:
+        //.Sender: the name of the module that sent this values
         //.Urea: amount of urea to add per layer (kgN/ha)
         //.NH4: amount of ammonium to add per layer (kgN/ha)
         //.NO3: amount of nitrate to add per layer (kgN/ha)
@@ -493,6 +494,8 @@ public partial class SoilNitrogen
         //   .Pool[]: info about FOM pools being added
         //      .C: amount of carbon in given pool to add per layer (kgC/ha)
         //      .N: amount of nitrogen in given pool to add per layer (kgN/ha)
+
+        senderModule = StuffToAdd.Sender.ToLower();
 
         for (int i = PatchesToAdd.Count - 1; i >= 0; i--)
         {
@@ -741,6 +744,7 @@ public partial class SoilNitrogen
     /// </summary>
     /// <param name="incomingDelta">The dlt to be partioned amongst patches</param>
     /// <param name="SoluteName">The solute or pool that is changing</param>
+    /// <param name="PartitionType">The type of partition to be used</param>
     /// <returns>The values of dlt partitioned for each existing patch</returns>
     private double[][] partitionDelta(double[] incomingDelta, string SoluteName, string PartitionType)
     {
@@ -901,5 +905,4 @@ public partial class SoilNitrogen
 
         return Result;
     }
-
 }

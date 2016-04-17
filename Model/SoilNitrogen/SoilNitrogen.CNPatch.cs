@@ -316,21 +316,17 @@ public partial class SoilNitrogen
         {
             get
             {
-                double totalNH4InRootZone = 0.0;
                 double depthFromSurface = 0.0;
                 double[] result = new double[g.dlayer.Length];
+                double fractionAvailable = Math.Min(1.0,
+                       MathUtility.Divide(g.maxTotalNAvailableToPlants, totalMineralNInRootZone, 0.0));
                 for (int layer = 0; layer < g.dlayer.Length; layer++)
                 {
-                    totalNH4InRootZone += nh4[layer];
+                    result[layer] = nh4[layer] * fractionAvailable;
                     depthFromSurface += g.dlayer[layer];
                     if (depthFromSurface >= g.rootDepth)
                         break;
                 }
-                double maxTotalNH4Available = g.maxTotalNAvailableToPlants *
-                                              MathUtility.Divide(totalNH4InRootZone, totalMineralNInRootZone, 0.0);
-                double fractionAvailable = Math.Min(1.0, MathUtility.Divide(maxTotalNH4Available, totalNH4InRootZone, 0.0));
-                for (int layer = 0; layer < g.dlayer.Length; layer++)
-                    result[layer] = nh4[layer] * fractionAvailable;
                 return result;
             }
         }
@@ -342,26 +338,21 @@ public partial class SoilNitrogen
         {
             get
             {
-                double totalNO3InRootZone = 0.0;
                 double depthFromSurface = 0.0;
                 double[] result = new double[g.dlayer.Length];
+                double fractionAvailable = Math.Min(1.0,
+                    MathUtility.Divide(g.maxTotalNAvailableToPlants, totalMineralNInRootZone, 0.0));
                 for (int layer = 0; layer < g.dlayer.Length; layer++)
                 {
-                    totalNO3InRootZone += no3[layer];
+                    result[layer] = no3[layer] * fractionAvailable;
                     depthFromSurface += g.dlayer[layer];
                     if (depthFromSurface >= g.rootDepth)
                         break;
                 }
-                double maxTotalNO3Available = g.maxTotalNAvailableToPlants *
-                                              MathUtility.Divide(totalNO3InRootZone, totalMineralNInRootZone, 0.0);
-                double fractionAvailable = Math.Min(1.0,
-                    MathUtility.Divide(maxTotalNO3Available, totalNO3InRootZone, 0.0));
-                for (int layer = 0; layer < g.dlayer.Length; layer++)
-                    result[layer] = no3[layer] * fractionAvailable;
                 return result;
             }
         }
-        
+
         /// <summary>
         /// N carried out in sediment via runoff/erosion
         /// </summary>
