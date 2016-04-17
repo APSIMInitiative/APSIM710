@@ -760,7 +760,6 @@ public partial class SoilNitrogen
         {
             // 2- gather how much solute is already in the soil
             double[][] existingSoluteAmount = new double[nPatches][];
-            double[][] SoluteLimit = new double[nPatches][];
             for (int k = 0; k < nPatches; k++)
             {
                 switch (SoluteName)
@@ -769,12 +768,16 @@ public partial class SoilNitrogen
                         existingSoluteAmount[k] = Patch[k].urea;
                         break;
                     case "NH4":
-                        existingSoluteAmount[k] = Patch[k].nh4;
-                        SoluteLimit[k] = Patch[k].nh4AvailableToPlants;
+                        if (senderModule == "Plant".ToLower())
+                            existingSoluteAmount[k] = Patch[k].nh4AvailableToPlants;
+                        else
+                            existingSoluteAmount[k] = Patch[k].nh4;
                         break;
                     case "NO3":
-                        existingSoluteAmount[k] = Patch[k].no3;
-                        SoluteLimit[k] = Patch[k].no3AvailableToPlants;
+                        if (senderModule == "Plant".ToLower())
+                            existingSoluteAmount[k] = Patch[k].no3AvailableToPlants;
+                        else
+                            existingSoluteAmount[k] = Patch[k].no3;
                         break;
                     default:
                         throw new Exception(" The solute " + SoluteName
@@ -782,53 +785,24 @@ public partial class SoilNitrogen
                 }
             }
 
-            // 2.2- Check whether the incoming delta is not too large
+            // 3- calculate partition weighting factors, done for each layer based on existing solute amount
+            double[] partitionWeight;
+            double[] thisLayerPatchSolute;
             double thisLayersTotalSolute;
             for (int layer = 0; layer < (nLayers); layer++)
             {
-                thisLayersTotalSolute = 0.0;
-                for (int k = 0; k < nPatches; k++)
-                    thisLayersTotalSolute += existingSoluteAmount[k][layer];
-
-                if (thisLayersTotalSolute + incomingDelta[layer] < FatalNegativeThreshold)
-                {
-                    string myMessage = "attempt to change " + SoluteName + "[" + (layer + 1).ToString() +
-                                       "] to a value negative value";
-                    throw new Exception(myMessage);
-                }
-            }
-
-            // 3- calculate weighting factors, done for each layer
-            double[] baseWeight;            // the weighting factor for partitioning delta, based on existing solute amount
-            double[] partitionWeight;       // the actual weighting factor for partitioning delta
-            double[] thisLayerPatchSolute;
-            for (int layer = 0; layer < (nLayers); layer++)
-            {
-                // 3.1- zero and initialise the variables
-                double[] maxWeight = new double[nPatches];
-                baseWeight = new double[nPatches];
-                partitionWeight = new double[nPatches];
-                thisLayerPatchSolute = new double[nPatches];
-                thisLayersTotalSolute = 0.0;
-
                 if (Math.Abs(incomingDelta[layer]) > epsilon)
                 {
-                    // 3.2- get the solute amounts, total and for each patch
+                    // 3.1- zero and initialise the variables
+                    partitionWeight = new double[nPatches];
+                    thisLayerPatchSolute = new double[nPatches];
+
+                    // 3.2- get the solute amounts for each patch in this layer
                     if ((PartitionType == "BasedOnLayerConcentration".ToLower()) ||
                         (PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] < epsilon))
                     {
                         for (int k = 0; k < nPatches; k++)
-                        {
-                            if (senderModule == "Plant".ToLower() && (SoluteName == "NH4" || SoluteName == "NO3"))
-                            { // plant is a speciall case, uptake might be limited, use that value then
-                                thisLayerPatchSolute[k] = Math.Min(existingSoluteAmount[k][layer], SoluteLimit[k][layer]) * Patch[k].RelativeArea;
-                            }
-                            else
-                            {
-                                thisLayerPatchSolute[k] = existingSoluteAmount[k][layer] * Patch[k].RelativeArea;
-                            }
-                        }
-                        thisLayersTotalSolute = SumDoubleArray(thisLayerPatchSolute);
+                            thisLayerPatchSolute[k] = existingSoluteAmount[k][layer] * Patch[k].RelativeArea;
                     }
                     else if ((PartitionType == "BasedOnSoilConcentration".ToLower()) ||
                         (PartitionType == "BasedOnConcentrationAndDelta".ToLower() & incomingDelta[layer] >= epsilon))
@@ -838,49 +812,33 @@ public partial class SoilNitrogen
                             double layerUsed = 0.0;
                             for (int z = layer; z >= 0; z--)        // goes backwards till soil surface (but may stop before that)
                             {
-                                if (senderModule == "Plant".ToLower() && (SoluteName == "NH4" || SoluteName == "NO3"))
-                                { // plant is a speciall case, uptake might be limited, use that value then
-                                    thisLayerPatchSolute[k] += Math.Min(existingSoluteAmount[k][z], SoluteLimit[k][z]) * Patch[k].RelativeArea;
-                                }
-                                else
-                                {
-                                    thisLayerPatchSolute[k] += existingSoluteAmount[k][z] * Patch[k].RelativeArea;
-                                }
+                                thisLayerPatchSolute[k] += existingSoluteAmount[k][z];
                                 layerUsed += dlayer[z];
-                                if ((layerNPartition > epsilon) && (layerUsed >= layerNPartition))  // stop if thickness reaches a defined value
-                                    z = 0;
+                                if ((layerNPartition > epsilon) && (layerUsed >= layerNPartition))
+                                    // stop if thickness reaches a defined value
+                                    z = -1;
                             }
+                            thisLayerPatchSolute[k] *= Patch[k].RelativeArea;
                         }
-                        thisLayersTotalSolute = SumDoubleArray(thisLayerPatchSolute);
                     }
 
-                    // 3.3- Compute the partition weights for each patch
+                    // 3.3- get the total solute amount for this layer
+                    thisLayersTotalSolute = SumDoubleArray(thisLayerPatchSolute);
+
+                    // 3.4- Check whether the existing solute is greater than the incoming delta
+                    if (thisLayersTotalSolute + incomingDelta[layer] < FatalNegativeThreshold)
+                    {
+                        string myMessage = "attempt to change " + SoluteName + "[" + (layer + 1) +
+                                           "] to a negative value";
+                        throw new Exception(myMessage);
+                    }
+
+                    // 3.5- Compute the partition weights for each patch
                     for (int k = 0; k < nPatches; k++)
                     {
-                        baseWeight[k] = 1.0;
+                        partitionWeight[k] = 0.0;
                         if (thisLayersTotalSolute >= epsilon)
-                            baseWeight[k] = MathUtility.Divide(thisLayerPatchSolute[k], thisLayersTotalSolute, 0.0);
-
-                        if (incomingDelta[layer] <= -epsilon)
-                        { // compute the maximum weight for each patch
-                            maxWeight[k] = 0.0;
-                            if (thisLayerPatchSolute[k] >= epsilon)
-                                maxWeight[k] = MathUtility.Divide(thisLayerPatchSolute[k], Math.Abs(incomingDelta[layer]), 0.0);
-                            baseWeight[k] = Math.Min(maxWeight[k], baseWeight[k]);
-                        }
-                    }
-
-                    // 3.4- calculate the actual partitioning weights
-                    double TotalWeight = baseWeight.Sum();
-                    if (TotalWeight > 0.0)
-                    {
-                        for (int k = 0; k < nPatches; k++)
-                        {
-                            if (TotalWeight >= epsilon)
-                                partitionWeight[k] = MathUtility.Divide(baseWeight[k], TotalWeight, 0.0);
-                            else
-                                throw new Exception(" could not resolve the partitioning, value of delta is too small");
-                        }
+                            partitionWeight[k] = MathUtility.Divide(thisLayerPatchSolute[k], thisLayersTotalSolute, 0.0);
                     }
 
                     // 4- Compute the partitioned values for each patch
