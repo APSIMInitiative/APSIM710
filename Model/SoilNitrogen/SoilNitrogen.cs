@@ -696,8 +696,8 @@ public partial class SoilNitrogen
                 double n_summed = 0.0;
                 for (int k=0;k<Patch.Count;k++)
                 {
-                 c_summed= Patch[k].SurfOMActualDecomposition.Pool[residue].FOM.C;
-                 n_summed = Patch[k].SurfOMActualDecomposition.Pool[residue].FOM.N;
+                    c_summed += Patch[k].SurfOMActualDecomposition.Pool[residue].FOM.C * Patch[k].RelativeArea;
+                    n_summed += Patch[k].SurfOMActualDecomposition.Pool[residue].FOM.N * Patch[k].RelativeArea;
                 }
 
                 // pack up the structure to return decompositions to SurfaceOrganicMatter
