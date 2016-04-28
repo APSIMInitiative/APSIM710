@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -19,6 +20,7 @@ namespace CSUserInterface
         public string GraphName;
         public List<GDPaddock> ManagedPaddocks = new List<GDPaddock>();
         public List<GDPaddock> AvailablePaddocks = new List<GDPaddock>();
+        private List<ComponentVE> MyComponents = new List<ComponentVE>();
         private string language = "TCL";
         public RotPlotUI()
         {
@@ -79,6 +81,14 @@ namespace CSUserInterface
                 label3.Text = "Actions (publish to system)";
             }
             GraphDisplay.Refresh();
+
+            ComponentVE.GetVisibleComponents(Controller.ApsimData.Find(NodePath), ref MyComponents);
+            PopulateComponentFilter();
+            PopulateVariableListView("Variables");
+            RuleBoxSelected = true;
+            txtRules.BackColor = Color.LightPink;
+            ActionBoxSelected = false;
+            txtActions.BackColor = Color.White; // TextBox.DefaultBackColor;
         }
         public override void OnSave()
         {
@@ -742,7 +752,7 @@ namespace CSUserInterface
                 }
             }
         }
-        private void txtActions_TextChanged(object sender, EventArgs e)
+    private void txtActions_TextChanged(object sender, EventArgs e)
         {
             if (m_Loading)
                 return;
@@ -758,7 +768,168 @@ namespace CSUserInterface
             }
 
         }
+        private void PopulateVariableListView(string what)
+        {
+            // ----------------------------------------------
+            // Populate the variable list view box
+            // ----------------------------------------------
 
+            if ((ComponentFilter.SelectedIndex >= 0) && (ComponentFilter.SelectedIndex < MyComponents.Count))
+            {
+                VariableListView.BeginUpdate();
+                VariableListView.Groups.Clear();
+                VariableListView.Items.Clear();
+                VariableListView.Columns.Clear();
+                AddThingsToListView(MyComponents[ComponentFilter.SelectedIndex], what);
+                if (what == "Events")
+                {
+                    ColumnHeader1.Text = "Event name";
+                    VariableListView.Columns.Add(ColumnHeader1);
+                    VariableListView.Columns.Add(ColumnHeader4);
+                }
+                else
+                {
+                    ColumnHeader1.Text = "Variable name";
+                    VariableListView.Columns.Add(ColumnHeader1);
+                    VariableListView.Columns.Add(ColumnHeader2);
+                    VariableListView.Columns.Add(ColumnHeader3);
+                    VariableListView.Columns.Add(ColumnHeader4);
+                }
+                VariableListView.EndUpdate();
+                VariableListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+            }
+        }
+        private void AddThingsToListView(ComponentVE c, string what)
+        {
+            ListViewGroup NewGroup = new ListViewGroup(c.name + " " + what);
+            VariableListView.Groups.Add(NewGroup);
+
+            StringCollection hidden = new StringCollection();
+            hidden.AddRange(new string[] { "active", "author", "name", "state", "type", "version" });
+            foreach (Types.MetaDataInfo thing in c.ModelInfo(what))
+            {
+                if (hidden.Contains(thing.Name.ToLower()))
+                    continue;
+                ListViewItem ListItem = new ListViewItem(thing.Name);
+                ListItem.Group = NewGroup;
+                if (what == "Variables")
+                {
+                if (thing.IsArray)
+                {
+                    ListItem.SubItems.Add("Yes");
+                }
+                else
+                {
+                    ListItem.SubItems.Add("No");
+                }
+                ListItem.SubItems.Add(thing.Units);
+                }
+                ListItem.SubItems.Add(thing.Description);
+                VariableListView.Items.Add(ListItem);
+            }
+        }
+        private void PopulateComponentFilter()
+        {
+            // ----------------------------------------
+            // Populate the component filter drop down
+            // ----------------------------------------
+            ComponentFilter.Items.Clear();
+            foreach (ComponentVE component in MyComponents)
+               ComponentFilter.Items.Add(component.name);
+
+            if (ComponentFilter.Items.Count > 0)
+                {
+                ComponentFilter.SelectedIndex = 0;
+                }
+        }
+
+        #region "Drag / Drop methods"
+
+        private void ListViewItemDrag(object sender, System.Windows.Forms.ItemDragEventArgs e)
+        {
+            // --------------------------------------------------------
+            // User is trying to initiate a drag - allow drag operation
+            // --------------------------------------------------------
+            VariableListView.DoDragDrop("xx", DragDropEffects.All);
+        }
+        private void VariablesGridDragEnter(System.Object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+        private void VariablesGridDragOver(System.Object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+        private void VariablesGridDragDrop(System.Object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            // --------------------------------------------------
+            // User has dropped a variable onto the variable grid
+            // --------------------------------------------------
+            AddVariablesToGrid();
+        }
+
+        private void VariableListView_DoubleClick(object sender, System.EventArgs e)
+        {
+            // ----------------------------------------------------------
+            // On a double click do exact the same thing as when you drop
+            // ----------------------------------------------------------
+            AddVariablesToGrid();
+        }
+        private void AddVariablesToGrid()
+        {
+            string componentName = MyComponents[ComponentFilter.SelectedIndex].name;
+            foreach (ListViewItem vname in VariableListView.SelectedItems)
+            {
+                string fullname = componentName + "." + vname.Text;
+                if (RuleBoxSelected)
+                {
+                    if (txtRules.Text.Length > 0) txtRules.AppendText("\n");
+                    txtRules.AppendText(fullname);
+                }
+                if (ActionBoxSelected)
+                {
+                    if (txtActions.Text.Length > 0) txtActions.AppendText("\n");
+                    txtActions.AppendText(fullname);
+                }
+            }
+        }
+        #endregion
+        private void ComponentFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (RuleBoxSelected)
+                PopulateVariableListView("Variables");
+            else if (ActionBoxSelected) 
+                PopulateVariableListView("Events");
+        }
+        private bool RuleBoxSelected = false;
+        private bool ActionBoxSelected = false;
+        private void txtRules_Click(object sender, EventArgs e)
+        {
+            if (ActionBoxSelected) ActionBoxSelected = false;
+            txtActions.BackColor = Color.White; //TextBox.DefaultBackColor;
+            RuleBoxSelected = !RuleBoxSelected;
+            if (RuleBoxSelected)
+            {
+                txtRules.BackColor = Color.LightPink;
+                //int currentComponent = ComponentFilter.SelectedIndex;
+                PopulateVariableListView("Variables");
+            }
+            else
+                txtRules.BackColor = Color.White; //TextBox.DefaultBackColor;TextBox.DefaultBackColor;
+        }
+        private void txtActions_Click(object sender, EventArgs e)
+        {
+            if (RuleBoxSelected) RuleBoxSelected = false;
+            txtRules.BackColor = Color.White; //TextBox.DefaultBackColor;TextBox.DefaultBackColor;
+            ActionBoxSelected = !ActionBoxSelected;
+            if (ActionBoxSelected)
+            {
+                txtActions.BackColor = Color.LightPink;
+                PopulateVariableListView("Events");
+            }
+            else
+                txtActions.BackColor = Color.White; //TextBox.DefaultBackColor;TextBox.DefaultBackColor;
+        }
     }
     public class GDPaddock
     {

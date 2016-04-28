@@ -33,6 +33,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.GraphDisplay = new CSUserInterface.GraphDisplayObject();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.pnlFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -57,17 +58,31 @@
             this.lstHints = new System.Windows.Forms.ListBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.ComponentFilter = new System.Windows.Forms.ComboBox();
+            this.VariableListView = new System.Windows.Forms.ListView();
+            this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ColumnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label8 = new System.Windows.Forms.Label();
             this.dlgColour = new System.Windows.Forms.ColorDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.panel5.SuspendLayout();
             this.pnlHints.SuspendLayout();
             this.pnlNodeProperties.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pnlArcProperties)).BeginInit();
             this.pnlArcProperties.Panel1.SuspendLayout();
             this.pnlArcProperties.Panel2.SuspendLayout();
             this.pnlArcProperties.SuspendLayout();
@@ -78,13 +93,14 @@
             // 
             // MyHelpLabel
             // 
+            this.MyHelpLabel.Size = new System.Drawing.Size(920, 16);
             this.MyHelpLabel.Text = "Rotation Setup";
             this.MyHelpLabel.Visible = true;
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 16);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -94,9 +110,9 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(655, 375);
-            this.splitContainer1.SplitterDistance = 231;
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
+            this.splitContainer1.Size = new System.Drawing.Size(920, 509);
+            this.splitContainer1.SplitterDistance = 312;
             this.splitContainer1.TabIndex = 33;
             // 
             // panel1
@@ -109,7 +125,7 @@
             this.panel1.Margin = new System.Windows.Forms.Padding(10);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(8);
-            this.panel1.Size = new System.Drawing.Size(655, 231);
+            this.panel1.Size = new System.Drawing.Size(920, 312);
             this.panel1.TabIndex = 33;
             // 
             // GraphDisplay
@@ -128,6 +144,25 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.splitContainer2);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.ComponentFilter);
+            this.splitContainer3.Panel2.Controls.Add(this.VariableListView);
+            this.splitContainer3.Panel2.Controls.Add(this.label8);
+            this.splitContainer3.Size = new System.Drawing.Size(920, 193);
+            this.splitContainer3.SplitterDistance = 525;
+            this.splitContainer3.TabIndex = 16;
+            // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -144,9 +179,9 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.pnlHints);
             this.splitContainer2.Panel2.Controls.Add(this.panel3);
-            this.splitContainer2.Size = new System.Drawing.Size(655, 140);
+            this.splitContainer2.Size = new System.Drawing.Size(525, 193);
             this.splitContainer2.SplitterDistance = 269;
-            this.splitContainer2.TabIndex = 15;
+            this.splitContainer2.TabIndex = 16;
             // 
             // pnlFlowLayout
             // 
@@ -154,7 +189,7 @@
             this.pnlFlowLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFlowLayout.Location = new System.Drawing.Point(0, 19);
             this.pnlFlowLayout.Name = "pnlFlowLayout";
-            this.pnlFlowLayout.Size = new System.Drawing.Size(269, 121);
+            this.pnlFlowLayout.Size = new System.Drawing.Size(269, 174);
             this.pnlFlowLayout.TabIndex = 6;
             // 
             // panel5
@@ -235,7 +270,6 @@
             this.lblColour.Name = "lblColour";
             this.lblColour.Size = new System.Drawing.Size(100, 19);
             this.lblColour.TabIndex = 16;
-            this.lblColour.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -252,7 +286,6 @@
             this.txtDesc.Name = "txtDesc";
             this.txtDesc.Size = new System.Drawing.Size(100, 20);
             this.txtDesc.TabIndex = 14;
-            this.txtDesc.TextChanged += new System.EventHandler(this.txtDesc_TextChanged);
             // 
             // txtName
             // 
@@ -260,7 +293,6 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(100, 20);
             this.txtName.TabIndex = 13;
-            this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // label5
             // 
@@ -314,7 +346,7 @@
             this.txtRules.Size = new System.Drawing.Size(86, 36);
             this.txtRules.TabIndex = 4;
             this.txtRules.WordWrap = false;
-            this.txtRules.TextChanged += new System.EventHandler(this.txtRules_TextChanged);
+            this.txtRules.Click += new System.EventHandler(this.txtRules_Click);
             // 
             // panel2
             // 
@@ -350,7 +382,7 @@
             this.txtActions.Size = new System.Drawing.Size(84, 31);
             this.txtActions.TabIndex = 5;
             this.txtActions.WordWrap = false;
-            this.txtActions.TextChanged += new System.EventHandler(this.txtActions_TextChanged);
+            this.txtActions.Click += new System.EventHandler(this.txtActions_Click);
             // 
             // panel4
             // 
@@ -402,7 +434,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(382, 19);
+            this.panel3.Size = new System.Drawing.Size(252, 19);
             this.panel3.TabIndex = 3;
             // 
             // lblStatus
@@ -416,21 +448,87 @@
             this.lblStatus.Text = "No Item Selected.";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // ComponentFilter
+            // 
+            this.ComponentFilter.FormattingEnabled = true;
+            this.ComponentFilter.Location = new System.Drawing.Point(95, 3);
+            this.ComponentFilter.Name = "ComponentFilter";
+            this.ComponentFilter.Size = new System.Drawing.Size(110, 21);
+            this.ComponentFilter.TabIndex = 24;
+            this.ComponentFilter.TextChanged += new System.EventHandler(this.ComponentFilter_TextChanged);
+            // 
+            // VariableListView
+            // 
+            this.VariableListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.VariableListView.BackColor = System.Drawing.SystemColors.Window;
+            this.VariableListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ColumnHeader1,
+            this.ColumnHeader2,
+            this.ColumnHeader3,
+            this.ColumnHeader4});
+            this.VariableListView.FullRowSelect = true;
+            this.VariableListView.Location = new System.Drawing.Point(2, 25);
+            this.VariableListView.Name = "VariableListView";
+            this.VariableListView.Size = new System.Drawing.Size(389, 165);
+            this.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.VariableListView.TabIndex = 23;
+            this.VariableListView.UseCompatibleStateImageBehavior = false;
+            this.VariableListView.View = System.Windows.Forms.View.Details;
+            this.VariableListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.ListViewItemDrag);
+            this.VariableListView.DoubleClick += new System.EventHandler(this.VariableListView_DoubleClick);
+            // 
+            // ColumnHeader1
+            // 
+            this.ColumnHeader1.Text = "Variable name";
+            this.ColumnHeader1.Width = 201;
+            // 
+            // ColumnHeader2
+            // 
+            this.ColumnHeader2.Text = "Array?";
+            // 
+            // ColumnHeader3
+            // 
+            this.ColumnHeader3.Text = "Units";
+            this.ColumnHeader3.Width = 45;
+            // 
+            // ColumnHeader4
+            // 
+            this.ColumnHeader4.Text = "Description";
+            this.ColumnHeader4.Width = 450;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 9);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(86, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Component filter:";
+            // 
             // RotPlotUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.splitContainer1);
             this.HelpText = "Rotation Setup";
             this.Name = "RotPlotUI";
-            this.Size = new System.Drawing.Size(655, 391);
-            this.Controls.SetChildIndex(this.MyHelpLabel, 0);
+            this.Size = new System.Drawing.Size(920, 509);
             this.Controls.SetChildIndex(this.splitContainer1, 0);
+            this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            this.splitContainer3.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
@@ -441,6 +539,7 @@
             this.pnlArcProperties.Panel1.PerformLayout();
             this.pnlArcProperties.Panel2.ResumeLayout(false);
             this.pnlArcProperties.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pnlArcProperties)).EndInit();
             this.pnlArcProperties.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -459,9 +558,12 @@
         private GraphDisplayObject GraphDisplay;
         private System.Windows.Forms.ColorDialog dlgColour;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.FlowLayoutPanel pnlFlowLayout;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel pnlHints;
         private System.Windows.Forms.Panel pnlNodeProperties;
         private System.Windows.Forms.Label lblInvalidName;
@@ -479,9 +581,14 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox lstHints;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.FlowLayoutPanel pnlFlowLayout;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.ComboBox ComponentFilter;
+        private System.Windows.Forms.ListView VariableListView;
+        private System.Windows.Forms.ColumnHeader ColumnHeader1;
+        private System.Windows.Forms.ColumnHeader ColumnHeader4;
+        private System.Windows.Forms.ColumnHeader ColumnHeader2;
+        private System.Windows.Forms.ColumnHeader ColumnHeader3;
+        private System.Windows.Forms.Label label8;
     }
 }
