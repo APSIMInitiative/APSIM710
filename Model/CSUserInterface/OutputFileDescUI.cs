@@ -22,9 +22,7 @@ namespace CSUserInterface
 
 	public partial class OutputFileDescUI : BaseView
 	{
-		private StringCollection ComponentNames = new StringCollection();
-
-		private StringCollection ComponentTypes = new StringCollection();
+        private List<ComponentVE> MyComponents = new List<ComponentVE>();
 
         const string searchText = "Search";
 
@@ -72,8 +70,8 @@ namespace CSUserInterface
 			Grid.DataSourceTable = Table;
 
 			// We want to find the component that is a child of our paddock.
-			ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
-			GetSiblingComponents(Paddock, ref ComponentNames, ref ComponentTypes);
+
+            ComponentVE.GetVisibleComponents(Controller.ApsimData.Find(NodePath), ref MyComponents);
 
 			PopulateComponentFilter();
             ClearSearch();
@@ -99,9 +97,9 @@ namespace CSUserInterface
 			// Populate the component filter drop down
 			// ----------------------------------------
 			ComponentFilter.Items.Clear();
-			foreach (string ComponentName in ComponentNames) {
-				ComponentFilter.Items.Add(ComponentName);
-			}
+            foreach (ComponentVE component in MyComponents)
+                ComponentFilter.Items.Add(component.name);
+            
 			if (XmlHelper.Type(Data).ToLower() == "tracker") {
 				ComponentFilter.Text = "tracker";
 				ComponentFilter.Visible = false;
@@ -141,25 +139,23 @@ namespace CSUserInterface
 			// Populate the variable list view box
 			// ----------------------------------------------
 
-			if ((ComponentFilter.SelectedIndex >= 0) && (ComponentFilter.SelectedIndex < ComponentNames.Count)) {
+			if ((ComponentFilter.SelectedIndex >= 0) && (ComponentFilter.SelectedIndex < MyComponents.Count)) {
 				VariableListView.BeginUpdate();
                 try
                 {
                     VariableListView.Groups.Clear();
                     VariableListView.Items.Clear();
 
-                    string ComponentType = ComponentTypes[ComponentFilter.SelectedIndex];
-                    string ComponentName = ComponentNames[ComponentFilter.SelectedIndex];
                     string PropertyGroup = XmlHelper.Type(Data);
                     // e.g. variables or events
                     if (PropertyGroup.ToLower() == "tracker")
                     {
                         PropertyGroup = "variables";
                     }
-                    if (ComponentType == "tracker")
+                    if (MyComponents[ComponentFilter.SelectedIndex].type == "tracker")
                         AddTrackerExamples();
                     else
-                        AddVariablesToListView(ComponentName, ComponentType, PropertyGroup);
+                        AddThingsToListView(MyComponents[ComponentFilter.SelectedIndex], PropertyGroup);
                 }
                 finally
                 {
@@ -193,55 +189,49 @@ namespace CSUserInterface
             ListItem.Group = NewGroup;
             VariableListView.Items.Add(ListItem);
         }
-		private void AddVariablesToListView(string ComponentName, string ComponentType, string PropertyGroup)
-		{
-			List<Types.MetaDataInfo> ModelInfo = null;
-			if (PropertyGroup == "variables") {
-				ModelInfo = Types.Instance.Variables(ComponentType);
-			} else {
-				ModelInfo = Types.Instance.Events(ComponentType);
-			}
-
-			string GroupName = ComponentName;
-			if (string.IsNullOrEmpty(GroupName)) {
-				GroupName = ComponentName + " " + PropertyGroup;
-			}
-			ListViewGroup NewGroup = new ListViewGroup(GroupName);
-
-            var items = new ListViewItem[ModelInfo.Count];
-            int i = 0;
+        private void AddThingsToListView(ComponentVE c, string what)
+        {
+            string GroupName = c.name;
+            if (string.IsNullOrEmpty(GroupName))
+            {
+                GroupName = c.name + what;
+            }
+            ListViewGroup NewGroup = new ListViewGroup(GroupName);
+            VariableListView.Groups.Add(NewGroup);
 
             StringCollection hidden = new StringCollection();
             hidden.AddRange(new string[] { "active", "author", "name", "state", "type", "version" });
-			foreach (Types.MetaDataInfo Variable in ModelInfo) {
-                if (hidden.Contains(Variable.Name.ToLower()))
+            foreach (Types.MetaDataInfo thing in c.ModelInfo(what))
+            {
+                if (hidden.Contains(thing.Name.ToLower()))
                     continue;
                 if (textBoxSearch.Text != "" && textBoxSearch.Text != searchText)
                 {
                     string search = textBoxSearch.Text.ToLower();
-                    if (!Variable.Name.ToLower().Contains(search) &&
-                        !Variable.Description.ToLower().Contains(search))
+                    if (!thing.Name.ToLower().Contains(search) &&
+                        !thing.Description.ToLower().Contains(search))
                         continue;
                 }
-				VariableListView.Groups.Add(NewGroup);
-				ListViewItem ListItem = new ListViewItem(Variable.Name);
-				ListItem.Group = NewGroup;
-				if (Variable.IsArray) {
-					ListItem.SubItems.Add("Yes");
-				} else {
-					ListItem.SubItems.Add("No");
-				}
-				ListItem.SubItems.Add(Variable.Units);
-				ListItem.SubItems.Add(Variable.Description);
-                items[i++] = ListItem;
-			}
-            if (i > 0)
-            {
-                Array.Resize(ref items, i);
-                VariableListView.Items.AddRange(items); // Using AddRange is MUCH faster than doing a series of separate Add operations.
+                ListViewItem ListItem = new ListViewItem(thing.Name);
+                ListItem.Group = NewGroup;
+                //if (what == "Variables")
+                //{
+                    if (thing.IsArray)
+                    {
+                        ListItem.SubItems.Add("Yes");
+                    }
+                    else
+                    {
+                        ListItem.SubItems.Add("No");
+                    }
+                    ListItem.SubItems.Add(thing.Units);
+                //}
+                ListItem.SubItems.Add(thing.Description);
+                VariableListView.Items.Add(ListItem);
             }
-		}
-		public override void OnSave()
+        }
+
+        public override void OnSave()
 		{
 			// --------------------------------------------------
 			// Save the variable grid back to the selected data.
