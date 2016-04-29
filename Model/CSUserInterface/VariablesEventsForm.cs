@@ -172,7 +172,7 @@ namespace CSUserInterface
                 else if (type.ToLower() == "manager2" && what.ToLower() == "events")
                     result.AddRange(getDynamicEvents(CompileTextToAssembly(manager2script)));
             }
-            catch (Exception e) { MessageBox.Show(e.Message); /* nothing - probably incomplete */ }
+            catch (Exception /*e*/ ) { /* MessageBox.Show(e.Message);  nothing - probably incomplete */ }
 
             return(result);
         }

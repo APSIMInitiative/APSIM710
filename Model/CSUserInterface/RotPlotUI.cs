@@ -983,6 +983,8 @@ namespace CSUserInterface
         public List<Point> BezPoints = new List<Point>();
         private double[] bezParameters = new double[8];
 
+        private int m_DefaultNodeSize = 100;
+
         #region interface properties
         //these aren't technically correct as their bounds are also described by the nodes they connect
         //used in conjunction with the others this should work though
@@ -997,13 +999,13 @@ namespace CSUserInterface
             if (BezPoints.Count == 0)
                 CalcBezPoints();
 
-            if (SourceNode != null && TargetNode != null)
+            if (BezPoints.Count != 0)
             {
                 Pen pen = new Pen(Color.Black);
                 if (Selected)
                     pen.Color = Color.Blue;
 
-                GraphicsObject.DrawBezier(pen, SourceNode.Mid, Location, Location, TargetNode.Mid);
+                GraphicsObject.DrawBezier(pen, BezPoints[0], Location, Location, BezPoints[BezPoints.Count-1]);
 
                 //find closest point in the bezPoints to the intersection point that is outside the target
                 //work backwards through BezPoints array and use the first one that is outside the target
@@ -1092,29 +1094,53 @@ namespace CSUserInterface
         }
         private void CalcBezPoints()
         {
-			if (SourceNode == null || TargetNode == null) return;
+            BezPoints.Clear();
+            if (SourceNode == null || TargetNode == null) return;
+            Point ep1 = new Point();
+            Point ep2 = new Point();
+            if (SourceNode != TargetNode)
+            {
+                ep1 = SourceNode.Mid;
+                ep2 = TargetNode.Mid;
+            }
+            else
+            {
+                double d = m_DefaultNodeSize / 4;
+                double m;
+                if ((SourceNode.Mid.X - Location.X) != 0)
+                    m = Math.Atan((SourceNode.Mid.Y - Location.Y) / (double)(SourceNode.Mid.X - Location.X));
+                else
+                    if (SourceNode.Mid.Y > Location.Y)
+                        m = Math.PI * 0.5;
+                    else
+                        m = Math.PI * 1.5;
+                double m1 = m - Math.PI / 2;
+                double m2 = m + Math.PI / 2;
+                ep1.X = SourceNode.Mid.X + (int)(d * Math.Cos(m1));
+                ep1.Y = SourceNode.Mid.Y + (int)(d * Math.Sin(m1));
+                ep2.X = SourceNode.Mid.X + (int)(d * Math.Cos(m2));
+                ep2.Y = SourceNode.Mid.Y + (int)(d * Math.Sin(m2));
+            }
 
-			int iStart = Math.Min(SourceNode.Mid.X, TargetNode.Mid.X);
-            int iEnd = Math.Max(SourceNode.Mid.X, TargetNode.Mid.X);
+			int iStart = Math.Min(ep1.X, ep2.X);
+            int iEnd = Math.Max(ep1.X, ep2.X);
             int xPoints = iEnd - iStart;
-            iStart = Math.Min(SourceNode.Mid.Y, TargetNode.Mid.Y);
-            iEnd = Math.Max(SourceNode.Mid.Y, TargetNode.Mid.Y);
+            iStart = Math.Min(ep1.Y, ep2.Y);
+            iEnd = Math.Max(ep1.Y, ep2.Y);
             int yPoints = iEnd - iStart;
             
-            //will calc a min of 20 points
-            int points = Math.Max(Math.Max(xPoints, yPoints), 10) * 2;
+            //will calc a min of 100 points
+            int points = Math.Max(Math.Max(xPoints, yPoints), 50) * 2;
             double[] output = new double[points];
+                bezParameters[0] = ep1.X;
+                bezParameters[1] = ep1.Y;
+                bezParameters[2] = Location.X ;
+                bezParameters[3] = Location.Y ;
+                bezParameters[4] = Location.X ;
+                bezParameters[5] = Location.Y ;
+                bezParameters[6] = ep2.X;
+                bezParameters[7] = ep2.Y;
 
-            bezParameters[0] = SourceNode.Mid.X;
-            bezParameters[1] = SourceNode.Mid.Y;
-            bezParameters[2] = Location.X;
-            bezParameters[3] = Location.Y;
-            bezParameters[4] = Location.X;
-            bezParameters[5] = Location.Y;
-            bezParameters[6] = TargetNode.Mid.X;
-            bezParameters[7] = TargetNode.Mid.Y;
-
-            BezPoints.Clear();
             bezCurve.Bezier2D(bezParameters, (points) / 2, output);
             for (int i = 0; i < points - 2; i += 2)
             {
@@ -1512,6 +1538,9 @@ namespace CSUserInterface
 
                         mnuItem = this.ContextMenuStrip.Items.Add("Duplicate");
                         mnuItem.Click += new EventHandler(DuplicateGDObjectMenuClicked);
+
+                        mnuItem = this.ContextMenuStrip.Items.Add("Add arc from " + tmpObject.Name + " to " + tmpObject.Name);
+                        mnuItem.Click += new EventHandler(addArcMenuClicked);
                     }
                     else
                     {
@@ -1572,8 +1601,7 @@ namespace CSUserInterface
         private void addArcMenuClicked(object sender, EventArgs e)
         {
             ToolStripItem mnuItem = sender as ToolStripItem;
-            if (m_RightClickedObject != SelectedObject 
-                && m_RightClickedObject != null 
+            if (m_RightClickedObject != null 
                 && SelectedObject != null
                 && mnuItem != null)
             {
@@ -1585,10 +1613,18 @@ namespace CSUserInterface
                 
                 AddArc(ga);
                 //this should set source and target so we can use them to cal the midpoint
-                int dist = ga.TargetNode.Mid.X - ga.SourceNode.Mid.X;
-                ga.Location.X = ga.SourceNode.Mid.X + dist / 2;
-                dist = ga.TargetNode.Mid.Y - ga.SourceNode.Mid.Y;
-                ga.Location.Y = ga.SourceNode.Mid.Y + dist / 2;
+                if (ga.TargetNode != ga.SourceNode)
+                {
+                    int dist = ga.TargetNode.Mid.X - ga.SourceNode.Mid.X;
+                    ga.Location.X = ga.SourceNode.Mid.X + dist / 2;
+                    dist = ga.TargetNode.Mid.Y - ga.SourceNode.Mid.Y;
+                    ga.Location.Y = ga.SourceNode.Mid.Y + dist / 2;
+                }
+                else
+                {
+                    ga.Location.X = ga.SourceNode.Mid.X + m_DefaultSize ;
+                    ga.Location.Y = ga.SourceNode.Mid.Y + m_DefaultSize ;
+                }
                 SelectedObject = ga;
                 Invalidate();
             }
