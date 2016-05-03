@@ -347,6 +347,7 @@
             this.txtRules.TabIndex = 4;
             this.txtRules.WordWrap = false;
             this.txtRules.Click += new System.EventHandler(this.txtRules_Click);
+            this.txtRules.TextChanged += new System.EventHandler(this.txtRules_TextChanged);
             // 
             // panel2
             // 
@@ -383,6 +384,7 @@
             this.txtActions.TabIndex = 5;
             this.txtActions.WordWrap = false;
             this.txtActions.Click += new System.EventHandler(this.txtActions_Click);
+            this.txtActions.TextChanged += new System.EventHandler(this.txtActions_TextChanged);
             // 
             // panel4
             // 

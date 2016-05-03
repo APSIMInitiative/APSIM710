@@ -907,7 +907,7 @@ namespace CSUserInterface
         {
             if (ActionBoxSelected) ActionBoxSelected = false;
             txtActions.BackColor = Color.White; //TextBox.DefaultBackColor;
-            RuleBoxSelected = !RuleBoxSelected;
+            RuleBoxSelected = true;
             if (RuleBoxSelected)
             {
                 txtRules.BackColor = Color.LightPink;
@@ -921,7 +921,7 @@ namespace CSUserInterface
         {
             if (RuleBoxSelected) RuleBoxSelected = false;
             txtRules.BackColor = Color.White; //TextBox.DefaultBackColor;TextBox.DefaultBackColor;
-            ActionBoxSelected = !ActionBoxSelected;
+            ActionBoxSelected = true;
             if (ActionBoxSelected)
             {
                 txtActions.BackColor = Color.LightPink;
