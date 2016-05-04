@@ -291,15 +291,13 @@ namespace CSUserInterface
                     }
                 case "modulename":
                     {
-                        ApsimFile.Component Paddock = Controller.ApsimData.Find(NodePath).FindContainingPaddock();
-                        while ((Paddock != null) && (Paddock.Type.ToLower() == "folder"))
-                        {
-                            Paddock = Paddock.Parent;
-                        }
-                        if ((Paddock != null))
-                        {
-                            Grid.CreateComboInCell(NewRow.Cells[4], Paddock.ChildNames);
-                        }
+                        List<ComponentVE> MyComponents = new List<ComponentVE>();
+                        ComponentVE.GetVisibleComponents(Controller.ApsimData.Find(NodePath), ref MyComponents);
+                        string[] modulenames = new string[MyComponents.Count];
+                        int i = 0;
+                        foreach (ComponentVE ve in MyComponents) { modulenames[i++] = ve.name; }
+
+                        Grid.CreateComboInCell(NewRow.Cells[4], modulenames);
 
                         break;
                     }

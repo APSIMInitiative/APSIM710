@@ -151,30 +151,35 @@ namespace CSUserInterface
             }
             return sRule;
         }
+
         public string BuildRuleCSharp()
         {
             string sRule = "using System;\n";
             sRule += "using System.Collections.Generic;\n";
+            sRule += "using System.Dynamic;\n";
             sRule += "using System.Text;\n";
             sRule += "using ModelFramework;\n";
             sRule += "using CSGeneral;\n";
 
             sRule += "public class Script {\n";
-            sRule += "[Link()]  public Paddock MyPaddock;\n";
+            sRule += "[Link] public Simulation MySimulation;\n";
 
+            sRule += "private List<string> paddocks = new List<string>();\n";
+            sRule += "private List<dynamic> paddockStates = new List<dynamic>();\n";
             sRule += "private Graph g = new Graph();\n";
-            sRule += "private string _currentState = \"\";\n";
-            sRule += "[Output()] public string currentState {\n";
-            sRule += "  get {return _currentState;} \n";
-            sRule += "  set {\n";
-            sRule += "    if (_currentState!= \"\") MyPaddock.Publish(\"transition_from_\" + _currentState);\n";
-            sRule += "    MyPaddock.Publish(\"transition\");\n";
-            sRule += "    _currentState = value;\n";
-            sRule += "    MyPaddock.Publish(\"transition_to_\" + _currentState);\n";
-            sRule += "  }\n";
+            sRule += "private Dictionary<string,string> _currentState = new Dictionary<string,string>();\n";
+            sRule += "[Output, Description(\"Current State of DG\")] public string currentState {\n";
+            sRule += "  get {string[] r = new string[_currentState.Count]; _currentState.Values.CopyTo(r,0);  \n";
+            sRule += "       return(String.Join(\" \", r));} \n";
             sRule += "}\n";
-
-            sRule += "[Output()] public string [] states = new string[0]; \n";
+            sRule += "private void setState(string p, string s) {\n";
+            sRule += "  _currentState[p] = s;\n";
+            sRule += "}\n";
+            sRule += "private string getState(string p) {\n";
+            sRule += "  return(_currentState[p]);\n";
+            sRule += "}\n";
+            sRule += "[Output, Description(\"Current paddock\")] public string currentPaddock = \"\";\n";
+            sRule += "[Output] public string [] states = new string[0]; \n";
 
             sRule += "[EventHandler] public void OnInitialised()\n";
             sRule += "{\n";
@@ -204,46 +209,82 @@ namespace CSUserInterface
             foreach (var c in pnlFlowLayout.Controls) {
 				if (c is PaddockState) {
 				   PaddockState p = (PaddockState) c;
-				   if (p.chkPaddock.Text == "<self>") {
-                      sRule += "currentState = \"" + p.cboState.Text + "\";\n";
+				   if (p.chkPaddock.Checked && p.chkPaddock.Text == "<self>") {
+                      sRule += "paddocks.Add(\"\");\n";
+                      sRule += "setState(\"\",\"" + p.cboState.Text + "\");\n";
+                   } else if (p.chkPaddock.Checked) {
+                       sRule += "paddocks.Add(\"" + p.chkPaddock.Text + "\");\n";
+                       sRule += "setState(\"" + p.chkPaddock.Text + "\",\"" + p.cboState.Text + "\");\n";
                    }
-                   else
-                   {
-                    /*sRule += "set config(" + paddock.Name + ",initialState) \"" + p.cboState.Text + "\"\n"*/; //FIXME				}
-				   }
 				}
 			}
+            sRule += "}\n";
 
-
+            // expose paddock states
+            foreach (var c in pnlFlowLayout.Controls)
+            {
+                if (c is PaddockState)
+                {
+                    PaddockState p = (PaddockState)c;
+                    if (p.chkPaddock.Checked && p.chkPaddock.Text != "<self>")
+                        sRule += "[Output] public string " + p.chkPaddock.Text + "_state {get {return(getState(\"" + p.chkPaddock.Text + "\"));}}\n";
+                }
+            }
+            sRule += "private string modname(string x) {\n";
+            sRule += "  if (x.Contains(\".\")) return(x.Split('.')[0]);\n";
+            sRule += "  return(\"\");\n";
+            sRule += "}\n";
+            sRule += "private string varname(string x) {\n";
+            sRule += "  if (x.Contains(\".\")) return(x.Split('.')[1]);\n";
+            sRule += "  return(x);\n";
             sRule += "}\n";
             sRule += "[EventHandler] public void OnProcess()\n";
             sRule += "{\n";
             sRule += "   bool more = true;\n";
             sRule += "   while (more) {\n";
             sRule += "      more = false;\n";
-            sRule += "      Node s = g.FindNode(currentState);\n";
-            sRule += "      //Console.WriteLine(\" state=\" + s.Name);\n";
-            sRule += "      double bestScore = -1.0; string bestArc = \"\";\n";
-            sRule += "      foreach (string _arc in s.arcs.Keys) {\n";
-            sRule += "         double score = 1;\n";
-			sRule += "         foreach (string testCondition in s.arcs[_arc].testCondition){\n";
-			sRule += "            double c = 0.0;\n";
-            sRule += "            if (MyPaddock.Get(testCondition, out c))\n";
-            sRule += "               score *= c;\n";
-            sRule += "            else\n";
-            sRule += "               throw new Exception(\"Nothing returned from expression '\" + testCondition + \"'\");\n";
-            sRule += "         } //Console.WriteLine(\" a=\" + _arc + \" score=\" + score);\n";
-            sRule += "         if (score > bestScore) {\n";
-            sRule += "            bestScore = score;\n";
-            sRule += "            bestArc = _arc;\n";
+            sRule += "      double bestScore = -1.0; string bestArc = \"\"; string bestPaddock = \"\";\n";
+            sRule += "      foreach (string p in paddocks) {\n";
+            sRule += "         Node s = g.FindNode(getState(p));\n";
+            sRule += "         // Console.WriteLine(\" state=\" + s.Name);\n";
+            sRule += "         foreach (string _arc in s.arcs.Keys) {\n";
+            sRule += "            double score = 1;\n";
+			sRule += "            foreach (string testCondition in s.arcs[_arc].testCondition){\n";
+            sRule += "               double c = 0.0;\n";
+            //sRule += "               Console.WriteLine(\"mod=\" + modname(testCondition) + \", paddock to set ='\" + p + \"'\");\n";
+            //sRule += "               Component modToAsk = (Component) MySimulation;\n";
+            //sRule += "               if( p != \"\" && modname(testCondition) != \"\")\n";
+            //sRule += "                  {modToAsk = (Component) MySimulation.LinkByName(modname(testCondition)); modToAsk.Set(\"paddock\", p);}\n";
+            //sRule += "               string p1; modToAsk.Get(\"paddock\", out p1);";
+            //sRule += "               Console.WriteLine(\"mod=\" + modToAsk.FullName + \", paddock ='\" + p1 + \"'\");\n";
+            sRule += "               currentPaddock = p;\n";
+            sRule += "               if (MySimulation.Get(testCondition, out c))\n";
+            sRule += "                  score *= c;\n";
+            sRule += "               else\n";
+            sRule += "                  throw new Exception(\"Nothing returned from expression '\" + testCondition + \"'\");\n";
+            sRule += "               //Console.WriteLine(\" p=\" + p +\" a=\" + _arc + \"cond=\" + testCondition + \" score=\" + score);\n";
+            sRule += "            }\n";
+            sRule += "            if (score > bestScore) {\n";
+            sRule += "               bestScore = score;\n";
+            sRule += "               bestArc = _arc;\n";
+            sRule += "               bestPaddock = p;\n";
+            sRule += "            }\n";
             sRule += "         }\n";
             sRule += "      }\n";
+            sRule += "      currentPaddock = \"\";\n";
             sRule += "      if (bestScore > 0.0) {\n";
-            sRule += "          //Console.WriteLine(\" best=\" + bestTarget + \" action=\" + s.arcs[bestTarget].action);\n";
-            sRule += "          currentState = g.FindArcTarget(bestArc);\n";
-            sRule += "          foreach (string action in s.arcs[bestArc].action )\n";
-            sRule += "             MyPaddock.Publish(action);\n";
-            sRule += "          more = true;\n";
+            sRule += "         Node s = g.FindNode(getState(bestPaddock));\n";
+            sRule += "         if( bestPaddock != \"\")\n";
+            sRule += "            currentPaddock = bestPaddock;\n";
+            sRule += "         if (getState(bestPaddock) != \"\") MySimulation.Publish(\"transition_from_\" + getState(bestPaddock));\n";
+            sRule += "         MySimulation.Publish(\"transition\");\n";
+            sRule += "         setState (bestPaddock, g.FindArcTarget(bestArc));\n";
+            sRule += "         foreach (string action in s.arcs[bestArc].action ) {\n";
+            sRule += "            MySimulation.Publish(action);\n";
+            sRule += "            //Console.WriteLine(\" best=\" + bestPaddock + \" action=\" + action);\n";
+            sRule += "         }\n";
+            sRule += "         MySimulation.Publish(\"transition_to_\" + getState(bestPaddock));\n";
+            sRule += "         more = true;\n";
             sRule += "      }\n";
             sRule += "   }\n";
             sRule += "}\n";
@@ -344,7 +385,7 @@ namespace CSUserInterface
             else if (language == "C#")
             {
                 XmlNode node = Data.AppendChild(Data.OwnerDocument.CreateElement("component"));
-                XmlHelper.SetName(node, GraphName + " Initialisation");
+                XmlHelper.SetName(node, Controller.ApsimData.Find(NodePath).Name + "_");
                 XmlHelper.SetAttribute(node, "executable", "%apsim%/Model/Manager2.dll");
                 XmlHelper.SetValue(node, "executable", "%apsim%/Model/Manager2.dll");
                 node = node.AppendChild(Data.OwnerDocument.CreateElement("initdata"));
@@ -425,14 +466,13 @@ namespace CSUserInterface
                        XmlNode initStateNode = Data.AppendChild(Data.OwnerDocument.CreateElement("InitialState"));
 				       initStateNode.InnerText = p.cboState.Text;
 				   } else {
-//                   XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("paddock"));
-//                   XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
-//                   childNode.InnerText = paddock.Name;
-//                   childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("isManaged"));
-//                   childNode.InnerText = paddock.Managed ? "1" : "0";
-//                   childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("initialState"));
-//                   childNode.InnerText = paddock.InitialState;
-//                    /*sRule += "set config(" + paddock.Name + ",initialState) \"" + p.cboState.Text + "\"\n"*/; //FIXME				}
+                   XmlNode parentNode = Data.AppendChild(Data.OwnerDocument.CreateElement("paddock"));
+                   XmlNode childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("name"));
+                   childNode.InnerText = p.chkPaddock.Text;
+                   childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("isManaged"));
+                   childNode.InnerText = p.chkPaddock.Checked.ToString();
+                   childNode = parentNode.AppendChild(Data.OwnerDocument.CreateElement("initialState"));
+                   childNode.InnerText = p.cboState.Text;
 				   }
 				}
 			}
@@ -463,17 +503,45 @@ namespace CSUserInterface
                     GDArc tmpGArc = ReadGDArc(tmpNode);
                     GraphDisplay.AddArc(tmpGArc);
                 }
+                nodes = Data.SelectNodes("//graph_name");
+                if (nodes.Count == 1)
+                {
+                    GraphName = nodes[0].InnerText;
+                }
                 nodes = Data.SelectNodes("//paddock");
                 foreach (XmlNode tmpNode in nodes)
                 {
                     GDPaddock tmpPaddock = ReadGDPaddock(tmpNode);
                     if (tmpPaddock != null)
-                        ManagedPaddocks.Add(tmpPaddock);    
+                        ManagedPaddocks.Add(tmpPaddock);
                 }
-                nodes = Data.SelectNodes("//graph_name");
-                if (nodes.Count == 1)
+                var allNodes = new List<ApsimFile.Component>();
+
+                ApsimFile.Component Selected = Controller.ApsimData.Find(Controller.SelectedPath);
+                ApsimFile.Component container = Selected;
+                while (container != null && container.Type.ToLower() != "area" && container.Type.ToLower() != "simulation")
+                    container = container.Parent;
+                if (container != null)
                 {
-                    GraphName = nodes[0].InnerText;
+                    container.ChildNodesRecursively(allNodes);
+                    foreach (ApsimFile.Component c in allNodes)
+                    {
+                        if (c.Type.ToLower() == "area")
+                        {
+                            bool found = false;
+                            foreach (GDPaddock gp in ManagedPaddocks)
+                                if (gp.Name != "<self>" && gp.Name == c.Name)
+                                    found = true;
+                            if (!found)
+                            {
+                                GDPaddock gp = new GDPaddock();
+                                gp.Name = c.Name;
+                                gp.Managed = false;
+                                gp.InitialState = "";
+                                ManagedPaddocks.Add(gp);
+                            }
+                        }
+                    }
                 }
 				// Fudge a paddock if needed (ie reading an old style .apsim file)
 				if (ManagedPaddocks.Count == 0) 
@@ -542,18 +610,12 @@ namespace CSUserInterface
         {
             GDPaddock gp = new GDPaddock();
 
-            string sName = ReadChildNodeText(tmpNode, "name");
-            string sManaged = ReadChildNodeText(tmpNode, "isManaged");
-            string sInitial = ReadChildNodeText(tmpNode, "initialState");
-
-            if(sManaged == "1")
-            {
-                gp.Name = sName;
-                gp.Managed = true;
-                gp.InitialState = sInitial;
-                return gp;
-            }
-            return null;
+            gp.Name = ReadChildNodeText(tmpNode, "name");
+            bool X = false;
+            Boolean.TryParse( ReadChildNodeText(tmpNode, "isManaged"), out X);
+            gp.Managed = X;
+            gp.InitialState = ReadChildNodeText(tmpNode, "initialState");
+            return gp;
         }
         public int ReadChildNodeValue(XmlNode tmpNode, string sChild)
         {

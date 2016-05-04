@@ -132,11 +132,11 @@
             // 
             this.GraphDisplay.BackColor = System.Drawing.SystemColors.Window;
             this.GraphDisplay.ContextMenuStrip = this.contextMenuStrip1;
-            this.GraphDisplay.Location = new System.Drawing.Point(2, -1);
+            this.GraphDisplay.Location = new System.Drawing.Point(2, 18);
             this.GraphDisplay.Margin = new System.Windows.Forms.Padding(10);
             this.GraphDisplay.Name = "GraphDisplay";
             this.GraphDisplay.SelectedObject = null;
-            this.GraphDisplay.Size = new System.Drawing.Size(0, 0);
+            this.GraphDisplay.Size = new System.Drawing.Size(910, 302);
             this.GraphDisplay.TabIndex = 12;
             // 
             // contextMenuStrip1
