@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Windows.Forms;
 
@@ -31,6 +32,12 @@ namespace CPIUserInterface
 
         private List<TTypedValue> typedvals;
 
+        //=====================================================================
+        /// <summary>
+        /// A tree grid UI that allows the initialisation of a list of 
+        /// SDML values as found in the initsection of a CPI component.
+        /// </summary>
+        //=====================================================================
         public mvCottonUI() : base()
         {
             InitializeComponent();
@@ -147,6 +154,26 @@ namespace CPIUserInterface
         }
         //=======================================================================
         /// <summary>
+        /// CPI components also include some properties that may not need to be shown to the user.
+        /// </summary>
+        /// <param name="propName">Name of the property</param>
+        /// <returns>True if the property should be shown.</returns>
+        //=======================================================================
+        private Boolean makePropertyVisible(String propName)
+        {
+            Boolean bPropVisible = true;
+            //check if this variable should be hidden
+            if ((propName == STRSUBEVENT_ARRAY))
+                bPropVisible = false;
+            if ((propName == STRPUBEVENT_ARRAY))
+                bPropVisible = false;
+            if ((propName == STRDRIVER_ARRAY))
+                bPropVisible = false;
+
+            return bPropVisible;
+        }
+        //=======================================================================
+        /// <summary>
         /// Initialise the lists of properties with values from the init section
         /// SDML. And reload the tree with the values.
         /// </summary>
@@ -215,26 +242,6 @@ namespace CPIUserInterface
             }
             afTreeViewColumns1.TreeView.EndUpdate();
             afTreeViewColumns1.ResumeLayout();
-        }
-        //=======================================================================
-        /// <summary>
-        /// CPI components also include some properties that may not need to be shown to the user.
-        /// </summary>
-        /// <param name="propName">Name of the property</param>
-        /// <returns>True if the property should be shown.</returns>
-        //=======================================================================
-        private Boolean makePropertyVisible(String propName)
-        {
-            Boolean bPropVisible = true;
-            //check if this variable should be hidden
-            if ((propName == STRSUBEVENT_ARRAY))
-                bPropVisible = false;
-            if ((propName == STRPUBEVENT_ARRAY))
-                bPropVisible = false;
-            if ((propName == STRDRIVER_ARRAY))
-                bPropVisible = false;
-
-            return bPropVisible;
         }
         //=======================================================================
         /// <summary>
@@ -318,13 +325,47 @@ namespace CPIUserInterface
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(newXML);
 
-            //add new data about the cultivars as an array of cultivars (only add the ones that have extra details)
-            String CultivarSpecs = WriteCultivars();
-            XmlDocument cultivar = new XmlDocument();
-            cultivar.LoadXml(CultivarSpecs);
-            doc.DocumentElement.AppendChild(doc.ImportNode(cultivar.DocumentElement, true));
+			////skip these few lines as this was duplicating the cultivars node
+			//// and causing newly added cultivars to be ignored/lost on the reload
+				////add new data about the cultivars as an array of cultivars (only add the ones that have extra details)
+				//String CultivarSpecs = WriteCultivars();
+				//XmlDocument cultivar = new XmlDocument();
+				//cultivar.LoadXml(CultivarSpecs);
+				//doc.DocumentElement.AppendChild(doc.ImportNode(cultivar.DocumentElement, true));
 
             Data.AppendChild(Data.OwnerDocument.ImportNode(doc.DocumentElement, true));
+        }
+        //=====================================================================
+        /// <summary>
+        /// Write the TTypedValues to an xml string.
+        /// </summary>
+        /// <returns>The init section string</returns>
+        //=====================================================================
+        protected override String WriteInitsectionXml()
+        {
+            StringBuilder newXML = new StringBuilder();
+            newXML.Append("<initsection>");
+
+            TSDMLValue sdmlWriter = new TSDMLValue("<init/>", "");
+
+            if (propertyList.Count > 0)             //if using the full component description
+            {
+                for (int i = 0; i < propertyList.Count; i++)
+                {
+                    if (propertyList[i].bInit == true)
+                        newXML.Append(sdmlWriter.getText(propertyList[i].InitValue, 0, 2));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < typedvals.Count; i++)
+                {
+                    newXML.Append(sdmlWriter.getText(typedvals[i], 0, 2));
+                }
+            }
+
+            newXML.Append("</initsection>");
+            return newXML.ToString();
         }
         //=====================================================================
         /// <summary>
