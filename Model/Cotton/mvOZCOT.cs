@@ -364,6 +364,22 @@ namespace ManagedComponent.MvOZCOT
                                        </type>";
 
 
+
+        public const string typeHarvest = @"<type name = ""Harvest"" >
+                                           <field name = ""Plants""            kind=""double"" />
+                                           <field name = ""Remove""            kind=""double"" />
+                                           <field name = ""Height""            kind=""double"" />
+                                           <field name = ""Report""            kind=""string"" />
+                                       </type>";
+
+
+        public const string typeKillCrop = @"<type name = ""KillCrop"" >
+                                            <field name = ""KillFraction""     kind=""single"" />
+                                       </type>";
+
+
+
+
         public const string typeCultivars = @"<type name=""cultivars""  array=""T"" >
                                                 <element>
                                                   <field name=""cultivar""        kind=""string""  />
@@ -430,11 +446,26 @@ namespace ManagedComponent.MvOZCOT
                                                        </element>
                                                    </field>
                                               </type>";
-	  
 
 
 
         
+        //<!--!   !!!!! Sysbal types  !!!!!!!!!!!!!!!!!!!!!!-->
+        //<type name = "ExternalMassFlow" >
+        //   < field name="PoolClass" kind="string" unit="-"/>
+        //   <field name = "FlowType" kind="string" unit="-"/>
+        //   <field name = "C" kind="single" unit="kg/ha"/>
+        //   <field name = "N" kind="single" unit="kg/ha"/>
+        //   <field name = "P" kind="single" unit="kg/ha"/>
+        //   <field name = "DM" kind="single" unit="kg/ha"/>
+        //   <field name = "SW" kind="single" unit="mm"/>
+        //</type>
+
+
+
+
+
+
         //     ! fruit age classes
         private const int small_sqz = 1;
         private const int medium_sqz = 2;
@@ -992,7 +1023,7 @@ namespace ManagedComponent.MvOZCOT
             defineEventTransition(EVENT_DO_GROWTH, GROWTH_STATE_ACQUIRE, 0, GROWTH_STATE_EXECUTE, false);
             defineEventTransition(EVENT_DO_GROWTH, GROWTH_STATE_EXECUTE, 0, TStateMachine.DONE, false); //done
 
-            addEvent("harvest", EVENT_HARVEST, TypeSpec.KIND_SUBSCRIBEDEVENT, TypeSpec.TYPEEMPTY, "Harvest Cotton", "APSIM Harvest event", 0);
+            addEvent("harvest", EVENT_HARVEST, TypeSpec.KIND_SUBSCRIBEDEVENT, typeHarvest, "Harvest Cotton", "APSIM Harvest event", 0);
             defineEventState(EVENT_HARVEST, HARVEST_STATE_ACQUIRE, TStateMachine.NONLOGIC);
             defineEventState(EVENT_HARVEST, HARVEST_STATE_EXECUTE, TStateMachine.LOGIC);
             defineEventTransition(EVENT_HARVEST, TStateMachine.IDLE, 0, HARVEST_STATE_ACQUIRE, true);   //idle -> acquire
@@ -1013,7 +1044,7 @@ namespace ManagedComponent.MvOZCOT
             defineEventTransition(EVENT_END_CROP, END_CROP_STATE_ACQUIRE, 0, END_CROP_STATE_EXECUTE, false);
             defineEventTransition(EVENT_END_CROP, END_CROP_STATE_EXECUTE, 0, TStateMachine.DONE, false); //done
 
-            addEvent("kill_crop", EVENT_KILL_CROP, TypeSpec.KIND_SUBSCRIBEDEVENT, TypeSpec.TYPEEMPTY, "Kill Crop", "Kill crop event", 0);
+            addEvent("kill_crop", EVENT_KILL_CROP, TypeSpec.KIND_SUBSCRIBEDEVENT, typeKillCrop, "Kill Crop", "Kill crop event", 0);
             defineEventState(EVENT_KILL_CROP, KILL_CROP_STATE_ACQUIRE, TStateMachine.NONLOGIC);
             defineEventState(EVENT_KILL_CROP, KILL_CROP_STATE_EXECUTE, TStateMachine.LOGIC);
             defineEventTransition(EVENT_KILL_CROP, TStateMachine.IDLE, 0, KILL_CROP_STATE_ACQUIRE, true);   //idle -> acquire
@@ -1294,7 +1325,7 @@ namespace ManagedComponent.MvOZCOT
             //   [Further review is called for as more data is published - particularly from Australian field studies]
 
             //2013 value reported to be approx 394ppm with about 2ppm gain per year
-            addProperty("cotton_co2", PROP_cottonCO2, true, false, true, "ppm", false, "double", "co2 concentration", "co2 concentration");
+            addProperty("cotton_co2", PROP_cottonCO2, true, false, false, "ppm", false, "double", "co2 concentration", "co2 concentration");
             setPropertyRange(PROP_cottonCO2, 400.0, 0.0, 1000.0);
 
 
@@ -1386,7 +1417,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("dw_root", PROP_dw_root, true, false, false, "kg/ha", false, "double", "dry wt roots", "dry wt roots");
             addProperty("dw_leaf", PROP_dw_leaf, true, false, false, "kg/ha", false, "double", "dry wt leaf", "dry wt leaf");
             addProperty("dw_stem", PROP_dw_stem, true, false, false, "kg/ha", false, "double", "dry wt stem", "dry wt stem");
-            addProperty("totnup", PROP_totnup, true, false, false, "kg/ha", false, "double", "total Nitrogen uptake", "total Nitrogen uptake");
+            //addProperty("totnup", PROP_totnup, true, false, false, "kg/ha", false, "double", "total Nitrogen uptake", "total Nitrogen uptake");
             addProperty("yield", PROP_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("lint_yield", PROP_lint_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("cover_green", PROP_cover_green, true, false, false, "-", false, "double", "crop coverage", "crop coverage of the ground on an area basis");
@@ -1394,13 +1425,13 @@ namespace ManagedComponent.MvOZCOT
             addProperty("cover_tot", PROP_cover_tot, true, false, false, "-", false, "double", "crop coverage of ground", "");
             addProperty("CoverTotal", PROP_CoverTotal, true, false, false, "-", false, "double", "crop coverage of ground", "");
             addProperty("availn", PROP_availn, true, false, false, "kg/ha", false, "double", "N available in soil", "N available in soil for uptake");
-            addProperty("uptakn", PROP_uptakn, true, false, false, "kg/ha", false, "double", "N taken up by crop", "N taken up by crop");
+            addProperty("nuptake_potential", PROP_uptakn, true, false, false, "kg/ha", false, "double", "potential N uptake", "potential N uptake");
             addProperty("tsno3", PROP_tsno3, true, false, false, "kg/ha", false, "double", "soil nitrate", "total soil nitrate");
             addProperty("ysno3", PROP_ysno3, true, false, false, "kg/ha", false, "double", "prior day's soil nitrate", "total soil nitrate yesterday");
             addProperty("tsnh4", PROP_tsnh4, true, false, false, "kg/ha", false, "double", "soil ammonium", "total soil ammonium");
             addProperty("ysnh4", PROP_ysnh4, true, false, false, "kg/ha", false, "double", "prior day's soil ammonium", "total soil ammonium yesterday");
-            addProperty("d_nup", PROP_d_nup, true, false, false, "kg/ha", false, "double", "daily N uptake", "daily N uptake kg/ha");
-            addProperty("NUptake", PROP_n_uptake, true, false, false, "kg/ha", false, "double", "N uptake", "N uptake kg/ha");
+           // addProperty("d_nup", PROP_d_nup, true, false, false, "kg/ha", false, "double", "daily N uptake", "daily N uptake kg/ha");
+            addProperty("nuptake_daily", PROP_n_uptake, true, false, false, "kg/ha", false, "double", "daily N uptake", "daily N uptake kg/ha");
             addProperty("rtdep", PROP_rtdep, true, false, false, "cm", false, "double", "rooting depth", "rooting depth");
             addProperty("s_bed_mi", PROP_s_bed_mi, true, false, false, "-", false, "double", "seed bed moisture index", "seed bed moisture index");
             addProperty("smi", PROP_smi, true, false, false, "-", false, "double", "SMI", "soil moisture index");
@@ -1411,7 +1442,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("evap_pot", PROP_evap_pot, true, false, false, "mm", false, "double", "eo potential evaporation", "eo potential evaporation from soil surface");
             addProperty("evap_tot", PROP_evap_tot, true, false, false, "mm", false, "double", "total evaporation et", "total evapotranspiration et");
             addProperty("bolls_sc", PROP_bolls_sc, true, false, false, "g/boll", false, "double", "seed cotton g/boll ", "weight seed cotton g/boll");
-            addProperty("nuptake", PROP_nuptake, true, false, false, "kg/ha", false, "double", "N uptake", "N uptake");
+            addProperty("nuptake_total", PROP_nuptake, true, false, false, "kg/ha", false, "double", "total N uptake", "total N uptake for crop");
             addProperty("squarz_max", PROP_squarz_max, true, false, false, "1/m2", false, "double", "max squares", "peak number of squares");
             addProperty("lai_max", PROP_lai_max, true, false, false, "m2/m2", false, "double", "LAI max", "peak LAI value");
             addProperty("defol_das", PROP_defol_das, true, false, false, "das", false, "integer4", "1st defoliation DAS", "1st defoliation DAS");
@@ -2932,8 +2963,10 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_dw_stem: aValue.setValue(dm_stem * 10.0);    //internal storage as g/m2 ,  reported as kg/ha
                     break;
 
-                case PROP_totnup: aValue.setValue(total_n * 10.0);    //internal storage as g/m2 ,  reported as kg/ha
-                    break;
+                
+                //case PROP_totnup: aValue.setValue(total_n * 10.0);    //internal storage as g/m2 ,  reported as kg/ha
+                //  duplicate of PROP_nuptake "NUptake_total"
+                //    break;
 
                 case PROP_yield: aValue.setValue(alint);
                     break;
@@ -2982,8 +3015,9 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_ysnh4: aValue.setValue(yest_tsnh4);
                     break;
 
-                case PROP_d_nup: aValue.setValue(dn_plant * 10.0);
-                    break;
+                //case PROP_d_nup: aValue.setValue(dn_plant * 10.0);
+                //   duplicate of PROP_n_uptake
+                //    break;
 
                 case PROP_n_uptake: aValue.setValue(dn_plant * 10.0);
                     break;
@@ -3264,7 +3298,7 @@ namespace ManagedComponent.MvOZCOT
 
                         ozcot2();                        // CALL OZCOT GROWTH MODEL
 
-                        if ((iend != 0 & DAS >= max_cohort))   //
+                        if ( DAS == max_cohort)   //
                         {
                             terminateCropError(" ***  Crop remains unterminated at 300 DAS. Check that manager harvest criteria contains an 'end_crop' event.");
                             // force a call of end_crop
@@ -3317,7 +3351,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     else if(iState == HARVEST_STATE_EXECUTE)
                     {
-                            ozcot_harvest();
+                            ozcot_harvest(Params);
                     }
                     gdCondition = 0;
                     break;
@@ -3352,7 +3386,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     else if (iState == KILL_CROP_STATE_EXECUTE)
                     {
-                        ozcot_kill_crop();
+                        ozcot_kill_crop(Params);
                     }
                     gdCondition = 0;
                     break;
@@ -3393,8 +3427,8 @@ namespace ManagedComponent.MvOZCOT
         //==========================================================================
         public void terminateCropError(string errText)
         {
-            System.Console.WriteLine("Terminal Crop Error: " + errText);
-            // TODO dbj  call terminate crop? or simulation?
+            System.Console.WriteLine("Terminal Cotton Crop Error: " + errText);
+            // end_crop called
         }
 
         //***************************** OZCOT CODE **********************************
@@ -4790,7 +4824,7 @@ namespace ManagedComponent.MvOZCOT
 
 
         //     ===========================================================
-        public void ozcot_kill_crop()
+        public void ozcot_kill_crop(TTypedValue Parameters)
         {
             //  ===========================================================
 
@@ -4802,6 +4836,10 @@ namespace ManagedComponent.MvOZCOT
 
             if (crop_in)
             {
+
+                //place holders - kill_crop parameters not implemented in Cotton - kill_crop kills entire crop
+                double killCropFraction = Parameters.member("KillFraction").asDouble();  //fraction of crop to be removed
+
                 // needs coding enhancements
                 plant_status = status_dead;
 
@@ -5018,7 +5056,7 @@ namespace ManagedComponent.MvOZCOT
 
 
         //     ===========================================================
-        public void ozcot_harvest()
+        public void ozcot_harvest(TTypedValue Parameters)
         {
             //+  purpose
             //       report occurence of harvest and the current crop values
@@ -5030,6 +5068,12 @@ namespace ManagedComponent.MvOZCOT
 
                 // Publish Event 'Harvesting'  Cotton is about to be harvested
                 sendPublishEvent(evtHarvesting, false);
+
+                //place holders - harvest parameters not implemented in Cotton - all open bolls are harvested
+                double harvestPlants = Parameters.member("Plants").asDouble();  //fraction of plants to remove from population
+                double harvestRemove = Parameters.member("Remove").asDouble();  //fraction of stover to move to remove from dry matter pool
+                double harvestHeight = Parameters.member("Height").asDouble();  //height at which to cut crop
+                string harvestReport = Parameters.member("Report").asString();  //report harvest parameters
 
                 ozcot_harvest_report();
                 ozcot_harvest_update();
@@ -5611,14 +5655,14 @@ namespace ManagedComponent.MvOZCOT
 
 			iday = DAS;
 
-			if ((iday == 300) & (cropStage < mature))
+			if ((iday == (max_cohort - 1)) & (cropStage < mature))
 			{
                 // error trap: Maturity trigger not met. Force maturity stage
                 iend = 10;
                 cropStage = mature;
                 maturityDAS = DAS;
                 Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
-                Console.WriteLine("   *** season > 300 days:  crop stage forced to 'maturity'.");
+                Console.WriteLine("   *** season at 300 days:  crop stage forced to 'maturity'.");
                 return; 
 			}
 
@@ -5627,11 +5671,13 @@ namespace ManagedComponent.MvOZCOT
 			if ((openz > 0.0)  &  (bollz * effectiveRowSpacing < 1.0) )
 			{
                 if ((iend == 0) & (cropStage < mature))
-                iend = 6;
-                cropStage = mature;
-                maturityDAS = DAS;
-                Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
-                Console.WriteLine("   *** crop has open bolls but no more green bolls:  crop stage forced to 'maturity'.");
+                {
+                    iend = 6;
+                    cropStage = mature;
+                    maturityDAS = DAS;
+                    Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
+                    Console.WriteLine("   *** crop has open bolls but no more green bolls:  crop stage forced to 'maturity'.");
+                }
             }
 
             dd = hunits;
@@ -5708,16 +5754,16 @@ namespace ManagedComponent.MvOZCOT
                 //        iend is used in ozcot_harvest() and also reported as ozcot-status and status
                 //        thus terminating the crop when manager script is looking for status > 0.
                 //
-                if (tempmn <= frost_kill_immediate & iemrg > 0.0)   // frost after emergence?
+                if (tempmn <= frost_kill_immediate & (iemrg > 0.0))   // frost after emergence?
                 {
-                    if ((bollz == 0))           // pre-fruiting?   green bolls yet?
+                    if ((iend == 0) & (bollz == 0) & (cropStage < firstFlower))           // pre-fruiting?   green bolls yet?
                     {
                         iend = 3;               // flag for frost killing young crop 
                                                 //write#1,//format(' *** crop killed by frost before fruiting')
                         Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
                         Console.WriteLine("   *** crop killed by frost before fruiting.");
                     }
-                    else if ((openz == 0.0))    // open bolls yet?   None - immature crop
+                    else if ((iend == 0) & (openz == 0.0) & (cropStage < firstOpenBoll))    // open bolls yet?   None - immature crop
                     {
                         iend = 4;               // flag for frost on immature crop - try to force open bolls > 80. mature
                                                 //write#1,//format(' *** crop killed by frost during fruiting, before open bolls')
@@ -5727,11 +5773,14 @@ namespace ManagedComponent.MvOZCOT
                     }
                     else
                     {
-                        iend = 5;              // flag for frost on older crop - force open bolls > 80. mature
-                        cropStage = mature;
-                        maturityDAS = DAS;
-                        Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
-                        Console.WriteLine("   *** crop with open bolls frosted:  crop stage forced to 'maturity'.");
+                        if ((iend == 0) & (cropStage < mature))
+                        {
+                            iend = 5;              // flag for frost on older crop - force open bolls > 80. mature
+                            cropStage = mature;
+                            maturityDAS = DAS;
+                            Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
+                            Console.WriteLine("   *** crop with open bolls frosted:  crop stage forced to 'maturity'.");
+                        }
                     }
                 }
 
