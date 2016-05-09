@@ -447,7 +447,7 @@
               , G_current_stage          &
               , G_dlayer          &
               , G_root_depth          &
-              , sw_avail_fac_deepest_layer                     &
+              , wf                     &
               , p_xf          &
               , g_dlt_root_depth          &
                )
