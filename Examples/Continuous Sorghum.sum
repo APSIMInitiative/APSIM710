@@ -17,12 +17,11 @@ Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component          "Sorghum Sowing rule" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "sorghum" = %apsim%\Model\Sorghum.dll
+   Component              "Crop Management" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -59,42 +58,6 @@ Paddock:
 
 ------- paddock.accum Initialisation ------------------------------------------
      Initialising
-
-------- paddock.Sorghum Sowing rule Initialisation ----------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'sorghum')) then
-              if (date_within('15-oct, 10-jan') = 1) then
-     if (rain[3] >= 30 and esw >= 200) or
-         ('no' = 'yes' and today = date('10-jan'))) then
-        choosenextcrop = 'yes'
-        sorghum sow plants =7, sowing_depth = 30, cultivar = early, row_spacing = 1000, skip = solid
-     endif
-     if today = date('10-jan') then
-        choosenextcrop = 'yes'
-     endif
-              endif
-           endif
-     
-     SECTION:- init
-     nextcrop = 0
-     fallowin = 0
-     END of rules
-     
-     Manager creating a new local real variable : nextcrop = 0.00000
-     Manager creating a new local real variable : fallowin = 0.00000
-
-------- paddock.Harvesting rule Initialisation --------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
-       sorghum  harvest
-       sorghum  end_crop
-                endif
-     END of rules
-     
 
 ------- paddock.Soil Water Initialisation -------------------------------------
      
@@ -252,12 +215,11 @@ Paddock:
           ---------------------------------------------------------
            Totals  155107.5 12408.6     0.0     0.0    80.0     2.0
           ---------------------------------------------------------
+
+------- Crop Management Initialisation ----------------------------------------
 ------- Start of simulation  --------------------------------------------------
-10 January 1940(Day of year=10), paddock.Sorghum Sowing rule: 
-     Manager creating a new local string variable : choosenextcrop = yes
-1 December 1940(Day of year=336), paddock.Sorghum Sowing rule: 
-     Manager sending message :- sorghum sow  plants = 7, sowing_depth = 30, cultivar = early, row_spacing = 1000, skip = solid
-1 December 1940(Day of year=336), sorghum: 
+30/11/1940 12:00:00 AM Sowing Crop
+30 November 1940(Day of year=335), sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -265,7 +227,7 @@ Paddock:
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no     mm     m^2    mm     code     name       no
          -------------------------------------------------------
-            336    30.0     7.0  1000    1.0     early    0.75
+            335    30.0     7.0  1000    1.0     early    0.75
          -------------------------------------------------------
      
       - reading constants for plant(sorghum) - early
@@ -299,85 +261,83 @@ Paddock:
              300.0     0.000          0.440       0.000
          ---------------------------------------------------
      
-2 December 1940(Day of year=337), sorghum: 
+1 December 1940(Day of year=336), sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-5 December 1940(Day of year=340), sorghum: 
+4 December 1940(Day of year=339), sorghum: 
      Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
-     		Stover N Conc =   0.00 		 Extractable SW =  17.12
-12 December 1940(Day of year=347), sorghum: 
+     		Stover N Conc =   0.00 		 Extractable SW =  17.53
+11 December 1940(Day of year=346), sorghum: 
      Stage 4 EndOfJuvenile  DAS = 11
-     		Biomass       =   1.84 		 LAI            =   0.01
-     		Stover N Conc =   0.03 		 Extractable SW =  65.66
-22 December 1940(Day of year=357), sorghum: 
+     		Biomass       =   1.85 		 LAI            =   0.01
+     		Stover N Conc =   0.02 		 Extractable SW =  70.84
+21 December 1940(Day of year=356), sorghum: 
      Stage 5 FloralInitiation  DAS = 21
-     		Biomass       =   4.90 		 LAI            =   0.06
-     		Stover N Conc =   0.08 		 Extractable SW = 124.10
-11 January 1941(Day of year=11), sorghum: 
+     		Biomass       =   4.99 		 LAI            =   0.06
+     		Stover N Conc =   0.08 		 Extractable SW = 130.38
+10 January 1941(Day of year=10), sorghum: 
      Stage 6 FlagLeaf  DAS = 41
-     		Biomass       =  27.62 		 LAI            =   0.22
-     		Stover N Conc =   0.38 		 Extractable SW = 211.75
-4 February 1941(Day of year=35), sorghum: 
+     		Biomass       =  28.12 		 LAI            =   0.22
+     		Stover N Conc =   0.39 		 Extractable SW = 212.15
+3 February 1941(Day of year=34), sorghum: 
      Stage 7 Flowering  DAS = 65
-     		Biomass       =  43.04 		 LAI            =   0.14
-     		Stover N Conc =   0.38 		 Extractable SW = 272.32
-9 February 1941(Day of year=40), sorghum: 
+     		Biomass       =  43.92 		 LAI            =   0.14
+     		Stover N Conc =   0.39 		 Extractable SW = 276.65
+8 February 1941(Day of year=39), sorghum: 
      Stage 8 StartGrainFill  DAS = 70
-     		Biomass       =  44.25 		 LAI            =   0.14
-     		Stover N Conc =   0.38 		 Extractable SW = 268.96
-18 March 1941(Day of year=77), sorghum: 
+     		Biomass       =  45.15 		 LAI            =   0.14
+     		Stover N Conc =   0.39 		 Extractable SW = 270.84
+17 March 1941(Day of year=76), sorghum: 
      Stage 9 EndGrainFill  DAS = 107
-     		Biomass       =  45.68 		 LAI            =   0.11
-     		Stover N Conc =   0.32 		 Extractable SW = 296.41
-20 March 1941(Day of year=79), sorghum: 
+     		Biomass       =  46.85 		 LAI            =   0.11
+     		Stover N Conc =   0.33 		 Extractable SW = 299.35
+19 March 1941(Day of year=78), sorghum: 
      Stage 10 Maturity  DAS = 109
-     		Biomass       =  45.68 		 LAI            =   0.11
-     		Stover N Conc =   0.32 		 Extractable SW = 299.17
-21 March 1941(Day of year=80), sorghum: 
+     		Biomass       =  46.85 		 LAI            =   0.11
+     		Stover N Conc =   0.33 		 Extractable SW = 293.62
+20 March 1941(Day of year=79), sorghum: 
      Stage 11 HarvestRipe  DAS = 110
-     		Biomass       =  45.68 		 LAI            =   0.11
-     		Stover N Conc =   0.32 		 Extractable SW = 296.91
-21 March 1941(Day of year=80), paddock.Harvesting rule: 
-     Manager sending message :- sorghum harvest
+     		Biomass       =  46.85 		 LAI            =   0.11
+     		Stover N Conc =   0.33 		 Extractable SW = 299.22
+21/03/1941 12:00:00 AM Harvesting Crop
+21 March 1941(Day of year=80), sorghum: 
      
      Harvest
      Flowering (DAS)       = 65 		 Maturity (DAS)          = 109
-     Flowering day         = 35 		 Maturity day            = 79
+     Flowering day         = 34 		 Maturity day            = 78
      Maximum LAI           = 0.2 		 Number of leaves        = 15.0
-     Total above ground biomass    (kg/ha) = 456.8
-     Green above ground biomass    (kg/ha) = 316.2
-     Senesced above ground biomass (kg/ha) = 140.5
-     Stover (kg/ha)        = 393.6 	 Grain yield (kg/ha)     = 63.1
-     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 72.5
-     Weight 1000 grains(g) = 4.9 		 Grains/m^2              = 1297.8
-     Grains/head           = 185.4
-     Grain N percent    (%)     =      0.99 	 Grain N            (kg/ha) =     0.62
-     Total N content    (kg/ha) =      3.84 	 Senesced N content (kg/ha) =     2.19
-     Green N content    (kg/ha) =      1.17
+     Total above ground biomass    (kg/ha) = 468.5
+     Green above ground biomass    (kg/ha) = 325.6
+     Senesced above ground biomass (kg/ha) = 143.0
+     Stover (kg/ha)        = 401.5 	 Grain yield (kg/ha)     = 67.0
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 77.0
+     Weight 1000 grains(g) = 5.1 		 Grains/m^2              = 1321.7
+     Grains/head           = 188.8
+     Grain N percent    (%)     =      0.95 	 Grain N            (kg/ha) =     0.64
+     Total N content    (kg/ha) =      3.94 	 Senesced N content (kg/ha) =     2.24
+     Green N content    (kg/ha) =      1.20
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        0.9
         End of juvenile     to Floral initiation         1.0          1.0        0.9
         Floral initiation   to Flag leaf                 1.0          1.0        0.8
         Flag leaf           to Flowering                 1.0          1.0        0.3
-        Flowering           to Start grain fill          1.0          1.0        0.1
+        Flowering           to Start grain fill          1.0          1.0        0.2
         Start grain fill    to End grain fill            1.0          1.0        0.0
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =                 63.11		    0.00
-                         N  (kg/ha) =                  0.62		    0.00
-     Manager sending message :- sorghum end_crop
+                         DM (kg/ha) =                 67.02		    0.00
+                         N  (kg/ha) =                  0.64		    0.00
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =                393.64		  174.14
-                         N  (kg/ha) =                  3.22		    0.14
+                         DM (kg/ha) =                401.53		  176.34
+                         N  (kg/ha) =                  3.30		    0.14
                          P  (kg/ha) =                  0.00		    0.00
-8 November 1942(Day of year=312), paddock.Sorghum Sowing rule: 
-     Manager sending message :- sorghum sow  plants = 7, sowing_depth = 30, cultivar = early, row_spacing = 1000, skip = solid
-8 November 1942(Day of year=312), sorghum: 
+7/11/1942 12:00:00 AM Sowing Crop
+7 November 1942(Day of year=311), sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -385,7 +345,7 @@ Paddock:
          Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
          Day no     mm     m^2    mm     code     name       no
          -------------------------------------------------------
-            312    30.0     7.0  1000    1.0     early    1.14
+            311    30.0     7.0  1000    1.0     early    1.14
          -------------------------------------------------------
      
       - reading constants for plant(sorghum) - early
@@ -419,26 +379,26 @@ Paddock:
              300.0     0.000          0.440       0.000
          ---------------------------------------------------
      
-9 November 1942(Day of year=313), sorghum: 
+8 November 1942(Day of year=312), sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
-     		Stover N Conc =   0.00 		 Extractable SW = 259.86
+     		Stover N Conc =   0.00 		 Extractable SW = 261.40
 11 November 1942(Day of year=315), sorghum: 
-     Stage 3 Emergence  DAS = 3
+     Stage 3 Emergence  DAS = 4
      		Biomass       =   0.00 		 LAI            =   0.00
-     		Stover N Conc =   0.00 		 Extractable SW = 271.19
-20 November 1942(Day of year=324), sorghum: 
+     		Stover N Conc =   0.00 		 Extractable SW = 278.40
+19 November 1942(Day of year=323), sorghum: 
      Stage 4 EndOfJuvenile  DAS = 12
-     		Biomass       =   2.21 		 LAI            =   0.02
-     		Stover N Conc =   0.03 		 Extractable SW = 284.89
-2 December 1942(Day of year=336), sorghum: 
+     		Biomass       =   2.10 		 LAI            =   0.02
+     		Stover N Conc =   0.03 		 Extractable SW = 286.92
+1 December 1942(Day of year=335), sorghum: 
      Stage 5 FloralInitiation  DAS = 24
-     		Biomass       =  10.65 		 LAI            =   0.14
-     		Stover N Conc =   0.19 		 Extractable SW = 229.39
-24 December 1942(Day of year=358), sorghum: 
+     		Biomass       =  10.27 		 LAI            =   0.14
+     		Stover N Conc =   0.18 		 Extractable SW = 230.18
+23 December 1942(Day of year=357), sorghum: 
      Stage 6 FlagLeaf  DAS = 46
-     		Biomass       =  68.21 		 LAI            =   0.44
-     		Stover N Conc =   0.81 		 Extractable SW = 243.08
+     		Biomass       =  70.94 		 LAI            =   0.47
+     		Stover N Conc =   0.85 		 Extractable SW = 245.11
 31 December 1942(Day of year=365), clock: 
      Simulation is terminating due to end criteria being met.
 

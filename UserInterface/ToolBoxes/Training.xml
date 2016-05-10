@@ -2425,27 +2425,52 @@
           <fertiliser />
           <wheat />
           <folder name="Manager folder">
-            <manager name="Fertilise on fixed date">
+            <manager2 name="Fertilise on fixed date">
               <ui>
                 <category type="category" description="When should fertiliser be applied" />
                 <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">10-jan</fert_date>
                 <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
                 <category type="category" description="Fertiliser application details" />
-                <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
                 <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">100</fert_amount>
                 <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
               </ui>
-              <script>
-                <text>
-         if (today = date('[fert_date]') then
-            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
-            if (N_topsoil &lt; [fert_criteria]) then
-               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
-            endif
-         endif </text>
-                <event>start_of_day</event>
-              </script>
-            </manager>
+              <text>using CSGeneral; 
+using ModelFramework;
+using System;
+
+// Crop management: Fertilise on a fixed date
+// Not Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{
+   [Link]  public Simulation MyPaddock;
+   [Link]  public Fertiliser MyFertiliser;
+
+   [Param] private string fert_date;
+   [Param] private float fert_criteria;
+   [Param] private float fert_amount;
+   [Param] private string fert_type;
+
+   [Input] private DateTime today; 
+   
+   [EventHandler] public void OnPrepare()
+   {
+      if (DateUtility.DatesEqual(fert_date, today))
+      {
+         float[] NO3 = new float[20];
+         float[] NH4 = new float[20];
+         MyPaddock.Get("no3", out NO3);
+         MyPaddock.Get("nh4", out NH4);
+         float N_topsoil = NO3[0] + NO3[1] + NH4[0] + NH4[1];
+         if(N_topsoil &lt; fert_criteria){
+            MyFertiliser.Apply(fert_amount, 50, fert_type);
+         }
+      }
+   }
+}
+       </text>
+            </manager2>
           </folder>
           <outputfile>
             <filename output="yes">Nitrogen Cycle.out</filename>
@@ -3170,82 +3195,300 @@
           <fertiliser />
           <sorghum />
           <folder name="Manager folder">
-            <manager name="Sorghum Sowing rule">
+            <manager2 name="Crop Management">
               <ui>
+                <category type="category" description="Crop properties" />
+                <crop type="crop" description="Name of this crop">sorghum</crop>
                 <category type="category" description="Sowing criteria" />
-                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-jan</date1>
-                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-jan</date2>
-                <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-                <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
-                <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-                <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-                <category type="category" description="Sowing parameters" />
-                <crop type="crop" description="Enter name of crop to sow : ">sorghum</crop>
-                <density type="text" description="Enter sowing density  (plants/m2) : ">8</density>
-                <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-                <cultivar type="cultivars" description="Enter cultivar : ">early</cultivar>
-                <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
-                <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
+                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-jan</date1>
+                <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">1-jan</date2>
+                <must_sow type="yesno" description="Must Sow">yes</must_sow>
+                <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">30</rain_amount>
+                <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+                <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
+                <category type="category" description="Sowing Parameters" />
+                <cultivar1 type="cultivars" description="Enter cultivar : ">early</cultivar1>
+                <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+                <density1 type="text" description="Enter sowing density  (plants/m2)">8</density1>
+                <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+                <row_spacing1 type="text" description="Enter row spacing  (mm)">1000</row_spacing1>
+                <category type="category" description="Extra Parameters" />
+                <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+                <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+                <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
               </ui>
-              <script>
-                <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-                <event>start_of_day</event>
-              </script>
-              <script>
-                <text>
-            nextcrop = 0
-            fallowin = 0
-            </text>
-                <event>init</event>
-              </script>
-            </manager>
-            <manager name="Harvesting rule">
-              <ui>
-                <category description="Harvesting criteria" type="category" />
-                <crop type="crop" description="Enter name of crop to harvest when ripe : ">sorghum</crop>
-              </ui>
-              <script>
-                <text>
+              <text>using System;
+using ModelFramework;
+using CSGeneral;
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
 
-            </text>
-                <event>end_of_day</event>
-              </script>
-            </manager>
-            <manager name="Fertilise at sowing">
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+            </manager2>
+            <manager2 name="Fertilise at Sowing">
               <ui>
-                <category type="category" description="When should fertiliser be applied" />
-                <modulename type="modulename" description="On which module should the event come from : ">sorghum</modulename>
-                <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-                <category type="category" description="Fertiliser application details" />
-                <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-                <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">0</fert_amount_sow>
-                <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+                <tag type="category" description="When should fertiliser be applied" />
+                <ModuleName type="modulename" description="On which module should the event come from: ">sorghum</ModuleName>
+                <EventName type="text" description="On which event should spraying be triggered">sowing</EventName>
+                <tag type="category" description="Event details" />
+                <fertType type="text" description="The type of fertiliser">urea_N</fertType>
+                <fertAmt type="text" description="Amount of fertiliser to apply (kg/ha)">0</fertAmt>
               </ui>
-              <script>
-                <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-                <event>[modulename].[eventname]</event>
-              </script>
-            </manager>
+              <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: fertilise at sowing
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string fertType;
+   [Param] float fertAmt;
+   [Param] string ModuleName;
+   [Param] string EventName;
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            if(child.Name == ModuleName){
+               RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+               MySimulation.Subscribe(child.FullName + "." + EventName, curried);
+               //Console.WriteLine("Subscribed '" + child.FullName + "." + EventName + " =&gt; " + paddock.Name + "'"); 
+            }
+         }
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      Console.WriteLine("Fertiliser OnTrigger called, paddock='" + paddock + "'"); 
+      if (fertAmt &gt; 0) 
+      {         
+         Component paddockModule;
+         if (paddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(paddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Fertiliser fertModule = (Fertiliser) paddockModule.LinkByName("Fertiliser");
+         fertModule.Apply(fertAmt, 50, fertType);
+      }
+   }
+}
+       </text>
+            </manager2>
           </folder>
           <outputfile>
             <filename output="yes">Sorghum Nil Fertiliser.out</filename>
@@ -3588,82 +3831,300 @@
           <fertiliser />
           <sorghum />
           <folder name="Manager folder">
-            <manager name="Sorghum Sowing rule">
+            <manager2 name="Crop Management">
               <ui>
+                <category type="category" description="Crop properties" />
+                <crop type="crop" description="Name of this crop">sorghum</crop>
                 <category type="category" description="Sowing criteria" />
-                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-jan</date1>
-                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-jan</date2>
-                <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-                <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
-                <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-                <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-                <category type="category" description="Sowing parameters" />
-                <crop type="crop" description="Enter name of crop to sow : ">sorghum</crop>
-                <density type="text" description="Enter sowing density  (plants/m2) : ">8</density>
-                <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-                <cultivar type="cultivars" description="Enter cultivar : ">early</cultivar>
-                <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
-                <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
+                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-jan</date1>
+                <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">1-jan</date2>
+                <must_sow type="yesno" description="Must Sow">yes</must_sow>
+                <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">30</rain_amount>
+                <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+                <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
+                <category type="category" description="Sowing Parameters" />
+                <cultivar1 type="cultivars" description="Enter cultivar : ">early</cultivar1>
+                <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+                <density1 type="text" description="Enter sowing density  (plants/m2)">8</density1>
+                <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+                <row_spacing1 type="text" description="Enter row spacing  (mm)">1000</row_spacing1>
+                <category type="category" description="Extra Parameters" />
+                <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+                <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+                <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
               </ui>
-              <script>
-                <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-                <event>start_of_day</event>
-              </script>
-              <script>
-                <text>
-            nextcrop = 0
-            fallowin = 0
-            </text>
-                <event>init</event>
-              </script>
-            </manager>
-            <manager name="Harvesting rule">
-              <ui>
-                <category description="Harvesting criteria" type="category" />
-                <crop type="crop" description="Enter name of crop to harvest when ripe : ">sorghum</crop>
-              </ui>
-              <script>
-                <text>
+              <text>using System;
+using ModelFramework;
+using CSGeneral;
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
 
-            </text>
-                <event>end_of_day</event>
-              </script>
-            </manager>
-            <manager name="Fertilise at sowing">
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+            </manager2>
+            <manager2 name="Fertilise at Sowing">
               <ui>
-                <category type="category" description="When should fertiliser be applied" />
-                <modulename type="modulename" description="On which module should the event come from : ">sorghum</modulename>
-                <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-                <category type="category" description="Fertiliser application details" />
-                <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-                <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">30</fert_amount_sow>
-                <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+                <tag type="category" description="When should fertiliser be applied" />
+                <ModuleName type="modulename" description="On which module should the event come from: ">sorghum</ModuleName>
+                <EventName type="text" description="On which event should spraying be triggered">sowing</EventName>
+                <tag type="category" description="Event details" />
+                <fertType type="text" description="The type of fertiliser">urea_N</fertType>
+                <fertAmt type="text" description="Amount of fertiliser to apply (kg/ha)">30</fertAmt>
               </ui>
-              <script>
-                <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-                <event>[modulename].[eventname]</event>
-              </script>
-            </manager>
+              <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: fertilise at sowing
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string fertType;
+   [Param] float fertAmt;
+   [Param] string ModuleName;
+   [Param] string EventName;
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            if(child.Name == ModuleName){
+               RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+               MySimulation.Subscribe(child.FullName + "." + EventName, curried);
+               //Console.WriteLine("Subscribed '" + child.FullName + "." + EventName + " =&gt; " + paddock.Name + "'"); 
+            }
+         }
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      Console.WriteLine("Fertiliser OnTrigger called, paddock='" + paddock + "'"); 
+      if (fertAmt &gt; 0) 
+      {         
+         Component paddockModule;
+         if (paddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(paddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Fertiliser fertModule = (Fertiliser) paddockModule.LinkByName("Fertiliser");
+         fertModule.Apply(fertAmt, 50, fertType);
+      }
+   }
+}
+       </text>
+            </manager2>
           </folder>
           <outputfile>
             <filename output="yes">Sorghum 30kg N Fertiliser.out</filename>
@@ -4006,82 +4467,300 @@
           <fertiliser />
           <sorghum />
           <folder name="Manager folder">
-            <manager name="Sorghum Sowing rule">
+            <manager2 name="Crop Management">
               <ui>
+                <category type="category" description="Crop properties" />
+                <crop type="crop" description="Name of this crop">sorghum</crop>
                 <category type="category" description="Sowing criteria" />
-                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-jan</date1>
-                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-jan</date2>
-                <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-                <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
-                <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-                <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-                <category type="category" description="Sowing parameters" />
-                <crop type="crop" description="Enter name of crop to sow : ">sorghum</crop>
-                <density type="text" description="Enter sowing density  (plants/m2) : ">8</density>
-                <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-                <cultivar type="cultivars" description="Enter cultivar : ">early</cultivar>
-                <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
-                <skiprow type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow>
+                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-jan</date1>
+                <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">1-jan</date2>
+                <must_sow type="yesno" description="Must Sow">yes</must_sow>
+                <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">30</rain_amount>
+                <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+                <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
+                <category type="category" description="Sowing Parameters" />
+                <cultivar1 type="cultivars" description="Enter cultivar : ">early</cultivar1>
+                <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+                <density1 type="text" description="Enter sowing density  (plants/m2)">8</density1>
+                <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+                <row_spacing1 type="text" description="Enter row spacing  (mm)">1000</row_spacing1>
+                <category type="category" description="Extra Parameters" />
+                <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+                <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+                <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
               </ui>
-              <script>
-                <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [skiprow]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-                <event>start_of_day</event>
-              </script>
-              <script>
-                <text>
-            nextcrop = 0
-            fallowin = 0
-            </text>
-                <event>init</event>
-              </script>
-            </manager>
-            <manager name="Harvesting rule">
-              <ui>
-                <category description="Harvesting criteria" type="category" />
-                <crop type="crop" description="Enter name of crop to harvest when ripe : ">sorghum</crop>
-              </ui>
-              <script>
-                <text>
+              <text>using System;
+using ModelFramework;
+using CSGeneral;
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
 
-            </text>
-                <event>end_of_day</event>
-              </script>
-            </manager>
-            <manager name="Fertilise at sowing">
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+            </manager2>
+            <manager2 name="Fertilise at Sowing">
               <ui>
-                <category type="category" description="When should fertiliser be applied" />
-                <modulename type="modulename" description="On which module should the event come from : ">sorghum</modulename>
-                <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-                <category type="category" description="Fertiliser application details" />
-                <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-                <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">60</fert_amount_sow>
-                <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+                <tag type="category" description="When should fertiliser be applied" />
+                <ModuleName type="modulename" description="On which module should the event come from: ">sorghum</ModuleName>
+                <EventName type="text" description="On which event should spraying be triggered">sowing</EventName>
+                <tag type="category" description="Event details" />
+                <fertType type="text" description="The type of fertiliser">urea_N</fertType>
+                <fertAmt type="text" description="Amount of fertiliser to apply (kg/ha)">30</fertAmt>
               </ui>
-              <script>
-                <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-                <event>[modulename].[eventname]</event>
-              </script>
-            </manager>
+              <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: fertilise at sowing
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string fertType;
+   [Param] float fertAmt;
+   [Param] string ModuleName;
+   [Param] string EventName;
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            if(child.Name == ModuleName){
+               RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+               MySimulation.Subscribe(child.FullName + "." + EventName, curried);
+               //Console.WriteLine("Subscribed '" + child.FullName + "." + EventName + " =&gt; " + paddock.Name + "'"); 
+            }
+         }
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      Console.WriteLine("Fertiliser OnTrigger called, paddock='" + paddock + "'"); 
+      if (fertAmt &gt; 0) 
+      {         
+         Component paddockModule;
+         if (paddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(paddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Fertiliser fertModule = (Fertiliser) paddockModule.LinkByName("Fertiliser");
+         fertModule.Apply(fertAmt, 50, fertType);
+      }
+   }
+}
+       </text>
+            </manager2>
           </folder>
           <outputfile>
             <filename output="yes">Sorghum 60kg N Fertiliser.out</filename>
@@ -4153,129 +4832,25 @@
           <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
         </metfile>
         <clock>
-          <start_date type="date" description="Enter the start date of the simulation">01/01/1979</start_date>
-          <end_date type="date" description="Enter the end date of the simulation">30/04/1989</end_date>
+          <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+          <end_date type="date" description="Enter the end date of the simulation">31/12/1980</end_date>
         </clock>
         <summaryfile />
         <area name="paddock">
-          <surfaceom name="SurfaceOrganicMatter">
-            <PoolName type="text" description="Organic Matter pool name">sorghum</PoolName>
-            <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">sorghum</type>
-            <mass type="text" description="Initial surface residue (kg/ha)">550</mass>
-            <cnr type="text" description="C:N ratio of initial residue">76</cnr>
-            <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
-          </surfaceom>
-          <fertiliser />
-          <folder name="Manager folder">
-            <manager name="Reset water, nitrogen and surfaceOM on fixed date">
-              <ui>
-                <category type="category" description="When should a reset be done" />
-                <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">01-may</reset_date>
-                <category type="category" description="Reset details" />
-                <soilmodule type="modulename" description="Name of your soil module : ">Heavy Clay</soilmodule>
-                <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
-                <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
-                <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
-                <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
-              </ui>
-              <script>
-                <text>
-         if (today = date('[reset_date]')) then
-            resetWater = '[resetWater]'
-            resetNitrogen  = '[resetNitrogen]'
-            resetSurfaceOM = '[resetSurfaceOM]'
-            if (resetWater = 'yes') then
-                '[soilmodule] Water' reset
-            endif
-            if (resetNitrogen = 'yes') then
-                '[soilmodule] Nitrogen' reset
-            endif
-            if (resetSurfaceOM = 'yes') then
-                '[surfaceommodule]' reset
-            endif
-            act_mods reseting
-         endif
-      </text>
-                <event>start_of_day</event>
-              </script>
-            </manager>
-            <manager name="Harvesting rule">
-              <ui>
-                <category type="category" description="Harvesting criteria" />
-                <crop type="crop" description="Enter name of crop to harvest when ripe : ">chickpea</crop>
-              </ui>
-              <script>
-                <text>
-
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
-
-            </text>
-                <event>end_of_day</event>
-              </script>
-            </manager>
-            <manager name="Sow using a variable rule">
-              <ui>
-                <category type="category" description="Sowing criteria" />
-                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-may</date1>
-                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-aug</date2>
-                <must_sow type="yesno" description="Must sow? : ">no</must_sow>
-                <raincrit type="text" description="Amount of rainfall : ">15</raincrit>
-                <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-                <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-                <category type="category" description="Sowing parameters" />
-                <crop type="crop" description="Enter name of crop to sow : ">chickpea</crop>
-                <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
-                <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-                <cultivar type="cultivars" description="Enter cultivar : ">amethyst</cultivar>
-                <class type="classes" description="Enter crop growth class : ">plant</class>
-                <row_spacing type="text" description="Enter row spacing (mm) : ">350</row_spacing>
-              </ui>
-              <script>
-                <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-                <event>start_of_day</event>
-              </script>
-            </manager>
-          </folder>
-          <outputfile>
-            <filename output="yes">Chickpea 10 plants.out</filename>
-            <title>Chickpea 10 plants</title>
-            <variables name="Variables">
-              <variable>year</variable>
-              <variable>yield</variable>
-            </variables>
-            <events name="Reporting Frequency">
-              <event>harvesting</event>
-            </events>
-          </outputfile>
-          <chickpea />
           <Soil name="Heavy Clay">
-            <SoilType description="Soil description">Generic Vertosol</SoilType>
+            <RecordNumber>0</RecordNumber>
+            <SoilType>Generic Vertosol</SoilType>
             <Site>Generic</Site>
-            <NearestTown description="Nearest town">Toowoomba</NearestTown>
+            <NearestTown>Toowoomba</NearestTown>
             <Region>Darling Downs and Granite Belt</Region>
             <State>Queensland</State>
             <Country>Australia</Country>
-            <Latitude description="Latitude (WGS84)">-27.564333</Latitude>
-            <Longitude description="Longitude (WGS84)">151.953991</Longitude>
-            <LocationAccuracy description="Location accuracy">Regional Soil Type</LocationAccuracy>
-            <DataSource type="multiedit" description="Data source">YP. A Peake-CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-            <Comments type="multiedit" description="Comments">Generic soil developed by Allan Peake.</Comments>
+            <Latitude>-27.564333</Latitude>
+            <Longitude>151.953991</Longitude>
+            <LocationAccuracy>Regional Soil Type</LocationAccuracy>
+            <YearOfSampling>0</YearOfSampling>
+            <DataSource>YP. A Peake-CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+            <Comments>Generic soil developed by Allan Peake.</Comments>
             <Water>
               <Thickness>
                 <double>150</double>
@@ -4369,6 +4944,44 @@
                   <double>1</double>
                 </XF>
               </SoilCrop>
+              <SoilCrop name="sorghum">
+                <Thickness>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                </Thickness>
+                <LL>
+                  <double>0.27</double>
+                  <double>0.28</double>
+                  <double>0.29</double>
+                  <double>0.3</double>
+                  <double>0.31</double>
+                  <double>0.32</double>
+                  <double>0.33</double>
+                </LL>
+                <KL>
+                  <double>0.07</double>
+                  <double>0.07</double>
+                  <double>0.07</double>
+                  <double>0.05</double>
+                  <double>0.04</double>
+                  <double>0.03</double>
+                  <double>0.02</double>
+                </KL>
+                <XF>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                </XF>
+              </SoilCrop>
               <SoilCrop name="chickpea">
                 <Thickness>
                   <double>150</double>
@@ -4421,6 +5034,10 @@
               <CN2Bare>73</CN2Bare>
               <CNRed>20</CNRed>
               <CNCov>0.8</CNCov>
+              <Slope>NaN</Slope>
+              <DischargeWidth>NaN</DischargeWidth>
+              <CatchmentArea>NaN</CatchmentArea>
+              <MaxPond>NaN</MaxPond>
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -4482,6 +5099,7 @@
                 <double>1</double>
                 <double>1</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -4537,34 +5155,25 @@
               <RelativeTo>ll15</RelativeTo>
             </InitialWater>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
-                <double>1800</double>
+                <double>100</double>
               </Thickness>
               <NO3>
                 <double>20</double>
               </NO3>
-              <NO3Units>kgha</NO3Units>
               <NH4>
                 <double>0</double>
               </NH4>
               <SW>
                 <double>0</double>
               </SW>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>kgha</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
-        </area>
-      </simulation>
-      <simulation name="Chickpea 15 plants">
-        <metfile name="met">
-          <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
-        </metfile>
-        <clock>
-          <start_date type="date" description="Enter the start date of the simulation">01/01/1979</start_date>
-          <end_date type="date" description="Enter the end date of the simulation">30/04/1989</end_date>
-        </clock>
-        <summaryfile />
-        <area name="paddock">
           <surfaceom name="SurfaceOrganicMatter">
             <PoolName type="text" description="Organic Matter pool name">sorghum</PoolName>
             <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">sorghum</type>
@@ -4573,193 +5182,337 @@
             <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
           </surfaceom>
           <fertiliser />
+          <chickpea>
+            <MaxRootDepth description="Maximum rooting depth (mm) 0=no restriction">0</MaxRootDepth>
+          </chickpea>
           <folder name="Manager folder">
-            <manager name="Reset water, nitrogen and surfaceOM on fixed date">
+            <manager2 name="Reset on Date">
               <ui>
                 <category type="category" description="When should a reset be done" />
-                <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">01-may</reset_date>
+                <reset_date type="text" description="Enter date of reset (dd-mmm) : ">1-may</reset_date>
                 <category type="category" description="Reset details" />
-                <soilmodule type="modulename" description="Name of your soil module : ">Heavy Clay</soilmodule>
-                <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
-                <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
-                <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
-                <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
+                <ResetWater type="yesno" description="Reset soil water?">yes</ResetWater>
+                <ResetNitrogen type="yesno" description="Reset soil nitrogen?">yes</ResetNitrogen>
+                <ResetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</ResetSurfaceOM>
               </ui>
-              <script>
-                <text>
-         if (today = date('[reset_date]')) then
-            resetWater = '[resetWater]'
-            resetNitrogen  = '[resetNitrogen]'
-            resetSurfaceOM = '[resetSurfaceOM]'
-            if (resetWater = 'yes') then
-                '[soilmodule] Water' reset
-            endif
-            if (resetNitrogen = 'yes') then
-                '[soilmodule] Nitrogen' reset
-            endif
-            if (resetSurfaceOM = 'yes') then
-                '[surfaceommodule]' reset
-            endif
-            act_mods reseting
-         endif
-      </text>
-                <event>start_of_day</event>
-              </script>
-            </manager>
-            <manager name="Harvesting rule">
-              <ui>
-                <category type="category" description="Harvesting criteria" />
-                <crop type="crop" description="Enter name of crop to harvest when ripe : ">chickpea</crop>
-              </ui>
-              <script>
-                <text>
+              <text>using System;
+using ModelFramework;
+using CSGeneral; 
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
+// Crop management: Reset on a fixed date
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
 
-            </text>
-                <event>end_of_day</event>
-              </script>
-            </manager>
-            <manager name="Sow using a variable rule">
+public class Script 
+   {
+   [Link]  public Simulation MySimulation;
+   
+   [Param] private string reset_date;                    // date to reset 
+   [Param] private string ResetWater;                    // reset water yes/no 
+   [Param] private string ResetNitrogen;                 // reset nitrogen yes/no
+   [Param] private string ResetSurfaceOM;                // reset surfaceOM yes/no
+   [Input] private DateTime today;                       // input date from clock 
+   
+   
+   [EventHandler] public void OnPrepare()                    // what comes under this section heading will be done at the beginning of each day 
+   {
+      if (DateUtility.DatesEqual(reset_date,today))          // test that today is equal to the reset date
+      {
+         Console.WriteLine(today + " Reset Day");
+         foreach (Paddock paddock in MySimulation.ChildPaddocks) {
+            if(ResetWater == "yes"){
+               Component soilwat = (Component) paddock.LinkByType("soilwat");
+               soilwat.Publish("reset");
+            }
+            if(ResetSurfaceOM == "yes"){
+               Component surfaceom = (Component) paddock.LinkByType("surfaceom");
+               surfaceom.Publish("reset");
+            }
+            if(ResetNitrogen == "yes"){
+               Component soiln = (Component) paddock.LinkByType("soiln");
+               soiln.Publish("reset");
+            }
+         }
+      }
+   }
+}
+       </text>
+            </manager2>
+            <manager2 name="Chickpea Management">
               <ui>
+                <category type="category" description="Crop properties" />
+                <crop type="crop" description="Name of this crop">chickpea</crop>
                 <category type="category" description="Sowing criteria" />
-                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-may</date1>
-                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-aug</date2>
-                <must_sow type="yesno" description="Must sow? : ">no</must_sow>
-                <raincrit type="text" description="Amount of rainfall : ">15</raincrit>
-                <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-                <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-                <category type="category" description="Sowing parameters" />
-                <crop type="crop" description="Enter name of crop to sow : ">chickpea</crop>
-                <density type="text" description="Enter sowing density  (plants/m2) : ">15</density>
-                <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-                <cultivar type="cultivars" description="Enter cultivar : ">amethyst</cultivar>
-                <class type="classes" description="Enter crop growth class : ">plant</class>
-                <row_spacing type="text" description="Enter row spacing (mm) : ">350</row_spacing>
+                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-may</date1>
+                <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">1-aug</date2>
+                <must_sow type="yesno" description="Must Sow">no</must_sow>
+                <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">15</rain_amount>
+                <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+                <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
+                <category type="category" description="Sowing Parameters" />
+                <cultivar1 type="cultivars" description="Enter cultivar : ">amethyst</cultivar1>
+                <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+                <density1 type="text" description="Enter sowing density  (plants/m2)">10</density1>
+                <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+                <row_spacing1 type="text" description="Enter row spacing  (mm)">350</row_spacing1>
+                <category type="category" description="Extra Parameters" />
+                <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+                <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+                <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
               </ui>
-              <script>
-                <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-                <event>start_of_day</event>
-              </script>
-            </manager>
+              <text>using System;
+using ModelFramework;
+using CSGeneral;
+
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
+
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+    
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+            </manager2>
           </folder>
           <outputfile>
-            <filename output="yes">Chickpea 15 plants.out</filename>
-            <title>Chickpea 15 plants</title>
+            <filename output="yes">Chickpea 10 plants.out</filename>
+            <title>Chickpea 10 plants</title>
             <variables name="Variables">
               <variable>year</variable>
               <variable>yield</variable>
             </variables>
             <events name="Reporting Frequency">
-              <event>harvesting</event>
+              <event description="">harvesting</event>
             </events>
           </outputfile>
-          <chickpea />
+        </area>
+      </simulation>
+      <simulation name="Chickpea 15 plants">
+        <metfile name="met">
+          <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
+        </metfile>
+        <clock>
+          <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+          <end_date type="date" description="Enter the end date of the simulation">31/12/1980</end_date>
+        </clock>
+        <summaryfile />
+        <area name="paddock">
           <Soil name="Heavy Clay">
-            <SoilType description="Soil description">Generic Vertosol</SoilType>
+            <RecordNumber>0</RecordNumber>
+            <SoilType>Generic Vertosol</SoilType>
             <Site>Generic</Site>
-            <NearestTown description="Nearest town">Toowoomba</NearestTown>
+            <NearestTown>Toowoomba</NearestTown>
             <Region>Darling Downs and Granite Belt</Region>
             <State>Queensland</State>
             <Country>Australia</Country>
-            <Latitude description="Latitude (WGS84)">-27.564333</Latitude>
-            <Longitude description="Longitude (WGS84)">151.953991</Longitude>
-            <LocationAccuracy description="Location accuracy">Regional Soil Type</LocationAccuracy>
-            <DataSource type="multiedit" description="Data source">YP. A Peake-CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
-            <Comments type="multiedit" description="Comments">Generic soil developed by Allan Peake.</Comments>
+            <Latitude>-27.564333</Latitude>
+            <Longitude>151.953991</Longitude>
+            <LocationAccuracy>Regional Soil Type</LocationAccuracy>
+            <YearOfSampling>0</YearOfSampling>
+            <DataSource>YP. A Peake-CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+            <Comments>Generic soil developed by Allan Peake.</Comments>
             <Water>
-              <SoilCrop name="wheat">
-                <Thickness>
-                  <double>150</double>
-                  <double>150</double>
-                  <double>300</double>
-                  <double>300</double>
-                  <double>300</double>
-                  <double>300</double>
-                  <double>300</double>
-                </Thickness>
-                <LL>
-                  <double>0.27</double>
-                  <double>0.28</double>
-                  <double>0.29</double>
-                  <double>0.3</double>
-                  <double>0.31</double>
-                  <double>0.32</double>
-                  <double>0.33</double>
-                </LL>
-                <KL>
-                  <double>0.06</double>
-                  <double>0.06</double>
-                  <double>0.04</double>
-                  <double>0.04</double>
-                  <double>0.04</double>
-                  <double>0.02</double>
-                  <double>0.02</double>
-                </KL>
-                <XF>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                </XF>
-              </SoilCrop>
-              <SoilCrop name="chickpea">
-                <Thickness>
-                  <double>150</double>
-                  <double>150</double>
-                  <double>300</double>
-                  <double>300</double>
-                  <double>300</double>
-                  <double>300</double>
-                  <double>300</double>
-                </Thickness>
-                <LL>
-                  <double>0.27</double>
-                  <double>0.28</double>
-                  <double>0.29</double>
-                  <double>0.3</double>
-                  <double>0.31</double>
-                  <double>0.32</double>
-                  <double>0.33</double>
-                </LL>
-                <KL>
-                  <double>0.07</double>
-                  <double>0.07</double>
-                  <double>0.07</double>
-                  <double>0.05</double>
-                  <double>0.04</double>
-                  <double>0.03</double>
-                  <double>0.02</double>
-                </KL>
-                <XF>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                  <double>1</double>
-                </XF>
-              </SoilCrop>
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -4814,6 +5567,120 @@
                 <double>0.513</double>
                 <double>0.498</double>
               </SAT>
+              <SoilCrop name="wheat">
+                <Thickness>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                </Thickness>
+                <LL>
+                  <double>0.27</double>
+                  <double>0.28</double>
+                  <double>0.29</double>
+                  <double>0.3</double>
+                  <double>0.31</double>
+                  <double>0.32</double>
+                  <double>0.33</double>
+                </LL>
+                <KL>
+                  <double>0.06</double>
+                  <double>0.06</double>
+                  <double>0.04</double>
+                  <double>0.04</double>
+                  <double>0.04</double>
+                  <double>0.02</double>
+                  <double>0.02</double>
+                </KL>
+                <XF>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                </XF>
+              </SoilCrop>
+              <SoilCrop name="sorghum">
+                <Thickness>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                </Thickness>
+                <LL>
+                  <double>0.27</double>
+                  <double>0.28</double>
+                  <double>0.29</double>
+                  <double>0.3</double>
+                  <double>0.31</double>
+                  <double>0.32</double>
+                  <double>0.33</double>
+                </LL>
+                <KL>
+                  <double>0.07</double>
+                  <double>0.07</double>
+                  <double>0.07</double>
+                  <double>0.05</double>
+                  <double>0.04</double>
+                  <double>0.03</double>
+                  <double>0.02</double>
+                </KL>
+                <XF>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                </XF>
+              </SoilCrop>
+              <SoilCrop name="chickpea">
+                <Thickness>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                </Thickness>
+                <LL>
+                  <double>0.27</double>
+                  <double>0.28</double>
+                  <double>0.29</double>
+                  <double>0.3</double>
+                  <double>0.31</double>
+                  <double>0.32</double>
+                  <double>0.33</double>
+                </LL>
+                <KL>
+                  <double>0.07</double>
+                  <double>0.07</double>
+                  <double>0.07</double>
+                  <double>0.05</double>
+                  <double>0.04</double>
+                  <double>0.03</double>
+                  <double>0.02</double>
+                </KL>
+                <XF>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                </XF>
+              </SoilCrop>
             </Water>
             <SoilWater>
               <SummerCona>3.5</SummerCona>
@@ -4828,6 +5695,10 @@
               <CN2Bare>73</CN2Bare>
               <CNRed>20</CNRed>
               <CNCov>0.8</CNCov>
+              <Slope>NaN</Slope>
+              <DischargeWidth>NaN</DischargeWidth>
+              <CatchmentArea>NaN</CatchmentArea>
+              <MaxPond>NaN</MaxPond>
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -4889,6 +5760,7 @@
                 <double>1</double>
                 <double>1</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -4938,33 +5810,347 @@
               </ESP>
             </Analysis>
             <InitialWater>
-              <RelativeTo>ll15</RelativeTo>
               <FractionFull>0.5</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
+              <RelativeTo>ll15</RelativeTo>
             </InitialWater>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
-                <double>1800</double>
+                <double>100</double>
               </Thickness>
               <NO3>
                 <double>20</double>
               </NO3>
-              <NO3Units>kgha</NO3Units>
               <NH4>
                 <double>0</double>
               </NH4>
               <SW>
                 <double>0</double>
               </SW>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>kgha</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
+          <surfaceom name="SurfaceOrganicMatter">
+            <PoolName type="text" description="Organic Matter pool name">sorghum</PoolName>
+            <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">sorghum</type>
+            <mass type="text" description="Initial surface residue (kg/ha)">550</mass>
+            <cnr type="text" description="C:N ratio of initial residue">76</cnr>
+            <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+          </surfaceom>
+          <fertiliser />
+          <chickpea>
+            <MaxRootDepth description="Maximum rooting depth (mm) 0=no restriction">0</MaxRootDepth>
+          </chickpea>
+          <folder name="Manager folder">
+            <manager2 name="Reset on Date">
+              <ui>
+                <category type="category" description="When should a reset be done" />
+                <reset_date type="text" description="Enter date of reset (dd-mmm) : ">1-may</reset_date>
+                <category type="category" description="Reset details" />
+                <ResetWater type="yesno" description="Reset soil water?">yes</ResetWater>
+                <ResetNitrogen type="yesno" description="Reset soil nitrogen?">yes</ResetNitrogen>
+                <ResetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</ResetSurfaceOM>
+              </ui>
+              <text>using System;
+using ModelFramework;
+using CSGeneral; 
+
+// Crop management: Reset on a fixed date
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+   {
+   [Link]  public Simulation MySimulation;
+   
+   [Param] private string reset_date;                    // date to reset 
+   [Param] private string ResetWater;                    // reset water yes/no 
+   [Param] private string ResetNitrogen;                 // reset nitrogen yes/no
+   [Param] private string ResetSurfaceOM;                // reset surfaceOM yes/no
+   [Input] private DateTime today;                       // input date from clock 
+   
+   
+   [EventHandler] public void OnPrepare()                    // what comes under this section heading will be done at the beginning of each day 
+   {
+      if (DateUtility.DatesEqual(reset_date,today))          // test that today is equal to the reset date
+      {
+         Console.WriteLine(today + " Reset Day");
+         foreach (Paddock paddock in MySimulation.ChildPaddocks) {
+            if(ResetWater == "yes"){
+               Component soilwat = (Component) paddock.LinkByType("soilwat");
+               soilwat.Publish("reset");
+            }
+            if(ResetSurfaceOM == "yes"){
+               Component surfaceom = (Component) paddock.LinkByType("surfaceom");
+               surfaceom.Publish("reset");
+            }
+            if(ResetNitrogen == "yes"){
+               Component soiln = (Component) paddock.LinkByType("soiln");
+               soiln.Publish("reset");
+            }
+         }
+      }
+   }
+}
+       </text>
+            </manager2>
+            <manager2 name="Chickpea Management">
+              <ui>
+                <category type="category" description="Crop properties" />
+                <crop type="crop" description="Name of this crop">chickpea</crop>
+                <category type="category" description="Sowing criteria" />
+                <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-may</date1>
+                <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+                <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">1-aug</date2>
+                <must_sow type="yesno" description="Must Sow">no</must_sow>
+                <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">15</rain_amount>
+                <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+                <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
+                <category type="category" description="Sowing Parameters" />
+                <cultivar1 type="cultivars" description="Enter cultivar : ">amethyst</cultivar1>
+                <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+                <density1 type="text" description="Enter sowing density  (plants/m2)">15</density1>
+                <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+                <row_spacing1 type="text" description="Enter row spacing  (mm)">350</row_spacing1>
+                <category type="category" description="Extra Parameters" />
+                <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+                <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+                <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
+              </ui>
+              <text>using System;
+using ModelFramework;
+using CSGeneral;
+
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
+
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+    
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+     if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+    }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+            </manager2>
+          </folder>
+          <outputfile>
+            <filename output="yes">Chickpea 15 plants.out</filename>
+            <title>Chickpea 15 plants</title>
+            <variables name="Variables">
+              <variable>year</variable>
+              <variable>yield</variable>
+            </variables>
+            <events name="Reporting Frequency">
+              <event description="">harvesting</event>
+            </events>
+          </outputfile>
         </area>
       </simulation>
       <Graph name="XY">
         <Legend>
-          <CheckedTitles> Chickpea 10 plants</CheckedTitles>
-          <CheckedTitles> Chickpea 15 plants</CheckedTitles>
         </Legend>
         <Plot>
           <SeriesType>Bar</SeriesType>
@@ -4978,8 +6164,6 @@
       </Graph>
       <Graph name="Probability Exceedence">
         <Legend>
-          <CheckedTitles> Chickpea 10 plants</CheckedTitles>
-          <CheckedTitles> Chickpea 15 plants</CheckedTitles>
         </Legend>
         <Plot>
           <SeriesType>Solid line</SeriesType>
