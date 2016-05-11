@@ -218,6 +218,7 @@ namespace CSUserInterface
                    }
 				}
 			}
+            sRule += "   MySimulation.Publish(\"transition\");\n";
             sRule += "}\n";
 
             // expose paddock states

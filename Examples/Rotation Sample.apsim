@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.8-r3861" name="simulations">
+<folder version="36" creator="Apsim 7.8-r3892" name="simulations">
   <simulation name="Rotation Sample">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -366,1352 +366,1098 @@
       <fertiliser />
       <chickpea />
       <wheat />
-      <cotton2 name="cotton">
-        <initsection>
-          <init name="published_events" array="T" />
-          <init name="subscribed_events" array="T" />
-          <init name="driver_connections" array="T" />
-          <init name="crop_type" kind="string">
-            <val>cotton</val>
-          </init>
-          <init name="leaf_res_n_conc" kind="double">
-            <val>0.02</val>
-          </init>
-          <init name="hucut" kind="double" unit="oC">
-            <val>40</val>
-          </init>
-          <init name="baset" kind="double" unit="oC">
-            <val>12</val>
-          </init>
-          <init name="open_def" kind="double" unit="%">
-            <val>60</val>
-          </init>
-          <init name="a_root_leaf" kind="double">
-            <val>1.01</val>
-          </init>
-          <init name="a_stem_leaf" kind="double">
-            <val>1.25</val>
-          </init>
-          <init name="e_par" kind="double" unit="g/MJ">
-            <val>2.5</val>
-          </init>
-          <init name="specific_lw" kind="double" unit="g/m^2">
-            <val>58</val>
-          </init>
-          <init name="t_opt" kind="double" unit="oC">
-            <val>25</val>
-          </init>
-          <init name="t_base" kind="double" unit="oC">
-            <val>8</val>
-          </init>
-          <init name="wt_area_max" kind="double">
-            <val>150</val>
-          </init>
-          <init name="embryo" kind="double" unit="g">
-            <val>0.75</val>
-          </init>
-          <init name="f_leaf" kind="double">
-            <val>0.6</val>
-          </init>
-          <init name="f_stem" kind="double">
-            <val>0.15</val>
-          </init>
-          <init name="f_root" kind="double">
-            <val>0.25</val>
-          </init>
-          <init name="elevation_default" kind="double" unit="m">
-            <val>200</val>
-          </init>
-          <init name="wlog_assimilate_red" kind="double">
-            <val>0.2</val>
-          </init>
-          <init name="wlog_carcap_red" kind="double">
-            <val>0.2</val>
-          </init>
-          <init name="watlog_c" kind="double">
-            <val>0.87</val>
-          </init>
-          <init name="watlog_n" kind="double">
-            <val>0.87</val>
-          </init>
-          <init name="wlog_carcap_red_stress" kind="double">
-            <val>0.01</val>
-          </init>
-          <init name="smi_affect_wlog" kind="double">
-            <val>0.75</val>
-          </init>
-          <init name="days_relief_wlog" kind="integer4" unit="days">
-            <val>7</val>
-          </init>
-          <init name="frost_kill_immediate" kind="double" unit="oC">
-            <val>2</val>
-          </init>
-          <init name="rtdep_max" kind="double" unit="cm">
-            <val>130</val>
-          </init>
-          <init name="harvest_n_frac" kind="double">
-            <val>0.85</val>
-          </init>
-          <init name="cutout_smi_crit" kind="double">
-            <val>0.75</val>
-          </init>
-          <init name="cutout_smi_days" kind="integer4" unit="days">
-            <val>5</val>
-          </init>
-          <init name="cutout_smi_site_red" kind="double">
-            <val>0.1</val>
-          </init>
-          <init name="epcoef1" kind="double">
-            <val>3.051</val>
-          </init>
-          <init name="epcoef2" kind="double">
-            <val>2.436</val>
-          </init>
-          <init name="epcoef_smi_crit" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="fbwstr_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="fbwstr_high" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="fbwstr_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="fbnstr_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="fbnstr_high" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="fbnstr_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="relp_smi_crit" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="relp_intercept" kind="double">
-            <val>0.25</val>
-          </init>
-          <init name="relp_slope" kind="double">
-            <val>0.864</val>
-          </init>
-          <init name="relp_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="relp_high" kind="double">
-            <val>1</val>
-          </init>
-          <init name="relp_a" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="vsnstr_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="vsnstr_high" kind="double">
-            <val>0.9</val>
-          </init>
-          <init name="vsnstr_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="flfsmi_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="flfsmi_high" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="flfsmi_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="vlnstr_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="vlnstr_high" kind="double">
-            <val>0.9</val>
-          </init>
-          <init name="vlnstr_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="fw_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="fw_high" kind="double">
-            <val>0.25</val>
-          </init>
-          <init name="fw_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="adjust_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="adjust_high" kind="double">
-            <val>5</val>
-          </init>
-          <init name="adjust_a" kind="double">
-            <val>1</val>
-          </init>
-          <init name="fwstrs_low" kind="double">
-            <val>0</val>
-          </init>
-          <init name="fwstrs_high" kind="double">
-            <val>0.5</val>
-          </init>
-          <init name="fwstrs_a" kind="double">
-            <val>4</val>
-          </init>
-          <init name="smi_delay_crit" kind="double">
-            <val>0.25</val>
-          </init>
-          <init name="cold_shock_delay_crit" kind="double" unit="oC">
-            <val>11</val>
-          </init>
-          <init name="cold_shock_delay" kind="double" unit="dd">
-            <val>5.2</val>
-          </init>
-          <init name="fert_crit" kind="double" unit="kg/ha">
-            <val>1</val>
-          </init>
-          <init name="fert_detect" kind="double" unit="kg/ha">
-            <val>10</val>
-          </init>
-          <init name="days_since_fert_max" kind="integer4" unit="days">
-            <val>100</val>
-          </init>
-          <init name="cultivar_default" kind="string">
-            <val>S71BR</val>
-          </init>
-          <init name="cultivars" array="T">
-            <element>
-              <field name="cultivar" kind="string">
-                <val>_Default_S71BR</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>40</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0217</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>402</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>161</val>
-                <val>307</val>
-                <val>338</val>
-                <val>484</val>
-                <val>630</val>
-                <val>848</val>
-                <val>1071</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>S71</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>42</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5.2</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0217</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>402</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>161</val>
-                <val>307</val>
-                <val>338</val>
-                <val>484</val>
-                <val>630</val>
-                <val>848</val>
-                <val>1071</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.8</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>S71BR</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>40</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0217</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>402</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>161</val>
-                <val>307</val>
-                <val>338</val>
-                <val>484</val>
-                <val>630</val>
-                <val>848</val>
-                <val>1071</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>Siok</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>42</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>4.5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0228</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>420</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>180</val>
-                <val>350</val>
-                <val>380</val>
-                <val>520</val>
-                <val>660</val>
-                <val>870</val>
-                <val>1100</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>Sica</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>40</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5.5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.02306</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0206</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.4789</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.87</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>420</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>180</val>
-                <val>350</val>
-                <val>380</val>
-                <val>520</val>
-                <val>660</val>
-                <val>870</val>
-                <val>1100</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-          </init>
-          <init name="cotton_co2" kind="double" unit="ppm">
-            <val>400</val>
-          </init>
-          <init name="x_stem_wt" kind="double" array="T" unit="g/plant" />
-          <init name="y_height" kind="double" array="T" unit="mm" />
-          <init name="rootExpansionDelay" kind="integer4">
-            <val>33</val>
-          </init>
-          <init name="useDDsumTo1stSq" kind="boolean">
-            <val>false</val>
-          </init>
-          <init name="cultivars" array="T">
-            <element>
-              <field name="cultivar" kind="string">
-                <val>_Default_S71BR</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>40</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0217</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>402</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>161</val>
-                <val>307</val>
-                <val>338</val>
-                <val>484</val>
-                <val>630</val>
-                <val>848</val>
-                <val>1071</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>S71</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>42</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5.2</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0217</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>402</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>161</val>
-                <val>307</val>
-                <val>338</val>
-                <val>484</val>
-                <val>630</val>
-                <val>848</val>
-                <val>1071</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.8</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>S71BR</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>40</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0217</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>402</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>161</val>
-                <val>307</val>
-                <val>338</val>
-                <val>484</val>
-                <val>630</val>
-                <val>848</val>
-                <val>1071</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>Siok</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>42</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>4.5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.01593</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0228</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.5411</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.52</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>420</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>180</val>
-                <val>350</val>
-                <val>380</val>
-                <val>520</val>
-                <val>660</val>
-                <val>870</val>
-                <val>1100</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-            <element>
-              <field name="cultivar" kind="string">
-                <val>Sica</val>
-              </field>
-              <field name="percent_l" kind="double">
-                <val>40</val>
-              </field>
-              <field name="scboll" kind="double">
-                <val>5.5</val>
-              </field>
-              <field name="respcon" kind="double">
-                <val>0.02306</val>
-              </field>
-              <field name="sqcon" kind="double">
-                <val>0.0206</val>
-              </field>
-              <field name="fcutout" kind="double">
-                <val>0.4789</val>
-              </field>
-              <field name="flai" kind="double">
-                <val>0.87</val>
-              </field>
-              <field name="DDISQ" kind="double">
-                <val>420</val>
-              </field>
-              <field name="TIPOUT" kind="double">
-                <val>52</val>
-              </field>
-              <field name="FRUDD" kind="double" array="T">
-                <val>50</val>
-                <val>180</val>
-                <val>350</val>
-                <val>380</val>
-                <val>520</val>
-                <val>660</val>
-                <val>870</val>
-                <val>1100</val>
-              </field>
-              <field name="BLTME" kind="double" array="T">
-                <val>0</val>
-                <val>0</val>
-                <val>0</val>
-                <val>0.07</val>
-                <val>0.21</val>
-                <val>0.33</val>
-                <val>0.55</val>
-                <val>1</val>
-              </field>
-              <field name="WT" kind="double" array="T">
-                <val>0.0104</val>
-                <val>0.0272</val>
-                <val>0.1441</val>
-                <val>0.0988</val>
-                <val>0.5042</val>
-                <val>0.9617</val>
-                <val>1</val>
-                <val>0.5785</val>
-              </field>
-              <field name="dlds_max" kind="double">
-                <val>0.12</val>
-              </field>
-              <field name="rate_emergence" kind="double">
-                <val>1</val>
-              </field>
-              <field name="popcon" kind="double">
-                <val>0.03633</val>
-              </field>
-              <field name="fburr" kind="double">
-                <val>1.23</val>
-              </field>
-              <field name="ACOTYL" kind="double">
-                <val>525</val>
-              </field>
-              <field name="RLAI" kind="double">
-                <val>0.01</val>
-              </field>
-              <field name="BckGndRetn" kind="double">
-                <val>0.9</val>
-              </field>
-            </element>
-          </init>
-        </initsection>
-      </cotton2>
       <folder name="Manager folder">
-        <manager name="Rotations">
-          <ui>
-            <category description="Fallow options" type="category" />
-            <SummerFallowName type="text" description="Enter summer fallow name : ">sf</SummerFallowName>
-            <SummerFallowEndDate type="text" description="Enter summer fallow END date (dd-mmm) : ">15-mar</SummerFallowEndDate>
-            <WinterFallowName type="text" description="Enter winter fallow name : ">wf</WinterFallowName>
-            <WinterFallowEndDate type="text" description="Enter winter fallow END date (dd-mmm) : ">23-aug</WinterFallowEndDate>
-            <category description="Crop rotation sequence" type="category" />
-            <crop1 type="crop" description="Enter 1st crop : ">cotton</crop1>
-            <crop2 type="crop" description="Enter 2nd crop : ">chickpea</crop2>
-            <crop3 type="crop" description="Enter 3rd crop : ">sf</crop3>
-            <crop4 type="crop" description="Enter 4th crop : ">wheat</crop4>
-            <crop5 type="crop" description="Enter 5th crop : ">sf</crop5>
-            <crop6 type="crop" description="Enter 6th crop : ">wf</crop6>
-            <crop7 type="crop" description="Enter 7th crop : ">nil</crop7>
-            <crop8 type="crop" description="Enter 8th crop : ">nil</crop8>
-            <crop9 type="crop" description="Enter 9th crop : ">nil</crop9>
-            <crop10 type="crop" description="Enter 10th crop : ">nil</crop10>
-            <crop11 type="crop" description="Enter 11th crop : ">nil</crop11>
-            <crop12 type="crop" description="Enter 12th crop : ">nil</crop12>
-            <crop13 type="crop" description="Enter 13th crop : ">nil</crop13>
-            <crop14 type="crop" description="Enter 14th crop : ">nil</crop14>
-            <crop15 type="crop" description="Enter 15th crop : ">nil</crop15>
-            <crop16 type="crop" description="Enter 16th crop : ">nil</crop16>
-            <crop17 type="crop" description="Enter 17th crop : ">nil</crop17>
-            <crop18 type="crop" description="Enter 18th crop : ">nil</crop18>
-            <crop19 type="crop" description="Enter 19th crop : ">nil</crop19>
-            <crop20 type="crop" description="Enter 20th crop : ">nil</crop20>
-          </ui>
-          <script name="init">
-            <text>
-         NextCropIndex = 1
-         NextCrop = ' '
-         ChooseNextCrop = 'yes'
-         SummerFallowIn = 'no'
-         WinterFallowIn = 'no'
-         FallowIn = 'no'
-      </text>
-            <event>init</event>
-          </script>
-          <script name="start_of_day">
-            <text>
-      if (ChooseNextCrop = 'yes') then
-         if (NextCropIndex = 1) then
-            NextCrop = '[crop1]'
-         elseif (NextCropIndex = 2) then
-            NextCrop = '[crop2]'
-         elseif (NextCropIndex = 3) then
-            NextCrop = '[crop3]'
-         elseif (NextCropIndex = 4) then
-            NextCrop = '[crop4]'
-         elseif (NextCropIndex = 5) then
-            NextCrop = '[crop5]'
-         elseif (NextCropIndex = 6) then
-            NextCrop = '[crop6]'
-         elseif (NextCropIndex = 7) then
-            NextCrop = '[crop7]'
-         elseif (NextCropIndex = 8) then
-            NextCrop = '[crop8]'
-         elseif (NextCropIndex = 9) then
-            NextCrop = '[crop9]'
-         elseif (NextCropIndex = 10) then
-            NextCrop = '[crop10]'
-         elseif (NextCropIndex = 11) then
-            NextCrop = '[crop11]'
-         elseif (NextCropIndex = 12) then
-            NextCrop = '[crop12]'
-         elseif (NextCropIndex = 13) then
-            NextCrop = '[crop13]'
-         elseif (NextCropIndex = 14) then
-            NextCrop = '[crop14]'
-         elseif (NextCropIndex = 15) then
-            NextCrop = '[crop15]'
-         elseif (NextCropIndex = 16) then
-            NextCrop = '[crop16]'
-         elseif (NextCropIndex = 17) then
-            NextCrop = '[crop17]'
-         elseif (NextCropIndex = 18) then
-            NextCrop = '[crop18]'
-         elseif (NextCropIndex = 19) then
-            NextCrop = '[crop19]'
-         elseif (NextCropIndex = 20) then
-            NextCrop = '[crop20]'
-         endif
-         if (NextCrop = 'nil' or NextCrop = ' ') then
-            NextCrop = '[crop1]'
-            NextCropIndex = 1
-         endif
-         NextCropIndex = NextCropIndex + 1
-         ChooseNextCrop = 'no'
-      endif
-      ! if the next crop is due to be a fallow and we're within the
-      ! correct date range then put a fallow in.
-      if (NextCrop = '[WinterFallowName]') then
-         if (paddock_is_fallow() = 1 and FallowIn = 'no') then
-            if (date_within('[SummerFallowEndDate], [WinterFallowEndDate]') then
-               WinterFallowIn = 'yes'
-               FallowIn = 'yes'
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      elseif (NextCrop = '[SummerFallowName]') then
-         if (paddock_is_fallow() = 1 and FallowIn = 'no') then
-            if (date_within('[WinterFallowEndDate], [SummerFallowEndDate]') then
-               SummerFallowIn = 'yes'
-               FallowIn = 'yes'
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
+        <rotplot name="Rotation Management">
+          <canvas_height>500</canvas_height>
+          <rules_height>293</rules_height>
+          <graph_name>stateGraph</graph_name>
+          <language>C#</language>
+          <node>
+            <name>chickpea</name>
+            <x1>191</x1>
+            <y1>319</y1>
+            <desc>
+            </desc>
+            <fill>-8323328</fill>
+          </node>
+          <node>
+            <name>wheat</name>
+            <x1>190</x1>
+            <y1>10</y1>
+            <desc>
+            </desc>
+            <fill>-16744320</fill>
+          </node>
+          <node>
+            <name>summer_fallow2</name>
+            <x1>10</x1>
+            <y1>160</y1>
+            <desc>
+            </desc>
+            <fill>-4144960</fill>
+          </node>
+          <node>
+            <name>summer_fallow</name>
+            <x1>358</x1>
+            <y1>170</y1>
+            <desc>
+            </desc>
+            <fill>-657956</fill>
+          </node>
+          <arc>
+            <name>arc2</name>
+            <source>wheat</source>
+            <target>summer_fallow2</target>
+            <x>50</x>
+            <y>55</y>
+            <actions>Wheat Management.Leave</actions>
+            <actions>SummerFallow.Enter</actions>
+            <rules>Wheat Management.canLeave</rules>
+          </arc>
+          <arc>
+            <name>arc6</name>
+            <source>summer_fallow</source>
+            <target>wheat</target>
+            <x>419</x>
+            <y>56</y>
+            <actions>SummerFallow.Leave</actions>
+            <actions>Wheat Management.Enter</actions>
+            <rules>SummerFallow.canLeave</rules>
+            <rules>Wheat Management.canEnter</rules>
+          </arc>
+          <arc>
+            <name>arc8</name>
+            <source>chickpea</source>
+            <target>summer_fallow</target>
+            <x>417</x>
+            <y>385</y>
+            <actions>Chickpea Management.Leave</actions>
+            <actions>SummerFallow.Enter</actions>
+            <rules>Chickpea Management.canLeave</rules>
+          </arc>
+          <arc>
+            <name>arc0</name>
+            <source>summer_fallow2</source>
+            <target>chickpea</target>
+            <x>51</x>
+            <y>386</y>
+            <actions>SummerFallow.Leave</actions>
+            <actions>Chickpea Management.Enter</actions>
+            <rules>SummerFallow.CanLeave</rules>
+            <rules>Chickpea Management.canEnter</rules>
+          </arc>
+          <InitialState>summer_fallow</InitialState>
+          <component name="Rotation Management_" executable="%apsim%/Model/Manager2.dll">
+            <executable>%apsim%/Model/Manager2.dll</executable>
+            <initdata>
+              <text><![CDATA[using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Text;
+using ModelFramework;
+using CSGeneral;
+public class Script {
+[Link] public Simulation MySimulation;
+private List<string> paddocks = new List<string>();
+private List<dynamic> paddockStates = new List<dynamic>();
+private Graph g = new Graph();
+private Dictionary<string,string> _currentState = new Dictionary<string,string>();
+[Output, Description("Current State of DG")] public string currentState {
+  get {string[] r = new string[_currentState.Count]; _currentState.Values.CopyTo(r,0);  
+       return(String.Join(" ", r));} 
+}
+private void setState(string p, string s) {
+  _currentState[p] = s;
+}
+private string getState(string p) {
+  return(_currentState[p]);
+}
+[Output, Description("Current paddock")] public string currentPaddock = "";
+[Output] public string [] states = new string[0]; 
+[EventHandler] public void OnInitialised()
+{
+g = new Graph();
+states = new string[4];
+int i = 0;
+g.AddNode("chickpea");
+states[i++] = "chickpea";
+g.AddNode("wheat");
+states[i++] = "wheat";
+g.AddNode("summer_fallow2");
+states[i++] = "summer_fallow2";
+g.AddNode("summer_fallow");
+states[i++] = "summer_fallow";
+ruleAction arc2 = new ruleAction();
+arc2.testCondition.Add("Wheat Management.canLeave");
+arc2.action.Add("Wheat Management.Leave");
+arc2.action.Add("SummerFallow.Enter");
+g.AddDirectedEdge("wheat","summer_fallow2",arc2);
+ruleAction arc6 = new ruleAction();
+arc6.testCondition.Add("SummerFallow.canLeave");
+arc6.testCondition.Add("Wheat Management.canEnter");
+arc6.action.Add("SummerFallow.Leave");
+arc6.action.Add("Wheat Management.Enter");
+g.AddDirectedEdge("summer_fallow","wheat",arc6);
+ruleAction arc8 = new ruleAction();
+arc8.testCondition.Add("Chickpea Management.canLeave");
+arc8.action.Add("Chickpea Management.Leave");
+arc8.action.Add("SummerFallow.Enter");
+g.AddDirectedEdge("chickpea","summer_fallow",arc8);
+ruleAction arc0 = new ruleAction();
+arc0.testCondition.Add("SummerFallow.CanLeave");
+arc0.testCondition.Add("Chickpea Management.canEnter");
+arc0.action.Add("SummerFallow.Leave");
+arc0.action.Add("Chickpea Management.Enter");
+g.AddDirectedEdge("summer_fallow2","chickpea",arc0);
+}
+[EventHandler] public void OnStart_Simulation()
+{
+paddocks.Add("");
+setState("","summer_fallow");
+   MySimulation.Publish("transition");
+}
+private string modname(string x) {
+  if (x.Contains(".")) return(x.Split('.')[0]);
+  return("");
+}
+private string varname(string x) {
+  if (x.Contains(".")) return(x.Split('.')[1]);
+  return(x);
+}
+[EventHandler] public void OnProcess()
+{
+   bool more = true;
+   while (more) {
+      more = false;
+      double bestScore = -1.0; string bestArc = ""; string bestPaddock = "";
+      foreach (string p in paddocks) {
+         Node s = g.FindNode(getState(p));
+         // Console.WriteLine(" state=" + s.Name);
+         foreach (string _arc in s.arcs.Keys) {
+            double score = 1;
+            foreach (string testCondition in s.arcs[_arc].testCondition){
+               double c = 0.0;
+               currentPaddock = p;
+               if (MySimulation.Get(testCondition, out c))
+                  score *= c;
+               else
+                  throw new Exception("Nothing returned from expression '" + testCondition + "'");
+               //Console.WriteLine(" p=" + p +" a=" + _arc + "cond=" + testCondition + " score=" + score);
+            }
+            if (score > bestScore) {
+               bestScore = score;
+               bestArc = _arc;
+               bestPaddock = p;
+            }
+         }
+      }
+      currentPaddock = "";
+      if (bestScore > 0.0) {
+         Node s = g.FindNode(getState(bestPaddock));
+         if( bestPaddock != "")
+            currentPaddock = bestPaddock;
+         if (getState(bestPaddock) != "") MySimulation.Publish("transition_from_" + getState(bestPaddock));
+         MySimulation.Publish("transition");
+         setState (bestPaddock, g.FindArcTarget(bestArc));
+         foreach (string action in s.arcs[bestArc].action ) {
+            MySimulation.Publish(action);
+            //Console.WriteLine(" best=" + bestPaddock + " action=" + action);
+         }
+         MySimulation.Publish("transition_to_" + getState(bestPaddock));
+         more = true;
+      }
+   }
+}
+  public class ruleAction
+  {
+     public string Target;
+     public List<string> testCondition = new List<string>();
+     public List<string> action = new List<string>();
+  }
+   public class Node : IEquatable<Node>
+   {
+      private string data /*, alias*/;
+      public Node(string _data) { data = _data; }
+      public Dictionary<string, ruleAction> arcs = new Dictionary<string, ruleAction>();
+      public bool Equals(Node other)
+      {
+         return ( this.data == other.data );
+      }
+      public string Name { get { return (data); } }
+   }
 
-      ! if we currently have a fallow in and we're at the end of the fallow window
-      ! then remove the fallow.
-      if (WinterFallowIn = 'yes' and today = date('[WinterFallowEndDate]')+1) then
-         WinterFallowIn = 'no'
-         FallowIn = 'no'
-      endif
-      if (SummerFallowIn = 'yes' and today = date('[SummerFallowEndDate]')+1) then
-         SummerFallowIn = 'no'
-         FallowIn = 'no'
-      endif
-      </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="CottonSowing">
+   class Graph
+   {
+      public List<Node> vertices;
+      public void print() {
+         foreach (Node n in vertices) {
+            Console.WriteLine(n.Name + ":"); 
+            foreach (string k in n.arcs.Keys) {
+               Console.WriteLine("  " + k); 
+            }
+         }
+      }
+      public Graph() { vertices = new List<Node>(); }
+      public Node AddNode(Node node)
+      {
+         if (vertices.Find(delegate(Node n) { return (n.Equals(node)); }) == null)
+            vertices.Add(node);
+         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));
+      }
+      public Node AddNode(string value)
+      {
+         return (AddNode(new Node(value)));
+      }
+      public Node FindNode(string value)
+      {
+         return (FindNode(AddNode(value)));
+      }
+      public Node FindNode(Node node)
+      {
+         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));
+      }
+      public void AddDirectedEdge(string source, string dest, ruleAction value)
+      {
+         int i = 0;
+         foreach (Node n in vertices) {
+            foreach (string arc in n.arcs.Keys) {
+               i++;
+            }
+         }
+         Node node1 = AddNode(source);
+         AddNode(dest);
+         value.Target = dest;
+         node1.arcs.Add("arc" + i.ToString(), value);
+      }
+      public string FindArcTarget(string arc)
+      {
+         foreach (Node n in vertices) {
+            foreach (string a in n.arcs.Keys) {
+               if (a == arc) { return (n.arcs[a].Target); }
+            }
+         }
+         Console.WriteLine("Aiee - no target for arc " + arc ); 
+         return("");
+      }
+   }
+}
+]]></text>
+            </initdata>
+          </component>
+        </rotplot>
+        <manager2 name="Chickpea Management">
           <ui>
+            <category type="category" description="Crop properties" />
+            <crop type="crop" description="Name of this crop">chickpea</crop>
             <category type="category" description="Sowing criteria" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">10-Oct</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-Dec</date2>
-            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-            <raincrit type="text" description="Amount of rainfall : ">10</raincrit>
-            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">100</esw_amount>
-            <category type="category" description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">cotton</crop>
-            <density type="text" description="Enter sowing density  (plants/m row) : ">10</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">Siok</cultivar>
-            <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
-            <skip type="text" description="Enter Skip Row (0=solid, 1=single, 2=double) : ">0</skip>
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">15-may</date1>
+            <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">10-jul</date2>
+            <must_sow type="yesno" description="Must Sow">no</must_sow>
+            <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">25</rain_amount>
+            <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+            <esw_amount type="text" description="Enter amount of soil water (mm)">50</esw_amount>
+            <category type="category" description="Sowing Parameters" />
+            <cultivar1 type="cultivars" description="Enter cultivar : ">amethyst</cultivar1>
+            <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+            <density1 type="text" description="Enter sowing density  (plants/m2)">25</density1>
+            <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+            <row_spacing1 type="text" description="Enter row spacing  (mm)">500</row_spacing1>
+            <category type="category" description="Extra Parameters" />
+            <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+            <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+            <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
           </ui>
-          <script>
-            <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants_pm =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skiprow = [skip]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="ChickPeaSowing">
-          <ui>
-            <category description="Sowing criteria" type="category" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
-            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
-            <raincrit type="text" description="Amount of rainfall : ">25</raincrit>
-            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">50</esw_amount>
-            <category description="Sowing parameters" type="category" />
-            <crop type="crop" description="Enter name of crop to sow : ">chickpea</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">25</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">amethyst</cultivar>
-            <class type="classes" description="Enter crop growth class : ">plant</class>
-            <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
-          </ui>
-          <script name="start_of_day">
-            <text><![CDATA[
-      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            ]]></text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="WheatSowing">
-          <ui>
-            <category description="Sowing criteria" type="category" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
-            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
-            <raincrit type="text" description="Amount of rainfall : ">25</raincrit>
-            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">50</esw_amount>
-            <category description="Sowing parameters" type="category" />
-            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
-            <class type="classes" description="Enter crop growth class : ">plant</class>
-            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
-          </ui>
-          <script>
-            <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Fertilise at sowing">
-          <ui>
-            <category description="When should fertiliser be applied" type="category" />
-            <modulename type="modulename" description="On which module should the event come from : ">wheat</modulename>
-            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category description="Fertiliser application details" type="category" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
-            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
-          </ui>
-          <script name="[modulename].[eventname]">
-            <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-            <event>[modulename].[eventname]</event>
-          </script>
-        </manager>
-        <manager name="CottonHarvesting">
-          <ui>
-            <category description="Harvesting criteria" type="category" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">cotton</crop>
-          </ui>
-          <script>
-            <text>          !!  cotton defoliation
-          if ([crop].stageName = 'mature'  and  [crop].defol_das = 0 ) then
-              [crop] defoliate
-          endif
-             
-          !! cotton harvest
-          if ([crop].stageName = 'harvest_ripe' ) then
-              [crop] harvest
-              [crop] end_crop
-          endif
-           </text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-        <manager name="ChickPeaHarvesting">
-          <ui>
-            <category description="Harvesting criteria" type="category" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">chickpea</crop>
-          </ui>
-          <script>
-            <text>
+          <text>using System;
+using ModelFramework;
+using CSGeneral;
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
 
-            </text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-        <manager name="WheatHarvesting">
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   [Output, Description("Test whether we have passed the end of the window")] public int pastWindow  {
+      get {
+         return( (DateUtility.CompareDates(date2, today) &gt; 0) ? 1 : 0);
+      }
+   }
+
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+        </manager2>
+        <manager2 name="Wheat Management">
           <ui>
-            <category description="Harvesting criteria" type="category" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
+            <category type="category" description="Crop properties" />
+            <crop type="crop" description="Name of this crop">wheat</crop>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">15-may</date1>
+            <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">10-jul</date2>
+            <must_sow type="yesno" description="Must Sow">no</must_sow>
+            <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">25</rain_amount>
+            <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+            <esw_amount type="text" description="Enter amount of soil water (mm)">50</esw_amount>
+            <category type="category" description="Sowing Parameters" />
+            <cultivar1 type="cultivars" description="Enter cultivar : ">hartog</cultivar1>
+            <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+            <density1 type="text" description="Enter sowing density  (plants/m2)">100</density1>
+            <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+            <row_spacing1 type="text" description="Enter row spacing  (mm)">250</row_spacing1>
+            <category type="category" description="Extra Parameters" />
+            <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+            <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+            <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
           </ui>
-          <script name="end_of_day">
-            <text>
+          <text>using System;
+using ModelFramework;
+using CSGeneral;
 
-           if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-              [crop]  harvest
-              [crop]  end_crop
-           endif
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
 
-            </text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   [Output, Description("Test whether we have passed the end of the window")] public int pastWindow  {
+      get {
+         return( (DateUtility.CompareDates(date2, today) &lt; 0) ? 1 : 0);
+      }
+   }
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+        </manager2>
+        <manager2 name="Wheat Sowing Fertiliser">
+          <ui>
+            <fertType type="text" description="The type of fertiliser">Urea_N</fertType>
+            <fertAmt type="text" description="Amout of fertiliser to apply (kg/ha)">150</fertAmt>
+            <tag type="category" description="Event details" />
+            <ModuleName type="modulename" description="On which module should the event come from: ">wheat</ModuleName>
+            <EventName type="text" description="On which event should spraying be triggered">sowing</EventName>
+          </ui>
+          <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: fertilise at sowing
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string fertType;
+   [Param] float fertAmt;
+   [Param] string ModuleName;
+   [Param] string EventName;
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            if(child.Name == ModuleName){
+               RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+               MySimulation.Subscribe(child.FullName + "." + EventName, curried);
+               Console.WriteLine("Subscribed '" + child.FullName + "." + EventName + " =&gt; " + paddock.Name + "'"); 
+            }
+         }
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      Console.WriteLine("Fertiliser OnTrigger called, paddock='" + paddock + "'"); 
+      if (fertAmt &gt; 0) 
+      {         
+         Component paddockModule;
+         if (paddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(paddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Fertiliser fertModule = (Fertiliser) paddockModule.LinkByName("Fertiliser");
+         fertModule.Apply(fertAmt, 50, fertType);
+      }
+   }
+}
+       </text>
+        </manager2>
+        <manager2 name="SummerFallow">
+          <ui>
+            <endDate type="text" description="Enter the end date of the pause">15-mar</endDate>
+          </ui>
+          <text>using System;
+using System.Collections.Generic;
+using ModelFramework;
+using CSGeneral;
+
+// A "blocking" period that waits until a specified date.
+// Multi-paddock aware.
+
+public class Script 
+{  
+   [Link()] public Simulation MySimulation;
+
+   [Input] private DateTime today; 
+   [Param] private string endDate; 
+
+   private Dictionary&lt;string,bool&gt; flag = new Dictionary&lt;string,bool&gt;();
+
+   // +ve number - yes
+   // 0          - no
+   [Output, Description("Test whether we can enter the pause")] public int canEnter  
+   {
+      get {return (1);}
+   }
+
+   // Set the flag to say that we cannot leave until the end of the period is passed
+   [EventHandler, Description("Enter the pause period")] public void OnEnter()
+   {
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      flag[currentPaddock] = false;
+   } 
+   
+   [Output, Description("Test whether we can leave the pause")] public int canLeave  
+   {get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("CanLeave called, p=" + currentPaddock + ",c=" + counter[currentPaddock]);
+         if (flag[currentPaddock]) {
+            return (1);
+         }   
+         return (0);
+
+      }
+   }
+   
+   [EventHandler, Description("Leave the pause")] public void OnLeave()
+   {
+       // Nothing
+   } 
+
+   // Setup
+   [EventHandler] public void OnStart_Simulation()
+   {
+      flag.Add("", true);
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+         flag.Add(paddock.Name, true);
+   }
+
+   // Set the flag to say that the end of the period has passed
+   [EventHandler] public void OnPost()
+   {
+      if (DateUtility.DatesEqual(endDate, today)) {
+         List &lt;string&gt; paddocks = new List&lt;string&gt;(flag.Keys);
+         foreach (string p in paddocks) 
+            flag[p] = true;
+      }
+   }
+}
+
+</text>
+        </manager2>
+        <manager2 name="StartEndSoils">
+          <ui />
+          <text>using System; 
+using ModelFramework; 
+using CSGeneral;
+
+// This captures and stores the inital state of sw_dep and NO3 at the begining of a 
+// transition within a rotation, this allows the start and end conditions 
+// to be reported on a single report line. 
+ 
+public class Script 
+{ 
+   [Link()] public Paddock myPaddock;   
+ 
+   [Output, Description("The soil water on the first day of a rotation"), Units("mm")] public double swStart = 0.0;
+   [Output, Description("The soil water on the last day of a rotation"), Units("mm")] public double swYesterday = 0.0;    //this is a way of capturing the day befores soil water to use in a water balance calculation
+   [Output, Description("The soil NO3 on the first day of a rotation"), Units("kg/ha")] public double no3Start = 0.0;     //this is the soil nitrogen on the final day of a transition
+   [Output, Description("The soil NO3 on the last day of a rotation"), Units("kg/ha")] public double no3Yesterday = 0.0; //this is a way of capturing the day befores soil nitrogen to use in a nitrogen balance calculation
+   [Output, Description("The number of days in a rotation"), Units("")] public int daysInPhase = 0;
+   
+   [EventHandler] public void OnStart_Simulation() { 
+      double [] swdep = new double[15];
+      double [] no3dep = new double[15];
+      myPaddock.Get("sw_dep()", out swdep);
+      myPaddock.Get("no3()", out no3dep);
+      swYesterday = swStart = MathUtility.Sum(swdep);  
+      no3Yesterday = no3Start = MathUtility.Sum(no3dep);
+   } 
+   [EventHandler] public void OnTransition() {
+      swStart = swYesterday; no3Start = no3Yesterday; 
+      daysInPhase = 0;
+   } 
+   [EventHandler] public void OnPost() { 
+      double [] swdep = new double[15];
+      myPaddock.Get("sw_dep()", out swdep);
+      swYesterday = MathUtility.Sum(swdep);
+      double [] no3dep = new double[15];
+      myPaddock.Get("no3()", out no3dep);
+      no3Yesterday = MathUtility.Sum(no3dep);
+      daysInPhase++;
+   } 
+} 
+</text>
+        </manager2>
+        <manager2 name="RotationCounter">
+          <ui />
+          <text>using System; 
+using ModelFramework; 
+
+// Counts the number of times a rotation has completed (ie gone back to the starting point)
+ 
+public class Script 
+{ 
+   [Link()] public Paddock myPaddock;   
+
+   [Output, Description("Number of times the rotation has cycled"), Units("n")] public int rotationNumber = 0; 
+  
+   private string initialState = ""; 
+   [EventHandler] public void OnStart_Simulation() { 
+      myPaddock.Get("currentState", out initialState);  
+   }    
+ 
+   private bool needsCheck = false; 
+   [EventHandler] public void OnPrepare() { needsCheck = false; } 
+   [EventHandler] public void OnTransition() { needsCheck = true; } 
+   [EventHandler] public void OnPost() { 
+      if (needsCheck)  { 
+         string currentState = ""; 
+         myPaddock.Get("currentstate", out currentState);  
+         if (currentState == initialState)  
+            rotationNumber++; 
+      } 
+   } 
+} 
+</text>
+        </manager2>
+        <manager2 name="YieldAccumulator">
+          <ui />
+          <text>using System;
+using ModelFramework;
+
+// This script accumulates yields and biomass over a period. It is useful when 
+// wanting to accumulate the total biomass produced across a sequence of crops 
+// or the total transpiration within a phase of a rotation. 
+// It's not very useful for intercrops.
+
+public class Script 
+   {
+   [Link()] public Paddock MyPaddock;  
+   [Output, Description("Crop Yield"), Units("kg/ha")] public double yld_kgha {
+      get{
+         double yld2 = 0;
+         foreach (Component crop in MyPaddock.Crops)
+         {
+            double yld = 0;
+            crop.Get("yield", out yld);
+            yld2 = yld2 + yld;
+         }
+         return yld2 ;}
+   }
+  
+   [Output, Description("Crop Biomass"), Units("kg/ha")] public double biomass_kgha {
+      get{
+         double bio2 = 0;
+         foreach (Component crop in MyPaddock.Crops)
+         {
+            double bio = 0;
+            crop.Get("biomass", out bio);
+            bio2 = bio2 + bio;
+         }
+         return bio2 ;}
+   }
+
+   [Output, Description("Plant Transpiration"), Units("mm")] public double SEp {
+      get{
+         double EpSum = 0;
+         foreach (Component crop in MyPaddock.Crops)
+         {
+            double Ep = 0.0;
+            crop.Get("Ep", out Ep);
+            EpSum = EpSum + Ep;
+         }
+         return EpSum ;}
+   }
+
+   [Output, Description("Grain Protein"), Units("%")] public double protein {
+   get{
+      double pro = 0;
+      double pro2 = 0;
+      foreach (Component crop in MyPaddock.Crops)
+      {
+         crop.Get("grain_protein", out pro);
+         pro2 = pro2 + pro;
+      }
+        
+      return pro2 ;}
+   }
+   
+   [Output, Description("Grain N"), Units("g/m2")] public double GrainN_gm2 {
+      get{
+         double GN2 = 0;
+         foreach (Component crop in MyPaddock.Crops)
+         {
+            double GN = 0;
+            if (crop.Get("grain_N", out GN))
+               GN2 = GN2 + GN;
+            else if (crop.Get("GrainGreenN", out GN))
+               GN2 = GN2 + GN;
+         }
+         return GN2 ;}
+   }
+}
+       </text>
+        </manager2>
+        <tracker>
+          <variable>sum of rain on end_of_day from transition to now as TRainfall</variable>
+          <variable>sum of SEp on end_of_day from transition to now as TEp</variable>
+          <variable>sum of drain on end_of_day from transition to now as Tdrainage</variable>
+          <variable>sum of runoff on end_of_day from transition to now as Trunoff</variable>
+          <variable>sum of es on end_of_day from transition to now as Tes</variable>
+          <variable>sum of fertiliser on end_of_day from transition to now as applied_fert</variable>
+          <variable>count of clock.simulation_days on end_of_day from transition to now as days_in_stage</variable>
+        </tracker>
       </folder>
-      <outputfile>
-        <filename output="yes">Rotation Sample.out</filename>
-        <title>Rotation Sample</title>
+      <outputfile name="Harvest">
+        <filename output="yes">Rotation Sample Harvest.out</filename>
+        <title>Rotation Sample Harvest</title>
         <variables name="Variables">
           <variable>dd/mm/yyyy as Date</variable>
-          <variable>cotton.dm as Cotton.Biomass</variable>
+          <variable>yield</variable>
           <variable>biomass</variable>
-          <variable>lai</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event description="End of day">Daily</event>
+          <event>harvesting</event>
+        </events>
+      </outputfile>
+      <outputfile name="Phases">
+        <filename output="yes">Rotation Sample Phases.out</filename>
+        <title>Rotation Sample Phases</title>
+        <variables name="Variables">
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>currentState</variable>
+          <variable>TRainfall as Rainfall</variable>
+          <variable>Trunoff as runoff</variable>
+          <variable>Tes as evap</variable>
+          <variable>Tdrainage as drainage</variable>
+          <variable>TEp as Ep</variable>
+          <variable>swStart</variable>
+          <variable>swYesterday as swEnd</variable>
+          <variable>no3Start</variable>
+          <variable>no3Yesterday as no3End</variable>
+          <variable>biomass_kgha as Biomass</variable>
+          <variable>yld_kgha as Yield</variable>
+          <variable>GrainN_gm2 as grainN</variable>
+          <variable>carbon_tot()</variable>
+          <variable>applied_fert</variable>
+          <variable>rotationNumber</variable>
+          <variable>simulation_days</variable>
+          <variable>daysInPhase</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>transition</event>
         </events>
       </outputfile>
     </area>

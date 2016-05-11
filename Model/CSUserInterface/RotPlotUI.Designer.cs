@@ -270,6 +270,7 @@
             this.lblColour.Name = "lblColour";
             this.lblColour.Size = new System.Drawing.Size(100, 19);
             this.lblColour.TabIndex = 16;
+            this.lblColour.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -286,6 +287,8 @@
             this.txtDesc.Name = "txtDesc";
             this.txtDesc.Size = new System.Drawing.Size(100, 20);
             this.txtDesc.TabIndex = 14;
+            this.txtDesc.TextChanged += new System.EventHandler(this.txtDesc_TextChanged);
+            this.txtDesc.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtName_KeyDown);
             // 
             // txtName
             // 
@@ -293,6 +296,8 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(100, 20);
             this.txtName.TabIndex = 13;
+            this.txtName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
+            this.txtName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtName_KeyDown);
             // 
             // label5
             // 
