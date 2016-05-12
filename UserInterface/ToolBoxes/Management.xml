@@ -42,7 +42,7 @@ Public Class Script
    End Sub
 
 End Class
-		</text>
+  </text>
   </manager2>
   <manager2 name="Script(C#)">
     <ui>
@@ -73,7 +73,7 @@ public class Script
    }
 
 }
-		</text>
+  </text>
   </manager2>
   <Reference>
     <ref type="text" description="Path to assembly:">xxxxxxx.dll</ref>
@@ -202,7 +202,7 @@ public class Script
              isPossibleToday = true;
          } 
 
-	     if (isPossibleToday)
+      if (isPossibleToday)
             return 1;
          
          if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
@@ -254,7 +254,7 @@ public class Script
 
       cropModule.Publish("Sow", data);
       if (tillageImplement.ToLower() != "na") 
-	  {
+   {
          TillageType t = new TillageType();
          t.type = tillageImplement;
          Component paddockModule;
@@ -263,7 +263,7 @@ public class Script
          else
             paddockModule = MySimulation.ChildPaddocks[0];
          paddockModule.Publish("tillage", t);
-      }		 
+      }   
    }
 
    // Test whether we can harvest a crop today
@@ -557,7 +557,7 @@ Public Class Script
    End Sub
 
 End Class
-			</text>
+   </text>
     </manager2>
     <manager2 name="FertOnSoilNCriteria">
       <ui>
@@ -637,7 +637,7 @@ Public Class Script
    End Sub
 
 End Class
-			</text>
+   </text>
     </manager2>
     <manager2 name="FertOnEvent">
       <ui>
@@ -762,7 +762,7 @@ Public Class Script
    End Sub
 
 End Class
-			</text>
+   </text>
     </manager2>
     <manager2 name="Irrigate on sw deficit">
       <ui>
@@ -831,7 +831,7 @@ public class Script
       }
    }  
 }
-			</text>
+   </text>
     </manager2>
     <manager2 name="Furrow irrigation">
       <ui>
@@ -914,7 +914,7 @@ public class Script
       }
    }  
 }
-			</text>
+   </text>
     </manager2>
     <manager2 name="Irrigate on event">
       <ui>
@@ -946,7 +946,7 @@ public class Script
       Console.WriteLine("Irrigating with " + amount + "mm due to " + ModuleName + "." + EventName + " event."); //write the event to the summary file
    }  
 }
-			</text>
+   </text>
     </manager2>
     <manager2 name="Irrigate on date">
       <ui>
@@ -1015,7 +1015,7 @@ public class Script
       }
    } 
 }
-			</text>
+   </text>
     </manager2>
     <manager2 name="Irrigate based on rainfall">
       <ui>
@@ -1073,7 +1073,7 @@ public class Script
       dai++; //increase the counter by one
    }  
 }
-			</text>
+   </text>
     </manager2>
     <manager2 name="Irrigate at start of week">
       <ui>
@@ -1109,7 +1109,7 @@ public class Script
          }
    }  
 }
-			</text>
+   </text>
     </manager2>
     <manager2 name="Report on specific days">
       <ui>
@@ -1156,7 +1156,7 @@ public class Script
       }
    }  
 }
-			</text>
+   </text>
     </manager2>
   </folder>
   <folder name="Manager (common tasks)">
@@ -1191,7 +1191,7 @@ if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or Nex
         ChooseNextCrop = 'yes'
     endif
 endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -1201,7 +1201,7 @@ endif
         if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <ui>
@@ -1282,7 +1282,7 @@ endif
             endif
          endif
       endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -1317,7 +1317,7 @@ endif
             endif
          endif
       endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -1356,14 +1356,14 @@ endif
                endif
             endif
          endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
         <text>
                nextcrop = 0
                fallowin = 0
-				</text>
+    </text>
         <event>init</event>
       </script>
     </manager>
@@ -1454,7 +1454,7 @@ endif
               [crop]LeyYears = [leyyears]
        endif
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -1469,7 +1469,7 @@ endif
                               [crop] end_crop
                    endif
               endif
-				</text>
+    </text>
         <event>end_of_day</event>
       </script>
     </manager>
@@ -1576,7 +1576,7 @@ endif
               [crop]  end_crop
         endif
 
-				</text>
+    </text>
         <event>end_of_day</event>
       </script>
       <ui>
@@ -1589,7 +1589,7 @@ endif
       <script>
         <text>
         [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-				</text>
+    </text>
         <event>[modulename].[eventname]</event>
       </script>
       <ui>
@@ -1627,13 +1627,13 @@ endif
       <script>
         <text>
             fert_applied[zadok_fert_stage_begin][zadok_fert_stage_end] = 0
-				</text>
+    </text>
         <event>init</event>
       </script>
       <script>
         <text>
             fert_applied[zadok_fert_stage_begin][zadok_fert_stage_end] = 0
-				</text>
+    </text>
         <event>sowing</event>
       </script>
       <script>
@@ -1735,7 +1735,7 @@ endif
             ready_to_till_pre_sow = 0
             till_day_pre_sow = 0
          endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <ui>
@@ -1756,7 +1756,7 @@ endif
             else
                 '[surfaceommodule]' tillage type = [tillage_type]
             endif
-				</text>
+    </text>
         <event>[modulename].[eventname]</event>
       </script>
       <ui>
@@ -1781,7 +1781,7 @@ endif
           if (today = date('[date]')) then
              [output] do_output
           endif
-				</text>
+    </text>
         <event>end_of_day</event>
       </script>
     </manager>
@@ -1807,7 +1807,7 @@ endif
             endif
             act_mods reseting
          endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <ui>
@@ -1845,7 +1845,7 @@ endif
             if (resetWater = 'yes' or resetNitrogen = 'yes' or resetSurfaceOM = 'yes' or resetP = 'yes') then
                act_mods reseting
             endif
-				</text>
+    </text>
         <event>[modulename].[eventname]</event>
       </script>
       <ui>
@@ -1871,7 +1871,7 @@ endif
          SummerFallowIn = 'no'
          WinterFallowIn = 'no'
          FallowIn = 'no'
-				</text>
+    </text>
         <event>init</event>
       </script>
       <script>
@@ -1955,7 +1955,7 @@ endif
          SummerFallowIn = 'no'
          FallowIn = 'no'
       endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <ui>
@@ -1991,7 +1991,7 @@ endif
       <script>
         <text>
           WetYield = yield / (1 - [MoistureContent]/100)
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <ui>
@@ -2091,7 +2091,7 @@ endif
       <script name="init">
         <text>
   bambatsi_in = 0
-				</text>
+    </text>
         <event>init</event>
       </script>
       <script name="start_of_day">
@@ -2165,7 +2165,7 @@ Maximum_interception = 0
 Residue_water = 0
 Interception_today = 0
 Evaporated_interception = 0
-				</text>
+    </text>
         <event>init</event>
       </script>
       <script>
@@ -2193,7 +2193,7 @@ Residue_water = Residue_water + Interception_today
 
 ! The remainder of the residue interception/evaporation procedure is on the end_of_day tab
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -2569,7 +2569,7 @@ endif</text>
         <text>if (today = date('[killdate]')) then
    [weed] kill_crop plants_kill_fraction = [amount]
 endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -2589,7 +2589,7 @@ fallowin = 0</text>
         <text>if (daysafteremergence = [killdoe]) then
    [weed] kill_crop plants_kill_fraction = [amount]
 endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -2605,7 +2605,7 @@ fallowin = 0</text>
         <script>
           <text>
         [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-					</text>
+     </text>
           <event>[modulename].[eventname]</event>
         </script>
         <ui>
@@ -2658,7 +2658,7 @@ fallowin = 0</text>
         <script>
           <text>
                '[surfaceommodule]' add_surfaceom type=[manure_type], name=[manure_type], mass=[manure_amount], cnr=[manure_cnr], cpr=[manure_cpr]
-					</text>
+     </text>
           <event>[modulename].[eventname]</event>
         </script>
         <ui>
@@ -2689,7 +2689,7 @@ fallowin = 0</text>
             ready_to_till_pre_sow = 0
             till_day_pre_sow = 0
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -2730,7 +2730,7 @@ fallowin = 0</text>
             endif
         endif
 
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
         <ui>
@@ -2743,7 +2743,7 @@ fallowin = 0</text>
         <script>
           <text>
           [crop]_to_harvest = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -2771,7 +2771,7 @@ fallowin = 0</text>
          if ([crop].StageName = 'harvest_ripe' OR [crop].plant_status = 'dead') then
             [crop]_to_harvest = 1
          endif
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
         <ui>
@@ -2786,7 +2786,7 @@ fallowin = 0</text>
          if ([crop]_to_harvest = 1) then
             '[outputfile]' do_output
          endif
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
         <ui>
@@ -2799,7 +2799,7 @@ fallowin = 0</text>
         <script>
           <text>
                last_stage_name = 'none'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -2809,7 +2809,7 @@ fallowin = 0</text>
             '[outputfile]' do_output
          endif
          last_stage_name = [crop].StageName
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
         <ui>
@@ -2826,7 +2826,7 @@ fallowin = 0</text>
             '[outputfile]' do_output
          endif
          last_stage_name = [crop].StageName
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
         <ui>
@@ -2854,7 +2854,7 @@ fallowin = 0</text>
          ready_to_till_pre_sow = 0
          till_day_pre_sow = 0
          days_after_weed_kill = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -2865,7 +2865,7 @@ fallowin = 0</text>
             wht_sow_opp_num = 0
             wht_sow_opp_days = 0
          endif
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
         <script>
@@ -3150,7 +3150,7 @@ fallowin = 0</text>
          till_day_pre_sow = 0
          days_after_weed_kill = 0
 
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3310,7 +3310,7 @@ fallowin = 0</text>
          till_day_pre_sow = 0
          days_after_weed_kill = 0
 
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3442,7 +3442,7 @@ fallowin = 0</text>
             endif
          endif
 
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -3478,7 +3478,7 @@ fallowin = 0</text>
         <script>
           <text>
           daemerge = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3561,7 +3561,7 @@ fallowin = 0</text>
          if today = date('[date]') then
             '[surfaceommodule]' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -3574,7 +3574,7 @@ fallowin = 0</text>
         <script>
           <text>
                last_stage_name = 'none'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3619,7 +3619,7 @@ fallowin = 0</text>
         <text>if (today = date('[date]')) then
      '[pasturemodel]' sowpasture rate = [rate]
     endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -3644,7 +3644,7 @@ fallowin = 0</text>
 
 
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -3688,7 +3688,7 @@ fallowin = 0</text>
     endif
 
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -3706,7 +3706,7 @@ fallowin = 0</text>
         <text>if (today = date('[date]')) then
      '[pasturemodel]' burnpasture kill_plants = [kill_plants], kill_seed = [kill_seed], propn_unburnt = [propn_unburnt]
     endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -3724,7 +3724,7 @@ fallowin = 0</text>
         <text>if (today = date('[date]')) then
      '[pasturemodel]' cultivatepasture depth = [depth], propn_incorp = [propn_incorp], propn_mixed = [propn_mixed]
     endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -3735,7 +3735,7 @@ fallowin = 0</text>
         <script>
           <text>
                cattle_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3744,7 +3744,7 @@ fallowin = 0</text>
            [stockmodule]scienceconverter buystock number = [buy_number] (-), genotype = '[genotype]', sex = [sex], age = [buy_age] (months), weight = [buy_weight] (kg)
            cattle_presence = 'on'
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -3762,7 +3762,7 @@ fallowin = 0</text>
         <script>
           <text>
                cattle_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3771,7 +3771,7 @@ fallowin = 0</text>
            [stockmodule]scienceconverter buystock number = [buy_number] (-), genotype = '[genotype]', sex = [sex], age = [buy_age] (months), weight = [buy_weight] (kg)
            cattle_presence = 'on'
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -3789,7 +3789,7 @@ fallowin = 0</text>
         <script>
           <text>
                cattle_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3801,7 +3801,7 @@ fallowin = 0</text>
                [sellpaddock].[sellstockmodule]scienceconverter sellstock number = stocknumber (-)
                [buypaddock].[buystockmodule]scienceconverter buystock number = stocknumber (-), genotype = '[genotype]', sex = [sex], age = stockage (months), weight = stockwt (kg)
         endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -3819,7 +3819,7 @@ fallowin = 0</text>
           <text>
                [sellpaddock]_cattle_presence = 'off'
                [buypaddock]_cattle_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3854,7 +3854,7 @@ fallowin = 0</text>
         <script>
           <text>
                cattle_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3886,7 +3886,7 @@ fallowin = 0</text>
           <text>
                [paddockname]_cattle_presence = 'off'
                buy_count = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -3942,7 +3942,7 @@ fallowin = 0</text>
                  [stockmodule]scienceconverter sellstock number = [sell_number] (-)
                  cattle_presence = 'off'
               endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -3987,7 +3987,7 @@ fallowin = 0</text>
         <script>
           <text>
             numdaysweightloss = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4036,7 +4036,7 @@ fallowin = 0</text>
           <text>
             numdaysweightchange = 0
             wt_change_yesterday = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4092,7 +4092,7 @@ fallowin = 0</text>
           <text>
             numdays_cond_score_diminishing = 0
             cond_score_yesterday = 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4173,7 +4173,7 @@ fallowin = 0</text>
         <script>
           <text>
                sheep_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4182,7 +4182,7 @@ fallowin = 0</text>
            [stockmodule]scienceconverter buystock number = [buy_number] (-), genotype = '[genotype]', sex = [sex], age = [buy_age] (months), weight = [buy_weight] (kg)
            sheep_presence = 'on'
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -4200,7 +4200,7 @@ fallowin = 0</text>
         <script>
           <text>
                sheep_presence = 'off'
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4235,7 +4235,7 @@ fallowin = 0</text>
               grazing_days = 0
               gpsm2kgpha = 10.0
               stem_discount = 0.17
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4289,7 +4289,7 @@ fallowin = 0</text>
            [stockmodule]scienceconverter sellstock number = [sell_number] (-)
            sheep_presence = 'off'
         endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -4325,7 +4325,7 @@ fallowin = 0</text>
           <text>
               gpsm2kgpha = 10.0
               stem_discount = 0.17
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4357,7 +4357,7 @@ fallowin = 0</text>
         if (today = date('[buy_date]') then
            [supplementmodule]scienceconverter buysupplement supplement = [buy_name] (-), amount = [buy_amount] (kg)
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -4374,7 +4374,7 @@ fallowin = 0</text>
         if (today = date('[mix_date]') then
            [supplementmodule]scienceconverter mixsupplement src_store = [src_store_name] (-), amount = [mix_amount] (kg), dest_store = [dest_store_name] (-)
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -4392,7 +4392,7 @@ fallowin = 0</text>
         if (date_within('[feed_start_date], [feed_end_date]') = 1) then
            [supplementmodule]scienceconverter feedsupplement supplement = [feed_name] (-), amount = [feed_amount] (kg)
          endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
         <ui>
@@ -4415,7 +4415,7 @@ fallowin = 0</text>
          est_lag_days = 10.0 / feed_rate_factor
          initial_feed_rate = 0.0
 
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4473,7 +4473,7 @@ fallowin = 0</text>
          est_lag_days = 10.0 / feed_rate_factor
          initial_feed_rate = 0.0
          yest_cond_score_all = 0.0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4535,7 +4535,7 @@ fallowin = 0</text>
          feed_rate_factor = 0.5
          est_lag_days = 10.0 / feed_rate_factor
          initial_feed_rate = 0.1
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4589,7 +4589,7 @@ fallowin = 0</text>
           <text>
          feed_rate = 0.0     ! Rate of feeding in kg FW/day
 
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4653,7 +4653,7 @@ fallowin = 0</text>
 
 account = -1
 
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4673,7 +4673,7 @@ if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]')) then
    endif
 endif
 
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
       </manager>
@@ -4693,7 +4693,7 @@ endif
         <script>
           <text>
 account = [interval] - 1
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4726,7 +4726,7 @@ if ((today &gt;= date('[date1]') and (today &lt;= date('[date2]')) then
       'fertiliser' apply amount =  n_urine2  (kg/ha), depth = depthUrine (mm), type = urea_n ()
    endif
 endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
       </manager>
@@ -4746,7 +4746,7 @@ endif
 continuegrazing = 0
 
 
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script>
@@ -4775,7 +4775,7 @@ if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]'))) then
       removed_n = [AgPasture].HarvestN
    endif
 endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
       </manager>
@@ -4815,7 +4815,7 @@ if (today = date('[date1]')) or (today = date('[date2]')) or (today = date('[dat
    removed_dm = [AgPasture].HarvestWt
    removed_n = [AgPasture].HarvestN
 endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
       </manager>
@@ -4874,7 +4874,7 @@ if (today = date('[date1]')) or (today = date('[date2]')) or (today = date('[dat
    depthUrine = dlayer(1) + 0.5 * dlayer(2)
    'fertiliser' apply amount =  n_urine2  (kg/ha), depth = depthUrine (mm), type = urea_n ()
 endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
       </manager>
@@ -4890,7 +4890,7 @@ if (today = date('[date]') then
    [crop] KillCrop KillFracion = 0
 endif
 
-					</text>
+     </text>
           <event>end_of_day</event>
         </script>
       </manager>
@@ -4906,7 +4906,7 @@ endif
 if (today = date('[date]') then
     [pasture] sow
 endif
-					</text>
+     </text>
           <event>start_of_day</event>
         </script>
       </manager>
@@ -5099,7 +5099,7 @@ public class Script
       Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Grazing at regular intervals">
         <ui>
@@ -5393,7 +5393,7 @@ public class Script
       }
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Cut and carry at target biomass">
         <ui>
@@ -5569,7 +5569,7 @@ public class Script
       Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Cut and carry on given dates">
         <ui>
@@ -5756,7 +5756,7 @@ public class Script
       Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Grazing on given dates">
         <ui>
@@ -6049,7 +6049,7 @@ public class Script
       }
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Kill AgPasture">
         <ui>
@@ -6099,7 +6099,7 @@ public class Script
       }
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Sow AgPasture">
         <ui>
@@ -6150,7 +6150,7 @@ public class Script
       }
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="ApplyFertiliserAfterHarvest">
         <ui>
@@ -6272,7 +6272,7 @@ public class Script
       return result;
    }
 }
-				</text>
+    </text>
       </manager2>
       <manager2 name="Harvesting AgPasture">
         <ui>
@@ -6886,7 +6886,7 @@ public class Script
       return my_y;
    }
 }
-				</text>
+    </text>
       </manager2>
     </folder>
   </folder>
@@ -7131,7 +7131,7 @@ if {![info exists myPaddockName]} {
   }
 }
 set sw1f_[crop] [expr [fasw_amount] / [lindex [apsimGet dlayer] 0] + [lindex [apsimGet ll15] 0]] 
-					</text>
+     </text>
           <event>start_simulation</event>
         </script>
         <script name="prepare">
@@ -7240,7 +7240,7 @@ if {[dateIs [date1]] } {
 }
 
 
-					</text>
+     </text>
           <event>prepare</event>
         </script>
       </rule>
@@ -7648,7 +7648,7 @@ if {![info exists myPaddockName]} {
     }
   }
 }
-					</text>
+     </text>
           <event>start_simulation</event>
         </script>
       </rule>
@@ -7794,7 +7794,7 @@ if {![info exists myPaddockName]} {
     }
   }
 }
-					</text>
+     </text>
           <event>start_simulation</event>
         </script>
       </rule>
@@ -7802,13 +7802,13 @@ if {![info exists myPaddockName]} {
         <script name="init">
           <text>
             set fert_applied_[crop]_[zadok_fert_stage_begin]_[zadok_fert_stage_end] 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script name="sowing">
           <text>
             set fert_applied_[crop]_[zadok_fert_stage_begin]_[zadok_fert_stage_end] 0
-					</text>
+     </text>
           <event>sowing</event>
         </script>
         <script name="prepare">
@@ -7906,7 +7906,7 @@ if {[dateIs [irrigate_date]]} {
    apsimSet [irrigate_module].irrigation_efficiency [irrigate_efficiency]
    apsimSendMessage  [irrigate_module] apply {amount [irrigate_amount]}
 }
-					</text>
+     </text>
           <event>prepare</event>
         </script>
         <ui>
@@ -7930,7 +7930,7 @@ if {[dateIs [tillage_date]]} {
    set ready_to_till_pre_sow 0
    set till_day_pre_sow 0
 endif
-					</text>
+     </text>
           <event>prepare</event>
         </script>
         <ui>
@@ -7951,7 +7951,7 @@ if {"[tillage_type]" == "user_defined"} {
 } else {
    apsimSendMessage [surfaceommodule] tillage {type [tillage_type]}
 }
-					</text>
+     </text>
           <event>[modulename].[eventname]</event>
         </script>
         <ui>
@@ -7980,7 +7980,7 @@ if {[dateIs [reset_date]]} {
    }
    apsimSendMessage * reseting
 }
-					</text>
+     </text>
           <event>prepare</event>
         </script>
         <ui>
@@ -8009,7 +8009,7 @@ if {[dateIs [reset_date]]} {
    }
    apsimSendMessage * reseting
 endif
-					</text>
+     </text>
           <event>[modulename].[eventname]</event>
         </script>
         <ui>
@@ -8038,7 +8038,7 @@ endif
         <script name="init">
           <text>
 set [crop]_in 0
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script name="prepare">
@@ -8108,7 +8108,7 @@ set ChooseNextCrop  yes
 set SummerFallowIn  no
 set WinterFallowIn  no
 set FallowIn        no
-					</text>
+     </text>
           <event>init</event>
         </script>
         <script name="prepare">
@@ -8215,7 +8215,7 @@ if {$SummerFallowIn == "yes" && [dateIs 1+[SummerFallowEndDate]]} {
 
   apsimSendMessage [fertmodule] apply {amount [fert_amount_sow]} {depth 50} {type [fert_type_sow]}
 
-					</text>
+     </text>
           <event>[modulename].[eventname]</event>
         </script>
       </rule>
@@ -8394,13 +8394,13 @@ foreach cond $Conds {
 
 incr steps -1
 if {$steps == 0} {tkwait variable steps}
-				</text></script></rule>
+    </text></script></rule>
   </tclmanager>
   <folder name="Rice">
     <manager name="Reset watertable">
       <script>
         <text>water_table = 2000
-				</text>
+    </text>
         <event>init</event>
       </script>
       <script>
@@ -8409,7 +8409,7 @@ if {$steps == 0} {tkwait variable steps}
     else
             water_table = DWT*1000 - para_height
     endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -8562,14 +8562,14 @@ min_dop = 20</text>
          rice  end_crop
    endif
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
         <text>
 top_dress = 0
 tot_irrig = 0
-				</text>
+    </text>
         <event>Init</event>
       </script>
     </manager>
@@ -8612,14 +8612,14 @@ tot_irrig = 0
          rice  end_crop
    endif
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
         <text>
 top_dress = 0
 tot_irrig = 0
-				</text>
+    </text>
         <event>Init</event>
       </script>
     </manager>
@@ -8662,14 +8662,14 @@ tot_irrig = 0
          rice  end_crop
    endif
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
         <text>
 top_dress = 0
 tot_irrig = 0
-				</text>
+    </text>
         <event>Init</event>
       </script>
     </manager>
@@ -8712,14 +8712,14 @@ tot_irrig = 0
          rice  end_crop
    endif
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
         <text>
 top_dress = 0
 tot_irrig = 0
-				</text>
+    </text>
         <event>Init</event>
       </script>
     </manager>
@@ -8758,14 +8758,14 @@ tot_irrig = 0
          rice  end_crop
    endif
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
         <text>
 top_dress = 0
 tot_irrig = 0
-				</text>
+    </text>
         <event>Init</event>
       </script>
     </manager>
@@ -8789,7 +8789,7 @@ tot_irrig = 0
                      top_dress = 1
                   endif
             endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -8817,7 +8817,7 @@ tot_irrig = 0
     endif
 
     tot_irrig = tot_irrig + irrig_amount
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -8879,7 +8879,7 @@ tot_irrig = 0
    endif
 
 
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -8917,7 +8917,7 @@ endif  </text>
       <script>
         <text>
             '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
-				</text>
+    </text>
         <event>[modulename].[eventname]</event>
       </script>
     </manager>
@@ -8941,7 +8941,7 @@ endif  </text>
                      top_dress = 1
                   endif
             endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
       <script>
@@ -8970,7 +8970,7 @@ endif  </text>
          LodgeDate = dd_mmm_yyyy
          LodgeFlag = 1
       endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -8992,7 +8992,7 @@ endif  </text>
                 '[surfaceommodule]' tillage type = [tillage_type]
             endif
 endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>
@@ -9008,7 +9008,7 @@ endif
         <text>if (sugar.DaysAfterSowing = [irrig_das]) then
             [irrigatemodule] apply amount = [irrig_amount] (mm)
          endif
-				</text>
+    </text>
         <event>start_of_day</event>
       </script>
     </manager>

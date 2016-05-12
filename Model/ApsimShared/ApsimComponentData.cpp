@@ -540,6 +540,7 @@ extern "C" void EXPORT STDCALL ApsimComponentData_loadRule
                              ruleCondition,
                              contents);
    FString(condition, conditionLength, EmptyString) = ruleCondition.c_str();
+   std::replace( contents.begin(), contents.end(), '\t', ' '); // replace all tabs with spaces
    Split_string(contents, "\n", *(stringVector(*handle)));
    }
 extern "C" unsigned EXPORT STDCALL ApsimComponentData_getNumRuleLines
