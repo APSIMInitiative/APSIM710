@@ -1459,6 +1459,42 @@ public class Script
         <events name="Reporting Frequency">
           <event>transition</event>
         </events>
+        <RGraphics name="Rugplot Graph">
+          <script>
+            <text>library(ggplot2)
+
+apsim.input&lt;- inputFiles 
+aps1 &lt;- read.table(apsim.input,skip=2,header=T) 
+aps.name &lt;- names(aps1)
+df &lt;- read.table(apsim.input,skip=3,header=T,col.names=aps.name,na.strings = "?")
+df$Date&lt;-as.Date(df$Date, format="%d/%m/%Y")
+
+# sort out the beginning and ending dates of each phase
+x1 &lt;- df$Date[-1*nrow(df)]
+x2 &lt;- df$Date[-1] 
+df &lt;- df[-1,]  # throw away the first - it's from Start_Simulation
+df$x1&lt;-x1
+df$x2&lt;-x2
+
+#lower bound of rectangles at bottom
+df$ymin &lt;- -0.25 * max(df$Yield)
+ 
+jpeg(file=imageFileName, width=width, height=height)
+g&lt;- ggplot(df) +
+ geom_bar(aes(x=Date, y=Yield, fill= currentState), stat="identity") +
+ geom_rect(aes(xmin = x1 , xmax = x2, ymin= ymin, ymax=0, fill= currentState ) ) +
+ scale_x_date() + scale_fill_discrete(name="state") + theme(
+       axis.line = element_line(colour = "black"),
+       panel.grid.major = element_blank(),
+       panel.grid.minor = element_blank(),
+       panel.border = element_blank(),
+       panel.background = element_blank() )
+print(g)
+
+dev.off()
+</text>
+          </script>
+        </RGraphics>
       </outputfile>
     </area>
   </simulation>
