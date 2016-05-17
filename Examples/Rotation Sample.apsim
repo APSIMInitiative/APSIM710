@@ -1256,47 +1256,257 @@ public class Script
 
 </text>
         </manager2>
-        <manager2 name="StartEndSoils">
+        <manager2 name="PaddockAccumulator">
           <ui />
           <text>using System; 
+using System.Collections.Generic;
 using ModelFramework; 
 using CSGeneral;
 
-// This captures and stores the inital state of sw_dep and NO3 at the begining of a 
-// transition within a rotation, this allows the start and end conditions 
+// This captures and accumulates the states of several paddock variables
 // to be reported on a single report line. 
- 
+
+// Multi-paddock aware.
+
 public class Script 
 { 
-   [Link()] public Paddock myPaddock;   
- 
-   [Output, Description("The soil water on the first day of a rotation"), Units("mm")] public double swStart = 0.0;
-   [Output, Description("The soil water on the last day of a rotation"), Units("mm")] public double swYesterday = 0.0;    //this is a way of capturing the day befores soil water to use in a water balance calculation
-   [Output, Description("The soil NO3 on the first day of a rotation"), Units("kg/ha")] public double no3Start = 0.0;     //this is the soil nitrogen on the final day of a transition
-   [Output, Description("The soil NO3 on the last day of a rotation"), Units("kg/ha")] public double no3Yesterday = 0.0; //this is a way of capturing the day befores soil nitrogen to use in a nitrogen balance calculation
+   [Link] public Simulation MySimulation;
+
+   // Cumulative Ep
+   [Output, Description("The total transpiration since the last transition"), Units("mm")] public double TEp {
+      get {setup(); string s = currentPaddock() + "_Ep"; return(me[s]);}
+   }
+   // Cumulative Drainage
+   [Output, Description("The total drainage since the last transition"), Units("mm")] public double TDrainage {
+      get {setup(); string s = currentPaddock() + "_drainage"; return(me[s]);}
+   }
+   // Cumulative Runoff
+   [Output, Description("The total runoff since the last transition"), Units("mm")] public double TRunoff {
+      get {setup(); string s = currentPaddock() + "_runoff"; return(me[s]);}
+   }
+   // Cumulative Es
+   [Output, Description("The total soil evaporation since the last transition"), Units("mm")] public double TEs {
+      get {setup(); string s = currentPaddock() + "_evaporation"; return(me[s]);}
+   }
+   // Cumulative fertiliser
+   [Output, Description("The total fertiliser applied since the last transition"), Units("kg/ha")] public double applied_fert {
+      get {setup(); string s = currentPaddock() + "_applied_fert"; return(me[s]);}
+   }
+   // Instantaneous sw at start
+   [Output, Description("The soil water on the first day of a rotation"), Units("mm")] public double swStart {
+      get {setup(); string s = currentPaddock() + "_swStart"; return(me[s]);}
+   }
+   // Instantaneous sw at end
+   [Output, Description("The soil water on the last day of a rotation"), Units("mm")] public double swYesterday {
+      get {setup(); string s = currentPaddock() + "_swYesterday"; return(me[s]);}
+   }
+   // Instantaneous no3 at start
+   [Output, Description("The soil NO3 on the first day of a rotation"), Units("kg/ha")] public double no3Start {
+      get {setup(); string s = currentPaddock() + "_no3Start"; return(me[s]);}
+   }
+   // Instantaneous no3 at end
+   [Output, Description("The soil NO3 on the last day of a rotation"), Units("kg/ha")] public double no3Yesterday {
+      get {setup(); string s = currentPaddock() + "_no3Yesterday"; return(me[s]);}
+   }
+   // Instantaneous carbon at end
+   [Output, Description("The soil carbon on the last day of a rotation"), Units("kg/ha")] public double carbonYesterday {
+      get {setup(); string s = currentPaddock() + "_carbon"; return(me[s]);}
+   }
+   // Instantaneous yield of all crops
+   [Output, Description("Crop Yield"), Units("kg/ha")] public double yield_kgha {
+      get{
+         double yld2 = 0;
+         Paddock p = (Paddock) MySimulation.LinkByName(currentPaddock());
+         foreach (Component crop in p.Crops)
+         {
+            double yld = 0;
+            crop.Get("yield", out yld);
+            yld2 = yld2 + yld;
+         }
+         return yld2 ;}
+   }
+   // Instantaneous yield of all crops
+   [Output, Description("Crop Yield"), Units("kg")] public double yield_kg {
+      get{
+         double yld2 = 0, area = 1.0;
+         Paddock p = (Paddock) MySimulation.LinkByName(currentPaddock());
+         MySimulation.Get(p.Name + ".area", out area);
+         foreach (Component crop in p.Crops)
+         {
+            double yld = 0;
+            crop.Get("yield", out yld);
+            yld2 = yld2 + yld * area;
+         }
+         return yld2 ;}
+   }
+   // Instantaneous biomass of all crops
+   [Output, Description("Crop biomass"), Units("kg/ha")] public double biomass_kgha {
+      get{
+         double biomass2 = 0;
+         Paddock p = (Paddock) MySimulation.LinkByName(currentPaddock());
+         foreach (Component crop in p.Crops)
+         {
+            double biomass = 0;
+            crop.Get("biomass", out biomass);
+            biomass2 = biomass2 + biomass;
+         }
+         return biomass2 ;}
+   }
+   // Instantaneous yield of all crops
+   [Output, Description("Crop Biomass"), Units("kg")] public double biomass_kg {
+      get{
+         double biomass2 = 0, area = 1.0;
+         Paddock p = (Paddock) MySimulation.LinkByName(currentPaddock());
+         MySimulation.Get(p.Name + ".area", out area);
+         foreach (Component crop in p.Crops)
+         {
+            double biomass = 0;
+            crop.Get("biomass", out biomass);
+            biomass2 = biomass2 + biomass * area;
+         }
+         return biomass2 ;}
+   }
+   // Instantaneous protein of all crops
+   [Output, Description("Grain Protein"), Units("%")] public double protein {
+      get{
+         double pro2 = 0;
+         Paddock p = (Paddock) MySimulation.LinkByName(currentPaddock());
+         foreach (Component crop in p.Crops)
+         {
+            double pro = 0;
+            crop.Get("grain_protein", out pro);
+            pro2 = pro2 + pro;
+         }
+        
+         return pro2 ;}
+   }
+   
+   // Instantaneous N of all crops
+   [Output, Description("Grain N"), Units("g/m2")] public double GrainN_gm2 {
+      get{
+         double GN2 = 0;
+         Paddock p = (Paddock) MySimulation.LinkByName(currentPaddock());
+         foreach (Component crop in p.Crops)
+         {
+            double GN = 0;
+            if (crop.Get("grain_N", out GN))
+               GN2 = GN2 + GN;
+            else if (crop.Get("GrainGreenN", out GN))
+               GN2 = GN2 + GN;
+         }
+         return GN2 ;}
+   }
+   
+   
+   [Output, Description("The state of the current paddock"), Units("")] public string paddockState {
+      get {
+         string cs = "";
+         string cp = currentPaddock();
+         MySimulation.Get(cp + "_state", out cs);
+         return(cs);
+      }
+   }
    [Output, Description("The number of days in a rotation"), Units("")] public int daysInPhase = 0;
+ 
+   private string currentPaddock() {
+      string result = "";
+      MySimulation.Get("currentPaddock", out result);
+      if (result != "")
+         return(result);
+      else
+         return(MySimulation.ChildPaddocks[0].Name);
+   }
+
+
+   // An accumulator for each thing in each paddock
+   private Dictionary&lt;string, double&gt; me = new Dictionary&lt;string, double&gt;();
+
+   private void setup() {
+      if (me.Keys.Count == 0) { OnStart_Simulation(); }
+   }
    
    [EventHandler] public void OnStart_Simulation() { 
-      double [] swdep = new double[15];
-      double [] no3dep = new double[15];
-      myPaddock.Get("sw_dep()", out swdep);
-      myPaddock.Get("no3()", out no3dep);
-      swYesterday = swStart = MathUtility.Sum(swdep);  
-      no3Yesterday = no3Start = MathUtility.Sum(no3dep);
+      if (me.Keys.Count == 0) {
+         foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+         {
+            Component soil = (Component) paddock.LinkByType("soilwat");
+            double [] swdep = new double[15];
+            soil.Get("sw_dep", out swdep);
+            me.Add(paddock.Name + "_swStart", MathUtility.Sum(swdep));
+            me.Add(paddock.Name + "_swYesterday", MathUtility.Sum(swdep));
+         
+            Component soilN = (Component) paddock.LinkByType("soiln");
+            double [] no3dep = new double[15];
+            soilN.Get("no3", out no3dep);
+            me.Add(paddock.Name + "_no3Start", MathUtility.Sum(no3dep));
+            me.Add(paddock.Name + "_no3Yesterday", MathUtility.Sum(no3dep));
+            me.Add(paddock.Name + "_Ep", 0);
+            me.Add(paddock.Name + "_drainage", 0);
+            me.Add(paddock.Name + "_runoff", 0);
+            me.Add(paddock.Name + "_evaporation", 0);
+            me.Add(paddock.Name + "_applied_fert", 0);
+            double[] carbon = new double[15];
+            soilN.Get("carbon_tot", out carbon);
+            me.Add(paddock.Name + "_carbon", MathUtility.Sum(carbon));
+         }
+      }
    } 
    [EventHandler] public void OnTransition() {
-      swStart = swYesterday; no3Start = no3Yesterday; 
+      setup();   
+      string s = currentPaddock();
+      me[s + "_swStart"] = me[s+"_swYesterday"]; 
+      me[s + "_no3Start"] = me[s + "_no3Yesterday"];
+      me[s + "_Ep"] = 0;
+      me[s + "_drainage"] = 0;
+      me[s + "_runoff"] = 0;
+      me[s + "_evaporation"] = 0;
+      me[s + "_applied_fert"] = 0;
+      me[s + "_carbon"] = 0;
       daysInPhase = 0;
    } 
    [EventHandler] public void OnPost() { 
-      double [] swdep = new double[15];
-      myPaddock.Get("sw_dep()", out swdep);
-      swYesterday = MathUtility.Sum(swdep);
-      double [] no3dep = new double[15];
-      myPaddock.Get("no3()", out no3dep);
-      no3Yesterday = MathUtility.Sum(no3dep);
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         Component soil = (Component) paddock.LinkByType("soilwat");
+         Component soilN = (Component) paddock.LinkByType("soiln");
+         Component fertiliser = (Component) paddock.LinkByType("fertiliser");
+         double [] swdep = new double[15];
+         soil.Get("sw_dep", out swdep);
+         me[paddock.Name + "_swYesterday"] = MathUtility.Sum(swdep);
+
+         double [] no3dep = new double[15];
+         soilN.Get("no3", out no3dep);
+         me[paddock.Name + "_no3Yesterday"] = MathUtility.Sum(no3dep);
+
+         double drain = 0;
+         soil.Get("drain", out drain);
+         me[paddock.Name + "_drainage"] += drain;
+
+         double runoff = 0;
+         soil.Get("runoff", out runoff);
+         me[paddock.Name + "_runoff"] += runoff;
+
+         double es = 0;
+         soil.Get("es", out es);
+         me[paddock.Name + "_evaporation"] += es;
+
+         double applied_fert = 0;
+         fertiliser.Get("fertiliser", out applied_fert);
+         me[paddock.Name + "_applied_fert"] += applied_fert;
+
+         double[] carbon = new double[15];
+         soilN.Get("carbon_tot", out carbon);
+         me[paddock.Name + "_carbon"] = MathUtility.Sum(carbon);
+
+         foreach (Component crop in paddock.Crops)
+         {
+            double Ep = 0.0;
+            if(crop.Get("Ep", out Ep))
+               me[paddock.Name + "_Ep"] += Ep;
+         }
+      }
       daysInPhase++;
-   } 
+   }
 } 
 </text>
         </manager2>
@@ -1332,91 +1542,8 @@ public class Script
 } 
 </text>
         </manager2>
-        <manager2 name="YieldAccumulator">
-          <ui />
-          <text>using System;
-using ModelFramework;
-
-// This script accumulates yields and biomass over a period. It is useful when 
-// wanting to accumulate the total biomass produced across a sequence of crops 
-// or the total transpiration within a phase of a rotation. 
-// It's not very useful for intercrops.
-
-public class Script 
-   {
-   [Link()] public Paddock MyPaddock;  
-   [Output, Description("Crop Yield"), Units("kg/ha")] public double yld_kgha {
-      get{
-         double yld2 = 0;
-         foreach (Component crop in MyPaddock.Crops)
-         {
-            double yld = 0;
-            crop.Get("yield", out yld);
-            yld2 = yld2 + yld;
-         }
-         return yld2 ;}
-   }
-  
-   [Output, Description("Crop Biomass"), Units("kg/ha")] public double biomass_kgha {
-      get{
-         double bio2 = 0;
-         foreach (Component crop in MyPaddock.Crops)
-         {
-            double bio = 0;
-            crop.Get("biomass", out bio);
-            bio2 = bio2 + bio;
-         }
-         return bio2 ;}
-   }
-
-   [Output, Description("Plant Transpiration"), Units("mm")] public double SEp {
-      get{
-         double EpSum = 0;
-         foreach (Component crop in MyPaddock.Crops)
-         {
-            double Ep = 0.0;
-            crop.Get("Ep", out Ep);
-            EpSum = EpSum + Ep;
-         }
-         return EpSum ;}
-   }
-
-   [Output, Description("Grain Protein"), Units("%")] public double protein {
-   get{
-      double pro = 0;
-      double pro2 = 0;
-      foreach (Component crop in MyPaddock.Crops)
-      {
-         crop.Get("grain_protein", out pro);
-         pro2 = pro2 + pro;
-      }
-        
-      return pro2 ;}
-   }
-   
-   [Output, Description("Grain N"), Units("g/m2")] public double GrainN_gm2 {
-      get{
-         double GN2 = 0;
-         foreach (Component crop in MyPaddock.Crops)
-         {
-            double GN = 0;
-            if (crop.Get("grain_N", out GN))
-               GN2 = GN2 + GN;
-            else if (crop.Get("GrainGreenN", out GN))
-               GN2 = GN2 + GN;
-         }
-         return GN2 ;}
-   }
-}
-       </text>
-        </manager2>
         <tracker>
           <variable>sum of rain on end_of_day from transition to now as TRainfall</variable>
-          <variable>sum of SEp on end_of_day from transition to now as TEp</variable>
-          <variable>sum of drain on end_of_day from transition to now as Tdrainage</variable>
-          <variable>sum of runoff on end_of_day from transition to now as Trunoff</variable>
-          <variable>sum of es on end_of_day from transition to now as Tes</variable>
-          <variable>sum of fertiliser on end_of_day from transition to now as applied_fert</variable>
           <variable>count of clock.simulation_days on end_of_day from transition to now as days_in_stage</variable>
         </tracker>
       </folder>
@@ -1448,9 +1575,9 @@ public class Script
           <variable>no3Start</variable>
           <variable>no3Yesterday as no3End</variable>
           <variable>biomass_kgha as Biomass</variable>
-          <variable>yld_kgha as Yield</variable>
+          <variable>yield_kgha as Yield</variable>
           <variable>GrainN_gm2 as grainN</variable>
-          <variable>carbon_tot()</variable>
+          <variable>carbonYesterday as carbon</variable>
           <variable>applied_fert</variable>
           <variable>rotationNumber</variable>
           <variable>simulation_days</variable>

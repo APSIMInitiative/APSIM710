@@ -29,9 +29,8 @@ Paddock:
    Component             "Wheat Management" = %apsim%\Model\Manager2.dll
    Component      "Wheat Sowing Fertiliser" = %apsim%\Model\Manager2.dll
    Component                 "SummerFallow" = %apsim%\Model\Manager2.dll
-   Component                "StartEndSoils" = %apsim%\Model\Manager2.dll
+   Component           "PaddockAccumulator" = %apsim%\Model\Manager2.dll
    Component              "RotationCounter" = %apsim%\Model\Manager2.dll
-   Component             "YieldAccumulator" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -80,9 +79,9 @@ Paddock:
         no3Start
         no3Yesterday as no3End
         biomass_kgha as Biomass
-        yld_kgha as Yield
+        yield_kgha as Yield
         GrainN_gm2 as grainN
-        carbon_tot()
+        carbonYesterday as carbon
         applied_fert
         rotationNumber
         simulation_days
@@ -238,11 +237,6 @@ Paddock:
 ------- paddock.tracker Initialisation ----------------------------------------
      Tracker variables:
         sum of rain on end_of_day from transition to now as TRainfall
-        sum of SEp on end_of_day from transition to now as TEp
-        sum of drain on end_of_day from transition to now as Tdrainage
-        sum of runoff on end_of_day from transition to now as Trunoff
-        sum of es on end_of_day from transition to now as Tes
-        sum of fertiliser on end_of_day from transition to now as applied_fert
         count of clock.simulation_days on end_of_day from transition to now as days_in_stage
 
 ------- Rotation Management_ Initialisation -----------------------------------
@@ -255,11 +249,9 @@ Paddock:
 
 ------- SummerFallow Initialisation -------------------------------------------
 
-------- StartEndSoils Initialisation ------------------------------------------
+------- PaddockAccumulator Initialisation -------------------------------------
 
 ------- RotationCounter Initialisation ----------------------------------------
-
-------- YieldAccumulator Initialisation ---------------------------------------
 ------- Start of simulation  --------------------------------------------------
 Subscribed 'paddock.wheat.sowing => paddock'
 27/05/1942 12:00:00 AM Sowing Crop
