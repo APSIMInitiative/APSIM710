@@ -615,6 +615,357 @@ public class Script
 }
        </text>
         </manager2>
+        <manager2 name="Monoculture Sequencer">
+          <ui>
+            <category type="category" description="Extra Tests at Sowing" />
+            <testS1 type="text" description="Test 1"></testS1>
+            <testS2 type="text" description="Test 2" />
+            <testS3 type="text" description="Test 3" />
+            <category type="category" description="Extra Actions at Sowing" />
+            <actS1 type="text" description="Action 1" />
+            <actS2 type="text" description="Action 2" />
+            <actS3 type="text" description="Action 3" />
+            <category type="category" description="Extra Tests at Harvesting" />
+            <testH1 type="text" description="Test 1" />
+            <testH2 type="text" description="Test 2" />
+            <testH3 type="text" description="Test 3" />
+            <category type="category" description="Extra Actions at Harvesting" />
+            <actH1 type="text" description="Action 1" />
+            <actH2 type="text" description="Action 2" />
+            <actH3 type="text" description="Action 3" />
+          </ui>
+          <text>using ModelFramework;
+
+// Basic crop sequencing: monoculture
+// FIXME not aware of multiple paddocks
+
+public class Script {      
+   [Link]  public Paddock MyPaddock; 
+
+   [Param] private string testS1;
+   [Param] private string testS2;
+   [Param] private string testS3;
+   
+   [Param] private string actS1;
+   [Param] private string actS2;
+   [Param] private string actS3;
+   
+   [Param] private string testH1;
+   [Param] private string testH2;
+   [Param] private string testH3;
+
+   [Param] private string actH1;
+   [Param] private string actH2;
+   [Param] private string actH3;
+   [Output] public string currentPaddock = "";
+   
+   [EventHandler, Description("Daily process routine")] public void OnProcess()
+   {
+      int canSow = 1;
+      MyPaddock.Get("canEnter", out canSow);
+      if (canSow &gt; 0 &amp;&amp; testS1 != "") MyPaddock.Get(testS1, out canSow);
+      if (canSow &gt; 0 &amp;&amp; testS2 != "") MyPaddock.Get(testS2, out canSow);
+      if (canSow &gt; 0 &amp;&amp; testS3 != "") MyPaddock.Get(testS3, out canSow);
+      
+      if (canSow &gt; 0) {
+         MyPaddock.Publish("Enter");
+         if (actS1 != "") MyPaddock.Publish(actS1);
+         if (actS2 != "") MyPaddock.Publish(actS2);
+         if (actS3 != "") MyPaddock.Publish(actS3);
+      }
+
+      int canHarvest = 1;
+      MyPaddock.Get("canLeave", out canHarvest);
+      if (canHarvest &gt; 0 &amp;&amp; testH1 != "") MyPaddock.Get(testH1, out canHarvest);
+      if (canHarvest &gt; 0 &amp;&amp; testH2 != "") MyPaddock.Get(testH2, out canHarvest);
+      if (canHarvest &gt; 0 &amp;&amp; testH3 != "") MyPaddock.Get(testH3, out canHarvest);
+      if (canHarvest &gt; 0) {
+         MyPaddock.Publish("Leave");
+         if (actH1 != "") MyPaddock.Publish(actH1);
+         if (actH2 != "") MyPaddock.Publish(actH2);
+         if (actH3 != "") MyPaddock.Publish(actH3);
+      }
+   }
+}</text>
+        </manager2>
+        <rotplot name="Rotation Management">
+          <canvas_height>500</canvas_height>
+          <rules_height>293</rules_height>
+          <graph_name>stateGraph</graph_name>
+          <language>C#</language>
+          <node>
+            <name>chickpea</name>
+            <x1>191</x1>
+            <y1>319</y1>
+            <desc>
+            </desc>
+            <fill>-8323328</fill>
+          </node>
+          <node>
+            <name>wheat</name>
+            <x1>190</x1>
+            <y1>10</y1>
+            <desc>
+            </desc>
+            <fill>-16744320</fill>
+          </node>
+          <node>
+            <name>summer_fallow2</name>
+            <x1>10</x1>
+            <y1>160</y1>
+            <desc>
+            </desc>
+            <fill>-4144960</fill>
+          </node>
+          <node>
+            <name>summer_fallow</name>
+            <x1>358</x1>
+            <y1>170</y1>
+            <desc>
+            </desc>
+            <fill>-657956</fill>
+          </node>
+          <arc>
+            <name>arc2</name>
+            <source>wheat</source>
+            <target>summer_fallow2</target>
+            <x>50</x>
+            <y>55</y>
+            <actions>Crop Management.Leave</actions>
+            <actions>SummerFallow.Enter</actions>
+            <rules>Crop Management.canLeave</rules>
+          </arc>
+          <arc>
+            <name>arc6</name>
+            <source>summer_fallow</source>
+            <target>wheat</target>
+            <x>419</x>
+            <y>56</y>
+            <actions>SummerFallow.Leave</actions>
+            <actions>Crop Management.Enter</actions>
+            <rules>SummerFallow.canLeave</rules>
+            <rules>Crop Management.canEnter</rules>
+          </arc>
+          <arc>
+            <name>arc8</name>
+            <source>chickpea</source>
+            <target>summer_fallow</target>
+            <x>417</x>
+            <y>385</y>
+            <actions>Chickpea Management.Leave</actions>
+            <actions>SummerFallow.Enter</actions>
+            <rules>Chickpea Management.canLeave</rules>
+          </arc>
+          <arc>
+            <name>arc0</name>
+            <source>summer_fallow2</source>
+            <target>chickpea</target>
+            <x>51</x>
+            <y>386</y>
+            <actions>SummerFallow.Leave</actions>
+            <actions>Chickpea Management.Enter</actions>
+            <rules>SummerFallow.CanLeave</rules>
+            <rules>Chickpea Management.canEnter</rules>
+          </arc>
+          <InitialState>summer_fallow</InitialState>
+          <component name="Rotation Management_" executable="%apsim%/Model/Manager2.dll">
+            <executable>%apsim%/Model/Manager2.dll</executable>
+            <initdata>
+              <text><![CDATA[using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Text;
+using ModelFramework;
+using CSGeneral;
+public class Script {
+[Link] public Simulation MySimulation;
+private List<string> paddocks = new List<string>();
+private List<dynamic> paddockStates = new List<dynamic>();
+private Graph g = new Graph();
+private Dictionary<string,string> _currentState = new Dictionary<string,string>();
+[Output, Description("Current State of DG")] public string currentState {
+  get {string[] r = new string[_currentState.Count]; _currentState.Values.CopyTo(r,0);  
+       return(String.Join(" ", r));} 
+}
+private void setState(string p, string s) {
+  _currentState[p] = s;
+}
+private string getState(string p) {
+  return(_currentState[p]);
+}
+[Output, Description("Current paddock")] public string currentPaddock = "";
+[Output] public string [] states = new string[0]; 
+[EventHandler] public void OnInitialised()
+{
+g = new Graph();
+states = new string[4];
+int i = 0;
+g.AddNode("chickpea");
+states[i++] = "chickpea";
+g.AddNode("wheat");
+states[i++] = "wheat";
+g.AddNode("summer_fallow2");
+states[i++] = "summer_fallow2";
+g.AddNode("summer_fallow");
+states[i++] = "summer_fallow";
+ruleAction arc2 = new ruleAction();
+arc2.testCondition.Add("Wheat Management.canLeave");
+arc2.action.Add("Wheat Management.Leave");
+arc2.action.Add("SummerFallow.Enter");
+g.AddDirectedEdge("wheat","summer_fallow2",arc2);
+ruleAction arc6 = new ruleAction();
+arc6.testCondition.Add("SummerFallow.canLeave");
+arc6.testCondition.Add("Wheat Management.canEnter");
+arc6.action.Add("SummerFallow.Leave");
+arc6.action.Add("Wheat Management.Enter");
+g.AddDirectedEdge("summer_fallow","wheat",arc6);
+ruleAction arc8 = new ruleAction();
+arc8.testCondition.Add("Chickpea Management.canLeave");
+arc8.action.Add("Chickpea Management.Leave");
+arc8.action.Add("SummerFallow.Enter");
+g.AddDirectedEdge("chickpea","summer_fallow",arc8);
+ruleAction arc0 = new ruleAction();
+arc0.testCondition.Add("SummerFallow.CanLeave");
+arc0.testCondition.Add("Chickpea Management.canEnter");
+arc0.action.Add("SummerFallow.Leave");
+arc0.action.Add("Chickpea Management.Enter");
+g.AddDirectedEdge("summer_fallow2","chickpea",arc0);
+}
+[EventHandler] public void OnStart_Simulation()
+{
+paddocks.Add("");
+setState("","summer_fallow");
+   MySimulation.Publish("transition");
+}
+private string modname(string x) {
+  if (x.Contains(".")) return(x.Split('.')[0]);
+  return("");
+}
+private string varname(string x) {
+  if (x.Contains(".")) return(x.Split('.')[1]);
+  return(x);
+}
+[EventHandler] public void OnProcess()
+{
+   bool more = true;
+   while (more) {
+      more = false;
+      double bestScore = -1.0; string bestArc = ""; string bestPaddock = "";
+      foreach (string p in paddocks) {
+         Node s = g.FindNode(getState(p));
+         // Console.WriteLine(" state=" + s.Name);
+         foreach (string _arc in s.arcs.Keys) {
+            double score = 1;
+            foreach (string testCondition in s.arcs[_arc].testCondition){
+               double c = 0.0;
+               currentPaddock = p;
+               if (MySimulation.Get(testCondition, out c))
+                  score *= c;
+               else
+                  throw new Exception("Nothing returned from expression '" + testCondition + "'");
+               //Console.WriteLine(" p=" + p +" a=" + _arc + "cond=" + testCondition + " score=" + score);
+            }
+            if (score > bestScore) {
+               bestScore = score;
+               bestArc = _arc;
+               bestPaddock = p;
+            }
+         }
+      }
+      currentPaddock = "";
+      if (bestScore > 0.0) {
+         Node s = g.FindNode(getState(bestPaddock));
+         if( bestPaddock != "")
+            currentPaddock = bestPaddock;
+         if (getState(bestPaddock) != "") MySimulation.Publish("transition_from_" + getState(bestPaddock));
+         MySimulation.Publish("transition");
+         setState (bestPaddock, g.FindArcTarget(bestArc));
+         foreach (string action in s.arcs[bestArc].action ) {
+            MySimulation.Publish(action);
+            //Console.WriteLine(" best=" + bestPaddock + " action=" + action);
+         }
+         MySimulation.Publish("transition_to_" + getState(bestPaddock));
+         more = true;
+      }
+   }
+}
+  public class ruleAction
+  {
+     public string Target;
+     public List<string> testCondition = new List<string>();
+     public List<string> action = new List<string>();
+  }
+   public class Node : IEquatable<Node>
+   {
+      private string data /*, alias*/;
+      public Node(string _data) { data = _data; }
+      public Dictionary<string, ruleAction> arcs = new Dictionary<string, ruleAction>();
+      public bool Equals(Node other)
+      {
+         return ( this.data == other.data );
+      }
+      public string Name { get { return (data); } }
+   }
+
+   class Graph
+   {
+      public List<Node> vertices;
+      public void print() {
+         foreach (Node n in vertices) {
+            Console.WriteLine(n.Name + ":"); 
+            foreach (string k in n.arcs.Keys) {
+               Console.WriteLine("  " + k); 
+            }
+         }
+      }
+      public Graph() { vertices = new List<Node>(); }
+      public Node AddNode(Node node)
+      {
+         if (vertices.Find(delegate(Node n) { return (n.Equals(node)); }) == null)
+            vertices.Add(node);
+         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));
+      }
+      public Node AddNode(string value)
+      {
+         return (AddNode(new Node(value)));
+      }
+      public Node FindNode(string value)
+      {
+         return (FindNode(AddNode(value)));
+      }
+      public Node FindNode(Node node)
+      {
+         return (vertices.Find(delegate(Node n) { return (n.Equals(node)); }));
+      }
+      public void AddDirectedEdge(string source, string dest, ruleAction value)
+      {
+         int i = 0;
+         foreach (Node n in vertices) {
+            foreach (string arc in n.arcs.Keys) {
+               i++;
+            }
+         }
+         Node node1 = AddNode(source);
+         AddNode(dest);
+         value.Target = dest;
+         node1.arcs.Add("arc" + i.ToString(), value);
+      }
+      public string FindArcTarget(string arc)
+      {
+         foreach (Node n in vertices) {
+            foreach (string a in n.arcs.Keys) {
+               if (a == arc) { return (n.arcs[a].Target); }
+            }
+         }
+         Console.WriteLine("Aiee - no target for arc " + arc ); 
+         return("");
+      }
+   }
+}
+]]></text>
+            </initdata>
+          </component>
+        </rotplot>
    <manager2 name="Plant 1 defoliation">
       <ui>
         <DefoliationDateString type="text" description="Date of defoliation">1-jun</DefoliationDateString>
@@ -1460,6 +1811,39 @@ public class Script
 }
    </text>
     </manager2>
+        <manager2 name="dayIs">
+          <ui>
+            <endDate type="text" description="Enter the date to test">1-jan</endDate>
+          </ui>
+          <text>using System;
+using ModelFramework;
+using CSGeneral;
+
+// A "blocking" period that waits until a specified date.
+// Multi-paddock aware.
+
+public class Script 
+{  
+   [Input] private DateTime today; 
+   [Param] private string endDate; 
+
+   // +ve number - yes
+   // 0          - no
+   [Output, Description("Test whether the date is matched")] public int dayIs  
+   {
+      get {
+         int result;
+         if (DateUtility.DatesEqual(endDate, today))
+            result = 1;
+         else
+            result = 0;
+         return (result);
+      }
+   }
+}
+
+       </text>
+        </manager2>
         <manager2 name="PaddockAccumulator">
           <ui />
           <text>using System; 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -516,34 +517,38 @@ namespace CSUserInterface
                     if (tmpPaddock != null)
                         ManagedPaddocks.Add(tmpPaddock);
                 }
+                List<string> simulationPaddocks = new List<string>();
                 var allNodes = new List<ApsimFile.Component>();
 
                 ApsimFile.Component Selected = Controller.ApsimData.Find(Controller.SelectedPath);
                 ApsimFile.Component container = Selected;
-                while (container != null && container.Type.ToLower() != "area" && container.Type.ToLower() != "simulation")
+                while (container != null && container.Type.ToLower() != "simulation")
                     container = container.Parent;
                 if (container != null)
                 {
-                    container.ChildNodesRecursively(allNodes);
-                    foreach (ApsimFile.Component c in allNodes)
+                    var paddockNodes = ApsimFile.ComponentUtility.FindPaddsInSim(container);
+
+                    foreach (ApsimFile.Component c in paddockNodes)
                     {
-                        if (c.Type.ToLower() == "area")
+                        simulationPaddocks.Add(c.Name);
+                        bool found = false;
+                        foreach (GDPaddock gp in ManagedPaddocks)
+                            if (gp.Name != "<self>" && gp.Name == c.Name)
+                                found = true;
+                        if (!found)
                         {
-                            bool found = false;
-                            foreach (GDPaddock gp in ManagedPaddocks)
-                                if (gp.Name != "<self>" && gp.Name == c.Name)
-                                    found = true;
-                            if (!found)
-                            {
-                                GDPaddock gp = new GDPaddock();
-                                gp.Name = c.Name;
-                                gp.Managed = false;
-                                gp.InitialState = "";
-                                ManagedPaddocks.Add(gp);
-                            }
+                            GDPaddock gp = new GDPaddock();
+                            gp.Name = c.Name;
+                            gp.Managed = false;
+                            gp.InitialState = "";
+                            ManagedPaddocks.Add(gp);
                         }
                     }
                 }
+                // Now prune off any that have gone missing
+                int itemToRemove ;
+                while ((itemToRemove = ManagedPaddocks.FindIndex(r => ! simulationPaddocks.Contains(r.Name)))  >=  0)
+                    ManagedPaddocks.RemoveAt(itemToRemove);
 				// Fudge a paddock if needed (ie reading an old style .apsim file)
 				if (ManagedPaddocks.Count == 0) 
 				{
