@@ -127,7 +127,10 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  getDataMethodID = addRegistration(::respondToEvent, 0, "getData", getDataDDML);
 	  haveReadTodaysDataID = addRegistration(::event, 0, "HaveReadTodaysData", nullTypeDDML);
      
-	  iAmMet = (findSubString(getClassType(), "metfile") != string::npos) || (Str_i_Cmp(getName(), "met") == 0);
+      string classType = getClassType();
+	  iAmMet = (findSubString(classType, "metfile") != string::npos) || 
+               (findSubString(classType, "siloinput") != string::npos) || 
+               (Str_i_Cmp(getName(), "met") == 0);
 	  if (iAmMet)
 		 {
 		   vpID = addRegistration(::respondToGetSet, 0, "vp", vpType);
