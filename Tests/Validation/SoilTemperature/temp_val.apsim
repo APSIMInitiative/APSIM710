@@ -1,0 +1,799 @@
+<folder version="36" creator="Apsim 7.8-r3905" name="simulations">
+  <simulation name="soil temp formartin2012">
+    <metfile name="met">
+      <filename name="filename" input="yes">tipton_bridge_mod.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/11/2012</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">16/07/2013</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">2000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <wheat />
+      <folder name="Manager folder">
+        <operations name="Operations Schedule">
+          <operation condition="start_of_day">
+            <date>01/11/2012</date>
+            <action>'Colonsay_nem water' set sw = 0.33 0.31 0.32 0.34 0.37 0.37 0.37 0.37 </action>
+          </operation>
+        </operations>
+      </folder>
+      <Soil name="Colonsay_nem">
+        <RecordNumber>0</RecordNumber>
+        <SoilType>Black Vertosol</SoilType>
+        <Site>Bongeen</Site>
+        <NearestTown>Bongeen, Q 4356</NearestTown>
+        <Region>Darling Downs</Region>
+        <State>Queensland</State>
+        <Country>Australia</Country>
+        <NaturalVegetation>Qld. Bluegrass, possible Qld. Blue gum</NaturalVegetation>
+        <ApsoilNumber>1</ApsoilNumber>
+        <Latitude>-27.629</Latitude>
+        <Longitude>151.402</Longitude>
+        <LocationAccuracy> +/-20m</LocationAccuracy>
+        <YearOfSampling>0</YearOfSampling>
+        <DataSource>CSIRO Sustainable Ecosystems, Toowoomba</DataSource>
+        <Comments>Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number); oc and ph estimated</Comments>
+        <Water>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.06</double>
+            <double>1.03</double>
+            <double>1.02</double>
+            <double>1.03</double>
+            <double>1.03</double>
+            <double>1.07</double>
+            <double>1.07</double>
+            <double>1.07</double>
+          </BD>
+          <AirDry>
+            <double>0.008</double>
+            <double>0.208</double>
+            <double>0.32</double>
+            <double>0.32</double>
+            <double>0.32</double>
+            <double>0.32</double>
+            <double>0.32</double>
+            <double>0.32</double>
+          </AirDry>
+          <LL15>
+            <double>0.26</double>
+            <double>0.31</double>
+            <double>0.35</double>
+            <double>0.35</double>
+            <double>0.34</double>
+            <double>0.39</double>
+            <double>0.44</double>
+            <double>0.52</double>
+          </LL15>
+          <DUL>
+            <double>0.53</double>
+            <double>0.54</double>
+            <double>0.54</double>
+            <double>0.54</double>
+            <double>0.53</double>
+            <double>0.53</double>
+            <double>0.52</double>
+            <double>0.52</double>
+          </DUL>
+          <SAT>
+            <double>0.58</double>
+            <double>0.59</double>
+            <double>0.59</double>
+            <double>0.59</double>
+            <double>0.58</double>
+            <double>0.58</double>
+            <double>0.57</double>
+            <double>0.57</double>
+          </SAT>
+          <AirDryMetadata>
+            <string />
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string />
+          </AirDryMetadata>
+          <LL15Metadata>
+            <string>Estimated based on local knowledge</string>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </LL15Metadata>
+          <SoilCrop name="wheat">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.26</double>
+              <double>0.31</double>
+              <double>0.35</double>
+              <double>0.35</double>
+              <double>0.34</double>
+              <double>0.39</double>
+              <double>0.44</double>
+              <double>0.52</double>
+            </LL>
+            <KL>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.05</double>
+              <double>0.05</double>
+              <double>0.04</double>
+              <double>0.03</double>
+              <double>NaN</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>NaN</double>
+            </XF>
+            <LLMetadata>
+              <string>Field measured and checked for sensibility</string>
+              <string />
+              <string />
+              <string />
+              <string>Field measured and checked for sensibility</string>
+              <string />
+              <string />
+              <string />
+            </LLMetadata>
+          </SoilCrop>
+        </Water>
+        <SoilWater>
+          <SummerCona>3.5</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>2.5</WinterCona>
+          <WinterU>4</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.12</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+            <double>0.3</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>1000</RootWt>
+          <SoilCN>12</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>0.953846153846154</double>
+            <double>0.953846153846154</double>
+            <double>0.961538461538461</double>
+            <double>0.846153846153846</double>
+            <double>0.546153846153846</double>
+            <double>0.261538461538462</double>
+            <double>0.2</double>
+          </OC>
+          <OCMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </OCMetadata>
+          <FBiom>
+            <double>0.04</double>
+            <double>0.02</double>
+            <double>0.02</double>
+            <double>0.02</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.4</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </FInert>
+          <OCUnits>WalkleyBlack</OCUnits>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>8</double>
+            <double>8</double>
+            <double>8</double>
+            <double>8</double>
+            <double>8</double>
+            <double>8</double>
+            <double>8</double>
+          </PH>
+          <PHMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </PHMetadata>
+          <ParticleSizeSand>
+            <double>10.84</double>
+            <double>10.46</double>
+            <double>10.36</double>
+            <double>10.36</double>
+            <double>10.1</double>
+            <double>11.11</double>
+            <double>NaN</double>
+          </ParticleSizeSand>
+          <ParticleSizeSilt>
+            <double>23.37</double>
+            <double>21.4</double>
+            <double>21.05</double>
+            <double>21.05</double>
+            <double>18.64</double>
+            <double>16.46</double>
+            <double>NaN</double>
+          </ParticleSizeSilt>
+          <ParticleSizeClay>
+            <double>65.79</double>
+            <double>68.14</double>
+            <double>68.59</double>
+            <double>68.59</double>
+            <double>71.26</double>
+            <double>72.43</double>
+            <double>NaN</double>
+          </ParticleSizeClay>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <InitialWater>
+          <FractionFull>1</FractionFull>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Thickness>
+            <double>200</double>
+            <double>1800</double>
+          </Thickness>
+          <NO3>
+            <double>200</double>
+            <double>70</double>
+          </NO3>
+          <NO3Units>kgha</NO3Units>
+          <NH4>
+            <double>5</double>
+            <double>1</double>
+          </NH4>
+          <NH4Units>kgha</NH4Units>
+        </Sample>
+        <SoilTemperature2>
+          <MaxTTimeDefault type="text" description="MaxTTimeDefault">14</MaxTTimeDefault>
+          <BoundaryLayerConductanceSource type="text" description="BoundaryLayerConductanceSource">calc</BoundaryLayerConductanceSource>
+          <BoundaryLayerConductance type="text" description="BoundaryLayerConductance">20</BoundaryLayerConductance>
+          <BoundaryLayerConductanceIterations type="text" description="BoundaryLayerConductanceIterations">1</BoundaryLayerConductanceIterations>
+          <NetRadiationSource type="text" description="NetRadiationSource">calc</NetRadiationSource>
+          <DefaultWindSpeed type="text" description="DefaultWindSpeed">3</DefaultWindSpeed>
+          <DefaultAltitude type="text" description="DefaultAltitude">366</DefaultAltitude>
+          <DefaultInstrumentHeight type="text" description="DefaultInstrumentHeight">1.2</DefaultInstrumentHeight>
+          <BareSoilHeight type="text" description="BareSoilHeight">57</BareSoilHeight>
+        </SoilTemperature2>
+      </Soil>
+      <outputfile>
+        <filename output="yes">soil temp formartin2012.out</filename>
+        <title>soil temp formartin2012</title>
+        <variables name="Variables">
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>ave_soil_temp</variable>
+          <variable>maxt_soil</variable>
+          <variable>mint_soil</variable>
+          <variable>maxT</variable>
+          <variable>minT</variable>
+          <variable>sw</variable>
+          <variable>surfaceom_wt</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event>Daily</event>
+        </events>
+        <GraphReport>
+          <Graph name="7cm">
+            <Legend>
+              <CheckedTitles>Plot, soil temp formartin2012</CheckedTitles>
+              <CheckedTitles>obs, observed</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(1)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(1)</Y>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+          <Graph name="22cm">
+            <Legend>
+              <CheckedTitles>sim, soil temp formartin2012</CheckedTitles>
+              <CheckedTitles>obs, observed</CheckedTitles>
+            </Legend>
+            <Plot name="sim">
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(2)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(2)</Y>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+          <Graph name="37cm">
+            <Legend>
+              <CheckedTitles>Plot, soil temp formartin2012</CheckedTitles>
+              <CheckedTitles>obs, observed</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(3)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(3)</Y>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+          <Graph name="52cm">
+            <Legend>
+              <CheckedTitles>Plot, soil temp formartin2012</CheckedTitles>
+              <CheckedTitles>obs, observed</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(4)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>ave_soil_temp(4)</Y>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+        </GraphReport>
+        <GraphReport name="observed">
+          <RegressionGraph name="layer1">
+            <Legend>
+              <CheckedTitles> Predicted/Observed</CheckedTitles>
+              <CheckedTitles>Regression line</CheckedTitles>
+              <CheckedTitles>1:1 line</CheckedTitles>
+            </Legend>
+            <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	
+	Note: You can add error bars to your Observed data by adding an extra column with the same name but with the word "Error" appended to the column name.
+          eg. If you have a column called "yield" you would add an extra column called "yieldError" to your Observed data output file. 
+              (It is very important you don't put any spaces between the "yield" and "Error")		  
+	
+	</memo>
+            <Plot>
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Observed ave_soil_temp(1)</X>
+              <Y>Predicted ave_soil_temp(1)</Y>
+              <GDPredObs name="PredictedObserved">
+                <FieldsToMatch>date</FieldsToMatch>
+                <GDApsimFileReader name="Observed">
+                  <FileName>observed.csv</FileName>
+                </GDApsimFileReader>
+                <GDApsimFileReader name="Predicted">
+                  <FileName>soil temp formartin2012.out</FileName>
+                </GDApsimFileReader>
+              </GDPredObs>
+            </Plot>
+          </RegressionGraph>
+          <RegressionGraph name="layer2">
+            <Legend>
+              <CheckedTitles> Predicted/Observed</CheckedTitles>
+              <CheckedTitles>Regression line</CheckedTitles>
+              <CheckedTitles>1:1 line</CheckedTitles>
+            </Legend>
+            <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	
+	Note: You can add error bars to your Observed data by adding an extra column with the same name but with the word "Error" appended to the column name.
+          eg. If you have a column called "yield" you would add an extra column called "yieldError" to your Observed data output file. 
+              (It is very important you don't put any spaces between the "yield" and "Error")		  
+	
+	</memo>
+            <Plot>
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <Y>Predicted ave_soil_temp(2)</Y>
+              <X>Observed ave_soil_temp(2)</X>
+              <GDPredObs name="PredictedObserved">
+                <FieldsToMatch>date</FieldsToMatch>
+                <GDApsimFileReader name="Observed">
+                  <FileName>observed.csv</FileName>
+                </GDApsimFileReader>
+                <GDApsimFileReader name="Predicted">
+                  <FileName>soil temp formartin2012.out</FileName>
+                </GDApsimFileReader>
+              </GDPredObs>
+            </Plot>
+          </RegressionGraph>
+          <RegressionGraph name="layer3">
+            <Legend>
+              <CheckedTitles> Predicted/Observed</CheckedTitles>
+              <CheckedTitles>Regression line</CheckedTitles>
+              <CheckedTitles>1:1 line</CheckedTitles>
+            </Legend>
+            <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	
+	Note: You can add error bars to your Observed data by adding an extra column with the same name but with the word "Error" appended to the column name.
+          eg. If you have a column called "yield" you would add an extra column called "yieldError" to your Observed data output file. 
+              (It is very important you don't put any spaces between the "yield" and "Error")		  
+	
+	</memo>
+            <Plot>
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Observed ave_soil_temp(3)</X>
+              <Y>Predicted ave_soil_temp(3)</Y>
+              <GDPredObs name="PredictedObserved">
+                <FieldsToMatch>date</FieldsToMatch>
+                <GDApsimFileReader name="Observed">
+                  <FileName>observed.csv</FileName>
+                </GDApsimFileReader>
+                <GDApsimFileReader name="Predicted">
+                  <FileName>soil temp formartin2012.out</FileName>
+                </GDApsimFileReader>
+              </GDPredObs>
+            </Plot>
+          </RegressionGraph>
+          <RegressionGraph name="layer4">
+            <Legend>
+              <CheckedTitles> Predicted/Observed</CheckedTitles>
+              <CheckedTitles>Regression line</CheckedTitles>
+              <CheckedTitles>1:1 line</CheckedTitles>
+            </Legend>
+            <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	
+	Note: You can add error bars to your Observed data by adding an extra column with the same name but with the word "Error" appended to the column name.
+          eg. If you have a column called "yield" you would add an extra column called "yieldError" to your Observed data output file. 
+              (It is very important you don't put any spaces between the "yield" and "Error")		  
+	
+	</memo>
+            <Plot>
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Observed ave_soil_temp(4)</X>
+              <Y>Predicted ave_soil_temp(4)</Y>
+              <GDPredObs name="PredictedObserved">
+                <FieldsToMatch>date</FieldsToMatch>
+                <GDApsimFileReader name="Observed">
+                  <FileName>observed.csv</FileName>
+                </GDApsimFileReader>
+                <GDApsimFileReader name="Predicted">
+                  <FileName>soil temp formartin2012.out</FileName>
+                </GDApsimFileReader>
+              </GDPredObs>
+            </Plot>
+          </RegressionGraph>
+          <RegressionGraph name="layerall">
+            <Legend>
+              <CheckedTitles> Observed ave_soil_temp(4)</CheckedTitles>
+              <CheckedTitles> Observed ave_soil_temp(3)</CheckedTitles>
+              <CheckedTitles> Observed ave_soil_temp(2)</CheckedTitles>
+              <CheckedTitles> Observed ave_soil_temp(1)</CheckedTitles>
+              <CheckedTitles>Regression line</CheckedTitles>
+              <CheckedTitles>1:1 line</CheckedTitles>
+            </Legend>
+            <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	
+	Note: You can add error bars to your Observed data by adding an extra column with the same name but with the word "Error" appended to the column name.
+          eg. If you have a column called "yield" you would add an extra column called "yieldError" to your Observed data output file. 
+              (It is very important you don't put any spaces between the "yield" and "Error")		  
+	
+	</memo>
+            <Plot>
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Observed ave_soil_temp(4)</X>
+              <Y>Predicted ave_soil_temp(4)</Y>
+              <X>Observed ave_soil_temp(3)</X>
+              <X>Observed ave_soil_temp(2)</X>
+              <X>Observed ave_soil_temp(1)</X>
+              <Y>Predicted ave_soil_temp(3)</Y>
+              <Y>Predicted ave_soil_temp(2)</Y>
+              <Y>Predicted ave_soil_temp(1)</Y>
+              <GDPredObs name="PredictedObserved">
+                <FieldsToMatch>date</FieldsToMatch>
+                <GDApsimFileReader name="Observed">
+                  <FileName>observed.csv</FileName>
+                </GDApsimFileReader>
+                <GDApsimFileReader name="Predicted">
+                  <FileName>soil temp formartin2012.out</FileName>
+                </GDApsimFileReader>
+              </GDPredObs>
+            </Plot>
+          </RegressionGraph>
+        </GraphReport>
+        <GraphReport name="soilwater">
+          <Graph name="7cm">
+            <Legend>
+              <CheckedTitles> soil temp formartin2012</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>sw(1)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+          <Graph name="22cm">
+            <Legend>
+              <CheckedTitles> soil temp formartin2012</CheckedTitles>
+            </Legend>
+            <Plot name="sim">
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>sw(2)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+          <Graph name="37cm">
+            <Legend>
+              <CheckedTitles> soil temp formartin2012</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>sw(3)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+          <Graph name="52cm">
+            <Legend>
+              <CheckedTitles> soil temp formartin2012</CheckedTitles>
+            </Legend>
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>sw(4)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+            <Plot name="obs">
+              <SeriesType>No line</SeriesType>
+              <PointType>Circle</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>observed.csv</FileName>
+              </GDApsimFileReader>
+            </Plot>
+          </Graph>
+        </GraphReport>
+      </outputfile>
+    </area>
+  </simulation>
+</folder>
