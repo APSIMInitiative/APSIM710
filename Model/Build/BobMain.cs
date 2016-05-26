@@ -77,7 +77,7 @@ class BobMain
 
             // Compile the JobScheduler.
             Run("Compile job scheduler",
-                (Path.DirectorySeparatorChar != '/' ? "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe" : "xbuild"),
+                (Path.DirectorySeparatorChar != '/' ? "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe" : "/usr/bin/xbuild"),
                 (Path.DirectorySeparatorChar != '/' ? "%APSIM%/Model/JobScheduler/JobScheduler.sln /build debug" : "%APSIM%/Model/JobScheduler/JobScheduler.sln /target:Build"),
                 "%APSIM%/Model/JobScheduler");
 
@@ -307,26 +307,40 @@ class BobMain
     /// <returns>The return data</returns>
     public static T CallRESTService<T>(string url)
     {
-        WebRequest wrGETURL;
-        wrGETURL = WebRequest.Create(url);
-        wrGETURL.Method = "GET";
-        wrGETURL.ContentType = @"application/xml; charset=utf-8";
-        wrGETURL.ContentLength = 0;
-        using (HttpWebResponse webresponse = wrGETURL.GetResponse() as HttpWebResponse)
-        {
-            Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
-            // read response stream from response object
-            using (StreamReader loResponseStream = new StreamReader(webresponse.GetResponseStream(), enc))
-            {
-                string st = loResponseStream.ReadToEnd();
-                if (typeof(T).Name == "Object" || st == null || st == string.Empty)
-                    return default(T);
-
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-                //ResponseData responseData;
-                return (T)serializer.Deserialize(new NamespaceIgnorantXmlTextReader(new StringReader(st)));
-            }
+    	  int retryCount = 0;
+    	  while (true) 
+    	  {
+           retryCount++;
+           try 
+           {
+              WebRequest wrGETURL;
+              wrGETURL = WebRequest.Create(url);
+              wrGETURL.Method = "GET";
+              wrGETURL.ContentType = @"application/xml; charset=utf-8";
+              wrGETURL.ContentLength = 0;
+              using (HttpWebResponse webresponse = wrGETURL.GetResponse() as HttpWebResponse)
+              {
+                  Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
+                  // read response stream from response object
+                  using (StreamReader loResponseStream = new StreamReader(webresponse.GetResponseStream(), enc))
+                  {
+                      string st = loResponseStream.ReadToEnd();
+                      if (typeof(T).Name == "Object" || st == null || st == string.Empty)
+                          return default(T);
+              
+                      XmlSerializer serializer = new XmlSerializer(typeof(T));
+              
+                      //ResponseData responseData;
+                      return (T)serializer.Deserialize(new NamespaceIgnorantXmlTextReader(new StringReader(st)));
+                  }
+              }
+           } 
+           catch (WebException) {
+              if (retryCount >= 5) {
+                 throw;
+              }
+           }
+           Thread.Sleep(1000 * retryCount);
         }
     }
 

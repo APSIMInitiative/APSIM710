@@ -18,7 +18,6 @@ using System.Xml.Serialization;
 class Bob
 {
     static public string svnExe = "svn.exe";
-    static public string sevenZipExe = "C:\\Program Files\\7-Zip\\7z.exe";
     static public string DbConnectPassword = "";
     static public string APSIMDir = "";
     /// <summary>
@@ -97,7 +96,7 @@ private static void doWindows ()
    
        // Extract the patch (already on local filesystem)
        Run("Extracting patch: " + PatchFileName,
-           sevenZipExe,
+           "C:\\Program Files\\7-Zip\\7z.exe",
            "x -y " + PatchFileName,
            Log);
    
@@ -116,10 +115,7 @@ private static void doWindows ()
 }
 private static void doLINUX ()
 {
-   if (Path.DirectorySeparatorChar == '/')
-   {
-       svnExe = "svn"; sevenZipExe = "unzip";
-   }
+   svnExe = "/usr/bin/svn"; 
 
    int JobID = CallRESTService<int>("http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/FindNextLinuxJob");
    
@@ -311,26 +307,38 @@ private static void doLINUX ()
     /// <returns>The return data</returns>
     public static T CallRESTService<T>(string url)
     {
-        WebRequest wrGETURL;
-        wrGETURL = WebRequest.Create(url);
-        wrGETURL.Method = "GET";
-        wrGETURL.ContentType = @"application/xml; charset=utf-8";
-        wrGETURL.ContentLength = 0;
-        using (HttpWebResponse webresponse = wrGETURL.GetResponse() as HttpWebResponse)
-        {
-            Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
-            // read response stream from response object
-            using (StreamReader loResponseStream = new StreamReader(webresponse.GetResponseStream(), enc))
-            {
-                string st = loResponseStream.ReadToEnd();
-                if (typeof(T).Name == "Object")
-                    return default(T);
-
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-                //ResponseData responseData;
-                return (T)serializer.Deserialize(new NamespaceIgnorantXmlTextReader(new StringReader(st)));
-            }
+    	  int retryCount = 0;
+    	  while (true) 
+    	  {
+           retryCount++;
+           try 
+           {
+              WebRequest wrGETURL;
+              wrGETURL = WebRequest.Create(url);
+              wrGETURL.Method = "GET";
+              wrGETURL.ContentType = @"application/xml; charset=utf-8";
+              wrGETURL.ContentLength = 0;
+              using (HttpWebResponse webresponse = wrGETURL.GetResponse() as HttpWebResponse)
+              {
+                  Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
+                  // read response stream from response object
+                  using (StreamReader loResponseStream = new StreamReader(webresponse.GetResponseStream(), enc))
+                  {
+                      string st = loResponseStream.ReadToEnd();
+                      if (typeof(T).Name == "Object" || st == null || st == string.Empty)
+                          return default(T);
+              
+                      XmlSerializer serializer = new XmlSerializer(typeof(T));
+              
+                      //ResponseData responseData;
+                      return (T)serializer.Deserialize(new NamespaceIgnorantXmlTextReader(new StringReader(st)));
+                  }
+              }
+           } 
+           catch (WebException e) 
+              if (retryCount >= 5) 
+                 throw;
+           Thread.Sleep(1000 * retryCount);
         }
     }
 
