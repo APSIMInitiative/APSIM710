@@ -190,24 +190,59 @@ namespace ApsimFile
 					if (PosLastSlash != -1)
 						simName = simName.Substring (PosLastSlash + 1);
 					string simFileName = Path.Combine (Path.GetDirectoryName (FileName), simName + ".sim");
-					StreamWriter fp = new StreamWriter (simFileName);
-					ApsimToSim.GetSimDoc (df.Find (SimulationPath), Configuration.getArchitecture ()).Save (fp);
-					fp.Close ();
-
-					Job J = CreateJob (simFileName,
-						                       Path.Combine (Path.GetDirectoryName (FileName), simName + ".sum"));
-					J.IgnoreErrors = false;
-					jobs.Add (J);
-					J = CleanupJob (simFileName, J.Name);
-					jobs.Add (J);
+                    StreamWriter fp = new StreamWriter(simFileName);
+                    try
+                    {
+                        ApsimToSim.GetSimDoc(df.Find(SimulationPath), Configuration.getArchitecture()).Save(fp);
+                        fp.Close();
+                        Job J = CreateJob(simFileName,
+                                                   Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"));
+                        J.IgnoreErrors = false;
+                        jobs.Add(J);
+                        J = CleanupJob(simFileName, J.Name);
+                        jobs.Add(J);
+                    }
+                    catch (Exception err)
+                    {
+                        fp.Close();
+                        string sumFileName = Path.ChangeExtension(simFileName, ".sum");
+                        WriteErrorToSummaryFile(sumFileName, err.Message);
+                    }
 				}
 			}
 		}
 
-		/// <summary>
-		/// Create a job for the specified .sim file.
-		/// </summary>
-		private void CreateJobsFromSIM (string FileName, ref List<Job> jobs)
+        /// <summary>Create a summary file</summary>
+        /// <param name="sumFileName">Name of summary file.</param>
+        /// <param name="message">Message to write.</param>
+        private void WriteErrorToSummaryFile(string sumFileName, string message)
+        {
+            string Banner = "     ###     ######     #####   #   #     #   \n" + 
+                            "    #   #    #     #   #        #   ##   ##   \n" +
+                            "   #     #   #     #   #        #   ##   ##   \n" +
+                            "   #######   ######     #####   #   # # # #   \n" +
+                            "   #     #   #              #   #   #  #  #   \n" +
+                            "   #     #   #         #####    #   #  #  #   \n" +
+                            "                                              \n" +
+                            "                                              \n" +
+                            " The Agricultural Production Systems Simulator\n" +
+                            "             Copyright(c) APSRU               \n\n";
+
+            StreamWriter fp = new StreamWriter(sumFileName);
+            fp.WriteLine(Banner);
+            fp.WriteLine("Title                  = " + Path.GetFileNameWithoutExtension(sumFileName));
+            fp.WriteLine("     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            fp.WriteLine("                      APSIM  Fatal  Error");
+            fp.WriteLine("                      -------------------");
+            fp.WriteLine(message);
+            fp.WriteLine("     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            fp.Close();
+        }
+
+        /// <summary>
+        /// Create a job for the specified .sim file.
+        /// </summary>
+        private void CreateJobsFromSIM (string FileName, ref List<Job> jobs)
 		{
 			jobs.Add (CreateJob (FileName, Path.ChangeExtension (FileName, ".sum")));
 		}
