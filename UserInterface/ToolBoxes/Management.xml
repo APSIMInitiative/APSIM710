@@ -3437,6 +3437,84 @@ endif</text>
         <event>start_of_day</event>
       </script>
     </manager>
+      <manager2 name="FrostMultiplier">
+        <ui>
+          <Crop type="text" description="Crop name">wheat</Crop>
+        </ui>
+        <text>using System;
+using ModelFramework;
+using System.Collections.Generic;
+using CSGeneral;
+using System.Collections;
+
+
+
+public class Script 
+{      
+   [Input] public DateTime Today;             
+   [Input] float rain;
+   [Input] double minT;   
+   [Input] double zadok_stage;
+
+   [Param] string crop;
+   [Output] double FrostMultiplier = 1;
+
+     
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+       Frost();            
+   }
+   
+   // The following event handler will be called at sowing
+   [EventHandler] public void OnSowing()
+   {
+       FrostMultiplier = 1;
+   }
+      
+   private void Frost() {
+      // implements frost model as described in:
+      //  Zheng et al. (2015), Frost trends and their estimated impact on yield in the
+      //     Australian wheatbelt, Journal of Experimental Botany, Vol. 66, No. 12 pp. 3611 to 3623
+      //     doi:10.1093
+      
+      if (crop == "wheat") {         
+         if (zadok_stage &gt;= 45 &amp;&amp; zadok_stage &lt; 55 &amp;&amp; minT &lt;= 0)
+         {
+            FrostMultiplier = -0.09 * zadok_stage + 5.05 &lt; FrostMultiplier ? -0.09 * zadok_stage + 5.05 : FrostMultiplier;
+         }
+         else if(zadok_stage &gt;= 55 &amp;&amp; zadok_stage &lt; 80 &amp;&amp; minT &lt;= 0) 
+         {
+            FrostMultiplier = 0.1 &lt; FrostMultiplier ? 0.1 : FrostMultiplier;         
+         }
+         else if (zadok_stage &gt;= 80 &amp; zadok_stage &lt; 89 &amp; minT &lt;= 0)
+         {
+            FrostMultiplier = 0.1 * zadok_stage - 7.9 &lt; FrostMultiplier ? 0.1 * zadok_stage - 7.9 : FrostMultiplier;         
+         }
+      } 
+      else if (crop == "barley")
+      {
+         if (zadok_stage &gt;= 45 &amp;&amp; zadok_stage &lt; 55 &amp;&amp; minT &lt;= 0)
+         {
+            FrostMultiplier = -0.06 * zadok_stage + 3.7 &lt; FrostMultiplier ? -0.06 * zadok_stage + 3.7 : FrostMultiplier;                     
+         }
+         else if(zadok_stage &gt;= 55 &amp;&amp; zadok_stage &lt; 80 &amp;&amp; minT &lt;= 0) 
+         {
+            FrostMultiplier = 0.4 &lt; FrostMultiplier ? 0.4 : FrostMultiplier;         
+         }
+         else if (zadok_stage &gt;= 80 &amp; zadok_stage &lt; 89 &amp; minT &lt;= 0)
+         {
+            FrostMultiplier = 0.0667 * zadok_stage - 4.9333 &lt; FrostMultiplier ? 0.0667 * zadok_stage - 4.9333 : FrostMultiplier;         
+         }
+      }
+      else
+      {
+         throw new ArgumentNullException("Frost method isn't applicable for crop" + crop);   
+      }
+   }
+  
+}</text>
+      </manager2>
   </folder>
   <folder name="Weed management">
     <manager name="Weed sowing">
