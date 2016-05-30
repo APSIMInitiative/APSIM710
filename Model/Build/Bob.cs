@@ -336,8 +336,10 @@ private static void doLINUX ()
               }
            } 
            catch (WebException e) 
+           {
               if (retryCount >= 5) 
                  throw;
+           }
            Thread.Sleep(1000 * retryCount);
         }
     }
