@@ -436,27 +436,34 @@ namespace Controllers
 			if (!FirstTimeRename) {
 
 				if ((e.Label != null)) {
-					//Check user typed something in. So you are not trying to rename it to a blank.
-					if ((e.Label.Length > 0)) {
+                    //Check user typed something in. So you are not trying to rename it to a blank.
+                    string newName = e.Label.Trim();  // Trim any leading and trailing white space
+                    if ((newName.Length > 0)) {
 
-
-						if (!(CSGeneral.Utility.CheckForInvalidChars(e.Label))) {
+						if (!(CSGeneral.Utility.CheckForInvalidChars(newName))) {
 							// Firstly empty the current selections.
 							Controller.SelectedPath = "";
 
 							// Change the data. 
 							ApsimFile.Component Comp = Controller.ApsimData.Find(GetPathFromNode(e.Node));
 							string oldName = Comp.Name;
-							Comp.Name = e.Label;
+							Comp.Name = newName;
 
-							// The component may baulk at this change and suggest something else. If so, give up.
-							if (Comp.Name != e.Label) {
+                            // The component may baulk at this change and suggest something else. If so, give up.
+                            if (Comp.Name != newName) {
 								Comp.Name = oldName;
-								MessageBox.Show("You can not have two components with the same name (" + e.Label + ")");
+								MessageBox.Show("You can not have two components with the same name (" + newName + ")");
 								e.CancelEdit = true;
 							} else {
-								// Now tell the base controller about the new selections.
-								Controller.SelectedPath = Comp.FullPath;
+                                // Now tell the base controller about the new selections.
+                                Controller.SelectedPath = Comp.FullPath;
+                                // A bit weird, but if we have had to trim blanks from the name, we need to end the
+                                // edit to get the corrected name to appear.
+                                if (newName != e.Label)  
+                                {
+                                    e.CancelEdit = true;
+                                    e.Node.Text = newName;
+                                }
 							}
 
 						} else {
