@@ -77,11 +77,44 @@ class ApsimToSimExe
 			FindSimsAndConvert(Apsim.RootComponent, SimName);
         else
             {
-			if (SimName.Contains("@factorial="))
-               foreach (string simFileName in Factor.CreateSimFiles(Apsim, new string[] { SimName }, Directory.GetCurrentDirectory()))
-                   Console.Error.WriteLine("Written " + simFileName);
-            else 
-               FindSimsAndConvert(Apsim.RootComponent, SimName);
+            bool factorialActive = XmlHelper.Value(Apsim.FactorComponent.ContentsAsXML, "active") == "1";
+            if (factorialActive)
+            {
+                List<string> simulationPaths = new List<string>();
+                ApsimFile.ApsimFile.ExpandSimsToRun(Apsim.RootComponent, ref simulationPaths);
+                foreach (string simXmlPath in simulationPaths)
+                {
+                    FactorBuilder b = new FactorBuilder(Apsim.FactorComponent);
+                    Component Simulation = Apsim.Find(simXmlPath);
+                    List<string> allFactorials = Factor.CalcFactorialList(Apsim, simXmlPath);
+                    int totalCount = allFactorials.Count;
+                    for (int instanceCount = 1; instanceCount <= totalCount; instanceCount++)
+                    {
+                        string rootName = Simulation.Name;
+                        if (b.SaveExtraInfoInFilename)
+                            rootName += ";" + allFactorials[instanceCount - 1];
+                        else
+                        {
+                            //write a spacer to list sims in order eg: 01 or 001 or 0001 depending on count
+                            string sPad = "";
+                            double tot = Math.Floor(Math.Log10(totalCount) + 1);
+                            double file = Math.Floor(Math.Log10(instanceCount) + 1);
+                            for (int i = 0; i < (int)(tot - file); ++i)
+                                sPad += "0";
+
+                            rootName += "_" + sPad + instanceCount;
+                        }
+
+                        string fullSimPath = simXmlPath + "@factorial=" + allFactorials[instanceCount - 1];
+                        Factor.CreateSimFiles(Apsim, new string[] { fullSimPath }, Directory.GetCurrentDirectory());
+                    }
+                }
+            }
+            else if (SimName.Contains("@factorial="))
+                foreach (string simFileName in Factor.CreateSimFiles(Apsim, new string[] { SimName }, Directory.GetCurrentDirectory()))
+                    Console.Error.WriteLine("Written " + simFileName);
+            else
+                FindSimsAndConvert(Apsim.RootComponent, SimName);
         } 
     }
 
