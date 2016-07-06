@@ -11,6 +11,9 @@
 #include <ComponentInterface2/ScienceAPI2.h>
 
 #include "ReportComponent.h"
+#ifdef __WIN32__
+#include "Windows.h"
+#endif
 using namespace std;
 
 // ------------------------------------------------------------------
@@ -541,8 +544,14 @@ void ReportComponent::writeHeadings(void)
    std::string IncludeBuildNumber;
    ApsimSettings settings;
    settings.read("apsimui|IncludeBuildNumberInOutSumFile", IncludeBuildNumber, false);
+#ifdef __WIN32__
+   TCHAR buffer[MAX_COMPUTERNAME_LENGTH + 1];
+   unsigned long size;
+   if (!GetComputerName(buffer, &size) || !_strnicmp(buffer, "bob", 4))
+       IncludeBuildNumber = "No";
+#endif
    if (IncludeBuildNumber == "Yes")
-      versionString += " " + getApsimBuildNumber();
+       versionString += " r" + getApsimBuildNumber();
    file << "ApsimVersion = " << versionString << endl;
 
    // write out all constants

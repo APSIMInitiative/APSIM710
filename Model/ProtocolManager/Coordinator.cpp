@@ -34,6 +34,9 @@
 #include "ComponentAlias.h"
 #include "Coordinator.h"
 
+#ifdef __WIN32__
+#include "Windows.h"
+#endif
 vector<int> Coordinator::componentOrders;
 
 using namespace std;
@@ -117,8 +120,14 @@ void Coordinator::doInit1(const protocol::Init1Data &init1Data)
       std::string IncludeBuildNumber;
       ApsimSettings settings;
       settings.read("apsimui|IncludeBuildNumberInOutSumFile", IncludeBuildNumber, false);
+#ifdef __WIN32__
+      TCHAR buffer[MAX_COMPUTERNAME_LENGTH + 1];
+      unsigned long size;
+      if (!GetComputerName(buffer, &size) || !_strnicmp(buffer, "bob", 4))
+          IncludeBuildNumber = "No";
+#endif
       if (IncludeBuildNumber == "Yes")
-         versionString += " " + getApsimBuildNumber();
+         versionString += " r" + getApsimBuildNumber();
       cout << "Version                = " + versionString << endl;
       }
 

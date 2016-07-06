@@ -37,7 +37,7 @@ ApsimSettings::ApsimSettings(void)
   string VersionNumber = getApsimVersion();
   replaceAll(VersionNumber, ".", "");
   string localPath;
-  string DirectoryName = "Apsim" + VersionNumber +"-" + getApsimBuildNumber();
+  string DirectoryName = "Apsim" + VersionNumber +"-r" + getApsimBuildNumber();
 #ifdef __WIN32__
   char szPath[MAX_PATH];
   if (SHGetFolderPath( NULL, CSIDL_APPDATA, NULL, 0, szPath ) != S_OK)
