@@ -122,8 +122,8 @@ void Coordinator::doInit1(const protocol::Init1Data &init1Data)
       settings.read("apsimui|IncludeBuildNumberInOutSumFile", IncludeBuildNumber, false);
 #ifdef __WIN32__
       TCHAR buffer[MAX_COMPUTERNAME_LENGTH + 1];
-      unsigned long size;
-      if (!GetComputerName(buffer, &size) || !_strnicmp(buffer, "bob", 4))
+      unsigned long size = sizeof(buffer);
+      if (GetComputerName(buffer, &size) && _strnicmp(buffer, "bob", 4) == 0)
           IncludeBuildNumber = "No";
 #endif
       if (IncludeBuildNumber == "Yes")
