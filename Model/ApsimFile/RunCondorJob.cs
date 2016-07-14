@@ -67,6 +67,7 @@ namespace ApsimFile
 
 			AddFiles (jobDoc.DocumentElement, FilesToRun, Notifier);
 
+			Notifier (99, "Creating batch files");
 			CreateSubmitFile (jobDoc);
 
 			StreamWriter fp = new StreamWriter (Path.Combine (WorkingFolder, "CondorApsim.xml"));
@@ -129,7 +130,6 @@ namespace ApsimFile
 						F.OpenFile (FileName);
 						simsToRun =	Factor.CreateSimulationNames (F, new string []{ XmlHelper.FullPath (simulation)}, Notifier);
 					}
-				    Notifier (99, "Creating batch files");
 					foreach (string simToRun in simsToRun) {					
 						XmlNode simulationNode = apsimFileNode.AppendChild (apsimFileNode.OwnerDocument.CreateElement ("simulation"));
 						XmlHelper.SetAttribute (simulationNode, "name", simToRun);
@@ -274,70 +274,88 @@ namespace ApsimFile
 			StreamWriter WinExeWriter = null;
 			StreamWriter LinuxExeWriter = null;
 
-			foreach (XmlNode fileNode in jobDoc.SelectNodes("//apsimfile")) {
-				string apsimFile = Path.GetFileName (XmlHelper.Attribute (fileNode, "source"));
-				foreach (XmlNode simNode in fileNode.SelectNodes("//simulation")) {
-					if (numSims == 0) {
-						SubWriter.WriteLine ("output = " + "Apsim." + Convert.ToString (jobCounter) + ".stdout");
-						SubWriter.WriteLine ("error = " + "Apsim." + Convert.ToString (jobCounter) + ".stderr");
-						SubWriter.WriteLine ("arguments = " + SelfExtractingExecutableLocation + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
-						if (File.Exists (SelfExtractingExecutableLocation))
-							inputfiles.Add (Path.GetFileName (SelfExtractingExecutableLocation));
-						inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
-						inputfiles.Add (apsimFile);
+			bool multipleApsimFiles = jobDoc.SelectNodes("//apsimfile").Count > 1;
 
-						string simsFile = "Apsim." + Convert.ToString (jobCounter) + "." + apsimFile + ".simulations";
-						SimsWriter = new StreamWriter (Path.Combine (WorkingFolder, simsFile));
-						inputfiles.Add (simsFile);
+            foreach (XmlNode simNode in jobDoc.SelectNodes("//simulation")) {
+				string apsimFile = Path.GetFileName (XmlHelper.Attribute (simNode, "source"));
+				if (numSims == 0) {
+					SubWriter.WriteLine ("output = " + "Apsim." + Convert.ToString (jobCounter) + ".stdout");
+					SubWriter.WriteLine ("error = " + "Apsim." + Convert.ToString (jobCounter) + ".stderr");
+					SubWriter.WriteLine ("arguments = " + SelfExtractingExecutableLocation + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
+					if (File.Exists (SelfExtractingExecutableLocation))
+						inputfiles.Add (Path.GetFileName (SelfExtractingExecutableLocation));
+					inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 
-						WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
-						WinExeWriter.NewLine = "\r\n";
-						WinExeWriter.WriteLine ("echo Running on %COMPUTERNAME%");
-						WinExeWriter.WriteLine (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
-
-						LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
-						LinuxExeWriter.NewLine = "\n";
-						LinuxExeWriter.WriteLine ("#!/bin/bash");
-						LinuxExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
-						LinuxExeWriter.WriteLine ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+					string simsFile = null;
+					if (!multipleApsimFiles)
+					{
+					   simsFile = "Apsim." + Convert.ToString (jobCounter) + "." + apsimFile + ".simulations";
+					   SimsWriter = new StreamWriter (Path.Combine (WorkingFolder, simsFile));
+					   inputfiles.Add (simsFile);
 					}
+					WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
+					WinExeWriter.NewLine = "\r\n";
+					WinExeWriter.WriteLine ("echo Running on %COMPUTERNAME%");
 
+					LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
+					LinuxExeWriter.NewLine = "\n";
+					LinuxExeWriter.WriteLine ("#!/bin/bash");
+					LinuxExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
+
+					if (!multipleApsimFiles) 
+					{
+						LinuxExeWriter.WriteLine ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+                        WinExeWriter.WriteLine (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+                    } else {
+						LinuxExeWriter.Write ("mono ./Temp/Model/Apsim.exe");
+                        WinExeWriter.Write (".\\Temp\\Model\\Apsim.exe");
+                    }
+				}
+				if (!inputfiles.Contains(apsimFile)) { inputfiles.Add(apsimFile); }
+				if (!multipleApsimFiles) 
 					SimsWriter.WriteLine (XmlHelper.Attribute (simNode, "name"));
+                else  
+                {
+					LinuxExeWriter.Write (" \"" + apsimFile + "\"");
+					WinExeWriter.Write (" \"" + apsimFile + "\"");
+                }
+				foreach (XmlNode inputNode in simNode.SelectNodes(".//input"))
+					if (!inputfiles.Contains (XmlHelper.Attribute (inputNode, "name")))
+						inputfiles.Add (XmlHelper.Attribute (inputNode, "name"));
 
-					foreach (XmlNode inputNode in simNode.SelectNodes(".//input"))
-						if (!inputfiles.Contains (XmlHelper.Attribute (inputNode, "name")))
-							inputfiles.Add (XmlHelper.Attribute (inputNode, "name"));
-
-					numSims++;
-					if (numSims >= numberSimsPerJob) {
-						SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
-						SubWriter.WriteLine ("queue");
-						SubWriter.WriteLine ();
-						PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+				numSims++;
+				if (numSims >= numberSimsPerJob) {
+					SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
+					SubWriter.WriteLine ("queue");
+					SubWriter.WriteLine ();
+					PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
 						                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
 						                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
 
-						SimsWriter.Close ();
-						WinExeWriter.Close ();
-						LinuxExeWriter.Close ();
-						numSims = 0;
-						inputfiles.Clear ();
-						jobCounter++;
-					}
+					if (!multipleApsimFiles) SimsWriter.Close ();
+				    if (multipleApsimFiles) WinExeWriter.Write ("\n");
+					WinExeWriter.Close ();
+				    if (multipleApsimFiles) LinuxExeWriter.Write ("\n");
+					LinuxExeWriter.Close ();
+					numSims = 0;
+					inputfiles.Clear ();
+					jobCounter++;
 				}
 			}
 
 			if (numSims > 0) {
+				if (multipleApsimFiles) WinExeWriter.Write ("\n");
+				WinExeWriter.Close ();
+				if (multipleApsimFiles) LinuxExeWriter.Write ("\n");
+				LinuxExeWriter.Close ();
+				if (!multipleApsimFiles)  SimsWriter.Close ();
 				SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 				SubWriter.WriteLine ("queue");
 				PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
 				                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
 				                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
 			}
-			WinExeWriter.Close ();
-			LinuxExeWriter.Close ();
 			SubWriter.Close ();
-			SimsWriter.Close ();
 
 			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
 			PBSWriter.WriteLine ("#!/bin/bash");
