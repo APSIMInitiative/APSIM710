@@ -23,25 +23,27 @@ namespace ApsimFile
 			MaxLinesInSummaryFile = -1;
 		}
 
+		public struct apsimRunFileSims { public string fileName; public List<string> simulationPaths;}
+
 		/// <summary>
 		/// FileNames can be any valid APSIM file eg. .apsim, .con or .sim. Paths can be specified
 		/// for .apsim and .con files. They can be a full path or just a simulation name.
 		/// Full path eg. /simulations/Continuous Wheat
 		/// </summary>
-		public void Start (string[] FileNames, string[] SimulationPaths, bool doAllFactors)
+		public void Start (List<apsimRunFileSims> args, bool doAllFactors)
 		{
 			List<Job> ApsimJobs = new List<Job> ();
 			ApsimJobs.Clear ();
 			NumApsimRuns = 0;
-			foreach (string FileName in FileNames) {
-				if (Path.GetExtension (FileName).ToLower () == ".apsim")
-					CreateJobsFromAPSIM (FileName, SimulationPaths, ref ApsimJobs, doAllFactors);
-				else if (Path.GetExtension (FileName).ToLower () == ".sim")
-					CreateJobsFromSIM (FileName, ref ApsimJobs);
-				else if (Path.GetExtension (FileName).ToLower () == ".con")
-					CreateJobsFromCON (FileName, SimulationPaths, ref ApsimJobs);
+			foreach (apsimRunFileSims arg in args) {
+				if (Path.GetExtension (arg.fileName).ToLower () == ".apsim")
+					CreateJobsFromAPSIM (arg.fileName, arg.simulationPaths.ToArray(), ref ApsimJobs, doAllFactors);
+				else if (Path.GetExtension (arg.fileName).ToLower () == ".sim")
+					CreateJobsFromSIM (arg.fileName, ref ApsimJobs);
+				else if (Path.GetExtension (arg.fileName).ToLower () == ".con")
+					CreateJobsFromCON (arg.fileName, arg.simulationPaths.ToArray(), ref ApsimJobs);
 				else
-					throw new Exception ("Unknown APSIM file type: " + FileName + ". Cannot run APSIM.");
+					throw new Exception ("Unknown APSIM file type: " + arg.fileName + ". Cannot run APSIM.");
 			}
 
 			Project P = new Project ();
@@ -460,10 +462,6 @@ namespace ApsimFile
 			J.StdOutFilename = SumFileName;
 			return J;
 		}
-
 		#endregion
-
-
-
 	}
 }

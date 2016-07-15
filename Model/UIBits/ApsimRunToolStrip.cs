@@ -173,7 +173,7 @@ public class ApsimRunToolStrip
 					doAllFactors = XmlHelper.Value(_F.FactorComponent.ContentsAsXML, "active") == "1";
 			}
             Timer.Enabled = true;
-            Apsim.Start(new string[] { _F.FileName }, SimsToRun.ToArray(), doAllFactors);
+			Apsim.Start(new List<RunApsim.apsimRunFileSims> {new RunApsim.apsimRunFileSims { fileName = _F.FileName, simulationPaths =  SimsToRun}}, doAllFactors);
 		}
         
     }
