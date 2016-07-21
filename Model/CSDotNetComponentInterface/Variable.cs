@@ -288,7 +288,7 @@ namespace ModelFramework
             }
             else if (typeof(T) == typeof(Int32[]))
             {
-                result = "<type kind=\"integer\" array=\"T\"/>";
+                result = "<type kind=\"integer4\" array=\"T\"/>";
             }
             else if (typeof(T) == typeof(Single[]))
             {
