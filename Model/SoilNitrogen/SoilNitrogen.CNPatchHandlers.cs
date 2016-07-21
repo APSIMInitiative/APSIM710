@@ -422,6 +422,8 @@ public partial class SoilNitrogen
             Patch[k].urea[layer] += Patch[j].urea[layer] * MultiplyingFactor;
             Patch[k].nh4[layer] += Patch[j].nh4[layer] * MultiplyingFactor;
             Patch[k].no3[layer] += Patch[j].no3[layer] * MultiplyingFactor;
+            Patch[k].nh3[layer] += Patch[j].nh3[layer] * MultiplyingFactor;
+            Patch[k].no2[layer] += Patch[j].no2[layer] * MultiplyingFactor;
             Patch[k].TodaysInitialNH4[layer] += Patch[j].TodaysInitialNH4[layer] * MultiplyingFactor;
             Patch[k].TodaysInitialNO3[layer] += Patch[j].TodaysInitialNO3[layer] * MultiplyingFactor;
 
@@ -458,6 +460,8 @@ public partial class SoilNitrogen
             Patch[k].urea[layer] = (Patch[k].urea[layer] * Patch[k].RelativeArea + Patch[j].urea[layer] * Patch[j].RelativeArea) / NewPatchArea;
             Patch[k].nh4[layer] = (Patch[k].nh4[layer] * Patch[k].RelativeArea + Patch[j].nh4[layer] * Patch[j].RelativeArea) / NewPatchArea;
             Patch[k].no3[layer] = (Patch[k].no3[layer] * Patch[k].RelativeArea + Patch[j].no3[layer] * Patch[j].RelativeArea) / NewPatchArea;
+            Patch[k].nh3[layer] = (Patch[k].nh3[layer] * Patch[k].RelativeArea + Patch[j].nh3[layer] * Patch[j].RelativeArea) / NewPatchArea;
+            Patch[k].no2[layer] = (Patch[k].no2[layer] * Patch[k].RelativeArea + Patch[j].no2[layer] * Patch[j].RelativeArea) / NewPatchArea;
             Patch[k].TodaysInitialNH4[layer] = (Patch[k].TodaysInitialNH4[layer] * Patch[k].RelativeArea + Patch[j].TodaysInitialNH4[layer] * Patch[j].RelativeArea) / NewPatchArea;
             Patch[k].TodaysInitialNO3[layer] = (Patch[k].TodaysInitialNO3[layer] * Patch[k].RelativeArea + Patch[j].TodaysInitialNO3[layer] * Patch[j].RelativeArea) / NewPatchArea;
 

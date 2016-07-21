@@ -58,6 +58,7 @@
       <defaultInitialpH description="Default initial ph, used case no pH is initialised in model"> 6.0 </defaultInitialpH>
       <WarningNegativeThreshold description="Threshold for raising a warning due to small negative values"> -0.0000000001 </WarningNegativeThreshold>
       <FatalNegativeThreshold description="Threshold for a fatal error due to negative values (loss of mass balance)"> -0.000001 </FatalNegativeThreshold>
+      <UseCodenitrification description="flag whether routines for nitrification and codenitrification are to be used (ignore old nitrification)"> no </UseCodenitrification>
 
       <!--  -  Parameters for setting/handling SoilCN patches  ................................................................................... -->
       <MininumRelativeAreaCNPatch description="Minimum allowable relative area for a CNpatch (0-1)"> 0.000001 </MininumRelativeAreaCNPatch>
@@ -361,6 +362,144 @@
         <double>0.0</double>
         <double>0.0</double>
       </phf_Nitrif_y>
+
+      <!--  -  Parameters for nitritation + nitratation  ........................................................................................ -->
+      <NitritationPotential units="ppm/day" description="Maximum soil potential nitritation rate (ug NH4/g soil/day)"> 40.0 </NitritationPotential>
+      <NH4AtHalfNitritationPot units="ppm" description="NH4 concentration when nitritation is half of potential (Michaelis-Menten kinetics)"> 90.0 </NH4AtHalfNitritationPot>
+      <NitratationPotential units="ppm/day" description="Maximum soil potential nitratation rate (ug NO2/g soil/day)"> 400.0 </NitratationPotential>
+      <NO2AtHalfNitratationPot units="ppm" description="NO2 concentration when nitratation is half of potential (Michaelis-Menten kinetics)"> 90.0 </NO2AtHalfNitratationPot>
+      <AmmoxLossParam1 units="ppm/day" description="Parameter to determine the base fraction of ammonia oxidated lost as N2O"> 0.0025 </AmmoxLossParam1>
+      <AmmoxLossParam2 units="day/ppm" description="Parameter to determine the changes in fraction of ammonia oxidated lost as N2O"> 0.45 </AmmoxLossParam2>
+      <!-- Limiting factors for nitrification -->
+      <TOptmimunNitrififaction description="parameters for the temperature factor, optimum temperature (aerobic and anaerobic)">
+        <double>32.0</double>
+        <double>32.0</double>
+      </TOptmimunNitrififaction>
+      <FactorZeroNitrification description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.00</double>
+        <double>0.00</double>
+      </FactorZeroNitrification>
+      <ExponentNitrification description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+        <double>2.0</double>
+        <double>2.0</double>
+      </ExponentNitrification>
+      <Nitrification_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.25</double>
+        <double>2.0</double>
+        <double>3.0</double>
+      </Nitrification_swx>
+      <Nitrification_swy description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+      </Nitrification_swy>
+      <Nitritation_phx description="parameters for pH factor affecting nitritation, values of soil ph (0-14)">
+        <double>0.0</double>
+        <double>4.5</double>
+        <double>6.0</double>
+        <double>8.0</double>
+        <double>9.0</double>
+        <double>14.0</double>
+      </Nitritation_phx>
+      <Nitritation_phy description="parameters for pH factor affecting nitritation, values of pH factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+        <double>0.0</double>
+      </Nitritation_phy>
+      <Nitratation_phx description="parameters for pH factor affecting nitratation, values of soil ph (0-14)">
+        <double>0.0</double>
+        <double>4.5</double>
+        <double>6.0</double>
+        <double>8.0</double>
+        <double>9.0</double>
+        <double>14.0</double>
+      </Nitratation_phx>
+      <Nitratation_phy description="parameters for pH factor affecting nitratation, values of pH factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+        <double>0.0</double>
+      </Nitratation_phy>
+      <Nitratation_NIFx description="parameters for nitratation inhibition factor due to NH3+NO2, values of N concentration (ppm)">
+        <double>0.0</double>
+        <double>5.0</double>
+        <double>20.0</double>
+        <double>25.0</double>
+      </Nitratation_NIFx>
+      <Nitratation_NIFy description="parameters for nitratation inhibition factor due to NH3+NO2, values of inhibition factor corresponding to x (0-1)">
+        <double>0.5</double>
+        <double>0.5</double>
+        <double>1.0</double>
+        <double>1.0</double>
+      </Nitratation_NIFy>
+
+      <!--  -  Parameters for codenitrification  ................................................................................................... -->
+      <CodenitRateCoefficient description="codenitrification rate coefficient (kg soil/mg C per day)"> 0.0006 </CodenitRateCoefficient>
+      <!-- Limiting factors for denitrification -->
+      <TOptmimunCodenitrififaction description="parameter for the temperature factor, optimum temperature (aerobic and anaerobic)">
+        <double>50.056</double>
+        <double>50.056</double>
+      </TOptmimunCodenitrififaction>
+      <FactorZeroCodenitrification description="parameters for the temperature factor, value of factor at zero degrees (aerobic and anaerobic)">
+        <double>0.10</double>
+        <double>0.10</double>
+      </FactorZeroCodenitrification>
+      <ExponentCodenitrification description="parameters for the temperature factor, curve exponent (aerobic and anaerobic)">
+        <double>68350.0</double>
+        <double>68350.0</double>
+      </ExponentCodenitrification>
+      <Codenitrification_swx description="parameters for the moisture factor, values of modified swc (0-3)">
+        <double>0.0</double>
+        <double>2.0</double>
+        <double>3.0</double>
+      </Codenitrification_swx>
+      <Codenitrification_swy description="parameters for the moisture factor, values of moisture factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+      </Codenitrification_swy>
+      <Codenitrification_phx description="parameters for pH factor affecting codenitrification, values of soil ph (0-14)">
+        <double>0.0</double>
+        <double>4.5</double>
+        <double>6.0</double>
+        <double>8.0</double>
+        <double>9.0</double>
+        <double>14.0</double>
+      </Codenitrification_phx>
+      <Codenitrification_phy description="parameters for pH factor affecting codenitrification, values of pH factor corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+        <double>0.0</double>
+      </Codenitrification_phy>
+      <!-- Parameters for computing the N2-N20 ratio -->
+      <Codenitrification_NHNOx description="parameters for NH3NO2 factor affecting the fraction of N2 during codenitrification, values of soil N (ppm)">
+        <double>0.0</double>
+        <double>4.5</double>
+        <double>6.0</double>
+        <double>8.0</double>
+        <double>9.0</double>
+        <double>14.0</double>
+      </Codenitrification_NHNOx>
+      <Codenitrification_NHNOy description="parameters for NH3NO2 factor affecting the fraction of N2 during codenitrification, values of N fraction corresponding to x (0-1)">
+        <double>0.0</double>
+        <double>0.0</double>
+        <double>1.0</double>
+        <double>1.0</double>
+        <double>0.0</double>
+        <double>0.0</double>
+      </Codenitrification_NHNOy>
 
       <!--  -  Parameters for denitrification  ................................................................................................... -->
       <DenitRateCoefficient description="denitrification rate coefficient (kg soil/mg C per day)"> 0.0006 </DenitRateCoefficient>

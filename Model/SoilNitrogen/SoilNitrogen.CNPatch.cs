@@ -54,20 +54,20 @@ public partial class SoilNitrogen
 
         #region Values for mineral N
 
-        /// <summary>
-        /// Amount of soil urea nitrogen(kgN/ha)
-        /// </summary>
+        /// <summary>Amount of soil urea nitrogen (kgN/ha)</summary>
         public double[] urea;
 
-        /// <summary>
-        /// Amount of soil ammonium nitrogen (kgN/ha)
-        /// </summary>
+        /// <summary>Amount of soil ammonium nitrogen (kgN/ha)</summary>
         public double[] nh4;
 
-        /// <summary>
-        /// Amount of soil nitrate nitrogen (kgN/ha)
-        /// </summary>
+        /// <summary>Amount of soil nitrate nitrogen (kgN/ha)</summary>
         public double[] no3;
+
+        /// <summary>Amount of soil ammonia nitrogen (kgN/ha)</summary>
+        public double[] nh3;
+
+        /// <summary>Amount of soil nitrite nitrogen (kgN/ha)</summary>
+        public double[] no2;
 
         /// <summary>
         /// Amount of NH4 plus NO3 in the root zone (kg/ha)
@@ -122,6 +122,13 @@ public partial class SoilNitrogen
         /// Nitrogen amount in soil inert humus
         /// </summary>
         public double[] inert_n;
+
+        #endregion
+
+        #region Values for soil pH
+
+        /// <summary>Soil pH value</summary>
+        public double[] pH;
 
         #endregion
 
@@ -414,6 +421,16 @@ public partial class SoilNitrogen
         public double[] dlt_n2o_dnit;
 
         /// <summary>
+        /// Nitrogen coverted by codenitrification (N2+N2O)
+        /// </summary>
+        public double[] dlt_codenitrification;
+
+        /// <summary>
+        /// N2O N produced during codenitrification
+        /// </summary>
+        public double[] dlt_n2o_codenit;
+
+        /// <summary>
         /// Excess N required above NH4 supply (for immobilisation)
         /// </summary>
         public double[] nh4_deficit_immob;
@@ -667,9 +684,11 @@ public partial class SoilNitrogen
         public void ResizeLayeredVariables(int nLayers)
         {
             // Mineral N
+            Array.Resize(ref urea, nLayers);
             Array.Resize(ref nh4, nLayers);
             Array.Resize(ref no3, nLayers);
-            Array.Resize(ref urea, nLayers);
+            Array.Resize(ref nh3, nLayers);
+            Array.Resize(ref no2, nLayers);
             Array.Resize(ref TodaysInitialNO3, nLayers);
             Array.Resize(ref TodaysInitialNH4, nLayers);
 
@@ -699,6 +718,8 @@ public partial class SoilNitrogen
             Array.Resize(ref dlt_n2o_nitrif, nLayers);
             Array.Resize(ref dlt_no3_dnit, nLayers);
             Array.Resize(ref dlt_n2o_dnit, nLayers);
+            Array.Resize(ref dlt_codenitrification, nLayers);
+            Array.Resize(ref dlt_n2o_codenit, nLayers);
             Array.Resize(ref dlt_n_fom_to_min, nLayers);
             Array.Resize(ref dlt_n_biom_to_min, nLayers);
             Array.Resize(ref dlt_n_hum_to_min, nLayers);

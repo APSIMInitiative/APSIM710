@@ -492,6 +492,69 @@ public partial class SoilNitrogen
         }
 
         /// <summary>
+        /// Check and compute the amount of NH4 converted to NO3 via nitrification
+        /// </summary>
+        public void ConvertAmmonium()
+        {
+            int nLayers = g.dlayer.Length;          // number of layers in the soil
+            if (g.SumDoubleArray(nh4) >= g.epsilon)
+            {
+                // there is some ammonium in the soil
+                for (int layer = 0; layer < nLayers; layer++)
+                {
+                    if (g.usingNewNitrification)
+                    {
+                        // get the N converted during nitritation
+                        double dlt_nitritation = Nitritation(layer);
+
+                        // get the N2O loss during ammonia oxidation
+                        dlt_n2o_nitrif[layer] = N2OProducedDuringNitritation(dlt_nitritation, layer);
+
+                        // update amount of NO2
+                        no2[layer] += dlt_nitritation - dlt_n2o_nitrif[layer];
+
+                        // get the amount of N codenitrified
+                        dlt_codenitrification[layer] = Codenitrification(layer);
+
+                        // get the N2 fraction on denitrification
+                        double fractionN2 = CodenitrificationN2Fraction(layer);
+
+                        // get the N2O produced during codenitrfication
+                        dlt_n2o_codenit[layer] = dlt_codenitrification[layer] * (1.0 - fractionN2);
+
+                        // update N pools
+                        nh3[layer] -= 0.5 * dlt_codenitrification[layer];
+                        no2[layer] -= 0.5 * dlt_codenitrification[layer];
+
+                        // get the N converted during nitratation
+                        dlt_nitrification[layer] = Nitratation(layer);
+
+                        // update soil mineral N
+                        nh4[layer] -= dlt_nitritation;
+                        no3[layer] += dlt_nitrification[layer];
+                    }
+                    else
+                    {
+                        // get the nitrification of ammonium-N
+                        dlt_nitrification[layer] = Nitrification(layer);
+
+                        // N2O loss to atmosphere during nitrification
+                        dlt_n2o_nitrif[layer] = N2OProducedDuringNitrification(layer);
+
+                        // update soil mineral N
+                        nh4[layer] -= dlt_nitrification[layer];
+                        no3[layer] += dlt_nitrification[layer] - dlt_n2o_nitrif[layer];
+                    }
+                }
+            }
+            else
+            {
+                Array.Clear(dlt_nitrification, 0, nLayers);
+                Array.Clear(dlt_n2o_nitrif, 0, nLayers);
+            }
+        }
+
+        /// <summary>
         /// Check and compute the amount of NO3 converted to gas via dinitrification
         /// </summary>
         public void ConvertNitrate()
@@ -515,35 +578,6 @@ public partial class SoilNitrogen
             {
                 Array.Clear(dlt_no3_dnit, 0, nLayers);
                 Array.Clear(dlt_n2o_dnit, 0, nLayers);
-            }
-        }
-
-        /// <summary>
-        /// Check and compute the amount of NH4 converted to NO3 via nitrification
-        /// </summary>
-        public void ConvertAmmonium()
-        {
-            int nLayers = g.dlayer.Length;          // number of layers in the soil
-            if (g.SumDoubleArray(nh4) >= g.epsilon)
-            {
-                // there is some ammonium in the soil
-                for (int layer = 0; layer < nLayers; layer++)
-                {
-                    // 6. get the nitrification of ammonium-N
-                    dlt_nitrification[layer] = Nitrification(layer);
-
-                    // N2O loss to atmosphere during nitrification
-                    dlt_n2o_nitrif[layer] = N2OProducedDuringNitrification(layer);
-
-                    // update soil mineral N
-                    no3[layer] += dlt_nitrification[layer] - dlt_n2o_nitrif[layer];
-                    nh4[layer] -= dlt_nitrification[layer];
-                }
-            }
-            else
-            {
-                Array.Clear(dlt_nitrification, 0, nLayers);
-                Array.Clear(dlt_n2o_nitrif, 0, nLayers);
             }
         }
 
@@ -752,6 +786,160 @@ public partial class SoilNitrogen
             double WFPSeffect = MathUtility.LinearInterpReal(WFPS, g.WFPSFactorData_Denit.xVals, g.WFPSFactorData_Denit.yVals, out didInterpolate);
             result = Math.Max(0.0, g.dnit_k1 * CO2effect * WFPSeffect);
 
+            return result;
+        }
+
+        /// <summary>
+        /// Calculate the amount of NH4 converted to NO2 via nitritation
+        /// </summary>
+        /// <param name="layer">the node number representing soil layer for which calculations will be made</param>
+        /// <returns>delta N coverted from NH4 into NO2</returns>
+        private double Nitritation(int layer)
+        {
+            double result;
+
+            // get the potential nitritation rate for this layer
+            double nh4ppm = nh4[layer] * g.convFactor[layer];
+            double potNitritationRate = MathUtility.Divide(g.NitritationPotential * nh4ppm, nh4ppm + g.NH4AtHalfNitritationPot, 0.0);
+
+            if (potNitritationRate >= g.epsilon)
+            {
+                // get the soil temperature factor
+                double stf = SoilTempFactor(layer, 0, g.TempFactorData_Nitrification);
+
+                // get the soil water factor
+                double swf = SoilMoistFactor(layer, 0, g.MoistFactorData_Nitrification);
+
+                // get the soil pH factor
+                double phf = SoilpHFactor(layer, 0, g.pHFactorData_Nitritation);
+
+                // get most limiting factor
+                double limitingFactor = Math.Min(swf, Math.Min(stf, phf));
+
+                // get the actual rate of nitritation
+                double nitritationRate = potNitritationRate * limitingFactor * Math.Max(0.0, 1.0 - g.InhibitionFactor_Nitrification[layer]);
+
+                // check that the nitritation rate is not greater than nh4 content
+                nitritationRate = Math.Min(nitritationRate, nh4ppm);
+
+                result = MathUtility.Divide(nitritationRate, g.convFactor[layer], 0.0);   // convert back to kg/ha
+            }
+            else
+                result = 0.0;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculate the amount of NO2 converted to NO3 via nitratation
+        /// </summary>
+        /// <param name="layer">the node number representing soil layer for which calculations will be made</param>
+        /// <returns>delta N coverted from NO2 into NO3</returns>
+        private double Nitratation(int layer)
+        {
+            double result;
+
+            // get the potential nitratation rate for this layer
+            double no2ppm = no2[layer] * g.convFactor[layer];
+            double potNitratationRate = MathUtility.Divide(g.NitritationPotential * no2ppm, no2ppm + g.NO2AtHalfNitratationPot, 0.0);
+
+            if (potNitratationRate >= g.epsilon)
+            {
+                // get the soil temperature factor
+                double stf = SoilTempFactor(layer, 0, g.TempFactorData_Nitrification);
+
+                // get the soil water factor
+                double swf = SoilMoistFactor(layer, 0, g.MoistFactorData_Nitrification);
+
+                // get the soil pH factor
+                double phf = SoilpHFactor(layer, 0, g.pHFactorData_Nitratation);
+
+                // get most limiting factor
+                double limitingFactor = Math.Min(swf, Math.Min(stf, phf));
+
+                // get the actual rate of nitratation
+                double nitratationRate = potNitratationRate * limitingFactor;
+
+                // check that the nitratation rate is not greater than no2 content
+                nitratationRate = Math.Min(nitratationRate, no2ppm);
+
+                result = MathUtility.Divide(nitratationRate, g.convFactor[layer], 0.0);   // convert back to kg/ha
+            }
+            else
+                result = 0.0;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculate the amount of N2O produced during nitritation
+        /// </summary>
+        /// <param name="layer">the node number representing soil layer for which calculations will be made</param>
+        /// <returns>delta N coverted from NH2OH into N2O</returns>
+        private double N2OProducedDuringNitritation(double deltaNH3Oxidation, int layer)
+        {
+            double result = g.AmmoxLossParam1 * (Math.Exp(deltaNH3Oxidation * g.AmmoxLossParam2) - 1.0);
+            result = Math.Min(deltaNH3Oxidation, result);
+            result = MathUtility.Divide(result, g.convFactor[layer], 0.0);   // convert back to kg/ha
+            return result;
+        }
+
+        /// <summary>
+        /// Calculate amount of gaseous N produced via co-denitrification
+        /// </summary>
+        /// <param name="layer">the soil layer index for which calculations will be made</param>
+        /// <returns>delta N coverted into gaseous forms</returns>
+        private double Codenitrification(int layer)
+        {
+            double result;
+
+            // get available C and N from soil organic pools
+            double totalC = (hum_c[layer] - inert_c[layer] + biom_c[layer] + fom_c[0][layer]) * g.convFactor[layer];
+
+            //get the waterSoluble C and N
+            waterSoluble_c[layer] = g.actCExp_parmA * Math.Pow(totalC, g.actCExp_parmB);
+            double waterSolubleOrganicN = Math.Min(biom_n[layer] + fom_n[0][layer], nh3[layer]);
+
+            // get the potential codenitrification rate
+            double potCodenitrificationRate = g.CodenitRateCoefficient * waterSoluble_c[layer];
+            double potNCodenitrifiable = 2.0 * Math.Min(no2[layer], waterSolubleOrganicN);
+
+            if ((potCodenitrificationRate >= g.epsilon) && (potNCodenitrifiable >= g.epsilon))
+            {
+                // get the soil temperature factor
+                double stf = SoilTempFactor(layer, 0, g.TempFactorData_Codenit);
+
+                // get the soil water factor
+                double swf = SoilMoistFactor(layer, 0, g.MoistFactorData_Codenit);
+
+                // get the soil pH factor
+                double phf = SoilpHFactor(layer, 0, g.pHFactorData_Codenit);
+
+                // get most limiting factor
+                double limitingFactor = Math.Min(swf, Math.Min(stf, phf));
+
+                // calculate codenitrification rate  - kg/ha
+                result = potCodenitrificationRate * potNCodenitrifiable * limitingFactor;
+            }
+            else
+                result = 0.0;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculate the N2 fraction during codenitrification
+        /// </summary>
+        /// <param name="layer">the soil layer index for which calculations will be made</param>
+        /// <returns>The fraction of N2 (0-1)</returns>
+        private double CodenitrificationN2Fraction(int layer)
+        {
+            bool DidInterpolate;
+            double totalNN = (nh3[layer] + no2[layer]) * g.convFactor[layer];
+            double result = MathUtility.LinearInterpReal( totalNN,
+                            g.NH3NO2FactorData_Codenit.xVals,
+                            g.NH3NO2FactorData_Codenit.yVals,
+                            out DidInterpolate);
             return result;
         }
 
