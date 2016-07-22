@@ -2,6 +2,6 @@
 #ifndef TestMiscH
 #define TestMiscH
 
-void TestMisc(void);
+CppUnit::TestSuite * TestMisc(void);
 
 #endif

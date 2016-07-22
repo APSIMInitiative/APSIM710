@@ -1,21 +1,20 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
-
-#include "TestMisc.h"
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/Messages.h>
-#include <boost/test/unit_test.hpp>
+#include <cppunit/extensions/HelperMacros.h>
+#include "TestMisc.h"
 
-using namespace boost::unit_test_framework;
 
 extern ScienceAPI2* scienceAPI;
 extern vector<MessageData> messagesSent;
 
 void setup();
 void teardown();
+class MiscTestCase : public CppUnit::TestFixture { 
+public:
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -33,16 +32,16 @@ void QueryInfo()
    // make sure a queryInfo message happened.
    QueryInfoType queryInfo;
    unpack(messagesSent[0], queryInfo);
-   BOOST_ASSERT(queryInfo.name == "*");
-   BOOST_ASSERT(queryInfo.kind == 7 /* component */);
+   CPPUNIT_ASSERT(queryInfo.name == "*");
+   CPPUNIT_ASSERT(queryInfo.kind == 7 /* component */);
 
    scienceAPI->query("*.sw", matches);
    unpack(messagesSent[1], queryInfo);
-   BOOST_ASSERT(queryInfo.name == "*.sw");
-   BOOST_ASSERT(queryInfo.kind == 2 /* variable */);
-   BOOST_ASSERT(matches.size() == 2);
-   BOOST_ASSERT(matches[0].name == "comp1.sw");
-   BOOST_ASSERT(matches[1].name == "comp2.sw");
+   CPPUNIT_ASSERT(queryInfo.name == "*.sw");
+   CPPUNIT_ASSERT(queryInfo.kind == 2 /* variable */);
+   CPPUNIT_ASSERT(matches.size() == 2);
+   CPPUNIT_ASSERT(matches[0].name == "comp1.sw");
+   CPPUNIT_ASSERT(matches[1].name == "comp2.sw");
 
    teardown();
    }
@@ -59,16 +58,19 @@ void Write()
 
    teardown();
    }
-
+};
 
 //---------------------------------------------------------------------------
 // test method
 //---------------------------------------------------------------------------
-void TestMisc(void)
+CppUnit::TestSuite * TestMisc() 
    {
-   QueryInfo();
-   Write();
+   CppUnit::TestSuite *suite= new CppUnit::TestSuite("Misc_test_suite" );
+   suite->addTest(new CppUnit::TestCaller<MiscTestCase>("", &MiscTestCase::QueryInfo) );
+   suite->addTest(new CppUnit::TestCaller<MiscTestCase>("", &MiscTestCase::Write) );
+   return(suite);
    }
+
 
 
 

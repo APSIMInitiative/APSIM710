@@ -1,11 +1,14 @@
 //---------------------------------------------------------------------------
-#include "testApsimDataFile.h"
-#include <ApsimShared/ApsimDataFile.h>
 #include <fstream>
 #include <General/stl_functions.h>
-using namespace std;
-using namespace boost::unit_test_framework;
+#include <ApsimShared/ApsimDataFile.h>
 
+#include <cppunit/extensions/HelperMacros.h>
+#include "testApsimDataFile.h"
+
+using namespace std;
+class ApsimDataFileTestSuite : public CppUnit::TestFixture { 
+public:
 ApsimDataFile* dataFile;
 //---------------------------------------------------------------------------
 // Setup the test environment
@@ -57,33 +60,33 @@ void testConstantsEnumeration(void)
 
    ApsimDataFile::iterator i = dataFile->constantsBegin();
 
-   BOOST_CHECK(i->name == "latitude");
-   BOOST_CHECK(i->units == "()");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "-27.11");
-   BOOST_CHECK(i->comment == "");
+   CPPUNIT_ASSERT(i->name == "latitude");
+   CPPUNIT_ASSERT(i->units == "()");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "-27.11");
+   CPPUNIT_ASSERT(i->comment == "");
    i++;
-   BOOST_CHECK(i->name == "tav");
-   BOOST_CHECK(i->units == "(oC)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "19.57");
-   BOOST_CHECK(i->comment == "annual average ambient temperature");
+   CPPUNIT_ASSERT(i->name == "tav");
+   CPPUNIT_ASSERT(i->units == "(oC)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "19.57");
+   CPPUNIT_ASSERT(i->comment == "annual average ambient temperature");
    i++;
-   BOOST_CHECK(i->name == "amp");
-   BOOST_CHECK(i->units == "(oC)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "10.40");
-   BOOST_CHECK(i->comment == "annual amplitude in mean monthly temperature");
+   CPPUNIT_ASSERT(i->name == "amp");
+   CPPUNIT_ASSERT(i->units == "(oC)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "10.40");
+   CPPUNIT_ASSERT(i->comment == "annual amplitude in mean monthly temperature");
    i++;
-   BOOST_CHECK(i->name == "array");
-   BOOST_CHECK(i->units == "()");
-   BOOST_CHECK(i->values.size() == 3);
-   BOOST_CHECK(i->values[0] == "3");
-   BOOST_CHECK(i->values[1] == "2");
-   BOOST_CHECK(i->values[2] == "1");
-   BOOST_CHECK(i->comment == "test of constant arrays");
+   CPPUNIT_ASSERT(i->name == "array");
+   CPPUNIT_ASSERT(i->units == "()");
+   CPPUNIT_ASSERT(i->values.size() == 3);
+   CPPUNIT_ASSERT(i->values[0] == "3");
+   CPPUNIT_ASSERT(i->values[1] == "2");
+   CPPUNIT_ASSERT(i->values[2] == "1");
+   CPPUNIT_ASSERT(i->comment == "test of constant arrays");
    i++;
-   BOOST_CHECK(i == dataFile->constantsEnd());
+   CPPUNIT_ASSERT(i == dataFile->constantsEnd());
 
    tearDownApsimDataFile();
    }
@@ -94,68 +97,69 @@ void testTemporalEnumeration(void)
    {
    setUpApsimDataFile();
 
-   BOOST_CHECK(dataFile->getDate() == GDate(1, 1, 1988));
+   CPPUNIT_ASSERT(dataFile->getDate() == GDate(1, 1, 1988));
 
    ApsimDataFile::iterator i = dataFile->fieldsBegin();
-   BOOST_CHECK(i->name == "site");
-   BOOST_CHECK(i->units == "()");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "DALB");
+   CPPUNIT_ASSERT(i->name == "site");
+   CPPUNIT_ASSERT(i->units == "()");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "DALB");
    i++;
-   BOOST_CHECK(i->name == "year");
-   BOOST_CHECK(i->units == "()");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "1988");
+   CPPUNIT_ASSERT(i->name == "year");
+   CPPUNIT_ASSERT(i->units == "()");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "1988");
    i++;
-   BOOST_CHECK(i->name == "day");
-   BOOST_CHECK(i->units == "()");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "1");
+   CPPUNIT_ASSERT(i->name == "day");
+   CPPUNIT_ASSERT(i->units == "()");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "1");
    i++;
-   BOOST_CHECK(i->name == "radn");
-   BOOST_CHECK(i->units == "(MJ/m^2)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "20.74");
+   CPPUNIT_ASSERT(i->name == "radn");
+   CPPUNIT_ASSERT(i->units == "(MJ/m^2)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "20.74");
    i++;
-   BOOST_CHECK(i->name == "maxt");
-   BOOST_CHECK(i->units == "(oC)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "33.0");
+   CPPUNIT_ASSERT(i->name == "maxt");
+   CPPUNIT_ASSERT(i->units == "(oC)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "33.0");
    i++;
-   BOOST_CHECK(i->name == "mint");
-   BOOST_CHECK(i->units == "(oC)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "17.4");
+   CPPUNIT_ASSERT(i->name == "mint");
+   CPPUNIT_ASSERT(i->units == "(oC)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "17.4");
    i++;
-   BOOST_CHECK(i->name == "rain");
-   BOOST_CHECK(i->units == "(mm)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "0.2");
+   CPPUNIT_ASSERT(i->name == "rain");
+   CPPUNIT_ASSERT(i->units == "(mm)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "0.2");
    i++;
-   BOOST_CHECK(i->name == "arr");
-   BOOST_CHECK(i->units == "(mm)");
-   BOOST_CHECK(i->values.size() == 2);
-   BOOST_CHECK(i->values[0] == "1");
-   BOOST_CHECK(i->values[1] == "2");
+   CPPUNIT_ASSERT(i->name == "arr");
+   CPPUNIT_ASSERT(i->units == "(mm)");
+   CPPUNIT_ASSERT(i->values.size() == 2);
+   CPPUNIT_ASSERT(i->values[0] == "1");
+   CPPUNIT_ASSERT(i->values[1] == "2");
    i++;
-   BOOST_CHECK(i->name == "evap");
-   BOOST_CHECK(i->units == "(mm)");
-   BOOST_CHECK(i->values.size() == 1);
-   BOOST_CHECK(i->values[0] == "7.41");
+   CPPUNIT_ASSERT(i->name == "evap");
+   CPPUNIT_ASSERT(i->units == "(mm)");
+   CPPUNIT_ASSERT(i->values.size() == 1);
+   CPPUNIT_ASSERT(i->values[0] == "7.41");
    i++;
-   BOOST_CHECK(i == dataFile->fieldsEnd());
+   CPPUNIT_ASSERT(i == dataFile->fieldsEnd());
 
    tearDownApsimDataFile();
    }
+ };
 //---------------------------------------------------------------------------
 // register all tests
 //---------------------------------------------------------------------------
-test_suite* testApsimDataFile(void)
+CppUnit::TestSuite * testApsimDataFile() 
    {
-   test_suite* test= BOOST_TEST_SUITE("TestApsimDataFile");
-   test->add(BOOST_TEST_CASE(&testConstantsEnumeration));
-   test->add(BOOST_TEST_CASE(&testTemporalEnumeration));
-   return test;
+   CppUnit::TestSuite *suite= new CppUnit::TestSuite("TestApsimDataFile" );
+   suite->addTest(new CppUnit::TestCaller<ApsimDataFileTestSuite>("testConstantsEnumeration", &ApsimDataFileTestSuite::testConstantsEnumeration) );
+   suite->addTest(new CppUnit::TestCaller<ApsimDataFileTestSuite>("testTemporalEnumeration", &ApsimDataFileTestSuite::testTemporalEnumeration) );
+   return suite;
    }
 
 

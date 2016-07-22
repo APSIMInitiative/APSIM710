@@ -1,17 +1,15 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
-
-#include "TestVariables.h"
+#include <iostream>
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/Messages.h>
-#include <boost/test/unit_test.hpp>
-#include <iostream>
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "TestVariables.h"
 
 using namespace std;
-using namespace boost::unit_test_framework;
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -44,11 +42,11 @@ void STDCALL PMCallback(const unsigned* arg, Message& message)
    {
    static string lastRegisteredName;
 
-   BOOST_ASSERT(*arg == messageArg);
-   BOOST_ASSERT(message.version == 256);
-   BOOST_ASSERT(message.from == componentID);
-   BOOST_ASSERT(message.to == parentID);
-   BOOST_ASSERT(message.toAcknowledge == false);
+   CPPUNIT_ASSERT(*arg == messageArg);
+   CPPUNIT_ASSERT(message.version == 256);
+   CPPUNIT_ASSERT(message.from == componentID);
+   CPPUNIT_ASSERT(message.to == parentID);
+   CPPUNIT_ASSERT(message.toAcknowledge == false);
    myMessages.push_back(cloneMessage(message));
    messagesSent.push_back(MessageData(*myMessages[myMessages.size()-1]));
 
@@ -124,60 +122,23 @@ void teardown()
    }
 
 //---------------------------------------------------------------------------
+// UseCase: Expose a string variable "st" using a setter function
+//          and make sure it's value is changed when component gets a querySetValue
+//          message from the PM.
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// UseCase: Expose a single variable "rain" and make sure it's value is
-//          returned to the PM in response to a QueryValue.
-//---------------------------------------------------------------------------
-void ExposeVariableAndReturnValue()
+class StClass
    {
-   setup();
+   public:
+      std::string st;
+      StClass()
+         {
+         scienceAPI->exposeFunction("st", "", "", StringFunction(&StClass::getter), StringFunction(&StClass::setter));
+         st = "empty string";
+         }
 
-   float component2Rain = 456.0;
-   scienceAPI->expose("rain", "mm", "Rainfall", false, component2Rain);
-
-   // make sure registration happened.
-   RegisterType registerData;
-   unpack(messagesSent[0], registerData);
-   BOOST_ASSERT(registerData.destID == 0);
-   BOOST_ASSERT(registerData.name == "rain");
-   BOOST_ASSERT(registerData.kind == 2 /*respondToGet*/);
-   BOOST_ASSERT(registerData.ddml == "<type kind=\"single\" unit=\"mm\" description=\"Rainfall\"/>");
-
-   // ask our component the value of rain.
-   QueryValueType queryValue;
-   queryValue.ID = registerData.ID;
-   queryValue.requestedByID = 1234;
-   Message& queryValueMsg = newMessage(Message::QueryValue, parentID, componentID, false, queryValue);
-   sendMessage(queryValueMsg);
-
-   // check that the component gave us the correct ReplyValue message.
-   ReplyValueType replyValue;
-   unpack(messagesSent[1], replyValue);
-   BOOST_ASSERT(replyValue.queryID == queryValueMsg.messageID);
-   BOOST_ASSERT(replyValue.ddml == "<type kind=\"single\"/>");
-   float rain;
-   unpack(messagesSent[1], rain);
-   BOOST_ASSERT(rain == 456);
-
-   teardown();
-   }
-
-//---------------------------------------------------------------------------
-// UseCase: Expose a single variable "rain" twice but ensure only 1
-//          register message is sent from component.
-//---------------------------------------------------------------------------
-void ExposeVariableTwice()
-   {
-   setup();
-
-   int component2Rain = 456;
-   scienceAPI->expose("rain", "mm", "Rainfall", false, component2Rain);
-   scienceAPI->expose("rain", "mm", "Rainfall", false, component2Rain);
-   BOOST_ASSERT(messagesSent.size() == 1);
-
-   teardown();
-   }
+      void setter(std::string& value) {st = value;}
+      void getter(std::string& value) {value = st;}
+   };
 
 //---------------------------------------------------------------------------
 // UseCase: Expose a vector<float> variable "sw" using a getter function
@@ -199,6 +160,66 @@ class SWClass
       void setter(vector<float>& values) {sw = values;}
    };
 
+class VariablesTestCase : public CppUnit::TestFixture { 
+public:
+
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+// UseCase: Expose a single variable "rain" and make sure it's value is
+//          returned to the PM in response to a QueryValue.
+//---------------------------------------------------------------------------
+void ExposeVariableAndReturnValue()
+   {
+   setup();
+
+   float component2Rain = 456.0;
+   scienceAPI->expose("rain", "mm", "Rainfall", false, component2Rain);
+
+   // make sure registration happened.
+   RegisterType registerData;
+   unpack(messagesSent[0], registerData);
+   CPPUNIT_ASSERT(registerData.destID == 0);
+   CPPUNIT_ASSERT(registerData.name == "rain");
+   CPPUNIT_ASSERT(registerData.kind == 2 /*respondToGet*/);
+   CPPUNIT_ASSERT(registerData.ddml == "<type kind=\"single\" unit=\"mm\" description=\"Rainfall\"/>");
+
+   // ask our component the value of rain.
+   QueryValueType queryValue;
+   queryValue.ID = registerData.ID;
+   queryValue.requestedByID = 1234;
+   Message& queryValueMsg = newMessage(Message::QueryValue, parentID, componentID, false, queryValue);
+   sendMessage(queryValueMsg);
+
+   // check that the component gave us the correct ReplyValue message.
+   ReplyValueType replyValue;
+   unpack(messagesSent[1], replyValue);
+   CPPUNIT_ASSERT(replyValue.queryID == queryValueMsg.messageID);
+   CPPUNIT_ASSERT(replyValue.ddml == "<type kind=\"single\"/>");
+   float rain;
+   unpack(messagesSent[1], rain);
+   CPPUNIT_ASSERT(rain == 456);
+
+   teardown();
+   }
+
+//---------------------------------------------------------------------------
+// UseCase: Expose a single variable "rain" twice but ensure only 1
+//          register message is sent from component.
+//---------------------------------------------------------------------------
+void ExposeVariableTwice()
+   {
+   setup();
+
+   int component2Rain = 456;
+   scienceAPI->expose("rain", "mm", "Rainfall", false, component2Rain);
+   scienceAPI->expose("rain", "mm", "Rainfall", false, component2Rain);
+   CPPUNIT_ASSERT(messagesSent.size() == 1);
+
+   teardown();
+   }
+
+
 void ExposeVariableUsingFunction()
    {
    setup();
@@ -208,10 +229,10 @@ void ExposeVariableUsingFunction()
    // make sure registration happened.
    RegisterType registerData;
    unpack(messagesSent[0], registerData);
-   BOOST_ASSERT(registerData.destID == 0);
-   BOOST_ASSERT(registerData.name == "sw");
-   BOOST_ASSERT(registerData.kind == 2 /*respondToGet*/);
-   BOOST_ASSERT(registerData.ddml == "<type kind=\"single\" array=\"T\" unit=\"mm/mm\" description=\"Soil water\"/>");
+   CPPUNIT_ASSERT(registerData.destID == 0);
+   CPPUNIT_ASSERT(registerData.name == "sw");
+   CPPUNIT_ASSERT(registerData.kind == 2 /*respondToGet*/);
+   CPPUNIT_ASSERT(registerData.ddml == "<type kind=\"single\" array=\"T\" unit=\"mm/mm\" description=\"Soil water\"/>");
 
    // ask our component the value of sw.
    QueryValueType queryValue;
@@ -223,13 +244,13 @@ void ExposeVariableUsingFunction()
    // check that the component gave us the correct ReplyValue message.
    ReplyValueType replyValue;
    unpack(messagesSent[1], replyValue);
-   BOOST_ASSERT(replyValue.queryID == queryValueMsg.messageID);
-   BOOST_ASSERT(replyValue.ddml == "<type kind=\"single\" array=\"T\"/>");
+   CPPUNIT_ASSERT(replyValue.queryID == queryValueMsg.messageID);
+   CPPUNIT_ASSERT(replyValue.ddml == "<type kind=\"single\" array=\"T\"/>");
    vector<float> values;
    unpack(messagesSent[1], values);
-   BOOST_ASSERT(values.size() == 2);
-   BOOST_ASSERT(values[0] == 1);
-   BOOST_ASSERT(values[1] == 2);
+   CPPUNIT_ASSERT(values.size() == 2);
+   CPPUNIT_ASSERT(values[0] == 1);
+   CPPUNIT_ASSERT(values[1] == 2);
 
    teardown();
    }
@@ -243,13 +264,13 @@ void GetVariable()
    vector<float> sw;
    float lb = 0.0;
    float ub = 100.0;
-   BOOST_CHECK_THROW(scienceAPI->get("doesntexist", "mm", false, sw, lb, ub), runtime_error);
+   CPPUNIT_ASSERT_THROW(scienceAPI->get("doesntexist", "mm", false, sw, lb, ub), runtime_error);
    scienceAPI->get("sw", "mm", false, sw, lb, ub);
-   BOOST_CHECK(sw.size() == 4);
-   BOOST_CHECK(sw[0] == 11);
-   BOOST_CHECK(sw[1] == 22);
-   BOOST_CHECK(sw[2] == 33);
-   BOOST_CHECK(sw[3] == 44);
+   CPPUNIT_ASSERT(sw.size() == 4);
+   CPPUNIT_ASSERT(sw[0] == 11);
+   CPPUNIT_ASSERT(sw[1] == 22);
+   CPPUNIT_ASSERT(sw[2] == 33);
+   CPPUNIT_ASSERT(sw[3] == 44);
 
    teardown();
    }
@@ -281,19 +302,19 @@ void GetVariableWithArraySpec()
    // make sure the message sent was a getvalue without the arrayspec.
    RegisterType registerData;
    unpack(messagesSent[0], registerData);
-   BOOST_ASSERT(registerData.name == "sw");
+   CPPUNIT_ASSERT(registerData.name == "sw");
 
    // make sure the correct element was returned.
-   BOOST_CHECK(swString == "22.000000");
+   CPPUNIT_ASSERT(swString == "22.000000");
 
    //scienceAPI->get("sw(2-3)", "mm", false, swString);
    //BOOST_CHECK(swString == "22.000000 33.000000");
 
    scienceAPI->get("sw()", "mm",false,  swString);
-   BOOST_CHECK(swString == "110.000000");
+   CPPUNIT_ASSERT(swString == "110.000000");
 
    scienceAPI->get("sum(sw)", "mm",false,  swString);
-   BOOST_CHECK(swString == "110.000000");
+   CPPUNIT_ASSERT(swString == "110.000000");
 
 // The next one fails when it shouldn't!   
 //   scienceAPI->get("sum(sw(3-4))", "mm",false,  swString);
@@ -316,10 +337,10 @@ void ExposeSettableVariable()
    // make sure registration happened.
    RegisterType registerData;
    unpack(messagesSent[0], registerData);
-   BOOST_ASSERT(registerData.destID == 0);
-   BOOST_ASSERT(registerData.name == "rain");
-   BOOST_ASSERT(registerData.kind == 4 /*respondToGetSet*/);
-   BOOST_ASSERT(registerData.ddml == "<type kind=\"double\" unit=\"mm\" description=\"Rainfall\"/>");
+   CPPUNIT_ASSERT(registerData.destID == 0);
+   CPPUNIT_ASSERT(registerData.name == "rain");
+   CPPUNIT_ASSERT(registerData.kind == 4 /*respondToGetSet*/);
+   CPPUNIT_ASSERT(registerData.ddml == "<type kind=\"double\" unit=\"mm\" description=\"Rainfall\"/>");
 
    // change the value of rain.
    double newRain = 1234;
@@ -336,29 +357,11 @@ void ExposeSettableVariable()
    // check that the component gave us a notifySetValueSuccess
    NotifySetValueSuccessType notifySuccess;
    unpack(messagesSent[1], notifySuccess);
-   BOOST_ASSERT(notifySuccess.success);
-   BOOST_ASSERT(rain == newRain);
+   CPPUNIT_ASSERT(notifySuccess.success);
+   CPPUNIT_ASSERT(rain == newRain);
 
    teardown();
    }
-//---------------------------------------------------------------------------
-// UseCase: Expose a string variable "st" using a setter function
-//          and make sure it's value is changed when component gets a querySetValue
-//          message from the PM.
-//---------------------------------------------------------------------------
-class StClass
-   {
-   public:
-      std::string st;
-      StClass()
-         {
-         scienceAPI->exposeFunction("st", "", "", StringFunction(&StClass::getter), StringFunction(&StClass::setter));
-         st = "empty string";
-         }
-
-      void setter(std::string& value) {st = value;}
-      void getter(std::string& value) {value = st;}
-   };
 
 void ExposeSettableVariableUsingFunction()
    {
@@ -369,10 +372,10 @@ void ExposeSettableVariableUsingFunction()
    // make sure registration happened.
    RegisterType registerData;
    unpack(messagesSent[0], registerData);
-   BOOST_ASSERT(registerData.destID == 0);
-   BOOST_ASSERT(registerData.name == "st");
-   BOOST_ASSERT(registerData.kind == 4 /*respondToGetSet*/);
-   BOOST_ASSERT(registerData.ddml == "<type kind=\"string\"/>");
+   CPPUNIT_ASSERT(registerData.destID == 0);
+   CPPUNIT_ASSERT(registerData.name == "st");
+   CPPUNIT_ASSERT(registerData.kind == 4 /*respondToGetSet*/);
+   CPPUNIT_ASSERT(registerData.ddml == "<type kind=\"string\"/>");
 
    // send a queryValue message to component.
    string newValue = "new value";
@@ -389,9 +392,9 @@ void ExposeSettableVariableUsingFunction()
    // check that the component gave us a notifySetValueSuccess
    NotifySetValueSuccessType notifySuccess;
    unpack(messagesSent[1], notifySuccess);
-   //BOOST_ASSERT(notifySuccess.ID == registerData.ID);
-   BOOST_ASSERT(notifySuccess.success);
-   BOOST_ASSERT(test.st == newValue);
+   //CPPUNIT_ASSERT(notifySuccess.ID == registerData.ID);
+   CPPUNIT_ASSERT(notifySuccess.success);
+   CPPUNIT_ASSERT(test.st == newValue);
 
    teardown();
    }
@@ -409,18 +412,18 @@ void SetVariable()
    // make sure registration happened.
    RegisterType registerData;
    unpack(messagesSent[0], registerData);
-   BOOST_ASSERT(registerData.destID == 0);
-   BOOST_ASSERT(registerData.name == "i");
-   BOOST_ASSERT(registerData.kind == 9 /*set*/);
-   BOOST_ASSERT(registerData.ddml == "<type kind=\"integer4\" unit=\"mm\"/>");
+   CPPUNIT_ASSERT(registerData.destID == 0);
+   CPPUNIT_ASSERT(registerData.name == "i");
+   CPPUNIT_ASSERT(registerData.kind == 9 /*set*/);
+   CPPUNIT_ASSERT(registerData.ddml == "<type kind=\"integer4\" unit=\"mm\"/>");
 
    // make sure the second message was a requestSetValue message
    RequestSetValueType requestSetValue;
    unpack(messagesSent[1], requestSetValue);
-   BOOST_ASSERT(requestSetValue.ID == registerData.ID);
+   CPPUNIT_ASSERT(requestSetValue.ID == registerData.ID);
    int value;
    unpack(messagesSent[1], value);
-   BOOST_ASSERT(value == i);
+   CPPUNIT_ASSERT(value == i);
    teardown();
    }
 
@@ -438,36 +441,38 @@ void Query()
    // make sure a queryInfo message happened.
    QueryInfoType queryInfo;
    unpack(messagesSent[0], queryInfo);
-   BOOST_ASSERT(queryInfo.name == "*");
-   BOOST_ASSERT(queryInfo.kind == 7 /* component */);
+   CPPUNIT_ASSERT(queryInfo.name == "*");
+   CPPUNIT_ASSERT(queryInfo.kind == 7 /* component */);
 
    scienceAPI->query("*.sw", matches);
    unpack(messagesSent[1], queryInfo);
-   BOOST_ASSERT(queryInfo.name == "*.sw");
-   BOOST_ASSERT(queryInfo.kind == 2 /* variable */);
-   BOOST_ASSERT(matches.size() == 2);
-   BOOST_ASSERT(matches[0].name == "comp1.sw");
-   BOOST_ASSERT(matches[1].name == "comp2.sw");
+   CPPUNIT_ASSERT(queryInfo.name == "*.sw");
+   CPPUNIT_ASSERT(queryInfo.kind == 2 /* variable */);
+   CPPUNIT_ASSERT(matches.size() == 2);
+   CPPUNIT_ASSERT(matches[0].name == "comp1.sw");
+   CPPUNIT_ASSERT(matches[1].name == "comp2.sw");
 
    teardown();
    }
-
+};
 
 //---------------------------------------------------------------------------
 // test method
 //---------------------------------------------------------------------------
-void TestVariables(void)
+CppUnit::TestSuite * TestVariables() 
    {
-   ExposeVariableAndReturnValue();
-   ExposeVariableTwice();
-   ExposeVariableUsingFunction();
-   GetVariable();
-   GetVariableFloatToString();
-   GetVariableWithArraySpec();
-   ExposeSettableVariable();
-   ExposeSettableVariableUsingFunction();
-   SetVariable();
-   Query();
+   CppUnit::TestSuite *suite= new CppUnit::TestSuite("Variables_test_suite" );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("ExposeVariableAndReturnValue", &VariablesTestCase::ExposeVariableAndReturnValue) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("ExposeVariableTwice", &VariablesTestCase::ExposeVariableTwice) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("ExposeVariableUsingFunction", &VariablesTestCase::ExposeVariableUsingFunction) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("GetVariable", &VariablesTestCase::GetVariable) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("GetVariableFloatToString", &VariablesTestCase::GetVariableFloatToString) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("GetVariableWithArraySpec", &VariablesTestCase::GetVariableWithArraySpec) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("ExposeSettableVariable", &VariablesTestCase::ExposeSettableVariable) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("ExposeSettableVariableUsingFunction", &VariablesTestCase::ExposeSettableVariableUsingFunction) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("SetVariable", &VariablesTestCase::SetVariable) );
+   suite->addTest(new CppUnit::TestCaller<VariablesTestCase>("Query", &VariablesTestCase::Query) );
+   return suite;
    }
 
 

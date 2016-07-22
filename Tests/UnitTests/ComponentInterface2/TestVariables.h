@@ -2,7 +2,7 @@
 #ifndef TestVariablesH
 #define TestVariablesH
 
-void TestVariables(void);
+CppUnit::TestSuite * TestVariables(void);
 
 
 #endif

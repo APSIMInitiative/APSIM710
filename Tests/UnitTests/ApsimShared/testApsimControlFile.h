@@ -2,6 +2,6 @@
 #ifndef testApsimControlFileH
 #define testApsimControlFileH
 
-void testApsimControlFile(void);
+CppUnit::TestSuite *testApsimControlFile(void);
 
 #endif

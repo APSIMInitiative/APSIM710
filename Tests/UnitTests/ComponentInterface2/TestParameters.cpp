@@ -1,15 +1,12 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
 
-#include "TestParameters.h"
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/ScienceAPI2Impl.h>
 #include <ComponentInterface2/CMPComponentInterface.h>
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/Messages.h>
-#include <boost/test/unit_test.hpp>
-
-using namespace boost::unit_test_framework;
+#include <cppunit/extensions/HelperMacros.h>
+#include "TestParameters.h"
 
 extern CMPComponentInterface* componentInterface;
 extern ScienceAPI2* scienceAPI;
@@ -45,6 +42,9 @@ void sendInit1()
    componentInterface->messageToLogic(newMessage(Message::Init1, parentID, componentID, false, init1));
    }
 
+class ParametersTestCase : public CppUnit::TestFixture { 
+public:
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -55,38 +55,41 @@ void ReadParameter()
    setup();
    sendInit1();
 
-   BOOST_ASSERT(scienceAPI->name() == "abc");
-   BOOST_ASSERT(scienceAPI->FQName() == "parent.abc");
+   CPPUNIT_ASSERT(scienceAPI->name() == "abc");
+   CPPUNIT_ASSERT(scienceAPI->FQName() == "parent.abc");
 
    float a;
    scienceAPI->read("a", "", false, a, (float)0.0, (float)1.0);
-   BOOST_ASSERT(a == 1);
+   CPPUNIT_ASSERT(a == 1);
 
    scienceAPI->read("a", "", false, a, (float)0.0, (float)0.5);
-   BOOST_ASSERT(a == 1);
+   CPPUNIT_ASSERT(a == 1);
 
    int b;
    scienceAPI->read("b", "", false, b, 0, 4);
-   BOOST_ASSERT(b == 2);
+   CPPUNIT_ASSERT(b == 2);
 
    scienceAPI->read("b", "", false, b, 0, 1);
-   BOOST_ASSERT(b == 2);
+   CPPUNIT_ASSERT(b == 2);
 
    string c;
    scienceAPI->read("c", "", false, c);
-   BOOST_ASSERT(c == "Three");
+   CPPUNIT_ASSERT(c == "Three");
 
-   BOOST_ASSERT(!scienceAPI->read("notfound", "", true, c));
+   CPPUNIT_ASSERT(!scienceAPI->read("notfound", "", true, c));
 
    teardown();
    }
+};
 
 //---------------------------------------------------------------------------
 // test method
 //---------------------------------------------------------------------------
-void TestParameters(void)
+CppUnit::TestSuite * TestParameters() 
    {
-   ReadParameter();
+   CppUnit::TestSuite *suite= new CppUnit::TestSuite("Parameters_test_suite" );
+   suite->addTest(new CppUnit::TestCaller<ParametersTestCase>("ReadParameter", &ParametersTestCase::ReadParameter) );
+   return(suite);
    }
 
 

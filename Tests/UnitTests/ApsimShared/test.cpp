@@ -1,32 +1,41 @@
-//---------------------------------------------------------------------------
-#ifndef WIN32
-#define BOOST_TEST_DYN_LINK
-#endif
+#include <cppunit/BriefTestProgressListener.h>
+#include <cppunit/CompilerOutputter.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TestResultCollector.h>
+#include <cppunit/TestRunner.h>
 
-#define BOOST_TEST_ALTERNATIVE_INIT_API
+//---------------------------------------------------------------------------
 
 
 #include "testApsimControlFile.h"
 #include "testControlFileConverter.h"
 #include "testApsimDataFile.h"
 
-#include <boost/test/included/unit_test.hpp>
-using namespace boost::unit_test;
-
-bool init_unit_test( )
+int main (int argc, char* argv[]) 
    {
-   test_suite* test= BOOST_TEST_SUITE("TestApsimShared");
-   test->add(BOOST_TEST_CASE(&testApsimControlFile));
-   test->add(testControlFileConverter());
-   test->add(testApsimDataFile());
+   // Create the event manager and test controller
+   CPPUNIT_NS::TestResult controller;
 
-   framework::master_test_suite().add(test);
-   return 1;
+   // Add a listener that colllects test result
+   CPPUNIT_NS::TestResultCollector result;
+   controller.addListener( &result );        
+
+   // Add a listener that print dots as test run.
+   CPPUNIT_NS::BriefTestProgressListener progress;
+   controller.addListener( &progress );      
+
+   // Add the top suite to the test runner
+   CPPUNIT_NS::TestRunner runner;
+   runner.addTest( testApsimControlFile() );
+   runner.addTest( testControlFileConverter() );
+   runner.addTest( testApsimDataFile() );
+   runner.run( controller );
+
+   // Print test in a compiler compatible format.
+   CPPUNIT_NS::CompilerOutputter outputter( &result, CPPUNIT_NS::stdCOut() );
+   outputter.write(); 
+
+   return result.wasSuccessful() ? 0 : 1;
    }
 
-#ifndef WIN32
-int main( int argc, char* argv[] )
-{
-    return ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
-}
-#endif

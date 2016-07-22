@@ -1,19 +1,19 @@
 //---------------------------------------------------------------------------
-
-#include "testApsimControlFile.h"
-
-#include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <fstream>
 #include <General/string_functions.h>
 #include <ApsimShared/ApsimControlFile.h>
 #include <ApsimShared/ApsimDirectories.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include "testApsimControlFile.h"
 
 
-using namespace boost::unit_test_framework;
 using namespace std;
 
+class ApsimControlFileTestCase : public CppUnit::TestFixture { 
 ApsimControlFile* con;
+
+public:
 
 //---------------------------------------------------------------------------
 // Setup the test environment
@@ -103,9 +103,9 @@ void testGetAllSectionNames(void)
    setUpConPar();
    vector<string> sectionNames;
    con->getAllSectionNames(sectionNames);
-   BOOST_CHECK(sectionNames.size() == 2);
-   BOOST_CHECK(sectionNames[0] == "Section1");
-   BOOST_CHECK(sectionNames[1] == "Section2");
+   CPPUNIT_ASSERT(sectionNames.size() == 2);
+   CPPUNIT_ASSERT(sectionNames[0] == "Section1");
+   CPPUNIT_ASSERT(sectionNames[1] == "Section2");
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -116,9 +116,9 @@ void testGetAllFiles(void)
    setUpConPar();
    vector<string> fileNames;
    con->getAllFiles("Section1", fileNames);
-   BOOST_CHECK(fileNames.size() == 2);
-   BOOST_CHECK(fileNames[0] == "accum.par");
-   BOOST_CHECK(fileNames[1] == "%apsuite\\apsim\\met\\SAMPLE\\DALBY.MET");
+   CPPUNIT_ASSERT(fileNames.size() == 2);
+   CPPUNIT_ASSERT(fileNames[0] == "accum.par");
+   CPPUNIT_ASSERT(fileNames[1] == "%apsuite\\apsim\\met\\SAMPLE\\DALBY.MET");
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -129,9 +129,9 @@ void testGetOutputFileNames(void)
    setUpConPar();
    vector<string> fileNames;
    con->getOutputFileNames("Section1", fileNames);
-   BOOST_CHECK(fileNames.size() == 2);
-   BOOST_CHECK(fileNames[0] == "out1.out");
-   BOOST_CHECK(fileNames[1] == "out2.out");
+   CPPUNIT_ASSERT(fileNames.size() == 2);
+   CPPUNIT_ASSERT(fileNames[0] == "out1.out");
+   CPPUNIT_ASSERT(fileNames[1] == "out2.out");
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ void testGetOutputFileNames(void)
 void testGetSummaryFileNames(void)
    {
    setUpConPar();
-   BOOST_CHECK(con->getSummaryFileName("Section1") == "accum.sum");
+   CPPUNIT_ASSERT(con->getSummaryFileName("Section1") == "accum.sum");
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -149,12 +149,12 @@ void testGetSummaryFileNames(void)
 void testGetParameterValues(void)
    {
    setUpConPar();
-   BOOST_CHECK(con->getParameterValue("section2", "clock", "start_date") == "1/1/1988");
+   CPPUNIT_ASSERT(con->getParameterValue("section2", "clock", "start_date") == "1/1/1988");
    vector<string> variables;
    con->getParameterValues("section1", "rep1", "variable", variables);
-   BOOST_CHECK(variables.size() == 2);
-   BOOST_CHECK(variables[0] == "clock.day");
-   BOOST_CHECK(variables[1] == "clock.year");
+   CPPUNIT_ASSERT(variables.size() == 2);
+   CPPUNIT_ASSERT(variables[0] == "clock.day");
+   CPPUNIT_ASSERT(variables[1] == "clock.year");
    tearDownConPar();
    }
 
@@ -166,16 +166,16 @@ void testSetParameterValues(void)
    setUpConPar();
    // change a parameter that already exists.
    con->setParameterValue("Section1", "clock", "start_date", "xxxx");
-   BOOST_CHECK(con->getParameterValue("Section1", "clock", "start_date") == "xxxx");
+   CPPUNIT_ASSERT(con->getParameterValue("Section1", "clock", "start_date") == "xxxx");
 
    // change a parameter that doesn't already exist.
    con->setParameterValue("Section1", "clock", "newParam", "xxxx");
-   BOOST_CHECK(con->getParameterValue("Section1", "clock", "newParam") == "xxxx");
+   CPPUNIT_ASSERT(con->getParameterValue("Section1", "clock", "newParam") == "xxxx");
 
    // change a parameter that doesn't exist and there is no par file
    // specified in control file.
    con->setParameterValue("Section1", "fertiliser", "fertParam", "1.0");
-   BOOST_CHECK(con->getParameterValue("Section1", "fertiliser", "fertParam") == "1.0");
+   CPPUNIT_ASSERT(con->getParameterValue("Section1", "fertiliser", "fertParam") == "1.0");
 
    // make sure the format of the control file is ok.
    static const char* conSt = "Version = 3.0\n"
@@ -201,7 +201,7 @@ void testSetParameterValues(void)
    ostringstream conContents;
    ifstream inCon(con->getFileName().c_str());
    conContents << inCon.rdbuf();
-   BOOST_CHECK(conContents.str() == conSt);
+   CPPUNIT_ASSERT(conContents.str() == conSt);
 
    // make sure the format of the par file is ok.
    static const char* parSt = "[sample.rep1.parameters]\n"
@@ -241,7 +241,7 @@ void testSetParameterValues(void)
    ifstream inPar("accum.par");
    parContents << inPar.rdbuf();
    inPar.close();
-   BOOST_CHECK(parContents.str() == parSt);
+   CPPUNIT_ASSERT(parContents.str() == parSt);
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -277,7 +277,7 @@ void testChangeModuleName(void)
    ostringstream conContents;
    ifstream inCon(con->getFileName().c_str());
    conContents << inCon.rdbuf();
-   BOOST_CHECK(conContents.str() == conSt);
+   CPPUNIT_ASSERT(conContents.str() == conSt);
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -286,7 +286,7 @@ void testChangeModuleName(void)
 void testTitle(void)
    {
    setUpConPar();
-   BOOST_CHECK(con->getTitle("Section2") == "test2");
+   CPPUNIT_ASSERT(con->getTitle("Section2") == "test2");
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -297,9 +297,9 @@ void testGetInstances(void)
    setUpConPar();
    vector<string> instances;
    con->getInstances("Section1", "report", instances);
-   BOOST_CHECK(instances.size() == 2);
-   BOOST_CHECK(instances[0] == "rep1");
-   BOOST_CHECK(instances[1] == "rep2");
+   CPPUNIT_ASSERT(instances.size() == 2);
+   CPPUNIT_ASSERT(instances[0] == "rep1");
+   CPPUNIT_ASSERT(instances[1] == "rep2");
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -344,7 +344,7 @@ void testRenameParameter(void)
    ifstream inPar("accum.par");
    parContents << inPar.rdbuf();
    inPar.close();
-   BOOST_CHECK(parContents.str() == parSt);
+   CPPUNIT_ASSERT(parContents.str() == parSt);
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -386,7 +386,7 @@ void testDeleteParameter(void)
    ifstream inPar("accum.par");
    parContents << inPar.rdbuf();
    inPar.close();
-   BOOST_CHECK(parContents.str() == parSt);
+   CPPUNIT_ASSERT(parContents.str() == parSt);
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -431,7 +431,7 @@ void testMoveParameter(void)
    ifstream inPar("accum.par");
    parContents << inPar.rdbuf();
    inPar.close();
-   BOOST_CHECK(parContents.str() == parSt);
+   CPPUNIT_ASSERT(parContents.str() == parSt);
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -505,7 +505,7 @@ void testMoveParametersOutOfCon(void)
    out.close();
    con = new ApsimControlFile("accum.con");
 
-   BOOST_CHECK(con->moveParametersOutOfCon("Section1", "default.par"));
+   CPPUNIT_ASSERT(con->moveParametersOutOfCon("Section1", "default.par"));
 
    // make sure the format of the con file is ok.
    static const char* newConSt = "Version = 3.0\n"
@@ -531,7 +531,7 @@ void testMoveParametersOutOfCon(void)
    ostringstream conContents;
    ifstream inCon("accum.con");
    conContents << inCon.rdbuf();
-   BOOST_CHECK(conContents.str() == newConSt);
+   CPPUNIT_ASSERT(conContents.str() == newConSt);
 
    // make sure the format of the par file is ok.
    static const char* parSt2 = "[sample.rep1.parameters]\n"
@@ -542,7 +542,7 @@ void testMoveParametersOutOfCon(void)
    ostringstream parContents;
    ifstream inPar("default.par");
    parContents << inPar.rdbuf();
-   BOOST_CHECK(parContents.str() == parSt2);
+   CPPUNIT_ASSERT(parContents.str() == parSt2);
    tearDownConPar();
    }
 //---------------------------------------------------------------------------
@@ -553,41 +553,45 @@ void testGetAllModuleInstances(void)
    setUpConPar();
    ApsimControlFile::ModuleInstances moduleInstances;
    con->getAllModuleInstances("Section2",moduleInstances);
-   BOOST_CHECK(moduleInstances.size() == 7);
-   BOOST_CHECK(moduleInstances[0].moduleName == "clock");
-   BOOST_CHECK(moduleInstances[0].instanceName == "clock");
-   BOOST_CHECK(moduleInstances[1].moduleName == "report");
-   BOOST_CHECK(moduleInstances[1].instanceName == "rep1");
-   BOOST_CHECK(moduleInstances[2].moduleName == "met");
-   BOOST_CHECK(moduleInstances[2].instanceName == "met");
-   BOOST_CHECK(moduleInstances[3].moduleName == "accum");
-   BOOST_CHECK(moduleInstances[3].instanceName == "accum");
-   BOOST_CHECK(moduleInstances[4].moduleName == "manager");
-   BOOST_CHECK(moduleInstances[4].instanceName == "manager");
-   BOOST_CHECK(moduleInstances[5].moduleName == "fertiliser");
-   BOOST_CHECK(moduleInstances[5].instanceName == "fertiliser");
-   BOOST_CHECK(moduleInstances[6].moduleName == "summaryfile");
-   BOOST_CHECK(moduleInstances[6].instanceName == "summaryfile");
+   CPPUNIT_ASSERT(moduleInstances.size() == 7);
+   CPPUNIT_ASSERT(moduleInstances[0].moduleName == "clock");
+   CPPUNIT_ASSERT(moduleInstances[0].instanceName == "clock");
+   CPPUNIT_ASSERT(moduleInstances[1].moduleName == "report");
+   CPPUNIT_ASSERT(moduleInstances[1].instanceName == "rep1");
+   CPPUNIT_ASSERT(moduleInstances[2].moduleName == "met");
+   CPPUNIT_ASSERT(moduleInstances[2].instanceName == "met");
+   CPPUNIT_ASSERT(moduleInstances[3].moduleName == "accum");
+   CPPUNIT_ASSERT(moduleInstances[3].instanceName == "accum");
+   CPPUNIT_ASSERT(moduleInstances[4].moduleName == "manager");
+   CPPUNIT_ASSERT(moduleInstances[4].instanceName == "manager");
+   CPPUNIT_ASSERT(moduleInstances[5].moduleName == "fertiliser");
+   CPPUNIT_ASSERT(moduleInstances[5].instanceName == "fertiliser");
+   CPPUNIT_ASSERT(moduleInstances[6].moduleName == "summaryfile");
+   CPPUNIT_ASSERT(moduleInstances[6].instanceName == "summaryfile");
    tearDownConPar();
    }
+ };
 //---------------------------------------------------------------------------
 // Perform all tests.
 //---------------------------------------------------------------------------
-void testApsimControlFile(void)
+
+CppUnit::TestSuite * testApsimControlFile() 
    {
-   testGetAllSectionNames();
-   testGetAllFiles();
-   testGetOutputFileNames();
-   testGetSummaryFileNames();
-   testGetParameterValues();
-   testSetParameterValues();
-   testChangeModuleName();
-   testTitle();
-   testGetInstances();
-   testRenameParameter();
-   testDeleteParameter();
-   testMoveParameter();
-   testMoveParametersOutOfCon();
-   testGetAllModuleInstances();
+   CppUnit::TestSuite *suite= new CppUnit::TestSuite("ApsimControlFile_test_suite" );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetAllSectionNames", &ApsimControlFileTestCase::testGetAllSectionNames) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetAllFiles", &ApsimControlFileTestCase::testGetAllFiles) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetOutputFileNames", &ApsimControlFileTestCase::testGetOutputFileNames) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetSummaryFileNames", &ApsimControlFileTestCase::testGetSummaryFileNames) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetParameterValues", &ApsimControlFileTestCase::testGetParameterValues) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testSetParameterValues", &ApsimControlFileTestCase::testSetParameterValues) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testChangeModuleName", &ApsimControlFileTestCase::testChangeModuleName) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testTitle", &ApsimControlFileTestCase::testTitle) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetInstances", &ApsimControlFileTestCase::testGetInstances) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testDeleteParameter", &ApsimControlFileTestCase::testDeleteParameter) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testMoveParameter", &ApsimControlFileTestCase::testMoveParameter) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testMoveParametersOutOfCon", &ApsimControlFileTestCase::testMoveParametersOutOfCon) );
+   suite->addTest(new CppUnit::TestCaller<ApsimControlFileTestCase>("testGetAllModuleInstances", &ApsimControlFileTestCase::testGetAllModuleInstances) );
+
+   return(suite);
    }
 

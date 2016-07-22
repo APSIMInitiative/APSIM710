@@ -2,6 +2,6 @@
 #ifndef TestParametersH
 #define TestParametersH
 
-void TestParameters(void);
+CppUnit::TestSuite * TestParameters(void);
 
 #endif

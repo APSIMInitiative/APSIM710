@@ -2,6 +2,6 @@
 #ifndef TestEventsH
 #define TestEventsH
 
-void TestEvents(void);
+CppUnit::TestSuite * TestEvents() ;
 
 #endif

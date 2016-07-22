@@ -1,33 +1,41 @@
 //---------------------------------------------------------------------------
-#ifndef WIN32
-#define BOOST_TEST_DYN_LINK
-#endif
-
-#define BOOST_TEST_ALTERNATIVE_INIT_API
+#include <cppunit/BriefTestProgressListener.h>
+#include <cppunit/CompilerOutputter.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TestResultCollector.h>
+#include <cppunit/TestRunner.h>
 
 #include "TestVariables.h"
 #include "TestParameters.h"
 #include "TestEvents.h"
 #include "TestMisc.h"
 
-#include <boost/test/included/unit_test.hpp>
-using namespace boost::unit_test;
-
-bool init_unit_test( )
+int main (int argc, char* argv[]) 
    {
-   test_suite* test= BOOST_TEST_SUITE("TestComponentInterface");
-   test->add(BOOST_TEST_CASE(&TestVariables));
-   test->add(BOOST_TEST_CASE(&TestParameters));
-   test->add(BOOST_TEST_CASE(&TestEvents));
-   test->add(BOOST_TEST_CASE(&TestMisc));
+   // Create the event manager and test controller
+   CPPUNIT_NS::TestResult controller;
 
-   framework::master_test_suite().add(test);
-   return 1;
-   }
+   // Add a listener that colllects test result
+   CPPUNIT_NS::TestResultCollector result;
+   controller.addListener( &result );        
 
-#ifndef WIN32
-int main( int argc, char* argv[] )
-{
-    return ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
+   // Add a listener that print dots as test run.
+   CPPUNIT_NS::BriefTestProgressListener progress;
+   controller.addListener( &progress );      
+
+   // Add the top suite to the test runner
+   CPPUNIT_NS::TestRunner runner;
+   runner.addTest( TestVariables() );
+   runner.addTest( TestParameters() );
+   runner.addTest( TestEvents() );
+   runner.addTest( TestMisc() );
+
+   runner.run( controller );
+
+   // Print test in a compiler compatible format.
+   CPPUNIT_NS::CompilerOutputter outputter( &result, CPPUNIT_NS::stdCOut() );
+   outputter.write(); 
+
+   return result.wasSuccessful() ? 0 : 1;
 }
-#endif
