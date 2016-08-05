@@ -77,8 +77,8 @@ class BobMain
 
             // Compile the JobScheduler.
             Run("Compile job scheduler",
-                (Path.DirectorySeparatorChar != '/' ? "%VS100COMNTOOLS%\\..\\IDE\\devenv.exe" : "/usr/bin/xbuild"),
-                (Path.DirectorySeparatorChar != '/' ? "%APSIM%/Model/JobScheduler/JobScheduler.sln /build debug" : "%APSIM%/Model/JobScheduler/JobScheduler.sln /target:Build"),
+                (Path.DirectorySeparatorChar != '/' ? "%FrameworkDIR32%%FrameworkVersion32%\\MSBuild.exe" : "/usr/bin/xbuild"),
+                (Path.DirectorySeparatorChar != '/' ? "%APSIM%\\Model\\JobScheduler\\JobScheduler.sln /target:Build /p:Configuration=Release" : "%APSIM%/Model/JobScheduler/JobScheduler.sln /target:Build"),
                 "%APSIM%/Model/JobScheduler");
 
             // Run the JobScheduler.

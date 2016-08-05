@@ -1636,9 +1636,12 @@ extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsi
 	char buf[MAX_CHARS + 1];
         memset(buf, 0, MAX_CHARS + 1);
 	char* endPtr;
+	char *chPtr;
 	size_t nChars = min(MAX_CHARS, (size_t)strLength);
 	memcpy(buf, str, nChars);
 	buf[nChars] = '\0';
+	while ((chPtr = strpbrk(buf, "Dd")) != NULL) // Convert 3.14D0 to 3.14E0 for fortran doubles
+	   *chPtr = 'E';
 	double result = strtod(buf, &endPtr);
 	// Check to be certain that we had a numeric value, and numeric value only
 	*ok = (endPtr != buf) && ((*endPtr == '\0') || isspace(*endPtr));

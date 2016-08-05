@@ -13,9 +13,9 @@ rem -------------------------------------------------------------
 for /D %%d in (*) do (
    cd %APSIM%\Tests\UnitTests\%%d
    if EXIST Test.sln (
-      "%VS100COMNTOOLS%..\IDE\devenv" Test.sln /ReBuild debug
+   	  "%FrameworkDIR32%%FrameworkVersion32%\msbuild" Test.sln /target:ReBuild /p:Configuration=Debug
       if ERRORLEVEL 0 (
-         "C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" bin\debug\Test.dll /nologo /noshadow > UnitTest.tmp
+         "C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console" /nologo /shadow bin\debug\Test.dll > UnitTest.tmp
          )
       )
    if EXIST Makefile (

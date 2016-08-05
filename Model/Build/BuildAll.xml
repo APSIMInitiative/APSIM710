@@ -306,6 +306,8 @@
       </Job>
       <Job name="Compile Oryza">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
+         <DependsOn>Compile CropTemplate</DependsOn>
+         <DependsOn>Compile CropMod</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Oryza</WorkingDirectory>
          <CommandLine>make</CommandLine>
@@ -779,7 +781,7 @@
       <DependsOn>BobBuildAndRun</DependsOn>
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
-         <CommandLine>"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
+         <CommandLine>"%VS140COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Bootleg MSI">
@@ -895,6 +897,7 @@
       <Job name="Apsim NUNIT tests">
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>"C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" APSIM.Tests.dll</CommandLine>
+         <!--<CommandLine>"C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console" APSIM.Tests.dll</CommandLine>-->
          <CommandLineUnix>nunit-console APSIM.Tests.dll</CommandLineUnix>
       </Job>   
    </Target>
