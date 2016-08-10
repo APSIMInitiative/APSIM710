@@ -3,15 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A9EE5C38-12DD-400F-94B3-D486826B338B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>APSIM.Tests</RootNamespace>
     <AssemblyName>APSIM.Tests</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -35,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CMPServices">
       <HintPath>..\CMPServices.dll</HintPath>
@@ -48,8 +42,6 @@
     <Reference Include="ApsimFile">
       <HintPath>..\ApsimFile.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL" />
-    <Reference Include="nunitlite, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,22 +52,13 @@
     <Reference Include="WaterAllocator">
       <HintPath>..\WaterAllocator.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunitlite">
+      <HintPath>packages\NUnitLite.3.4.1\lib\net45\nunitlite.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <Choose>
-    <When Condition="'$(OS)' != 'Windows_NT'">
-      <ItemGroup>
-        <Reference Include="nunit.framework, Version=2.5.10.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-          <SpecificVersion>False</SpecificVersion>
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="nunit.core, Version=2.5.10.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-          <SpecificVersion>False</SpecificVersion>
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <Otherwise />
-  </Choose>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="SoilDataTableTest.cs" />
@@ -116,6 +99,8 @@
     <None Include="ChangeToolFiles\Apsim73.apsimConvertedGOOD" />
     <None Include="ChangeToolFiles\Apsim74.apsim" />
     <None Include="ChangeToolFiles\Apsim74.apsimConvertedGOOD" />
+    <None Include="packages.config" />
+    <None Include="Program.vb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
