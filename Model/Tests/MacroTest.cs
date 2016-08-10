@@ -129,7 +129,6 @@ namespace APSIM.Tests
         // Test badly formatted foreach macro #2
         // -------------------------------------------
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void TestBadForEachThrows2()
         {
             const string Template =
@@ -140,13 +139,15 @@ namespace APSIM.Tests
             Doc.LoadXml(Values);
 
             Macro macro = new Macro();
-            string Result = macro.Go(Doc.DocumentElement, Template);
+            string Result;
+            
+            Assert.Throws<Exception>(() => 
+               Result = macro.Go(Doc.DocumentElement, Template));
         }
         // -------------------------------------------
         // Test badly formatted foreach macro #3
         // -------------------------------------------
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void TestBadForEachThrows3()
         {
             const string Template =
@@ -156,13 +157,14 @@ namespace APSIM.Tests
             Doc.LoadXml(Values);
 
             Macro macro = new Macro();
-            string Result = macro.Go(Doc.DocumentElement, Template);
+            string Result;
+            Assert.Throws<Exception>(() =>
+                Result = macro.Go(Doc.DocumentElement, Template));
         }
         // -------------------------------------------
         // Test missing endfor
         // -------------------------------------------
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void TestMissingEndForThrows()
         {
             const string Template =
@@ -174,7 +176,9 @@ namespace APSIM.Tests
             Doc.LoadXml(Values);
 
             Macro macro = new Macro();
-            string Result = macro.Go(Doc.DocumentElement, Template);
+            string Result;
+            Assert.Throws<Exception>(() =>
+                Result = macro.Go(Doc.DocumentElement, Template));
         }
         // -------------------------------------------
         // Test that bad macros are ignored.

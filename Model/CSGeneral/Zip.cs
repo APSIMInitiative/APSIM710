@@ -146,7 +146,7 @@ namespace CSGeneral
         {
             MemoryStream MemStream = null;
 
-            List<string> FilesCreated = new List<string>();
+            //List<string> FilesCreated = new List<string>();
             ZipInputStream Zip = new ZipInputStream(File.Open(ZipFile, FileMode.Open, FileAccess.Read));
             if (Password != "" && Password != null)
                 Zip.Password = Password;

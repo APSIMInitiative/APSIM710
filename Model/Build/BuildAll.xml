@@ -655,7 +655,7 @@
          <WorkingDirectory>%APSIM%/Model/SlurryTank</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-<Job name="Compile StandardProducts">
+      <Job name="Compile StandardProducts">
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
@@ -781,7 +781,7 @@
       <DependsOn>BobBuildAndRun</DependsOn>
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
-         <CommandLine>"%VS140COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
+         <CommandLine>make</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Bootleg MSI">
@@ -896,9 +896,7 @@
       </Job>
       <Job name="Apsim NUNIT tests">
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>"C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" APSIM.Tests.dll</CommandLine>
-         <!--<CommandLine>"C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console" APSIM.Tests.dll</CommandLine>-->
-         <CommandLineUnix>nunit-console APSIM.Tests.dll</CommandLineUnix>
+         <CommandLine>APSIM.Tests.exe --out=%APSIM%/Model/Tests/APSIM.Tests.out  --workers=1 --noresult</CommandLine>
       </Job>   
    </Target>
 

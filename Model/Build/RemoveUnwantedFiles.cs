@@ -73,7 +73,7 @@ class RemoveUnwantedFiles
                                  !path.Contains("CSGeneral.dll"))
                         {
                             try
-                            {
+                            {Console.WriteLine("Deleting " + path);
                                 File.Delete(path);
                             }
                             catch (Exception)

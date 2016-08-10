@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ReportDb</RootNamespace>
     <AssemblyName>ReportDb</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +32,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CMPServices, Version=1.0.4272.28884, Culture=neutral, processorArchitecture=x86">
@@ -53,20 +56,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
-      <When Condition="'$(OS)' != 'Windows_NT'">
+    <When Condition="'$(OS)' != 'Windows_NT'">
       <ItemGroup>
-         <Reference Include="Mono.Data.Sqlite" /> 
+        <Reference Include="Mono.Data.Sqlite" />
       </ItemGroup>
-      </When>
-      <Otherwise>
-       <ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
         <Reference Include="System.Data.SQLite">
-         <SpecificVersion>False</SpecificVersion>
-         <HintPath>..\System.Data.SQLite.dll"</HintPath>
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\System.Data.SQLite.dll"</HintPath>
         </Reference>
       </ItemGroup>
-      </Otherwise>
-    </Choose>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
     <Compile Include="..\Build\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>

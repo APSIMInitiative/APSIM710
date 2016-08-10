@@ -11,7 +11,7 @@ cd %~dp0..
 set APSIM=%CD%
 cd %APSIM%\Release
 
-set InsertFiles=%APSIM%\Release\InsertFilesIntoSetup\bin\release\InsertFilesIntoSetup
+set InsertFiles=%APSIM%\Release\InsertFilesIntoSetup\bin\Release\InsertFilesIntoSetup.exe
 
 rem Make a copy of the setup template before putting files into it. Also copy the .sed file 
 mkdir %2
@@ -28,7 +28,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% %2.vdproj %3 ..\..\Documentation                           %%Apsim%%\Documentation
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.lnk                             %%Apsim%%\Model
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.xml                             %%Apsim%%\Model
-del ..\..\Model\APSIM.Tests.dll
+del ..\..\Model\APSIM.Tests.exe
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.exe                             %%Apsim%%\Model
 %InsertFiles% %2.vdproj %3 ..\..\Model\*.dll                             %%Apsim%%\Model
 %InsertFiles% %2.vdproj %3 ..\..\Model\RunTime\*.dll                     %%Apsim%%\Model
@@ -36,7 +36,8 @@ del ..\..\Model\APSIM.Tests.dll
 %InsertFiles% %2.vdproj %3 ..\..\Model\TclLink\lib\                      %%Apsim%%\Model\TclLink\lib
 %InsertFiles% %2.vdproj %3 ..\..\Model\TclLink\CIDataTypes.tcl           %%Apsim%%\Model\TclLink
 
-"%VS100COMNTOOLS%\..\IDE\devenv" %2.vdproj /build release
+rem this requires the "VS2015 installer projects" extension from https://visualstudiogallery.msdn.microsoft.com/f1cc3f3e-c300-40a7-8797-c509fb8933b9
+"%VS140COMNTOOLS%..\IDE\devenv" %2.vdproj /build Release
 
 rem Now combine apsimsetup.msi and setup.exe into a self extracting installation.
 rem This uses IExpress described here:

@@ -25,6 +25,7 @@ rem ----- 14 = VS 2015
 rem ----- (There is no 13!)
 rem ----- If you want to force building with a specific version, just delete the numbers of the
 rem ----- versions you don't want to consider
+rem ----- The .NET components are built against 4.5 (VS 2012 or later)
 set VSTOOLPATH=""
 for %%a in (10 11 12 14) DO IF DEFINED VS%%a0COMNTOOLS (
   SET VSTOOLPATH=VS%%a0COMNTOOLS

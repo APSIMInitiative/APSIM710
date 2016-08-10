@@ -185,13 +185,11 @@ class Program
         string Contents = In.ReadToEnd();
         In.Close();
 
-        string Pattern;
+        string Pattern = "undefined";
         if (Path.GetExtension(FileName).ToLower() == ".con")
             Pattern = "^\\[(.+)\\]";
         else if (Path.GetExtension(FileName) == ".apsim")
             Pattern = "<simulation name=\"(.+)\"";
-        else
-            throw new Exception("Cannot find simulations in file: " + FileName);
 
         List<string> Matches = new List<string>();
         Regex rgx = new Regex(Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -205,7 +203,5 @@ class Program
 
         return Matches;
     }
-
-
 }
 

@@ -106,7 +106,7 @@ int stage_no_of (float stage_code,           //(INPUT) stage code to look up
    else
       {
       char error_mess[80];
-      sprintf(error_mess,"Stage code not found in code list. Code number = %d",
+      sprintf(error_mess,"Stage code not found in code list. Code number = %.0f",
               stage_code);
       throw std::invalid_argument(error_mess);
       }

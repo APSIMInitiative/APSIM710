@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace CMPServices
 {
@@ -304,7 +305,7 @@ namespace CMPServices
         [DllImport("libdl")]
         internal static extern int dlclose(IntPtr hModule);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern IntPtr LoadLibrary(String dllname);
 
         [DllImport("kernel32.dll")]
@@ -325,12 +326,23 @@ namespace CMPServices
         //=========================================================================
         static public IntPtr LibLoad(String dllName)
         {
+            if (Environment.Is64BitProcess)
+                throw new Exception(String.Format("Can't load {0} because this is a 64 bit proccess", dllName));
+
             if (Path.VolumeSeparatorChar == '/')
             {
                 return dlopen(dllName, 1); // 1 is usually the value for RTLD_LAZY...
             }
-            else
-                return LoadLibrary(dllName);
+            
+            IntPtr handle = LoadLibrary(dllName);
+            if (handle == IntPtr.Zero)
+            {
+                string message = "Failed to load " + dllName + "\n" +
+                  new Win32Exception(Marshal.GetLastWin32Error()).Message;
+
+                throw new Exception(message);
+            }
+            return (handle);
         }
         //=========================================================================
         /// <summary>
@@ -379,7 +391,10 @@ namespace CMPServices
                 string sCurrent = Directory.GetCurrentDirectory();
                 string sModuleDir = Path.GetDirectoryName(Executable);
                 if (sModuleDir != String.Empty)
+                {
                     Directory.SetCurrentDirectory(sModuleDir);
+                    //NativeMethods.SetDllDirectory(sModuleDir);
+                }
                 try
                 {
                     dllHandle = LibLoad(Executable);

@@ -111,25 +111,25 @@ class DLLProber
 				PGetDescription fpGetDescr;
 
 				IntPtr dllHandle = TOSInterface.loadDll(DllFileName);
-				if (!dllHandle.Equals(IntPtr.Zero))
-				{
-					IntPtr procAddr = TOSInterface.LibGetAddr(dllHandle, "getDescriptionLength");
-					if (!procAddr.Equals(IntPtr.Zero))
-					{
-						Int32 lLength = 0;
-						fpGetDescrLength = (PGetDescriptionLength)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescriptionLength));
-						fpGetDescrLength(initScript, ref lLength);
-						//now get the description. Native components construct an instance during getDescription()
-						procAddr = TOSInterface.LibGetAddr(dllHandle, "getDescription");
-						if (!procAddr.Equals(IntPtr.Zero))
-						{
-							StringBuilder sb = new StringBuilder(lLength);
-							fpGetDescr = (PGetDescription)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescription));
-							fpGetDescr(initScript, sb);
-							descr = sb.ToString();
-						}
-					}
-				}
+                
+                if (dllHandle.Equals(IntPtr.Zero))
+                    throw new Exception("Failed to load dll " + DllFileName + "\n" );
+                IntPtr procAddr = TOSInterface.LibGetAddr(dllHandle, "getDescriptionLength");
+                if (!procAddr.Equals(IntPtr.Zero))
+                    {
+                        Int32 lLength = 0;
+                        fpGetDescrLength = (PGetDescriptionLength)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescriptionLength));
+                        fpGetDescrLength(initScript, ref lLength);
+                        //now get the description. Native components construct an instance during getDescription()
+                        procAddr = TOSInterface.LibGetAddr(dllHandle, "getDescription");
+                        if (!procAddr.Equals(IntPtr.Zero))
+                        {
+                            StringBuilder sb = new StringBuilder(lLength);
+                            fpGetDescr = (PGetDescription)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescription));
+                            fpGetDescr(initScript, sb);
+                            descr = sb.ToString();
+                        }
+                    }
             }
         }
         return descr;
@@ -503,7 +503,7 @@ class DLLProber
         {
             CompilerParameters Params = new CompilerParameters();
             Params.GenerateInMemory = false;
-            Params.CompilerOptions = "/platform:x86";
+            Params.CompilerOptions = "/platform:AnyCPU";
             Params.OutputAssembly = Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll");
             Params.TreatWarningsAsErrors = false;
             Params.WarningLevel = 2;
