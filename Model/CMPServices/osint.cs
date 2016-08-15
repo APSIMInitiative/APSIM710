@@ -255,7 +255,7 @@ namespace CMPServices
                 uint headerOffset = UInt32FromBytes(data, 0x3c);  // This will get the address for the WinNT header
 
                 //at the file offset specified at offset 0x3c, is a 4-byte
-                //signature that identifies the file as a PE format image file. This signature is “PE\0\0”
+                //signature that identifies the file as a PE format image file. This signature is ï¿½PE\0\0ï¿½
                 if (UInt32FromBytes(data, headerOffset) != 0x00004550)
                     return CompilationMode.Invalid;
 
@@ -326,14 +326,13 @@ namespace CMPServices
         //=========================================================================
         static public IntPtr LibLoad(String dllName)
         {
-            if (Environment.Is64BitProcess)
-                throw new Exception(String.Format("Can't load {0} because this is a 64 bit proccess", dllName));
-
             if (Path.VolumeSeparatorChar == '/')
             {
                 return dlopen(dllName, 1); // 1 is usually the value for RTLD_LAZY...
             }
             
+            if (Environment.Is64BitProcess)
+                throw new Exception(String.Format("Can't load {0} because this is a 64 bit proccess", dllName));
             IntPtr handle = LoadLibrary(dllName);
             if (handle == IntPtr.Zero)
             {
