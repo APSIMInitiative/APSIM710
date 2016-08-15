@@ -2,7 +2,6 @@
 CPPDEBUGFLAGS=-g
 LDDEBUGFLAGS := $(LDDEBUGFLAGS) -lg
 
-BOOST_INCLUDEDIR=-I/usr/include/boost
 XML2_INCLUDEDIR=-I/usr/include/libxml2
 XML2_LIBDIR= -L/usr/lib
 
@@ -18,15 +17,15 @@ CC=/usr/bin/g++
 LD=/usr/bin/ld
 # the -fno-omit-frame-pointer is present to disable an option otherwise set by -O3.
 # Apparently, for g++ versions before 4.0, using -fomit-frame pointer interferes with use of STDCALL
-CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model -I$(APSIM)/Model/$(PROJECT) \
--std=c++11 -DBOOST_FILESYSTEM_VERSION=3 -Wno-write-strings -fpermissive -fPIC -O3 -fno-omit-frame-pointer $(CPPDEBUGFLAGS) $(INCLUDES)
+CFLAGS= -Wall $(MONO_DEFINE) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model -I$(APSIM)/Model/$(PROJECT) \
+-std=c++11 -Wno-write-strings -fpermissive -fPIC -O3 -fno-omit-frame-pointer $(CPPDEBUGFLAGS) $(INCLUDES)
 
 #-Wno-deprecated
 
 #-----------------------------------------------------------------------
 # Required libraries
 LIBS:= -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) \
-        $(EXTRALIBS)  -lboost_filesystem -lboost_date_time \
+        $(EXTRALIBS) \
         $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
 
 ifeq ($(PROJECTTYPE),dll)

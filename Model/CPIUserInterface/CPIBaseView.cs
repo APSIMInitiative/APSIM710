@@ -117,11 +117,12 @@ namespace CPIUserInterface
             List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
             FDllFileName = DllFileNames[0];
             FDllFileName = Configuration.RemoveMacros(FDllFileName);
-
+           
             if ((propertyList.Count == 0) && File.Exists(FDllFileName)) //if no properties yet
             {
                 String descr = "";
-                TOSInterface.CompilationMode mode = TOSInterface.isManaged(FDllFileName);
+                TOSInterface.CPUArchitecture arch;               
+                TOSInterface.CompilationMode mode = TOSInterface.isManaged(FDllFileName, out arch);
                 //now I can probe this dll for it's description. CPI mixed mode wrapper/comp has a native interface
                 if ((mode == TOSInterface.CompilationMode.Native) || (mode == TOSInterface.CompilationMode.Mixed))
                 {

@@ -32,6 +32,26 @@ namespace CMPServices
             /// Mixed mode
             /// </summary>
             Mixed };
+
+        /// <summary>
+        /// Describes what type of module.
+        /// </summary>
+        public enum CPUArchitecture
+        {
+            /// <summary>
+            /// 32-bit
+            /// </summary>
+            x86, 
+            /// <summary>
+            /// Intel or AMD 64-bit
+            /// </summary>
+            x86_64,
+            /// <summary>
+            /// Unknown
+            /// </summary>
+            Unknown
+        };
+
         //=======================================================================
         /// <summary>
         /// Retrieve any environment variable value.
@@ -229,10 +249,11 @@ namespace CMPServices
         /// <param name="filename">File name of the Assembly or native dll to probe.</param>
         /// <returns>Compilation mode.</returns>
         //=========================================================================
-        static public CompilationMode isManaged(string filename)
+        static public CompilationMode isManaged(string filename, out CPUArchitecture arch)
         {
             try
             {
+                arch = CPUArchitecture.Unknown; 
                 byte[] data = new byte[4096];
                 FileInfo file = new FileInfo(filename);
                 Stream fin = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -242,11 +263,17 @@ namespace CMPServices
                 // If we are running on Linux, the executable/so will start with the string 0x7f + 'ELF'
                 // If the 5 byte is 1, it's a 32-bit image (2 indicates 64-bit)
                 // If the 16th byte is 3, it's a shared object; 2 means it's an executable
-                // If it's a Mono/.Net assembly, we should the the "Windows" header
+                // If it's a Mono/.Net assembly, we should find the "Windows" header
 
                 // For now, if we're on Linux just see if it has an "ELF" header
                 if (Path.VolumeSeparatorChar == '/' && data[0] == 0x7f && data[1] == 'E' && data[2] == 'L' && data[3] == 'F')
+                {
+                    if (data[4] == 1)
+                        arch = CPUArchitecture.x86;
+                    else if (data[4] == 2)
+                        arch = CPUArchitecture.x86_64;
                     return CompilationMode.Native;
+                }
 
                 // Verify this is a executable/dll
                 if (UInt16FromBytes(data, 0) != 0x5a4d)
@@ -258,6 +285,11 @@ namespace CMPServices
                 //signature that identifies the file as a PE format image file. This signature is �PE\0\0�
                 if (UInt32FromBytes(data, headerOffset) != 0x00004550)
                     return CompilationMode.Invalid;
+                uint machineType = UInt16FromBytes(data, headerOffset + 4);
+                if (machineType == 0x14c)
+                    arch = CPUArchitecture.x86;
+                else if (machineType == 0x200 || machineType == 0x8664)
+                    arch = CPUArchitecture.x86_64;
 
                 //uint machineType = UInt16FromBytes(data, headerOffset + 4); //type of machine
                 uint optionalHdrBase = headerOffset + 24;
@@ -279,6 +311,7 @@ namespace CMPServices
                         return CompilationMode.Mixed;
                     else
                         return CompilationMode.CLR;
+                        // CPUArchitecture won't be quite correct here. should check to see if it's x86 or AnyCPU
                 }
             }
             catch (Exception e)
@@ -326,13 +359,18 @@ namespace CMPServices
         //=========================================================================
         static public IntPtr LibLoad(String dllName)
         {
+            CPUArchitecture arch;
+            isManaged(dllName, out arch);
+            if (Environment.Is64BitProcess && arch != CPUArchitecture.x86_64)
+                throw new Exception(String.Format("Can't load {0} because this is a 64 bit proccess", dllName));
+            else if (!Environment.Is64BitProcess && arch != CPUArchitecture.x86)
+                throw new Exception(String.Format("Can't load {0} because this is a 32 bit proccess", dllName));
+
             if (Path.VolumeSeparatorChar == '/')
             {
                 return dlopen(dllName, 1); // 1 is usually the value for RTLD_LAZY...
             }
-            
-            if (Environment.Is64BitProcess)
-                throw new Exception(String.Format("Can't load {0} because this is a 64 bit proccess", dllName));
+
             IntPtr handle = LoadLibrary(dllName);
             if (handle == IntPtr.Zero)
             {
