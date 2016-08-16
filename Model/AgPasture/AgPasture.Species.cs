@@ -95,6 +95,9 @@ public class Species
     /// <summary>Some Description</summary>
     internal string micrometType;
 
+    /// <summary>Flag whether the species is alive</summary>
+    internal bool isAlive = true;
+
     /// <summary>Some Description</summary>
     internal bool isLegume; //Legume (0=no,1=yes)
 
@@ -128,7 +131,13 @@ public class Species
     internal int daysEmgToAnth; //Days from emergence to Anthesis (calculated, annual only)
 
     /// <summary>Some Description</summary>
-    internal int phenoStage = 1; //pheno stages: 0 - pre_emergence, 1 - vegetative, 2 - reproductive
+    internal int phenoStage = 0; //pheno stages: 0 - pre_emergence, 1 - vegetative, 2 - reproductive
+
+    /// <summary>Some Description</summary>
+    internal double degreesdayForGermination;
+
+    /// <summary>Some Description</summary>
+    internal double germinationGDD = 0.0;
 
     /// <summary>Some Description</summary>
     internal double phenoFactor = 1;
@@ -140,10 +149,10 @@ public class Species
     internal int daysfromAnthesis = 0; //days
 
     /// <summary>Some Description</summary>
-    internal int dRootDepth; //Daily root growth (mm)
+    internal double dRootDepth; //Daily root growth (mm)
 
     /// <summary>Some Description</summary>
-    internal int maxRootDepth; //Maximum root depth (mm)
+    internal double maxRootDepth; //Maximum root depth (mm)
 
     internal bool bSown = false;
     private double DDSfromSowing = 0.0;
@@ -260,10 +269,7 @@ public class Species
     internal double DDSEmergence;
 
     /// <summary>Some Description</summary>
-    internal double[] emergenceDM_grass;
-
-    /// <summary>Some Description</summary>
-    internal double[] emergenceDM_legume;
+    internal double[] emergenceDM;
 
     //// > DM partition >>>
 
@@ -498,14 +504,20 @@ public class Species
     /// <summary>Some Description</summary>
     internal bool usingSpeciesRoot;
 
-    /// <summary>Some Description</summary>
-    internal double rootDepth; //current root depth (mm)
+    /// <summary>current root depth (mm)</summary>
+    internal double rootDepth;
+
+    /// <summary>minimum root depth (mm)</summary>
+    internal double minRootDepth;
+
+    /// <summary>Base root elongation rate (mm/day)</summary>
+    internal double rootElongationRate;
 
     /// <summary>Some Description</summary>
     internal int rootDistributionMethod = 2;
 
     /// <summary>Some Description</summary>
-    internal double expoLinearDepthParam = 0.12;
+    internal double expoLinearDepthParam = 90.0;
 
     /// <summary>Some Description</summary>
     internal double expoLinearCurveParam = 3.2;
@@ -527,6 +539,10 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal double[] rootFraction;
+    internal double[] rootFraction1;
+
+    /// <summary>Some Description</summary>
+    internal double[] targetRootAllocation;
 
     /// <summary>Root length density (mm/mm3)</summary>
     internal double[] RLD
@@ -881,46 +897,26 @@ public class Species
     /// <summary>
     /// Set state
     /// </summary>
-    private void SetEmergenceState()
+    internal void SetEmergenceState()
     {
-        if (isLegume)
-        {
-            leaves.tissue[0].DM = emergenceDM_legume[0];
-            leaves.tissue[1].DM = emergenceDM_legume[1];
-            leaves.tissue[2].DM = emergenceDM_legume[2];
-            leaves.tissue[3].DM = emergenceDM_legume[3];
-            stems.tissue[0].DM = emergenceDM_legume[4];
-            stems.tissue[1].DM = emergenceDM_legume[5];
-            stems.tissue[2].DM = emergenceDM_legume[6];
-            stems.tissue[3].DM = emergenceDM_legume[7];
-            stolons.tissue[0].DM = emergenceDM_legume[8];
-            stolons.tissue[1].DM = emergenceDM_legume[9];
-            stolons.tissue[2].DM = emergenceDM_legume[10];
-            stolons.tissue[3].DM = 0.0;
-            roots.tissue[0].DM = emergenceDM_legume[11];
-            roots.tissue[1].DM = 0.0;
-            roots.tissue[2].DM = 0.0;
-            roots.tissue[3].DM = 0.0;
-        }
-        else
-        {
-            leaves.tissue[0].DM = emergenceDM_grass[0];
-            leaves.tissue[1].DM = emergenceDM_grass[1];
-            leaves.tissue[2].DM = emergenceDM_grass[2];
-            leaves.tissue[3].DM = emergenceDM_grass[3];
-            stems.tissue[0].DM = emergenceDM_grass[4];
-            stems.tissue[1].DM = emergenceDM_grass[5];
-            stems.tissue[2].DM = emergenceDM_grass[6];
-            stems.tissue[3].DM = emergenceDM_grass[7];
-            stolons.tissue[0].DM = 0.0;
-            stolons.tissue[1].DM = 0.0;
-            stolons.tissue[2].DM = 0.0;
-            stolons.tissue[3].DM = 0.0;
-            roots.tissue[0].DM = emergenceDM_grass[11];
-            roots.tissue[1].DM = 0.0;
-            roots.tissue[2].DM = 0.0;
-            roots.tissue[3].DM = 0.0;
-        }
+        phenoStage = 1;
+
+        leaves.tissue[0].DM = emergenceDM[0];
+        leaves.tissue[1].DM = emergenceDM[1];
+        leaves.tissue[2].DM = emergenceDM[2];
+        leaves.tissue[3].DM = emergenceDM[3];
+        stems.tissue[0].DM = emergenceDM[4];
+        stems.tissue[1].DM = emergenceDM[5];
+        stems.tissue[2].DM = emergenceDM[6];
+        stems.tissue[3].DM = emergenceDM[7];
+        stolons.tissue[0].DM = emergenceDM[8];
+        stolons.tissue[1].DM = emergenceDM[9];
+        stolons.tissue[2].DM = emergenceDM[10];
+        stolons.tissue[3].DM = 0.0;
+        roots.tissue[0].DM = emergenceDM[11];
+        roots.tissue[1].DM = 0.0;
+        roots.tissue[2].DM = 0.0;
+        roots.tissue[3].DM = 0.0;
 
         //Init total N in each pool
         leaves.tissue[0].Nconc = NcleafOpt;
@@ -961,7 +957,6 @@ public class Species
             DDSfromSowing += Tmean;
             if (DDSfromSowing > DDSEmergence)
             {
-                phenoStage = 1;
                 DDSfromSowing = 0;
                 SetEmergenceState(); //Initial states at 50% emergence
             }
@@ -1007,7 +1002,7 @@ public class Species
             return false; //no growth
         }
 
-        if (phenoStage == 1) //vege
+        if (phenoStage == 1) //vegetative
         {
             daysfromEmergence++;
             return true;
@@ -1041,8 +1036,22 @@ public class Species
             layerBottomRootZone = GetRootZoneBottomLayer();
             //considering root distribution change, here?
         }
+        else
+        {
+            if ((phenoStage > 0) && (rootDepth < maxRootDepth))
+            {
+                double tempFactor = GFTemperature(Tmean);
+                dRootDepth = rootElongationRate * tempFactor;
+                rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
+            }
+            else
+            {
+                dRootDepth = 0.0;
+                rootDepth = 0.0;
+            }
+        }
 
-        return rootDepth; // no root depth change for pereniel pasture
+        return rootDepth;
     }
 
     /// <summary>
@@ -1069,6 +1078,26 @@ public class Species
     #region Plant growth and DM partition  --------------------------------------------------------
 
     /// <summary>
+    /// Computation of daily progress through germination
+    /// </summary>
+    /// <returns>Fraction of germination phase completed</returns>
+    internal double DailyGerminationProgress()
+    {
+        double result = 0.0;
+        if (isAnnual)
+        {
+            DDSfromSowing += Tmean;
+            result = DDSfromSowing / DDSEmergence;
+        }
+        else
+        {
+            germinationGDD += Math.Max(0.0, Tmean - growthTmin);
+            result = germinationGDD / degreesdayForGermination;
+        }
+        return result;
+    }
+
+    /// <summary>
     /// Daily potential growth
     /// </summary>
     /// <returns>Pot growth</returns>
@@ -1086,7 +1115,7 @@ public class Species
                 return dGrowthPot = 0.0;
         }
 
-        // skip growth is plant hasn't germinated yet
+        // skip growth if plant hasn't germinated yet
         if (phenoStage == 0 || greenLAI == 0)
             return dGrowthPot = 0.0;
 
@@ -1205,10 +1234,6 @@ public class Species
         if (isAnnual)
             isGrowing = annualPhenology();
 
-        // skip growth is plant hasn't germinated yet
-        if (phenoStage == 0 || greenLAI == 0)
-            isGrowing = false;
-
         // set basic values for growth factors
         CO2Factor = 1.0;
         NcFactor = 1.0;
@@ -1243,9 +1268,9 @@ public class Species
             //Irradiance at top of canopy in the middle of the day (J/m2 leaf/s)
             IrradianceTopOfCanopy = lightExtCoeff * incidentPAR * (4.0 / 3.0);
 
-            //Photosynthesis per leaf area under full irradiance at the top of the canopy
+            //Photosynthesis per leaf area under full irradiance at the top of the canopy (mg CO2/m^2 leaf/s)
             double Pl1 = SingleLeafPhotosynthesis(0.5 * IrradianceTopOfCanopy, Pm1); // early and late parts of the day
-            double Pl2 = SingleLeafPhotosynthesis(IrradianceTopOfCanopy, Pm2); // main part of the day
+            double Pl2 = SingleLeafPhotosynthesis(IrradianceTopOfCanopy, Pm2); // middle part of the day
 
             // Radiation effects (for reporting purposes only)
             RadnFactor = MathUtility.Divide((0.25 * Pl1) + (0.75 * Pl2), (0.25 * Pm1) + (0.75 * Pm2), 1.0);
@@ -1278,13 +1303,13 @@ public class Species
     /// <summary>
     /// Compute the photosynthetic rate for a single leaf
     /// </summary>
-    /// <param name="IL">Istantaneous intercepted radiation (depend on time of day)</param>
-    /// <param name="Pmc">Max photosyntehsis rate, given T, CO2 and N concentration</param>
+    /// <param name="IL">Instantaneous intercepted radiation (depend on time of day)</param>
+    /// <param name="Pmax">Max photosyntehsis rate, given T, CO2 and N concentration</param>
     /// <returns></returns>
-    private double SingleLeafPhotosynthesis(double IL, double Pmc)
+    private double SingleLeafPhotosynthesis(double IL, double Pmax)
     {
-        double photoAux1 = alphaPhoto * IL + Pmc;
-        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pmc;
+        double photoAux1 = alphaPhoto * IL + Pmax;
+        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pmax;
         double Pl = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
         return Pl;
     }
@@ -1295,12 +1320,13 @@ public class Species
     /// <returns>Amount of C lost by respiration</returns>
     internal void DailyPlantRespiration()
     {
-        double LiveDM = (dmgreenShoot + roots.DMGreen) * CarbonFractionDM; //converting DM to C    (kgC/ha)
+        double LiveBiomassC = (dmgreenShoot + roots.DMGreen) * CarbonFractionDM; //converting DM to C    (kgC/ha)
 
         // maintenance respiration
+        //tempFactorRespiration = TemperatureEffectOnRespirationOld();
         tempFactorRespiration = TemperatureEffectOnRespiration();
-        if (LiveDM > 0.0)
-            Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveDM;
+        if (LiveBiomassC > 0.0)
+            Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveBiomassC;
         else
             Resp_m = 0.0;
 
@@ -2453,6 +2479,29 @@ public class Species
     }
 
     /// <summary>
+    /// Computes the effects of temperature on respiration
+    /// </summary>
+    /// <returns>Temperature factor</returns>
+    private double TemperatureEffectOnRespirationNew()
+    {
+        double result;
+        if (Tmean <= 0)
+        {
+            // too cold, no respiration
+            result = 0.0;
+        }
+        else
+        {
+            // scale factor
+            double scalef = 1 - Math.Exp(-1);
+            double baseEffect = 1 - Math.Exp(-Math.Pow(Tmean / respTref, 2.0));
+            result = baseEffect / scalef;
+        }
+
+        return result;
+    }
+
+    /// <summary>
     ///  Effect of temperature on tissue turnover rate
     /// </summary>
     /// <returns>Temperature effect</returns>
@@ -2690,6 +2739,7 @@ public class Species
     /// <returns>Plant height</returns>
     internal double HeightfromDM()
     {
+        //double TodaysHeight = MaxPlantHeight - MinimumHeight;
         double TodaysHeight = MaxPlantHeight;
         double standingDM = (leaves.DMTotal + stems.DMTotal);
 
@@ -2703,11 +2753,11 @@ public class Species
             TodaysHeight *= heightF;
         }
 
+        //return TodaysHeight + MinimumHeight;
         return Math.Max(TodaysHeight, MinimumHeight);
     }
 
     #endregion
-
 
     #region Plant parts (classes) -----------------------------------------------------------------
 
