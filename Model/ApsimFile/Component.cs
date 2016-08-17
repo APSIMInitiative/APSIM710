@@ -370,7 +370,6 @@ namespace ApsimFile
                         XmlNode AnalysisNode = XmlHelper.FindByType(SoilNode, "Analysis");
                         XmlNode WaterNode = XmlHelper.FindByType(SoilNode, "Water");
                         string Thickness = "<Thickness units=\"mm\">100</Thickness>";
-                        string pHUnits = "<PHUnits>Water</PHUnits>";
                         XmlNode ThicknessNode = null;
                         if (AnalysisNode != null)
                             ThicknessNode = XmlHelper.Find(AnalysisNode, "Thickness");

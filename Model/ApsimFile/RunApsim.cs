@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CSGeneral;
+using JobScheduler;
 using System.Diagnostics;
 
 
@@ -9,7 +10,7 @@ namespace ApsimFile
 {
 	public class RunApsim
 	{
-		private JobScheduler Scheduler = null;
+		//private JobScheduler.JobScheduler Scheduler = null;
 
 		public int MaxLinesInSummaryFile { get; set; }
 
@@ -32,8 +33,8 @@ namespace ApsimFile
 		/// </summary>
 		public void Start (List<apsimRunFileSims> args, bool doAllFactors)
 		{
-			List<Job> ApsimJobs = new List<Job> ();
-			ApsimJobs.Clear ();
+			List<IJob> ApsimJobs = new List<IJob> ();
+
 			NumApsimRuns = 0;
 			foreach (apsimRunFileSims arg in args) {
 				if (Path.GetExtension (arg.fileName).ToLower () == ".apsim")
@@ -51,8 +52,7 @@ namespace ApsimFile
 			T.Name = "Apsim.exe";
 			T.Jobs = ApsimJobs;
 			P.Targets.Add (T);
-			Scheduler = new JobScheduler ();
-			Scheduler.Start (P);
+            JobScheduler.JobScheduler.Instance.RunJob (P);
 		}
 
 		/// <summary>
@@ -60,8 +60,7 @@ namespace ApsimFile
 		/// </summary>
 		public void WaitUntilFinished ()
 		{
-			if (Scheduler != null)
-				Scheduler.WaitForFinish ();
+            JobScheduler.JobScheduler.Instance.WaitForFinish ();
 		}
 
 		/// <summary>
@@ -69,10 +68,7 @@ namespace ApsimFile
 		/// </summary>
 		public int Progress {
 			get {
-				if (Scheduler != null)
-					return Scheduler.PercentComplete;
-				else
-					return 0;
+				return JobScheduler.JobScheduler.Instance.PercentComplete;
 			}
 		}
 
@@ -81,8 +77,7 @@ namespace ApsimFile
 		/// </summary>
 		public void Stop ()
 		{
-			if (Scheduler != null)
-				Scheduler.Stop ();
+            JobScheduler.JobScheduler.Instance.Stop ();
 		}
 
 		/// <summary>
@@ -90,10 +85,7 @@ namespace ApsimFile
 		/// </summary>
 		public bool HasErrors {
 			get {
-				if (Scheduler != null)
-					return Scheduler.HasErrors;
-				else
-					return false;
+				return JobScheduler.JobScheduler.Instance.HasErrors;
 			}
 		}
 
@@ -102,10 +94,7 @@ namespace ApsimFile
 		/// </summary>
 		public bool HasFinished {
 			get {
-				if (Scheduler != null)
-					return Scheduler.HasFinished;
-				else
-					return false;
+				return JobScheduler.JobScheduler.Instance.HasFinished;
 			}
 		}
 
@@ -123,9 +112,7 @@ namespace ApsimFile
 		/// </summary>
 		public int NumJobsCompleted {
 			get {
-				if (Scheduler != null)
-					return Scheduler.NumJobsCompleted;
-				return 0;
+				return JobScheduler.JobScheduler.Instance.NumJobsCompleted;
 			}
 		}
 
@@ -134,16 +121,8 @@ namespace ApsimFile
 		/// </summary>
 		public string FirstJobWithError {
 			get {
-				if (Scheduler != null)
-					return Scheduler.FirstJobWithError;
-				return "";
+			    return JobScheduler.JobScheduler.Instance.FirstJobWithError;
 			}
-		}
-
-		public void SaveLogFile (string FileName)
-		{
-			if (Scheduler != null)
-				Scheduler.SaveLogFile (FileName);
 		}
 
 		#region Privates
@@ -151,7 +130,7 @@ namespace ApsimFile
 		/// <summary>
 		/// Create, and add to ApsimJobs, a series of jobs to run APSIM for each simulation.
 		/// </summary>
-		private void CreateJobsFromAPSIM (string FileName, string[] SimulationPaths, ref List<Job> jobs, bool doAllFactors)
+		private void CreateJobsFromAPSIM (string FileName, string[] SimulationPaths, ref List<IJob> jobs, bool doAllFactors)
 		{
 			// Load all plugin (.xml) files.
 			if (Types.Instance.TypeNames.Length == 0)
@@ -172,31 +151,34 @@ namespace ApsimFile
 				ApsimFile.ExpandSimsToRun (AFile.RootComponent, ref AllPaths);
 				SimulationPaths = AllPaths.ToArray ();
 			}
-			if (SimulationPaths.Length == 1) {
-				string SumFileName = SimulationPaths [0];
-				int PosLastSlash = SumFileName.LastIndexOf ('/');
-				if (PosLastSlash != -1)
-					SumFileName = SumFileName.Substring (PosLastSlash + 1);
-				SumFileName += ".sum";
-				SumFileName = Path.Combine (Path.GetDirectoryName (FileName), SumFileName);
+            if (SimulationPaths.Length == 1)
+            {
+                string SumFileName = SimulationPaths[0];
+                int PosLastSlash = SumFileName.LastIndexOf('/');
+                if (PosLastSlash != -1)
+                    SumFileName = SumFileName.Substring(PosLastSlash + 1);
+                SumFileName += ".sum";
+                SumFileName = Path.Combine(Path.GetDirectoryName(FileName), SumFileName);
 
-				Job J = CreateJob (FileName, SumFileName, SimulationPaths [0]);
-				J.IgnoreErrors = false;
-				jobs.Add (J);
-			} else if (SimulationPaths.Length > 1) {
-				ApsimFile df = new ApsimFile (FileName);
-				// For each path, create a simfile, and a job in our target.
-				foreach (string SimulationPath in SimulationPaths) {
-					string simName = SimulationPath;
-					int PosLastSlash = simName.LastIndexOf ('/');
-					if (PosLastSlash != -1)
-						simName = simName.Substring (PosLastSlash + 1);
-					string simFileName = Path.Combine (Path.GetDirectoryName (FileName), simName + ".sim");
+                Job J = CreateJob(FileName, SumFileName, SimulationPaths[0]);
+                J.IgnoreErrors = false;
+                jobs.Add(J);
+            }
+            else if (SimulationPaths.Length > 1)
+            {
+                ApsimFile df = new ApsimFile(FileName);
+                // For each path, create a simfile, and a job in our target.
+                foreach (string SimulationPath in SimulationPaths)
+                {
+                    string simName = SimulationPath;
+                    int PosLastSlash = simName.LastIndexOf('/');
+                    if (PosLastSlash != -1)
+                        simName = simName.Substring(PosLastSlash + 1);
+                    string simFileName = Path.Combine(Path.GetDirectoryName(FileName), simName + ".sim");
                     StreamWriter fp = new StreamWriter(simFileName);
                     try
                     {
                         ApsimToSim.GetSimDoc(df.Find(SimulationPath), Configuration.getArchitecture()).Save(fp);
-                        fp.Close();
                         Job J = CreateJob(simFileName,
                                                    Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"));
                         J.IgnoreErrors = false;
@@ -206,12 +188,15 @@ namespace ApsimFile
                     }
                     catch (Exception err)
                     {
-                        fp.Close();
                         string sumFileName = Path.ChangeExtension(simFileName, ".sum");
                         WriteErrorToSummaryFile(sumFileName, err.Message);
                     }
-				}
-			}
+                    finally
+                    {
+                        fp.Close();
+                    }
+                }
+            }
 		}
 
         /// <summary>Create a summary file</summary>
@@ -244,7 +229,7 @@ namespace ApsimFile
         /// <summary>
         /// Create a job for the specified .sim file.
         /// </summary>
-        private void CreateJobsFromSIM (string FileName, ref List<Job> jobs)
+        private void CreateJobsFromSIM (string FileName, ref List<IJob> jobs)
 		{
 			jobs.Add (CreateJob (FileName, Path.ChangeExtension (FileName, ".sum")));
 		}
@@ -252,7 +237,7 @@ namespace ApsimFile
 		/// <summary>
 		/// Create a job for each simulation in the specified .con file.
 		/// </summary>
-		private void CreateJobsFromCON (string FileName, string[] SimulationPaths, ref List<Job> jobs)
+		private void CreateJobsFromCON (string FileName, string[] SimulationPaths, ref List<IJob> jobs)
 		{
 			// Run ConToSim first.
 			string ConToSimExe = Path.Combine (Configuration.ApsimBinDirectory (), "ConToSim.exe");
@@ -282,7 +267,7 @@ namespace ApsimFile
 		/// <summary>
 		/// The specified ApsimFile has a factorial in it. Create a series of jobs and add to ApsimJobs.
 		/// </summary>
-		private int FillProjectWithSpecifiedFactorialJobs (ApsimFile AFile, string FileName, string[] SimulationPaths, ref List<Job> jobs)
+		private int FillProjectWithSpecifiedFactorialJobs (ApsimFile AFile, string FileName, string[] SimulationPaths, ref List<IJob> jobs)
 		{
 			int numFound = 0;
 			if (AFile.FactorComponent != null) {
@@ -347,7 +332,7 @@ namespace ApsimFile
 			return numFound;
 		}
 
-		private int FillProjectWithAllFactorialJobs (ApsimFile AFile, string FileName, ref List<Job> jobs)
+		private int FillProjectWithAllFactorialJobs (ApsimFile AFile, string FileName, ref List<IJob> jobs)
 		{
 			int numFound = 0;
 			if (AFile.FactorComponent != null) {

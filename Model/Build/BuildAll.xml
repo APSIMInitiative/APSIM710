@@ -857,25 +857,18 @@
    <!-- ############### Testing targets ############### -->
     <Target name="FindTests">
       <DependsOn>Clean</DependsOn>
-      <Job name="Compile FindJobs">
-         <WorkingDirectory>%APSIM%/Model/JobScheduler/FindJobs</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-      </Job>
-      <Job name="Find .apsim Tests">
-         <DependsOn>Compile FindJobs</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.apsim TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
-      </Job>
-      <Job name="Find .con Tests">
-         <DependsOn>Compile FindJobs</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Tests/*.con TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
-      </Job>	  
-      <Job name="Find Examples">
-         <DependsOn>Compile FindJobs</DependsOn>
-         <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/FindJobs.exe Filespec=%APSIM%/Examples/*.apsim TargetName=Tests Server=%Server% Port=%Port%</CommandLine>
-      </Job>
+      <FindJob name="Find .apsim Tests">
+         <FileSpec>%APSIM%/Tests/*.apsim</FileSpec>
+         <TargetFolder>Tests</TargetFolder>
+      </FindJob>
+      <FindJob name="Find .con Tests">
+         <FileSpec>%APSIM%/Tests/*.con</FileSpec>
+         <TargetFolder>Tests</TargetFolder>
+      </FindJob>	  
+      <FindJob name="Find Examples">
+         <FileSpec>%APSIM%/Examples/*.apsim</FileSpec>
+         <TargetFolder>Tests</TargetFolder>
+      </FindJob>
       <Job name="Remove all .out and .sum files from Examples folder">
          <WorkingDirectory>%APSIM%/Examples</WorkingDirectory>
          <CommandLine>%APSIM%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>

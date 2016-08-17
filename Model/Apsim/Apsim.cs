@@ -77,9 +77,6 @@ public class Apsim
 
 			Run.Start(allRuns, doAllFactors);
             Run.WaitUntilFinished();
-            if (Macros.ContainsKey("SaveProfileOutput"))
-                Run.SaveLogFile(Macros["SaveProfileOutput"]);
-
         }
         catch (Exception err)
         {

@@ -4,149 +4,167 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
-[Serializable]
-public class Project
-{
-    [XmlElement("Target")]
-    public List<Target> Targets { get; set; }
+namespace JobScheduler {
 
-    /// <summary>
-    ///  Construtor
-    /// </summary>
-    public Project()
+    [Serializable]
+    public class Project
     {
-        Targets = new List<Target>();
-    }
+        internal Object thisLock = null;
 
-    internal Target FindTarget(string NameToFind)
-    {
-        foreach (Target t in Targets)
-            if (t.Name == NameToFind)
-                return t;
-        return null;
-    }
-    internal Job FindJob(string NameToFind)
-    {
-        foreach (Target t in Targets)
+        [XmlElement("Target")]
+        public List<Target> Targets { get; set; }
+
+        //[XmlElement("WasCancelled")]
+        //public bool WasCancelled = false;
+        /// <summary>
+        ///  Constructor
+        /// </summary>
+        public Project()
         {
-            Job J = t.FindJob(NameToFind);
-            if (J != null)
-                return J;
+            Targets = new List<Target>();
+            thisLock = new object();
         }
-        return null;
-    }
-    internal List<Job> FindNextJobToRun(int NumJobs)
-    {
-        List<Job> Jobs = null;
-        foreach (Target t in Targets)
+
+
+        internal Target FindTarget(string NameToFind)
         {
-            Job J;
-            do 
+            foreach (Target t in Targets)
+                if (t.Name == NameToFind)
+                    return t;
+            return null;
+        }
+
+        internal IJob NextJobToRun()
+        {
+            IJob J;
+            lock (thisLock)
             {
-                J = t.FindNextJobToRun(this);
-                if (J != null)
+                foreach (Target t in Targets)
                 {
-                    if (Jobs == null)
-                        Jobs = new List<Job>();
-                    Jobs.Add(J);
-                    if (Jobs.Count == NumJobs)
-                        return Jobs;
+                    J = t.NextJobToRun();
+                    if (J != null)
+                    {
+                        J.Status = "Running";
+                        if (t.StartTime == DateTime.MinValue) t.StartTime = DateTime.Now;
+                        return J;
+                    }
                 }
             }
-            while (J != null);
-
+            return null;
         }
-        return Jobs;
-    }
 
-
-
-    /// <summary>
-    /// Signal that the specified job has completed. Return true if all ok. False otherwise.
-    /// </summary>
-    internal void SignalJobHasFinsihed(Job Job)
-    {
-        // Try and find the job.
-        bool found = false;
-        foreach (Target t in Targets)
+        /// <summary>
+        /// Check all our targets for completion. If one of them changes, keep 
+        /// reevaluating so that any chained dependancies can catch up
+        /// </summary>
+        internal void CheckAllJobsForCompletion()
         {
-            Job J = t.FindJob(Job.Name);
-            if (J != null)
+            lock (thisLock)
             {
-                J.CopyFrom(Job);
-                found = true;
-                break;
+                bool wasChanged;
+                do
+                {
+                    wasChanged = false;
+                    foreach (Target t in Targets)
+                        wasChanged |= t.CheckAllJobsForCompletion();
+                } while (wasChanged);
             }
         }
-        if (!found) throw new Exception("Cannot find job: " + Job.Name);
-        CheckAllJobsForCompletion();
-    }
-/// <summary>
-/// Check all our targets for completion. If one of them changes, keep 
-/// reevaluating so that any chained dependancies can catch up
-/// </summary>
-    internal void CheckAllJobsForCompletion()
-    {
-        bool wasChanged;
-        do
-        {
-            wasChanged = false;
-            foreach (Target t in Targets)
-                wasChanged |= t.CheckAllJobsForCompletion();
-        } while (wasChanged);
 
-    }
-
-    internal void AddTarget(Target T)
-    {
-        Target ExistingTarget = FindTarget(T.Name);
-        if (ExistingTarget != null)
+        internal void AddTarget(Target T)
         {
-            ExistingTarget.Jobs.AddRange(T.Jobs);
-            //if (ExistingTarget.HasFinished)
-            //    ExistingTarget.Status = "Running";
-        }
-        else
-            Targets.Add(T);
-    }
-
-    public bool AllTargetsFinished
-    {
-        get
-        {
-            foreach (Target t in Targets)
+            lock (thisLock)
             {
-                if (t.NeedToRun && !t.HasFinished)
-                    return false;
-            }
-            return true;
-        }
-    }
-
-
-    public bool AllTargetsPassed
-    {
-        get
-        {
-            foreach (Target t in Targets)
-            {
-                if (t.NeedToRun && t.Status != null && t.Status != "Pass")
-                    return false;
-            }
-            return true;
-        }
-    }
-
-
-    internal void CheckForDuplicateJobNames()
-    {
-        List<string> Names = new List<string>();
-        foreach (Target t in Targets)
-            foreach (Job J in t.Jobs)
-                if (Names.Contains(J.Name))
-                    throw new Exception("Duplicate job name found: " + J.Name);
+                Target ExistingTarget = FindTarget(T.Name);
+                if (ExistingTarget != null)
+                    ExistingTarget.Jobs.AddRange(T.Jobs);
                 else
-                    Names.Add(J.Name);
+                    Targets.Add(T);
+            }
+        }
+
+        public bool AllTargetsFinished
+        {
+            get
+            {
+                lock (thisLock)
+                {
+                    foreach (Target t in Targets)
+                    {
+                        if (t.NeedToRun && !t.HasFinished)
+                           return false;
+                    }
+                    return true;
+                }
+            }
+        }
+
+
+        public bool AllTargetsPassed
+        {
+            get
+            {
+                foreach (Target t in Targets)
+                {
+                    if (t.NeedToRun && t.Status != null && t.Status != "Pass")
+                        return false;
+                }
+                return true;
+            }
+        }
+
+
+        internal void CheckForSensibility()
+        {
+            // Check there are no duplicate names
+            List<string> Names = new List<string>();
+            foreach (Target t in Targets)
+                foreach (IJob J in t.Jobs)
+                    if (Names.Contains(J.Name))
+                        throw new Exception("Duplicate job name found: " + J.Name);
+                    else
+                        Names.Add(J.Name);
+            // Check there is at least one job in every target
+            foreach (Target t in Targets)
+                if (t.Jobs.Count == 0)
+                {
+                    t.Jobs.Add(new Job());
+                    t.Jobs[0].Name = t.Name + "Dummy";
+                }
+        }
+
+        internal int NumJobsCompleted()
+        {
+            int n = 0;
+            foreach (Target t in Targets)
+                foreach (Job J in t.Jobs)
+                    if (J.Status != null && J.Status != "Running")
+                        n++;
+            return (n);
+        }
+
+        internal int NumJobs()
+        {
+            int n = 0;
+            foreach (Target t in Targets)
+                foreach (Job J in t.Jobs)
+                        n++;
+            return (n);
+        }
+
+        internal int PercentComplete()
+        {
+            lock (thisLock)
+            {
+                double p = 0.0; double n = 0;
+                foreach (Target t in Targets)
+                    foreach (Job J in t.Jobs)
+                    {
+                        p += J.PercentComplete / 100.0;
+                        n += 1.0;
+                    }
+                return (Math.Min(100, Math.Max(0, (int)(100 * p / n))));
+            }
+        }
     }
 }
-

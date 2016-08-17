@@ -676,7 +676,7 @@ namespace ApsimFile
             }
             return SimFiles;
         }
-        public static List<string> CreateSimulationJobs(ApsimFile _F, string[] SimsToRun, ref List<Job> ApsimJobs, ProgressNotifier Notifier)
+        public static List<string> CreateSimulationJobs(ApsimFile _F, string[] SimsToRun, ref List<JobScheduler.Job> ApsimJobs, ProgressNotifier Notifier)
         {
             List<string> SimFiles = new List<string>();
             foreach (string FullSimulationPath in SimsToRun)

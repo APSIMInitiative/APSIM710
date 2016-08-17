@@ -106,6 +106,7 @@ class RemoveUnwantedFiles
             Console.WriteLine(err.Message);
             return 1;
         }
+        Console.WriteLine("No errors!");
 
         return 0;
     }

@@ -72,8 +72,8 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
       uniqueFileName = uniqueFileName.substr(i+1);
    uniqueFileName += ".sims";
 
-   CommandLine += " 2> " + (uniqueFileName.find_first_of(' ') != string::npos ? 
-	                                   "\"" + uniqueFileName + "\"" : uniqueFileName);
+   CommandLine += " > " + (uniqueFileName.find_first_of(' ') != string::npos ? 
+	                                   "\"" + uniqueFileName + "\"" : uniqueFileName) + " 2>&1";
    // Hack for quoting under win32 - see quoting rules in "cmd /?". If we've installed apsim in a dir with spaces,
    // then the executable will be quoted, and 
 #ifdef __WIN32__   

@@ -97,7 +97,6 @@ public class ApsimRunToolStrip
         _SelectedPaths = Controller.SelectedPaths;
         _Strip = Strip;
         _Strip.Visible = true;
-        Apsim.Stop();
 
         ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
         ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
@@ -118,7 +117,6 @@ public class ApsimRunToolStrip
         foreach (String SimulationPath in _SelectedPaths)
         {
             ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
-
         }
         // JF 061211 - Added check for duplicate simulation names in different folders.
         //Create a list of sim names
@@ -199,7 +197,6 @@ public class ApsimRunToolStrip
                 {
                 ProgressBar.Value = 100;
                 PercentLabel.Text = "100 %";
-                Apsim.Stop();
 
                 // All finished.
                 RunButton.Enabled = true;

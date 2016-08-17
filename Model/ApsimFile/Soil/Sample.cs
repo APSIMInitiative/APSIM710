@@ -177,7 +177,7 @@ namespace ApsimFile
                 double[] BD = Soil.BDMapped(Thickness);
                 for (int i = 0; i < NO3Values.Length; i++)
                 {
-                    if (NO3Values[i] != double.NaN)
+                    if (!double.IsNaN(NO3Values[i]))
                         NO3Values[i] = NO3Values[i] * 100 / (BD[i] * Thickness[i]);
                 }
             }
@@ -196,7 +196,7 @@ namespace ApsimFile
                 double[] BD = Soil.BDMapped(Thickness);
                 for (int i = 0; i < NO3Values.Length; i++)
                 {
-                    if (NO3Values[i] != double.NaN)
+                    if (!double.IsNaN(NO3Values[i]))
                         NO3Values[i] = NO3Values[i] / 100 * (BD[i] * Thickness[i]);
                 }
             }
@@ -215,7 +215,7 @@ namespace ApsimFile
                 double[] BD = Soil.BDMapped(Thickness);
                 for (int i = 0; i < NH4Values.Length; i++)
                 {
-                    if (NH4Values[i] != double.NaN)
+                    if (!double.IsNaN(NH4Values[i]))
                         NH4Values[i] = NH4Values[i] * 100 / (BD[i] * Thickness[i]);
                 }
             }
@@ -234,7 +234,7 @@ namespace ApsimFile
                 double[] BD = Soil.BDMapped(Thickness);
                 for (int i = 0; i < NH4Values.Length; i++)
                 {
-                    if (NH4Values[i] != double.NaN)
+                    if (!double.IsNaN(NH4Values[i]))
                         NH4Values[i] = NH4Values[i] / 100 * (BD[i] * Thickness[i]);
                 }
             }
