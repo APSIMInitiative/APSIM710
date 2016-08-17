@@ -7,6 +7,11 @@ using System;
 using System.IO;
  public class pigs :animal
  {
+    [Link]
+    private Component My; //is this component really a system with system children?
+    [Link]
+    private Paddock MyPaddock;
+
     [Param]
      public double FE_need;
      [Param]
@@ -27,36 +32,44 @@ using System.IO;
      [EventHandler]
      public void OnProcess()
      {
-         Console.WriteLine(Directory.GetCurrentDirectory());
-         Console.WriteLine("pig");
-         currentfeed = new feedItemType();
-         currentfeed.name = "feedmix";
-         file feedMixInfo = new file();
-         feedMixInfo.readFile(fileInfo);
- 
-         feedMixInfo.FindSection(currentfeed.name,0);
-         feedMixInfo.FindItem("C_content",ref currentfeed.C_content);
-         feedMixInfo.FindItem("K_content", ref currentfeed.K_content);
-         feedMixInfo.FindItem("NH4_content", ref currentfeed.NH4_content);
-         feedMixInfo.FindItem("NO3_content", ref currentfeed.NO3_content);
-         feedMixInfo.FindItem("orgN_content", ref currentfeed.orgN_content);
-         feedMixInfo.FindItem("P_content", ref currentfeed.P_content);
-         feedMixInfo.FindItem("P_digest", ref currentfeed.P_digest);
-         feedMixInfo.FindItem("pigFeedUnitsPerItemUnit", ref currentfeed.pigFeedUnitsPerItemUnit);
-         feedMixInfo.FindItem("proteinN_digestibility", ref currentfeed.proteinN_digestibility);
-         for (int i = 0; i < feedItemList.Count; i++)
-         {
+        // Console.WriteLine(MyPaddock.ChildrenAsObjects.Count);
+               
+            for(int i=0;i<MyPaddock.Children.Count;i++)
+            {
+               Console.WriteLine(MyPaddock.Name);
+               Console.WriteLine(MyPaddock.ChildrenAsObjects.Count());
+            }
 
-             //should be able to get feeditems from store when we have a store
-            currentfeed.amount= currentfeed.amount + feedItemList[i].amount;
-         }
-         double surplusN = ProduceManure(fluidManurePrDay, solidManurePrDay);
-         if (surplusN < 0)
-         {
-             throw new System.Exception("Pig:: Insufficient protein in feed");
-         }
-         manurePrDay = fluidManurePrDay;
-         manurePrDay.amount = manurePrDay.amount + solidManurePrDay.amount;
+         /*    Console.WriteLine(Directory.GetCurrentDirectory());
+          Console.WriteLine("pig");
+          currentfeed = new feedItemType();
+          currentfeed.name = "feedmix";
+          file feedMixInfo = new file();
+          feedMixInfo.readFile(fileInfo);
+ 
+          feedMixInfo.FindSection(currentfeed.name,0);
+          feedMixInfo.FindItem("C_content",ref currentfeed.C_content);
+          feedMixInfo.FindItem("K_content", ref currentfeed.K_content);
+          feedMixInfo.FindItem("NH4_content", ref currentfeed.NH4_content);
+          feedMixInfo.FindItem("NO3_content", ref currentfeed.NO3_content);
+          feedMixInfo.FindItem("orgN_content", ref currentfeed.orgN_content);
+          feedMixInfo.FindItem("P_content", ref currentfeed.P_content);
+          feedMixInfo.FindItem("P_digest", ref currentfeed.P_digest);
+          feedMixInfo.FindItem("pigFeedUnitsPerItemUnit", ref currentfeed.pigFeedUnitsPerItemUnit);
+          feedMixInfo.FindItem("proteinN_digestibility", ref currentfeed.proteinN_digestibility);
+          for (int i = 0; i < feedItemList.Count; i++)
+          {
+
+              //should be able to get feeditems from store when we have a store
+             currentfeed.amount= currentfeed.amount + feedItemList[i].amount;
+          }
+          double surplusN = ProduceManure(fluidManurePrDay, solidManurePrDay);
+          if (surplusN < 0)
+          {
+              throw new System.Exception("Pig:: Insufficient protein in feed");
+          }
+          manurePrDay = fluidManurePrDay;
+          manurePrDay.amount = manurePrDay.amount + solidManurePrDay.amount;*/
      }
      double ProduceManure(ManureType fluidManure, ManureType solidManure)
     {
