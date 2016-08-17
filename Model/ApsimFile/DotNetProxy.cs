@@ -140,7 +140,12 @@ class DLLProber
     /// </summary>
     public static string CreateProxyClassForDLL(string TypeName, string ClassName, string DLLFileName)
     {
-        string DescriptionXML = ProbeDLLForDescriptionXML(TypeName, DLLFileName);
+        string DescriptionXML = "";
+		try { 
+           DescriptionXML = ProbeDLLForDescriptionXML(TypeName, DLLFileName);
+		} catch (Exception e) {
+           Console.WriteLine(e.Message);
+		}
 
         if (DescriptionXML != "")
         {
