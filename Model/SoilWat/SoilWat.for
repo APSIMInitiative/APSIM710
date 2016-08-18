@@ -6848,7 +6848,7 @@ c dsg 070302 added runon
 
             string = 'Cannot find info for tillage:- '//
      :          trim(tillage%type)
-            call FATAL_ERROR (ERR_user, string)
+            call WARNING_ERROR (ERR_user, string)
 
         else
             if (tillage%cn_red .ne. 0 .and. 

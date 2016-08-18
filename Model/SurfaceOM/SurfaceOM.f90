@@ -1624,13 +1624,13 @@ subroutine surfom_ONTillage (variant)
 
       call read_real_array_optional (tillage_section, tillage%type, 2, '()', type_info, numvals, 0.0, 1000.0)
 
-      ! If we still have no values then stop
+      ! If we still have no values then ignore it
       If (numvals.ne.2) then
          ! We have an unspecified tillage type
          tillage%f_incorp = 0.0
          tillage%tillage_depth = 0.0
          string = 'Cannot find info for tillage:- '//trim(tillage%type)
-         call FATAL_ERROR (ERR_user, string)
+         call WARNING_ERROR (ERR_user, string)
 
       Else
          if (.not. reals_are_equal(tillage%f_incorp, 0.0) .and. .not. reals_are_equal( tillage%f_incorp ,type_info(1))) then
