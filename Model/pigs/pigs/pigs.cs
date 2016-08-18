@@ -9,8 +9,8 @@ using System.IO;
  {
     [Link]
     private Component My; //is this component really a system with system children?
-    [Link]
-    private Paddock MyPaddock;
+    //[Link]
+    //private Paddock MyPaddock;
 
     [Param]
      public double FE_need;
@@ -33,11 +33,11 @@ using System.IO;
      public void OnProcess()
      {
         // Console.WriteLine(MyPaddock.ChildrenAsObjects.Count);
-               
-            for(int i=0;i<MyPaddock.Children.Count;i++)
+         Console.WriteLine("con pig"+ My.ChildrenAsObjects.Count());
+         for (int i = 0; i < My.ChildrenAsObjects.Count; i++)
             {
-               Console.WriteLine(MyPaddock.Name);
-               Console.WriteLine(MyPaddock.ChildrenAsObjects.Count());
+                Console.WriteLine(My.Name);
+                Console.WriteLine(My.ChildrenAsObjects.Count());
             }
 
          /*    Console.WriteLine(Directory.GetCurrentDirectory());
