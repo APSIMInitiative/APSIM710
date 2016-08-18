@@ -5,12 +5,17 @@ using System.Text;
 using ModelFramework;
 public class animalSection
 {
-    [Input]
-    ManureType WASHWATER;
-    [Input]
-    ManureType WHEATSTRAW;
+    //[Input]
+    // ManureType WASHWATER;
+    //[Input]
+    //ManureType WHEATSTRAW;
+    public double getNrOfAnimals()
+    {
+        return NrOfAnimals;
+    }
+
     [Link]
-    private SystemComponent My;
+    private Component My;
     [Param]
     double NrOfAnimals = 1;
     [Param]
@@ -18,17 +23,17 @@ public class animalSection
     [EventHandler]
     public void OnInitialised()
     {
-        Console.Out.WriteLine("Entered OnInitialised in animalSection");
+        
     }
     [EventHandler]
     public void OnPrepare()
     {
-        Console.Out.WriteLine("Entered OnPrepare in 2222");
+        
     }
     [EventHandler]
     public void OnProcess()
     {
-        Console.WriteLine(My.Name+" animal section name in animal sec");
+      
       
    
   
@@ -37,19 +42,20 @@ public class animalSection
 
         if (NrOfAnimals > 0)
         {
-            ManureType WASHWATERInput = WASHWATER;
-            WASHWATERInput.amount = NrOfAnimals * SpiltDrinkingWater / 1000.0;
-            RcvManure(WASHWATERInput, null);
+            // ManureType WASHWATERInput = WASHWATER;
+            // WASHWATERInput.amount = NrOfAnimals * SpiltDrinkingWater / 1000.0;
+            //RcvManure(WASHWATERInput, null);
 
             ManureType someStraw = new ManureType();
-            for(int i=0; i<My.Children.Count;i++)
+       
+            for(int i=0; i<My.ChildrenAsObjects.Count;i++)
             {
                 double ExcretaPartition = 0;
-                My.Children[i].Get("ExcretaPartition", out ExcretaPartition);
+               /* My.ChildrenAsObjects[i].Get("ExcretaPartition", out ExcretaPartition);
                 double StrawAdded=0;
-                My.Children[i].Get("StrawAdded", out StrawAdded);
+                My.ChildrenAsObjects[i].Get("StrawAdded", out StrawAdded);
                 someStraw.amount = NrOfAnimals * StrawAdded*ExcretaPartition / 1000;
-                My.Children[i].Publish("RcvBedding", someStraw);
+                My.ChildrenAsObjects[i].Publish("RcvBedding", someStraw);*/
             }
 
         }

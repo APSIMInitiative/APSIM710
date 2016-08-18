@@ -6,10 +6,9 @@ using ModelFramework;
 
 public class floor
 {
+   
     [Link]
-    SystemComponent Me;
-    [Link]
-    private SystemComponent My;
+    private Component My;
     store Solid=new store();
     store liquid=new store();
     [Param]
@@ -67,12 +66,13 @@ public class floor
         water.amount += liquid.CleanStore().amount;
         bool found = false;
 
-        for (int i = 0; i < My.Children.Count(); i++)
+        for (int i = 0; i < My.ChildrenAsObjects.Count(); i++)
         {
-            if (My.Children[i].Name.CompareTo(WhereTo) == 0)
+           /* if (My.ChildrenAsObjects[i].Name.CompareTo(WhereTo) == 0)
             {
-                My.Children[i].Publish("RcvManure", water);
+                My.ChildrenAsObjects[i].Publish("RcvManure", water);
             }
+            */
         }
         if (found == false)
         {
