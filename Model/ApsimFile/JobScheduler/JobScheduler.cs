@@ -123,8 +123,8 @@ namespace JobScheduler
             #endregion
 
             Start(NumJobs, Macros.ContainsKey("Target") ? Macros["Target"] : null);
-            while (!Project.AllTargetsFinished)
-                Thread.Sleep(1000);
+
+            WaitForFinish();
 
             DateTime FinishTime = DateTime.Now;
             int ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
@@ -215,8 +215,8 @@ namespace JobScheduler
                 while ((J = Project.NextJobToRun()) != null) {
                     allTasks.Add(kickoff(throttler, J, cancellationTokenSource.Token));
                 }
-                await Task.WhenAny(allTasks);
-                await Task.Delay(500);
+                //await Task.WhenAny(allTasks);
+                await Task.Delay(100);
             } while (!Project.AllTargetsFinished );
 
             await Task.WhenAll(allTasks);

@@ -44,6 +44,7 @@ namespace JobScheduler {
                     J = t.NextJobToRun();
                     if (J != null)
                     {
+                        //Console.WriteLine("Found  " + J.Name);
                         J.Status = "Running";
                         if (t.StartTime == DateTime.MinValue) t.StartTime = DateTime.Now;
                         return J;
@@ -124,6 +125,7 @@ namespace JobScheduler {
                         throw new Exception("Duplicate job name found: " + J.Name);
                     else
                         Names.Add(J.Name);
+
             // Check there is at least one job in every target
             foreach (Target t in Targets)
                 if (t.Jobs.Count == 0)
@@ -131,6 +133,7 @@ namespace JobScheduler {
                     t.Jobs.Add(new Job());
                     t.Jobs[0].Name = t.Name + "Dummy";
                 }
+
         }
 
         internal int NumJobsCompleted()

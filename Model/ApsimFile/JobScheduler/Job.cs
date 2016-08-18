@@ -109,7 +109,7 @@ namespace JobScheduler {
                     {
                         Status = "Fail";
                         // FIXME StdOutBuf.AppendLine("Failed due to dependency failure");
-                        Project.CheckAllJobsForCompletion();
+                        //Project.CheckAllJobsForCompletion();
                     }
                     if (T.Status == "Running")
                         return false;
@@ -127,7 +127,7 @@ namespace JobScheduler {
                         {
                             Status = "Fail";
                             // FIXME StdOutBuf.AppendLine("Failed due to dependency failure");
-                            Project.CheckAllJobsForCompletion();
+                            //Project.CheckAllJobsForCompletion();
                         }
 
                         if (J.Status == "Running")
@@ -151,6 +151,7 @@ namespace JobScheduler {
         /// </summary>
         public Task<int> StartAsync()
         {
+            //Console.WriteLine("Runn   " + Name);
             var tcs = new TaskCompletionSource<int>();
             Status = "Running";
             StartTime = DateTime.Now;
@@ -223,7 +224,7 @@ namespace JobScheduler {
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public Job()
+        public Job() 
         {
             StdOutFilename = "";
             IgnoreErrors = false;
@@ -525,7 +526,8 @@ namespace JobScheduler {
         Status = "Pass";
         //FIXME StdOut += "Found " + FileNames.Count + " files\n";
         Project.AddTarget(Target);
-    }
+        tcs.SetResult(0);
+        }
 
     // FIXME: This ignores "factorial" .apsim simulations
     private static List<string> GetSimulationNamesFrom(string FileName)

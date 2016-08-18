@@ -53,7 +53,7 @@ public class Target
         {
             if (J.Status != null )
                 anyStarted = true;
-            if (J.Status != null && J.Status == "Running")
+            if (J.IsRunning)
                 anyRunning = true;
             if (J.Status != null && J.Status == "Fail")
                 allPassed = false;
@@ -154,7 +154,7 @@ public class Target
            FinishTime = DateTime.Now;
            ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
 
-           //Console.WriteLine("[" + Status + "] Target: " + Name + " [" + ElapsedTime.ToString() + "sec]");
+           Console.WriteLine("[" + Status + "] Target: " + Name + " [" + ElapsedTime.ToString() + "sec]");
            return true;
         }
         return false;
