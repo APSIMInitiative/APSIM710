@@ -126,7 +126,11 @@ void Coordinator::doInit1(const protocol::Init1Data &init1Data)
       if (GetComputerName(buffer, &size) && _strnicmp(buffer, "bob", 4) == 0)
           IncludeBuildNumber = "No";
 #endif
-      if (IncludeBuildNumber == "Yes")
+      char *envVariable = getenv("IncludeBuildNumberInOutSumFile");
+      if (envVariable != NULL)
+      	 IncludeBuildNumber = envVariable;
+      	 
+      if (ToLower(IncludeBuildNumber) == "yes")
          versionString += " r" + getApsimBuildNumber();
       cout << "Version                = " + versionString << endl;
       }
