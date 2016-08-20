@@ -713,11 +713,6 @@ public class AgPasture
     private double[] dmgreenmin;
 
     [Param]
-    [Description("Minimum dead DM")]
-    [Units("kgDM/ha")]
-    private double[] dmdeadmin;
-
-    [Param]
     [Description("Fractions of initial dmshoot for each biomass pool, for non-legumes")]
     [Units("0-1")]
     private double[] initialDMFractions_grass;
@@ -1835,8 +1830,6 @@ public class AgPasture
             breakCode("dmroot");
         if (dmgreenmin.Length < NumSpecies)
             breakCode("dmgreenmin");
-        if (dmdeadmin.Length < NumSpecies)
-            breakCode("dmdeadmin");
 
         ////  >> N fixation  >>>
         if (NMinFix.Length < NumSpecies)
@@ -2054,7 +2047,6 @@ public class AgPasture
 
         ////  >> DM limits for harvest and senescence  >>>
         mySpecies[s1].dmgreenmin = dmgreenmin[s2];
-        mySpecies[s1].dmdeadmin = dmdeadmin[s2];
 
         ////  >> N fixation  >>>
         mySpecies[s1].MaxFix = NMaxFix[s2]; //N-fix fraction when no soil N available, read in later
@@ -2194,8 +2186,8 @@ public class AgPasture
         for (int s = 0; s < NumSpecies; s++)
         {
             //accumulate the DM and N for all species
-            swardGreenDM += mySpecies[s].dmgreenShoot;
-            swardDeadDM += mySpecies[s].dmdeadShoot;
+            swardGreenDM += mySpecies[s].AboveGroundLiveWt;
+            swardDeadDM += mySpecies[s].AboveGroundDeadWt;
             swardRootDM += mySpecies[s].roots.DMGreen;
             swardLitterDM += mySpecies[s].dDMLitter;
             swardLitterN += mySpecies[s].dNLitter;
@@ -2226,7 +2218,7 @@ public class AgPasture
             swardHeight = 0.0;
             for (int s = 0; s < NumSpecies; s++)
             {
-                swardHeight += mySpecies[s].height * mySpecies[s].dmshoot;
+                swardHeight += mySpecies[s].height * mySpecies[s].AboveGroundWt;
             }
 
             if (AboveGroundWt > 0)
@@ -2314,12 +2306,12 @@ public class AgPasture
             Console.WriteLine(
                 "          {0,-12}    {1,6:F1}   {2,6:F1}  {3,6:F1}  {4,4:F2}  {5,6:F1}    {6,5:F1}      {7,6:F1}",
                 mySpecies[specie].speciesName,
-                mySpecies[specie].dmshoot + mySpecies[specie].dmroot,
-                mySpecies[specie].dmshoot,
-                mySpecies[specie].dmroot,
+                mySpecies[specie].AboveGroundWt + mySpecies[specie].roots.DMTotal,
+                mySpecies[specie].AboveGroundWt,
+                mySpecies[specie].roots.DMTotal,
                 mySpecies[specie].totalLAI,
-                (mySpecies[specie].dmshoot + mySpecies[specie].dmroot) * 0.4,
-                mySpecies[specie].Nshoot + mySpecies[specie].Nroot,
+                (mySpecies[specie].AboveGroundWt + mySpecies[specie].roots.DMTotal) * 0.4,
+                mySpecies[specie].AboveGroundN + mySpecies[specie].roots.NTotal,
                 mySpecies[specie].rootDepth);
         }
 
@@ -2522,7 +2514,7 @@ public class AgPasture
             double prop = 1.0 / NumSpecies;
             if (swardGreenDM != 0.0)
             {
-                prop = MathUtility.Divide(mySpecies[s].dmgreenShoot, swardGreenDM, 1.0);
+                prop = MathUtility.Divide(mySpecies[s].AboveGroundLiveWt, swardGreenDM, 1.0);
             }
 
             mySpecies[s].glfTemp = mySpecies[s].GFTemperature(Tday);
@@ -4773,7 +4765,7 @@ public class AgPasture
         // Compute the herbage growth for sward
         swardHerbageGrowth = 0.0;
         for (int s = 0; s < NumSpecies; s++)
-            swardHerbageGrowth += mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
+            swardHerbageGrowth += mySpecies[s].AboveGroundWt - mySpecies[s].prevState.dmshoot;
 
         // Return litter to surface OM
         DoSurfaceOMReturn(swardLitterDM, swardLitterN, 1.0);
@@ -5177,7 +5169,7 @@ public class AgPasture
         for (int s = 0; s < NumSpecies; s++)
             AmountRemovable +=
                 Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin) +
-                Math.Max(0.0, mySpecies[s].dmdeadShoot - mySpecies[s].dmdeadmin);
+                Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
         AmountRemovable = Math.Max(0.0, AmountRemovable);
 
         // get the amount required to remove
@@ -5219,7 +5211,7 @@ public class AgPasture
                 TempWeights[s] += (TotalPreference - TempWeights[s]) * (1 - FractionNotRemoved);
                 TempAmounts[s] =
                     Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin) +
-                    Math.Max(0.0, mySpecies[s].dmdeadShoot - mySpecies[s].dmdeadmin);
+                    Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
                 TempTotal += TempAmounts[s] * TempWeights[s];
             }
 
@@ -5352,20 +5344,20 @@ public class AgPasture
                 }
                 else
                 {
-                    if (mySpecies[s].dmshoot > 0.0)
+                    if (mySpecies[s].AboveGroundWt > 0.0)
                     {
                         // Use current fractions
-                        NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[0].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[1].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[2].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[3].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[0].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[1].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[2].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[3].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[0].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[1].DM / mySpecies[s].dmshoot;
-                        NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[2].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[0].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[1].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[2].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[3].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[0].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[1].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[2].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[3].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[0].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[1].DM / mySpecies[s].AboveGroundWt;
+                        NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[2].DM / mySpecies[s].AboveGroundWt;
                     }
                     else
                     {
@@ -5776,7 +5768,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].dmshoot;
+                result += mySpecies[s].AboveGroundWt;
             return result;
         }
     }
@@ -5821,7 +5813,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].dmgreenShoot;
+                result += mySpecies[s].AboveGroundLiveWt;
             return result;
         }
     }
@@ -5836,7 +5828,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].dmdeadShoot;
+                result += mySpecies[s].AboveGroundDeadWt;
             return result;
         }
     }
@@ -6027,7 +6019,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].Nshoot;
+                result += mySpecies[s].AboveGroundN;
             return result;
         }
     }
@@ -6107,7 +6099,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].NgreenShoot;
+                result += mySpecies[s].AboveGroundLiveN;
             return result;
         }
     }
@@ -6122,7 +6114,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].NdeadShoot;
+                result += mySpecies[s].AboveGroundDeadN;
             return result;
         }
     }
@@ -6498,7 +6490,7 @@ public class AgPasture
             for (int s = 0; s < NumSpecies; s++)
                 result += Math.Max(0.0,
                     mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin)
-                          + Math.Max(0.0, mySpecies[s].dmdeadShoot - mySpecies[s].dmdeadmin);
+                          + Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
             return result;
         }
     }
@@ -6929,7 +6921,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].RadnFactor * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].RadnFactor * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -6952,7 +6944,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].canopyCompetitionFactor * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].canopyCompetitionFactor * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -6975,7 +6967,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].TempFactor * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].TempFactor * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -6998,7 +6990,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].CO2Factor * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].CO2Factor * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -7021,7 +7013,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].NcFactor * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].NcFactor * mySpecies[s].AboveGroundLiveWt;
                 }
                 result /= swardGreenDM;
             }
@@ -7043,7 +7035,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].GLFGeneric * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].GLFGeneric * mySpecies[s].AboveGroundLiveWt;
                 }
                 result /= swardGreenDM;
             }
@@ -7076,7 +7068,7 @@ public class AgPasture
             {
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
-                    result += mySpecies[s].ExtremeTempStress * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].ExtremeTempStress * mySpecies[s].AboveGroundLiveWt;
                 result /= swardGreenDM;
             }
 
@@ -7134,7 +7126,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].GLFSFertility * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].GLFSFertility * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -7157,7 +7149,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].tempFactorRespiration * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].tempFactorRespiration * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -7180,7 +7172,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].tempFacTTurnover * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].tempFacTTurnover * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -7203,7 +7195,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].swFacTTurnover * mySpecies[s].dmgreenShoot;
+                    result += mySpecies[s].swFacTTurnover * mySpecies[s].AboveGroundLiveWt;
                 }
 
                 result /= swardGreenDM;
@@ -7409,7 +7401,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].dmshoot + mySpecies[s].dmroot;
+                result[s] = mySpecies[s].AboveGroundWt + mySpecies[s].roots.DMTotal;
             return result;
         }
     }
@@ -7424,7 +7416,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].dmshoot;
+                result[s] = mySpecies[s].AboveGroundWt;
             return result;
         }
     }
@@ -7439,7 +7431,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].dmroot;
+                result[s] = mySpecies[s].roots.DMTotal;
             return result;
         }
     }
@@ -7559,7 +7551,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].Nshoot + mySpecies[s].Nroot;
+                result[s] = mySpecies[s].AboveGroundN + mySpecies[s].roots.NTotal;
             return result;
         }
     }
@@ -7649,7 +7641,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].Nshoot;
+                result[s] = mySpecies[s].AboveGroundN;
             return result;
         }
     }
@@ -7733,7 +7725,7 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = MathUtility.Divide(mySpecies[s].Nshoot, mySpecies[s].dmshoot, 0.0);
+                result[s] = MathUtility.Divide(mySpecies[s].AboveGroundN, mySpecies[s].AboveGroundWt, 0.0);
             }
             return result;
         }
@@ -8379,7 +8371,7 @@ public class AgPasture
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].dmshoot - mySpecies[s].prevState.dmshoot;
+                result[s] = mySpecies[s].AboveGroundWt - mySpecies[s].prevState.dmshoot;
             return result;
         }
     }
@@ -8516,7 +8508,7 @@ public class AgPasture
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = Math.Max(0.0,
                     mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin)
-                            + Math.Max(0.0, mySpecies[s].dmdeadShoot - mySpecies[s].dmdeadmin);
+                            + Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
             return result;
         }
     }
