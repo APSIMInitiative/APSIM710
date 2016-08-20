@@ -1111,6 +1111,42 @@ public class AgPasture
 
     #endregion  -----------------------------------------------------------------------------------
 
+    #region Events to be invoked  -----------------------------------------------------------------
+
+    /// <summary>NewCrop event</summary>
+    [Event]
+    public event NewCropDelegate NewCrop;
+
+    /// <summary>New_Canopy event</summary>
+    [Event]
+    public event NewCanopyDelegate New_Canopy;
+
+    /// <summary>NewPotentialGrowth event</summary>
+    [Event]
+    public event NewPotentialGrowthDelegate NewPotentialGrowth;
+
+    /// <summary>IncorpFOM event</summary>
+    [Event]
+    public event FOMLayerDelegate IncorpFOM;
+
+    /// <summary>BiomassRemoved event</summary>
+    [Event]
+    public event BiomassRemovedDelegate BiomassRemoved;
+
+    /// <summary>WaterChanged event</summary>
+    [Event]
+    public event WaterChangedDelegate WaterChanged;
+
+    /// <summary>NitrogenChanged event</summary>
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
+
+    /// <summary>NitrogenChanged event</summary>
+    [Event]
+    public event AddSoilCNPatchDelegate AddSoilCNPatch;
+
+    #endregion  -----------------------------------------------------------------------------------
+
     #region General internal variables  ------------------------------------------------------------
 
     /// <summary>
@@ -1122,11 +1158,6 @@ public class AgPasture
     /// Number of species in the sward
     /// </summary>
     private int NumSpecies = 0;
-
-    /// <summary>
-    /// Basic state parameters for each species
-    /// </summary>
-    private SpeciesStateSettings[] InitialState;
 
     //// Pasture sward parameters, aggregated over all species
 
@@ -1257,42 +1288,6 @@ public class AgPasture
 
     /// <summary>C fraction on DM, for conversion</summary>
     const double CarbonFractionDM = 0.4;
-
-    #endregion  -----------------------------------------------------------------------------------
-
-    #region Events to be invoked  -----------------------------------------------------------------
-
-    /// <summary>NewCrop event</summary>
-    [Event]
-    public event NewCropDelegate NewCrop;
-
-    /// <summary>New_Canopy event</summary>
-    [Event]
-    public event NewCanopyDelegate New_Canopy;
-
-    /// <summary>NewPotentialGrowth event</summary>
-    [Event]
-    public event NewPotentialGrowthDelegate NewPotentialGrowth;
-
-    /// <summary>IncorpFOM event</summary>
-    [Event]
-    public event FOMLayerDelegate IncorpFOM;
-
-    /// <summary>BiomassRemoved event</summary>
-    [Event]
-    public event BiomassRemovedDelegate BiomassRemoved;
-
-    /// <summary>WaterChanged event</summary>
-    [Event]
-    public event WaterChangedDelegate WaterChanged;
-
-    /// <summary>NitrogenChanged event</summary>
-    [Event]
-    public event NitrogenChangedDelegate NitrogenChanged;
-
-    /// <summary>NitrogenChanged event</summary>
-    [Event]
-    public event AddSoilCNPatchDelegate AddSoilCNPatch;
 
     #endregion  -----------------------------------------------------------------------------------
 
@@ -1457,7 +1452,6 @@ public class AgPasture
         //// Create and initialise each species
 
         mySpecies = new Species[NumSpecies];
-        InitialState = new SpeciesStateSettings[NumSpecies];
 
         // set links to static members (clock, MetData, dlayer, CO2, etc)
         Species.Clock = myClock;
@@ -1477,6 +1471,7 @@ public class AgPasture
 
                     // pass on values for dlayer
                     mySpecies[s1].dlayer = dlayer;
+                    mySpecies[s1].xf = xf;
 
                     // check mas root depth
                     if (iniRootDepth[s1] > 0.0)
@@ -1488,52 +1483,54 @@ public class AgPasture
                     SetSpeciesParameters(s1, s2);
 
                     // save the initial values for the state parameters, will needed this in case of reset
-                    InitialState[s1] = new SpeciesStateSettings();
-                    if (iniShootDM[s1] >= 0.0)
-                        InitialState[s1].ShootDM = iniShootDM[s1];
-                    else
-                        InitialState[s1].ShootDM = dmshoot[s2];  // if iniShootDM is negative, use the default value
-
-                    if (InitialState[s1].ShootDM > 0.0)
+                    if (iniShootDM[s1] < 0.0)
                     {
-                        if (iniRootDM[s1] > 0.0)
-                        {
-                            InitialState[s1].RootDM = iniRootDM[s1];
-                        }
+                        // if iniShootDM is negative, use the default value
+                        iniShootDM[s1]= dmshoot[s2];
+                    }
+
+                    if (iniShootDM[s1] > 0.0)
+                    {
+                        double[] DMFractions;
+                        if (mySpecies[s1].isLegume)
+                            DMFractions = initialDMFractions_legume;
                         else
+                            DMFractions = initialDMFractions_grass;
+
+                        for (int pool = 0; pool < 11; pool++)
+                            mySpecies[s1].InitialState.DMWeight[pool] = DMFractions[pool] * iniShootDM[s1];
+
+                        if (iniRootDM[s1] <= 0.0)
                         {
                             // iniRootDM is zero or negative, use the default value
                             if (dmroot[s2] > 0.0)
-                                InitialState[s1].RootDM = dmroot[s2];
+                                iniRootDM[s1] = dmroot[s2];
                             else
-                                InitialState[s1].RootDM = InitialState[s1].ShootDM / mySpecies[s2].targetSRratio;
+                                iniRootDM[s1] = iniRootDM[s1] / mySpecies[s2].targetSRratio;
                         }
 
-                        if (iniRootDepth[s1] > 0.0)
-                        {
-                            InitialState[s1].RootDepth = iniRootDepth[s1];
-                        }
-                        else
+                        if (iniRootDepth[s1] <= 0.0)
                         {
                             // iniRootDepth is zero or negative, use the default value
-                            InitialState[s1].RootDepth = myRootDepth[s2];
                             iniRootDepth[s1] = myRootDepth[s2];
-                            // needed to determine the max root depth of species being simulated
                         }
+
+                        mySpecies[s1].InitialState.DMWeight[11] = iniRootDM[s1];
+                        mySpecies[s1].InitialState.RootDepth = iniRootDepth[s1];
                     }
                     else
                     {
                         // shoot DM is zero, so root should also be zero
-                        InitialState[s1].RootDM = 0.0;
-                        InitialState[s1].RootDepth = 0.0;
                         iniRootDepth[s1] = 0.0;
+                        mySpecies[s1].InitialState.DMWeight[11] = 0.0;
+                        mySpecies[s1].InitialState.RootDepth = 0.0;
                     }
 
                     if (iniRootDepthParam[s1] > 0.0)
                     {
-                        if (iniRootDepthParam[s1] >= InitialState[s1].RootDepth)
+                        if (iniRootDepthParam[s1] >= iniRootDepth[s1])
                         {
-                            rootTopDepthParam[s1] = InitialState[s1].RootDepth;
+                            rootTopDepthParam[s1] = iniRootDepth[s1];
                             mySpecies[s1].rootDistributionMethod = 0;
                             if (s1 == 0)
                                 rootsDistributionMethod = 0;
@@ -1553,23 +1550,19 @@ public class AgPasture
                         }
                     }
 
-                    if (mySpecies[s1].isLegume)
-                        InitialState[s1].DMFraction = initialDMFractions_legume;
-                    else
-                        InitialState[s1].DMFraction = initialDMFractions_grass;
-
-                    InitialState[s1].NConcentration[0] = mySpecies[s1].NcleafOpt;
-                    InitialState[s1].NConcentration[1] = mySpecies[s1].NcleafOpt * mySpecies[s1].NcRel2;
-                    InitialState[s1].NConcentration[2] = mySpecies[s1].NcleafOpt * mySpecies[s1].NcRel3;
-                    InitialState[s1].NConcentration[3] = mySpecies[s1].NcleafMin;
-                    InitialState[s1].NConcentration[4] = mySpecies[s1].NcstemOpt;
-                    InitialState[s1].NConcentration[5] = mySpecies[s1].NcstemOpt * mySpecies[s1].NcRel2;
-                    InitialState[s1].NConcentration[6] = mySpecies[s1].NcstemOpt * mySpecies[s1].NcRel3;
-                    InitialState[s1].NConcentration[7] = mySpecies[s1].NcstemMin;
-                    InitialState[s1].NConcentration[8] = mySpecies[s1].NcstolOpt;
-                    InitialState[s1].NConcentration[9] = mySpecies[s1].NcstolOpt * mySpecies[s1].NcRel2;
-                    InitialState[s1].NConcentration[10] = mySpecies[s1].NcstolOpt * mySpecies[s1].NcRel3;
-                    InitialState[s1].NConcentration[11] = mySpecies[s1].NcrootOpt;
+                    // assume N concentration is at optimum for green pools and minimum for dead pools
+                    mySpecies[s1].InitialState.NAmount[0] = mySpecies[s1].InitialState.DMWeight[0] * mySpecies[s1].leaves.NConcOptimum;
+                    mySpecies[s1].InitialState.NAmount[1] = mySpecies[s1].InitialState.DMWeight[1] * mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcRel2;
+                    mySpecies[s1].InitialState.NAmount[2] = mySpecies[s1].InitialState.DMWeight[2] * mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcRel3;
+                    mySpecies[s1].InitialState.NAmount[3] = mySpecies[s1].InitialState.DMWeight[3] * mySpecies[s1].leaves.NConcMinimum;
+                    mySpecies[s1].InitialState.NAmount[4] = mySpecies[s1].InitialState.DMWeight[4] * mySpecies[s1].stems.NConcOptimum;
+                    mySpecies[s1].InitialState.NAmount[5] = mySpecies[s1].InitialState.DMWeight[5] * mySpecies[s1].stems.NConcOptimum * mySpecies[s1].NcRel2;
+                    mySpecies[s1].InitialState.NAmount[6] = mySpecies[s1].InitialState.DMWeight[6] * mySpecies[s1].stems.NConcOptimum * mySpecies[s1].NcRel3;
+                    mySpecies[s1].InitialState.NAmount[7] = mySpecies[s1].InitialState.DMWeight[7] * mySpecies[s1].stems.NConcMinimum;
+                    mySpecies[s1].InitialState.NAmount[8] = mySpecies[s1].InitialState.DMWeight[8] * mySpecies[s1].stolons.NConcOptimum;
+                    mySpecies[s1].InitialState.NAmount[9] = mySpecies[s1].InitialState.DMWeight[9] * mySpecies[s1].stolons.NConcOptimum * mySpecies[s1].NcRel2;
+                    mySpecies[s1].InitialState.NAmount[10] = mySpecies[s1].InitialState.DMWeight[10] * mySpecies[s1].stolons.NConcOptimum * mySpecies[s1].NcRel3;
+                    mySpecies[s1].InitialState.NAmount[11] = mySpecies[s1].InitialState.DMWeight[11] * mySpecies[s1].roots.NConcOptimum;
 
                     break;
                 }
@@ -1577,7 +1570,7 @@ public class AgPasture
         }
 
         // check whether the sward is active (existing) or is yet to be sown
-        if (InitialState.Sum(x => x.ShootDM) > 0.0)
+        if (iniShootDM.Sum() >0.0)
             isAlive = true;
         else
             isAlive = false;
@@ -1588,10 +1581,10 @@ public class AgPasture
             if (!usingSpeciesRoot)
             {
                 // get the max root depth of all species
-                InitialState[s].RootDepth = iniRootDepth.Max();
+                mySpecies[s].InitialState.RootDepth = iniRootDepth.Max();
             }
 
-            SetSpeciesState(s, InitialState[s]);
+            SetSpeciesState(s, mySpecies[s].InitialState);
 
             // get the deepest root as sward depth
             if (mySpecies[s].rootDepth > swardRootDepth)
@@ -1602,14 +1595,12 @@ public class AgPasture
         }
 
         // check root distribution
+        targetRootAllocation = new double[nLayers];
         rootFraction1 = new double[nLayers];
-        targetRootAllocation = RootDistributionTarget(0);
         if (usingSpeciesRoot)
         {
             // each species has its own distribution
             rootFraction = new double[nLayers];
-            rootFraction1 = new double[nLayers];
-            targetRootAllocation = new double[nLayers];
         }
         else
         {
@@ -1619,10 +1610,24 @@ public class AgPasture
             double cumDepth = 0.0;
             for (int layer = 0; layer < nLayers; layer++)
             {
-                cumDepth += dlayer[layer];
-                if (cumDepth <= swardRootDepth)
+                targetRootAllocation[layer] = mySpecies[0].targetRootAllocation[layer];
+                if (cumDepth < swardRootDepth)
                 {
-                    cumAllocation += targetRootAllocation[layer] * LayerFractionWithRoots(layer, swardRootDepth);
+                    cumDepth += dlayer[layer];
+                    if (cumDepth <= swardRootDepth)
+                    {
+                        // layer is fully in the root zone
+                        cumAllocation += targetRootAllocation[layer];
+                    }
+                    else
+                    {
+                        // layer is partially in the root zone
+                        double maxDepth = mySpecies.Max(x => x.maxRootDepth);
+                        double layerFrac = (swardRootDepth - (cumDepth - dlayer[layer]))
+                                           / (maxDepth - (cumDepth - dlayer[layer]));
+                        cumAllocation += targetRootAllocation[layer] * Math.Min(1.0, Math.Max(0.0, layerFrac));
+                    }
+
                 }
             }
 
@@ -1632,8 +1637,6 @@ public class AgPasture
             for (int s = 0; s < NumSpecies; s++)
             {
                 mySpecies[s].rootFraction = new double[nLayers];
-                mySpecies[s].rootFraction1 = new double[nLayers];
-                mySpecies[s].targetRootAllocation = new double[nLayers];
                 for (int layer = 0; layer < nLayers; layer++)
                 {
                     mySpecies[s].rootFraction[layer] = rootFraction[layer];
@@ -2114,20 +2117,20 @@ public class AgPasture
         mySpecies[s1].NcRel3 = RelativeNconc_stage3[s2];
 
         // Note: 0.01 is for conversion of % to fraction
-        mySpecies[s1].NcleafOpt = 0.01 * NconcOptimum_leaves[s2];
-        mySpecies[s1].NcstemOpt = mySpecies[s1].NcleafOpt * mySpecies[s1].NcstemFr;
-        mySpecies[s1].NcstolOpt = mySpecies[s1].NcleafOpt * mySpecies[s1].NcstolFr;
-        mySpecies[s1].NcrootOpt = mySpecies[s1].NcleafOpt * mySpecies[s1].NcrootFr;
+        mySpecies[s1].leaves.NConcOptimum = 0.01 * NconcOptimum_leaves[s2];
+        mySpecies[s1].stems.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcstemFr;
+        mySpecies[s1].stolons.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcstolFr;
+        mySpecies[s1].roots.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcrootFr;
 
-        mySpecies[s1].NcleafMax = 0.01 * NconcMaximum_leaves[s2];
-        mySpecies[s1].NcstemMax = mySpecies[s1].NcleafMax * mySpecies[s1].NcstemFr;
-        mySpecies[s1].NcstolMax = mySpecies[s1].NcleafMax * mySpecies[s1].NcstolFr;
-        mySpecies[s1].NcrootMax = mySpecies[s1].NcleafMax * mySpecies[s1].NcrootFr;
+        mySpecies[s1].leaves.NConcMaximum = 0.01 * NconcMaximum_leaves[s2];
+        mySpecies[s1].stems.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * mySpecies[s1].NcstemFr;
+        mySpecies[s1].stolons.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * mySpecies[s1].NcstolFr;
+        mySpecies[s1].roots.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * mySpecies[s1].NcrootFr;
 
-        mySpecies[s1].NcleafMin = 0.01 * NconcMinimum_leaves[s2];
-        mySpecies[s1].NcstemMin = mySpecies[s1].NcleafMin * mySpecies[s1].NcstemFr;
-        mySpecies[s1].NcstolMin = mySpecies[s1].NcleafMin * mySpecies[s1].NcstolFr;
-        mySpecies[s1].NcrootMin = mySpecies[s1].NcleafMin * mySpecies[s1].NcrootFr;
+        mySpecies[s1].leaves.NConcMinimum = 0.01 * NconcMinimum_leaves[s2];
+        mySpecies[s1].stems.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcstemFr;
+        mySpecies[s1].stolons.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcstolFr;
+        mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcrootFr;
 
         //// Additional initialisation bits ..............................
         mySpecies[s1].fShoot = 1; // actual fraction of dGrowth allocated to shoot
@@ -2151,77 +2154,23 @@ public class AgPasture
     /// </summary>
     /// <param name="s">The index for the species being setup</param>
     /// <param name="MyState">The collection of basic state defining values</param>
-    private void SetSpeciesState(int s, SpeciesStateSettings MyState)
+    private void SetSpeciesState(int s, SpeciesBasicState MyState)
     {
         //// General status ..............................................
         mySpecies[s].isAlive = isAlive;
-        if (MyState.ShootDM <= 1e-12)
+        if (MyState.DMWeight.Sum() <= 1e-12)
             mySpecies[s].phenoStage = 0;
         else
             mySpecies[s].phenoStage = 1;
 
-        //// Shoot DM ....................................................
-        mySpecies[s].leaves.tissue[0].DM = MyState.ShootDM * MyState.DMFraction[0];
-        mySpecies[s].leaves.tissue[1].DM = MyState.ShootDM * MyState.DMFraction[1];
-        mySpecies[s].leaves.tissue[2].DM = MyState.ShootDM * MyState.DMFraction[2];
-        mySpecies[s].leaves.tissue[3].DM = MyState.ShootDM * MyState.DMFraction[3];
-        mySpecies[s].stems.tissue[0].DM = MyState.ShootDM * MyState.DMFraction[4];
-        mySpecies[s].stems.tissue[1].DM = MyState.ShootDM * MyState.DMFraction[5];
-        mySpecies[s].stems.tissue[2].DM = MyState.ShootDM * MyState.DMFraction[6];
-        mySpecies[s].stems.tissue[3].DM = MyState.ShootDM * MyState.DMFraction[7];
-        mySpecies[s].stolons.tissue[0].DM = MyState.ShootDM * MyState.DMFraction[8];
-        mySpecies[s].stolons.tissue[1].DM = MyState.ShootDM * MyState.DMFraction[9];
-        mySpecies[s].stolons.tissue[2].DM = MyState.ShootDM * MyState.DMFraction[10];
-
-        //// Root DM  ....................................................
-        mySpecies[s].roots.tissue[0].DM = MyState.RootDM;
-
-        //// Initial N amount in each pool ...............................
-        mySpecies[s].leaves.tissue[0].Nconc = MyState.NConcentration[0];
-        mySpecies[s].leaves.tissue[1].Nconc = MyState.NConcentration[1];
-        mySpecies[s].leaves.tissue[2].Nconc = MyState.NConcentration[2];
-        mySpecies[s].leaves.tissue[3].Nconc = MyState.NConcentration[3];
-        mySpecies[s].stems.tissue[0].Nconc = MyState.NConcentration[4];
-        mySpecies[s].stems.tissue[1].Nconc = MyState.NConcentration[5];
-        mySpecies[s].stems.tissue[2].Nconc = MyState.NConcentration[6];
-        mySpecies[s].stems.tissue[3].Nconc = MyState.NConcentration[7];
-        mySpecies[s].stolons.tissue[0].Nconc = MyState.NConcentration[8];
-        mySpecies[s].stolons.tissue[1].Nconc = MyState.NConcentration[9];
-        mySpecies[s].stolons.tissue[2].Nconc = MyState.NConcentration[10];
-        mySpecies[s].roots.tissue[0].Nconc = MyState.NConcentration[11];
-
-        //// Aggregated and plant parts variables ........................
-        mySpecies[s].UpdateAggregatedVariables();
-
-        //// Plant height ................................................
-        if (usingSpeciesHeight)
-        {
-            // each species has it own height
-            mySpecies[s].height = mySpecies[s].HeightfromDM();
-        }
+        mySpecies[s].SetSpeciesState(MyState);
 
         //// Root depth and distribution  ................................
-        mySpecies[s].rootDepth = MyState.RootDepth;
         mySpecies[s].layerBottomRootZone = mySpecies[s].GetRootZoneBottomLayer();
         if (usingSpeciesRoot)
         {
             // each species has it own root distribution
             mySpecies[s].rootFraction = RootProfileDistribution(s);
-            mySpecies[s].targetRootAllocation = RootDistributionTarget(s);
-            mySpecies[s].rootFraction1 = new double[dlayer.Length];
-            double cumAllocation = 0.0;
-            double cumDepth = 0.0;
-            for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-                cumDepth += dlayer[layer];
-                if (cumDepth <= mySpecies[s].rootDepth)
-                {
-                    cumAllocation += mySpecies[s].targetRootAllocation[layer] * LayerFractionWithRoots(layer, mySpecies[s].rootDepth);
-                }
-            }
-
-            for (int layer = 0; layer < dlayer.Length; layer++)
-                mySpecies[s].rootFraction1[layer] = mySpecies[s].targetRootAllocation[layer] / cumAllocation;
         }
     }
 
@@ -2305,11 +2254,12 @@ public class AgPasture
                     rootFraction1[layer] += mySpecies[s].roots.DMGreen * mySpecies[s].rootFraction1[layer];
                     targetRootAllocation[layer] += mySpecies[s].roots.DMGreen * mySpecies[s].targetRootAllocation[layer];
                 }
+
                 if (RootWt > 0.0)
                 {
                     rootFraction[layer] /= RootWt;
                     rootFraction1[layer] /= RootWt;
-                    targetRootAllocation[layer] = 0.0;
+                    targetRootAllocation[layer] /= RootWt;
                 }
                 else
                 {
@@ -2424,18 +2374,8 @@ public class AgPasture
     [EventHandler]
     public void OnPrepare()
     {
-        // RCichota May2014, moved here from onProcess (really ought to be onNewMet but have issues at initialisation)
-        //**Zero out some variables
-        //for (int s = 0; s < NumSpecies; s++)
-        //    mySpecies[s].DailyRefresh();
-
         // Clear FractionHarvest array
         Array.Clear(FractionToHarvest, 0, FractionToHarvest.Length);
-
-        // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
-        //DoNewCanopyEvent();
-        //DoNewPotentialGrowthEvent();
-        // RCichota Nov2015, moved these to the beginning of OnProcess (avoids conflict with grazing at start of day)
     }
 
     /// <summary>
@@ -2715,6 +2655,7 @@ public class AgPasture
         for (int s = 0; s < NumSpecies; s++)
         {
             mySpecies[s].dlayer = dlayer;
+            mySpecies[s].xf = xf;
         }
     }
 
@@ -2729,7 +2670,6 @@ public class AgPasture
     private void PartitionAboveGroundResources()
     {
         double sumkLAI = 0.0;
-        double sumCoverGreen = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
             sumkLAI += mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff;
@@ -4087,7 +4027,6 @@ public class AgPasture
         double swUpFactor = 0.0; // water uptake factor, fraction of total water taken up
         double[] xFac = new double[2]; // extractability factor for each layer
         double nFrac = 0.0; // fraction available for each species
-        double auxUptake = 0.0;
 
         if (usingNAvailableBySpecies)
         {
@@ -4938,8 +4877,7 @@ public class AgPasture
         isAlive = false;
 
         //Let user know (via summary) that the pasture has end
-        Console.WriteLine(myClock.Today.ToString("dd MMMM yyyy") + " (Day of year=" +
-                          myClock.Today.DayOfYear + "), " + thisCropName + ":");
+        Console.WriteLine(myClock.Today.ToString("dd MMMM yyyy") + " (Day of year=" + myClock.Today.DayOfYear + "), " + thisCropName + ":");
         Console.WriteLine("     EndCrop - Pasture is now dead");
     }
 
@@ -4962,7 +4900,7 @@ public class AgPasture
         swardRootDepth = 0.0;
 
         //daily changes
-        swardPotentialGrowth = swardPotGrowthWater = swardActualGrowth = swardHerbageGrowth = 0.0; //daily DM increase
+        swardPotentialGrowth = swardPotGrowthWater = swardActualGrowth = swardHerbageGrowth = 0.0;
         swardLitterDM = swardLitterN = 0.0;
         swardSenescedRootDM = swardSenescedRootN = 0.0;
 
@@ -5323,11 +5261,11 @@ public class AgPasture
             if (!usingSpeciesRoot)
             {
                 // Get the max root depth of all species
-                InitialState[s].RootDepth = mySpecies.Max(x => x.rootDepth);
+                mySpecies[s].InitialState.RootDepth = mySpecies.Max(x => x.rootDepth);
             }
 
             // set initial state
-            SetSpeciesState(s, InitialState[s]);
+            SetSpeciesState(s, mySpecies[s].InitialState);
 
             // reset previous state
             mySpecies[s].SetPrevPools();
@@ -5370,7 +5308,7 @@ public class AgPasture
     /// <param name="NewSetState">New set of values for DM and N of given species</param>
     /// <remarks>
     /// The type NewSetState contains:
-    ///   - species: List with the index of species to be changed
+    ///   - speciesID: List with the index of species to be changed
     ///   - dmShoot: Array of DM shoot values for each species being changed
     ///   - dmRoot: Array of DM root values for each species being changed
     ///   - rootDepth: Array of root depth values for each species being changed
@@ -5382,112 +5320,135 @@ public class AgPasture
     {
         // in theory all parameters are optional, but dmFractions and nConcentrations need to be initialised or APSIM crashes
 
-        SpeciesStateSettings NewState = new SpeciesStateSettings();
-        NewState.DMFraction = new double[11];
-        NewState.NConcentration = new double[12];
 
+        int nSetSpecies = NewSetState.speciesID.Length;
+        SpeciesBasicState[] NewState = new SpeciesBasicState[nSetSpecies];
+        int myS = 0;
         foreach (int s in NewSetState.speciesID)
         {
-            // get DM shoot
+            //initialise state variable
+            NewState[myS] = new SpeciesBasicState();
+            NewState[myS].DMWeight = new double[12];
+            NewState[myS].NAmount = new double[12];
+
+            // Check DM shoot
             if (NewSetState.dmShoot.Length > 0)
-                NewState.ShootDM = NewSetState.dmShoot[s];
-            else
-                NewState.ShootDM = mySpecies[s].dmshoot;
-
-            // get DM root
-            if (NewSetState.dmRoot.Length > 0)
-                NewState.RootDM = NewSetState.dmRoot[s];
-            else
-                NewState.RootDM = mySpecies[s].roots.DMGreen;
-
-            // get root depth
-            if (NewSetState.rootDepth.Length > 0)
-                NewState.RootDepth = NewSetState.rootDepth[s];
-            else
-                NewState.RootDepth = mySpecies[s].rootDepth;
-
-            // get dm fractions
-            if (NewSetState.dmFractions.Length > 0)
             {
-                NewState.DMFraction[0] = NewSetState.dmFractions[s].Leaf1;
-                NewState.DMFraction[1] = NewSetState.dmFractions[s].Leaf2;
-                NewState.DMFraction[2] = NewSetState.dmFractions[s].Leaf3;
-                NewState.DMFraction[3] = NewSetState.dmFractions[s].Leaf4;
-                NewState.DMFraction[4] = NewSetState.dmFractions[s].Stem1;
-                NewState.DMFraction[5] = NewSetState.dmFractions[s].Stem2;
-                NewState.DMFraction[6] = NewSetState.dmFractions[s].Stem3;
-                NewState.DMFraction[7] = NewSetState.dmFractions[s].Stem4;
-                NewState.DMFraction[8] = NewSetState.dmFractions[s].Stolon1;
-                NewState.DMFraction[9] = NewSetState.dmFractions[s].Stolon2;
-                NewState.DMFraction[10] = NewSetState.dmFractions[s].Stolon3;
-                // NewSetState.dmFractions[s].Roots is not used here
-            }
-            else
-            {
-                if (mySpecies[s].dmshoot > 0.0)
+                // New DM being set, check DM fractions
+                if (NewSetState.dmFractions.Length > 0)
                 {
-                    NewState.DMFraction[0] = mySpecies[s].leaves.tissue[0].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[1] = mySpecies[s].leaves.tissue[1].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[2] = mySpecies[s].leaves.tissue[2].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[3] = mySpecies[s].leaves.tissue[3].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[4] = mySpecies[s].stems.tissue[0].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[5] = mySpecies[s].stems.tissue[1].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[6] = mySpecies[s].stems.tissue[2].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[7] = mySpecies[s].stems.tissue[3].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[8] = mySpecies[s].stolons.tissue[0].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[9] = mySpecies[s].stolons.tissue[1].DM / mySpecies[s].dmshoot;
-                    NewState.DMFraction[10] = mySpecies[s].stolons.tissue[2].DM / mySpecies[s].dmshoot;
+                    // New fractions given
+                    NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf1;
+                    NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf2;
+                    NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf3;
+                    NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf4;
+                    NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem1;
+                    NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem2;
+                    NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem3;
+                    NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem4;
+                    NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stolon1;
+                    NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stolon2;
+                    NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stolon3;
                 }
                 else
                 {
-                    NewState.DMFraction[0] = InitialState[s].DMFraction[0];
-                    NewState.DMFraction[1] = InitialState[s].DMFraction[1];
-                    NewState.DMFraction[2] = InitialState[s].DMFraction[2];
-                    NewState.DMFraction[3] = InitialState[s].DMFraction[3];
-                    NewState.DMFraction[4] = InitialState[s].DMFraction[4];
-                    NewState.DMFraction[5] = InitialState[s].DMFraction[5];
-                    NewState.DMFraction[6] = InitialState[s].DMFraction[6];
-                    NewState.DMFraction[7] = InitialState[s].DMFraction[7];
-                    NewState.DMFraction[8] = InitialState[s].DMFraction[8];
-                    NewState.DMFraction[9] = InitialState[s].DMFraction[9];
-                    NewState.DMFraction[10] = InitialState[s].DMFraction[10];
+                    if (mySpecies[s].dmshoot > 0.0)
+                    {
+                        // Use current fractions
+                        NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[0].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[1].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[2].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[3].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[0].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[1].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[2].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[3].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[0].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[1].DM / mySpecies[s].dmshoot;
+                        NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[2].DM / mySpecies[s].dmshoot;
+                    }
+                    else
+                    {
+                        // Use the default initial fractions
+                        double defaultDM = mySpecies[s].InitialState.DMWeight.Sum();
+                        NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[0] / defaultDM;
+                        NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[1] / defaultDM;
+                        NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[2] / defaultDM;
+                        NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[3] / defaultDM;
+                        NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[4] / defaultDM;
+                        NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[5] / defaultDM;
+                        NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[6] / defaultDM;
+                        NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[7] / defaultDM;
+                        NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[8] / defaultDM;
+                        NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[9] / defaultDM;
+                        NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[10] / defaultDM;
+                    }
                 }
-            }
-
-            // get N concentrations
-            if (NewSetState.nConcentrations.Length > 0)
-            {
-                NewState.NConcentration[0] = NewSetState.nConcentrations[s].Leaf1;
-                NewState.NConcentration[1] = NewSetState.nConcentrations[s].Leaf2;
-                NewState.NConcentration[2] = NewSetState.nConcentrations[s].Leaf3;
-                NewState.NConcentration[3] = NewSetState.nConcentrations[s].Leaf4;
-                NewState.NConcentration[4] = NewSetState.nConcentrations[s].Stem1;
-                NewState.NConcentration[5] = NewSetState.nConcentrations[s].Stem2;
-                NewState.NConcentration[6] = NewSetState.nConcentrations[s].Stem3;
-                NewState.NConcentration[7] = NewSetState.nConcentrations[s].Stem4;
-                NewState.NConcentration[8] = NewSetState.nConcentrations[s].Stolon1;
-                NewState.NConcentration[9] = NewSetState.nConcentrations[s].Stolon2;
-                NewState.NConcentration[10] = NewSetState.nConcentrations[s].Stolon3;
-                NewState.NConcentration[11] = NewSetState.nConcentrations[s].Roots;
             }
             else
             {
-                NewState.NConcentration[0] = mySpecies[s].leaves.tissue[0].Nconc;
-                NewState.NConcentration[1] = mySpecies[s].leaves.tissue[1].Nconc;
-                NewState.NConcentration[2] = mySpecies[s].leaves.tissue[2].Nconc;
-                NewState.NConcentration[3] = mySpecies[s].leaves.tissue[3].Nconc;
-                NewState.NConcentration[4] = mySpecies[s].stems.tissue[0].Nconc;
-                NewState.NConcentration[5] = mySpecies[s].stems.tissue[1].Nconc;
-                NewState.NConcentration[6] = mySpecies[s].stems.tissue[2].Nconc;
-                NewState.NConcentration[7] = mySpecies[s].stems.tissue[3].Nconc;
-                NewState.NConcentration[8] = mySpecies[s].stolons.tissue[0].Nconc;
-                NewState.NConcentration[9] = mySpecies[s].stolons.tissue[1].Nconc;
-                NewState.NConcentration[10] = mySpecies[s].stolons.tissue[2].Nconc;
-                NewState.NConcentration[11] = mySpecies[s].roots.tissue[0].Nconc;
+                // Keep current DM
+                NewState[myS].DMWeight[0] = mySpecies[s].leaves.tissue[0].DM;
+                NewState[myS].DMWeight[1] = mySpecies[s].leaves.tissue[1].DM;
+                NewState[myS].DMWeight[2] = mySpecies[s].leaves.tissue[2].DM;
+                NewState[myS].DMWeight[3] = mySpecies[s].leaves.tissue[3].DM;
+                NewState[myS].DMWeight[4] = mySpecies[s].stems.tissue[0].DM;
+                NewState[myS].DMWeight[5] = mySpecies[s].stems.tissue[1].DM;
+                NewState[myS].DMWeight[6] = mySpecies[s].stems.tissue[2].DM;
+                NewState[myS].DMWeight[7] = mySpecies[s].stems.tissue[3].DM;
+                NewState[myS].DMWeight[8] = mySpecies[s].stolons.tissue[0].DM;
+                NewState[myS].DMWeight[9] = mySpecies[s].stolons.tissue[1].DM;
+                NewState[myS].DMWeight[10] = mySpecies[s].stolons.tissue[2].DM;
+            }
+
+            // Check DM root
+            if (NewSetState.dmRoot.Length > 0)
+                NewState[myS].DMWeight[11] = NewSetState.dmRoot[s];
+            else
+                NewState[myS].DMWeight[11] = mySpecies[s].roots.DMGreen;
+
+            // Check root depth
+            if (NewSetState.rootDepth.Length > 0)
+                NewState[myS].RootDepth = NewSetState.rootDepth[s];
+            else
+                NewState[myS].RootDepth = mySpecies[s].rootDepth;
+
+            // Check N concentrations
+            if (NewSetState.nConcentrations.Length > 0)
+            {
+                // new values given
+                NewState[myS].NAmount[0] = NewState[myS].DMWeight[0] * NewSetState.nConcentrations[s].Leaf1;
+                NewState[myS].NAmount[1] = NewState[myS].DMWeight[1] * NewSetState.nConcentrations[s].Leaf2;
+                NewState[myS].NAmount[2] = NewState[myS].DMWeight[2] * NewSetState.nConcentrations[s].Leaf3;
+                NewState[myS].NAmount[3] = NewState[myS].DMWeight[3] * NewSetState.nConcentrations[s].Leaf4;
+                NewState[myS].NAmount[4] = NewState[myS].DMWeight[4] * NewSetState.nConcentrations[s].Stem1;
+                NewState[myS].NAmount[5] = NewState[myS].DMWeight[5] * NewSetState.nConcentrations[s].Stem2;
+                NewState[myS].NAmount[6] = NewState[myS].DMWeight[6] * NewSetState.nConcentrations[s].Stem3;
+                NewState[myS].NAmount[7] = NewState[myS].DMWeight[7] * NewSetState.nConcentrations[s].Stem4;
+                NewState[myS].NAmount[8] = NewState[myS].DMWeight[8] * NewSetState.nConcentrations[s].Stolon1;
+                NewState[myS].NAmount[9] = NewState[myS].DMWeight[9] * NewSetState.nConcentrations[s].Stolon2;
+                NewState[myS].NAmount[10] = NewState[myS].DMWeight[10] * NewSetState.nConcentrations[s].Stolon3;
+                NewState[myS].NAmount[11] = NewState[myS].DMWeight[10] * NewSetState.nConcentrations[s].Roots;
+            }
+            else
+            {
+                // Use current values
+                NewState[myS].NAmount[0] = mySpecies[s].leaves.tissue[0].Namount;
+                NewState[myS].NAmount[1] = mySpecies[s].leaves.tissue[1].Namount;
+                NewState[myS].NAmount[2] = mySpecies[s].leaves.tissue[2].Namount;
+                NewState[myS].NAmount[3] = mySpecies[s].leaves.tissue[3].Namount;
+                NewState[myS].NAmount[4] = mySpecies[s].stems.tissue[0].Namount;
+                NewState[myS].NAmount[5] = mySpecies[s].stems.tissue[1].Namount;
+                NewState[myS].NAmount[6] = mySpecies[s].stems.tissue[2].Namount;
+                NewState[myS].NAmount[7] = mySpecies[s].stems.tissue[3].Namount;
+                NewState[myS].NAmount[8] = mySpecies[s].stolons.tissue[0].Namount;
+                NewState[myS].NAmount[9] = mySpecies[s].stolons.tissue[1].Namount;
+                NewState[myS].NAmount[10] = mySpecies[s].stolons.tissue[2].Namount;
+                NewState[myS].NAmount[11] = mySpecies[s].roots.tissue[0].Namount;
             }
 
             // Set the species
-            SetSpeciesState(s, NewState);
+            SetSpeciesState(s, NewState[myS]);
         }
 
         // Update aggregated variables (whole sward)
@@ -5621,65 +5582,6 @@ public class AgPasture
             {
                 throw new Exception("No valid method for computing root distribution was selected");
             }
-        }
-
-        return result;
-    }
-
-    /// <summary>Compute the ideal distribution of roots in the soil profile</summary>
-    /// <remarks>
-    /// These values are used to allocate initial rootDM as well as any growth over the profile
-    /// </remarks>
-    /// <returns>A weighting factor for each soil layer (mm of soil)</returns>
-    private double[] RootDistributionTarget(int s)
-    {
-        // 1. Base distribution calculated using and ExpoLinear function
-        //  Considers homogeneous distribution from surface down to a fraction of root depth (rootTopDepthParam)
-        //   below this depth, the proportion of root decrease following a power function, it reaches zero slightly
-        //   below the maxRootDepth (defined by rootDeepDepthParam), function's exponent is given by rootCurveParam
-        //  The values are further adjusted using the values of XF (so there will be less roots in those layers)
-
-        int nLayers = dlayer.Length;
-        double[] result = new double[nLayers];
-        double depthTop = 0.0;
-        double depthBottom = 0.0;
-        double depthFirstStage = Math.Min(maxRootDepth[s], rootTopDepthParam[s]);
-        double rootDeepDepthParam = 1.0;
-        double xlFac;
-        for (int layer = 0; layer < nLayers; layer++)
-        {
-
-            if (xf.Length > 1)
-                xlFac = xf[layer];
-            else
-                xlFac = 1.0;
-            depthBottom += dlayer[layer];
-            if (depthTop >= maxRootDepth[s])
-            {
-                // totally out of root zone
-                result[layer] = 0.0;
-            }
-            else if (depthBottom <= depthFirstStage)
-            {
-                // totally in the first stage
-                result[layer] = dlayer[layer] * xlFac;
-            }
-            else
-            {
-                // at least partially on second stage
-                result[layer] = Math.Pow(maxRootDepth[s] * rootDeepDepthParam - Math.Max(depthTop, depthFirstStage), rootCurveParam[s] + 1)
-                              - Math.Pow(maxRootDepth[s] * rootDeepDepthParam - Math.Min(depthBottom, maxRootDepth[s]), rootCurveParam[s] + 1);
-                result[layer] /= (rootCurveParam[s] + 1) * Math.Pow(maxRootDepth[s] * rootDeepDepthParam - depthFirstStage, rootCurveParam[s]);
-                if (depthTop < depthFirstStage)
-                {
-                    // partially in first stage
-                    result[layer] += depthFirstStage - depthTop;
-                }
-
-                result[layer] *= xlFac;
-            }
-
-            depthTop += dlayer[layer];
         }
 
         return result;
@@ -5885,7 +5787,13 @@ public class AgPasture
     [Units("kgDM/ha")]
     public double BelowGroundWt
     {
-        get { return swardRootDM; }
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                result += mySpecies[s].roots.DMTotal;
+            return result;
+        }
     }
 
     /// <summary>An output</summary>
@@ -5924,7 +5832,13 @@ public class AgPasture
     [Units("kgDM/ha")]
     public double AboveGroundDeadWt
     {
-        get { return swardDeadDM; }
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                result += mySpecies[s].dmdeadShoot;
+            return result;
+        }
     }
 
     /// <summary>An output</summary>
@@ -5967,7 +5881,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].leaves.tissue[3].DM;
+                result += mySpecies[s].leaves.DMDead;
             return result;
         }
     }
@@ -6012,7 +5926,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].stems.tissue[3].DM;
+                result += mySpecies[s].stems.DMDead;
             return result;
         }
     }
@@ -6113,7 +6027,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].Nshoot; //remobilised N is reported in stem
+                result += mySpecies[s].Nshoot;
             return result;
         }
     }
@@ -6128,7 +6042,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].Nroot;
+                result += mySpecies[s].roots.NTotal;
             return result;
         }
     }
@@ -6268,7 +6182,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].Nroot;
+                result += mySpecies[s].roots.NGreen;
             return result;
         }
     }
@@ -6851,7 +6765,6 @@ public class AgPasture
             return result;
         }
     }
-
 
     /// <summary>An output</summary>
     [Output]
