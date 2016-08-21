@@ -590,7 +590,6 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal double[] rootFraction;
-    internal double[] rootFraction1;
 
     /// <summary>Some Description</summary>
     internal double[] targetRootAllocation;
@@ -843,7 +842,7 @@ public class Species
         //// Root depth and distribution  ................................
         rootDepth = MyState.RootDepth;
         targetRootAllocation = RootDistributionTarget();
-        rootFraction1 = CurrentRootDistributionTarget();
+        rootFraction = CurrentRootDistributionTarget();
 
         //// Initial N amount in each pool ...............................
         leaves.tissue[0].Namount = MyState.NAmount[0];
@@ -886,7 +885,7 @@ public class Species
 
         // init roots
         rootDepth = minRootDepth;
-        rootFraction1 = CurrentRootDistributionTarget();
+        rootFraction = CurrentRootDistributionTarget();
 
         //Init total N in each pool
         leaves.tissue[0].Nconc = leaves.NConcOptimum;
@@ -1604,15 +1603,6 @@ public class Species
 
         //// - Plant height  ---------------------------------------------
         height = HeightfromDM();
-
-        //// - Root distribution  ----------------------------------------
-        if (usingSpeciesRoot)
-        {
-            // Add new growth - TODO: check this
-            rootFraction = RootGrowthDistribution(dGrowth);
-            // Subtract senescence
-            rootFraction = RootGrowthDistribution(-dDMRootSen);
-        }
     }
 
     /// <summary>
@@ -2688,18 +2678,6 @@ public class Species
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Compute the distribution of roots in the soil profile after growth (sum is equal to one)
-    /// </summary>
-    /// <remarks>
-    /// Root distribution is not changed during the simulation, so this will return the initial RootFraction
-    /// </remarks>
-    /// <returns>The proportion of root mass in each soil layer</returns>
-    private double[] RootGrowthDistribution(double deltaDM)
-    {
-        return rootFraction;
     }
 
     /// <summary>Compute the current target distribution of roots in the soil profile</summary>
