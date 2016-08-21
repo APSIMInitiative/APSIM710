@@ -38,23 +38,6 @@ public class AgPasture
     [Units("calc/apsim")]
     private string NUptakeSource = "calc";
 
-    private bool usingSpeciesHeight = false;
-
-    [Param]
-    [Description("Whether plant height is determined for each species, instead of avg sward")]
-    [Units("yes/no")]
-    private string UseHeightBySpecies
-    {
-        get
-        {
-            if (usingSpeciesHeight)
-                return "yes";
-            else
-                return "no";
-        }
-        set { usingSpeciesHeight = value.ToLower() == "yes"; }
-    }
-
     private bool usingSpeciesRoot = false;
 
     [Param]
@@ -237,23 +220,6 @@ public class AgPasture
     [Description("Exponent factor of function determining soil extractable N (approach01)")]
     [Units("0-1")]
     private double[] NextraSWF;
-
-    private bool usingPairWise;
-
-    [Param]
-    [Description("Whether old pair-wise function to compute plant height is to be used")]
-    [Units("yes/no")]
-    private string UsePairWise
-    {
-        get
-        {
-            if (usingPairWise)
-                return "yes";
-            else
-                return "no";
-        }
-        set { usingPairWise = value.ToLower() == "yes"; }
-    }
 
     ////  >> Initial values >>>
     // These values replace the default values of dmShoot, dmRoot, and maxRootDepth
@@ -961,8 +927,6 @@ public class AgPasture
     [Units("mm")]
     private double MinimumHeight;
 
-    [Link] private LinearInterpolation HeightMassFN = null;
-
     ////  >> Soil related (water uptake) >>>
     [Param]
     [Output]
@@ -1179,18 +1143,6 @@ public class AgPasture
 
     /// <summary>Amount of N in root senesced (kgN/ha)</summary>
     private double swardSenescedRootN;
-
-    /// <summary>Sward average canopy height (mm)</summary>
-    private double swardHeight;
-
-    /// <summary>Sward average green LAI</summary>
-    private double swardGreenLAI;
-
-    /// <summary>Sward average dead LAI</summary>
-    private double swardDeadLAI;
-
-    /// <summary>Sward average total LAI</summary>
-    private double swardTotalLAI;
 
     /// <summary>Sward average light extinction coefficient</summary>
     private double swardLightExtCoeff;
@@ -1646,13 +1598,13 @@ public class AgPasture
 
         //// Weighted average of lightExtCoeff for the sward (should be updated daily)
         double sumkLAI = mySpecies.Sum(x => x.lightExtCoeff * x.totalLAI);
-        swardLightExtCoeff = MathUtility.Divide(sumkLAI, swardTotalLAI, 1.0);
+        swardLightExtCoeff = MathUtility.Divide(sumkLAI, LAI_total, 1.0);
 
         FractionToHarvest = new double[NumSpecies];
     }
 
     /// <summary>
-    /// Check whether all parameter have been given to each species
+    /// Check whether all parameter have been given for each species
     /// </summary>
     private void CheckSpeciesParameters()
     {
@@ -2098,7 +2050,6 @@ public class AgPasture
         }
 
         ////  >> Plant height  >>>
-        mySpecies[s1].usingSpeciesHeight = usingSpeciesHeight;
         mySpecies[s1].MaxPlantHeight = MaxPlantHeight[s2];
         mySpecies[s1].MassForMaxHeight = MassForMaxHeight[s2];
         mySpecies[s1].ExponentHeightFromMass = ExponentHeightFromMass[s2];
@@ -2129,7 +2080,7 @@ public class AgPasture
         mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcrootFr;
 
         //// Additional initialisation bits ..............................
-        mySpecies[s1].fShoot = 1; // actual fraction of dGrowth allocated to shoot
+        mySpecies[s1].fShoot = 1.0; // actual fraction of dGrowth allocated to shoot
 
         int nLayers = dlayer.Length;
         soilAvailableWater = new double[nLayers];
@@ -2183,8 +2134,6 @@ public class AgPasture
         swardLitterN = 0.0;
         swardSenescedRootDM = 0.0;
         swardSenescedRootN = 0.0;
-        swardGreenLAI = 0.0;
-        swardDeadLAI = 0.0;
         double sumkLAI = 0.0;
 
         for (int s = 0; s < NumSpecies; s++)
@@ -2198,45 +2147,16 @@ public class AgPasture
             swardSenescedRootDM += mySpecies[s].dDMRootSen;
             swardSenescedRootN += mySpecies[s].dNRootSen;
 
-            //accumulate LAI of all species
-            swardGreenLAI += mySpecies[s].greenLAI;
-            swardDeadLAI += mySpecies[s].deadLAI;
-
             //accumulate this for weighted average of lightExtCoeff
             sumkLAI += mySpecies[s].lightExtCoeff * mySpecies[s].greenLAI;
         }
 
-        swardTotalLAI = swardGreenLAI + swardDeadLAI;
         swardShootDM = swardGreenDM + swardDeadDM;
 
         // get sward light extinction coefficient
         if (updateLightExtCoeffAllowed)
         {
-            swardLightExtCoeff = MathUtility.Divide(sumkLAI, swardGreenLAI, 1.0);
-        }
-
-        // get the average plant height for sward
-        if (usingSpeciesHeight)
-        {
-            // each species has its own height
-            swardHeight = 0.0;
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                swardHeight += mySpecies[s].height * mySpecies[s].AboveGroundWt;
-            }
-
-            if (AboveGroundWt > 0)
-                swardHeight /= AboveGroundWt;
-        }
-        else
-        {
-            // only sward height is considered
-            swardHeight = HeightfromDM();
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                // need to pass this back to each species
-                mySpecies[s].height = swardHeight;
-            }
+            swardLightExtCoeff = MathUtility.Divide(sumkLAI, LAI_green, 1.0);
         }
 
         // get sward average root distribution
@@ -2491,10 +2411,10 @@ public class AgPasture
 
         //  Pack and send info about the average sward canopy
         canopyData.sender = thisCropName;
-        canopyData.lai = (float) swardGreenLAI;
-        canopyData.lai_tot = (float) swardTotalLAI;
-        canopyData.height = (int) swardHeight;
-        canopyData.depth = (int) swardHeight;
+        canopyData.lai = (float) LAI_green;
+        canopyData.lai_tot = (float) LAI_dead;
+        canopyData.height = (int) Height;
+        canopyData.depth = (int) Height;
         canopyData.cover = (float) Cover_green;
         canopyData.cover_tot = (float) Cover_tot;
 
@@ -4631,7 +4551,7 @@ public class AgPasture
                     accum_gfwater += mySpecies[s].glfWater * mySpecies[s].greenLAI;
                 }
 
-                swardGLFWater = MathUtility.Divide(accum_gfwater, swardGreenLAI, 1.0);
+                swardGLFWater = MathUtility.Divide(accum_gfwater, LAI_green, 1.0);
             }
             else
             {
@@ -4686,7 +4606,7 @@ public class AgPasture
                 accum_glfair += mySpecies[s].glfAeration * mySpecies[s].greenLAI;
             }
 
-            swardGLFAeration = MathUtility.Divide(accum_glfair, swardGreenLAI, 1.0);
+            swardGLFAeration = MathUtility.Divide(accum_glfair, LAI_green, 1.0);
         }
         else
         {
@@ -4756,7 +4676,7 @@ public class AgPasture
             // Compute the tissue turnover
             mySpecies[s].TissueTurnover();
 
-            // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+            // Update the aggregated variables (LAI, height, etc)
             mySpecies[s].UpdateAggregatedVariables();
 
             // Calc today's herbage digestibility
@@ -4860,7 +4780,7 @@ public class AgPasture
 
         ZeroVars();
 
-        // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+        // Update the aggregated variables (LAI, height, etc)
         for (int s = 0; s < NumSpecies; s++)
         {
             mySpecies[s].UpdateAggregatedVariables();
@@ -4883,13 +4803,9 @@ public class AgPasture
     private void ZeroVars()
     {
         //shoot
-        swardGreenLAI = 0.0;
-        swardDeadLAI = 0.0;
-        swardTotalLAI = 0.0;
         swardGreenDM = 0.0;
         swardDeadDM = 0.0;
         swardShootDM = 0.0;
-        swardHeight = 0.0;
 
         //root
         swardRootDM = 0.0;
@@ -5118,7 +5034,7 @@ public class AgPasture
             swardHarvestedDM += mySpecies[s].dmdefoliated;
             swardHarvestedN += mySpecies[s].Ndefoliated;
 
-            // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+            // Update the aggregated variables (LAI, height, etc)
             mySpecies[s].UpdateAggregatedVariables();
 
             // RCichota May 2014: store the defoliated amount (to use for senescence)
@@ -5598,37 +5514,6 @@ public class AgPasture
         fraction_in_layer = (root_depth - depthToTopOfLayer) / dlayer[layer];
 
         return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
-    }
-
-    /// <summary>
-    /// Plant height calculation from DM
-    /// </summary>
-    private double HeightfromDM()
-    {
-        if (usingPairWise)
-        {
-            // as implemented by Frank Li
-            double ht = HeightMassFN.Value(swardGreenDM + swardDeadDM);
-            if (ht < 20.0) ht = 20.0; // minimum = 20mm
-            return ht;
-        }
-        else
-        {
-            //double TodaysHeight = MaxPlantHeight[0] - MinimumHeight;
-            double TodaysHeight = MaxPlantHeight[0];
-
-            if ((swardGreenDM + swardDeadDM) <= MassForMaxHeight[0])
-            {
-                double myX = MathUtility.Divide(swardGreenDM + swardDeadDM, MassForMaxHeight[0], 0.0);
-                double heightF = ExponentHeightFromMass[0]
-                                 - (ExponentHeightFromMass[0] * myX)
-                                 + myX;
-                heightF *= Math.Pow(myX, ExponentHeightFromMass[0] - 1);
-                TodaysHeight *= heightF;
-            }
-            //return TodaysHeight + MinimumHeight;
-            return Math.Max(TodaysHeight, MinimumHeight);
-        }
     }
 
     /// <summary>
@@ -6412,16 +6297,28 @@ public class AgPasture
     [Units("m^2/m^2")]
     public double LAI_green
     {
-        get { return swardGreenLAI; }
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                result += mySpecies[s].greenLAI;
+            return result;
+        }
     }
 
     /// <summary>An output</summary>
-    [Output]
+        [Output]
     [Description("Leaf area index of dead leaves")]
     [Units("m^2/m^2")]
     public double LAI_dead
     {
-        get { return swardDeadLAI; }
+        get
+        {
+            double result = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                result += mySpecies[s].deadLAI;
+            return result;
+        }
     }
 
     /// <summary>An output</summary>
@@ -6430,7 +6327,7 @@ public class AgPasture
     [Units("m^2/m^2")]
     public double LAI_total
     {
-        get { return swardTotalLAI; }
+        get { return LAI_green + LAI_dead; }
     }
 
     /// <summary>An output</summary>
@@ -6441,8 +6338,8 @@ public class AgPasture
     {
         get
         {
-            if (swardGreenLAI == 0) return 0;
-            return 1.0 - Math.Exp(-swardLightExtCoeff * swardGreenLAI);
+            if (LAI_green == 0) return 0;
+            return 1.0 - Math.Exp(-swardLightExtCoeff * LAI_green);
         }
     }
 
@@ -6454,8 +6351,8 @@ public class AgPasture
     {
         get
         {
-            if (swardDeadLAI == 0) return 0;
-            return 1.0 - Math.Exp(-swardLightExtCoeff * swardDeadLAI);
+            if (LAI_dead == 0) return 0;
+            return 1.0 - Math.Exp(-swardLightExtCoeff * LAI_dead);
         }
     }
 
@@ -6467,8 +6364,8 @@ public class AgPasture
     {
         get
         {
-            if (swardTotalLAI == 0) return 0;
-            return 1.0 - (Math.Exp(-swardLightExtCoeff * swardTotalLAI));
+            if (LAI_total == 0) return 0;
+            return 1.0 - (Math.Exp(-swardLightExtCoeff * LAI_total));
         }
     }
 
@@ -7233,11 +7130,23 @@ public class AgPasture
     [Units("mm")]
     public double Height
     {
-        get { return swardHeight; }
+        get
+        {
+            double result = 0.0;
+            if (AboveGroundWt > 0)
+            {
+                for (int s = 0; s < NumSpecies; s++)
+                    result += mySpecies[s].height * mySpecies[s].AboveGroundWt;
+
+                result /= AboveGroundWt;
+            }
+
+            return result;
+        }
     }
 
     /// <summary>An output</summary>
-    [Output]
+        [Output]
     [Description("Sward average root depth")] //needed by micromet
     [Units("mm")]
     public double RootingDepth

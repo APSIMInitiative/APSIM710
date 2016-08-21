@@ -363,9 +363,6 @@ public class Species
     ////  >> Plant height  >>>
 
     /// <summary>Some Description</summary>
-    internal bool usingSpeciesHeight;
-
-    /// <summary>Some Description</summary>
     internal double MaxPlantHeight;
 
     /// <summary>Some Description</summary>
@@ -843,6 +840,11 @@ public class Species
         stolons.tissue[2].DM = MyState.DMWeight[10];
         roots.tissue[0].DM = MyState.DMWeight[11];
 
+        //// Root depth and distribution  ................................
+        rootDepth = MyState.RootDepth;
+        targetRootAllocation = RootDistributionTarget();
+        rootFraction1 = CurrentRootDistributionTarget();
+
         //// Initial N amount in each pool ...............................
         leaves.tissue[0].Namount = MyState.NAmount[0];
         leaves.tissue[1].Namount = MyState.NAmount[1];
@@ -857,28 +859,56 @@ public class Species
         stolons.tissue[2].Namount = MyState.NAmount[10];
         roots.tissue[0].Namount = MyState.NAmount[11];
 
-        //// Aggregated and plant parts variables ........................
+        //// Update the aggregated variables (LAI, height, etc) ..........
         UpdateAggregatedVariables();
+    }
 
-        //// Plant height ................................................
-        if (usingSpeciesHeight)
-        {
-            // each species has it own height
-            height = HeightfromDM();
-        }
+    /// <summary>
+    /// Set state
+    /// </summary>
+    internal void SetEmergenceState()
+    {
+        // init DM for each pool
+        leaves.tissue[0].DM = emergenceDM[0];
+        leaves.tissue[1].DM = emergenceDM[1];
+        leaves.tissue[2].DM = emergenceDM[2];
+        leaves.tissue[3].DM = emergenceDM[3];
+        stems.tissue[0].DM = emergenceDM[4];
+        stems.tissue[1].DM = emergenceDM[5];
+        stems.tissue[2].DM = emergenceDM[6];
+        stems.tissue[3].DM = emergenceDM[7];
+        stolons.tissue[0].DM = emergenceDM[8];
+        stolons.tissue[1].DM = emergenceDM[9];
+        stolons.tissue[2].DM = emergenceDM[10];
+        stolons.tissue[3].DM = 0.0;
+        roots.tissue[0].DM = emergenceDM[11];
+        roots.tissue[1].DM = 0.0;
 
-        //// Root depth and distribution  ................................
-        rootDepth = MyState.RootDepth;
-        //layerBottomRootZone = GetRootZoneBottomLayer();
-        targetRootAllocation = RootDistributionTarget();
+        // init roots
+        rootDepth = minRootDepth;
         rootFraction1 = CurrentRootDistributionTarget();
 
-        //// General status ..............................................
-        //mySpecies[s].isAlive = isAlive;
-        //if (MyState.ShootDM <= 1e-12)
-        //    phenoStage = 0;
-        //else
-        //    phenoStage = 1;
+        //Init total N in each pool
+        leaves.tissue[0].Nconc = leaves.NConcOptimum;
+        leaves.tissue[1].Nconc = leaves.NConcOptimum * NcRel2;
+        leaves.tissue[2].Nconc = leaves.NConcOptimum * NcRel3;
+        leaves.tissue[3].Nconc = leaves.NConcMinimum;
+        stems.tissue[0].Nconc = stems.NConcOptimum;
+        stems.tissue[1].Nconc = stems.NConcOptimum * NcRel2;
+        stems.tissue[2].Nconc = stems.NConcOptimum * NcRel3;
+        stems.tissue[3].Nconc = stems.NConcMinimum;
+        stolons.tissue[0].Nconc = stolons.NConcOptimum;
+        stolons.tissue[1].Nconc = stolons.NConcOptimum * NcRel2;
+        stolons.tissue[2].Nconc = stolons.NConcOptimum * NcRel3;
+        stolons.tissue[3].Nconc = 0.0;
+        roots.tissue[0].Nconc = roots.NConcOptimum;
+        roots.tissue[1].Nconc = 0.0;
+
+        // init pheno stage
+        phenoStage = 1;
+
+        // init the aggregated variables (LAI, height, etc)
+        UpdateAggregatedVariables();
     }
 
     /// <summary>
@@ -1573,15 +1603,12 @@ public class Species
         evaluateLAI();
 
         //// - Plant height  ---------------------------------------------
-        if (usingSpeciesHeight)
-        {
-            height = HeightfromDM();
-        }
+        height = HeightfromDM();
 
         //// - Root distribution  ----------------------------------------
         if (usingSpeciesRoot)
         {
-            // Add new growth
+            // Add new growth - TODO: check this
             rootFraction = RootGrowthDistribution(dGrowth);
             // Subtract senescence
             rootFraction = RootGrowthDistribution(-dDMRootSen);
@@ -1629,54 +1656,6 @@ public class Species
     {
         bSown = true;
         phenoStage = 0; //before germination
-    }
-
-    /// <summary>
-    /// Set state
-    /// </summary>
-    internal void SetEmergenceState()
-    {
-        phenoStage = 1;
-
-        leaves.tissue[0].DM = emergenceDM[0];
-        leaves.tissue[1].DM = emergenceDM[1];
-        leaves.tissue[2].DM = emergenceDM[2];
-        leaves.tissue[3].DM = emergenceDM[3];
-        stems.tissue[0].DM = emergenceDM[4];
-        stems.tissue[1].DM = emergenceDM[5];
-        stems.tissue[2].DM = emergenceDM[6];
-        stems.tissue[3].DM = emergenceDM[7];
-        stolons.tissue[0].DM = emergenceDM[8];
-        stolons.tissue[1].DM = emergenceDM[9];
-        stolons.tissue[2].DM = emergenceDM[10];
-        stolons.tissue[3].DM = 0.0;
-        roots.tissue[0].DM = emergenceDM[11];
-        roots.tissue[1].DM = 0.0;
-
-        //Init total N in each pool
-        leaves.tissue[0].Nconc = leaves.NConcOptimum;
-        leaves.tissue[1].Nconc = leaves.NConcOptimum * NcRel2;
-        leaves.tissue[2].Nconc = leaves.NConcOptimum * NcRel3;
-        leaves.tissue[3].Nconc = leaves.NConcMinimum;
-        stems.tissue[0].Nconc = stems.NConcOptimum;
-        stems.tissue[1].Nconc = stems.NConcOptimum * NcRel2;
-        stems.tissue[2].Nconc = stems.NConcOptimum * NcRel3;
-        stems.tissue[3].Nconc = stems.NConcMinimum;
-        stolons.tissue[0].Nconc = stolons.NConcOptimum;
-        stolons.tissue[1].Nconc = stolons.NConcOptimum * NcRel2;
-        stolons.tissue[2].Nconc = stolons.NConcOptimum * NcRel3;
-        stolons.tissue[3].Nconc = 0.0;
-        roots.tissue[0].Nconc = roots.NConcOptimum;
-        roots.tissue[1].Nconc = 0.0;
-
-        //calculated, DM and LAI,  species-specific
-        UpdateAggregatedVariables();
-
-        dGrowthPot = 0.0; // daily growth potential
-        dGrowthW = 0.0; // daily growth considering only water deficit
-        dGrowth = 0.0; // daily growth actual
-        dGrowthRoot = 0.0; // daily root growth
-        fShoot = 1.0; // actual fraction of dGrowth allocated to shoot
     }
 
     /// <summary>
@@ -2626,14 +2605,14 @@ public class Species
         double PreRemovalNRemob = Nremob;
         Nremob *= fractionRemainingGreen;
 
-        // update Luxury N pools
+        // Update Luxury N pools
         NLuxury2 *= fractionRemainingGreen;
         NLuxury3 *= fractionRemainingGreen;
 
-        // Update the variables with aggregated data and plant parts (dmshoot, LAI, etc)
+        // Update the aggregated variables (LAI, height, etc)
         UpdateAggregatedVariables();
 
-        // check balance and set outputs
+        // Check balance and set outputs
         double NremobRemove = PreRemovalNRemob - Nremob;
         dmdefoliated = prevState.dmshoot - AboveGroundWt;
         prevState.dmdefoliated = dmdefoliated;
