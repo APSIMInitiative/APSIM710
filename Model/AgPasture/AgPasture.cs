@@ -688,12 +688,12 @@ public class AgPasture
     [Param]
     [Description("Digestibility of live plant material (0-1)")]
     [Units("")]
-    private double[] digestLive;
+    private double[] digestLiveCellWall;
 
     [Param]
     [Description("Digestibility of dead plant material (0-1)")]
     [Units("")]
-    private double[] digestDead;
+    private double[] digestDeadCellWall;
 
     ////  >> Default values for DM
     [Param]
@@ -1818,9 +1818,9 @@ public class AgPasture
             breakCode("Kappa4_Remob");
 
         ////  >> Digestibility and feed quality  >>>
-        if (digestLive.Length < NumSpecies)
+        if (digestLiveCellWall.Length < NumSpecies)
             breakCode("digestLive");
-        if (digestDead.Length < NumSpecies)
+        if (digestDeadCellWall.Length < NumSpecies)
             breakCode("digestDead");
 
         ////  >> DM limits for harvest and senescence  >>>
@@ -2042,8 +2042,12 @@ public class AgPasture
         mySpecies[s1].Kappa4 = Kappa4_Remob[s2];
 
         ////  >> Digestibility and feed quality  >>>
-        mySpecies[s1].digestLive = digestLive[s2];
-        mySpecies[s1].digestDead = digestDead[s2];
+        mySpecies[s1].leaves.DigestLiveCellWall = digestLiveCellWall[s2];
+        mySpecies[s1].leaves.DigestDeadCellWall = digestDeadCellWall[s2];
+        mySpecies[s1].stems.DigestLiveCellWall = digestLiveCellWall[s2];
+        mySpecies[s1].stems.DigestDeadCellWall = digestDeadCellWall[s2];
+        mySpecies[s1].stolons.DigestLiveCellWall = digestLiveCellWall[s2];
+        mySpecies[s1].stolons.DigestDeadCellWall = digestDeadCellWall[s2];
 
         ////  >> DM limits for harvest and senescence  >>>
         mySpecies[s1].dmgreenmin = dmgreenmin[s2];
@@ -4756,7 +4760,7 @@ public class AgPasture
             mySpecies[s].UpdateAggregatedVariables();
 
             // Calc today's herbage digestibility
-            mySpecies[s].calcDigestibility();
+            mySpecies[s].evaluateDigestibility();
         }
 
         // Update aggregated variables (whole sward)
@@ -5130,7 +5134,7 @@ public class AgPasture
         UpdateAggregatedVariables();
 
         //In this routine of no selection among species, the removed tissue from different species
-        //will be in proportion with exisisting mass of each species.
+        //will be in proportion with existing mass of each species.
         //The digetibility below is an approximation (= that of pasture swards).
         //It is more reasonable to calculate it organ-by-organ for each species, then put them together.
         swardHarvestDigestibility = HerbageDigestibility;
@@ -6541,8 +6545,7 @@ public class AgPasture
 
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].digestHerbage *
-                          MathUtility.Divide(mySpecies[s].stems.DMTotal + mySpecies[s].leaves.DMTotal, StemWt + LeafWt,
+                result += mySpecies[s].digestHerbage * MathUtility.Divide(mySpecies[s].stems.DMTotal + mySpecies[s].leaves.DMTotal, StemWt + LeafWt,
                               0.0);
             return result;
         }
@@ -6555,6 +6558,25 @@ public class AgPasture
     public double DefoliatedDigestibility
     {
         get { return swardHarvestDigestibility; }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Average digestibility of harvested material")]
+    [Units("0-1")]
+    public double SwardDefoliatedDigestibility
+    {
+        get
+        {
+            double result = 0.0;
+            if (HarvestWt > 0.0)
+            {
+                for (int s = 0; s < NumSpecies; s++)
+                    result += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated;
+                result /= HarvestWt;
+            }
+            return result;
+        }
     }
 
     /// <summary>An output</summary>
@@ -8547,7 +8569,7 @@ public class AgPasture
     [Output]
     [Description("Average digestibility of harvested material, for each species")]
     [Units("0-1")]
-    public double[] speciesDefoliatedDigestibility
+    public double[] SpeciesDefoliatedDigestibility
     {
         get
         {
@@ -8560,15 +8582,30 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Average ME of harvested material, for each species")]
-    [Units("(MJ/kgDM)")]
-    public double[] speciesHerbageMEconc
+    [Description("Average herbage digestibility, for each species")]
+    [Units("0-1")]
+    public double[] SpeciesHerbageDigestibility
     {
         get
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = 16 * mySpecies[s].digestDefoliated;
+                result[s] = mySpecies[s].digestHerbage;
+            return result;
+        }
+    }
+
+    /// <summary>An output</summary>
+    [Output]
+    [Description("Average ME of harvested material, for each species")]
+    [Units("MJ/kgDM")]
+    public double[] SpeciesHerbageMEconc
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = 16 * mySpecies[s].digestHerbage;
             return result;
         }
     }

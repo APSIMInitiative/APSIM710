@@ -355,14 +355,6 @@ public class Species
     /// <summary>Some Description</summary>
     internal double GLFSFertility;
 
-    //// > Digestibility and feed quality  >>>
-
-    /// <summary>Some Description</summary>
-    internal double digestLive; //Digestibility of live plant material (0-1)
-
-    /// <summary>Some Description</summary>
-    internal double digestDead; //Digestibility of dead plant material (0-1)
-
     //// > Minimum DM and preferences when harvesting  >>>
 
     /// <summary>minimum green DM</summary>
@@ -779,6 +771,18 @@ public class Species
     internal double AboveGroundDeadWt
     {
         get { return leaves.DMDead + stems.DMDead + stolons.DMDead; }
+    }
+
+    /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
+    internal double StandingWt
+    {
+        get { return leaves.DMTotal + stems.DMTotal; }
+    }
+
+    /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
+    internal double StandingLiveWt
+    {
+        get { return leaves.DMGreen + stems.DMGreen; }
     }
 
     /// <summary>N amount aboveground (kg/ha)</summary>
@@ -1267,6 +1271,12 @@ public class Species
             roots.tissue[0].DM += toRoot * dGrowth;
             dGrowthHerbage = (toLeaf + toStem + toStol) * dGrowth;
 
+            // Set the amount of sugar in each organ
+            double fToSugar = 0.5;
+            leaves.SugarWt = fToSugar * toLeaf * dGrowth;
+            stems.SugarWt = fToSugar * toStem * dGrowth;
+            stolons.SugarWt = fToSugar * toStol * dGrowth;
+
             // Partitioing N, based on DM and [N] in each plant part
             double myNsum = (toLeaf * leaves.NConcMaximum)
                             + (toStem * stems.NConcMaximum)
@@ -1351,6 +1361,7 @@ public class Species
             gamaS = refTurnoverRateStolon * tempFacTTurnover * swFacTTurnover * leafFac;
 
         // Littering rate
+        double digestDead = ((leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead)) / (leaves.DMDead + stems.DMDead);
         gamaD = refLitteringRate * swFacTTDead * digestDead / 0.4;
 
         // Adjust littering rate due to stock trampling
@@ -1559,9 +1570,7 @@ public class Species
     internal void UpdateAggregatedVariables() //update DM, N
     {
         //// - LAI  ------------------------------------------------------
-        greenLAI = GreenLAI();
-        deadLAI = DeadLAI();
-        totalLAI = greenLAI + deadLAI;
+        evaluateLAI();
 
         //// - Plant height  ---------------------------------------------
         if (usingSpeciesHeight)
@@ -1765,39 +1774,6 @@ public class Species
         }
         dGrowthPot *= rFactor;
         return dGrowthPot;
-    }
-
-    /// <summary>
-    /// Compute the LAI value of green material
-    /// </summary>
-    /// <returns>green LAI</returns>
-    internal double GreenLAI()
-    {
-        double myLAI = (0.0001 * leaves.DMGreen * specificLeafArea)
-                       + (0.0001 * stolons.DMTotal * 0.3 * specificLeafArea);
-        // 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming Mass2GLA = 0.3*SLA
-        // Resilience after unfavoured conditions
-        // Consider cover will be bigger for the same amount of DM when DM is low due to
-        // - light extinction coefficient will be bigger - plant leaves will be more horizontal than in dense high swards
-        // - more parts will turn green for photosysnthesis (?)
-        // - quick response of plant shoots to favoured conditions after release of stress
-        // » Specific leaf area should be reduced (RCichota2014)
-        if (!isLegume && AboveGroundLiveWt < 1000)
-        {
-            myLAI += 0.0001 * stems.DMGreen * specificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
-        }
-
-        return myLAI;
-    }
-
-    /// <summary>
-    /// Compute the LAI value of dead material
-    /// </summary>
-    /// <returns>dead LAI</returns>
-    internal double DeadLAI()
-    {
-        double myLAI = 0.0001 * leaves.tissue[3].DM * specificLeafArea;
-        return myLAI;
     }
 
     #endregion
@@ -2620,11 +2596,10 @@ public class Species
         fractionRemainingDead = Math.Max(0.0, Math.Min(1.0, fractionRemainingDead));
 
         // get digestibility of DM being harvested
-        double fCN = (AboveGroundLiveWt * CarbonFractionDM) / AboveGroundLiveN;
-        double greenDigestibility = tissueDigestibility(fCN, digestLive, 0.5 * dGrowth / AboveGroundLiveWt);
-            // assume half of new growth is sugar
-        fCN = (AboveGroundDeadWt * CarbonFractionDM) / AboveGroundDeadN;
-        double deadDigestibility = tissueDigestibility(fCN, digestDead, 0.0); // no sugars in dead material
+        double greenDigestibility = (leaves.DigestibilityLive * leaves.DMGreen) + (stems.DigestibilityLive * stems.DMGreen);
+        double deadDigestibility = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
+        greenDigestibility /= StandingLiveWt;
+        deadDigestibility /= AboveGroundDeadWt;
         digestDefoliated = fractionToHarvestGreen * greenDigestibility + fractionToHarvestDead * deadDigestibility;
 
         // update the various pools
@@ -2671,67 +2646,44 @@ public class Species
     }
 
     /// <summary>
-    /// Calculate the average herbage digestibility (above ground)
+    /// Calcualtes the LAI values for green and dead material
     /// </summary>
-    /// <returns>digestibility</returns>
-    internal void calcDigestibility()
+    internal void evaluateLAI()
     {
-        double fSugar;
-        double CNtissue;
-        if (AboveGroundWt > 0.0)
+        greenLAI = (0.0001 * leaves.DMGreen * specificLeafArea)
+                   + (0.0001 * stolons.DMTotal * 0.3 * specificLeafArea);
+        // 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming stolon = 0.3*SLA
+        // Resilience after unfavoured conditions
+        // Consider cover will be bigger for the same amount of DM when DM is low due to
+        // - light extinction coefficient will be bigger - plant leaves will be more horizontal than in dense high swards
+        // - more parts will turn green for photosysnthesis (?)
+        // - quick response of plant shoots to favoured conditions after release of stress
+        // » Specific leaf area should be reduced (RCichota2014)
+        if (!isLegume && AboveGroundLiveWt < 1000)
         {
-            //Live
-            double digestibilityLive = 0.0;
-            double standingDMGreen = leaves.DMGreen + stems.DMGreen;
-            double standingNGreen = leaves.NGreen + stems.NGreen;
-            if ((standingDMGreen > 0.0) & (standingNGreen > 0.0))
-            {
-                fSugar = 0.5 * dGrowth / AboveGroundLiveWt; //sugar fraction is assumed as half of growth
-                CNtissue = 0.4 * standingDMGreen / standingNGreen; //CN ratio of live shoots (minus stolon)
-                digestibilityLive = tissueDigestibility(CNtissue, digestLive, fSugar);
-            }
-
-            //Dead
-            double digestibilityDead = 0.0;
-            if ((AboveGroundDeadWt > 0.0) && (AboveGroundDeadN > 0.0))
-            {
-                fSugar = 0.0; //no sugar in dead material
-                CNtissue = (AboveGroundDeadWt * CarbonFractionDM) / AboveGroundDeadN; //CN ratio of standing dead;
-                digestibilityDead = tissueDigestibility(CNtissue, digestDead, 0.0);
-            }
-
-            double deadFrac = MathUtility.Divide(AboveGroundDeadWt, standingDMGreen, 0.0);
-            digestHerbage = digestibilityLive * (1 - deadFrac) + digestibilityDead * deadFrac;
+            greenLAI += 0.0001 * stems.DMGreen * specificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
         }
-        else
-            digestHerbage = 0.0;
+
+
+        deadLAI = 0.0001 * leaves.tissue[3].DM * specificLeafArea;
+        totalLAI = greenLAI + deadLAI;
     }
 
     /// <summary>
-    /// Calculate the digestibility of plant material
+    /// Calculate the average herbage digestibility (above ground)
     /// </summary>
-    /// <remarks>
-    /// Assumes fixed CN ratios and digestibilites of various materials
-    /// Digestibility of sugars (dissolved carbohydrates) and proteins is assumed to be one
-    /// </remarks>
-    /// <param name="tissueCN">the CN ratio of the tissue</param>
-    /// <param name="nonSolubleDigest">the digestibility of non-soluble fraction of the tissue</param>
-    /// <param name="fSugar">the fraction of soluble carbohydrate of the tissue</param>
-    /// <returns>the tissue digestibility</returns>
-    internal double tissueDigestibility(double tissueCN, double nonSolubleDigest, double fSugar)
+    /// <returns>digestibility</returns>
+    internal void evaluateDigestibility()
     {
         double result = 0.0;
-        if (tissueCN > 0.0)
+        if (StandingWt > 0.0)
         {
-            //Fraction of protein in the tissue
-            double fProtein = (fSugar - 1 + (CNw / tissueCN)) * (ProteinCNr / (CNw - ProteinCNr));
-            //Fraction of non-soluble material in the tissue (cell wall)
-            double fCellWall = 1 - fSugar - fProtein;
-
-            result = fSugar + fProtein + fCellWall * nonSolubleDigest;
+            result = (leaves.DigestibilityLive * leaves.DMGreen) + (leaves.DigestibilityDead * leaves.DMDead)
+                   + (stems.DigestibilityLive * stems.DMGreen) + (stems.DigestibilityDead * stems.DMDead);
+            result /= StandingWt;
         }
 
-        return result;
+        digestHerbage = result;
     }
 
     /// <summary>
@@ -3080,6 +3032,70 @@ public class Species
                 if (DMDead > 0.0)
                 {
                     result = NDead / DMDead;
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>The digestibility of live cell walls [0-1]</summary>
+        internal double DigestLiveCellWall = 0.6;
+
+        /// <summary>The digestibility of dead cell walls [0-1]</summary>
+        internal double DigestDeadCellWall = 0.2;
+
+        /// <summary>The fraction of DM in sugar form for this organ [0-1]</summary>
+        internal double SugarWt = 0.1;
+
+        /// <summary>The digestibility of live plant material</summary>
+        /// <remarks>
+        /// Assumes fixed CN ratios and digestibilites of various materials
+        /// Digestibility of sugars (dissolved carbohydrates) and proteins is assumed to be one
+        /// </remarks>
+        /// <returns>the digestibility for this organ</returns>
+        internal double DigestibilityLive
+        {
+            get
+            {
+                double result = 0.0;
+                double tissueCN = MathUtility.Divide(DMGreen * CarbonFractionDM, NGreen, 0.0);
+
+                if (tissueCN > 0.0)
+                {
+                    //Fraction of protein in the tissue
+                    double fSugar = SugarWt / DMGreen;
+                    double fProtein = (fSugar - 1.0 + (CNw / tissueCN)) * (ProteinCNr / (CNw - ProteinCNr));
+                    //Fraction of non-soluble material in the tissue (cell wall)
+                    double fCellWall = 1.0 - fSugar - fProtein;
+
+                    result = fSugar + fProtein + fCellWall * DigestLiveCellWall;
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>The digestibility of dead plant material</summary>
+        /// <remarks>
+        /// Assumes fixed CN ratios and digestibilites of various materials
+        /// Digestibility of proteins is assumed to be one, assume no sugars in dead material
+        /// </remarks>
+        /// <returns>the digestibility for this organ</returns>
+        internal double DigestibilityDead
+        {
+            get
+            {
+                double result = 0.0;
+                double tissueCN = MathUtility.Divide(DMDead * CarbonFractionDM, NDead, 0.0);
+
+                if (tissueCN > 0.0)
+                {
+                    //Fraction of protein in the tissue
+                    double fProtein = ((CNw - tissueCN) / tissueCN) * (ProteinCNr / (CNw - ProteinCNr));
+                    //Fraction of non-soluble material in the tissue (cell wall)
+                    double fCellWall = 1.0 - fProtein;
+
+                    result = fProtein + fCellWall * DigestDeadCellWall;
                 }
 
                 return result;
