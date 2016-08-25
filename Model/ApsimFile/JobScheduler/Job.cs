@@ -21,20 +21,18 @@ namespace JobScheduler {
     {
         [XmlIgnore]
         public Project Project { get; set; }
+        [XmlIgnore]
+        public Target Target { get; set; }
 
         public int taskProgress = 0;
 
         [XmlAttribute("IgnoreErrors")]
         public bool IgnoreErrors { get; set; }
-
         public abstract bool HasErrors { get; }
-
         public bool HasRun { get { return Status != null; } }
 
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
-
-        [XmlAttribute("ElapsedTime")]
         public int ElapsedTime { get; set; }
 
         [XmlAttribute("name")]
@@ -44,7 +42,7 @@ namespace JobScheduler {
         public string Status { get; set; }
 
         [XmlElement("DependsOn")]
-        public List<DependsOn> DependsOn { get; set; }
+        public List<DependsOn> DependsOn = new List<DependsOn>();
 
         /// <summary>
         /// Return percent complete
@@ -84,91 +82,76 @@ namespace JobScheduler {
         /// <summary>
         /// Return true if this job can be run.
         /// </summary>
-        public bool CanRun(Project Project, Target Target)
+        public bool CanRun
         {
-            if (!HasRun)
-                return DependenciesSatisfied(Project, Target);
-            else
-                return false;
+            get
+            {
+                if (!HasRun)
+                    return DependenciesSatisfied();
+                else
+                    return false;
+            }
         }
 
         /// <summary>
         /// Return true if the dependencies for this job have been satisfied.
         /// </summary>
-        public bool DependenciesSatisfied(Project Project, Target Target)
+        public bool DependenciesSatisfied()
         {
-            if (DependsOn == null)
-                return true;
             foreach (DependsOn Dependency in DependsOn)
             {
                 Target T = Project.FindTarget(Dependency.Name);
                 if (T != null)
                 {
-                    T.NeedToRun = true;
-                    if (T.Status == "Fail")
-                    {
-                        Status = "Fail";
-                        // FIXME StdOutBuf.AppendLine("Failed due to dependency failure");
-                        //Project.CheckAllJobsForCompletion();
-                    }
-                    if (T.Status == "Running")
+                    if (T.Status == null)
                         return false;
-                    else if (T.Status == "Fail" && !Dependency.IgnoreErrors)
+                    else if (T.Status == "Running")
+                        return false;
+                    else if (T.Status == "Fail" && ! Dependency.IgnoreErrors)
                         return false;
                 }
                 else
                 {
-                    IJob J = Target.FindJob(Dependency.Name);
-                    if (J != null)
-                    {
-                        if (J.Status == null)
-                            return false;
-                        if (J.Status == "Fail")
-                        {
-                            Status = "Fail";
-                            // FIXME StdOutBuf.AppendLine("Failed due to dependency failure");
-                            //Project.CheckAllJobsForCompletion();
-                        }
+                    IJob J = Project.FindJob(Dependency.Name);
+                    if (J == null)
+                        throw new Exception("Job " + Name + " Cannot find dependency: " + Dependency.Name);
 
-                        if (J.Status == "Running")
-                            return false;
-                        else if (J.Status == "Fail" && !Dependency.IgnoreErrors)
-                            return false;
-                    }
-                    else
-                    {
-                        Status = "Fail";
-                        // FIXME StdErrBuf.AppendLine("Cannot find dependency: " + Dependency.Name);
+                    if (J.Status == null)
                         return false;
-                    }
+
+                    else if (J.Status == "Fail" && ! Dependency.IgnoreErrors)
+                        return false;
+
+                    else if (J.Status == "Running")
+                        return false;
                 }
             }
+            // We are good to go.
             return true;
         }
 
+        protected object thislock = new object();
         /// <summary>
         /// Start running the job. Job may not be complete when this method returns.
         /// </summary>
         public Task<int> StartAsync()
         {
-            //Console.WriteLine("Runn   " + Name);
+            lock (thislock) { // FIXME should not be needed
             var tcs = new TaskCompletionSource<int>();
-            Status = "Running";
             StartTime = DateTime.Now;
-            try
-            {
+            if (Target.StartTime.Ticks == 0)
+                Target.StartTime = DateTime.Now;
+
+            if (Status == "Fail")
+                { 
+                FinishTime = DateTime.Now;
+                tcs.SetResult(1);
+                }
+            else
                 Run(tcs);
-            }
-            catch (Exception e)
-            {
-                Status = "Fail";
-                tcs.SetException(e); // ?? needed ??
-            }
+
             return (tcs.Task);
-        }
-        public void onCancel()
-        {
-            Status = "Fail";
+            }
         }
         public abstract void Run(TaskCompletionSource<int> tcs);
         public abstract void Stop();
@@ -188,6 +171,7 @@ namespace JobScheduler {
         [XmlElement("CommandLineUnix")]
         public string CommandLineUnix { get; set; }
         public int maxLines { get; set; }
+        [XmlIgnore]
         public bool SendStdErrToConsole { get; set; }
         private int lineCount;
         public override bool HasErrors { get { return ExitCode != 0; } }
@@ -280,6 +264,7 @@ namespace JobScheduler {
             }
 
         }
+
         public override void Run(TaskCompletionSource<int> tcs)
         {
             try
@@ -288,11 +273,14 @@ namespace JobScheduler {
             }
             catch (Exception e)
             {
-                StdErr += "Exception caught: " + e.Message + "\n" + e.StackTrace;
+                string msg = "Exception caught: " + e.Message + "\n" + e.StackTrace + "\n";
+                StdErr = msg + StdErr;
+                Status = "Fail";
                 Shutdown();
-                throw;
+                tcs.SetResult(1);
             }
         }
+
         private void Run1(TaskCompletionSource<int> tcs)
         {
             WorkingDirectory = Utility.ReplaceEnvironmentVariables(WorkingDirectory).Replace('\\', '/');
@@ -322,9 +310,10 @@ namespace JobScheduler {
                         ldPath += ":" + APSIMModelDirectory;
                     else
                         ldPath = APSIMModelDirectory;
-                    if (_P.StartInfo.EnvironmentVariables.ContainsKey("LD_LIBRARY_PATH"))
-                        _P.StartInfo.EnvironmentVariables.Remove("LD_LIBRARY_PATH");
-                    _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
+                    if (_P.StartInfo.EnvironmentVariables.ContainsKey("LD_LIBRARY_PATH")) 
+                        _P.StartInfo.EnvironmentVariables["LD_LIBRARY_PATH"] = ldPath;
+                    else
+                        _P.StartInfo.EnvironmentVariables.Add("LD_LIBRARY_PATH", ldPath);
                 }
                 if (StdOutFilename != "")
                 {
@@ -346,14 +335,16 @@ namespace JobScheduler {
 
                     Shutdown();
 
-                    Status = "Fail";
                     if (_P.ExitCode == 0 || IgnoreErrors)
                         Status = "Pass";
+                    else
+                        Status = "Fail";
+
                     WriteLogMessage();
                     tcs.SetResult(_P.ExitCode);
                     _P.Dispose();
                 };
-                // Console.WriteLine("Run: " + _P.StartInfo.FileName + " " + _P.StartInfo.Arguments + "(wd=" + WorkingDirectory + ")");
+                //Console.WriteLine("Run: " + _P.StartInfo.FileName + " " + _P.StartInfo.Arguments + "(wd=" + WorkingDirectory + ")");
                 _P.Start();
                 _P.BeginOutputReadLine();
                 _P.BeginErrorReadLine();
@@ -387,11 +378,8 @@ namespace JobScheduler {
                 if (_P != null && !_P.HasExited)
                     _P.Kill();
 
-                //                while (!_P.HasExited)
-                //                {
-                //                    System.Threading.Thread.Sleep(100);
-                //                }
                 _P = null;
+                Shutdown();
             }
             catch (Exception)
             { }
@@ -466,15 +454,16 @@ namespace JobScheduler {
 
         public override void Run(TaskCompletionSource<int> tcs)
         {
-
+        //Console.WriteLine("Run: " + FileSpec);
         // Scan a directory.
         // 1. For each filename found, add a job for each simulation in each file.
         List<string> FileNames = new List<string>();
         Utility.FindFiles(Utility.ReplaceEnvironmentVariables(Path.GetDirectoryName(FileSpec)), 
                           Path.GetFileName(FileSpec), ref FileNames, true, false);
 
-        Target Target = new Target();
-        Target.Name = TargetFolder;
+        Target myTarget = new Target();
+        myTarget.Name = TargetFolder;
+        myTarget.Project = Project;
 
         foreach (string FileName in FileNames)
         {
@@ -487,21 +476,22 @@ namespace JobScheduler {
                 convJob.Name = "";
                 if (Exe != "")
                 {
+                    convJob.Target = myTarget; convJob.Project = Project;
                     convJob.Name = "Convert " + FileName;
                     convJob.CommandLine = StringManip.DQuote(Exe) + " " + StringManip.DQuote(FileName);
                     convJob.WorkingDirectory = Path.GetDirectoryName(FileName);
-                    Target.Jobs.Add(convJob);
+                    myTarget.Jobs.Add(convJob);
                 }
 
                 foreach (string SimulationName in GetSimulationNamesFrom(FileName))
                 {
                     Job J = new Job();
+                    J.Target = myTarget; J.Project = Project;
                     J.Name = FileName + ":" + SimulationName;
                     if (Path.GetExtension(FileName).ToLower() == ".apsim")
                     {
                         J.CommandLine = StringManip.DQuote("%APSIM%/Model/ApsimModel.exe") + " " +
                                          StringManip.DQuote(SimulationName + ".sim");
-                        J.DependsOn = new List<DependsOn>();
                         J.DependsOn.Add(new DependsOn(convJob.Name));
                         J.StdOutFilename = Path.Combine(Path.GetDirectoryName(FileName), SimulationName + ".sum");
                     }
@@ -510,7 +500,6 @@ namespace JobScheduler {
                         string simfile = Path.ChangeExtension(FileName, "." + SimulationName + ".sim");
                         J.CommandLine = StringManip.DQuote("%APSIM%/Model/ApsimModel.exe") + " " +
                                          StringManip.DQuote(simfile);
-                        J.DependsOn = new List<DependsOn>();
                         J.DependsOn.Add(new DependsOn(convJob.Name));
                         J.StdOutFilename = Path.Combine(Path.GetDirectoryName(FileName), Path.ChangeExtension(simfile, ".sum"));
                     }
@@ -520,17 +509,18 @@ namespace JobScheduler {
                     }
                     J.IgnoreErrors = true;
                     J.WorkingDirectory = Path.GetDirectoryName(FileName);
-                    Target.Jobs.Add(J);
+                    myTarget.Jobs.Add(J);
                 }
         }
         Status = "Pass";
         //FIXME StdOut += "Found " + FileNames.Count + " files\n";
-        Project.AddTarget(Target);
+        Project.AddTarget(myTarget);
+        FinishTime = DateTime.Now;
         tcs.SetResult(0);
         }
 
     // FIXME: This ignores "factorial" .apsim simulations
-    private static List<string> GetSimulationNamesFrom(string FileName)
+    private List<string> GetSimulationNamesFrom(string FileName)
     {
         StreamReader In = new StreamReader(FileName);
         string Contents = In.ReadToEnd();

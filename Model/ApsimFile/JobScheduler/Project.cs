@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,26 +13,58 @@ namespace JobScheduler {
         internal Object thisLock = null;
 
         [XmlElement("Target")]
-        public List<Target> Targets { get; set; }
+        public List<Target> Targets = new List<Target>();
 
-        //[XmlElement("WasCancelled")]
-        //public bool WasCancelled = false;
         /// <summary>
         ///  Constructor
         /// </summary>
         public Project()
         {
-            Targets = new List<Target>();
             thisLock = new object();
         }
 
+        [XmlIgnore]
+        private string MainTarget = "";
+
+        public void SetMainTarget(string TargetToRun) 
+        {
+            if (TargetToRun == null)
+            {
+                // run the first target if not specified
+                if (Targets.Count > 0)
+                    Targets[0].NeedToRun = true;
+                MainTarget = Targets[0].Name;
+            }
+            else
+            {
+                Target T = FindTarget(TargetToRun);
+                if (T == null)
+                    throw new Exception("Cannot find target: " + TargetToRun);
+                T.NeedToRun = true;
+                MainTarget = T.Name;
+            }
+        }
 
         internal Target FindTarget(string NameToFind)
         {
-            foreach (Target t in Targets)
-                if (t.Name == NameToFind)
-                    return t;
-            return null;
+            lock (thisLock)
+            {
+                foreach (Target t in Targets)
+                    if (t.Name == NameToFind)
+                        return t;
+                return null;
+            }
+        }
+        internal IJob FindJob(string NameToFind)
+        {
+            lock (thisLock)
+            {
+                foreach (Target t in Targets)
+                    foreach (IJob J in t.Jobs)
+                        if (J.Name == NameToFind)
+                            return J;
+                return null;
+            }
         }
 
         internal IJob NextJobToRun()
@@ -44,14 +77,13 @@ namespace JobScheduler {
                     J = t.NextJobToRun();
                     if (J != null)
                     {
-                        //Console.WriteLine("Found  " + J.Name);
                         J.Status = "Running";
                         if (t.StartTime == DateTime.MinValue) t.StartTime = DateTime.Now;
                         return J;
                     }
                 }
+                return null;
             }
-            return null;
         }
 
         /// <summary>
@@ -100,6 +132,20 @@ namespace JobScheduler {
             }
         }
 
+        public bool MainTargetFinished
+        {
+            get
+            {
+                lock (thisLock)
+                {
+                    Target T = FindTarget(MainTarget);
+                    //Console.WriteLine("---");
+                    //T.Print(0);
+                    return (T.HasFinished);
+                }
+            }
+        }
+
 
         public bool AllTargetsPassed
         {
@@ -126,14 +172,9 @@ namespace JobScheduler {
                     else
                         Names.Add(J.Name);
 
-            // Check there is at least one job in every target
+            // Check that dependencies exist and check if needs to run
             foreach (Target t in Targets)
-                if (t.Jobs.Count == 0)
-                {
-                    t.Jobs.Add(new Job());
-                    t.Jobs[0].Name = t.Name + "Dummy";
-                }
-
+                t.CheckForDependancies();
         }
 
         internal int NumJobsCompleted()
@@ -169,5 +210,30 @@ namespace JobScheduler {
                 return (Math.Min(100, Math.Max(0, (int)(100 * p / n))));
             }
         }
+
+        [XmlIgnore]
+        private List<IJob> RunLog = new List<IJob>();
+        public void SaveJobInLog (IJob J)
+        {
+            lock (thisLock)
+            {
+                RunLog.Add(J);
+            }
+        }
+        /// <summary>
+        /// Save our logfile.
+        /// </summary>
+        internal void SaveXmlFile(string FileName)
+        {
+            lock (thisLock)
+            {
+                Type[] derivedClasses = { typeof(Job), typeof(FindJob) };
+                XmlSerializer x = new XmlSerializer(typeof(List<IJob>), derivedClasses);
+                StreamWriter s = new StreamWriter(FileName);
+                x.Serialize(s, RunLog);
+                s.Close();
+            }
+        }
+
     }
 }

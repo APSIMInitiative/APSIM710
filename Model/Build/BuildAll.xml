@@ -51,11 +51,6 @@
          <WorkingDirectory>%APSIM%/Model/CMPServices</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-      <Job name="Compile WaterAllocator">
- 	 <DependsOn>Compile CMPServices</DependsOn>	
-         <WorkingDirectory>%APSIM%/Model/WaterAllocator</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-      </Job>
       <Job name="Compile ApsimFile">
          <DependsOn>Compile CMPServices</DependsOn>
          <WorkingDirectory>%APSIM%/Model/ApsimFile</WorkingDirectory>
@@ -580,6 +575,11 @@
          <CommandLine>make</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
+      <Job name="Compile WaterAllocator">
+ 	       <DependsOn>Compile CMPServices</DependsOn>	
+         <WorkingDirectory>%APSIM%/Model/WaterAllocator</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
       <Job name="Compile WaterSupply">
          <DependsOn>Compile FortranInfrastructure</DependsOn>
          <DependsOn>Compile FortranComponentInterface</DependsOn>
@@ -819,7 +819,6 @@
    </Target>
 
    <Target name="Bob">
-      <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
       <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Upload SFX Binaries 1">
          <WorkingDirectory>%APSIM%/Release</WorkingDirectory>

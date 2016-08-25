@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CSGeneral;
 using System.Xml.Serialization;
 using System.Reflection;
+using System.Linq;
 
 namespace JobScheduler
 {
@@ -108,7 +109,6 @@ namespace JobScheduler
             {
                 string num;
                 Macros.TryGetValue("NumCPUs", out num);
-                string NumberOfProcesses = num;
                 try
                 {
                     NumJobs = Convert.ToInt32(num);
@@ -140,7 +140,7 @@ namespace JobScheduler
             Console.WriteLine(" [" + ElapsedTime.ToString() + "sec]");
             Console.WriteLine("");
 
-            SaveXmlFile(args[0].Replace(".xml", "Output.xml"), Project);
+            Project.SaveXmlFile(args[0].Replace(".xml", "Output.xml"));
             return HasErrors;
         }
 
@@ -149,46 +149,32 @@ namespace JobScheduler
         /// </summary>
         public bool RunJob(Project P)
         {
-            Project = P;
-            Start(CalcNumCPUs());
-            return (true);
+            lock (this)
+            {
+                Project = P;
+                Start(CalcNumCPUs());
+                return (true);
+            }
         }
 
-        CancellationTokenSource cancellationTokenSource = null;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         /// <summary>
         /// Start running the jobs specified in the project.
         /// </summary>
         internal void Start(int NumJobs, string TargetToRun = null)
         {
-            if (cancellationTokenSource != null)
-            {
-                cancellationTokenSource.Cancel();
-                cancellationTokenSource = null;
-            }
-
             // Give the project to each target and job.
             foreach (Target t in Project.Targets)
             {
                 t.Project = Project;
                 foreach (IJob j in t.Jobs)
+                {
                     j.Project = Project;
+                    j.Target = t;
+                }
             }
-
-            if (TargetToRun == null)
-            {
-                // run the first target if not specified
-                if (Project.Targets.Count > 0)
-                    Project.Targets[0].NeedToRun = true;
-                TargetToRun = Project.Targets[0].Name;
-            }
-            else
-            {
-                Target T = Project.FindTarget(TargetToRun);
-                if (T == null)
-                    throw new Exception("Cannot find target: " + TargetToRun);
-                T.NeedToRun = true;
-            }
+            Project.SetMainTarget(TargetToRun);
 
             // Add built-in macros.
             string APSIMRootDirectory = Path.GetFullPath(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)));
@@ -196,7 +182,7 @@ namespace JobScheduler
             if (Environment.GetEnvironmentVariable("APSIM") == null)
                 Environment.SetEnvironmentVariable("APSIM", APSIMRootDirectory);
 
-            // Do some simple crash prevention
+            // Do initialisation and some simple crash prevention
             Project.CheckForSensibility();
 
             Go(NumJobs);
@@ -207,44 +193,65 @@ namespace JobScheduler
         /// </summary>
         private async void Go(int NumJobs)
         {
+            cancellationTokenSource.Dispose();
             cancellationTokenSource = new CancellationTokenSource();
             var throttler = new SemaphoreSlim(NumJobs);
-            List<Task> allTasks = new List<Task>();
+            List<Task<IJob>> allTasks = new List<Task<IJob>>();
             do {
                 IJob J;
                 while ((J = Project.NextJobToRun()) != null) {
-                    allTasks.Add(kickoff(throttler, J, cancellationTokenSource.Token));
-                }
-                //await Task.WhenAny(allTasks);
-                await Task.Delay(100);
-            } while (!Project.AllTargetsFinished );
+                   // Kick off a single job:
+                   var tcs = new TaskCompletionSource<int>();
+                   cancellationTokenSource.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: true);
+                   var jobToStart = J; 
+                   Task<IJob> T = Task.Run<IJob>( async () => {
+                       // Dont start until there is a free CPU. 
+                       await throttler.WaitAsync(cancellationTokenSource.Token);
+                       try
+                       {
+                           Task<int> myJob = jobToStart.StartAsync();
+                           Task<int> myCanceller = tcs.Task;
+                           Task t = await Task.WhenAny<int>(myJob, myCanceller);
+                           // Kill it if cancellation is requested (Eg. Stop button pressed)
+                           if (t.Status == TaskStatus.Canceled)
+                               jobToStart.Stop();
+                       }
+                       finally
+                       {
+                           throttler.Release();
+                       }
+                       return(jobToStart);
+                   });
+                   allTasks.Add(T);
+              }
+              // Remove any jobs that have completed
+              while (allTasks.Any(t => t.Status == TaskStatus.RanToCompletion))
+              {
+                    Task<IJob> t = await Task.WhenAny(allTasks);
+                    Project.SaveJobInLog(t.Result);
+                    allTasks.Remove(t);
+              } 
+              await Task.Delay(100);
 
-            await Task.WhenAll(allTasks);
-            try { cancellationTokenSource.Dispose(); } catch (Exception) { }
-            cancellationTokenSource = null;
-        }
+              Project.CheckAllJobsForCompletion();
 
-        /// <summary>
-        /// Kick off a single job:
-        ///   Dont start until there is a free CPU. 
-        ///   Kill it if cancellation is requested.
-        /// </summary>
-        internal async Task<int> kickoff(SemaphoreSlim throttler, IJob J, CancellationToken cancellationToken) {
-            await throttler.WaitAsync();
+            } while ( !Project.MainTargetFinished );
 
-            var tcs = new TaskCompletionSource<int>();
-            cancellationToken.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
+                // Hmmm. Faulted jobs are a problem. "Failed" jobs have been caught in the Job class, but faults
+                // must have failed in the scheduler. Record them anyway.
+            try { await Task.WhenAll(allTasks); } // May throw 
+            catch (Exception) { }
+            foreach (var failure in allTasks)
+            {
+                //failure.Result.Status = "Fail";
+                Project.SaveJobInLog(failure.Result);
+            }
 
-            List<Task<int>> myTasks = new List<Task<int>>() { J.StartAsync(), tcs.Task };
-            Task<int> t = await Task.WhenAny<int>(myTasks);
-
-            if (t.Status == TaskStatus.Canceled)
-                J.Stop(); 
-
-            Project.CheckAllJobsForCompletion();
-            throttler.Release();
-
-            return (1);
+            if (cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = new CancellationTokenSource();
+            }
         }
 
         /// <summary>
@@ -252,8 +259,8 @@ namespace JobScheduler
         /// </summary>
         public void WaitForFinish()
         {
-            while (cancellationTokenSource != null && !Project.AllTargetsFinished)
-                Thread.Sleep(500);
+            while (!Project.MainTargetFinished)
+               Thread.Sleep(500);  
         }
 
         /// <summary>
@@ -261,8 +268,7 @@ namespace JobScheduler
         /// </summary>
         public void Stop()
         {
-            if (cancellationTokenSource != null) cancellationTokenSource.Cancel();
-            if (Project.Targets.Count > 0) { Project = new Project(); }
+            cancellationTokenSource.Cancel();
         }
 
         /// <summary>
@@ -310,16 +316,6 @@ namespace JobScheduler
             }
         }
 
-        /// <summary>
-        /// Save our logfile.
-        /// </summary>
-        public static void SaveXmlFile(string FileName, Project p)
-        {
-            XmlSerializer x = new XmlSerializer(typeof(Project));
-            StreamWriter s = new StreamWriter(FileName);
-            x.Serialize(s, p);
-            s.Close();
-        }
         /// <summary>
         /// Calculate the number of CPUs in the computer that this program is running on.
         /// </summary>

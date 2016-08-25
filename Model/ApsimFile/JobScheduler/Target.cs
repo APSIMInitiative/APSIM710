@@ -15,91 +15,94 @@ public class Target
     public int PercentComplete { get; set; }
 
     [XmlIgnore]
-    bool _NeedToRun;
-    public bool NeedToRun
-    {
-        get
-        {
-            return _NeedToRun;
-        }
-
-        set
-        {
-            if (_NeedToRun != value)
-            {
-                _NeedToRun = value;
-                foreach (DependsOn Dependency in DependsOn)
-                {
-                    Target t = Project.FindTarget(Dependency.Name);
-                    if (t == null)
-                        throw new Exception("Cannot find dependency: " + Dependency.Name);
-                    t.NeedToRun = value;
-                }
-            }
-        }
-    }
+    public bool NeedToRun { get; set; }
 
     [XmlAttribute("name")]
     public string Name { get; set; }
 
     [XmlAttribute("status")]
-    public string Status { 
-    get{
-        bool anyStarted = false, anyRunning = false, allPassed = true;
-        if (DependenciesHaveFinished && ! DependenciesHavePassed)
-           return("Fail");
-
-        foreach (IJob J in Jobs)
+        public string Status
         {
-            if (J.Status != null )
-                anyStarted = true;
-            if (J.IsRunning)
-                anyRunning = true;
-            if (J.Status != null && J.Status == "Fail")
-                allPassed = false;
+            get
+            {
+                bool anyStarted = false, anyRunning = false, allPassed = true, anyWaiting = false;
+                foreach (DependsOn D in DependsOn)
+                {
+                    Target T = Project.FindTarget(D.Name);
+                    string dStatus = T.Status;
+                    if (dStatus != null)
+                        anyStarted = true;
+                    if (dStatus == "Running")
+                        anyRunning = true;
+                    if (dStatus == "Fail" && ! D.IgnoreErrors)
+                        allPassed = false;
+                }
+                if (!allPassed)
+                    return("Fail");
+                //{ anyRunning = false; anyStarted = true; } // If there's been a failed dependency, we won't bother finishing the others
+
+                foreach (IJob J in Jobs)
+                {
+                    string jStatus = J.Status;
+                    if (jStatus != null)
+                        anyStarted = true;
+                    if (J.CanRun)
+                        anyWaiting = true;
+                    if (J.IsRunning)
+                        anyRunning = true;
+                    if (jStatus != null && jStatus == "Fail")
+                        allPassed = false;
+                }
+                return (!anyStarted ? null :
+                        (anyRunning | anyWaiting ? "Running" :
+                         (allPassed ? "Pass" : "Fail")));
+            }
+            set
+            {
+                throw new Exception("Target.status is readonly"); // but allow serialisation of this attribute
+            }
         }
-        return(!anyStarted ? null :
-                (anyRunning ? "Running" : 
-                 (allPassed  ? "Pass" : "Fail")));
-       }
-    set{
-       throw new Exception("Target.status is readonly"); // allow serialisation of this attribute
-       }
+    public void Print(int index) {
+            for (int i = 0; i < index; i++)
+                Console.Write(" ");
+            Console.WriteLine("Name=" + Name + ", Status = " + Status);
+            foreach (DependsOn D in DependsOn)
+                {
+                Target T = Project.FindTarget(D.Name);
+                T.Print( index + 1);
+                }
     }
 
-    [XmlAttribute("ElapsedTime")]
-    public int ElapsedTime { get; set; }
-
     [XmlElement("DependsOn")]
-    public List<DependsOn> DependsOn { get; set; }
+    public List<DependsOn> DependsOn = new List<DependsOn>();
+
 
     public DateTime StartTime { get; set; }
     public DateTime FinishTime { get; set; }
+    public int ElapsedTime { get; set; }
 
     [XmlElement("Job", Type=typeof(Job))]
     [XmlElement("FindJob", Type=typeof(FindJob))]
-    public List<IJob> Jobs { get; set; }
+    public List<IJob> Jobs = new List<IJob>();
 
     public bool HasFinished
     {
         get
         {
-            return DependenciesHaveFinished && Status != null && Status != "Running";
+             return Status != null && Status != "Running";
+        }
+    }
+
+    public bool HasFailed
+    {
+        get
+        {
+             return Status != null && Status == "Fail";
         }
     }
 
     [XmlIgnore]
     public Project Project { get; set; }
-
-    /// <summary>
-    ///  Constructor
-    /// </summary>
-    public Target()
-    {
-        _NeedToRun = false;
-        Jobs = new List<IJob>();
-        DependsOn = new List<DependsOn>();
-    }
 
     internal IJob NextJobToRun()
     {
@@ -109,25 +112,13 @@ public class Target
         if (!DependenciesHavePassed)
             return null;
 
-        IJob next = null;
-        foreach (IJob J in Jobs)
-            if (J.CanRun(Project, this)) 
-            {
-                next = J;
-                break;
-            }
-
-         if (next != null && StartTime.Ticks == 0) 
+        if (StartTime.Ticks == 0)
             StartTime = DateTime.Now;
 
-         return next;
-    }
-
-    internal IJob FindJob(string NameToFind)
-    {
         foreach (IJob J in Jobs)
-            if (J.Name == NameToFind)
-                return J;
+            if (J.CanRun)
+                return (J);
+
         return null;
     }
 
@@ -139,10 +130,10 @@ public class Target
         /// </returns>
     internal bool CheckAllJobsForCompletion()
     {
-        if ( !NeedToRun )
+        if ( ! NeedToRun )
             return false;
 
-        if (!DependenciesHaveFinished)
+        if ( ! DependenciesHaveFinished)
             return false;
 
         if (Status == null || Status == "Running") 
@@ -153,7 +144,6 @@ public class Target
            if (StartTime.Ticks == 0) StartTime = DateTime.Now;
            FinishTime = DateTime.Now;
            ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
-
            Console.WriteLine("[" + Status + "] Target: " + Name + " [" + ElapsedTime.ToString() + "sec]");
            return true;
         }
@@ -175,16 +165,55 @@ public class Target
                 Target T = Project.FindTarget(Dependency.Name);
                 if (T == null)
                     throw new Exception("Missing dependency '" + Dependency.Name + "' being asked for by Target '" + Name + "'");
-                AllFinished = AllFinished && T.HasFinished;
+                AllFinished &= T.HasFinished;
             }
             return AllFinished;
         }
     }
 
-    /// <summary>
-    /// Return true if the dependencies for this job have all passed.
-    /// </summary>
-    private bool DependenciesHavePassed
+        /// <summary>
+        /// Return true if any dependencies for this job have failed.
+        /// </summary>
+        private bool DependenciesHaveFailed
+        {
+            get
+            {
+                if (DependsOn == null)
+                    return false;
+
+                foreach (DependsOn Dependency in DependsOn)
+                {
+                    Target T = Project.FindTarget(Dependency.Name);
+                    if (T.HasFailed)
+                        return true;
+                }
+                return false;
+            }
+        }
+        /// <summary>
+        /// Return true if a failed dependency means this target has also failed.
+        /// </summary>
+        private bool DependenciesMeanFailure
+        {
+            get
+            {
+                if (DependsOn == null)
+                    return false;
+
+                foreach (DependsOn Dependency in DependsOn)
+                {
+                    Target T = Project.FindTarget(Dependency.Name);
+                    if (T.HasFailed && ! Dependency.IgnoreErrors)
+                        return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Return true if the dependencies for this job have all passed.
+        /// </summary>
+        private bool DependenciesHavePassed
     {
         get
         {
@@ -205,5 +234,19 @@ public class Target
             return true;
         }
     }
+    // Check  dependencies that need to run
+    internal void CheckForDependancies()
+    {
+        if (NeedToRun)
+           foreach (DependsOn D in DependsOn)
+           {
+                Target T = Project.FindTarget(D.Name);
+                if (T == null) 
+                    throw new Exception("Missing dependency '" + D.Name + "' being asked for by Target '" + Name + "'");
+                T.NeedToRun = true;
+                T.CheckForDependancies();
+           }
+    }
+
 }
 }
