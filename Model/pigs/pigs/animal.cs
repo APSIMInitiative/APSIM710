@@ -5,11 +5,14 @@ using System.Text;
 using ModelFramework;
 public class animal
 {
-    protected double NumberPrDay = 0;
-    protected ManureType manurePrDay;
-    protected ManureType solidManurePrDay;
-    protected ManureType fluidManurePrDay;
-    protected feedItemType currentfeed;
+    [Param]
+    public double NumberPrDay;
+    [Param]
+    public double C_growth;          // C partitioned to tissue growth
+    public manure solidManurePrDay;
+    public manure fluidManurePrDay;
+    public manure manurePrDay;
+    protected FeedItem currentfeed;
     [Param]
     public int amountFluid = 0;
     [Param]
@@ -18,17 +21,17 @@ public class animal
     public int amountSolid = 0;
     public animal()
     {
-        solidManurePrDay = new ManureType();
-        fluidManurePrDay = new ManureType();
-        currentfeed = new feedItemType();
-        Console.WriteLine("con animal");
+        solidManurePrDay = new manure();
+        fluidManurePrDay = new manure();
+        currentfeed = new FeedItem();
+ 
     }
     [EventHandler]
     public void OnProcess()
     {
         fluidManurePrDay.amount=(amountFluid / 1000.0);
         solidManurePrDay.amount=(amountSolid / 1000.0);
-        Console.WriteLine("animal");
+   
     }
 }
 
