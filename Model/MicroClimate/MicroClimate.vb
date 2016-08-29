@@ -631,10 +631,10 @@ Partial Public Class MicroClimate
         ComponentData(idx).R50 = Me.r50
         ComponentData(idx).Gsmax = Me.gsmax
 
-        Dim cropType As New CropType()
+        Dim cropType As New CropTypeParameters()
         For i As Integer = 0 To My.ChildrenAsObjects.Count - 1
             If My.ChildrenAsObjects(i).[GetType]().Equals(cropType.[GetType]()) Then
-                cropType = DirectCast(My.ChildrenAsObjects(i), CropType)
+                cropType = DirectCast(My.ChildrenAsObjects(i), CropTypeParameters)
                 If cropType.apply_to IsNot Nothing Then
                     For j As Integer = 0 To cropType.apply_to.Length - 1
                         If cropType.apply_to(j).ToLower() = targetType Then
@@ -752,7 +752,7 @@ Partial Public Class MicroClimate
             For j As Integer = 0 To ComponentData.Length - 1
                 If (ComponentData(j).Height > bottom) AndAlso (ComponentData(j).Height - ComponentData(j).Depth < top) Then
                     ComponentData(j).layerLAItot(i) = Ld(j) * DeltaZ(i)
-                    ComponentData(j).layerLAI(i) = ComponentData(j).layerLAItot(i) * _
+                    ComponentData(j).layerLAI(i) = ComponentData(j).layerLAItot(i) *
                                                    MathUtility.Divide(ComponentData(j).LAI, ComponentData(j).LAItot, 0.0)
                     layerLAIsum(i) += ComponentData(j).layerLAItot(i)
                 End If
@@ -815,12 +815,12 @@ Partial Public Class MicroClimate
             Dim Rint As Double = 0.0
 
             For j As Integer = 0 To ComponentData.Length - 1
-                ComponentData(j).Gc(i) = CanopyConductance(ComponentData(j).Gsmax, _
-                                                           ComponentData(j).R50, _
-                                                           ComponentData(j).Frgr, _
-                                                           ComponentData(j).Fgreen(i), _
-                                                           layerKtot(i), _
-                                                           layerLAIsum(i), _
+                ComponentData(j).Gc(i) = CanopyConductance(ComponentData(j).Gsmax,
+                                                           ComponentData(j).R50,
+                                                           ComponentData(j).Frgr,
+                                                           ComponentData(j).Fgreen(i),
+                                                           layerKtot(i),
+                                                           layerLAIsum(i),
                                                            Rflux)
 
                 Rint += ComponentData(j).Rs(i)
@@ -910,7 +910,7 @@ Partial Public Class MicroClimate
         Dim netRadiation As Double = ((1.0 - albedo) * sumRs + sumRl + sumRsoil) * 1000000.0  ' MJ/J
         netRadiation = Math.Max(0.0, netRadiation)
         Dim freeEvapGc As Double = freeEvapGa * 1000000.0   ' =infinite surface conductance
-        Dim freeEvap As Double = CalcPenmanMonteith(netRadiation, mint, maxt, vp, air_pressure, dayLength, _
+        Dim freeEvap As Double = CalcPenmanMonteith(netRadiation, mint, maxt, vp, air_pressure, dayLength,
          freeEvapGa, freeEvapGc)
 
         dryleaffraction = 1.0 - MathUtility.Divide(sumInterception * (1.0 - night_interception_fraction), freeEvap, 0.0)
@@ -918,16 +918,16 @@ Partial Public Class MicroClimate
 
         For i As Integer = 0 To numLayers - 1
             For j As Integer = 0 To ComponentData.Length - 1
-                netRadiation = 1000000.0 * ((1.0 - albedo) * ComponentData(j).Rs(i) + _
-                                                 ComponentData(j).Rl(i) + _
+                netRadiation = 1000000.0 * ((1.0 - albedo) * ComponentData(j).Rs(i) +
+                                                 ComponentData(j).Rl(i) +
                                                  ComponentData(j).Rsoil(i))
                 ' MJ/J
                 netRadiation = Math.Max(0.0, netRadiation)
 
-                ComponentData(j).PETr(i) = CalcPETr(netRadiation * dryleaffraction, mint, maxt, air_pressure, _
+                ComponentData(j).PETr(i) = CalcPETr(netRadiation * dryleaffraction, mint, maxt, air_pressure,
                                                     ComponentData(j).Ga(i), ComponentData(j).Gc(i))
 
-                ComponentData(j).PETa(i) = CalcPETa(mint, maxt, vp, air_pressure, dayLength * dryleaffraction, _
+                ComponentData(j).PETa(i) = CalcPETa(mint, maxt, vp, air_pressure, dayLength * dryleaffraction,
                                                     ComponentData(j).Ga(i), ComponentData(j).Gc(i))
 
                 ComponentData(j).PET(i) = ComponentData(j).PETr(i) + ComponentData(j).PETa(i)
@@ -1000,29 +1000,29 @@ End Class
 ''' occurs in MicroMet.ComponentConstants()
 ''' </summary>
 ''' <remarks></remarks>
-Public Class CropType
+Public Class CropTypeParameters
 
 
-    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
-    <Units("0-1")> _
-    <Description("")> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)>
+    <Units("0-1")>
+    <Description("")>
     Public albedo As Double = -1
 
-    <Param(IsOptional:=True, MinVal:=0.9, MaxVal:=1.0)> _
-    <Units("0-1")> _
-    <Description("")> _
+    <Param(IsOptional:=True, MinVal:=0.9, MaxVal:=1.0)>
+    <Units("0-1")>
+    <Description("")>
     Public emissivity As Double = -1
 
-    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
-    <Units("m/s")> _
-    <Description("")> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)>
+    <Units("m/s")>
+    <Description("")>
     Public gsmax As Double = -1
 
-    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1000.0)> _
-    <Units("W/m^2")> _
-    <Description("")> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1000.0)>
+    <Units("W/m^2")>
+    <Description("")>
     Public r50 As Double = -1
 
-    <Param(IsOptional:=True)> _
+    <Param(IsOptional:=True)>
     Public apply_to As String() = Nothing
 End Class

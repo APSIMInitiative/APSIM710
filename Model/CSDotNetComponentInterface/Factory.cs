@@ -371,7 +371,9 @@ class Factory
     private Type GetTypeOfChild(XmlNode Child, Instance Obj)
     {
         FactoryProperty Parameter = FindProperty(Child);
-        Type t = CallingAssembly.GetType(Child.Name);
+        Type t = FindType(Child.Name);
+        if (t != null && t.BaseType != null && t.BaseType.Name == "Attribute")  
+            t = null;         // Exclude types if they are an attribute type.
         if ((t == null) && (Parameter != null))
             t = CallingAssembly.GetType(Parameter.TypeName);
         if ((t == null) && (Parameter != null))
@@ -390,6 +392,25 @@ class Factory
 
         } return t;
     }
+    // --------------------------------------------------------------------
+    // Find the type.
+    // --------------------------------------------------------------------
+    private Type FindType(string typeName)
+    {
+        Type t = CallingAssembly.GetType(typeName);
+        if (t != null || CallingAssembly.Location == string.Empty)
+            return t;
+
+        Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        foreach (Assembly assembly in assemblies)
+        {
+            t = assembly.GetType(typeName);
+            if (t != null)
+                return t;
+        }
+        return null;
+    }
+
     // --------------------------------------------------------------------
     /// <summary>
     /// Go through all our registered properties and look for the one that
