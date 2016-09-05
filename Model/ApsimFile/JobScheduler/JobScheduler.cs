@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CSGeneral;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using CSGeneral;
 using System.Xml.Serialization;
 using System.Reflection;
 using System.Linq;
@@ -69,6 +69,7 @@ namespace JobScheduler
             try
             {
                 JobScheduler Scheduler = Instance;
+                //Console.CancelKeyPress += delegate { Instance.Stop(); };
                 if (Scheduler.RunJob(args))
                     return 1;
                 else
@@ -77,6 +78,7 @@ namespace JobScheduler
             catch (Exception err)
             {
                 Console.WriteLine(err.Message);
+                //Instance.Stop();
                 return 1;
             }
         }
@@ -103,7 +105,7 @@ namespace JobScheduler
             Project = x.Deserialize(s) as Project;
             s.Close();
 
-            int NumJobs = CalcNumCPUs();
+            int NumCPUs = CalcNumCPUs();
             #region Core number override for AMD CPUs
             if (Macros.ContainsKey("NumCPUs"))
             {
@@ -111,18 +113,18 @@ namespace JobScheduler
                 Macros.TryGetValue("NumCPUs", out num);
                 try
                 {
-                    NumJobs = Convert.ToInt32(num);
+                    NumCPUs = Convert.ToInt32(num);
                 }
                 catch (Exception)
                 {
                     throw new Exception("Invalid number for NumCPUs.");
                 }
-                if (NumJobs <= 0)
-                    NumJobs = 1;
+                if (NumCPUs <= 0)
+                    NumCPUs = 1;
             }
             #endregion
 
-            Start(NumJobs, Macros.ContainsKey("Target") ? Macros["Target"] : null);
+            Start(NumCPUs, Macros.ContainsKey("Target") ? Macros["Target"] : null);
 
             WaitForFinish();
 
@@ -185,67 +187,64 @@ namespace JobScheduler
             // Do initialisation and some simple crash prevention
             Project.CheckForSensibility();
 
-            Go(NumJobs);
+            Thread worker = new Thread(() => Go(NumJobs));
+            worker.Start();
         }
 
         /// <summary>
         /// Start running jobs in the project. Run at most NumJobs at any one time
         /// </summary>
-        private async void Go(int NumJobs)
+        private void Go(int NumJobs)
         {
             cancellationTokenSource.Dispose();
             cancellationTokenSource = new CancellationTokenSource();
-            var throttler = new SemaphoreSlim(NumJobs);
-            List<Task<IJob>> allTasks = new List<Task<IJob>>();
-            do {
-                IJob J;
-                while ((J = Project.NextJobToRun()) != null) {
-                   // Kick off a single job:
-                   var tcs = new TaskCompletionSource<int>();
-                   cancellationTokenSource.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: true);
-                   var jobToStart = J; 
-                   Task<IJob> T = Task.Run<IJob>( async () => {
-                       // Dont start until there is a free CPU. 
-                       await throttler.WaitAsync(cancellationTokenSource.Token);
-                       try
-                       {
-                           Task<int> myJob = jobToStart.StartAsync();
-                           Task<int> myCanceller = tcs.Task;
-                           Task t = await Task.WhenAny<int>(myJob, myCanceller);
-                           // Kill it if cancellation is requested (Eg. Stop button pressed)
-                           if (t.Status == TaskStatus.Canceled)
-                               jobToStart.Stop();
-                       }
-                       finally
-                       {
-                           throttler.Release();
-                       }
-                       return(jobToStart);
-                   });
-                   allTasks.Add(T);
-              }
-              // Remove any jobs that have completed
-              while (allTasks.Any(t => t.Status == TaskStatus.RanToCompletion))
-              {
-                    Task<IJob> t = await Task.WhenAny(allTasks);
-                    Project.SaveJobInLog(t.Result);
-                    allTasks.Remove(t);
-              } 
-              await Task.Delay(100);
-
-              Project.CheckAllJobsForCompletion();
-
-            } while ( !Project.MainTargetFinished );
-
-                // Hmmm. Faulted jobs are a problem. "Failed" jobs have been caught in the Job class, but faults
-                // must have failed in the scheduler. Record them anyway.
-            try { await Task.WhenAll(allTasks); } // May throw 
-            catch (Exception) { }
-            foreach (var failure in allTasks)
+            List<IJob> runningJobs = new List<IJob>();
+            do
             {
-                //failure.Result.Status = "Fail";
-                Project.SaveJobInLog(failure.Result);
-            }
+                //Console.WriteLine ("run=" + runningJobs.Count + ", avail=" + NumJobs);
+
+                if (cancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    foreach (IJob J in runningJobs)
+                        J.Stop();
+                    foreach (Target t in Project.Targets)
+                        foreach (IJob J in t.Jobs)
+                            J.Status = Status_t.Fail;
+                    // Exit thread
+                    return; 
+                }
+                bool justStartedAJob = false;
+                while (runningJobs.Count < NumJobs)
+                {
+                    IJob J;
+                    if ((J = Project.NextJobToRun()) != null)
+                    {
+                        // Kick off a single job
+                        J.StartAsync();
+                        runningJobs.Add(J);
+                        justStartedAJob = true;
+                    } else {
+                        break;
+                    }
+                } 
+                if (!justStartedAJob) {
+                    Thread.Sleep(100);
+                }
+                // Remove any jobs that have completed
+                bool justFinishedAJob = false;
+                for (int i = 0; i <  runningJobs.Count; i++)
+                {
+                    if (runningJobs[i].Status == Status_t.Fail || runningJobs[i].Status == Status_t.Pass)
+                    {
+                        Project.SaveJobInLog(runningJobs[i]);
+                        runningJobs.RemoveAt(i);
+                        justFinishedAJob = true;
+                    }
+                }
+                if (justFinishedAJob) {
+                    Project.CheckAllJobsForCompletion();
+                }
+            } while ( !Project.MainTargetFinished );
 
             if (cancellationTokenSource.IsCancellationRequested)
             {
@@ -297,7 +296,7 @@ namespace JobScheduler
             {
                  foreach (Target T in Project.Targets)
                     foreach (IJob J in T.Jobs)
-                        if (J.Status == "Fail")
+                        if (J.Status == Status_t.Fail)
                         {
                             int pos = J.Name.LastIndexOf(":");
                             if (pos >= 0)

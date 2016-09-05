@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CSGeneral;
 using System.IO;
+using CSGeneral;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Xml;
@@ -13,6 +13,8 @@ using System.Text.RegularExpressions;
 
 
 namespace JobScheduler {
+
+    public enum Status_t {Waiting, Running, Pass, Fail};
 
     /// <summary>
     /// A class capable of running an external job.
@@ -29,7 +31,6 @@ namespace JobScheduler {
         [XmlAttribute("IgnoreErrors")]
         public bool IgnoreErrors { get; set; }
         public abstract bool HasErrors { get; }
-        public bool HasRun { get { return Status != null; } }
 
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
@@ -39,7 +40,9 @@ namespace JobScheduler {
         public string Name { get; set; }
 
         [XmlAttribute("status")]
-        public string Status { get; set; }
+        public string _Status { get {return(Status.ToString());} set {throw new Exception("Status is readonly"); }}
+
+        public Status_t Status;
 
         [XmlElement("DependsOn")]
         public List<DependsOn> DependsOn = new List<DependsOn>();
@@ -51,7 +54,7 @@ namespace JobScheduler {
         {
             get
             {
-                if (Status == "Fail")
+                if (Status == Status_t.Fail)
                     return 100;
                 else
                     return Math.Max((int)0, (int)Math.Min((int)100, taskProgress));
@@ -65,7 +68,7 @@ namespace JobScheduler {
         {
             get
             {
-                return Status != null && Status == "Running";
+                return Status == Status_t.Waiting || Status == Status_t.Running;
             }
         }
 
@@ -76,7 +79,7 @@ namespace JobScheduler {
         {
             get
             {
-                return (Status != null && Status != "Running");
+                return (Status != Status_t.Waiting && Status != Status_t.Running);
             }
         }
         /// <summary>
@@ -86,7 +89,7 @@ namespace JobScheduler {
         {
             get
             {
-                if (!HasRun)
+                if (Status == Status_t.Waiting)
                     return DependenciesSatisfied();
                 else
                     return false;
@@ -103,11 +106,11 @@ namespace JobScheduler {
                 Target T = Project.FindTarget(Dependency.Name);
                 if (T != null)
                 {
-                    if (T.Status == null)
+                    if (T.Status == Status_t.Waiting)
                         return false;
-                    else if (T.Status == "Running")
+                    else if (T.Status == Status_t.Running)
                         return false;
-                    else if (T.Status == "Fail" && ! Dependency.IgnoreErrors)
+                    else if (T.Status == Status_t.Fail && ! Dependency.IgnoreErrors)
                         return false;
                 }
                 else
@@ -116,13 +119,13 @@ namespace JobScheduler {
                     if (J == null)
                         throw new Exception("Job " + Name + " Cannot find dependency: " + Dependency.Name);
 
-                    if (J.Status == null)
+                    if (J.Status == Status_t.Waiting)
                         return false;
 
-                    else if (J.Status == "Fail" && ! Dependency.IgnoreErrors)
+                    else if (J.Status == Status_t.Fail && ! Dependency.IgnoreErrors)
                         return false;
 
-                    else if (J.Status == "Running")
+                    else if (J.Status == Status_t.Running)
                         return false;
                 }
             }
@@ -130,30 +133,21 @@ namespace JobScheduler {
             return true;
         }
 
-        protected object thislock = new object();
         /// <summary>
         /// Start running the job. Job may not be complete when this method returns.
         /// </summary>
-        public Task<int> StartAsync()
+        public void StartAsync()
         {
-            lock (thislock) { // FIXME should not be needed
-            var tcs = new TaskCompletionSource<int>();
             StartTime = DateTime.Now;
             if (Target.StartTime.Ticks == 0)
                 Target.StartTime = DateTime.Now;
 
-            if (Status == "Fail")
-                { 
+            if (Status == Status_t.Fail)
                 FinishTime = DateTime.Now;
-                tcs.SetResult(1);
-                }
             else
-                Run(tcs);
-
-            return (tcs.Task);
-            }
+                Run();
         }
-        public abstract void Run(TaskCompletionSource<int> tcs);
+        protected abstract void Run();
         public abstract void Stop();
     }
 
@@ -265,29 +259,28 @@ namespace JobScheduler {
 
         }
 
-        public override void Run(TaskCompletionSource<int> tcs)
+        protected override void Run()
         {
             try
             {
-                Run1(tcs);
+                Run1();
             }
             catch (Exception e)
             {
                 string msg = "Exception caught: " + e.Message + "\n" + e.StackTrace + "\n";
                 StdErr = msg + StdErr;
-                Status = "Fail";
+                Status = Status_t.Fail;
                 Shutdown();
-                tcs.SetResult(1);
             }
         }
 
-        private void Run1(TaskCompletionSource<int> tcs)
+        private void Run1()
         {
             WorkingDirectory = Utility.ReplaceEnvironmentVariables(WorkingDirectory).Replace('\\', '/');
 
             if (Executable == "")
             {
-                Status = "Pass";
+                Status = Status_t.Pass;
                 Shutdown();
             }
             else
@@ -328,21 +321,17 @@ namespace JobScheduler {
                 {
                     if (_P == null) { return; }
                     taskProgress = 100;
-
-                    // Some data may still be buffered. 
-                    if (_P.WaitForExit(1000)) // Wait for the process to exit (but we should never have to actually wait)
-                        _P.WaitForExit();     // and wait for stdout processing to complete
-
-                    Shutdown();
+                    // Ensure buffered output empties..
+                    if (_P.WaitForExit(10)) 
+                        _P.WaitForExit();
 
                     if (_P.ExitCode == 0 || IgnoreErrors)
-                        Status = "Pass";
+                        Status = Status_t.Pass;
                     else
-                        Status = "Fail";
+                        Status = Status_t.Fail;
 
+                    Shutdown();
                     WriteLogMessage();
-                    tcs.SetResult(_P.ExitCode);
-                    _P.Dispose();
                 };
                 //Console.WriteLine("Run: " + _P.StartInfo.FileName + " " + _P.StartInfo.Arguments + "(wd=" + WorkingDirectory + ")");
                 _P.Start();
@@ -356,15 +345,14 @@ namespace JobScheduler {
         /// </summary>
         void Shutdown()
         {
-            // Console.WriteLine("Shutdown: " + Name);
-            // Job has finished.
-            FinishTime = DateTime.Now;
-            ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
+             //Console.WriteLine("Shutdown: " + Name);
             if (StdOutStream != null)
             {
                 StdOutStream.Close();
                 StdOutStream = null;
             }
+            FinishTime = DateTime.Now;
+            ElapsedTime = Convert.ToInt32((FinishTime - StartTime).TotalSeconds);
         }
 
         /// <summary>
@@ -430,8 +418,8 @@ namespace JobScheduler {
 
         protected void WriteLogMessage()
         {
-            Console.WriteLine("[" + Status + "] " + Name + " [" + ElapsedTime.ToString() + "sec]");
-            if (Status == "Fail")
+            Console.WriteLine("[" + _Status + "] " + Name + " [" + ElapsedTime.ToString() + "sec]");
+            if (Status == Status_t.Fail)
             {
                 if (StdOut.Length > 0)
                     Console.WriteLine(StringManip.IndentText(StdOut.ToString(), 4));
@@ -452,8 +440,9 @@ namespace JobScheduler {
 
         public override bool HasErrors { get { return(false); } }
 
-        public override void Run(TaskCompletionSource<int> tcs)
+        protected override void Run()
         {
+            Status = Status_t.Running;
         //Console.WriteLine("Run: " + FileSpec);
         // Scan a directory.
         // 1. For each filename found, add a job for each simulation in each file.
@@ -512,11 +501,10 @@ namespace JobScheduler {
                     myTarget.Jobs.Add(J);
                 }
         }
-        Status = "Pass";
+            Status = Status_t.Pass;
         //FIXME StdOut += "Found " + FileNames.Count + " files\n";
         Project.AddTarget(myTarget);
         FinishTime = DateTime.Now;
-        tcs.SetResult(0);
         }
 
     // FIXME: This ignores "factorial" .apsim simulations

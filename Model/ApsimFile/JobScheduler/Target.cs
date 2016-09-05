@@ -21,7 +21,9 @@ public class Target
     public string Name { get; set; }
 
     [XmlAttribute("status")]
-        public string Status
+    public string _Status { get {return(Status.ToString());} set {throw new Exception("Status is readonly"); }}
+
+    public Status_t Status
         {
             get
             {
@@ -29,49 +31,35 @@ public class Target
                 foreach (DependsOn D in DependsOn)
                 {
                     Target T = Project.FindTarget(D.Name);
-                    string dStatus = T.Status;
-                    if (dStatus != null)
+                    Status_t dStatus = T.Status;
+                    if (dStatus != Status_t.Waiting)
                         anyStarted = true;
-                    if (dStatus == "Running")
+                    if (dStatus == Status_t.Running)
                         anyRunning = true;
-                    if (dStatus == "Fail" && ! D.IgnoreErrors)
+                    if (dStatus == Status_t.Fail && ! D.IgnoreErrors)
                         allPassed = false;
                 }
                 if (!allPassed)
-                    return("Fail");
+                    return(Status_t.Fail);
                 //{ anyRunning = false; anyStarted = true; } // If there's been a failed dependency, we won't bother finishing the others
 
                 foreach (IJob J in Jobs)
                 {
-                    string jStatus = J.Status;
-                    if (jStatus != null)
+                    Status_t jStatus = J.Status;
+                    if (jStatus != Status_t.Waiting)
                         anyStarted = true;
                     if (J.CanRun)
                         anyWaiting = true;
                     if (J.IsRunning)
                         anyRunning = true;
-                    if (jStatus != null && jStatus == "Fail")
+                    if (jStatus == Status_t.Fail)
                         allPassed = false;
                 }
-                return (!anyStarted ? null :
-                        (anyRunning | anyWaiting ? "Running" :
-                         (allPassed ? "Pass" : "Fail")));
-            }
-            set
-            {
-                throw new Exception("Target.status is readonly"); // but allow serialisation of this attribute
+                return (!anyStarted ? Status_t.Waiting :
+                        (anyRunning | anyWaiting ? Status_t.Running :
+                        (allPassed ? Status_t.Pass : Status_t.Fail)));
             }
         }
-    public void Print(int index) {
-            for (int i = 0; i < index; i++)
-                Console.Write(" ");
-            Console.WriteLine("Name=" + Name + ", Status = " + Status);
-            foreach (DependsOn D in DependsOn)
-                {
-                Target T = Project.FindTarget(D.Name);
-                T.Print( index + 1);
-                }
-    }
 
     [XmlElement("DependsOn")]
     public List<DependsOn> DependsOn = new List<DependsOn>();
@@ -89,7 +77,8 @@ public class Target
     {
         get
         {
-             return Status != null && Status != "Running";
+            Status_t now = Status;
+            return now != Status_t.Waiting && now != Status_t.Running;
         }
     }
 
@@ -97,7 +86,7 @@ public class Target
     {
         get
         {
-             return Status != null && Status == "Fail";
+                return Status == Status_t.Fail;
         }
     }
 
@@ -136,7 +125,7 @@ public class Target
         if ( ! DependenciesHaveFinished)
             return false;
 
-        if (Status == null || Status == "Running") 
+        if (Status == Status_t.Waiting || Status == Status_t.Running) 
             return false;
 
         if (FinishTime.Ticks == 0) 
@@ -170,7 +159,7 @@ public class Target
             return AllFinished;
         }
     }
-
+#if false
         /// <summary>
         /// Return true if any dependencies for this job have failed.
         /// </summary>
@@ -190,30 +179,11 @@ public class Target
                 return false;
             }
         }
-        /// <summary>
-        /// Return true if a failed dependency means this target has also failed.
-        /// </summary>
-        private bool DependenciesMeanFailure
-        {
-            get
-            {
-                if (DependsOn == null)
-                    return false;
-
-                foreach (DependsOn Dependency in DependsOn)
-                {
-                    Target T = Project.FindTarget(Dependency.Name);
-                    if (T.HasFailed && ! Dependency.IgnoreErrors)
-                        return true;
-                }
-                return false;
-            }
-        }
-
+#endif
         /// <summary>
         /// Return true if the dependencies for this job have all passed.
         /// </summary>
-        private bool DependenciesHavePassed
+    private bool DependenciesHavePassed
     {
         get
         {
@@ -228,7 +198,7 @@ public class Target
                 if (!T.HasFinished)
                    return false;
 
-                if (T.Status == "Fail" && !Dependency.IgnoreErrors)
+                if (T.Status == Status_t.Fail && !Dependency.IgnoreErrors)
                    return false;
             }
             return true;

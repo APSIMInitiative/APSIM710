@@ -10,7 +10,6 @@ namespace JobScheduler {
     [Serializable]
     public class Project
     {
-        internal Object thisLock = null;
 
         [XmlElement("Target")]
         public List<Target> Targets = new List<Target>();
@@ -20,7 +19,6 @@ namespace JobScheduler {
         /// </summary>
         public Project()
         {
-            thisLock = new object();
         }
 
         [XmlIgnore]
@@ -47,43 +45,34 @@ namespace JobScheduler {
 
         internal Target FindTarget(string NameToFind)
         {
-            lock (thisLock)
-            {
-                foreach (Target t in Targets)
-                    if (t.Name == NameToFind)
-                        return t;
-                return null;
-            }
+           foreach (Target t in Targets)
+               if (t.Name == NameToFind)
+                   return t;
+           return null;
         }
         internal IJob FindJob(string NameToFind)
         {
-            lock (thisLock)
-            {
-                foreach (Target t in Targets)
-                    foreach (IJob J in t.Jobs)
-                        if (J.Name == NameToFind)
-                            return J;
-                return null;
-            }
+            foreach (Target t in Targets)
+                foreach (IJob J in t.Jobs)
+                    if (J.Name == NameToFind)
+                        return J;
+            return null;
         }
 
         internal IJob NextJobToRun()
         {
             IJob J;
-            lock (thisLock)
+            foreach (Target t in Targets)
             {
-                foreach (Target t in Targets)
+                J = t.NextJobToRun();
+                if (J != null)
                 {
-                    J = t.NextJobToRun();
-                    if (J != null)
-                    {
-                        J.Status = "Running";
-                        if (t.StartTime == DateTime.MinValue) t.StartTime = DateTime.Now;
-                        return J;
-                    }
+                    J.Status = Status_t.Running;
+                    if (t.StartTime == DateTime.MinValue) t.StartTime = DateTime.Now;
+                    return J;
                 }
-                return null;
             }
+            return null;
         }
 
         /// <summary>
@@ -92,43 +81,34 @@ namespace JobScheduler {
         /// </summary>
         internal void CheckAllJobsForCompletion()
         {
-            lock (thisLock)
+            bool wasChanged;
+            do
             {
-                bool wasChanged;
-                do
-                {
-                    wasChanged = false;
-                    foreach (Target t in Targets)
-                        wasChanged |= t.CheckAllJobsForCompletion();
-                } while (wasChanged);
-            }
+                wasChanged = false;
+                foreach (Target t in Targets)
+                    wasChanged |= t.CheckAllJobsForCompletion();
+            } while (wasChanged);
         }
 
         internal void AddTarget(Target T)
         {
-            lock (thisLock)
-            {
-                Target ExistingTarget = FindTarget(T.Name);
-                if (ExistingTarget != null)
-                    ExistingTarget.Jobs.AddRange(T.Jobs);
-                else
-                    Targets.Add(T);
-            }
+            Target ExistingTarget = FindTarget(T.Name);
+            if (ExistingTarget != null)
+                ExistingTarget.Jobs.AddRange(T.Jobs);
+            else
+                Targets.Add(T);
         }
 
         public bool AllTargetsFinished
         {
             get
             {
-                lock (thisLock)
+                foreach (Target t in Targets)
                 {
-                    foreach (Target t in Targets)
-                    {
-                        if (t.NeedToRun && !t.HasFinished)
-                           return false;
-                    }
-                    return true;
+                    if (t.NeedToRun && !t.HasFinished)
+                       return false;
                 }
+                return true;
             }
         }
 
@@ -136,13 +116,8 @@ namespace JobScheduler {
         {
             get
             {
-                lock (thisLock)
-                {
-                    Target T = FindTarget(MainTarget);
-                    //Console.WriteLine("---");
-                    //T.Print(0);
-                    return (T.HasFinished);
-                }
+                Target T = FindTarget(MainTarget);
+                return (T.HasFinished);
             }
         }
 
@@ -153,7 +128,7 @@ namespace JobScheduler {
             {
                 foreach (Target t in Targets)
                 {
-                    if (t.NeedToRun && t.Status != null && t.Status != "Pass")
+                    if (t.NeedToRun && t.Status != Status_t.Pass)
                         return false;
                 }
                 return true;
@@ -182,7 +157,7 @@ namespace JobScheduler {
             int n = 0;
             foreach (Target t in Targets)
                 foreach (Job J in t.Jobs)
-                    if (J.Status != null && J.Status != "Running")
+                    if (J.Status == Status_t.Fail || J.Status == Status_t.Pass)
                         n++;
             return (n);
         }
@@ -198,24 +173,23 @@ namespace JobScheduler {
 
         internal int PercentComplete()
         {
-            lock (thisLock)
-            {
-                double p = 0.0; double n = 0;
-                foreach (Target t in Targets)
-                    foreach (Job J in t.Jobs)
-                    {
-                        p += J.PercentComplete / 100.0;
-                        n += 1.0;
-                    }
-                return (Math.Min(100, Math.Max(0, (int)(100 * p / n))));
-            }
+            double p = 0.0; double n = 0;
+            foreach (Target t in Targets)
+                foreach (Job J in t.Jobs)
+                {
+                    p += J.PercentComplete / 100.0;
+                    n += 1.0;
+                }
+            return (Math.Min(100, Math.Max(0, (int)(100 * p / n))));
         }
 
         [XmlIgnore]
         private List<IJob> RunLog = new List<IJob>();
+
+        internal Object thisLock = new object();
         public void SaveJobInLog (IJob J)
         {
-            lock (thisLock)
+            lock (thisLock) 
             {
                 RunLog.Add(J);
             }
@@ -223,17 +197,15 @@ namespace JobScheduler {
         /// <summary>
         /// Save our logfile.
         /// </summary>
+
+
         internal void SaveXmlFile(string FileName)
         {
-            lock (thisLock)
-            {
-                Type[] derivedClasses = { typeof(Job), typeof(FindJob) };
-                XmlSerializer x = new XmlSerializer(typeof(List<IJob>), derivedClasses);
-                StreamWriter s = new StreamWriter(FileName);
-                x.Serialize(s, RunLog);
-                s.Close();
-            }
+            Type[] derivedClasses = { typeof(Job), typeof(FindJob) };
+            XmlSerializer x = new XmlSerializer(typeof(List<IJob>), derivedClasses);
+            StreamWriter s = new StreamWriter(FileName);
+            x.Serialize(s, RunLog);
+            s.Close();
         }
-
     }
 }

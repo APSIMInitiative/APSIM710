@@ -83,7 +83,7 @@ class BobMain
 
             // Run the JobScheduler.
             if (System.Environment.MachineName.ToUpper() == "BOB")
-                Run("Run job scheduler", "%APSIM%/Model/JobScheduler.exe", "%APSIM%/Model/Build/BuildAll.xml Target=Bob");
+                Run("Run job scheduler", "%APSIM%/Model/JobScheduler.exe", "%APSIM%/Model/Build/BuildAll.xml Target=Bob NumCPUs=64");
             else
                 Run("Run job scheduler", "%APSIM%/Model/JobScheduler.exe", "%APSIM%/Model/Build/BuildAll.xml Target=LinuxX64");
 
