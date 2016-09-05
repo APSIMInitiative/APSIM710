@@ -25,11 +25,11 @@ using ModelFramework;
     double N_growth;                   // N partitioned to tissue growth
     [Param]
     string fileInfo;        
-    List<feedItemType> feedItemList;
+
      public pigs():base()
      {
-         feedItemList = new List<feedItemType>();
-         Console.WriteLine("con pig");
+
+
      }
      public string GetName()
      {
@@ -58,13 +58,15 @@ using ModelFramework;
          for (int i = 0; i < My.ChildrenAsObjects.Count; i++)
          {
              afeedItem = (FeedItem)My.ChildrenAsObjects[i];
-             Console.WriteLine(afeedItem.pigFeedUnitsPerItemUnit +" dfdfdf");
+
+  
              FeedItem storedfeedItem = new FeedItem();
            //  FeedItem storedfeedItem = (FeedItem)theProducts.GetCopyStoredFeedProduct( afeedItem);    // returns a copy of the product if it is found in storage
 
             
              if ((storedfeedItem.getAmount() > 0.0))
              {
+
                  storedfeedItem.setAmount(afeedItem.getAmount());
                 // theProducts.SubtractProduct(storedfeedItem);    // subtract feed from storage
                  if (currentfeed.getAmount()!=0)
@@ -84,14 +86,17 @@ using ModelFramework;
 
                  //theProducts.SubtractProduct(afeedItem);    // subtract feed from storage
 
-
+             
                  if (currentfeed.getAmount() != 0)
-                     currentfeed = currentfeed + storedfeedItem;
+                 {
+                     currentfeed = currentfeed + afeedItem;
+
+                 }
                  else
                      currentfeed = afeedItem;
              }
          }
-         Console.WriteLine(currentfeed.pigFeedUnitsPerItemUnit + "  currentfeed.pigFeedUnitsPerItemUnit");
+       
          if (currentfeed.getAmount() == 0)
          {
          
@@ -119,7 +124,7 @@ using ModelFramework;
          CinManure = manurePrDay.GetAmount() * manurePrDay.GetC_content();
          CinCH4 = 0.01 * GetGrossEnergyinDryMatter() * currentfeed.getAmount() * currentfeed.GetdryMatter() / 55.55;
 
-         Console.WriteLine(NumberPrDay+" "+C_growth);
+      //   Console.WriteLine(NumberPrDay+" "+C_growth);
 
          double CinCO2 = CinFeed - (CinSoldPig + CinManure + CinCH4);
 
@@ -154,8 +159,8 @@ using ModelFramework;
       
                     Console.Write( "Energy as percentage of requirement = ");
                     Console.WriteLine(100.0 * energyInput / (NumberPrDay * FE_need));
-                 
-                      throw new System.ArgumentException("pig::ProduceManure -  Very low amount of energy in feed");
+
+                    throw new System.ArgumentException("pig::ProduceManure -  Very low amount of energy in feed " + currentfeed.pigFeedUnitsPerItemUnit);
 
                 }
                 else
@@ -194,7 +199,7 @@ using ModelFramework;
                 //faecal N is the undigested protein N
                 Nconc = (amountfeed * protein_N_conc - proteinNDigested) / totalAmountPrDay;
                 if (Nconc < 0.0)
-                    throw new System.ArgumentException("pig::protein N digested greater than protein N present" + proteinNDigested);
+                    throw new System.ArgumentException("pig::protein N digested greater than protein N present" + protein_N_conc);
 
                 //         solidManure->SetfromAnimal(animalName);
                 solidManure.amount=totalAmountPrDay;

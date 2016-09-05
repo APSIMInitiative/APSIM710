@@ -68,6 +68,7 @@ using System.Threading.Tasks;
             returnItem.NO3_content = c1.getAmount() / returnItem.getAmount() * c1.NO3_content + c2.getAmount() / returnItem.getAmount() * c2.NO3_content;
             returnItem.NH4_content = c1.getAmount() / returnItem.getAmount() * c1.NH4_content + c2.getAmount() / returnItem.getAmount() * c2.NH4_content;
             returnItem.K_content = c1.getAmount() / returnItem.getAmount() * c1.K_content + c2.getAmount() / returnItem.getAmount() * c2.K_content;
+            returnItem.pigFeedUnitsPerItemUnit = c1.getAmount() / returnItem.getAmount() * c1.pigFeedUnitsPerItemUnit + c2.getAmount() / returnItem.getAmount() * c2.pigFeedUnitsPerItemUnit;
             return returnItem;
         }
         public double GetdryMatter() {
