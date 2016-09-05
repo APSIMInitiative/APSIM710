@@ -92,11 +92,14 @@ namespace JobScheduler {
 
         internal void AddTarget(Target T)
         {
-            Target ExistingTarget = FindTarget(T.Name);
-            if (ExistingTarget != null)
-                ExistingTarget.Jobs.AddRange(T.Jobs);
-            else
-                Targets.Add(T);
+            lock (thisLock) 
+            {
+                Target ExistingTarget = FindTarget(T.Name);
+                if (ExistingTarget != null)
+                    ExistingTarget.Jobs.AddRange(T.Jobs);
+                else
+                    Targets.Add(T);
+            }
         }
 
         public bool AllTargetsFinished
@@ -116,8 +119,11 @@ namespace JobScheduler {
         {
             get
             {
-                Target T = FindTarget(MainTarget);
-                return (T.HasFinished);
+            lock (thisLock) 
+                {
+                    Target T = FindTarget(MainTarget);
+                    return (T.HasFinished);
+                }
             }
         }
 
