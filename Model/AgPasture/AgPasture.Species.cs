@@ -376,9 +376,6 @@ public class Species
 
     //// > Root depth and distribution  >>>
 
-    /// <summary>Some Description</summary>
-    internal bool usingSpeciesRoot;
-
     /// <summary>minimum root depth (mm)</summary>
     internal double minRootDepth;
 
@@ -387,9 +384,6 @@ public class Species
 
     /// <summary>Base root elongation rate (mm/day)</summary>
     internal double rootElongationRate;
-
-    /// <summary>Some Description</summary>
-    internal int rootDistributionMethod = 2;
 
     /// <summary>Some Description</summary>
     internal double expoLinearDepthParam = 90.0;
@@ -1605,36 +1599,6 @@ public class Species
         height = HeightfromDM();
     }
 
-    /// <summary>
-    /// Root growth
-    /// </summary>
-    /// <returns>root depth</returns>
-    internal double rootGrowth()
-    {
-        if (isAnnual)
-        {
-            rootDepth = 50 + (maxRootDepth - 50) * MathUtility.Divide(daysfromEmergence, daysEmgToAnth, 1.0);
-            layerBottomRootZone = GetRootZoneBottomLayer();
-            //considering root distribution change, here?
-        }
-        else
-        {
-            if ((phenoStage > 0) && (rootDepth < maxRootDepth))
-            {
-                double tempFactor = GFTemperature(Tmean);
-                dRootDepth = rootElongationRate * tempFactor;
-                rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
-            }
-            else
-            {
-                dRootDepth = 0.0;
-                rootDepth = 0.0;
-            }
-        }
-
-        return rootDepth;
-    }
-
     #endregion
 
     #region - Handling and auxilary processes  -------------------------------------------------------------------------
@@ -2639,7 +2603,7 @@ public class Species
     }
 
     /// <summary>
-    /// Calculate the average herbage digestibility (above ground)
+    /// Calculates the average herbage digestibility (above ground)
     /// </summary>
     /// <returns>digestibility</returns>
     internal void evaluateDigestibility()
@@ -2656,28 +2620,62 @@ public class Species
     }
 
     /// <summary>
-    /// Find the layer at the bottom of the root zone
+    /// Calculates the plant height, as function of DM
     /// </summary>
-    /// <returns>layer at bottom of root zone</returns>
-    internal int GetRootZoneBottomLayer()
+    /// <returns>Plant height</returns>
+    internal double HeightfromDM()
     {
-        double depthFromSurface = 0.0;
-        int result = dlayer.Length - 1;
-        double maxDepth = Math.Min(rootDepth, dlayer.Sum());
-        for (int layer = 0; layer < dlayer.Length; layer++)
+        double TodaysHeight = MaxPlantHeight - MinimumHeight;
+        double standingDM = (leaves.DMTotal + stems.DMTotal);
+
+        if (standingDM <= MassForMaxHeight)
         {
-            if (depthFromSurface >= maxDepth)
+            double massRatio = standingDM / MassForMaxHeight;
+            double heightF = ExponentHeightFromMass
+                             - (ExponentHeightFromMass * massRatio)
+                             + massRatio;
+            heightF *= Math.Pow(massRatio, ExponentHeightFromMass - 1);
+            TodaysHeight *= heightF;
+        }
+
+        return TodaysHeight + MinimumHeight;
+    }
+
+    /// <summary>
+    /// Calculates variations in root growth and distribution
+    /// </summary>
+    internal void evaluateRootGrowth()
+    {
+        if (isAnnual)
+        {
+            rootDepth = 50 + (maxRootDepth - 50) * MathUtility.Divide(daysfromEmergence, daysEmgToAnth, 1.0);
+            layerBottomRootZone = GetRootZoneBottomLayer();
+            //considering root distribution change, here?
+            //TODO: use the same calculation for annuals
+        }
+        else
+        {
+            if (phenoStage > 0)
             {
-                result = layer - 1;
-                layer = dlayer.Length;
+                // do root elongation
+                if ((dGrowthRoot > 0.0) && (rootDepth < maxRootDepth))
+                {
+                    double tempFactor = GFTemperature(Tmean);
+                    dRootDepth = rootElongationRate * tempFactor;
+                    rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
+                }
+                else
+                {
+                    // no root growth, depth does not change
+                    dRootDepth = 0.0;
+                }
             }
             else
             {
-                depthFromSurface += dlayer[layer];
+                dRootDepth = 0.0;
+                rootDepth = 0.0;
             }
         }
-
-        return result;
     }
 
     /// <summary>Compute the current target distribution of roots in the soil profile</summary>
@@ -2780,44 +2778,43 @@ public class Species
     }
 
     /// <summary>
-    /// Compute how much of the layer is actually explored by roots
+    /// Find the layer at the bottom of the root zone
     /// </summary>
-    /// <param name="layer"></param>
-    /// <param name="root_depth"></param>
-    /// <returns>Fraction of layer explored by roots</returns>
-    private double LayerFractionWithRoots(int layer, double root_depth)
+    /// <returns>layer at bottom of root zone</returns>
+    internal int GetRootZoneBottomLayer()
     {
-        double depthToTopOfLayer = 0.0;
-        double fraction_in_layer = 0.0;
-        for (int i = 0; i < layer; i++)
-            depthToTopOfLayer += dlayer[i];
-        fraction_in_layer = (root_depth - depthToTopOfLayer) / dlayer[layer];
+        double depthFromSurface = 0.0;
+        int result = dlayer.Length - 1;
+        double maxDepth = Math.Min(rootDepth, dlayer.Sum());
+        for (int layer = 0; layer < dlayer.Length; layer++)
+        {
+            if (depthFromSurface >= maxDepth)
+            {
+                result = layer - 1;
+                layer = dlayer.Length;
+            }
+            else
+            {
+                depthFromSurface += dlayer[layer];
+            }
+        }
 
-        return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
+        return result;
     }
 
     /// <summary>
-    /// Calculate the plant height, as function of DM
+    /// Compute how much of the layer is actually explored by roots
     /// </summary>
-    /// <returns>Plant height</returns>
-    internal double HeightfromDM()
+    /// <param name="layer"></param>
+    /// <returns>Fraction of layer explored by roots</returns>
+    private double LayerFractionWithRoots(int layer)
     {
-        //double TodaysHeight = MaxPlantHeight - MinimumHeight;
-        double TodaysHeight = MaxPlantHeight;
-        double standingDM = (leaves.DMTotal + stems.DMTotal);
+        double depthToTopOfLayer = 0.0;
+        for (int i = 0; i < layer; i++)
+            depthToTopOfLayer += dlayer[i];
+        double fractionInLayer = (rootDepth - depthToTopOfLayer) / dlayer[layer];
 
-        if (standingDM <= MassForMaxHeight)
-        {
-            double massRatio = standingDM / MassForMaxHeight;
-            double heightF = ExponentHeightFromMass
-                             - (ExponentHeightFromMass * massRatio)
-                             + massRatio;
-            heightF *= Math.Pow(massRatio, ExponentHeightFromMass - 1);
-            TodaysHeight *= heightF;
-        }
-
-        //return TodaysHeight + MinimumHeight;
-        return Math.Max(TodaysHeight, MinimumHeight);
+        return Math.Min(1.0, Math.Max(0.0, fractionInLayer));
     }
 
     #endregion

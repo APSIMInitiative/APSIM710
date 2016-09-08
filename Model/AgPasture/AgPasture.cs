@@ -838,8 +838,6 @@ public class AgPasture
     [Units("mm/day")]
     private double[] RootElongationRate { get; set; }
 
-    private int rootsDistributionMethod = 0;
-
     private double[] rootTopDepthParam;
 
     [Param]
@@ -881,6 +879,11 @@ public class AgPasture
     private double[] MaxPlantHeight;
 
     [Param]
+    [Description("Minimum plant height, for all species")]
+    [Units("mm")]
+    private double[] MinimumHeight;
+
+    [Param]
     [Description("Mass above ground when maximum height is reached")]
     [Units("kgDM/ha")]
     private double[] MassForMaxHeight;
@@ -889,11 +892,6 @@ public class AgPasture
     [Description("Exponent of function describing plant height as function of DM weight")]
     [Units(">1.0")]
     private double[] ExponentHeightFromMass;
-
-    [Param]
-    [Description("Minimum plant height, for all species")]
-    [Units("mm")]
-    private double MinimumHeight;
 
     ////  >> Soil related (water uptake) >>>
     [Param]
@@ -1388,7 +1386,7 @@ public class AgPasture
                     mySpecies[s1].dlayer = dlayer;
                     mySpecies[s1].xf = xf;
 
-                    // check mas root depth
+                    // check max root depth
                     if (iniRootDepth[s1] > 0.0)
                         maxRootDepth[s1] = iniRootDepth[s1];
                     else
@@ -1421,7 +1419,7 @@ public class AgPasture
                             if (dmroot[s2] > 0.0)
                                 iniRootDM[s1] = dmroot[s2];
                             else
-                                iniRootDM[s1] = iniRootDM[s1] / mySpecies[s2].targetSRratio;
+                                iniRootDM[s1] = iniShootDM[s1] / mySpecies[s2].targetSRratio;
                         }
 
                         if (iniRootDepth[s1] <= 0.0)
@@ -1477,8 +1475,8 @@ public class AgPasture
         {
             if (!usingSpeciesRoot)
             {
-                // get the max root depth of all species
-                mySpecies[s].InitialState.RootDepth = iniRootDepth.Max();
+                // only sward is considered, use root system of species1
+                mySpecies[s].InitialState.RootDepth = iniRootDepth[0];
             }
 
             SetSpeciesState(s, mySpecies[s].InitialState);
@@ -1492,15 +1490,15 @@ public class AgPasture
         }
 
         // check root distribution
-        targetRootAllocation = new double[nLayers];
-        rootFraction = new double[nLayers];
+        swardTargetRootAllocation = new double[nLayers];
+        swardRootFraction = new double[nLayers];
         if (!usingSpeciesRoot)
         {
             // only sward is considered, use root system of species1
             for (int layer = 0; layer < nLayers; layer++)
             {
-                targetRootAllocation[layer] = mySpecies[0].targetRootAllocation[layer];
-                rootFraction[layer] = mySpecies[0].rootFraction[layer];
+                swardTargetRootAllocation[layer] = mySpecies[0].targetRootAllocation[layer];
+                swardRootFraction[layer] = mySpecies[0].rootFraction[layer];
             }
 
             // reset root fraction of each species
@@ -1509,8 +1507,8 @@ public class AgPasture
                 mySpecies[s].rootFraction = new double[nLayers];
                 for (int layer = 0; layer < nLayers; layer++)
                 {
-                    mySpecies[s].targetRootAllocation[layer] = targetRootAllocation[layer];
-                    mySpecies[s].rootFraction[layer] = rootFraction[layer];
+                    mySpecies[s].targetRootAllocation[layer] = swardTargetRootAllocation[layer];
+                    mySpecies[s].rootFraction[layer] = swardRootFraction[layer];
                 }
             }
         }
@@ -1758,6 +1756,8 @@ public class AgPasture
         ////  >> Plant height  >>>
         if (MaxPlantHeight.Length < NumSpecies)
             breakCode("MaxPlantHeight");
+        if (MinimumHeight.Length < NumSpecies)
+            breakCode("MinimumHeight");
         if (MassForMaxHeight.Length < NumSpecies)
             breakCode("MassForMaxHeight");
         if (ExponentHeightFromMass.Length < NumSpecies)
@@ -1945,7 +1945,6 @@ public class AgPasture
         mySpecies[s1].minRootDepth = MinimumRootDepth[s2];
         mySpecies[s1].maxRootDepth = maxRootDepth[s2];
         mySpecies[s1].rootElongationRate = RootElongationRate[s2];
-        mySpecies[s1].usingSpeciesRoot = usingSpeciesRoot;
         if (usingSpeciesRoot)
         {
             // root specified for each species
@@ -1959,7 +1958,6 @@ public class AgPasture
         else
         {
             // root specified for whole sward (use first species as data entry)
-            mySpecies[s1].rootDistributionMethod = rootsDistributionMethod;
             mySpecies[s1].expoLinearDepthParam = rootTopDepthParam[0];
             mySpecies[s1].expoLinearCurveParam = rootCurveParam[0];
             mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[0];
@@ -1972,7 +1970,7 @@ public class AgPasture
         mySpecies[s1].MaxPlantHeight = MaxPlantHeight[s2];
         mySpecies[s1].MassForMaxHeight = MassForMaxHeight[s2];
         mySpecies[s1].ExponentHeightFromMass = ExponentHeightFromMass[s2];
-        mySpecies[s1].MinimumHeight = MinimumHeight;
+        mySpecies[s1].MinimumHeight = MinimumHeight[s2];
 
         //// N concentrations ............................................
         mySpecies[s1].NcstemFr = RelativeNconc_Stems[s2];
@@ -2073,30 +2071,33 @@ public class AgPasture
             swardLightExtCoeff = MathUtility.Divide(sumkLAI, LAI_green, 1.0);
         }
 
-        // get sward average root distribution
+        // get sward average root depth and distribution
         if (usingSpeciesRoot)
         {
+            // the deepest root depth is used for sward
+            swardRootDepth = mySpecies.Max(x => x.rootDepth);
+            swardRootZoneBottomLayer = mySpecies.Max(x => x.layerBottomRootZone);
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    rootFraction[layer] += mySpecies[s].roots.DMGreen * mySpecies[s].rootFraction[layer];
-                    targetRootAllocation[layer] += mySpecies[s].roots.DMGreen * mySpecies[s].targetRootAllocation[layer];
+                    swardRootFraction[layer] += mySpecies[s].roots.DMGreen * mySpecies[s].rootFraction[layer];
+                    swardTargetRootAllocation[layer] += mySpecies[s].roots.DMGreen * mySpecies[s].targetRootAllocation[layer];
                 }
 
                 if (RootWt > 0.0)
                 {
-                    rootFraction[layer] /= RootWt;
-                    targetRootAllocation[layer] /= RootWt;
+                    swardRootFraction[layer] /= RootWt;
+                    swardTargetRootAllocation[layer] /= RootWt;
                 }
                 else
                 {
-                    rootFraction[layer] = 0.0;
-                    targetRootAllocation[layer] = 0.0;
+                    swardRootFraction[layer] = 0.0;
+                    swardTargetRootAllocation[layer] = 0.0;
                 }
             }
         }
-        //else  root distribution does not change 
+        //else  root distribution already updated (in GrowthAndPartition) 
     }
 
     /// <summary>
@@ -2173,7 +2174,7 @@ public class AgPasture
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
             Console.WriteLine("          {0,3}  {1,10}     {2,6:F3}", layer,
-                LayerTop.ToString() + "-" + (LayerTop + dlayer[layer]).ToString(), rootFraction[layer]);
+                LayerTop.ToString() + "-" + (LayerTop + dlayer[layer]).ToString(), swardRootFraction[layer]);
             LayerTop += dlayer[layer];
         }
 
@@ -2214,19 +2215,9 @@ public class AgPasture
         if (!isAlive)
             return;
 
-        // Remember current state of each species and update root depth frontier (root depth for annuals)
+        // Remember current state of each species
         for (int s = 0; s < NumSpecies; s++)
-        {
             mySpecies[s].SetPrevPools();
-
-            double newRootDepth = mySpecies[s].rootGrowth();
-            if (swardRootDepth < newRootDepth)
-            {
-                // the deepest root_depth is used
-                swardRootDepth = newRootDepth;
-                swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
-            }
-        }
 
         // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
         DoNewCanopyEvent();
@@ -2269,10 +2260,8 @@ public class AgPasture
         // Get soil water available in the root zone
         soilAvailableWater = PlantWaterAvailability();
 
-
         // Evaluate the water supply, demand & uptake
         WaterBudgetAndUptake();
-
 
         // Calculate and set the growth limiting factor due to soil moisture and aeration
         SetSpeciesGLFWater();
@@ -4587,6 +4576,30 @@ public class AgPasture
             // Compute the tissue turnover
             mySpecies[s].TissueTurnover();
 
+            // Check changes in root depth and update root distribution
+            if (usingSpeciesRoot)
+            {
+                mySpecies[s].evaluateRootGrowth();
+            }
+            else
+            {
+                if (s == 0)
+                {
+                    mySpecies[s].evaluateRootGrowth();
+                    swardRootDepth = mySpecies[s].rootDepth;
+                    swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
+                    for (int layer = 0; layer < dlayer.Length; layer++)
+                        swardRootFraction[layer] = mySpecies[s].rootFraction[layer];
+                }
+                else
+                {
+                    mySpecies[s].rootDepth = swardRootDepth;
+                    mySpecies[s].layerBottomRootZone = swardRootZoneBottomLayer;
+                    for (int layer = 0; layer < dlayer.Length; layer++)
+                        mySpecies[s].rootFraction[layer] = swardRootFraction[layer];
+                }
+            }
+
             // Update the aggregated variables (LAI, height, etc)
             mySpecies[s].UpdateAggregatedVariables();
 
@@ -4789,8 +4802,8 @@ public class AgPasture
         double dNLayer = 0.0;
         for (int i = 0; i < dlayer.Length; i++)
         {
-            dAmtLayer = rootSen * rootFraction[i];
-            dNLayer = NinRootSen * rootFraction[i];
+            dAmtLayer = rootSen * swardRootFraction[i];
+            dNLayer = NinRootSen * swardRootFraction[i];
 
             float amt = (float) dAmtLayer;
 
@@ -5083,8 +5096,8 @@ public class AgPasture
         {
             if (!usingSpeciesRoot)
             {
-                // Get the max root depth of all species
-                mySpecies[s].InitialState.RootDepth = mySpecies.Max(x => x.rootDepth);
+                // only sward is considered, use root system of species1
+                mySpecies[s].InitialState.RootDepth = mySpecies[0].rootDepth;
             }
 
             // set initial state
@@ -5103,15 +5116,15 @@ public class AgPasture
 
         // check root distribution
         int nLayers = dlayer.Length;
-        targetRootAllocation = new double[nLayers];
-        rootFraction = new double[nLayers];
+        swardTargetRootAllocation = new double[nLayers];
+        swardRootFraction = new double[nLayers];
         if (!usingSpeciesRoot)
         {
             // only sward height is considered, use root system of species 1
             for (int layer = 0; layer < nLayers; layer++)
             {
-                targetRootAllocation[layer] = mySpecies[0].targetRootAllocation[layer];
-                rootFraction[layer] = mySpecies[0].rootFraction[layer];
+                swardTargetRootAllocation[layer] = mySpecies[0].targetRootAllocation[layer];
+                swardRootFraction[layer] = mySpecies[0].rootFraction[layer];
             }
 
             for (int s = 0; s < NumSpecies; s++)
@@ -5119,8 +5132,8 @@ public class AgPasture
                 mySpecies[s].rootFraction = new double[nLayers];
                 for (int layer = 0; layer < nLayers; layer++)
                 {
-                    mySpecies[s].targetRootAllocation[layer] = targetRootAllocation[layer];
-                    mySpecies[s].rootFraction[layer] = rootFraction[layer];
+                    mySpecies[s].targetRootAllocation[layer] = swardTargetRootAllocation[layer];
+                    mySpecies[s].rootFraction[layer] = swardRootFraction[layer];
                 }
             }
         }
@@ -5287,134 +5300,6 @@ public class AgPasture
     #region Functions  ----------------------------------------------------------------------------
 
     /// <summary>
-    /// Compute the distribution of roots in the soil profile (sum is equal to one)
-    /// </summary>
-    /// <returns>The proportion of root mass in each soil layer</returns>
-    /// <param name="s">The index of the species to compute root distribution</param>
-    private double[] RootProfileDistribution1(int s)
-    {
-        int nLayers = dlayer.Length;
-        double[] result = new double[nLayers];
-        double sumProportion = 0.0;
-        double myRootDepth = 0.0;
-        if (s >= 0)
-        {
-            myRootDepth = mySpecies[s].rootDepth;
-        }
-        else
-        {
-            myRootDepth = swardRootDepth;
-            s = 0; // will use parameters from first species
-        }
-
-        switch (mySpecies[s].rootDistributionMethod)
-        {
-            case 0:
-            {
-                // homogeneous distribution over soil profile (same root density throughout the profile)
-                double DepthTop = 0.0;
-                sumProportion = myRootDepth;
-                if (sumProportion <= 0.0)
-                    throw new Exception("Could not calculate root distribution");
-                for (int layer = 0; layer < nLayers; layer++)
-                {
-                    if (DepthTop >= myRootDepth)
-                        result[layer] = 0.0;
-                    else if (DepthTop + dlayer[layer] <= myRootDepth)
-                        result[layer] = dlayer[layer];
-                    else
-                        result[layer] = (myRootDepth - DepthTop);
-                    DepthTop += dlayer[layer];
-                    if (sumProportion > 0.0)
-                        result[layer] /= sumProportion;
-                }
-
-                break;
-            }
-            case 1:
-            {
-                // distribution given by the user
-                Array.Resize(ref rlvp, nLayers);
-                    // This will remove values in excess (non-existing layers) or add zeroes if layers are missing
-                for (int layer = 0; layer < nLayers; layer++)
-                {
-                    result[layer] = rlvp[layer];
-                    sumProportion += result[layer];
-                }
-
-                if (sumProportion > 0.0)
-                {
-                    for (int layer = 0; layer < nLayers; layer++)
-                    {
-                        result[layer] = result[layer] / sumProportion;
-                    }
-                }
-                else
-                    throw new Exception("Could not calculate root distribution");
-
-                break;
-            }
-            case 2:
-            {
-                // distribution calculated using ExpoLinear method
-                //  Considers homogeneous distribution from surface down to a given depth (rootTopDepthParam)
-                //   below this depth, the proportion of root decreases following a power function (exponent = rootCurveParam)
-                //   if exponent is one than the proportion decreases linearly.
-                double depthTop = 0.0;
-                double depthBottom = 0.0;
-                sumProportion = (myRootDepth + (rootTopDepthParam[s] * rootCurveParam[s])) / (rootCurveParam[s] + 1);
-                if (sumProportion <= 0.0)
-                    throw new Exception("Could not calculate root distribution");
-
-                for (int layer = 0; layer < nLayers; layer++)
-                {
-                    depthBottom += dlayer[layer];
-                    if (depthTop >= myRootDepth)
-                    {
-                        // totally out of root zone
-                        result[layer] = 0.0;
-                    }
-                    else if (depthBottom <= rootTopDepthParam[s])
-                    {
-                        // totally in the first stage
-                        result[layer] = dlayer[layer];
-                    }
-                    else
-                    {
-                        // at least partially on second stage
-                        result[layer] = Math.Pow(myRootDepth - Math.Max(depthTop, rootTopDepthParam[s]),
-                            rootCurveParam[s] + 1)
-                                        -
-                                        Math.Pow(myRootDepth - Math.Min(depthBottom, myRootDepth), rootCurveParam[s] + 1);
-                        result[layer] /= (rootCurveParam[s] + 1) *
-                                         Math.Pow(myRootDepth - rootTopDepthParam[s], rootCurveParam[s]);
-                        if (depthTop < rootTopDepthParam[s])
-                        {
-                            // partially in first stage
-                            result[layer] += rootTopDepthParam[s] - depthTop;
-                        }
-                    }
-
-                    if (sumProportion > 0)
-                        result[layer] /= sumProportion;
-                    else
-                        result[layer] = 0.0;
-
-                    depthTop += dlayer[layer];
-                }
-
-                break;
-            }
-            default:
-            {
-                throw new Exception("No valid method for computing root distribution was selected");
-            }
-        }
-
-        return result;
-    }
-
-    /// <summary>
     /// Compute how much of the layer is actually explored by roots
     /// </summary>
     /// <param name="layer"></param>
@@ -5423,12 +5308,11 @@ public class AgPasture
     private double LayerFractionWithRoots(int layer, double root_depth)
     {
         double depthToTopOfLayer = 0.0;
-        double fraction_in_layer = 0.0;
         for (int i = 0; i < layer; i++)
             depthToTopOfLayer += dlayer[i];
-        fraction_in_layer = (root_depth - depthToTopOfLayer) / dlayer[layer];
+        double fractionInLayer = (root_depth - depthToTopOfLayer) / dlayer[layer];
 
-        return Math.Min(1.0, Math.Max(0.0, fraction_in_layer));
+        return Math.Min(1.0, Math.Max(0.0, fractionInLayer));
     }
 
     /// <summary>
@@ -7083,16 +6967,15 @@ public class AgPasture
             for (int layer = 0; layer < result.Length; layer++)
             {
                 Total_Rlength = 0.0;
-                for (int s = 0; s < NumSpecies; s++)
+                if (usingSpeciesRoot)
                 {
-                    // average root length (m root/m2 soil)
-                    if (usingSpeciesRoot)
-                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * mySpecies[s].rootFraction[layer] *
-                                         mySpecies[s].specificRootLength;
-                    else
-                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * rootFraction[layer] *
-                                         mySpecies[s].specificRootLength;
+                    for (int s = 0; s < NumSpecies; s++)
+                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * mySpecies[s].rootFraction[layer] * mySpecies[s].specificRootLength;
                 }
+                else
+                    Total_Rlength += (swardRootDM * 0.1) * swardRootFraction[layer] * mySpecies[0].specificRootLength;
+
+                // average root length (m root/m2 soil)
                 result[layer] = Total_Rlength / (dlayer[layer] * 1000); // mm root/mm3 soil
             }
             return result;
@@ -7100,10 +6983,10 @@ public class AgPasture
     }
 
     /// <summary>The ideal fraction of roots DM in each layer</summary>
-    private double[] targetRootAllocation;
+    private double[] swardTargetRootAllocation;
 
     /// <summary>The current fraction of roots DM in each layer</summary>
-    private double[] rootFraction;
+    private double[] swardRootFraction;
 
     /// <summary>An output</summary>
     [Output]
@@ -7111,7 +6994,7 @@ public class AgPasture
     [Units("0-1")]
     public double[] RootWtFraction
     {
-        get { return rootFraction; }
+        get { return swardRootFraction; }
     }
 
     /// <summary>An output</summary>
