@@ -274,6 +274,11 @@ public class AgPasture
     private double[] Pm;
 
     [Param]
+    [Description("Relative factor for light partition between species")]
+    [Units("-")]
+    private double[] LightPartitioningFactor;
+
+    [Param]
     [Description("Pgrowth/Pgross")]
     [Units("")]
     private double[] growthEfficiency;
@@ -1471,6 +1476,7 @@ public class AgPasture
             isAlive = false;
 
         // set the initial state (DM, N, LAI, etc.) for the species
+        double auxLightPartition = mySpecies.Sum(species => species.lightPartitioningFactor);
         for (int s = 0; s < NumSpecies; s++)
         {
             if (!usingSpeciesRoot)
@@ -1480,6 +1486,9 @@ public class AgPasture
             }
 
             SetSpeciesState(s, mySpecies[s].InitialState);
+
+            // update light partitioning factors
+            mySpecies[s].lightPartitioningFactor *= NumSpecies / auxLightPartition;
 
             // get the deepest root as sward depth
             if (mySpecies[s].rootDepth > swardRootDepth)
@@ -1541,6 +1550,8 @@ public class AgPasture
         //// >> Potential growth (photosynthesis)  >>>
         if (Pm.Length < NumSpecies)
             breakCode("Pm");
+        if (LightPartitioningFactor.Length < NumSpecies)
+            breakCode("LightPartitioningFactor");
         if (growthEfficiency.Length < NumSpecies)
             breakCode("growthEfficiency");
         if (maintRespiration.Length < NumSpecies)
@@ -1832,6 +1843,7 @@ public class AgPasture
 
         //// >> Potential growth (photosynthesis)  >>>
         mySpecies[s1].Pm = Pm[s2]; //reference leaf co2 mg/m^2/s maximum
+        mySpecies[s1].lightPartitioningFactor = LightPartitioningFactor[s2]; // to be updated to a value 0-1
         mySpecies[s1].maintRespiration = maintRespiration[s2] * 0.01; // from % to fraction
         mySpecies[s1].growthEfficiency = growthEfficiency[s2];
         mySpecies[s1].alphaPhoto = alphaPhoto[s2];
@@ -5161,15 +5173,10 @@ public class AgPasture
         // in theory all parameters are optional, but dmFractions and nConcentrations need to be initialised or APSIM crashes
 
 
-        int nSetSpecies = NewSetState.speciesID.Length;
-        SpeciesBasicState[] NewState = new SpeciesBasicState[nSetSpecies];
-        int myS = 0;
-        foreach (int s in NewSetState.speciesID)
+        foreach (int sp in NewSetState.speciesID)
         {
             //initialise state variable
-            NewState[myS] = new SpeciesBasicState();
-            NewState[myS].DMWeight = new double[12];
-            NewState[myS].NAmount = new double[12];
+            SpeciesBasicState NewState = new SpeciesBasicState();
 
             // Check DM shoot
             if (NewSetState.dmShoot.Length > 0)
@@ -5178,117 +5185,117 @@ public class AgPasture
                 if (NewSetState.dmFractions.Length > 0)
                 {
                     // New fractions given
-                    NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf1;
-                    NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf2;
-                    NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf3;
-                    NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Leaf4;
-                    NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem1;
-                    NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem2;
-                    NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem3;
-                    NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stem4;
-                    NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stolon1;
-                    NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stolon2;
-                    NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * NewSetState.dmFractions[s].Stolon3;
+                    NewState.DMWeight[0] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Leaf1;
+                    NewState.DMWeight[1] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Leaf2;
+                    NewState.DMWeight[2] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Leaf3;
+                    NewState.DMWeight[3] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Leaf4;
+                    NewState.DMWeight[4] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stem1;
+                    NewState.DMWeight[5] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stem2;
+                    NewState.DMWeight[6] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stem3;
+                    NewState.DMWeight[7] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stem4;
+                    NewState.DMWeight[8] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon1;
+                    NewState.DMWeight[9] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon2;
+                    NewState.DMWeight[10] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon3;
                 }
                 else
                 {
-                    if (mySpecies[s].AboveGroundWt > 0.0)
+                    if (mySpecies[sp].AboveGroundWt > 0.0)
                     {
                         // Use current fractions
-                        NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[0].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[1].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[2].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * mySpecies[s].leaves.tissue[3].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[0].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[1].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[2].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * mySpecies[s].stems.tissue[3].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[0].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[1].DM / mySpecies[s].AboveGroundWt;
-                        NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * mySpecies[s].stolons.tissue[2].DM / mySpecies[s].AboveGroundWt;
+                        NewState.DMWeight[0] = NewSetState.dmShoot[sp] * mySpecies[sp].leaves.tissue[0].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[1] = NewSetState.dmShoot[sp] * mySpecies[sp].leaves.tissue[1].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[2] = NewSetState.dmShoot[sp] * mySpecies[sp].leaves.tissue[2].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[3] = NewSetState.dmShoot[sp] * mySpecies[sp].leaves.tissue[3].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[4] = NewSetState.dmShoot[sp] * mySpecies[sp].stems.tissue[0].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[5] = NewSetState.dmShoot[sp] * mySpecies[sp].stems.tissue[1].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[6] = NewSetState.dmShoot[sp] * mySpecies[sp].stems.tissue[2].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[7] = NewSetState.dmShoot[sp] * mySpecies[sp].stems.tissue[3].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[8] = NewSetState.dmShoot[sp] * mySpecies[sp].stolons.tissue[0].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[9] = NewSetState.dmShoot[sp] * mySpecies[sp].stolons.tissue[1].DM / mySpecies[sp].AboveGroundWt;
+                        NewState.DMWeight[10] = NewSetState.dmShoot[sp] * mySpecies[sp].stolons.tissue[2].DM / mySpecies[sp].AboveGroundWt;
                     }
                     else
                     {
                         // Use the default initial fractions
-                        double defaultDM = mySpecies[s].InitialState.DMWeight.Sum();
-                        NewState[myS].DMWeight[0] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[0] / defaultDM;
-                        NewState[myS].DMWeight[1] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[1] / defaultDM;
-                        NewState[myS].DMWeight[2] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[2] / defaultDM;
-                        NewState[myS].DMWeight[3] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[3] / defaultDM;
-                        NewState[myS].DMWeight[4] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[4] / defaultDM;
-                        NewState[myS].DMWeight[5] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[5] / defaultDM;
-                        NewState[myS].DMWeight[6] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[6] / defaultDM;
-                        NewState[myS].DMWeight[7] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[7] / defaultDM;
-                        NewState[myS].DMWeight[8] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[8] / defaultDM;
-                        NewState[myS].DMWeight[9] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[9] / defaultDM;
-                        NewState[myS].DMWeight[10] = NewSetState.dmShoot[s] * mySpecies[s].InitialState.DMWeight[10] / defaultDM;
+                        double defaultDM = mySpecies[sp].InitialState.DMWeight.Sum();
+                        NewState.DMWeight[0] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[0] / defaultDM;
+                        NewState.DMWeight[1] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[1] / defaultDM;
+                        NewState.DMWeight[2] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[2] / defaultDM;
+                        NewState.DMWeight[3] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[3] / defaultDM;
+                        NewState.DMWeight[4] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[4] / defaultDM;
+                        NewState.DMWeight[5] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[5] / defaultDM;
+                        NewState.DMWeight[6] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[6] / defaultDM;
+                        NewState.DMWeight[7] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[7] / defaultDM;
+                        NewState.DMWeight[8] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[8] / defaultDM;
+                        NewState.DMWeight[9] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[9] / defaultDM;
+                        NewState.DMWeight[10] = NewSetState.dmShoot[sp] * mySpecies[sp].InitialState.DMWeight[10] / defaultDM;
                     }
                 }
             }
             else
             {
                 // Keep current DM
-                NewState[myS].DMWeight[0] = mySpecies[s].leaves.tissue[0].DM;
-                NewState[myS].DMWeight[1] = mySpecies[s].leaves.tissue[1].DM;
-                NewState[myS].DMWeight[2] = mySpecies[s].leaves.tissue[2].DM;
-                NewState[myS].DMWeight[3] = mySpecies[s].leaves.tissue[3].DM;
-                NewState[myS].DMWeight[4] = mySpecies[s].stems.tissue[0].DM;
-                NewState[myS].DMWeight[5] = mySpecies[s].stems.tissue[1].DM;
-                NewState[myS].DMWeight[6] = mySpecies[s].stems.tissue[2].DM;
-                NewState[myS].DMWeight[7] = mySpecies[s].stems.tissue[3].DM;
-                NewState[myS].DMWeight[8] = mySpecies[s].stolons.tissue[0].DM;
-                NewState[myS].DMWeight[9] = mySpecies[s].stolons.tissue[1].DM;
-                NewState[myS].DMWeight[10] = mySpecies[s].stolons.tissue[2].DM;
+                NewState.DMWeight[0] = mySpecies[sp].leaves.tissue[0].DM;
+                NewState.DMWeight[1] = mySpecies[sp].leaves.tissue[1].DM;
+                NewState.DMWeight[2] = mySpecies[sp].leaves.tissue[2].DM;
+                NewState.DMWeight[3] = mySpecies[sp].leaves.tissue[3].DM;
+                NewState.DMWeight[4] = mySpecies[sp].stems.tissue[0].DM;
+                NewState.DMWeight[5] = mySpecies[sp].stems.tissue[1].DM;
+                NewState.DMWeight[6] = mySpecies[sp].stems.tissue[2].DM;
+                NewState.DMWeight[7] = mySpecies[sp].stems.tissue[3].DM;
+                NewState.DMWeight[8] = mySpecies[sp].stolons.tissue[0].DM;
+                NewState.DMWeight[9] = mySpecies[sp].stolons.tissue[1].DM;
+                NewState.DMWeight[10] = mySpecies[sp].stolons.tissue[2].DM;
             }
 
             // Check DM root
             if (NewSetState.dmRoot.Length > 0)
-                NewState[myS].DMWeight[11] = NewSetState.dmRoot[s];
+                NewState.DMWeight[11] = NewSetState.dmRoot[sp];
             else
-                NewState[myS].DMWeight[11] = mySpecies[s].roots.DMGreen;
+                NewState.DMWeight[11] = mySpecies[sp].roots.DMGreen;
 
             // Check root depth
             if (NewSetState.rootDepth.Length > 0)
-                NewState[myS].RootDepth = NewSetState.rootDepth[s];
+                NewState.RootDepth = NewSetState.rootDepth[sp];
             else
-                NewState[myS].RootDepth = mySpecies[s].rootDepth;
+                NewState.RootDepth = mySpecies[sp].rootDepth;
 
             // Check N concentrations
             if (NewSetState.nConcentrations.Length > 0)
             {
                 // new values given
-                NewState[myS].NAmount[0] = NewState[myS].DMWeight[0] * NewSetState.nConcentrations[s].Leaf1;
-                NewState[myS].NAmount[1] = NewState[myS].DMWeight[1] * NewSetState.nConcentrations[s].Leaf2;
-                NewState[myS].NAmount[2] = NewState[myS].DMWeight[2] * NewSetState.nConcentrations[s].Leaf3;
-                NewState[myS].NAmount[3] = NewState[myS].DMWeight[3] * NewSetState.nConcentrations[s].Leaf4;
-                NewState[myS].NAmount[4] = NewState[myS].DMWeight[4] * NewSetState.nConcentrations[s].Stem1;
-                NewState[myS].NAmount[5] = NewState[myS].DMWeight[5] * NewSetState.nConcentrations[s].Stem2;
-                NewState[myS].NAmount[6] = NewState[myS].DMWeight[6] * NewSetState.nConcentrations[s].Stem3;
-                NewState[myS].NAmount[7] = NewState[myS].DMWeight[7] * NewSetState.nConcentrations[s].Stem4;
-                NewState[myS].NAmount[8] = NewState[myS].DMWeight[8] * NewSetState.nConcentrations[s].Stolon1;
-                NewState[myS].NAmount[9] = NewState[myS].DMWeight[9] * NewSetState.nConcentrations[s].Stolon2;
-                NewState[myS].NAmount[10] = NewState[myS].DMWeight[10] * NewSetState.nConcentrations[s].Stolon3;
-                NewState[myS].NAmount[11] = NewState[myS].DMWeight[10] * NewSetState.nConcentrations[s].Roots;
+                NewState.NAmount[0] = NewState.DMWeight[0] * NewSetState.nConcentrations[sp].Leaf1;
+                NewState.NAmount[1] = NewState.DMWeight[1] * NewSetState.nConcentrations[sp].Leaf2;
+                NewState.NAmount[2] = NewState.DMWeight[2] * NewSetState.nConcentrations[sp].Leaf3;
+                NewState.NAmount[3] = NewState.DMWeight[3] * NewSetState.nConcentrations[sp].Leaf4;
+                NewState.NAmount[4] = NewState.DMWeight[4] * NewSetState.nConcentrations[sp].Stem1;
+                NewState.NAmount[5] = NewState.DMWeight[5] * NewSetState.nConcentrations[sp].Stem2;
+                NewState.NAmount[6] = NewState.DMWeight[6] * NewSetState.nConcentrations[sp].Stem3;
+                NewState.NAmount[7] = NewState.DMWeight[7] * NewSetState.nConcentrations[sp].Stem4;
+                NewState.NAmount[8] = NewState.DMWeight[8] * NewSetState.nConcentrations[sp].Stolon1;
+                NewState.NAmount[9] = NewState.DMWeight[9] * NewSetState.nConcentrations[sp].Stolon2;
+                NewState.NAmount[10] = NewState.DMWeight[10] * NewSetState.nConcentrations[sp].Stolon3;
+                NewState.NAmount[11] = NewState.DMWeight[11] * NewSetState.nConcentrations[sp].Roots;
             }
             else
             {
                 // Use current values
-                NewState[myS].NAmount[0] = mySpecies[s].leaves.tissue[0].Namount;
-                NewState[myS].NAmount[1] = mySpecies[s].leaves.tissue[1].Namount;
-                NewState[myS].NAmount[2] = mySpecies[s].leaves.tissue[2].Namount;
-                NewState[myS].NAmount[3] = mySpecies[s].leaves.tissue[3].Namount;
-                NewState[myS].NAmount[4] = mySpecies[s].stems.tissue[0].Namount;
-                NewState[myS].NAmount[5] = mySpecies[s].stems.tissue[1].Namount;
-                NewState[myS].NAmount[6] = mySpecies[s].stems.tissue[2].Namount;
-                NewState[myS].NAmount[7] = mySpecies[s].stems.tissue[3].Namount;
-                NewState[myS].NAmount[8] = mySpecies[s].stolons.tissue[0].Namount;
-                NewState[myS].NAmount[9] = mySpecies[s].stolons.tissue[1].Namount;
-                NewState[myS].NAmount[10] = mySpecies[s].stolons.tissue[2].Namount;
-                NewState[myS].NAmount[11] = mySpecies[s].roots.tissue[0].Namount;
+                NewState.NAmount[0] = NewState.DMWeight[0] * mySpecies[sp].leaves.tissue[0].Nconc;
+                NewState.NAmount[1] = NewState.DMWeight[1] * mySpecies[sp].leaves.tissue[1].Nconc;
+                NewState.NAmount[2] = NewState.DMWeight[2] * mySpecies[sp].leaves.tissue[2].Nconc;
+                NewState.NAmount[3] = NewState.DMWeight[3] * mySpecies[sp].leaves.tissue[3].Nconc;
+                NewState.NAmount[4] = NewState.DMWeight[4] * mySpecies[sp].stems.tissue[0].Nconc;
+                NewState.NAmount[5] = NewState.DMWeight[5] * mySpecies[sp].stems.tissue[1].Nconc;
+                NewState.NAmount[6] = NewState.DMWeight[6] * mySpecies[sp].stems.tissue[2].Nconc;
+                NewState.NAmount[7] = NewState.DMWeight[7] * mySpecies[sp].stems.tissue[3].Nconc;
+                NewState.NAmount[8] = NewState.DMWeight[8] * mySpecies[sp].stolons.tissue[0].Nconc;
+                NewState.NAmount[9] = NewState.DMWeight[9] * mySpecies[sp].stolons.tissue[1].Nconc;
+                NewState.NAmount[10] = NewState.DMWeight[10] * mySpecies[sp].stolons.tissue[2].Nconc;
+                NewState.NAmount[11] = NewState.DMWeight[11] * mySpecies[sp].roots.tissue[0].Nconc;
             }
 
             // Set the species
-            SetSpeciesState(s, NewState[myS]);
+            SetSpeciesState(sp, NewState);
         }
 
         // Update aggregated variables (whole sward)

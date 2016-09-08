@@ -69,6 +69,9 @@ public class Species
     /// <summary>reference leaf co2 mg/m^2/s maximum</summary>
     internal double Pm;
 
+    /// <summary>Partition factor for intercepted light for each species</summary>
+    internal double lightPartitioningFactor;
+
     /// <summary>Some Description</summary>
     internal double maintRespiration;
 
@@ -1008,7 +1011,7 @@ public class Species
         double Pl2 = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
 
         // Upscaling from 'per LAI' to 'per ground area'
-        double carbon_m2 = 0.5 * (Pl1 + Pl2) * swardCoverGreen * intRadnFrac / lightExtCoeff;
+        double carbon_m2 = 0.5 * (Pl1 + Pl2) * swardCoverGreen * intRadnFrac * lightPartitioningFactor / lightExtCoeff;
         carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
         // tau: from second => day;
         // 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
@@ -1135,7 +1138,7 @@ public class Species
             RadnFactor = MathUtility.Divide((0.25 * Pl1) + (0.75 * Pl2), (0.25 * Pm1) + (0.75 * Pm2), 1.0);
 
             // Fraction of total radiation available to this plant
-            canopyCompetitionFactor = MathUtility.Divide(interceptedRadn, MetFile.Radn * coverGreen, 1.0);
+            canopyCompetitionFactor = MathUtility.Divide(interceptedRadn * lightPartitioningFactor, MetFile.Radn * coverGreen, 1.0);
 
             //Canopy photosynthesis - Upscaling from 'per leaf' to 'per ground' area
             double carbon_m2 = 0.5 * (Pl1 + Pl2); // mgCO2/m2 leaf/s
