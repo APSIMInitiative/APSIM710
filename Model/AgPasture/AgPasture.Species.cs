@@ -250,9 +250,6 @@ public class Species
     internal double facGrowingTissue;
 
     /// <summary>Some Description</summary>
-    internal double refTurnoverRateStolon;
-
-    /// <summary>Some Description</summary>
     internal double refLitteringRate; //Decay coefficient between dead and litter
 
     /// <summary>Some Description</summary>
@@ -411,26 +408,17 @@ public class Species
 
     //// > annual species parameters  >>>
 
-    /// <summary>Some Description</summary>
-    internal int dayEmerg; //Earlist day of emergence (for annuals only)
+    /// <summary>Earliest day of year for emergence (for annuals only)</summary>
+    internal double dayGermn;
 
-    /// <summary>Some Description</summary>
-    internal int monEmerg; //Earlist month of emergence (for annuals only)
+    /// <summary>Days needed to complete germination</summary>
+    internal double daysToGermn;
 
-    /// <summary>Some Description</summary>
-    internal int dayAnth; //Earlist day of anthesis (for annuals only)
+    /// <summary>Days from emergence to Anthesis</summary>
+    internal double daysEmgToAnth;
 
-    /// <summary>Some Description</summary>
-    internal int monAnth; //Earlist month of anthesis (for annuals only)
-
-    /// <summary>Some Description</summary>
-    internal int daysToMature; //Days from anthesis to maturity (for annuals only)
-
-    /// <summary>Some Description</summary>
-    internal int daysEmgToAnth; //Days from emergence to Anthesis (calculated, annual only)
-
-    /// <summary>Some Description</summary>
-    internal double DDSEmergence;
+    /// <summary>Days from anthesis to maturity</summary>
+    internal double daysAnthToMatur;
 
     #endregion
 
@@ -473,15 +461,7 @@ public class Species
     internal int phenoStage = 0; //pheno stages: 0 - pre_emergence, 1 - vegetative, 2 - reproductive
 
     /// <summary>Some Description</summary>
-    internal int daysfromEmergence = 0; //days
-
-    /// <summary>Some Description</summary>
-    internal int daysfromAnthesis = 0; //days
-
-    internal bool bSown = false;
-    private double DDSfromSowing = 0.0;
-    private double DDSfromEmergence = 0.0;
-    private double DDSfromAnthesis = 0.0;
+    internal double daysfromEmergence = 0;
 
     // Photosynthesis, growth, and turnover  ----------------------------------------------------------------------
 
@@ -907,22 +887,6 @@ public class Species
         UpdateAggregatedVariables();
     }
 
-    /// <summary>
-    /// Emergence to anthesys
-    /// </summary>
-    /// <returns>Number of days</returns>
-    internal int CalcDaysEmgToAnth()
-    {
-        daysEmgToAnth = 0;
-        int numbMonths = monAnth - monEmerg; //emergence & anthesis in the same calendar year: monEmerg < monAnth
-        if (monEmerg >= monAnth) //...across the calendar year
-            numbMonths += 12;
-
-        daysEmgToAnth = (int) (30.5 * numbMonths + (dayAnth - dayEmerg));
-
-        return daysEmgToAnth;
-    }
-
     #endregion
 
     #region Daily processes  ----------------------------------------------------------------------
@@ -946,16 +910,8 @@ public class Species
     internal double DailyGerminationProgress()
     {
         double result = 0.0;
-        if (isAnnual)
-        {
-            DDSfromSowing += Tmean;
-            result = DDSfromSowing / DDSEmergence;
-        }
-        else
-        {
-            germinationGDD += Math.Max(0.0, Tmean - growthTmin);
-            result = germinationGDD / degreesdayForGermination;
-        }
+        germinationGDD += Math.Max(0.0, Tmean - growthTmin);
+        result = germinationGDD / degreesdayForGermination;
         return result;
     }
 
@@ -972,7 +928,7 @@ public class Species
         // annuals phenology
         if (isAnnual)
         {
-            bool moreGrowth = annualPhenology();
+            bool moreGrowth = AnnualPhenology();
             if (!moreGrowth)
                 return dGrowthPot = 0.0;
         }
@@ -1080,7 +1036,7 @@ public class Species
 
         // phenologically related reduction of annual species (from IJ)
         if (isAnnual)
-            dGrowthPot = annualSpeciesReduction();
+            dGrowthPot *= AnnualSpeciesGrowthFactor();
 
         return dGrowthPot;
     }
@@ -1094,7 +1050,7 @@ public class Species
 
         // annuals phenology
         if (isAnnual)
-            isGrowing = annualPhenology();
+            isGrowing = AnnualPhenology();
 
         // set basic values for growth factors
         CO2Factor = 1.0;
@@ -1228,7 +1184,7 @@ public class Species
 
             // phenologically related reduction of annual species (from IJ)
             if (isAnnual)
-                dGrowthPot = annualSpeciesReduction();
+                dGrowthPot *= AnnualSpeciesGrowthFactor();
         }
 
         return dGrowthPot;
@@ -1269,15 +1225,9 @@ public class Species
     /// </summary>
     internal void PartitionDMGrown()
     {
-        //Leaf appearance rate is modified by temp & water stress
-        //double rateLeaf = leafRate * GFT * (Math.Pow(gfwater, 0.33333));  //why input is 3
-        //if (rateLeaf < 0.0) rateLeaf = 0.0;
-        //if (rateLeaf > 1.0) rateLeaf = 1.0;
-
         if (dGrowth > 0.0) // if no net growth, then skip "partition" part
         {
-            // fShoot was calculated on CalcNdemand()
-            // Calc new fLeaf
+            // fShoot and fLeaf were calculated on CalcNdemand()
 
             // Fractions of new growth to be allocated to the 1st tissue pools
             double toRoot = 1.0 - fShoot;
@@ -1382,10 +1332,6 @@ public class Species
         // Leaf and stems turnover rate
         gama = refTissueTurnoverRate * tempFacTTurnover * swFacTTurnover * leafFac;
 
-        // Stolons turnover rate (legumes)
-        if (isLegume)
-            gamaS = refTurnoverRateStolon * tempFacTTurnover * swFacTTurnover * leafFac;
-
         // Littering rate
         double digestDead = ((leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead)) / (leaves.DMDead + stems.DMDead);
         gamaD = refLitteringRate * swFacTTDead * digestDead / 0.4;
@@ -1412,27 +1358,19 @@ public class Species
                 if (phenoStage == 1)
                 {
                     //vegetative
-                    double Kv = (double) daysfromEmergence / daysEmgToAnth;
+                    double Kv = daysfromEmergence / daysEmgToAnth;
                     gama *= Kv;
                     gamaR *= Kv;
                 }
                 else if (phenoStage == 2)
                 {
                     //reproductive
-                    double Kr = (double) daysfromAnthesis / daysToMature;
+                    double Kr = (daysfromEmergence - daysEmgToAnth) / daysAnthToMatur;
                     //gama = 1 - (1 - gama) * (1 - Kr * Kr);
                     gama *= 1 - (Kr * Kr);
                     gama += Kr * Kr;
                 }
             }
-
-            // Get daily defoliation factor
-            double defoliationFactor = MathUtility.Divide(prevState.dmdefoliated,
-                prevState.dmdefoliated + prevState.dmshoot, 0.0);
-
-            // Increase stolon senescence if there was defoliation
-            if (isLegume)
-                gamaS += defoliationFactor * (1 - gamaS);
 
             // If today's turnover will result in a dmgreenShoot < dmgreen_minimum, then adjust the rates,
             // Possibly will have to skip this for annuals to allow them to die - phenololgy-related?
@@ -1446,7 +1384,6 @@ public class Species
                     if (AboveGroundLiveWt + dGrowth < dmgreenmin)
                     {
                         gama = 0.0;
-                        gamaS = 0.0;
                         gamaR = 0.0;
                     }
                     else
@@ -1466,6 +1403,18 @@ public class Species
             {
                 gamaR = 0.0;
             }
+
+            // Stolons turnover rate (legumes)
+            if (isLegume)
+            {
+                gamaS = gama;
+
+                // Increase stolon senescence if there was defoliation
+                double defoliationFactor = MathUtility.Divide(prevState.dmdefoliated, prevState.dmdefoliated + prevState.dmshoot, 0.0);
+                gamaS += defoliationFactor * (1.0 - gamaS);
+            }
+            else
+                gamaS = 0.0;
 
             //// Do the actual turnover, update DM and N
 
@@ -1596,7 +1545,7 @@ public class Species
     internal void UpdateAggregatedVariables() //update DM, N
     {
         //// - LAI  ------------------------------------------------------
-        evaluateLAI();
+        EvaluateLAI();
 
         //// - Plant height  ---------------------------------------------
         height = HeightfromDM();
@@ -1611,105 +1560,63 @@ public class Species
     /// </summary>
     internal void SetInGermination()
     {
-        bSown = true;
         phenoStage = 0; //before germination
-    }
-
-    /// <summary>
-    /// Get phenology state
-    /// </summary>
-    /// <returns>Phenology index</returns>
-    internal int Phenology()
-    {
-        if (bSown && phenoStage == 0) //  before emergence
-        {
-            DDSfromSowing += Tmean;
-            if (DDSfromSowing > DDSEmergence)
-            {
-                DDSfromSowing = 0;
-                SetEmergenceState(); //Initial states at 50% emergence
-            }
-        }
-
-        /*TO DO later
-        *      else if (phenoStage == 1)       //  Vege
-        {
-        DDSfromEmergence += meanT;
-        if (DDSfromEmergence > 1000)
-        phenoStage = 2;
-        }
-        else if (phenoStage == 2)       //  Reprod
-        {
-        DDSfromAnthesis += meanT;
-        if (DDSfromEmergence > 1000)
-        phenoStage = 3;
-        }
-        else if (phenoStage == 4)       //  Post_reprod
-        {
-        DDSfromAnthesis += meanT;
-        if (DDSfromEmergence > 1000)
-        phenoStage = 1;         // return to vege
-        }
-        */
-        return phenoStage;
     }
 
     /// <summary>
     /// Annuals phenology
     /// </summary>
     /// <returns>true or false</returns>
-    internal bool annualPhenology()
+    internal bool AnnualPhenology()
     {
-        if (Clock.month == monEmerg && Clock.day_of_month == dayEmerg)
-            phenoStage = 1; //vegetative stage
-        else if (Clock.month == monAnth && Clock.day_of_month == dayAnth)
-            phenoStage = 2; //reproductive
+        // check whether germination started
+        if (Clock.Today.DayOfYear == dayGermn)
+            phenoStage = 0; // germinating
 
-        if (phenoStage == 0) //before emergence
+        if (phenoStage == 0)
         {
-            dGrowthPot = 0.0;
-            return false; //no growth
-        }
-
-        if (phenoStage == 1) //vegetative
-        {
-            daysfromEmergence++;
-            return true;
-        }
-
-        if (phenoStage == 2)
-        {
-            daysfromAnthesis++;
-            if (daysfromAnthesis >= daysToMature)
+            daysfromEmergence += 1;
+            if (daysfromEmergence >= daysToGermn)
             {
-                phenoStage = 0;
+                phenoStage = 1; // vegetative stage
                 daysfromEmergence = 0;
-                daysfromAnthesis = 0;
-                dGrowthPot = 0.0;
-                return false; // Flag no growth after mature
             }
-            return true;
         }
-        return true;
+        else if (phenoStage > 0)
+        {
+            daysfromEmergence += 1;
+            if (daysfromEmergence >= daysEmgToAnth)
+                phenoStage = 2; // reproductive stage
+
+            if (daysfromEmergence >= (daysEmgToAnth + daysAnthToMatur))
+            {
+                phenoStage = -1; // maturity / death
+                daysfromEmergence = 0;
+            }
+        }
+
+        return (phenoStage > 0);
     }
 
     /// <summary>
-    /// Reduction of growth in annual species, related to phenology
+    /// Growth factor for annual species, related to phenology/population
     /// </summary>
-    /// <returns>Pot growth</returns>
-    public double annualSpeciesReduction()
+    /// <returns>Growth factor</returns>
+    public double AnnualSpeciesGrowthFactor()
     {
-        double rFactor = 1; // reduction factor of annual species
-        if (phenoStage == 1 && daysfromEmergence < 60) //decline at the begining due to seed bank effects ???
+        double rFactor = 1.0;
+        if (phenoStage == 1 && daysfromEmergence < 60)
         {
+            //decline at the begining due to population effects ???
             rFactor = 0.5 + 0.5 * daysfromEmergence / 60;
         }
-        else if (phenoStage == 2) //decline of photosynthesis when approaching maturity
+        else if (phenoStage == 2)
         {
-            rFactor = 1.0 - MathUtility.Divide(daysfromAnthesis, daysToMature, 0.0);
+            //decline of photosynthesis when approaching maturity
+            rFactor = 1.0 - (daysfromEmergence - daysEmgToAnth) / daysAnthToMatur;
         }
-        dGrowthPot *= rFactor;
-        return dGrowthPot;
+
+        return rFactor;
     }
 
     #endregion
@@ -2584,7 +2491,7 @@ public class Species
     /// <summary>
     /// Calcualtes the LAI values for green and dead material
     /// </summary>
-    internal void evaluateLAI()
+    internal void EvaluateLAI()
     {
         greenLAI = (0.0001 * leaves.DMGreen * specificLeafArea)
                    + (0.0001 * stolons.DMTotal * 0.3 * specificLeafArea);
@@ -2609,7 +2516,7 @@ public class Species
     /// Calculates the average herbage digestibility (above ground)
     /// </summary>
     /// <returns>digestibility</returns>
-    internal void evaluateDigestibility()
+    internal void EvaluateDigestibility()
     {
         double result = 0.0;
         if (StandingWt > 0.0)
@@ -2634,9 +2541,7 @@ public class Species
         if (standingDM <= MassForMaxHeight)
         {
             double massRatio = standingDM / MassForMaxHeight;
-            double heightF = ExponentHeightFromMass
-                             - (ExponentHeightFromMass * massRatio)
-                             + massRatio;
+            double heightF = ExponentHeightFromMass - (ExponentHeightFromMass * massRatio) + massRatio;
             heightF *= Math.Pow(massRatio, ExponentHeightFromMass - 1);
             TodaysHeight *= heightF;
         }
@@ -2647,37 +2552,40 @@ public class Species
     /// <summary>
     /// Calculates variations in root growth and distribution
     /// </summary>
-    internal void evaluateRootGrowth()
+    internal void EvaluateRootGrowth()
     {
-        if (isAnnual)
+        if (phenoStage > 0)
         {
-            rootDepth = 50 + (maxRootDepth - 50) * MathUtility.Divide(daysfromEmergence, daysEmgToAnth, 1.0);
-            layerBottomRootZone = GetRootZoneBottomLayer();
-            //considering root distribution change, here?
-            //TODO: use the same calculation for annuals
-        }
-        else
-        {
-            if (phenoStage > 0)
+            // do root elongation
+            if ((dGrowthRoot > 0.0) && (rootDepth < maxRootDepth))
             {
-                // do root elongation
-                if ((dGrowthRoot > 0.0) && (rootDepth < maxRootDepth))
-                {
-                    double tempFactor = GFTemperature(Tmean);
-                    dRootDepth = rootElongationRate * tempFactor;
-                    rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
-                }
-                else
-                {
-                    // no root growth, depth does not change
-                    dRootDepth = 0.0;
-                }
+                double tempFactor = GFTemperature(Tmean);
+                dRootDepth = rootElongationRate * tempFactor;
+                rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
             }
             else
             {
+                // no root growth, depth does not change
                 dRootDepth = 0.0;
-                rootDepth = 0.0;
             }
+
+            // do root distribution
+            if (dRootDepth > 0.0)
+            {
+                // only need to update root distribution if root depht changed
+                double[] curTarget = CurrentRootDistributionTarget();
+                for (int layer = 0; layer < dlayer.Length; layer++)
+                {
+                    // Senesced DM is not accounted for here
+                    double newAmountLayer = (prevState.roots.DMGreen * rootFraction[layer]) + (dGrowthRoot * curTarget[layer]);
+                    rootFraction[layer] = newAmountLayer / roots.DMGreen;
+                }
+            }
+        }
+        else
+        {
+            dRootDepth = 0.0;
+            rootDepth = 0.0;
         }
     }
 
@@ -2691,7 +2599,7 @@ public class Species
     {
         int nLayers = dlayer.Length;
         double currentDepth = 0.0;
-        double cumAllocation = 0.0;
+        double cumProportion = 0.0;
         for (int layer = 0; layer < nLayers; layer++)
         {
             if (currentDepth < rootDepth)
@@ -2701,14 +2609,14 @@ public class Species
                 if (currentDepth <= rootDepth)
                 {
                     // layer is fully in the root zone
-                    cumAllocation += targetRootAllocation[layer];
+                    cumProportion += targetRootAllocation[layer];
                 }
                 else
                 {
                     // layer is partially in the root zone
                     double layerFrac = (rootDepth - (currentDepth - dlayer[layer]))
                                      / (maxRootDepth - (currentDepth - dlayer[layer]));
-                    cumAllocation += targetRootAllocation[layer] * Math.Min(1.0, Math.Max(0.0, layerFrac));
+                    cumProportion += targetRootAllocation[layer] * Math.Min(1.0, Math.Max(0.0, layerFrac));
                 }
             }
             else
@@ -2717,7 +2625,7 @@ public class Species
 
         double[] result = new double[nLayers];
         for (int layer = 0; layer < nLayers; layer++)
-            result[layer] = targetRootAllocation[layer] / cumAllocation;
+            result[layer] = targetRootAllocation[layer] / cumProportion;
 
         return result;
     }

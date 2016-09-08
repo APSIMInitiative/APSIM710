@@ -418,12 +418,6 @@ public class AgPasture
     [Units("")]
     private double[] maxTeffectResp;
 
-
-    [Param]
-    [Description("Degrees-day from sowing to emergence")]
-    [Units("oC")]
-    private double[] DDSowEmergence;
-
     ////  >> Partition of new growth  >>>
     // - Shoot:root partition
     [Param]
@@ -589,11 +583,6 @@ public class AgPasture
     [Description("Senescence rate for shoot (live to dead material)")]
     [Units("")]
     private double[] rateLive2Dead;
-
-    [Param]
-    [Description("Senescence rate for stolon (live to dead material)")]
-    [Units("")]
-    private double[] refTurnoverRateStolon;
 
     [Param]
     [Description("Littering rate (dead to litter)")]
@@ -1673,8 +1662,6 @@ public class AgPasture
             breakCode("rateLive2Dead");
         if (facGrowingTissue.Length < NumSpecies)
             breakCode("facGrowingTissue");
-        if (refTurnoverRateStolon.Length < NumSpecies)
-            breakCode("refTurnoverRateStolon");
         if (rateDead2Litter.Length < NumSpecies)
             breakCode("rateDead2Litter");
         if (rateRootSen.Length < NumSpecies)
@@ -1820,16 +1807,9 @@ public class AgPasture
         // else SP[s].isAnnual = false;
         mySpecies[s1].isAnnual = false;
 
-        mySpecies[s1].dayEmerg = 1; // (int)dayEmerg[s];
-        mySpecies[s1].monEmerg = 1; //(int)monEmerg[s];
-        mySpecies[s1].dayAnth = 1; //(int)dayAnth[s];
-        mySpecies[s1].monAnth = 1; //(int)monAnth[s];
-        mySpecies[s1].daysToMature = 1; //(int)daysToMature[s];
-        if (mySpecies[s1].isAnnual) //calulate days from Emg to Antheis
-            mySpecies[s1].CalcDaysEmgToAnth();
-        // these are re-used for any growth, not only annuals
-        //mySpecies[s1].dRootDepth = 0; //(int)dRootDepth[s];
-        //mySpecies[s1].maxRootDepth = 10; //(int)maxRootDepth[s];
+        mySpecies[s1].dayGermn = 220; // (int)dayEmerg[s];
+        mySpecies[s1].daysEmgToAnth = 100; //(int)monEmerg[s];
+        mySpecies[s1].daysAnthToMatur = 100; //(int)dayAnth[s];
         //// ------------------------------------------------------------------------------------------------
 
         //// >> Parameter for germination and emergence
@@ -1839,7 +1819,6 @@ public class AgPasture
         for (int p = 0; p < nTissues; p++)
             mySpecies[s1].emergenceDM[p] = EmergenceDMFractions[p] * dmgreenmin[s1];
         mySpecies[s1].emergenceDM[nTissues] = dmgreenmin[s1]; // rootDM at germination equals shootDM
-        mySpecies[s1].DDSEmergence = DDSowEmergence[s2];
 
         //// >> Potential growth (photosynthesis)  >>>
         mySpecies[s1].Pm = Pm[s2]; //reference leaf co2 mg/m^2/s maximum
@@ -1911,7 +1890,6 @@ public class AgPasture
 
         mySpecies[s1].refTissueTurnoverRate = rateLive2Dead[s2];
         mySpecies[s1].facGrowingTissue = facGrowingTissue[s2];
-        mySpecies[s1].refTurnoverRateStolon = refTurnoverRateStolon[s2];
         mySpecies[s1].refLitteringRate = rateDead2Litter[s2];
         mySpecies[s1].rateRootSen = rateRootSen[s2];
         mySpecies[s1].massFluxTmin = massFluxTmin[s2];
@@ -4591,13 +4569,13 @@ public class AgPasture
             // Check changes in root depth and update root distribution
             if (usingSpeciesRoot)
             {
-                mySpecies[s].evaluateRootGrowth();
+                mySpecies[s].EvaluateRootGrowth();
             }
             else
             {
                 if (s == 0)
                 {
-                    mySpecies[s].evaluateRootGrowth();
+                    mySpecies[s].EvaluateRootGrowth();
                     swardRootDepth = mySpecies[s].rootDepth;
                     swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
                     for (int layer = 0; layer < dlayer.Length; layer++)
@@ -4616,7 +4594,7 @@ public class AgPasture
             mySpecies[s].UpdateAggregatedVariables();
 
             // Calc today's herbage digestibility
-            mySpecies[s].evaluateDigestibility();
+            mySpecies[s].EvaluateDigestibility();
         }
 
         // Update aggregated variables (whole sward)
@@ -4720,7 +4698,6 @@ public class AgPasture
         for (int s = 0; s < NumSpecies; s++)
         {
             mySpecies[s].UpdateAggregatedVariables();
-            mySpecies[s].bSown = false;
         }
 
         // Update aggregated variables (whole sward)

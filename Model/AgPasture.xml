@@ -47,16 +47,19 @@
             <isLegume description="Whether the species is legume (no=0, yes=1)">0  1  0</isLegume>
 
             <Pm description="Reference photosynthesis rate - leaf C assimilation (mg CO2/m2.s)">1.0  1.0  1.2</Pm>
-            <LightPartitioningFactor description="Relative factor for partitioning intercepted light between species">1.0  1.0  1.0</LightPartitioningFactor>
-            <growthEfficiency description="Growth efficiency factor - photosynthesis minus growth respiration (0-1)">0.75  0.75  0.75</growthEfficiency>
-            <maintRespiration description="Maintenance respiration coefficient (%)">3.0  3.0  3.0</maintRespiration>
             <alphaPhoto description="Leaf gross photosynthesis rate (mg CO2/J)">0.01  0.01  0.01</alphaPhoto>
             <thetaPhoto description="Photosynthesis curve parameter (J/kg.s)">0.8  0.8  0.8</thetaPhoto>
+            <LightPartitioningFactor description="Relative factor for partitioning intercepted light between species">1.0  1.0  1.0</LightPartitioningFactor>
             <fractionPAR description="Fraction of radiation that is photosynthetic active (0-1)">0.5  0.5  0.5</fractionPAR>
             <lightExtCoeff description="Light extinction coefficient (0-1)">0.5  0.8  0.6</lightExtCoeff>
             <growthTmin description="Minimum temperature for growth (oC)">2.0  4.0  10.0</growthTmin>
             <growthTopt description="Optimum temperature for growth (oC)">20.0  22.0  35.0</growthTopt>
             <growthTq description="Curve parameter for growth response to temperature">1.5  1.5  1.2</growthTq>
+            <referenceCO2 description="Reference atmospheric CO2 content for photosynthesis (ppm)">380  380  380</referenceCO2>
+            <CO2PmaxScale description="Scale factor for CO2 effect on photosynthesis (ppm)">700  700  150</CO2PmaxScale>
+            <CO2NScale description="Scale factor for CO2 effects on plant N concentration (ppm)">600  600  600</CO2NScale>
+            <CO2NMin description="Minimum reduction of plant N concentration under elevated CO2 (0-1)">0.7  0.7  0.7</CO2NMin>
+            <CO2NCurvature description="Curvature factor of CO2 effect on plant N concentration (>1.0)">2.0  2.0  2.0</CO2NCurvature>
             <useHeatStress description="Whether heat stress is considered, reduces photosynthesis (yes/no)">no  no  no</useHeatStress>
             <heatOnsetT description="Onset temperature for heat effects on growth (oC)">26.0  30.0  35.0</heatOnsetT>
             <heatFullT description="Temperature for full heat effects on growth (oC)">31.0  35.0  40.0</heatFullT>
@@ -69,14 +72,10 @@
             <coldSumT description="Temperature sum for recovery from cold effects (oC)">30.0  30.0  50.0</coldSumT>
             <coldTq description="Exponent for computing recovery from cold stress">1.0  1.0  1.0</coldTq>
             <coldRecoverT description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</coldRecoverT>
+            <growthEfficiency description="Growth efficiency factor - photosynthesis minus growth respiration (0-1)">0.75  0.75  0.75</growthEfficiency>
+            <maintRespiration description="Maintenance respiration coefficient (%)">3.0  3.0  3.0</maintRespiration>
             <respTref description="Reference temperature for maintenance respiration (oC)">20.0  20.0  20.0</respTref>
             <maxTeffectResp description="Maximum effect of temperature on respiration (>1.0)">1.25  1.25  1.25</maxTeffectResp>
-            <referenceCO2 description="Reference atmospheric CO2 content for photosynthesis (ppm)">380  380  380</referenceCO2>
-            <CO2PmaxScale description="Scale factor for CO2 effect on photosynthesis (ppm)">700  700  150</CO2PmaxScale>
-            <CO2NScale description="Scale factor for CO2 effects on plant N concentration (ppm)">600  600  600</CO2NScale>
-            <CO2NMin description="Minimum reduction of plant N concentration under elevated CO2 (0-1)">0.7  0.7  0.7</CO2NMin>
-            <CO2NCurvature description="Curvature factor of CO2 effect on plant N concentration (>1.0)">2.0  2.0  2.0</CO2NCurvature>
-            <DDSowEmergence description="Degrees-day from sowing to emergence (oC)">45  40  50</DDSowEmergence>
 
             <maxRootFraction description="Maximum biomass fraction allocated to roots (0-1)">0.25  0.25  0.25</maxRootFraction>
             <targetSRratio description="Target or ideal shoot:root ratio, for DM allocation">4.0  4.0  4.0</targetSRratio>
@@ -106,7 +105,6 @@
 
             <rateLive2Dead description="Reference tissue turnover rate for shoot (0-1)">0.05  0.05  0.05</rateLive2Dead>
             <facGrowingTissue description="Factor for adjusting DM turnover of growing tissue (>0.0)">2.0  2.0  2.0</facGrowingTissue>
-            <refTurnoverRateStolon description="Reference tissue turnover rate for stolon (0-1)">0.00  0.05  0.00</refTurnoverRateStolon>
             <rateDead2Litter description="Reference littering rate - dead tissue to litter (0-1)">0.08  0.08  0.07</rateDead2Litter>
             <rateRootSen description="Reference senescence rate for roots (0-1)">0.02  0.02  0.02</rateRootSen>
             <massFluxTmin description="Minimum temperature for tissue turnover (oC)">2.0  2.0  5.0</massFluxTmin>
@@ -154,9 +152,9 @@
             <symbiontCostFactor description="Respiration cost due to the presence of symbiont bacteria (method02) (gC/gCroots)">0.00  0.01  0.00</symbiontCostFactor>
             <NFixingCostFactor description="Activity cost of N fixation (method02) (gC/gNfixed)">0.0  4.0  0.0</NFixingCostFactor>
 
-            <PreferenceForGreenDM description="Weight factor defining the preference level for green DM">1  1  1</PreferenceForGreenDM>
-            <PreferenceForDeadDM description="Weight factor defining the preference level for dead DM">1  1  1</PreferenceForDeadDM>
-            <PreferenceForLeaves description="Weight factor defining the preference level for leaves over stems">1  1  1</PreferenceForLeaves>
+            <PreferenceForGreenDM description="Weight factor defining the preference level for green DM (on removal)">1  1  1</PreferenceForGreenDM>
+            <PreferenceForDeadDM description="Weight factor defining the preference level for dead DM (on removal)">1  1  1</PreferenceForDeadDM>
+            <PreferenceForLeaves description="Weight factor defining the preference level for leaves over stems (on removal)">1  1  1</PreferenceForLeaves>
 
             <rootDepth description="Default rooting depth (mm)">750  350  850</rootDepth>
             <ExpoLinearDepthParam description="Depth from surface below which the proportion of roots starts to decrease (mm)">90  70  95</ExpoLinearDepthParam>
