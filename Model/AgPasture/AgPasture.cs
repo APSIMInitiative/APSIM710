@@ -1330,9 +1330,9 @@ public class AgPasture
 
                     // check max root depth
                     if (iniRootDepth[s1] > 0.0)
-                        maxRootDepth[s1] = iniRootDepth[s1];
+                        maxRootDepth[s2] = iniRootDepth[s1];
                     else
-                        maxRootDepth[s1] = myRootDepth[s2];
+                        maxRootDepth[s2] = myRootDepth[s2];
 
                     // set the parameters and initialise the species
                     SetSpeciesParameters(s1, s2);
@@ -4036,10 +4036,10 @@ public class AgPasture
                 else
                 {
                     // consider the whole sward
+                    double nFormFrac = MathUtility.Divide(soilNH4Available.Sum(), (soilNH4Available.Sum() + soilNO3Available.Sum()), 0.0);
                     if (swardSoilNavailable >= swardSoilNDemand)
                     {
                         // soil can supply all N demanded for maximum uptake (luxury N)
-                        double nFormFrac = soilNH4Available.Sum() / (soilNH4Available.Sum() + soilNO3Available.Sum());
                         mySpecies[s].soilNH4Uptake = mySpecies[s].soilNdemand * nFormFrac;
                         mySpecies[s].soilNO3Uptake = mySpecies[s].soilNdemand * (1.0 - nFormFrac);
                         mySpecies[s].NLuxuryRemob3 = 0.0;
@@ -4049,7 +4049,6 @@ public class AgPasture
                     else
                     {
                         // soil cannot supply all N needed. Uptake the available N and partition it between species
-                        double nFormFrac = soilNH4Available.Sum() / (soilNH4Available.Sum() + soilNO3Available.Sum());
                         double speciesNuptake = swardSoilNavailable *
                                                 MathUtility.Divide(mySpecies[s].soilNdemand, swardSoilNDemand, 0.0);
                         mySpecies[s].soilNH4Uptake = speciesNuptake * nFormFrac;
