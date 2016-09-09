@@ -421,158 +421,106 @@ public class AgPasture
     ////  >> Partition of new growth  >>>
     // - Shoot:root partition
     [Param]
-    [Description("Target or ideal plant's shoot:root ratio")]
+    [Description("Target or ideal plant's shoot:root ratio at vegetative stage")]
     [Units("-")]
-    private double[] targetSRratio;
+    private double[] TargetSRratio;
 
     [Param]
-    [Description("Maximum fraction of biomass allocated to roots")]
+    [Description("Maximum fraction of biomass that can be allocated to roots")]
     [Units("0-1")]
-    private double[] maxRootFraction;
+    private double[] MaxRootAllocation;
 
     [Param]
-    [Description("Factor for increasing DM allocation to shoot during reproductive growth")]
+    [Description("Coefficient controlling the maximum effect that soil GLFs have on Shoot-Root ratio")]
     [Units("0-1")]
-    private double[] allocationSeasonF;
+    private double[] GlfEffectsOnSR;
 
     [Param]
-    [Description("day for starting the period with higher DM allocation to shoot")]
-    [Units("day of year")]
-    private double[] StartHighAllocation;
-
-    [Param]
-    [Description("duration of main phase for higher DM allocation to shoot")]
-    [Units("days")]
-    private double[] DurationHighAllocation;
-
-    [Param]
-    [Description("relative duration of shoulder periods for higher shoot allocation")]
-    [Units("0-1")]
-    private double[] ShoulderHighAllocation;
-
-    // - Alternative account for seasonal S:R partition
-    [Param]
-    [Description("Whether DM allocation (shoot/root) will be adjusted using latitude")]
+    [Description("Whether DM allocation (shoot/root) should be adjusted for reproductive period (perennials)")]
     [Units("yes/no")]
-    private string[] useLatitudeFunction;
+    private string[] UseReproSeasonFactor;
 
     [Param]
-    [Description("Reference latitude, beyond which DM allocation is hardly affected")]
+    [Description("Reference latitude determining timing for reproductive season")]
     [Units("degrees")]
-    private double[] ReferenceLatitude;
+    private double[] ReproSeasonReferenceLatitude;
 
     [Param]
-    [Description("Exponent of function for defining the start of period with high allocation to shoot")]
+    [Description("Coefficient controling the time to start the reproductive season as function of latitude")]
     [Units("-")]
-    private double[] paramALatFunction;
+    private double[] ReproSeasonTimingCoeff;
 
     [Param]
-    [Description("Define the duration of onset phase with high allocation, fraction of main phase")]
+    [Description("Coefficient controling the duration of the reproductive season as function of latitude")]
+    [Units("-")]
+    private double[] ReproSeasonDurationCoeff;
+
+    [Param]
+    [Description("Ratio between the length of shoulders and the period with full reproductive growth effect")]
+    [Units("-")]
+    private double[] ReproSeasonShouldersLengthFactor;
+
+    [Param]
+    [Description("The proportion of the length of shoulder before the period with full reproductive growth effect")]
     [Units("0-1")]
-    private double[] onsetFacLatFunction;
-
-    [Param]
-    [Description("Define the duration of outset phase with high allocation, fraction of main phase")]
-    [Units("0-1")]
-    private double[] outsetFacLatFunction;
-
-    [Param]
-    [Description("Maximum duration of the shoulder phases with high DM allocation")]
-    [Units("days")]
-    private double[] maxShoulderLatFunction;
-
-    [Param]
-    [Description("Minimum duration of main phase (plateau) with high DM allocation")]
-    [Units("days")]
-    private double[] minPlateauLatFunction;
-
-    [Param]
-    [Description("Exponent of function defining the duration of main phase with high allocation")]
-    [Units("days")]
-    private double[] paramBLatFunction;
+    private double[] ReproSeasonOnsetDurationFactor;
 
     [Param]
     [Description("Maximum increase in DM allocation to shoot during reproductive growth")]
     [Units("0-1")]
-    private double[] allocationMax;
+    private double[] ReproSeasonMaxAllocationIncrease;
 
     [Param]
-    [Description("Exponent of function defining the duration of main phase with high allocation")]
-    [Units("days")]
-    private double[] paramCLatFunction;
+    [Description("Coefficient controling the increase in shoot allocation during reproductive growth as function of latitude")]
+    [Units("-")]
+    private double[] ReproSeasonAllocationCoeff;
 
     // - Partition of shoot DM into leaves
     [Param]
     [Description("Maximum fraction of new growth allocated to leaf")]
     [Units("0-1")]
-    private double[] maxFLeaf;
+    private double[] FractionLeafMaximum;
 
     [Param]
     [Description("Minimum fraction of new shoot growth allocated to leaves")]
     [Units("0-1")]
-    private double[] minFLeaf;
+    private double[] FractionLeafMinimum;
 
     [Param]
     [Description("Shoot DM for maximum leaf allocation")]
     [Units("kgDM/ha")]
-    private double[] dmMaxFLeaf;
+    private double[] FractionLeafDMThreshold;
 
     [Param]
     [Description("Reference DM, when allocation to leaves is midway max and min")]
     [Units("kgDM/ha")]
-    private double[] dmReferenceFLeaf;
+    private double[] FractionLeafDMFactor;
 
     [Param]
     [Description("Exponent of function describing DM allocation to leaves")]
     [Units(">0.0")]
-    private double[] exponentFLeaf;
+    private double[] FractionLeafExponent;
 
     [Param]
     [Description("Fraction of new growth allocated to stolon")]
     [Units("0-1")]
-    private double[] fStolon;
-
-    private double[] specificLeafArea;
+    private double[] StolonAllocationFactor;
 
     [Param]
     [Description("Specific leaf area, per dry matter weight")]
     [Units("m^2/kgDM")]
-    private double[] SpecificLeafArea
-    {
-        get { return specificLeafArea; }
-        set
-        {
-            specificLeafArea = new double[value.Length];
-            for (int s = 0; s < value.Length; s++)
-            {
-                specificLeafArea[s] = value[s];
-            }
-        }
-    }
-
-    private double[] specificRootLength;
+    private double[] SpecificLeafArea;
 
     [Param]
     [Description("Specific root length, per dry matter weight")]
     [Units("m/gDM")]
-    private double[] SpecificRootLength
-    {
-        get { return specificRootLength; }
-        set
-        {
-            specificRootLength = new double[value.Length];
-            for (int s = 0; s < value.Length; s++)
-            {
-                specificRootLength[s] = value[s];
-            }
-        }
-    }
+    private double[] SpecificRootLength;
 
     ////  >> Tissue turnover and senescence >>>
     [Param]
     [Description("Number of live leaves per tiller")]
     [Units("")]
-    private double[] liveLeavesPerTiller;
+    private double[] LiveLeavesPerTiller;
 
     [Param]
     [Description("Factor for adjusting DM turnover of growing tissue")]
@@ -1413,7 +1361,7 @@ public class AgPasture
                             if (dmroot[s2] > 0.0)
                                 iniRootDM[s1] = dmroot[s2];
                             else
-                                iniRootDM[s1] = iniShootDM[s1] / mySpecies[s2].targetSRratio;
+                                iniRootDM[s1] = iniShootDM[s1] / mySpecies[s2].TargetSRratio;
                         }
 
                         if (iniRootDepth[s1] <= 0.0)
@@ -1605,50 +1553,40 @@ public class AgPasture
             breakCode("maxTeffectResp");
 
         ////  >> Partition of new growth  >>>
-        if (maxRootFraction.Length < NumSpecies)
+        if (MaxRootAllocation.Length < NumSpecies)
             breakCode("maxRootFraction");
-        if (targetSRratio.Length < NumSpecies)
+        if (TargetSRratio.Length < NumSpecies)
             breakCode("targetSRratio");
-        if (allocationSeasonF.Length < NumSpecies)
-            breakCode("allocationSeasonF");
-        if (StartHighAllocation.Length < NumSpecies)
-            breakCode("StartHighAllocation");
-        if (DurationHighAllocation.Length < NumSpecies)
-            breakCode("DurationHighAllocation");
-        if (ShoulderHighAllocation.Length < NumSpecies)
-            breakCode("ShoulderHighAllocation");
-        if (useLatitudeFunction.Length < NumSpecies)
-            breakCode("useLatitudeFunction");
-        if (ReferenceLatitude.Length < NumSpecies)
-            breakCode("ReferenceLatitude");
-        if (paramALatFunction.Length < NumSpecies)
-            breakCode("paramALatFunction");
-        if (onsetFacLatFunction.Length < NumSpecies)
-            breakCode("onsetFacLatFunction");
-        if (outsetFacLatFunction.Length < NumSpecies)
-            breakCode("outsetFacLatFunction");
-        if (maxShoulderLatFunction.Length < NumSpecies)
-            breakCode("maxShoulderLatFunction");
-        if (minPlateauLatFunction.Length < NumSpecies)
-            breakCode("minPlateauLatFunction");
-        if (paramBLatFunction.Length < NumSpecies)
-            breakCode("paramBLatFunction");
-        if (allocationMax.Length < NumSpecies)
-            breakCode("allocationMax");
-        if (paramCLatFunction.Length < NumSpecies)
-            breakCode("paramCLatFunction");
-
-        if (maxFLeaf.Length < NumSpecies)
+        if (GlfEffectsOnSR.Length < NumSpecies)
+            breakCode("GlfEffectsOnSR");
+        if (UseReproSeasonFactor.Length < NumSpecies)
+            breakCode("UseReproSeasonFactor");
+        if (ReproSeasonReferenceLatitude.Length < NumSpecies)
+            breakCode("ReproSeasonReferenceLatitude");
+        if (ReproSeasonTimingCoeff.Length < NumSpecies)
+            breakCode("ReproSeasonTimingCoeff");
+        if (ReproSeasonDurationCoeff.Length < NumSpecies)
+            breakCode("ReproSeasonDurationCoeff");
+        if (ReproSeasonShouldersLengthFactor.Length < NumSpecies)
+            breakCode("ReproSeasonShouldersLengthFactor");
+        if (ReproSeasonOnsetDurationFactor.Length < NumSpecies)
+            breakCode("ReproSeasonOnsetDurationFactor");
+        if (ReproSeasonMaxAllocationIncrease.Length < NumSpecies)
+            breakCode("ReproSeasonMaxAllocationIncrease");
+        if (ReproSeasonAllocationCoeff.Length < NumSpecies)
+            breakCode("ReproSeasonAllocationCoeff");
+ 
+        if (FractionLeafMaximum.Length < NumSpecies)
             breakCode("maxFLeaf");
-        if (minFLeaf.Length < NumSpecies)
+        if (FractionLeafMinimum.Length < NumSpecies)
             breakCode("minFLeaf");
-        if (dmMaxFLeaf.Length < NumSpecies)
+        if (FractionLeafDMThreshold.Length < NumSpecies)
             breakCode("dmMaxFLeaf");
-        if (dmReferenceFLeaf.Length < NumSpecies)
+        if (FractionLeafDMFactor.Length < NumSpecies)
             breakCode("dmReferenceFLeaf");
-        if (exponentFLeaf.Length < NumSpecies)
+        if (FractionLeafExponent.Length < NumSpecies)
             breakCode("exponentFLeaf");
-        if (fStolon.Length < NumSpecies)
+        if (StolonAllocationFactor.Length < NumSpecies)
             breakCode("fStolon");
         if (SpecificLeafArea.Length < NumSpecies)
             breakCode("SpecificLeafArea");
@@ -1656,7 +1594,7 @@ public class AgPasture
             breakCode("SpecificRootLength");
 
         ////  >> Tissue turnover and senescence  >>>
-        if (liveLeavesPerTiller.Length < NumSpecies)
+        if (LiveLeavesPerTiller.Length < NumSpecies)
             breakCode("liveLeavesPerTiller");
         if (rateLive2Dead.Length < NumSpecies)
             breakCode("rateLive2Dead");
@@ -1856,37 +1794,32 @@ public class AgPasture
         mySpecies[s1].CO2NMin = CO2NMin[s2];
         mySpecies[s1].CO2NCurvature = CO2NCurvature[s2];
 
-        ////  >> Parition of new growth  >>>
-        mySpecies[s1].maxRootFraction = maxRootFraction[s2];
-        mySpecies[s1].targetSRratio = targetSRratio[s2];
-        mySpecies[s1].allocationSeasonF = allocationSeasonF[s2];
-        mySpecies[s1].startHighAllocation = StartHighAllocation[s2];
-        mySpecies[s1].durationHighAllocation = DurationHighAllocation[s2];
-        mySpecies[s1].shoulderHighAllocation = ShoulderHighAllocation[s2];
-        mySpecies[s1].usingLatFunctionFShoot = useLatitudeFunction[s2].ToLower() == "yes";
-        mySpecies[s1].referenceLatitude = ReferenceLatitude[s2];
-        mySpecies[s1].paramALatFunction = paramALatFunction[s2];
-        mySpecies[s1].onsetFacLatFunction = onsetFacLatFunction[s2];
-        mySpecies[s1].outsetFacLatFunction = outsetFacLatFunction[s2];
-        mySpecies[s1].maxShoulderLatFunction = maxShoulderLatFunction[s2];
-        mySpecies[s1].minPlateauLatFunction = minPlateauLatFunction[s2];
-        mySpecies[s1].paramBLatFunction = paramBLatFunction[s2];
-        mySpecies[s1].allocationMax = allocationMax[s2];
-        mySpecies[s1].paramCLatFunction = paramCLatFunction[s2];
+        ////  >> Partition of new growth  >>>
+        mySpecies[s1].MaxRootAllocation = MaxRootAllocation[s2];
+        mySpecies[s1].TargetSRratio = TargetSRratio[s2];
+        mySpecies[s1].GlfEffectOnSR = GlfEffectsOnSR[s2];
+        mySpecies[s1].UsingReproSeasonFactor = UseReproSeasonFactor[s2].ToLower() == "yes";
+        mySpecies[s1].ReproSeasonReferenceLatitude = ReproSeasonReferenceLatitude[s2];
+        mySpecies[s1].ReproSeasonTimingCoeff = ReproSeasonTimingCoeff[s2];
+        mySpecies[s1].ReproSeasonDurationCoeff = ReproSeasonDurationCoeff[s2];
+        mySpecies[s1].ReproSeasonShouldersLengthFactor = ReproSeasonShouldersLengthFactor[s2];
+        mySpecies[s1].ReproSeasonOnsetDurationFactor = ReproSeasonOnsetDurationFactor[s2];
+        mySpecies[s1].ReproSeasonMaxAllocationIncrease = ReproSeasonMaxAllocationIncrease[s2];
+        mySpecies[s1].ReproSeasonAllocationCoeff = ReproSeasonAllocationCoeff[s2];
+        mySpecies[s1].InitReproductiveGrowthFactor();
+        mySpecies[s1].FractionLeafMaximum = FractionLeafMaximum[s2];
+        mySpecies[s1].FractionLeafMinimum = FractionLeafMinimum[s2];
+        mySpecies[s1].FractionLeafDMThreshold = FractionLeafDMThreshold[s2];
+        mySpecies[s1].FractionLeafDMFactor = FractionLeafDMFactor[s2];
+        mySpecies[s1].FractionLeafExponent = FractionLeafExponent[s2];
 
-        mySpecies[s1].maxFLeaf = maxFLeaf[s2];
-        mySpecies[s1].minFLeaf = minFLeaf[s2];
-        mySpecies[s1].dmMaxFLeaf = dmMaxFLeaf[s2];
-        mySpecies[s1].dmReferenceFLeaf = dmReferenceFLeaf[s2];
-        mySpecies[s1].exponentFLeaf = exponentFLeaf[s2];
+        mySpecies[s1].StolonAllocationFactor = StolonAllocationFactor[s2];
 
-        mySpecies[s1].fStolon = fStolon[s2];
-
-        mySpecies[s1].specificLeafArea = specificLeafArea[s2];
-        mySpecies[s1].specificRootLength = specificRootLength[s2];
+        mySpecies[s1].specificLeafArea = SpecificLeafArea[s2];
+        mySpecies[s1].specificRootLength = SpecificRootLength[s2];
 
         ////  >> Tissue turnover and senescence  >>>
-        mySpecies[s1].liveLeavesPerTiller = liveLeavesPerTiller[s2];
+        mySpecies[s1].LiveLeavesPerTiller = LiveLeavesPerTiller[s2];
 
         mySpecies[s1].refTissueTurnoverRate = rateLive2Dead[s2];
         mySpecies[s1].facGrowingTissue = facGrowingTissue[s2];
@@ -1987,7 +1920,7 @@ public class AgPasture
         mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcrootFr;
 
         //// Additional initialisation bits ..............................
-        mySpecies[s1].fShoot = 1.0; // actual fraction of dGrowth allocated to shoot
+        mySpecies[s1].ShootAllocationFactor = 1.0; // actual fraction of dGrowth allocated to shoot
 
         int nLayers = dlayer.Length;
         soilAvailableWater = new double[nLayers];
@@ -6509,7 +6442,7 @@ public class AgPasture
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
             {
-                result += (1 - mySpecies[s].fShoot) * mySpecies[s].dGrowth;
+                result += (1 - mySpecies[s].ShootAllocationFactor) * mySpecies[s].dGrowth;
             }
             return result;
         }
@@ -6526,7 +6459,7 @@ public class AgPasture
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
             {
-                result += mySpecies[s].fShoot * mySpecies[s].dGrowth;
+                result += mySpecies[s].ShootAllocationFactor * mySpecies[s].dGrowth;
             }
             return result;
         }
@@ -7047,7 +6980,7 @@ public class AgPasture
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
                 result += ((mySpecies[s].Pgross * mySpecies[s].growthEfficiency) - mySpecies[s].Resp_m) *
-                          mySpecies[s].fShoot;
+                          mySpecies[s].ShootAllocationFactor;
             return result;
         }
     }
@@ -7063,7 +6996,7 @@ public class AgPasture
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
                 result += ((mySpecies[s].Pgross * mySpecies[s].growthEfficiency) - mySpecies[s].Resp_m) *
-                          (1.0 - mySpecies[s].fShoot);
+                          (1.0 - mySpecies[s].ShootAllocationFactor);
             return result;
         }
     }
@@ -8966,7 +8899,7 @@ public class AgPasture
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].fShoot;
+                result[s] = mySpecies[s].ShootAllocationFactor;
             return result;
         }
     }
@@ -8981,7 +8914,7 @@ public class AgPasture
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].fLeaf;
+                result[s] = mySpecies[s].LeafAllocationFactor;
             return result;
         }
     }
