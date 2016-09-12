@@ -1373,7 +1373,8 @@ public class Species
         gama = refTissueTurnoverRate * tempFacTTurnover * swFacTTurnover * leafFac;
 
         // Littering rate
-        double digestDead = ((leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead)) / (leaves.DMDead + stems.DMDead);
+        double digestDead = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
+        digestDead = MathUtility.Divide(digestDead, leaves.DMDead + stems.DMDead, 0.0);
         gamaD = refLitteringRate * swFacTTDead * digestDead / 0.4;
 
         // Adjust littering rate due to stock trampling
@@ -2483,8 +2484,7 @@ public class Species
         double tempRemovableDead = Math.Max(0.0, leaves.tissue[3].DM + stems.tissue[3].DM);
 
         // get partiton between dead and live materials
-        double tempTotal = tempRemovableGreen * tempPrefGreen
-                           + tempRemovableDead * tempPrefDead;
+        double tempTotal = tempRemovableGreen * tempPrefGreen + tempRemovableDead * tempPrefDead;
         double fractionToHarvestGreen = 0.0;
         double fractionToHarvestDead = 0.0;
         if (tempTotal > 0.0)
@@ -2509,8 +2509,8 @@ public class Species
         // get digestibility of DM being harvested
         double greenDigestibility = (leaves.DigestibilityLive * leaves.DMGreen) + (stems.DigestibilityLive * stems.DMGreen);
         double deadDigestibility = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
-        greenDigestibility /= StandingLiveWt;
-        deadDigestibility /= AboveGroundDeadWt;
+        greenDigestibility = MathUtility.Divide(greenDigestibility, StandingLiveWt, 0.0);
+        deadDigestibility = MathUtility.Divide(deadDigestibility, AboveGroundDeadWt, 0.0);
         digestDefoliated = fractionToHarvestGreen * greenDigestibility + fractionToHarvestDead * deadDigestibility;
 
         // update the various pools
@@ -2574,7 +2574,6 @@ public class Species
         {
             greenLAI += 0.0001 * stems.DMGreen * specificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
         }
-
 
         deadLAI = 0.0001 * leaves.tissue[3].DM * specificLeafArea;
         totalLAI = greenLAI + deadLAI;

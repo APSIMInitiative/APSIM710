@@ -2250,7 +2250,7 @@ public class AgPasture
     /// <remarks>
     ///  - micromet uses this to compute radiation interception and ET
     ///  Ideally we should pass the values for each species, micromet would then do the resource arbitration.
-    ///  However, this is not possible due to comflict with SWIM (see coment on AdvertiseThisCrop())
+    ///  However, this is not possible due to conflicting comms with SWIM (see comment on AdvertiseThisCrop())
     /// </remarks>
     private void DoNewPotentialGrowthEvent()
     {
@@ -4932,9 +4932,8 @@ public class AgPasture
         // get the amount that can potentially be removed
         double AmountRemovable = 0.0;
         for (int s = 0; s < NumSpecies; s++)
-            AmountRemovable +=
-                Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin) +
-                Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
+            AmountRemovable += Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin) +
+                               Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
         AmountRemovable = Math.Max(0.0, AmountRemovable);
 
         // get the amount required to remove
@@ -6104,9 +6103,11 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += Math.Max(0.0,
-                    mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin)
-                          + Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
+            {
+                result += Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin);
+                result += Math.Max(0.0, mySpecies[s].leaves.DMDead + mySpecies[s].stems.DMDead);
+            }
+
             return result;
         }
     }
@@ -8143,9 +8144,11 @@ public class AgPasture
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = Math.Max(0.0,
-                    mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin)
-                            + Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
+            {
+                result[s] = Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin);
+                result[s] += Math.Max(0.0, mySpecies[s].leaves.DMDead + mySpecies[s].stems.DMDead);
+            }
+
             return result;
         }
     }
