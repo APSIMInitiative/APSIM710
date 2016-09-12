@@ -797,6 +797,12 @@ public class Species
         get { return leaves.DMGreen + stems.DMGreen; }
     }
 
+    /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
+    internal double StandingDeadWt
+    {
+        get { return leaves.DMDead + stems.DMDead; }
+    }
+
     /// <summary>N amount aboveground (kg/ha)</summary>
     internal double AboveGroundN
     {

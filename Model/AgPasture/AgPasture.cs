@@ -747,14 +747,17 @@ public class AgPasture
     ////  >> Preferences for species and parts (on removal)
     [Param]
     [Description("Weight factor defining the preference level for green DM")]
+    [Units("")]
     private double[] PreferenceForGreenDM;
 
     [Param]
     [Description("Weight factor defining the preference level for dead DM")]
+    [Units("")]
     private double[] PreferenceForDeadDM;
 
     [Param]
     [Description("Weight factor defining the preference level for dead DM")]
+    [Units("")]
     private double[] PreferenceForLeaves;
 
     ////  >> Root depth and distribution >>>
