@@ -616,9 +616,16 @@ public class AgPasture
     private double[] dmroot;
 
     [Param]
+    [Output]
     [Description("Minimum green DM")]
     [Units("kgDM/ha")]
     private double[] dmgreenmin;
+
+    [Param]
+    [Output]
+    [Description("Proportion of stolons standing, i.e. harvestable")]
+    [Units("0-1")]
+    private double[] FractionStolonsStanding { get; set; }
 
     [Param]
     [Description("Fractions of initial dmshoot for each biomass pool, for non-legumes")]
@@ -1641,6 +1648,8 @@ public class AgPasture
             breakCode("dmroot");
         if (dmgreenmin.Length < NumSpecies)
             breakCode("dmgreenmin");
+        if (FractionStolonsStanding.Length < NumSpecies)
+            breakCode("FractionStolonsStanding");
 
         ////  >> N fixation  >>>
         if (NMinFix.Length < NumSpecies)
@@ -1849,6 +1858,7 @@ public class AgPasture
 
         ////  >> DM limits for harvest and senescence  >>>
         mySpecies[s1].dmgreenmin = dmgreenmin[s2];
+        mySpecies[s1].FractionStolonsStanding = FractionStolonsStanding[s2];
 
         ////  >> N fixation  >>>
         mySpecies[s1].MaxFix = NMaxFix[s2]; //N-fix fraction when no soil N available, read in later
@@ -4932,13 +4942,6 @@ public class AgPasture
         swardHarvestedN = 0.0;
         swardHarvestDigestibility = 0.0;
 
-        // get the amount that can potentially be removed
-        double AmountRemovable = 0.0;
-        for (int s = 0; s < NumSpecies; s++)
-            AmountRemovable += Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin) +
-                               Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
-        AmountRemovable = Math.Max(0.0, AmountRemovable);
-
         // get the amount required to remove
         double AmountRequired = 0.0;
         if (grazeData.type.ToLower() == "SetResidueAmount".ToLower())
@@ -4957,14 +4960,13 @@ public class AgPasture
         }
 
         // get the actual amount to be removed
-        double AmountToRemove = Math.Min(AmountRequired, AmountRemovable);
+        double AmountToRemove = Math.Min(AmountRequired, HarvestableWt);
 
         // get the amounts to remove by species
         double FractionNotRemoved = 0.0;
-        if (AmountRemovable > 0.0)
-            FractionNotRemoved = Math.Max(0.0, (AmountRemovable - AmountToRemove) / AmountRemovable);
+        if (HarvestableWt > 0.0)
+            FractionNotRemoved = Math.Max(0.0, (HarvestableWt - AmountToRemove) / HarvestableWt);
         double[] TempWeights = new double[NumSpecies];
-        double[] TempAmounts = new double[NumSpecies];
         double TempTotal = 0.0;
         if (AmountToRemove > 0.0)
         {
@@ -4976,21 +4978,18 @@ public class AgPasture
             {
                 TempWeights[s] = PreferenceForGreenDM[s] + PreferenceForDeadDM[s];
                 TempWeights[s] += (TotalPreference - TempWeights[s]) * (1 - FractionNotRemoved);
-                TempAmounts[s] =
-                    Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin) +
-                    Math.Max(0.0, mySpecies[s].AboveGroundDeadWt);
-                TempTotal += TempAmounts[s] * TempWeights[s];
+                TempTotal += SpeciesHarvestableWt[s] * TempWeights[s];
             }
 
             // get the actual amounts being removed for each species
             for (int s = 0; s < NumSpecies; s++)
             {
                 if (TempTotal > 0.0)
-                    FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * TempAmounts[s] / TempTotal));
+                    FractionToHarvest[s] = Math.Max(0.0, Math.Min(1.0, TempWeights[s] * SpeciesHarvestableWt[s] / TempTotal));
                 else
                     FractionToHarvest[s] = 0.0;
-                swardHarvestedDM += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s],
-                    PreferenceForDeadDM[s]);
+
+                swardHarvestedDM += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
                 swardHarvestedN += mySpecies[s].Ndefoliated;
 
                 // get digestibility of harvested material
@@ -5404,7 +5403,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].leaves.DMTotal + mySpecies[s].stems.DMTotal;
+                result += mySpecies[s].StandingWt;
             return result;
         }
     }
@@ -5670,7 +5669,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].leaves.NTotal + mySpecies[s].stems.NTotal;
+                result += mySpecies[s].StandingN;
             return result;
         }
     }
@@ -5687,8 +5686,8 @@ public class AgPasture
             double DMamount = 0.0;
             for (int s = 0; s < NumSpecies; s++)
             {
-                Namount += mySpecies[s].leaves.NTotal + mySpecies[s].stems.NTotal;
-                DMamount += mySpecies[s].leaves.DMTotal + mySpecies[s].stems.DMTotal;
+                Namount += mySpecies[s].StandingN;
+                DMamount += mySpecies[s].StandingWt;
             }
             double result = MathUtility.Divide(Namount, DMamount, 0.0);
             return result;
@@ -6108,6 +6107,7 @@ public class AgPasture
             for (int s = 0; s < NumSpecies; s++)
             {
                 result += Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin);
+                result += Math.Max(0.0, mySpecies[s].stolons.DMGreen * mySpecies[s].FractionStolonsStanding);
                 result += Math.Max(0.0, mySpecies[s].leaves.DMDead + mySpecies[s].stems.DMDead);
             }
 
@@ -7087,7 +7087,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].leaves.DMTotal + mySpecies[s].stems.DMTotal;
+                result[s] = mySpecies[s].StandingWt;
             return result;
         }
     }
@@ -7102,7 +7102,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen;
+                result[s] = mySpecies[s].StandingLiveWt;
             return result;
         }
     }
@@ -7117,7 +7117,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].leaves.tissue[3].DM + mySpecies[s].stems.tissue[3].DM;
+                result[s] = mySpecies[s].StandingDeadWt;
             return result;
         }
     }
@@ -7207,7 +7207,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].leaves.NTotal + mySpecies[s].stems.NTotal;
+                result[s] = mySpecies[s].StandingN;
             return result;
         }
     }
@@ -8149,6 +8149,7 @@ public class AgPasture
             for (int s = 0; s < NumSpecies; s++)
             {
                 result[s] = Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin);
+                result[s] += Math.Max(0.0, mySpecies[s].stolons.DMGreen * mySpecies[s].FractionStolonsStanding);
                 result[s] += Math.Max(0.0, mySpecies[s].leaves.DMDead + mySpecies[s].stems.DMDead);
             }
 
@@ -8233,26 +8234,24 @@ public class AgPasture
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Proportion in the dry matter harvested of each species")]
+    [Description("Percentage in the harvested dry matter of each species")]
     [Units("%")]
-    public double[] SpeciesHarvestPct
+    public double[] SpeciesProportionHarvest
     {
         get
         {
             double[] result = new double[mySpecies.Length];
-            double myTotal = StandingPlantWt;
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                if (myTotal > 0.0)
-                    result[s] = (mySpecies[s].stems.DMTotal + mySpecies[s].leaves.DMTotal) * 100 / myTotal;
-            }
+            double myTotal = HarvestWt;
+            if (myTotal > 0.0)
+                for (int s = 0; s < NumSpecies; s++)
+                    result[s] = mySpecies[s].dmdefoliated * 100 / myTotal;
             return result;
         }
     }
 
     /// <summary>An output</summary>
     [Output]
-    [Description("Proportion in the standing dry matter for each species")]
+    [Description("Percentage in the standing dry matter for each species")]
     [Units("%")]
     public double[] SpeciesProportionStanding
     {
@@ -8260,11 +8259,9 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             double myTotal = StandingPlantWt;
-            for (int s = 0; s < NumSpecies; s++)
-            {
-                if (myTotal > 0.0)
-                    result[s] = (mySpecies[s].stems.DMTotal + mySpecies[s].leaves.DMTotal) * 100 / myTotal;
-            }
+            if (myTotal > 0.0)
+                for (int s = 0; s < NumSpecies; s++)
+                    result[s] = mySpecies[s].StandingWt * 100 / myTotal;
             return result;
         }
     }

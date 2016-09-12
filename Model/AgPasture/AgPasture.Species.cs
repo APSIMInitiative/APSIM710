@@ -387,6 +387,9 @@ public class Species
     /// <summary>minimum green DM</summary>
     internal double dmgreenmin;
 
+    /// <summary>Fraction of stolons that can be harvested</summary>
+    internal double FractionStolonsStanding;
+
     ////  >> Plant height  >>>
 
     /// <summary>Some Description</summary>
@@ -788,19 +791,31 @@ public class Species
     /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
     internal double StandingWt
     {
-        get { return leaves.DMTotal + stems.DMTotal; }
+        get { return leaves.DMTotal + stems.DMTotal + (stolons.DMTotal * FractionStolonsStanding); }
     }
 
     /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
     internal double StandingLiveWt
     {
-        get { return leaves.DMGreen + stems.DMGreen; }
+        get { return leaves.DMGreen + stems.DMGreen + (stolons.DMGreen * FractionStolonsStanding); }
     }
 
     /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
     internal double StandingDeadWt
     {
         get { return leaves.DMDead + stems.DMDead; }
+    }
+
+    /// <summary>Dry matter amount that can be harvested (kg/ha)</summary>
+    internal double HarvestableWt
+    {
+        get { return StandingWt - dmgreenmin; }
+    }
+
+    /// <summary>N amount of standing green material (kg/ha)</summary>
+    internal double StandingN
+    {
+        get { return leaves.NTotal + stems.NTotal + (stolons.NTotal * FractionStolonsStanding); }
     }
 
     /// <summary>N amount aboveground (kg/ha)</summary>
@@ -2475,19 +2490,15 @@ public class Species
         // save current state
         SetPrevPools();
 
-        // check existing amount and what is harvestable
-        double amountRemovable = Math.Max(0.0, leaves.DMGreen + stems.DMGreen - dmgreenmin)
-                                 + Math.Max(0.0, leaves.tissue[3].DM + stems.tissue[3].DM);
-
         // get the weights for each pool, consider preference and available DM
         double fractionToRemoved = 0.0;
-        if (amountRemovable > 0.0)
-            fractionToRemoved = Math.Min(1.0, MathUtility.Divide(AmountToRemove, amountRemovable, 0.0));
+        if (HarvestableWt > 0.0)
+            fractionToRemoved = Math.Min(1.0, AmountToRemove / StandingWt);
 
         double tempPrefGreen = PrefGreen + (PrefDead * fractionToRemoved);
         double tempPrefDead = PrefDead + (PrefGreen * fractionToRemoved);
-        double tempRemovableGreen = Math.Max(0.0, leaves.DMGreen + stems.DMGreen - dmgreenmin);
-        double tempRemovableDead = Math.Max(0.0, leaves.tissue[3].DM + stems.tissue[3].DM);
+        double tempRemovableGreen = Math.Max(0.0, StandingLiveWt - dmgreenmin);
+        double tempRemovableDead = Math.Max(0.0, StandingDeadWt);
 
         // get partiton between dead and live materials
         double tempTotal = tempRemovableGreen * tempPrefGreen + tempRemovableDead * tempPrefDead;
@@ -2504,19 +2515,21 @@ public class Species
         double removingDeadDm = AmountToRemove * fractionToHarvestDead;
         // Fraction of DM remaining in the field
         double fractionRemainingGreen = 1.0;
-        if (leaves.DMGreen + stems.DMGreen > 0.0)
-            fractionRemainingGreen -= removingGreenDm / (leaves.DMGreen + stems.DMGreen);
+        if (StandingLiveWt > 0.0)
+            fractionRemainingGreen -= removingGreenDm / StandingLiveWt;
         double fractionRemainingDead = 1.0;
-        if (leaves.tissue[3].DM + stems.tissue[3].DM > 0.0)
-            fractionRemainingDead -= removingDeadDm / (leaves.tissue[3].DM + stems.tissue[3].DM);
-        fractionRemainingGreen = Math.Max(0.0, Math.Min(1.0, fractionRemainingGreen));
-        fractionRemainingDead = Math.Max(0.0, Math.Min(1.0, fractionRemainingDead));
+        if (StandingDeadWt > 0.0)
+            fractionRemainingDead -= removingDeadDm / StandingDeadWt;
+        double fractionRemainingStolon = 1.0;
+        if (StandingLiveWt > 0.0)
+            fractionRemainingStolon -= removingGreenDm * FractionStolonsStanding / StandingLiveWt;
 
         // get digestibility of DM being harvested
         double greenDigestibility = (leaves.DigestibilityLive * leaves.DMGreen) + (stems.DigestibilityLive * stems.DMGreen);
+        greenDigestibility += (stolons.DigestibilityLive * stolons.DMGreen * FractionStolonsStanding);
         double deadDigestibility = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
         greenDigestibility = MathUtility.Divide(greenDigestibility, StandingLiveWt, 0.0);
-        deadDigestibility = MathUtility.Divide(deadDigestibility, AboveGroundDeadWt, 0.0);
+        deadDigestibility = MathUtility.Divide(deadDigestibility, StandingDeadWt, 0.0);
         digestDefoliated = fractionToHarvestGreen * greenDigestibility + fractionToHarvestDead * deadDigestibility;
 
         // update the various pools
@@ -2528,7 +2541,9 @@ public class Species
         stems.tissue[1].DM *= fractionRemainingGreen;
         stems.tissue[2].DM *= fractionRemainingGreen;
         stems.tissue[3].DM *= fractionRemainingDead;
-        //No stolon removed
+        stolons.tissue[0].DM *= fractionRemainingStolon;
+        stolons.tissue[1].DM *= fractionRemainingStolon;
+        stolons.tissue[2].DM *= fractionRemainingStolon;
 
         leaves.tissue[0].Namount *= fractionRemainingGreen;
         leaves.tissue[1].Namount *= fractionRemainingGreen;
@@ -2538,9 +2553,11 @@ public class Species
         stems.tissue[1].Namount *= fractionRemainingGreen;
         stems.tissue[2].Namount *= fractionRemainingGreen;
         stems.tissue[3].Namount *= fractionRemainingDead;
+        stolons.tissue[0].Namount *= fractionRemainingStolon;
+        stolons.tissue[1].Namount *= fractionRemainingStolon;
+        stolons.tissue[2].Namount *= fractionRemainingStolon;
 
-        //Nremob is also removed proportionally (not sensitive?)
-        double PreRemovalNRemob = Nremob;
+        //Nremob is also removed proportionally
         Nremob *= fractionRemainingGreen;
 
         // Update Luxury N pools
@@ -2551,7 +2568,6 @@ public class Species
         UpdateAggregatedVariables();
 
         // Check balance and set outputs
-        double NremobRemove = PreRemovalNRemob - Nremob;
         dmdefoliated = prevState.dmshoot - AboveGroundWt;
         prevState.dmdefoliated = dmdefoliated;
         Ndefoliated = prevState.Nshoot - AboveGroundN;
@@ -2595,7 +2611,8 @@ public class Species
         if (StandingWt > 0.0)
         {
             result = (leaves.DigestibilityLive * leaves.DMGreen) + (leaves.DigestibilityDead * leaves.DMDead)
-                   + (stems.DigestibilityLive * stems.DMGreen) + (stems.DigestibilityDead * stems.DMDead);
+                   + (stems.DigestibilityLive * stems.DMGreen) + (stems.DigestibilityDead * stems.DMDead)
+                   + (stolons.DigestibilityLive * stolons.DMGreen * FractionStolonsStanding);
             result /= StandingWt;
         }
 
