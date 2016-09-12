@@ -82,10 +82,10 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
 #endif
 
    // exec ApsimToSim and read its stdout as the .sim file name.
-   if (system(CommandLine.c_str()) < 0) {
+   if (system(CommandLine.c_str()) != 0) {
        cout << "APSIM  Fatal  Error" << endl;
        cout << "-------------------" << endl;
-       cout << "Error finding simulation " << simulationName << " in apsim file " << apsimPath << endl;
+       cout << "Error finding \"" << simulationName << "\" in apsim file " << apsimPath << endl;
    }
    ifstream in(uniqueFileName.c_str());
    string simPath;
@@ -93,8 +93,10 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
    in.close();
 
    if (simPath.find("Written ") == string::npos)
+   {
+      cout << simPath << endl;
       return "";
-
+   }
    unlink(uniqueFileName.c_str());
    replaceAll(simPath, "Written ", "");
    return simPath;
@@ -212,6 +214,7 @@ int main(int argc, char **argv)
          unlink(simPath.c_str());
       return ( RunAPSIM(sdml.str().c_str()));
       }
+   return 1;
 }
 
 //---------------------------------------------------------------------------
