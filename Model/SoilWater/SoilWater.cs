@@ -3458,6 +3458,9 @@ public class SoilWater
 
         //! flux into layer 1 = infiltration (mm).
 
+        if (Clock.Today.Day == 11)
+            System.Diagnostics.Debugger.Break();
+
         w_in = 0.0;
         ExtraRunoff = 0.0;
 

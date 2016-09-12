@@ -2127,6 +2127,10 @@ public class AgPasture
     {
         // Clear FractionHarvest array
         Array.Clear(FractionToHarvest, 0, FractionToHarvest.Length);
+
+        // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
+        DoNewCanopyEvent();
+        DoNewPotentialGrowthEvent();
     }
 
     /// <summary>
@@ -2141,10 +2145,6 @@ public class AgPasture
         // Remember current state of each species
         for (int s = 0; s < NumSpecies; s++)
             mySpecies[s].SetPrevPools();
-
-        // Send info about canopy and potential growth, used by other modules to calculate intercepted radn and ET
-        DoNewCanopyEvent();
-        DoNewPotentialGrowthEvent();
 
         // Pass on some parameters to different species
         SetSpeciesWithSwardData();
@@ -2235,7 +2235,7 @@ public class AgPasture
         //  Pack and send info about the average sward canopy
         canopyData.sender = thisCropName;
         canopyData.lai = (float) LAI_green;
-        canopyData.lai_tot = (float) LAI_dead;
+        canopyData.lai_tot = (float) LAI_total;
         canopyData.height = (int) Height;
         canopyData.depth = (int) Height;
         canopyData.cover = (float) Cover_green;
