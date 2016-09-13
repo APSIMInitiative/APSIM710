@@ -895,6 +895,18 @@ CCC End new code
 
       else
 
+* - VOS 2016-09-13 - (!shouldn't) need to check that LAI/cover total is >= green
+          if (newcanopy%lai.gt.newcanopy%lai_tot) then
+            call fatal_Error(ERR_Internal
+     :        ,'Total LAI cannot be > green LAI: '//newcanopy%sender)
+          endif
+          if (newcanopy%cover.gt.newcanopy%cover_tot) then
+            call fatal_Error(ERR_Internal
+     :        ,'Total cover cannot be > green cover: '
+     :        //newcanopy%sender)
+          endif
+
+
         g%ComponentLAI(ComponentNo) = newcanopy%lai
         g%ComponentLAItot(ComponentNo) = newcanopy%lai_tot
         g%ComponentCoverGreen(ComponentNo) = newcanopy%cover
@@ -905,7 +917,7 @@ CCC End new code
         g%ComponentDepth(ComponentNo) = newcanopy%depth
         g%ComponentDepth(ComponentNo) = g%ComponentDepth(ComponentNo)
      :                         / 1000.  ! to convert from mm to m
-
+ 
       endif
       !call Micromet_Canopy_Compartments ()
 
