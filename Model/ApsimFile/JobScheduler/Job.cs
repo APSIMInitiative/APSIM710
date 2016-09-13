@@ -332,6 +332,7 @@ namespace JobScheduler {
 
                     Shutdown();
                     WriteLogMessage();
+                    _P.Dispose(); _P = null;
                 };
                 //Console.WriteLine("Run: " + _P.StartInfo.FileName + " " + _P.StartInfo.Arguments + "(wd=" + WorkingDirectory + ")");
                 _P.Start();
@@ -366,6 +367,7 @@ namespace JobScheduler {
                 if (_P != null && !_P.HasExited)
                     _P.Kill();
 
+                _P.Dispose();
                 _P = null;
                 Shutdown();
             }
