@@ -5091,6 +5091,10 @@ public class AgPasture
             // Check DM shoot
             if (NewSetState.dmShoot.Length > 0)
             {
+                //check for negative value
+                if (NewSetState.dmShoot[sp] < -0.000000001)
+                    throw new Exception("Attempt to set shoot DM of " + mySpecies[sp].speciesName + " to a negative value - OnSetSpeciesState");
+
                 // New DM being set, check DM fractions
                 if (NewSetState.dmFractions.Length > 0)
                 {
@@ -5106,6 +5110,11 @@ public class AgPasture
                     NewState.DMWeight[8] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon1;
                     NewState.DMWeight[9] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon2;
                     NewState.DMWeight[10] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon3;
+
+                    // check for mass balance
+                    if (NewState.DMWeight.Sum() - NewSetState.dmShoot[sp] < -0.000000001)
+                        throw new Exception("Fractions to partition shoot DM of " + mySpecies[sp].speciesName
+                                            + " did not add to one - OnSetSpeciesState");
                 }
                 else
                 {
@@ -5160,13 +5169,23 @@ public class AgPasture
 
             // Check DM root
             if (NewSetState.dmRoot.Length > 0)
-                NewState.DMWeight[11] = NewSetState.dmRoot[sp];
+            {
+                if (NewSetState.dmRoot[sp] >= 0.0)
+                    NewState.DMWeight[11] = NewSetState.dmRoot[sp];
+                else
+                    throw new Exception("Attempt to set root DM of " + mySpecies[sp].speciesName + " to a negative value - OnSetSpeciesState");
+            }
             else
                 NewState.DMWeight[11] = mySpecies[sp].roots.DMGreen;
 
             // Check root depth
             if (NewSetState.rootDepth.Length > 0)
-                NewState.RootDepth = NewSetState.rootDepth[sp];
+            {
+                if (NewSetState.rootDepth[sp] >= 0.0)
+                    NewState.RootDepth = NewSetState.rootDepth[sp];
+                else
+                    throw new Exception("Attempt to set root depth of " + mySpecies[sp].speciesName + " to a negative value - OnSetSpeciesState");
+            }
             else
                 NewState.RootDepth = mySpecies[sp].rootDepth;
 
@@ -5174,18 +5193,77 @@ public class AgPasture
             if (NewSetState.nConcentrations.Length > 0)
             {
                 // new values given
-                NewState.NAmount[0] = NewState.DMWeight[0] * NewSetState.nConcentrations[sp].Leaf1;
-                NewState.NAmount[1] = NewState.DMWeight[1] * NewSetState.nConcentrations[sp].Leaf2;
-                NewState.NAmount[2] = NewState.DMWeight[2] * NewSetState.nConcentrations[sp].Leaf3;
-                NewState.NAmount[3] = NewState.DMWeight[3] * NewSetState.nConcentrations[sp].Leaf4;
-                NewState.NAmount[4] = NewState.DMWeight[4] * NewSetState.nConcentrations[sp].Stem1;
-                NewState.NAmount[5] = NewState.DMWeight[5] * NewSetState.nConcentrations[sp].Stem2;
-                NewState.NAmount[6] = NewState.DMWeight[6] * NewSetState.nConcentrations[sp].Stem3;
-                NewState.NAmount[7] = NewState.DMWeight[7] * NewSetState.nConcentrations[sp].Stem4;
-                NewState.NAmount[8] = NewState.DMWeight[8] * NewSetState.nConcentrations[sp].Stolon1;
-                NewState.NAmount[9] = NewState.DMWeight[9] * NewSetState.nConcentrations[sp].Stolon2;
-                NewState.NAmount[10] = NewState.DMWeight[10] * NewSetState.nConcentrations[sp].Stolon3;
-                NewState.NAmount[11] = NewState.DMWeight[11] * NewSetState.nConcentrations[sp].Roots;
+                if (NewSetState.nConcentrations[sp].Leaf1 >= 0.0)
+                    NewState.NAmount[0] = NewState.DMWeight[0] * NewSetState.nConcentrations[sp].Leaf1;
+                else
+                    throw new Exception("Attempt to set leaf N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Leaf2 >= 0.0)
+                    NewState.NAmount[1] = NewState.DMWeight[1] * NewSetState.nConcentrations[sp].Leaf2;
+                else
+                    throw new Exception("Attempt to set leaf N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Leaf3 >= 0.0)
+                    NewState.NAmount[2] = NewState.DMWeight[2] * NewSetState.nConcentrations[sp].Leaf3;
+                else
+                    throw new Exception("Attempt to set leaf N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Leaf4 >= 0.0)
+                    NewState.NAmount[3] = NewState.DMWeight[3] * NewSetState.nConcentrations[sp].Leaf4;
+                else
+                    throw new Exception("Attempt to set leaf N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stem1 >= 0.0)
+                    NewState.NAmount[4] = NewState.DMWeight[4] * NewSetState.nConcentrations[sp].Stem1;
+                else
+                    throw new Exception("Attempt to set stem N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stem2 >= 0.0)
+                    NewState.NAmount[5] = NewState.DMWeight[5] * NewSetState.nConcentrations[sp].Stem2;
+                else
+                    throw new Exception("Attempt to set stem N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stem3 >= 0.0)
+                    NewState.NAmount[6] = NewState.DMWeight[6] * NewSetState.nConcentrations[sp].Stem3;
+                else
+                    throw new Exception("Attempt to set stem N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stem4 >= 0.0)
+                    NewState.NAmount[7] = NewState.DMWeight[7] * NewSetState.nConcentrations[sp].Stem4;
+                else
+                    throw new Exception("Attempt to set stem N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stolon1 >= 0.0)
+                    NewState.NAmount[8] = NewState.DMWeight[8] * NewSetState.nConcentrations[sp].Stolon1;
+                else
+                    throw new Exception("Attempt to set stolon N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stolon2 >= 0.0)
+                    NewState.NAmount[9] = NewState.DMWeight[9] * NewSetState.nConcentrations[sp].Stolon2;
+                else
+                    throw new Exception("Attempt to set stolon N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Stolon3 >= 0.0)
+                    NewState.NAmount[10] = NewState.DMWeight[10] * NewSetState.nConcentrations[sp].Stolon3;
+                else
+                    throw new Exception("Attempt to set stolon N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
+
+                if (NewSetState.nConcentrations[sp].Roots >= 0.0)
+                    NewState.NAmount[11] = NewState.DMWeight[11] * NewSetState.nConcentrations[sp].Roots;
+                else
+                    throw new Exception("Attempt to set root N concentration of " + mySpecies[sp].speciesName +
+                                        " to a negative value - OnSetSpeciesState");
             }
             else
             {

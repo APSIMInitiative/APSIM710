@@ -1392,6 +1392,8 @@ public class Species
 
         // Leaf and stems turnover rate
         gama = refTissueTurnoverRate * tempFacTTurnover * swFacTTurnover * leafFac;
+        if (gama > 1.0)
+            throw new Exception("Computed tissue turnover rate greter than one");
 
         // Littering rate
         double digestDead = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
@@ -1400,9 +1402,13 @@ public class Species
 
         // Adjust littering rate due to stock trampling
         gamaD += stockParameter * stockingRate;
+        if (gamaD > 1.0)
+            throw new Exception("Computed tissue turnover rate greter than one");
 
         // Roots turnover rate
         gamaR = tempFacTTurnover * (2 - Math.Min(glfWater, glfAeration)) * rateRootSen;
+        if (gamaR > 1.0)
+            throw new Exception("Computed tissue turnover rate greter than one");
 
         if (gama == 0.0)
         {
@@ -1690,7 +1696,7 @@ public class Species
     /// <param name="KillFaction">The fraction of each live pool to be moved into dead</param>
     internal void KillCrop(double KillFaction)
     {
-        double fractionRemaining = 1.0 - KillFaction;
+        double fractionRemaining = Math.Max(0.0, 1.0 - KillFaction);
         leaves.tissue[3].DM += (leaves.tissue[0].DM + leaves.tissue[1].DM + leaves.tissue[2].DM) * KillFaction;
         leaves.tissue[0].DM *= fractionRemaining;
         leaves.tissue[1].DM *= fractionRemaining;
@@ -2523,6 +2529,9 @@ public class Species
         double fractionRemainingStolon = 1.0;
         if (StandingLiveWt > 0.0)
             fractionRemainingStolon -= removingGreenDm * FractionStolonsStanding / StandingLiveWt;
+
+        if ((fractionRemainingGreen < -Epsilon) || (fractionRemainingDead < -Epsilon) || (fractionRemainingStolon < -Epsilon))
+            throw new Exception(" AgPasture - partition of DM removed resulted in loss of mass balance");
 
         // get digestibility of DM being harvested
         double greenDigestibility = (leaves.DigestibilityLive * leaves.DMGreen) + (stems.DigestibilityLive * stems.DMGreen);
