@@ -414,9 +414,9 @@ public class AgPasture
     private double[] respTref;
 
     [Param]
-    [Description("Maximum effect of temperature on respiration")]
+    [Description("Exponent controlling the effect of temperature on respiration")]
     [Units("")]
-    private double[] maxTeffectResp;
+    private double[] respExponent;
 
     ////  >> Partition of new growth  >>>
     // - Shoot:root partition
@@ -571,6 +571,11 @@ public class AgPasture
     [Description("Mass flux exponent")]
     [Units("")]
     private double[] massFluxDeadWq;
+
+    [Param]
+    [Description("Mass flux factor")]
+    [Units("")]
+    private double[] massFluxDeadWf;
 
     [Param]
     [Description("Parameter for stock influence on senescence")]
@@ -763,7 +768,7 @@ public class AgPasture
     private double[] PreferenceForDeadDM;
 
     [Param]
-    [Description("Weight factor defining the preference level for dead DM")]
+    [Description("Weight factor defining the preference level for leaves over stem-stolons")]
     [Units("")]
     private double[] PreferenceForLeaves;
 
@@ -1122,6 +1127,12 @@ public class AgPasture
     /// <summary>Amount of N taken up from each soil layer (kgN/ha)</summary>
     private double[] soilNO3Uptake;
 
+    /// <summary>Amount of N demanded with luxury uptake</summary>
+    private double swardNdemandLux = 0.0;
+
+    /// <summary>Amount of N demanded for optimum growth</summary>
+    private double swardNdemandOpt = 0.0;
+
     /// <summary>Amount of N fixed by legumes</summary>
     private double swardNFixed = 0.0;
 
@@ -1153,6 +1164,9 @@ public class AgPasture
 
     /// <summary>C fraction on DM, for conversion</summary>
     const double CarbonFractionDM = 0.4;
+
+    /// <summary>Minimum significant difference between two values</summary>
+    const double Epsilon = 0.000000001;
 
     #endregion  -----------------------------------------------------------------------------------
 
@@ -1559,8 +1573,8 @@ public class AgPasture
         // respiration
         if (respTref.Length < NumSpecies)
             breakCode("respTref");
-        if (maxTeffectResp.Length < NumSpecies)
-            breakCode("maxTeffectResp");
+        if (respExponent.Length < NumSpecies)
+            breakCode("respExponent");
 
         ////  >> Partition of new growth  >>>
         if (MaxRootAllocation.Length < NumSpecies)
@@ -1626,6 +1640,8 @@ public class AgPasture
             breakCode("massFluxWopt");
         if (massFluxDeadWq.Length < NumSpecies)
             breakCode("massFluxDeadWq");
+        if (massFluxDeadWf.Length < NumSpecies)
+            breakCode("massFluxDeadWf");
         if (stockParameter.Length < NumSpecies)
             breakCode("stockParameter");
         if (Kappa2_Remob.Length < NumSpecies)
@@ -1796,7 +1812,7 @@ public class AgPasture
         mySpecies[s1].coldTq = coldTq[s2];
         mySpecies[s1].coldSumT = coldSumT[s2]; //temperature sum for recovery - sum of means
         mySpecies[s1].coldRecoverT = coldRecoverT[s2];
-        mySpecies[s1].maxTempEffectResp = maxTeffectResp[s2];
+        mySpecies[s1].respExponent = respExponent[s2];
         mySpecies[s1].respTref = respTref[s2];
 
         // CO2 effects
@@ -1827,8 +1843,8 @@ public class AgPasture
 
         mySpecies[s1].StolonAllocationFactor = StolonAllocationFactor[s2];
 
-        mySpecies[s1].specificLeafArea = SpecificLeafArea[s2];
-        mySpecies[s1].specificRootLength = SpecificRootLength[s2];
+        mySpecies[s1].SpecificLeafArea = SpecificLeafArea[s2];
+        mySpecies[s1].SpecificRootLength = SpecificRootLength[s2];
 
         ////  >> Tissue turnover and senescence  >>>
         mySpecies[s1].LiveLeavesPerTiller = LiveLeavesPerTiller[s2];
@@ -1843,6 +1859,7 @@ public class AgPasture
         mySpecies[s1].massFluxW0 = massFluxW0[s2];
         mySpecies[s1].massFluxWopt = massFluxWopt[s2];
         mySpecies[s1].exponentGLFW2dead = massFluxDeadWq[s2];
+        mySpecies[s1].factorGLFW2dead = massFluxDeadWf[s2];
         mySpecies[s1].stockParameter = stockParameter[s2];
         mySpecies[s1].Kappa2 = Kappa2_Remob[s2];
         mySpecies[s1].Kappa3 = Kappa3_Remob[s2];
@@ -1856,10 +1873,17 @@ public class AgPasture
         mySpecies[s1].stolons.DigestLiveCellWall = digestLiveCellWall[s2];
         mySpecies[s1].stolons.DigestDeadCellWall = digestDeadCellWall[s2];
 
-        ////  >> DM limits for harvest and senescence  >>>
-        mySpecies[s1].dmgreenmin = dmgreenmin[s2];
-        mySpecies[s1].FractionStolonsStanding = FractionStolonsStanding[s2];
-
+        ////  >> Minimum DM and preferences when harvesting  >>>
+        mySpecies[s1].leaves.MinimumGreenDM = dmgreenmin[s2] * 0.80;
+        mySpecies[s1].stems.MinimumGreenDM = dmgreenmin[s2] * 0.20;
+        mySpecies[s1].stolons.MinimumGreenDM = 0.0;
+        mySpecies[s1].roots.MinimumGreenDM = dmgreenmin[s2] * 0.50;
+        mySpecies[s1].stolons.FractionStanding = FractionStolonsStanding[s2];
+        mySpecies[s1].PreferenceGreenOverDead = MathUtility.Divide(PreferenceForGreenDM[s2], PreferenceForDeadDM[s2], 1000000);
+        mySpecies[s2].PreferenceLeafOverStem = PreferenceForLeaves[s2];
+        if ((mySpecies[s1].PreferenceGreenOverDead < Epsilon) || (mySpecies[s1].PreferenceGreenOverDead < Epsilon))
+            throw new Exception("Relative preferences for green or leaf DM cannot be set to zero");
+    
         ////  >> N fixation  >>>
         mySpecies[s1].MaxFix = NMaxFix[s2]; //N-fix fraction when no soil N available, read in later
         mySpecies[s1].MinFix = NMinFix[s2]; //N-fix fraction when soil N sufficient
@@ -2152,85 +2176,96 @@ public class AgPasture
     [EventHandler]
     public void OnProcess()
     {
-        if (!isAlive)
-            return;
-
-        // Remember current state of each species
-        for (int s = 0; s < NumSpecies; s++)
-            mySpecies[s].SetPrevPools();
-
-        // Pass on some parameters to different species
-        SetSpeciesWithSwardData();
-
-        // Allocate resources for each species (includes water demand)
-        PartitionAboveGroundResources();
-
-        // Get potential growth
-        swardPotentialGrowth = 0;
-        for (int s = 0; s < NumSpecies; s++)
+        if (isAlive)
         {
-            if (mySpecies[s].phenoStage == 0)
+            // Pass on some parameters to different species
+            SetSpeciesWithSwardData();
+
+            // Allocate resources for each species (includes water demand)
+            PartitionAboveGroundResources();
+
+            // Get potential growth
+            swardPotentialGrowth = 0;
+            for (int s = 0; s < NumSpecies; s++)
             {
-                // not germinated yet, check germination progress
-                if (mySpecies[s].DailyGerminationProgress() >= 1.0)
+                if (mySpecies[s].phenoStage == 0)
                 {
-                    // germination completed
-                    mySpecies[s].SetEmergenceState();
-                }
-            }
-            else
-            {
-                if (usingSpeciesPhotosynthesis)
-                {
-                    mySpecies[s].DailyPotentialPhotosynthesis();
-                    mySpecies[s].DailyPlantRespiration();
-                    swardPotentialGrowth += mySpecies[s].DailyPotentialGrowth();
+                    // not germinated yet, check germination progress
+                    if (mySpecies[s].DailyGerminationProgress() >= 1.0)
+                    {
+                        // germination completed
+                        mySpecies[s].SetEmergenceState();
+                    }
                 }
                 else
                 {
-                    swardPotentialGrowth += mySpecies[s].DailyGrowthPot();
+                    // Compute the tissue turnover
+                    mySpecies[s].EvaluateTissueTurnover();
+
+                    if (usingSpeciesPhotosynthesis)
+                        swardPotentialGrowth += mySpecies[s].CalcDailyPotentialGrowth();
+                    else
+                        swardPotentialGrowth += mySpecies[s].DailyGrowthPot();
                 }
+
+                // Evaluate potential allocation of today's growth
+                mySpecies[s].EvaluateGrowthAllocation();
             }
+
+            // Evaluate the water supply, demand & uptake
+            DoWaterCalculations();
+
+            // Get the potential growth after water limitations
+            SetSpeciesGLFWater();
+            SetSpeciesGLFAeration();
+            swardPotGrowthWater = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                swardPotGrowthWater += mySpecies[s].GrowthAfterWaterLimitations();
+
+            // Get the N amount demanded for optimum growth and luxury uptake
+            EvaluateNitrogenDemand();
+
+            // Evaluate the nitrogen soil demand, supply, and uptake
+            DoNitrogenCalculations();
+
+            // Get the actual growth, after nutrient limitations but before senescence
+            SetSpeciesGLFNitrogen();
+            swardActualGrowth = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+                swardActualGrowth += mySpecies[s].DailyGrowthAct();
+
+            swardHerbageGrowth = 0.0;
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                // Evaluate actual allocation of today's growth
+                mySpecies[s].EvaluateAllocationNewGrowth();
+
+                // Get the effective growth, after all limitations and senescence
+                swardHerbageGrowth += mySpecies[s].dGrowthShoot;
+
+                // Check changes in root depth and update root distribution
+                if (usingSpeciesRoot)
+                    mySpecies[s].EvaluateRootGrowth();
+                else
+                    EvaluateRootGrowth(s);
+
+                // Update the DM and N of each tissue
+                mySpecies[s].DoUpdateTissues();
+
+                // Update the aggregated variables (LAI, height, etc)
+                mySpecies[s].UpdateAggregatedVariables();
+            }
+
+            // Update aggregated variables (whole sward)
+            UpdateAggregatedVariables();
+
+            // Send detached material to other modules (litter to surfaceOM, roots to soilFOM) 
+            DoSurfaceOMReturn(swardLitterDM, swardLitterN, 1.0);
+            DoIncorpFomEvent(swardSenescedRootDM, swardSenescedRootN);
+
+            // Do the actual uptake (send changes to other modules)
+            UptakeWaterAndN();
         }
-
-        // Get soil water available in the root zone
-        soilAvailableWater = PlantWaterAvailability();
-
-        // Evaluate the water supply, demand & uptake
-        WaterBudgetAndUptake();
-
-        // Calculate and set the growth limiting factor due to soil moisture and aeration
-        SetSpeciesGLFWater();
-        SetSpeciesGLFAeration();
-
-        // Consider water effects (before considering other nutrient limitation)
-        swardPotGrowthWater = 0.0;
-        for (int s = 0; s < NumSpecies; s++)
-        {
-            swardPotGrowthWater += mySpecies[s].DailyGrowthW();
-        }
-
-        // Get soil N available in the root zone
-        swardSoilNavailable = PlantNExtractability();
-
-        // Compute the N budget and uptake
-        NBudgetAndUptake();
-
-        // Calculate and set the growth limiting factor due to nitrogen
-        SetSpeciesGLFNitrogen();
-
-        // Compute the actual daily growth
-        swardActualGrowth = 0.0;
-        for (int s = 0; s < NumSpecies; s++)
-        {
-            swardActualGrowth += mySpecies[s].DailyGrowthAct();
-        }
-
-        // DM partitioning & tissue turnover
-        GrowthAndPartition();
-
-        // Do the actual uptake (send changes to other modules)
-        UptakeWaterAndN();
     }
 
     /// <summary>
@@ -2773,8 +2808,11 @@ public class AgPasture
     /// <summary>
     /// Evaluate water supply vs. demand and compute water uptake
     /// </summary>
-    private void WaterBudgetAndUptake()
+    private void DoWaterCalculations()
     {
+        // Get soil water available in the root zone
+        soilAvailableWater = PlantWaterAvailability();
+
         double wFrac = 0.0; // uptake fraction for each species
         int nLayers = dlayer.Length;
 
@@ -3937,37 +3975,26 @@ public class AgPasture
         }
     }
 
-    /// <summary>
-    /// Evaluate N budget and uptake processes
-    /// </summary>
-    /// <remarks>
-    /// RCichota, Jun 2014: cleaned up and add consideration for remobilisation of luxury N
-    /// RCichota, Dec 2014: separated calculation for glfN and actual uptake
-    /// </remarks>
-    private void NBudgetAndUptake()
+    /// <summary>Computes the amount of nitrogen demand for optimum N content as well as luxury uptake</summary>
+    internal void EvaluateNitrogenDemand()
     {
-        //1) Get the total N demand (species by species)
-        swardNFixed = 0.0;
-        double swardNdemandLux = 0.0;
-        double swardNdemandOpt = 0.0;
+        swardNdemandLux = 0.0;
+        swardNdemandOpt = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
             mySpecies[s].CalcTotalNDemand();
             swardNdemandOpt += mySpecies[s].NdemandOpt;
             swardNdemandLux += mySpecies[s].NdemandLux;
-            if (!usingNAvailableBySpecies && (mySpecies[s].isLegume))
-            {
-                // minimum N fixation for whole sward
-                mySpecies[s].NFixed = mySpecies[s].MinFix * mySpecies[s].NdemandOpt;
-                swardNFixed += mySpecies[s].NFixed;
-            }
         }
+    }
 
-        //2) Update N fixation of legume species if under N stress
+    /// <summary>Computes the amount of atmospheric nitrogen fixed through symbiosis</summary>
+    internal void EvaluateNitrogenFixation()
+    {
+        swardNFixed = 0.0;
         if (usingNAvailableBySpecies)
         {
             // consider each species separately (need N available for each species)
-            swardNFixed = 0.0; // this is re-calculated here
             for (int s = 0; s < NumSpecies; s++)
             {
                 if (mySpecies[s].isLegume)
@@ -3979,19 +4006,29 @@ public class AgPasture
         }
         else
         {
-            // consider whole sward
+            // get the minimum N fixation for whole sward
+            for (int s = 0; s < NumSpecies; s++)
+            {
+                if (mySpecies[s].isLegume)
+                {
+                    mySpecies[s].NFixed = mySpecies[s].MinFix * mySpecies[s].NdemandOpt;
+                    swardNFixed += mySpecies[s].NFixed;
+                }
+            }
+
+            // consider additional fixation
             double Nstress = 1.0;
             if (swardNdemandOpt > 0.0 && (swardNdemandOpt > swardSoilNavailable + swardNFixed))
                 Nstress = swardSoilNavailable / (swardNdemandOpt - swardNFixed);
 
-            if (Nstress < 0.999)
+            if (1.0 - Nstress > Epsilon)
             {
                 // more fixation under N stress
                 for (int s = 0; s < NumSpecies; s++)
                 {
                     if (mySpecies[s].isLegume)
                     {
-                        double moreNfixation = (mySpecies[s].MaxFix - mySpecies[s].MinFix) * (1 - Nstress);
+                        double moreNfixation = (mySpecies[s].MaxFix - mySpecies[s].MinFix) * (1.0 - Nstress);
                         moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation)) * mySpecies[s].NdemandOpt;
                         mySpecies[s].NFixed += moreNfixation;
                         swardNFixed += moreNfixation;
@@ -3999,6 +4036,16 @@ public class AgPasture
                 }
             }
         }
+    }
+
+    /// <summary>Evaluate N budget and uptake processes</summary>
+    private void DoNitrogenCalculations()
+    {
+        //1) Get soil N available in the root zone
+        swardSoilNavailable = PlantNExtractability();
+
+        //2) Get N fixation for legumes
+        EvaluateNitrogenFixation();
 
         //3) Get N remobilised of senesced material and calculate N demand from soil
         swardSoilNDemand = 0.0;
@@ -4019,13 +4066,12 @@ public class AgPasture
         //4) Compute soil N uptake and consider remobilisation of luxury N
         for (int s = 0; s < NumSpecies; s++)
         {
-            if (mySpecies[s].soilNdemand == 0.0)
+            if (mySpecies[s].soilNdemand < Epsilon)
             {
                 // no need for uptake or extra remobilisation
                 mySpecies[s].soilNH4Uptake = 0.0;
                 mySpecies[s].soilNO3Uptake = 0.0;
-                mySpecies[s].NLuxuryRemob3 = 0.0;
-                mySpecies[s].NLuxuryRemob2 = 0.0;
+                mySpecies[s].NLuxury2NewGrowth = 0.0;
             }
             else
             {
@@ -4042,8 +4088,7 @@ public class AgPasture
                     else
                     {
                         // N supply was enough for optimum growth, no need to use luxury N
-                        mySpecies[s].NLuxuryRemob3 = 0.0;
-                        mySpecies[s].NLuxuryRemob2 = 0.0;
+                        mySpecies[s].NLuxury2NewGrowth = 0.0;
                     }
                 }
                 else
@@ -4055,15 +4100,13 @@ public class AgPasture
                         // soil can supply all N demanded for maximum uptake (luxury N)
                         mySpecies[s].soilNH4Uptake = mySpecies[s].soilNdemand * nFormFrac;
                         mySpecies[s].soilNO3Uptake = mySpecies[s].soilNdemand * (1.0 - nFormFrac);
-                        mySpecies[s].NLuxuryRemob3 = 0.0;
-                        mySpecies[s].NLuxuryRemob2 = 0.0;
+                        mySpecies[s].NLuxury2NewGrowth = 0.0;
                         mySpecies[s].newGrowthN += mySpecies[s].soilNH4Uptake + mySpecies[s].soilNO3Uptake;
                     }
                     else
                     {
                         // soil cannot supply all N needed. Uptake the available N and partition it between species
-                        double speciesNuptake = swardSoilNavailable *
-                                                MathUtility.Divide(mySpecies[s].soilNdemand, swardSoilNDemand, 0.0);
+                        double speciesNuptake = swardSoilNavailable * MathUtility.Divide(mySpecies[s].soilNdemand, swardSoilNDemand, 0.0);
                         mySpecies[s].soilNH4Uptake = speciesNuptake * nFormFrac;
                         mySpecies[s].soilNO3Uptake = speciesNuptake * (1 - nFormFrac);
                         mySpecies[s].newGrowthN += mySpecies[s].soilNH4Uptake + mySpecies[s].soilNO3Uptake;
@@ -4077,8 +4120,7 @@ public class AgPasture
                         else
                         {
                             // N supply is enough for optimum growth, although luxury uptake is not fully accomplished
-                            mySpecies[s].NLuxuryRemob3 = 0.0;
-                            mySpecies[s].NLuxuryRemob2 = 0.0;
+                            mySpecies[s].NLuxury2NewGrowth = 0.0;
                         }
                     }
                 }
@@ -4142,10 +4184,10 @@ public class AgPasture
         // check that amounts to remove aren't larger that available
         for (int layer = 0; layer <= swardRootZoneBottomLayer; layer++)
         {
-            if ((soilNH4Uptake[layer] - nh4[layer]) > 0.000001)
+            if ((soilNH4Uptake[layer] - nh4[layer]) > Epsilon)
                 throw new Exception("Loss of mass balance - NH4 uptake too large");
 
-            if ((soilNO3Uptake[layer] - no3[layer]) > 0.000001)
+            if ((soilNO3Uptake[layer] - no3[layer]) > Epsilon)
                 throw new Exception("Loss of mass balance - NO3 uptake too large");
         }
     }
@@ -4204,7 +4246,7 @@ public class AgPasture
                 }
 
                 // check that mass balance was kept
-                if (Math.Abs(soilNH4Uptake.Sum() + soilNO3Uptake.Sum() + TotalUptake) > 0.000001)
+                if (Math.Abs(soilNH4Uptake.Sum() + soilNO3Uptake.Sum() + TotalUptake) > Epsilon)
                     throw new Exception("Loss of mass balance - partition between SoilCNPatches");
             }
             else
@@ -4351,7 +4393,7 @@ public class AgPasture
         soilNH4Uptake = availableNH4_bylayer.Select(x => x * 1).ToArray();
         soilNO3Uptake = availableNO3_bylayer.Select(x => x * 1).ToArray();
 
-        double[] diffs = soilNO3Uptake.Select((x, i) => Math.Max(no3[i] + x + 0.00000001, 0)).ToArray();
+        double[] diffs = soilNO3Uptake.Select((x, i) => Math.Max(no3[i] + x + Epsilon, 0)).ToArray();
         if (diffs.Any(x => x == 0))
             throw new Exception();
     }
@@ -4499,67 +4541,24 @@ public class AgPasture
     }
 
     /// <summary>
-    /// Partitioning plant growth and tissue turnover
+    /// Calculates variations in root growth and distribution, when using sward only
     /// </summary>
-    private void GrowthAndPartition()
+    private void EvaluateRootGrowth(int sp)
     {
-        for (int s = 0; s < NumSpecies; s++)
+        if (sp == 0)
         {
-            // Compute the partitioning of DM grown
-            mySpecies[s].PartitionDMGrown();
-
-            // Compute the tissue turnover
-            mySpecies[s].TissueTurnover();
-
-            // Check changes in root depth and update root distribution
-            if (usingSpeciesRoot)
-            {
-                mySpecies[s].EvaluateRootGrowth();
-            }
-            else
-            {
-                if (s == 0)
-                {
-                    mySpecies[s].EvaluateRootGrowth();
-                    swardRootDepth = mySpecies[s].rootDepth;
-                    swardRootZoneBottomLayer = mySpecies[s].layerBottomRootZone;
-                    for (int layer = 0; layer < dlayer.Length; layer++)
-                        swardRootFraction[layer] = mySpecies[s].rootFraction[layer];
-                }
-                else
-                {
-                    mySpecies[s].rootDepth = swardRootDepth;
-                    mySpecies[s].layerBottomRootZone = swardRootZoneBottomLayer;
-                    for (int layer = 0; layer < dlayer.Length; layer++)
-                        mySpecies[s].rootFraction[layer] = swardRootFraction[layer];
-                }
-            }
-
-            // Update the aggregated variables (LAI, height, etc)
-            mySpecies[s].UpdateAggregatedVariables();
-
-            // Calc today's herbage digestibility
-            mySpecies[s].EvaluateDigestibility();
+            mySpecies[sp].EvaluateRootGrowth();
+            swardRootDepth = mySpecies[sp].rootDepth;
+            swardRootZoneBottomLayer = mySpecies[sp].layerBottomRootZone;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                swardRootFraction[layer] = mySpecies[sp].rootFraction[layer];
         }
-
-        // Update aggregated variables (whole sward)
-        UpdateAggregatedVariables();
-
-        // Compute the herbage growth for sward
-        swardHerbageGrowth = 0.0;
-        for (int s = 0; s < NumSpecies; s++)
-            swardHerbageGrowth += mySpecies[s].AboveGroundWt - mySpecies[s].prevState.dmshoot;
-
-        // Return litter to surface OM
-        DoSurfaceOMReturn(swardLitterDM, swardLitterN, 1.0);
-
-        // Return senesced root to soil FOM
-        DoIncorpFomEvent(swardSenescedRootDM, swardSenescedRootN);
-
-        // RCichota May2014: zero out the stored pS.dmdefoliated (it has been used today)
-        for (int s = 0; s < NumSpecies; s++)
+        else
         {
-            mySpecies[s].prevState.dmdefoliated = 0.0;
+            mySpecies[sp].rootDepth = swardRootDepth;
+            mySpecies[sp].layerBottomRootZone = swardRootZoneBottomLayer;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                mySpecies[sp].rootFraction[layer] = swardRootFraction[layer];
         }
     }
 
@@ -4690,7 +4689,7 @@ public class AgPasture
     /// <param name="frac">Fraction=1</param>
     private void DoSurfaceOMReturn(double amtDM, double amtN, double frac)
     {
-        if (amtDM < 0.000001)
+        if (amtDM < Epsilon)
             return;
 
         float dDM = (float) amtDM;
@@ -4724,7 +4723,7 @@ public class AgPasture
     /// <param name="NinRootSen">N amount</param>
     private void DoIncorpFomEvent(double rootSen, double NinRootSen)
     {
-        if (rootSen < 0.000001)
+        if (rootSen < Epsilon)
             return;
 
         FOMLayerLayerType[] fomLL = new FOMLayerLayerType[dlayer.Length];
@@ -4894,14 +4893,10 @@ public class AgPasture
 
             // Update the aggregated variables (LAI, height, etc)
             mySpecies[s].UpdateAggregatedVariables();
-
-            // RCichota May 2014: store the defoliated amount (to use for senescence)
-            mySpecies[s].prevState.dmdefoliated = mySpecies[s].dmdefoliated;
-            mySpecies[s].prevState.Ndefoliated = mySpecies[s].Ndefoliated;
         }
 
         // check mass balance
-        if (Math.Abs(swardHarvestedDM - amountRequested) > 0.00001)
+        if (Math.Abs(swardHarvestedDM - amountRequested) > Epsilon)
             throw new Exception("OnRemove - removal of DM resulted in loss of mass balance");
 
         // Update aggregated variables (whole sward)
@@ -4989,8 +4984,11 @@ public class AgPasture
                 else
                     FractionToHarvest[s] = 0.0;
 
-                swardHarvestedDM += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
-                swardHarvestedN += mySpecies[s].Ndefoliated;
+                if (mySpecies[s].HarvestableWt > 0.0)
+                {
+                    swardHarvestedDM += mySpecies[s].RemoveDM(AmountToRemove * FractionToHarvest[s], PreferenceForGreenDM[s], PreferenceForDeadDM[s]);
+                    swardHarvestedN += mySpecies[s].Ndefoliated;
+                }
 
                 // get digestibility of harvested material
                 swardHarvestDigestibility += mySpecies[s].digestDefoliated * mySpecies[s].dmdefoliated / AmountToRemove;
@@ -4998,7 +4996,7 @@ public class AgPasture
 
             // check some variables
             swardHarvestDigestibility = Math.Min(1.0, swardHarvestDigestibility);
-            if (Math.Abs(swardHarvestedDM - AmountToRemove) > 0.00001)
+            if (Math.Abs(swardHarvestedDM - AmountToRemove) > Epsilon)
                 throw new Exception("OnGraze - removal of DM resulted in loss of mass balance");
 
             // Update aggregated variables (whole sward)
@@ -5024,9 +5022,6 @@ public class AgPasture
 
             // set initial state
             SetSpeciesState(s, mySpecies[s].InitialState);
-
-            // reset previous state
-            mySpecies[s].SetPrevPools();
 
             // get the deepest root as sward depth
             if (mySpecies[s].rootDepth > swardRootDepth)
@@ -5092,7 +5087,7 @@ public class AgPasture
             if (NewSetState.dmShoot.Length > 0)
             {
                 //check for negative value
-                if (NewSetState.dmShoot[sp] < -0.000000001)
+                if (NewSetState.dmShoot[sp] < -Epsilon)
                     throw new Exception("Attempt to set shoot DM of " + mySpecies[sp].speciesName + " to a negative value - OnSetSpeciesState");
 
                 // New DM being set, check DM fractions
@@ -5112,7 +5107,7 @@ public class AgPasture
                     NewState.DMWeight[10] = NewSetState.dmShoot[sp] * NewSetState.dmFractions[sp].Stolon3;
 
                     // check for mass balance
-                    if (NewState.DMWeight.Sum() - NewSetState.dmShoot[sp] < -0.000000001)
+                    if (NewState.DMWeight.Sum() - NewSetState.dmShoot[sp] < -Epsilon)
                         throw new Exception("Fractions to partition shoot DM of " + mySpecies[sp].speciesName
                                             + " did not add to one - OnSetSpeciesState");
                 }
@@ -6183,12 +6178,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-            {
-                result += Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin);
-                result += Math.Max(0.0, mySpecies[s].stolons.DMGreen * mySpecies[s].FractionStolonsStanding);
-                result += Math.Max(0.0, mySpecies[s].leaves.DMDead + mySpecies[s].stems.DMDead);
-            }
-
+                result += mySpecies[s].leaves.DMTotalHarvestable + mySpecies[s].stems.DMTotalHarvestable + mySpecies[s].stolons.DMTotalHarvestable;
             return result;
         }
     }
@@ -6324,7 +6314,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].Nremob;
+                result += mySpecies[s].leaves.NSenesced + mySpecies[s].stems.NSenesced + mySpecies[s].stolons.NSenesced + mySpecies[s].roots.NSenesced;
             return result;
         }
     }
@@ -6339,7 +6329,8 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].remob2NewGrowth;
+                result += mySpecies[s].leaves.NSenescedRemobilised + mySpecies[s].stems.NSenescedRemobilised 
+                    + mySpecies[s].stolons.NSenescedRemobilised + mySpecies[s].roots.NSenescedRemobilised;
             return result;
         }
     }
@@ -6354,7 +6345,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].NLuxury2 + mySpecies[s].NLuxury3;
+                result += mySpecies[s].NLuxuryRemobilisable;
             return result;
         }
     }
@@ -6369,7 +6360,8 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += mySpecies[s].NLuxuryRemob2 + mySpecies[s].NLuxuryRemob3;
+                result += mySpecies[s].leaves.NLuxuryRemobilised + mySpecies[s].stems.NLuxuryRemobilised
+                          + mySpecies[s].stolons.NLuxuryRemobilised + mySpecies[s].roots.NLuxuryRemobilised;
             return result;
         }
     }
@@ -6968,10 +6960,10 @@ public class AgPasture
                 if (usingSpeciesRoot)
                 {
                     for (int s = 0; s < NumSpecies; s++)
-                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * mySpecies[s].rootFraction[layer] * mySpecies[s].specificRootLength;
+                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * mySpecies[s].rootFraction[layer] * mySpecies[s].SpecificRootLength;
                 }
                 else
-                    Total_Rlength += (swardRootDM * 0.1) * swardRootFraction[layer] * mySpecies[0].specificRootLength;
+                    Total_Rlength += (swardRootDM * 0.1) * swardRootFraction[layer] * mySpecies[0].SpecificRootLength;
 
                 // average root length (m root/m2 soil)
                 result[layer] = Total_Rlength / (dlayer[layer] * 1000); // mm root/mm3 soil
@@ -8090,7 +8082,7 @@ public class AgPasture
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].AboveGroundWt - mySpecies[s].prevState.dmshoot;
+                result[s] = mySpecies[s].dGrowthShoot;
             return result;
         }
     }
@@ -8225,12 +8217,7 @@ public class AgPasture
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
-            {
-                result[s] = Math.Max(0.0, mySpecies[s].leaves.DMGreen + mySpecies[s].stems.DMGreen - mySpecies[s].dmgreenmin);
-                result[s] += Math.Max(0.0, mySpecies[s].stolons.DMGreen * mySpecies[s].FractionStolonsStanding);
-                result[s] += Math.Max(0.0, mySpecies[s].leaves.DMDead + mySpecies[s].stems.DMDead);
-            }
-
+                result[s] = mySpecies[s].leaves.DMTotalHarvestable + mySpecies[s].stems.DMTotalHarvestable + mySpecies[s].stolons.DMTotalHarvestable;
             return result;
         }
     }
@@ -8457,7 +8444,8 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = mySpecies[s].Nremob;
+                result[s] = mySpecies[s].leaves.NSenesced + mySpecies[s].stems.NSenesced
+                            + mySpecies[s].stolons.NSenesced + mySpecies[s].roots.NSenesced;
             }
             return result;
         }
@@ -8474,7 +8462,8 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = mySpecies[s].remob2NewGrowth;
+                result[s] = mySpecies[s].leaves.NSenescedRemobilised + mySpecies[s].stems.NSenescedRemobilised
+                            + mySpecies[s].stolons.NSenescedRemobilised + mySpecies[s].roots.NSenescedRemobilised;
             }
             return result;
         }
@@ -8490,9 +8479,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-            {
-                result[s] = mySpecies[s].NLuxury2 + mySpecies[s].NLuxury3;
-            }
+                result[s] = mySpecies[s].NLuxuryRemobilisable;
             return result;
         }
     }
@@ -8508,7 +8495,8 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
             {
-                result[s] = mySpecies[s].NLuxuryRemob2 + mySpecies[s].NLuxuryRemob3;
+                result[s] = mySpecies[s].leaves.NLuxuryRemobilised + mySpecies[s].stems.NLuxuryRemobilised
+                            + mySpecies[s].stolons.NLuxuryRemobilised + mySpecies[s].roots.NLuxuryRemobilised;
             }
             return result;
         }

@@ -156,6 +156,9 @@ public class Species
     /// <summary>Some Description</summary>
     internal double respTref;
 
+    /// <summary>Some Description</summary>
+    internal double respExponent;
+
     //// > Germination and emergence >>>
 
     /// <summary>Some Description</summary>
@@ -256,14 +259,14 @@ public class Species
     /// <summary>Some Description</summary>
     internal double FractionLeafExponent;
 
-    /// <summary>Some Description</summary>
-    internal double StolonAllocationFactor; //Fixed growth partition to stolon (0-1)
+    /// <summary>Growth partition to stolon (0-1)</summary>
+    internal double StolonAllocationFactor;
 
-    /// <summary>Some Description</summary>
-    internal double specificLeafArea; //Specific leaf area (m2/kg dwt)
+    /// <summary>Specific leaf area (m2/kg dwt)</summary>
+    internal double SpecificLeafArea;
 
-    /// <summary>Some Description</summary>
-    internal double specificRootLength;
+    /// <summary>Specific root length (m/kg dwt)</summary>
+    internal double SpecificRootLength;
 
     //// > DM turnover and senescence  >>>
 
@@ -301,16 +304,22 @@ public class Species
     internal double exponentGLFW2dead;
 
     /// <summary>Some Description</summary>
+    internal double factorGLFW2dead;
+
+    /// <summary>Some Description</summary>
     internal double stockParameter; //Stock influence parameter
 
     /// <summary>Some Description</summary>
     internal static double stockingRate = 0.0;
-        //stocking rate affacting transfer of dead to little (default as 0 for now)
+    //stocking rate affacting transfer of dead to little (default as 0 for now)
 
-    /// <summary>Some Description</summary>
+    /// <summary>Fraction of luxury N in tissue 1 that can be remobilised</summary>
+    internal double Kappa1 = 0.0;
+
+    /// <summary>Fraction of luxury N in tissue 2 that can be remobilised</summary>
     internal double Kappa2 = 0.0;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Fraction of luxury N in tissue 3 that can be remobilised</summary>
     internal double Kappa3 = 0.0;
 
     /// <summary>Some Description</summary>
@@ -327,11 +336,11 @@ public class Species
     /// <summary>Some Description</summary>
     internal double NcrootFr; //root Nc as % of leaf Nc
 
-    /// <summary>Some Description</summary>
-    internal double NcRel2; //N concentration in tissue 2 relative to tissue 1
+    /// <summary>N concentration in tissue 2 relative to tissue 1</summary>
+    internal double NcRel2;
 
-    /// <summary>Some Description</summary>
-    internal double NcRel3; //N concentration in tissue 3 relative to tissue 1
+    /// <summary>N concentration in tissue 3 relative to tissue 1</summary>
+    internal double NcRel3;
 
     //// > N fixation  >>>
 
@@ -382,13 +391,13 @@ public class Species
     /// <summary>Some Description</summary>
     internal double GLFSFertility;
 
-    //// > Minimum DM and preferences when harvesting  >>>
+    //// > Preferences when harvesting  >>>
 
-    /// <summary>minimum green DM</summary>
-    internal double dmgreenmin;
+    /// <summary>Relative preference for green tissues over dead, for DM removal</summary>
+    internal double PreferenceGreenOverDead;
 
-    /// <summary>Fraction of stolons that can be harvested</summary>
-    internal double FractionStolonsStanding;
+    /// <summary>Relative preference for leaves over stem-stolon, for DM removal</summary>
+    internal double PreferenceLeafOverStem;
 
     ////  >> Plant height  >>>
 
@@ -474,9 +483,6 @@ public class Species
     /// <summary>basic state variables for each species (to be used for reset)</summary>
     internal SpeciesBasicState InitialState;
 
-    /// <summary>Previous state</summary>
-    internal SpeciesState prevState = new SpeciesState(); //for remembering the state of previous day
-
     // defining the plant type  -------------------------------------------------------------------
 
     /// <summary>Flag whether the species is a legume</summary>
@@ -528,14 +534,20 @@ public class Species
     /// <summary>Some Description</summary>
     internal double dGrowthW = 0.0; //daily growth with water-deficit incorporated
 
-    /// <summary>Some Description</summary>
-    internal double dGrowth = 0.0; //daily growth
+    /// <summary>daily total growth</summary>
+    internal double dGrowth = 0.0;
 
-    /// <summary>Some Description</summary>
-    internal double dGrowthRoot = 0.0; //daily root growth
+    /// <summary>daily shoot growth</summary>
+    internal double dGrowthShoot = 0.0;
 
-    /// <summary>Some Description</summary>
-    internal double dGrowthShoot = 0.0; //daily growth shoot
+    /// <summary>daily root growth</summary>
+    internal double dGrowthRoot = 0.0;
+
+    /// <summary>N amount in new shoot growth</summary>
+    internal double dGrowthShootN = 0.0;
+
+    /// <summary>N amount in new root growth</summary>
+    internal double dGrowthRootN = 0.0;
 
     /// <summary>Some Description</summary>
     internal double dDMLitter = 0.0; //daily litter production
@@ -622,37 +634,13 @@ public class Species
     internal double NFixed = 0.0; //N fixed by legumes
 
     /// <summary>Some Description</summary>
-    internal double Nremob = 0.0; //N remobiliesd N during senescing
-
-    /// <summary>Some Description</summary>
-    internal double Nleaf3Remob = 0.0;
-
-    /// <summary>Some Description</summary>
-    internal double Nstem3Remob = 0.0;
-
-    /// <summary>Some Description</summary>
-    internal double Nstol3Remob = 0.0;
-
-    /// <summary>Some Description</summary>
-    internal double NrootRemob = 0.0;
-
-    /// <summary>Some Description</summary>
-    internal double remob2NewGrowth = 0.0;
-
-    /// <summary>Some Description</summary>
     internal double newGrowthN = 0.0; //N plant-soil
 
-    /// <summary>uxury N (above Nopt) potentially remobilisable from tissue 2</summary>
-    internal double NLuxury2 = 0.0;
-
-    /// <summary>luxury N (above Nopt) potentially remobilisable from tissue 3</summary>
-    internal double NLuxury3 = 0.0;
-
-    /// <summary>amount of luxury N remobilised from tissue 2</summary>
-    internal double NLuxuryRemob2 = 0.0;
+    /// <summary>Some Description</summary>
+    internal double NRemobilised2NewGrowth = 0.0;
 
     /// <summary>amount of luxury N remobilised from tissue 3</summary>
-    internal double NLuxuryRemob3 = 0.0;
+    internal double NLuxury2NewGrowth = 0.0;
 
     // N uptake process  --------------------------------------------------------------------------
 
@@ -740,6 +728,9 @@ public class Species
     internal double Ndefoliated;
 
     /// <summary>Some Description</summary>
+    private double fractionDefoliated;
+
+    /// <summary>Some Description</summary>
     internal double digestHerbage;
 
     /// <summary>Some Description</summary>
@@ -791,13 +782,13 @@ public class Species
     /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
     internal double StandingWt
     {
-        get { return leaves.DMTotal + stems.DMTotal + (stolons.DMTotal * FractionStolonsStanding); }
+        get { return StandingLiveWt + StandingDeadWt; }
     }
 
     /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
     internal double StandingLiveWt
     {
-        get { return leaves.DMGreen + stems.DMGreen + (stolons.DMGreen * FractionStolonsStanding); }
+        get { return leaves.DMGreen + stems.DMGreen + (stolons.DMGreen * stolons.FractionStanding); }
     }
 
     /// <summary>Dry matter amount of standing green material (kg/ha)</summary>
@@ -809,13 +800,13 @@ public class Species
     /// <summary>Dry matter amount that can be harvested (kg/ha)</summary>
     internal double HarvestableWt
     {
-        get { return StandingWt - dmgreenmin; }
+        get { return leaves.DMTotalHarvestable + stems.DMTotalHarvestable + stolons.DMTotalHarvestable; }
     }
 
     /// <summary>N amount of standing green material (kg/ha)</summary>
     internal double StandingN
     {
-        get { return leaves.NTotal + stems.NTotal + (stolons.NTotal * FractionStolonsStanding); }
+        get { return leaves.NTotal + stems.NTotal + (stolons.NTotal * stolons.FractionStanding); }
     }
 
     /// <summary>N amount aboveground (kg/ha)</summary>
@@ -836,6 +827,18 @@ public class Species
         get { return leaves.NDead + stems.NDead + stolons.NDead; }
     }
 
+    /// <summary>N remobiliesed N during senescence</summary>
+    internal double NSenescedRemobilisable
+    {
+        get { return leaves.NSenesced + stems.NSenesced + stolons.NSenesced + roots.NSenesced; }
+    }
+
+    /// <summary>N remobiliesed N during senescence</summary>
+    internal double NLuxuryRemobilisable
+    {
+        get { return leaves.NLuxury + stems.NLuxury + stolons.NLuxury + roots.NLuxury; }
+    }
+
     /// <summary>Root length density (mm/mm3)</summary>
     internal double[] RLD
     {
@@ -844,7 +847,7 @@ public class Species
             double[] Result = new double[dlayer.Length];
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
-                Result[layer] = (roots.DMGreen * 0.1) * rootFraction[layer] * specificRootLength; // m/m2
+                Result[layer] = (roots.DMGreen * 0.1) * rootFraction[layer] * SpecificRootLength; // m/m2
                 Result[layer] /= dlayer[layer] * 1000; // mm/mm3
             }
 
@@ -959,6 +962,10 @@ public class Species
         dmdefoliated = 0.0;
         Ndefoliated = 0.0;
         digestDefoliated = 0.0;
+        leaves.DoCleanTransferAmounts();
+        stems.DoCleanTransferAmounts();
+        stolons.DoCleanTransferAmounts();
+        roots.DoCleanTransferAmounts();
     }
 
     #region Plant growth and DM partition  --------------------------------------------------------
@@ -973,6 +980,19 @@ public class Species
         germinationGDD += Math.Max(0.0, Tmean - growthTmin);
         result = germinationGDD / degreesdayForGermination;
         return result;
+    }
+
+    /// <summary>Calculates the potential growth.</summary>
+    internal double CalcDailyPotentialGrowth()
+    {
+        // Get today's gross potential photosynthetic rate (kgC/ha/day)
+        DailyPotentialPhotosynthesis();
+
+        // Get respiration rates (kgC/ha/day)
+        DailyPlantRespiration();
+
+        // Net potential growth (kgDM/ha/day)
+        return DailyPotentialGrowth();
     }
 
     /// <summary>
@@ -1254,7 +1274,7 @@ public class Species
     /// Daily growth after moisture factors
     /// </summary>
     /// <returns>Pot growth</returns>
-    internal double DailyGrowthW()
+    internal double GrowthAfterWaterLimitations()
     {
         dGrowthW = dGrowthPot * Math.Pow(Math.Min(glfWater, glfAeration), waterStressFactor);
 
@@ -1283,7 +1303,7 @@ public class Species
     /// <summary>
     /// Partition DM from new growth
     /// </summary>
-    internal void PartitionDMGrown()
+    internal void EvaluateAllocationNewGrowth()
     {
         if (dGrowth > 0.0) // if no net growth, then skip "partition" part
         {
@@ -1291,39 +1311,39 @@ public class Species
 
             // Fractions of new growth to be allocated to the 1st tissue pools
             double toRoot = 1.0 - ShootAllocationFactor;
-            double toStol = ShootAllocationFactor * StolonAllocationFactor;
+            double toStolon = ShootAllocationFactor * StolonAllocationFactor;
             double toLeaf = ShootAllocationFactor * LeafAllocationFactor;
             double toStem = ShootAllocationFactor * (1.0 - StolonAllocationFactor - LeafAllocationFactor);
 
             // checking
-            double ToAll = toLeaf + toStem + toStol + toRoot;
+            double ToAll = toLeaf + toStem + toStolon + toRoot;
             if (Math.Abs(ToAll - 1.0) > 0.0001)
                 throw new Exception("Mass balance lost during partition of new growth DM");
 
             // Allocate the partitioned growth to the 1st tissue pools
-            leaves.tissue[0].DM += toLeaf * dGrowth;
-            stems.tissue[0].DM += toStem * dGrowth;
-            stolons.tissue[0].DM += toStol * dGrowth;
-            roots.tissue[0].DM += toRoot * dGrowth;
-            dGrowthShoot = (toLeaf + toStem + toStol) * dGrowth;
-            dGrowthRoot = toRoot * dGrowth; // added to actual organ on EvaluateRootGrowth
+            dGrowthShoot = ShootAllocationFactor * dGrowth;
+            dGrowthRoot = toRoot * dGrowth;
+            leaves.tissue[0].DMTransferedIn = toLeaf * dGrowth;
+            stems.tissue[0].DMTransferedIn = toStem * dGrowth;
+            stolons.tissue[0].DMTransferedIn = toStolon * dGrowth;
+            roots.tissue[0].DMTransferedIn = dGrowthRoot;
 
             // Set the amount of sugar in each organ
             double fToSugar = 0.5;
             leaves.SugarWt = fToSugar * toLeaf * dGrowth;
             stems.SugarWt = fToSugar * toStem * dGrowth;
-            stolons.SugarWt = fToSugar * toStol * dGrowth;
+            stolons.SugarWt = fToSugar * toStolon * dGrowth;
 
             // Partitioing N, based on DM and [N] in each plant part
             double myNsum = (toLeaf * leaves.NConcMaximum)
                             + (toStem * stems.NConcMaximum)
-                            + (toStol * stolons.NConcMaximum)
+                            + (toStolon * stolons.NConcMaximum)
                             + (toRoot * roots.NConcMaximum);
             if (myNsum > 0.0)
             {
                 double toLeafN = toLeaf * leaves.NConcMaximum / myNsum;
                 double toStemN = toStem * stems.NConcMaximum / myNsum;
-                double toStolN = toStol * stolons.NConcMaximum / myNsum;
+                double toStolN = toStolon * stolons.NConcMaximum / myNsum;
                 double toRootN = toRoot * roots.NConcMaximum / myNsum;
 
                 // checking
@@ -1332,40 +1352,13 @@ public class Species
                     throw new Exception("Mass balance lost during partition of new growth N");
 
                 // Allocate new N to the 1st tissue pools
-                leaves.tissue[0].Namount += toLeafN * newGrowthN;
-                stems.tissue[0].Namount += toStemN * newGrowthN;
-                stolons.tissue[0].Namount += toStolN * newGrowthN;
-                roots.tissue[0].Namount += toRootN * newGrowthN;
-            }
+                leaves.tissue[0].NTransferedIn = toLeafN * newGrowthN;
+                stems.tissue[0].NTransferedIn = toStemN * newGrowthN;
+                stolons.tissue[0].NTransferedIn = toStolN * newGrowthN;
+                roots.tissue[0].NTransferedIn = toRootN * newGrowthN;
 
-            // fraction of Nremob not used on growth that is added to dead tissue (remaining goes into litter)
-            double leftoverNremob = Nremob * Kappa4;
-            if (leftoverNremob > 0.0)
-            {
-                double myDMsum = leaves.tissue[3].DM + stems.tissue[3].DM;
-                leaves.tissue[3].Namount += leftoverNremob * MathUtility.Divide(leaves.tissue[3].DM, myDMsum, 0.0);
-                stems.tissue[3].Namount += leftoverNremob * MathUtility.Divide(stems.tissue[3].DM, myDMsum, 0.0);
-            }
-
-            // check whether luxury N was remobilised during N balance
-            if (NLuxuryRemob2 + NLuxuryRemob3 > 0.0)
-            {
-                // partition any used N into plant parts (by N content)
-                myNsum = leaves.tissue[1].Namount + stems.tissue[1].Namount + stolons.tissue[1].Namount;
-                if (NLuxuryRemob2 > 0.0 && myNsum > 0.0)
-                {
-                    leaves.tissue[1].Namount -= NLuxuryRemob2 * leaves.tissue[1].Namount / myNsum;
-                    stems.tissue[1].Namount -= NLuxuryRemob2 * stems.tissue[1].Namount / myNsum;
-                    stolons.tissue[1].Namount -= NLuxuryRemob2 * stolons.tissue[1].Namount / myNsum;
-                }
-
-                myNsum = leaves.tissue[2].Namount + stems.tissue[2].Namount + stolons.tissue[2].Namount;
-                if (NLuxuryRemob3 > 0.0 && myNsum > 0.0)
-                {
-                    leaves.tissue[2].Namount -= NLuxuryRemob3 * leaves.tissue[2].Namount / myNsum;
-                    stems.tissue[2].Namount -= NLuxuryRemob3 * stems.tissue[2].Namount / myNsum;
-                    stolons.tissue[2].Namount -= NLuxuryRemob3 * stolons.tissue[2].Namount / myNsum;
-                }
+                dGrowthShootN = leaves.tissue[0].NTransferedIn + stems.tissue[0].NTransferedIn + stolons.tissue[0].NTransferedIn;
+                dGrowthRootN = roots.tissue[0].NTransferedIn;
             }
         }
     }
@@ -1373,7 +1366,7 @@ public class Species
     /// <summary>
     /// Tissue turnover among the 12 biomass pools
     /// </summary>
-    internal void TissueTurnover()
+    internal void EvaluateTissueTurnover()
     {
         // The turnover rates are affected by soil water and air temperature
         //  the number of leaves per tiller also influences the rate (3 stage pools are used to describe any number of leaves)
@@ -1386,14 +1379,13 @@ public class Species
 
         // Get the moisture factor for littering rate
         double swFacTTDead = Math.Pow(Math.Min(glfWater, glfAeration), exponentGLFW2dead);
+        swFacTTDead = factorGLFW2dead + Math.Max(0.0, 1.0 - factorGLFW2dead) * swFacTTDead;
 
         // Consider the number of leaves
         double leafFac = 3.0 / LiveLeavesPerTiller; // three refers to the number of stages used in the model
 
         // Leaf and stems turnover rate
         gama = refTissueTurnoverRate * tempFacTTurnover * swFacTTurnover * leafFac;
-        if (gama > 1.0)
-            throw new Exception("Computed tissue turnover rate greter than one");
 
         // Littering rate
         double digestDead = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
@@ -1402,13 +1394,15 @@ public class Species
 
         // Adjust littering rate due to stock trampling
         gamaD += stockParameter * stockingRate;
-        if (gamaD > 1.0)
-            throw new Exception("Computed tissue turnover rate greter than one");
+        if (gamaD <= 0.03)
+            gamaD += 0.0;
 
         // Roots turnover rate
         gamaR = tempFacTTurnover * (2 - Math.Min(glfWater, glfAeration)) * rateRootSen;
-        if (gamaR > 1.0)
-            throw new Exception("Computed tissue turnover rate greter than one");
+
+        // check turnover rates
+        if ((gama > 1.0)|| (gamaD > 1.0)||(gamaR > 1.0))
+            throw new Exception(" AgPasture Computed tissue turnover rate greater than one");
 
         if (gama == 0.0)
         {
@@ -1442,24 +1436,21 @@ public class Species
 
             // If today's turnover will result in a dmgreenShoot < dmgreen_minimum, then adjust the rates,
             // Possibly will have to skip this for annuals to allow them to die - phenololgy-related?
-            double dmgreenToBe = AboveGroundLiveWt + dGrowth - (gama * (prevState.leaves.tissue[2].DM +
-                                                                   prevState.stems.tissue[2].DM +
-                                                                   prevState.stolons.tissue[2].DM));
-            if (dmgreenToBe < dmgreenmin)
+            double dmgreenToBe = AboveGroundLiveWt + dGrowth - (gama * (leaves.tissue[2].DM + stems.tissue[2].DM + stolons.tissue[2].DM));
+            double minimumDMgreen = leaves.MinimumGreenDM + stems.MinimumGreenDM + stolons.MinimumGreenDM;
+            if (dmgreenToBe < minimumDMgreen)
             {
                 if (gama > 0.0)
                 {
-                    if (AboveGroundLiveWt + dGrowth < dmgreenmin)
+                    if (AboveGroundLiveWt + dGrowth < minimumDMgreen)
                     {
                         gama = 0.0;
                         gamaR = 0.0;
                     }
                     else
                     {
-                        double gama_adj = MathUtility.Divide(AboveGroundLiveWt + dGrowth - dmgreenmin,
-                            prevState.leaves.tissue[2].DM +
-                            prevState.stems.tissue[2].DM +
-                            prevState.stolons.tissue[2].DM, 0.0);
+                        double gama_adj = MathUtility.Divide(AboveGroundLiveWt + dGrowth - minimumDMgreen,
+                            leaves.tissue[2].DM + stems.tissue[2].DM + stolons.tissue[2].DM, 0.0);
                         gamaR *= gama_adj / gama;
                         gama = gama_adj;
                     }
@@ -1467,7 +1458,7 @@ public class Species
             }
 
             // consider a minimum for roots too
-            if (roots.DMGreen < 0.5 * dmgreenmin)
+            if (roots.DMGreen < roots.MinimumGreenDM)
             {
                 gamaR = 0.0;
             }
@@ -1478,130 +1469,143 @@ public class Species
                 gamaS = gama;
 
                 // Increase stolon senescence if there was defoliation
-                double defoliationFactor = MathUtility.Divide(prevState.dmdefoliated, prevState.dmdefoliated + prevState.dmshoot, 0.0);
-                gamaS += defoliationFactor * (1.0 - gamaS);
+                gamaS += fractionDefoliated * (1.0 - gamaS);
             }
             else
                 gamaS = 0.0;
 
-            //// Do the actual turnover, update DM and N
+            // clear fraction removed, need to do it here to avoid issue with when a removal has happened (onPrepare, onProcess, onPost)
+            fractionDefoliated = 0.0;
+
+            //// Get the turnover amounts (DM and N) for each organ  - DM into tissue1 was considered in PartitionDMGrown()
 
             // Leaves
-            double DMfrom1to2 = facGrowingTissue * gama * prevState.leaves.tissue[0].DM;
-            double DMfrom2to3 = gama * prevState.leaves.tissue[1].DM;
-            double DMfrom3to4 = gama * prevState.leaves.tissue[2].DM;
-            double DMfrom4toL = gamaD * prevState.leaves.tissue[3].DM;
+            leaves.tissue[0].DMTransferedOut = facGrowingTissue * gama * leaves.tissue[0].DM;
+            leaves.tissue[1].DMTransferedIn = leaves.tissue[0].DMTransferedOut;
+            leaves.tissue[1].DMTransferedOut = gama * leaves.tissue[1].DM;
+            leaves.tissue[2].DMTransferedIn = leaves.tissue[1].DMTransferedOut;
+            leaves.tissue[2].DMTransferedOut = gama * leaves.tissue[2].DM;
+            leaves.tissue[3].DMTransferedIn = leaves.tissue[2].DMTransferedOut;
+            leaves.tissue[3].DMTransferedOut = gamaD * leaves.tissue[3].DM;
+            dDMLitter = leaves.tissue[3].DMTransferedOut;
 
-            leaves.tissue[0].DM += 0.0 - DMfrom1to2; // DM in was considered in PartitionDMGrown()
-            leaves.tissue[1].DM += DMfrom1to2 - DMfrom2to3;
-            leaves.tissue[2].DM += DMfrom2to3 - DMfrom3to4;
-            leaves.tissue[3].DM += DMfrom3to4 - DMfrom4toL;
-            dDMLitter = DMfrom4toL;
-
-            double Nfrom1to2 = prevState.leaves.tissue[0].Nconc * DMfrom1to2;
-            double Nfrom2to3 = prevState.leaves.tissue[1].Nconc * DMfrom2to3;
-            double Nfrom3to4 = leaves.NConcMinimum * DMfrom3to4;
-            double Nfrom4toL = prevState.leaves.tissue[3].Nconc * DMfrom4toL;
-            Nleaf3Remob = (prevState.leaves.tissue[2].Nconc - leaves.NConcMinimum) * DMfrom3to4;
-
-            leaves.tissue[0].Namount += 0.0 - Nfrom1to2; // N in was considered in PartitionDMGrown()
-            leaves.tissue[1].Namount += Nfrom1to2 - Nfrom2to3;
-            leaves.tissue[2].Namount += Nfrom2to3 - Nfrom3to4 - Nleaf3Remob;
-            leaves.tissue[3].Namount += Nfrom3to4 - Nfrom4toL;
-            dNLitter = Nfrom4toL;
+            leaves.tissue[0].NTransferedOut = leaves.tissue[0].Nconc * leaves.tissue[0].DMTransferedOut;
+            leaves.tissue[1].NTransferedIn = leaves.tissue[0].NTransferedOut;
+            leaves.tissue[1].NTransferedOut = leaves.tissue[1].Nconc * leaves.tissue[1].DMTransferedOut;
+            leaves.tissue[2].NTransferedIn = leaves.tissue[1].NTransferedOut;
+            leaves.tissue[2].NTransferedOut = leaves.tissue[2].Nconc * leaves.tissue[2].DMTransferedOut;
+            leaves.tissue[3].NTransferedIn = leaves.tissue[2].NTransferedOut;
+            leaves.tissue[3].NTransferedOut = leaves.tissue[3].Nconc * leaves.tissue[3].DMTransferedOut;
+            dNLitter = leaves.tissue[3].NTransferedOut;
+            leaves.tissue[3].NRemobilisable = (leaves.tissue[2].Nconc - leaves.NConcMinimum) * leaves.tissue[2].DMTransferedOut;
 
             // Stems
-            DMfrom1to2 = facGrowingTissue * gama * prevState.stems.tissue[0].DM;
-            DMfrom2to3 = gama * prevState.stems.tissue[1].DM;
-            DMfrom3to4 = gama * prevState.stems.tissue[2].DM;
-            DMfrom4toL = gamaD * prevState.stems.tissue[3].DM;
+            stems.tissue[0].DMTransferedOut = facGrowingTissue * gama * stems.tissue[0].DM;
+            stems.tissue[1].DMTransferedIn = stems.tissue[0].DMTransferedOut;
+            stems.tissue[1].DMTransferedOut = gama * stems.tissue[1].DM;
+            stems.tissue[2].DMTransferedIn = stems.tissue[1].DMTransferedOut;
+            stems.tissue[2].DMTransferedOut = gama * stems.tissue[2].DM;
+            stems.tissue[3].DMTransferedIn = stems.tissue[2].DMTransferedOut;
+            stems.tissue[3].DMTransferedOut = gamaD * stems.tissue[3].DM;
+            dDMLitter += stems.tissue[3].DMTransferedOut;
 
-            stems.tissue[0].DM += 0.0 - DMfrom1to2; // DM in was considered in PartitionDMGrown()
-            stems.tissue[1].DM += DMfrom1to2 - DMfrom2to3;
-            stems.tissue[2].DM += DMfrom2to3 - DMfrom3to4;
-            stems.tissue[3].DM += DMfrom3to4 - DMfrom4toL;
-            dDMLitter += DMfrom4toL;
-
-            Nfrom1to2 = prevState.stems.tissue[0].Nconc * DMfrom1to2;
-            Nfrom2to3 = prevState.stems.tissue[1].Nconc * DMfrom2to3;
-            Nfrom3to4 = stems.NConcMinimum * DMfrom3to4;
-            Nfrom4toL = prevState.stems.tissue[3].Nconc * DMfrom4toL;
-            Nstem3Remob = (prevState.stems.tissue[2].Nconc - stems.NConcMinimum) * DMfrom3to4;
-
-            stems.tissue[0].Namount += 0.0 - Nfrom1to2; // N in was considered in PartitionDMGrown()
-            stems.tissue[1].Namount += Nfrom1to2 - Nfrom2to3;
-            stems.tissue[2].Namount += Nfrom2to3 - Nfrom3to4 - Nstem3Remob;
-            stems.tissue[3].Namount += Nfrom3to4 - Nfrom4toL;
-            dNLitter += Nfrom4toL;
+            stems.tissue[0].NTransferedOut = stems.tissue[0].Nconc * stems.tissue[0].DMTransferedOut;
+            stems.tissue[1].NTransferedIn = stems.tissue[0].NTransferedOut;
+            stems.tissue[1].NTransferedOut = stems.tissue[1].Nconc * stems.tissue[1].DMTransferedOut;
+            stems.tissue[2].NTransferedIn = stems.tissue[1].NTransferedOut;
+            stems.tissue[2].NTransferedOut = stems.tissue[2].Nconc * stems.tissue[2].DMTransferedOut;
+            stems.tissue[3].NTransferedIn = stems.tissue[2].NTransferedOut;
+            stems.tissue[3].NTransferedOut = stems.tissue[3].Nconc * stems.tissue[3].DMTransferedOut;
+            dNLitter += stems.tissue[3].NTransferedOut;
+            stems.tissue[3].NRemobilisable = (stems.tissue[2].Nconc - stems.NConcMinimum) * stems.tissue[2].DMTransferedOut;
 
             // Stolons
             if (isLegume)
             {
-                DMfrom1to2 = facGrowingTissue * gamaS * prevState.stolons.tissue[0].DM;
-                DMfrom2to3 = gamaS * prevState.stolons.tissue[1].DM;
-                double DMfrom3toL = gamaS * prevState.stolons.tissue[2].DM;
 
-                stolons.tissue[0].DM += 0.0 - DMfrom1to2; // DM in was considered in PartitionDMGrown()
-                stolons.tissue[1].DM += DMfrom1to2 - DMfrom2to3;
-                stolons.tissue[2].DM += DMfrom2to3 - DMfrom3toL;
-                dDMLitter += DMfrom3toL;
+                stolons.tissue[0].DMTransferedOut = facGrowingTissue * gamaS * stolons.tissue[0].DM;
+                stolons.tissue[1].DMTransferedIn = stolons.tissue[0].DMTransferedOut;
+                stolons.tissue[1].DMTransferedOut = gamaS * stolons.tissue[1].DM;
+                stolons.tissue[2].DMTransferedIn = stolons.tissue[1].DMTransferedOut;
+                stolons.tissue[2].DMTransferedOut = gamaS * stolons.tissue[2].DM;
+                stolons.tissue[3].DMTransferedIn = stolons.tissue[2].DMTransferedOut;
+                stolons.tissue[3].DMTransferedOut = stolons.tissue[3].DM;
+                dDMLitter += stolons.tissue[3].DMTransferedOut;
 
-                Nfrom1to2 = prevState.stolons.tissue[0].Nconc * DMfrom1to2;
-                Nfrom2to3 = prevState.stolons.tissue[1].Nconc * DMfrom2to3;
-                Nfrom3to4 = 0.5 * (prevState.stolons.tissue[2].Nconc + stolons.NConcMinimum) * DMfrom3toL;
-                Nstol3Remob = 0.5 * (prevState.stolons.tissue[2].Nconc - stolons.NConcMinimum) * DMfrom3toL;
-
-                stolons.tissue[0].Namount += 0.0 - Nfrom1to2; // N in was considered in PartitionDMGrown()
-                stolons.tissue[1].Namount += Nfrom1to2 - Nfrom2to3;
-                stolons.tissue[2].Namount += Nfrom2to3 - Nfrom3to4 - Nstol3Remob;
-                dNLitter += Nfrom3to4;
-
-                // Add stuff from dead material (should only have values if KillCrop was used)
-                if (stolons.tissue[3].DM > 0.0)
-                {
-                    dDMLitter += stolons.tissue[3].DM;
-                    dNLitter += stolons.tissue[3].Namount;
-                    stolons.tissue[3].DM = 0.0;
-                    stolons.tissue[3].Namount = 0.0;
-                }
+                stolons.tissue[0].NTransferedOut = stolons.tissue[0].Nconc * stolons.tissue[0].DMTransferedOut;
+                stolons.tissue[1].NTransferedIn = stolons.tissue[0].NTransferedOut;
+                stolons.tissue[1].NTransferedOut = stolons.tissue[1].Nconc * stolons.tissue[1].DMTransferedOut;
+                stolons.tissue[2].NTransferedIn = stolons.tissue[1].NTransferedOut;
+                stolons.tissue[2].NTransferedOut = stolons.tissue[2].Nconc * stolons.tissue[2].DMTransferedOut;
+                stolons.tissue[3].NTransferedIn = stolons.tissue[2].NTransferedOut;
+                stolons.tissue[3].NTransferedOut = stolons.tissue[3].Namount;
+                dNLitter += stolons.tissue[3].NTransferedOut;
+                stolons.tissue[3].NRemobilisable = (stolons.tissue[2].Nconc - stolons.NConcMinimum) * stolons.tissue[2].DMTransferedOut;
             }
 
-            // Roots
-            dDMRootSen = gamaR * prevState.roots.tissue[0].DM;
-            roots.tissue[0].DM -= dDMRootSen;
-            NrootRemob = 0.5 * (prevState.roots.tissue[0].Nconc - roots.NConcMinimum) * dDMRootSen;
-            dNRootSen = prevState.roots.tissue[0].Nconc * dDMRootSen - NrootRemob;
-            roots.tissue[0].Namount -= prevState.roots.tissue[0].Nconc * dDMRootSen;
+            // Roots (note: only two tissue pools)
+            roots.tissue[0].DMTransferedOut = gamaR * roots.tissue[0].DM;
+            roots.tissue[1].DMTransferedIn = roots.tissue[0].DMTransferedOut;
+            roots.tissue[1].DMTransferedOut = roots.tissue[1].DM;
+            dDMRootSen = roots.tissue[1].DM;
 
-            // Add stuff from dead material (should only have values if KillCrop was used)
-            if (roots.tissue[1].DM > 0.0)
-            {
-                dDMRootSen += roots.tissue[1].DM;
-                dNRootSen += roots.tissue[1].Namount;
-                roots.tissue[1].DM = 0.0;
-                roots.tissue[1].Namount = 0.0;
-            }
+            roots.tissue[0].NTransferedOut = roots.tissue[0].Nconc * roots.tissue[0].DMTransferedOut;
+            roots.tissue[1].NTransferedIn = roots.tissue[0].NTransferedOut;
+            roots.tissue[1].NTransferedOut = roots.tissue[1].Namount;
+            dNRootSen = roots.tissue[1].NTransferedOut;
+            roots.tissue[1].NRemobilisable = (roots.tissue[0].Nconc - roots.NConcMinimum) * roots.tissue[1].DMTransferedOut;
 
-            // fraction of Nremob not used in growth that is added to litter
-            double leftoverNremob = Nremob * (1 - Kappa4);
-            dNLitter += leftoverNremob;
-            //The leftover 'Nremob' of previous day (if>0) indicates more N should go to litter in previous day, so do it now
-
-            // remobilised and remobilisable N (these will be used tomorrow)
-            Nremob = Nleaf3Remob + Nstem3Remob + Nstol3Remob + NrootRemob;
-            NLuxury2 = Math.Max(0.0, leaves.tissue[1].Nconc - leaves.NConcOptimum * NcRel2) * leaves.tissue[1].DM +
-                       Math.Max(0.0, stems.tissue[1].Nconc - stems.NConcOptimum * NcRel2) * stems.tissue[1].DM +
-                       Math.Max(0.0, stolons.tissue[1].Nconc - stolons.NConcOptimum * NcRel2) * stolons.tissue[1].DM;
-            NLuxury3 = Math.Max(0.0, leaves.tissue[2].Nconc - leaves.NConcOptimum * NcRel3) * leaves.tissue[2].DM +
-                       Math.Max(0.0, stems.tissue[2].Nconc - stems.NConcOptimum * NcRel3) * stems.tissue[2].DM +
-                       Math.Max(0.0, stolons.tissue[2].Nconc - stolons.NConcOptimum * NcRel3) * stolons.tissue[2].DM;
-            // only a fraction of luxury N is available for remobilisation:
-            NLuxury2 *= Kappa2;
-            NLuxury3 *= Kappa3;
+            // Evaluate remobilisable luxury N
+            leaves.tissue[0].NRemobilisable = Math.Max(0.0, leaves.tissue[0].Nconc - leaves.NConcOptimum) * leaves.tissue[0].DM * Kappa1;
+            leaves.tissue[1].NRemobilisable = Math.Max(0.0, leaves.tissue[1].Nconc - leaves.NConcOptimum * NcRel2) * leaves.tissue[1].DM * Kappa2;
+            leaves.tissue[2].NRemobilisable = Math.Max(0.0, leaves.tissue[2].Nconc - leaves.NConcOptimum * NcRel3) * leaves.tissue[2].DM * Kappa3;
+            stems.tissue[0].NRemobilisable = Math.Max(0.0, stems.tissue[0].Nconc - stems.NConcOptimum) * stems.tissue[0].DM * Kappa1;
+            stems.tissue[1].NRemobilisable = Math.Max(0.0, stems.tissue[1].Nconc - stems.NConcOptimum * NcRel2) * stems.tissue[1].DM * Kappa2;
+            stems.tissue[2].NRemobilisable = Math.Max(0.0, stems.tissue[2].Nconc - stems.NConcOptimum * NcRel3) * stems.tissue[2].DM * Kappa3;
+            stolons.tissue[0].NRemobilisable = Math.Max(0.0, stolons.tissue[0].Nconc - stolons.NConcOptimum) * stolons.tissue[0].DM * Kappa1;
+            stolons.tissue[1].NRemobilisable = Math.Max(0.0, stolons.tissue[1].Nconc - stolons.NConcOptimum * NcRel2) * stolons.tissue[1].DM * Kappa2;
+            stolons.tissue[2].NRemobilisable = Math.Max(0.0, stolons.tissue[2].Nconc - stolons.NConcOptimum * NcRel3) * stolons.tissue[2].DM * Kappa3;
+            roots.tissue[0].NRemobilisable = Math.Max(0.0, roots.tissue[0].Nconc - roots.NConcOptimum) * roots.tissue[0].DM * Kappa1;
 
             //Sugar remobilisation and C balance:
             Cremob = 0.0; // not explicitly considered
         }
+    }
+
+    /// <summary>
+    /// Update the DM and N of each tissue
+    /// </summary>
+    internal void DoUpdateTissues()
+    {
+        // Save some variables for mass balance check
+        double preTotalWt = AboveGroundWt + roots.DMTotal;
+        double preTotalN = AboveGroundN + roots.NTotal;
+
+        // Update each organ, returns test for mass balance
+        if (leaves.DoOrganUpdate() == false)
+            throw new Exception("Growth and tissue turnover resulted in loss of mass balance for leaves");
+
+        if (stems.DoOrganUpdate() == false)
+            throw new Exception("Growth and tissue turnover resulted in loss of mass balance for stems");
+
+        if (stolons.DoOrganUpdate() == false)
+            throw new Exception("Growth and tissue turnover resulted in loss of mass balance for stolons");
+
+        if (roots.DoOrganUpdate() == false)
+            throw new Exception("Growth and tissue turnover resulted in loss of mass balance for roots");
+
+        // Check for loss of mass balance of total plant
+        if (Math.Abs(preTotalWt + dGrowth - dDMLitter - dDMRootSen - (AboveGroundWt + roots.DMTotal)) > Epsilon)
+            throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance");
+
+        if (Math.Abs(preTotalN + newGrowthN - dNLitter - dNRootSen - NRemobilised2NewGrowth - (AboveGroundN + roots.NTotal)) > Epsilon)
+            throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance");
+
+
+        //bool dmIsOk = Math.Abs(previousDM + DMGrowth - DMDetached - DMTotal) <= Epsilon;
+        //bool nIsOk = Math.Abs(previousN + NGrowth - NDetached - NSenescedRemobilised - NTotal) <= Epsilon;
+
+        UpdateAggregatedVariables();
     }
 
     /// <summary>
@@ -1614,6 +1618,9 @@ public class Species
 
         //// - Plant height  ---------------------------------------------
         height = HeightfromDM();
+
+        //// - Tissue digestibility  -------------------------------------
+        EvaluateDigestibility();
     }
 
     #endregion
@@ -1693,78 +1700,42 @@ public class Species
     /// <summary>
     /// Move a given amount of DM and N from live to dead pools
     /// </summary>
-    /// <param name="KillFaction">The fraction of each live pool to be moved into dead</param>
-    internal void KillCrop(double KillFaction)
+    /// <param name="killFaction">The fraction of each live pool to be moved into dead</param>
+    internal void KillCrop(double killFaction)
     {
-        double fractionRemaining = Math.Max(0.0, 1.0 - KillFaction);
-        leaves.tissue[3].DM += (leaves.tissue[0].DM + leaves.tissue[1].DM + leaves.tissue[2].DM) * KillFaction;
+        double fractionRemaining = Math.Max(0.0, 1.0 - killFaction);
+        leaves.tissue[3].DM += (leaves.tissue[0].DM + leaves.tissue[1].DM + leaves.tissue[2].DM) * killFaction;
         leaves.tissue[0].DM *= fractionRemaining;
         leaves.tissue[1].DM *= fractionRemaining;
         leaves.tissue[2].DM *= fractionRemaining;
-        stems.tissue[3].DM += (stems.tissue[0].DM + stems.tissue[1].DM + stems.tissue[2].DM) * KillFaction;
+        stems.tissue[3].DM += (stems.tissue[0].DM + stems.tissue[1].DM + stems.tissue[2].DM) * killFaction;
         stems.tissue[0].DM *= fractionRemaining;
         stems.tissue[1].DM *= fractionRemaining;
         stems.tissue[2].DM *= fractionRemaining;
-        stolons.tissue[3].DM += (stolons.tissue[0].DM + stolons.tissue[1].DM + stolons.tissue[2].DM) * KillFaction;
+        stolons.tissue[3].DM += (stolons.tissue[0].DM + stolons.tissue[1].DM + stolons.tissue[2].DM) * killFaction;
         stolons.tissue[0].DM *= fractionRemaining;
         stolons.tissue[1].DM *= fractionRemaining;
         stolons.tissue[2].DM *= fractionRemaining;
-        roots.tissue[1].DM += roots.tissue[0].DM * KillFaction;
+        roots.tissue[1].DM += roots.tissue[0].DM * killFaction;
         roots.tissue[0].DM *= fractionRemaining;
 
         // note: N concentration do not change for green material, so do not need to update N amount;
-        leaves.tissue[3].Namount += (leaves.tissue[0].Namount + leaves.tissue[1].Namount + leaves.tissue[2].Namount) *
-                                    KillFaction;
+        leaves.tissue[3].Namount += (leaves.tissue[0].Namount + leaves.tissue[1].Namount + leaves.tissue[2].Namount) * killFaction;
         leaves.tissue[0].Namount *= fractionRemaining;
         leaves.tissue[1].Namount *= fractionRemaining;
         leaves.tissue[2].Namount *= fractionRemaining;
-        stems.tissue[3].Namount += (stems.tissue[0].Namount + stems.tissue[1].Namount + stems.tissue[2].Namount) *
-                                   KillFaction;
+        stems.tissue[3].Namount += (stems.tissue[0].Namount + stems.tissue[1].Namount + stems.tissue[2].Namount) *killFaction;
         stems.tissue[0].Namount *= fractionRemaining;
         stems.tissue[1].Namount *= fractionRemaining;
         stems.tissue[2].Namount *= fractionRemaining;
-        stolons.tissue[3].Namount += (stolons.tissue[0].Namount + stolons.tissue[1].Namount + stolons.tissue[2].Namount) *
-                                     KillFaction;
+        stolons.tissue[3].Namount += (stolons.tissue[0].Namount + stolons.tissue[1].Namount + stolons.tissue[2].Namount) * killFaction;
         stolons.tissue[0].Namount *= fractionRemaining;
         stolons.tissue[1].Namount *= fractionRemaining;
         stolons.tissue[2].Namount *= fractionRemaining;
-        roots.tissue[1].Namount += roots.tissue[0].Namount * KillFaction;
+        roots.tissue[1].Namount += roots.tissue[0].Namount * killFaction;
         roots.tissue[0].Namount *= fractionRemaining;
 
         UpdateAggregatedVariables();
-        SetPrevPools();
-    }
-
-    /// <summary>
-    /// Store state of various pools
-    /// </summary>
-    internal void SetPrevPools()
-    {
-        prevState.leaves.tissue[0].DM = leaves.tissue[0].DM;
-        prevState.leaves.tissue[1].DM = leaves.tissue[1].DM;
-        prevState.leaves.tissue[2].DM = leaves.tissue[2].DM;
-        prevState.leaves.tissue[3].DM = leaves.tissue[3].DM;
-        prevState.stems.tissue[0].DM = stems.tissue[0].DM;
-        prevState.stems.tissue[1].DM = stems.tissue[1].DM;
-        prevState.stems.tissue[2].DM = stems.tissue[2].DM;
-        prevState.stems.tissue[3].DM = stems.tissue[3].DM;
-        prevState.stolons.tissue[0].DM = stolons.tissue[0].DM;
-        prevState.stolons.tissue[1].DM = stolons.tissue[1].DM;
-        prevState.stolons.tissue[2].DM = stolons.tissue[2].DM;
-        prevState.roots.tissue[0].DM = roots.tissue[0].DM; // only one pool for roots
-
-        prevState.leaves.tissue[0].Namount = leaves.tissue[0].Namount;
-        prevState.leaves.tissue[1].Namount = leaves.tissue[1].Namount;
-        prevState.leaves.tissue[2].Namount = leaves.tissue[2].Namount;
-        prevState.leaves.tissue[3].Namount = leaves.tissue[3].Namount;
-        prevState.stems.tissue[0].Namount = stems.tissue[0].Namount;
-        prevState.stems.tissue[1].Namount = stems.tissue[1].Namount;
-        prevState.stems.tissue[2].Namount = stems.tissue[2].Namount;
-        prevState.stems.tissue[3].Namount = stems.tissue[3].Namount;
-        prevState.stolons.tissue[0].Namount = stolons.tissue[0].Namount;
-        prevState.stolons.tissue[1].Namount = stolons.tissue[1].Namount;
-        prevState.stolons.tissue[2].Namount = stolons.tissue[2].Namount;
-        prevState.roots.tissue[0].Namount = roots.tissue[0].Namount; // only one pool for roots
     }
 
     /// <summary>
@@ -1778,15 +1749,22 @@ public class Species
         stolons.tissue[0].DM = stolons.tissue[1].DM = stolons.tissue[2].DM = stolons.tissue[3].DM = 0.0;
         roots.tissue[0].DM = roots.tissue[1].DM = 0.0;
 
-        dmdefoliated = 0.0;
-
         //Reset N pools
         leaves.tissue[0].Namount = leaves.tissue[1].Namount = leaves.tissue[2].Namount = leaves.tissue[3].Namount = 0.0;
         stems.tissue[0].Namount = stems.tissue[1].Namount = stems.tissue[2].Namount = stems.tissue[3].Namount = 0.0;
         stolons.tissue[0].Namount = stolons.tissue[1].Namount = stolons.tissue[2].Namount = stolons.tissue[3].Namount = 0.0;
         roots.tissue[0].Namount = roots.tissue[1].Namount = 0.0;
 
+        //Reset transfer amount
+        leaves.DoCleanTransferAmounts();
+        stems.DoCleanTransferAmounts();
+        stolons.DoCleanTransferAmounts();
+        roots.DoCleanTransferAmounts();
+
+        //Reset harvest amounts
+        dmdefoliated = 0.0;
         Ndefoliated = 0.0;
+        digestDefoliated = 0.0;
 
         phenoStage = 0;
     }
@@ -1851,10 +1829,6 @@ public class Species
     /// </summary>
     internal void CalcTotalNDemand()
     {
-        // get allocations to shoot and the to leaf
-        EvaluateAllocationToShoot();
-        EvaluateAllocationToLeaf();
-
         double toRoot = dGrowthW * (1.0 - ShootAllocationFactor);
         double toStol = dGrowthW * ShootAllocationFactor * StolonAllocationFactor;
         double toLeaf = dGrowthW * ShootAllocationFactor * LeafAllocationFactor;
@@ -1902,20 +1876,25 @@ public class Species
     /// </summary>
     internal void CalcNRemobSenescent()
     {
-        if (NdemandLux <= Nremob + NFixed)
+        if (NdemandLux <= NSenescedRemobilisable + NFixed)
         {
             // Nremob and/or Nfix are able to supply all N
-            remob2NewGrowth = Math.Max(0.0, NdemandLux - NFixed);
-            Nremob -= remob2NewGrowth;
+            NRemobilised2NewGrowth = Math.Max(0.0, NdemandLux - NFixed);
         }
         else
         {
             // not enough N within the plant, uptake is needed
-            remob2NewGrowth = Nremob;
-            Nremob = 0.0;
+            NRemobilised2NewGrowth = NSenescedRemobilisable;
         }
 
-        newGrowthN = remob2NewGrowth + NFixed;
+        // pass the remobilised amount to each organ
+        double fracRemob = MathUtility.Divide(NRemobilised2NewGrowth, NSenescedRemobilisable, 0.0);
+        leaves.tissue[3].DoRemobiliseN(fracRemob);
+        stems.tissue[3].DoRemobiliseN(fracRemob);
+        stolons.tissue[3].DoRemobiliseN(fracRemob);
+        roots.tissue[1].DoRemobiliseN(fracRemob);
+
+        newGrowthN = NRemobilised2NewGrowth + NFixed;
     }
 
     /// <summary>
@@ -1924,39 +1903,59 @@ public class Species
     internal void CalcNRemobLuxury()
     {
         double remainingNdemand = NdemandOpt - newGrowthN;
-        if (remainingNdemand <= NLuxury2 + NLuxury3)
+        if ((remainingNdemand > Epsilon) && (NLuxuryRemobilisable > Epsilon))
         {
-            // there is luxury N that can be used for optimum growth
-            if (remainingNdemand <= NLuxury3)
+            // there is still N demand, check N luxury 
+            if (remainingNdemand >= NLuxuryRemobilisable)
             {
-                // tissue 3 is able to supply all
-                NLuxuryRemob3 = remainingNdemand;
-                NLuxuryRemob2 = 0.0;
-                remainingNdemand = 0.0;
+                // All luxury N is used up
+                NLuxury2NewGrowth = NLuxuryRemobilisable;
+                double fracRemob = 1.0;
+                for (int t = 0; t < 3; t++)
+                {
+                    leaves.tissue[t].DoRemobiliseN(fracRemob);
+                    stems.tissue[t].DoRemobiliseN(fracRemob);
+                    stolons.tissue[t].DoRemobiliseN(fracRemob);
+                }
+                roots.tissue[0].DoRemobiliseN(fracRemob);
             }
             else
             {
-                // get first from tissue 3, then from tissue 2
+                // N luxury is enough, get first from tissue 3 and proceed downwards
+                double fracRemob = 1.0;
+                double NLuxTissue = 0.0;
+                for (int t = 2; t >= 0; t--)
+                {
+                    NLuxTissue = leaves.tissue[t].NRemobilisable + stems.tissue[t].NRemobilisable + stolons.tissue[t].NRemobilisable;
+                    if (t == 0) NLuxTissue += roots.tissue[t].NRemobilisable;
+                    if (NLuxTissue > Epsilon)
+                    {
+                        if (remainingNdemand >= NLuxTissue)
+                        {
+                            remainingNdemand -= NLuxTissue;
+                            fracRemob = 1.0;
+                        }
+                        else
+                        {
+                            fracRemob = remainingNdemand / NLuxTissue;
+                            NLuxTissue = remainingNdemand;
+                        }
 
-                NLuxuryRemob3 = NLuxury3;
-                remainingNdemand -= NLuxury3;
-                NLuxuryRemob2 = remainingNdemand;
-                remainingNdemand = 0.0;
+                        NLuxury2NewGrowth += NLuxTissue;
+                        leaves.tissue[t].DoRemobiliseN(fracRemob);
+                        stems.tissue[t].DoRemobiliseN(fracRemob);
+                        stolons.tissue[t].DoRemobiliseN(fracRemob);
+                    }
+                }
             }
         }
         else
         {
-            // N luxury is not enough for optimum growth, use up all there is
-            if (NLuxury2 + NLuxury3 > 0.0)
-            {
-                NLuxuryRemob3 = NLuxury3;
-                remainingNdemand -= NLuxury3;
-                NLuxuryRemob2 = NLuxury2;
-                remainingNdemand -= NLuxury2;
-            }
+            // no use of luxury N
+            NLuxury2NewGrowth = 0.0;
         }
 
-        newGrowthN += NLuxuryRemob3 + NLuxuryRemob2;
+        newGrowthN += NLuxury2NewGrowth;
     }
 
     /// <summary>
@@ -2062,6 +2061,13 @@ public class Species
         double activityCost = NFixed * NFixingCostFactor;
 
         return maintenanceCost + activityCost;
+    }
+
+    /// <summary>Computes the allocations into shoot and leaves of todays growth</summary>
+    internal void EvaluateGrowthAllocation()
+    {
+        EvaluateAllocationToShoot();
+        EvaluateAllocationToLeaf();
     }
 
     /// <summary>
@@ -2401,53 +2407,20 @@ public class Species
             return 1.0;
     }
 
-    /// <summary>
-    /// Computes the effects of temperature on respiration
-    /// </summary>
+    /// <summary>Computes the effects of temperature on respiration</summary>
     /// <returns>Temperature factor</returns>
     private double TemperatureEffectOnRespiration()
     {
         double result;
-        double respTmin = 0.5 * growthTmin; // assume average between zero and growthTmin
-        if (Tmean <= respTmin)
-        {
-            // too cold, no respiration
-            result = 0.0;
-        }
-        else if (Tmean < respTref)
-        {
-            // respiration is a power function of temperature
-            double respTmax = respTref * growthTq / (growthTq - 1);
-            double val1 = Math.Pow((Tmean - respTmin) / (respTref - respTmin), growthTq);
-            double val2 = (respTmax - Tmean) / (respTmax - respTref);
-            result = val1 * val2;
-        }
-        else
-        {
-            // continue to rise proportionally to temperature, up to a maximum
-            result = Math.Min(maxTempEffectResp, Tmean / respTref);
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Computes the effects of temperature on respiration
-    /// </summary>
-    /// <returns>Temperature factor</returns>
-    private double TemperatureEffectOnRespirationNew()
-    {
-        double result;
-        if (Tmean <= 0)
+        if (Tmean <= 0.0)
         {
             // too cold, no respiration
             result = 0.0;
         }
         else
         {
-            // scale factor
-            double scalef = 1 - Math.Exp(-1);
-            double baseEffect = 1 - Math.Exp(-Math.Pow(Tmean / respTref, 2.0));
+            double scalef = 1.0 - Math.Exp(-1.0);
+            double baseEffect = 1.0 - Math.Exp(-Math.Pow(Tmean / respTref, respExponent));
             result = baseEffect / scalef;
         }
 
@@ -2494,27 +2467,23 @@ public class Species
     internal double RemoveDM(double AmountToRemove, double PrefGreen, double PrefDead)
     {
         // save current state
-        SetPrevPools();
+        double preRemovalDMshoot = AboveGroundWt;
+        double preRemovalNshoot = AboveGroundN;
 
         // get the weights for each pool, consider preference and available DM
-        double fractionToRemoved = 0.0;
-        if (HarvestableWt > 0.0)
-            fractionToRemoved = Math.Min(1.0, AmountToRemove / StandingWt);
+        double fractionToRemoved = Math.Min(1.0, AmountToRemove / StandingWt);
 
         double tempPrefGreen = PrefGreen + (PrefDead * fractionToRemoved);
         double tempPrefDead = PrefDead + (PrefGreen * fractionToRemoved);
-        double tempRemovableGreen = Math.Max(0.0, StandingLiveWt - dmgreenmin);
+        double tempRemovableGreen = Math.Max(0.0, leaves.DMGreenHarvestable + stems.DMGreenHarvestable + stolons.DMGreenHarvestable);
         double tempRemovableDead = Math.Max(0.0, StandingDeadWt);
 
         // get partiton between dead and live materials
         double tempTotal = tempRemovableGreen * tempPrefGreen + tempRemovableDead * tempPrefDead;
         double fractionToHarvestGreen = 0.0;
         double fractionToHarvestDead = 0.0;
-        if (tempTotal > 0.0)
-        {
-            fractionToHarvestGreen = tempRemovableGreen * tempPrefGreen / tempTotal;
-            fractionToHarvestDead = tempRemovableDead * tempPrefDead / tempTotal;
-        }
+        fractionToHarvestGreen = tempRemovableGreen * tempPrefGreen / tempTotal;
+        fractionToHarvestDead = tempRemovableDead * tempPrefDead / tempTotal;
 
         // get amounts removed
         double removingGreenDm = AmountToRemove * fractionToHarvestGreen;
@@ -2522,20 +2491,20 @@ public class Species
         // Fraction of DM remaining in the field
         double fractionRemainingGreen = 1.0;
         if (StandingLiveWt > 0.0)
-            fractionRemainingGreen -= removingGreenDm / StandingLiveWt;
+            fractionRemainingGreen -= Math.Min(1.0, removingGreenDm / StandingLiveWt);
         double fractionRemainingDead = 1.0;
         if (StandingDeadWt > 0.0)
-            fractionRemainingDead -= removingDeadDm / StandingDeadWt;
+            fractionRemainingDead -= Math.Min(1.0, removingDeadDm / StandingDeadWt);
         double fractionRemainingStolon = 1.0;
         if (StandingLiveWt > 0.0)
-            fractionRemainingStolon -= removingGreenDm * FractionStolonsStanding / StandingLiveWt;
+            fractionRemainingStolon -= Math.Min(1.0, removingGreenDm * stolons.FractionStanding / StandingLiveWt);
 
         if ((fractionRemainingGreen < -Epsilon) || (fractionRemainingDead < -Epsilon) || (fractionRemainingStolon < -Epsilon))
             throw new Exception(" AgPasture - partition of DM removed resulted in loss of mass balance");
 
         // get digestibility of DM being harvested
         double greenDigestibility = (leaves.DigestibilityLive * leaves.DMGreen) + (stems.DigestibilityLive * stems.DMGreen);
-        greenDigestibility += (stolons.DigestibilityLive * stolons.DMGreen * FractionStolonsStanding);
+        greenDigestibility += (stolons.DigestibilityLive * stolons.DMGreen * stolons.FractionStanding);
         double deadDigestibility = (leaves.DigestibilityDead * leaves.DMDead) + (stems.DigestibilityDead * stems.DMDead);
         greenDigestibility = MathUtility.Divide(greenDigestibility, StandingLiveWt, 0.0);
         deadDigestibility = MathUtility.Divide(deadDigestibility, StandingDeadWt, 0.0);
@@ -2566,21 +2535,27 @@ public class Species
         stolons.tissue[1].Namount *= fractionRemainingStolon;
         stolons.tissue[2].Namount *= fractionRemainingStolon;
 
-        //Nremob is also removed proportionally
-        Nremob *= fractionRemainingGreen;
-
         // Update Luxury N pools
-        NLuxury2 *= fractionRemainingGreen;
-        NLuxury3 *= fractionRemainingGreen;
+        for (int t = 0; t < 3; t++)
+        {
+            leaves.tissue[t].NRemobilisable *= fractionRemainingGreen;
+            stems.tissue[t].NRemobilisable *= fractionRemainingGreen;
+            stolons.tissue[t].NRemobilisable *= fractionRemainingGreen;
+        }
+        roots.tissue[0].NRemobilisable *= fractionRemainingGreen;
+
+        leaves.tissue[3].NRemobilisable *= fractionRemainingDead;
+        stems.tissue[3].NRemobilisable *= fractionRemainingDead;
+        stolons.tissue[3].NRemobilisable *= fractionRemainingDead;
+        roots.tissue[1].NRemobilisable *= fractionRemainingDead;
 
         // Update the aggregated variables (LAI, height, etc)
         UpdateAggregatedVariables();
 
         // Check balance and set outputs
-        dmdefoliated = prevState.dmshoot - AboveGroundWt;
-        prevState.dmdefoliated = dmdefoliated;
-        Ndefoliated = prevState.Nshoot - AboveGroundN;
-        prevState.Ndefoliated = Ndefoliated;
+        dmdefoliated = preRemovalDMshoot - AboveGroundWt;
+        Ndefoliated = preRemovalNshoot - AboveGroundN;
+        fractionDefoliated = dmdefoliated / preRemovalDMshoot;
         if (Math.Abs(dmdefoliated - AmountToRemove) > 0.00001)
             throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
 
@@ -2592,8 +2567,8 @@ public class Species
     /// </summary>
     internal void EvaluateLAI()
     {
-        greenLAI = (0.0001 * leaves.DMGreen * specificLeafArea)
-                   + (0.0001 * stolons.DMTotal * 0.3 * specificLeafArea);
+        greenLAI = (0.0001 * leaves.DMGreen * SpecificLeafArea)
+                   + (0.0001 * stolons.DMTotal * 0.3 * SpecificLeafArea);
         // 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming stolon = 0.3*SLA
         // Resilience after unfavoured conditions
         // Consider cover will be bigger for the same amount of DM when DM is low due to
@@ -2603,15 +2578,15 @@ public class Species
         // » Specific leaf area should be reduced (RCichota2014)
         if (!isLegume && AboveGroundLiveWt < 1000)
         {
-            greenLAI += 0.0001 * stems.DMGreen * specificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
+            greenLAI += 0.0001 * stems.DMGreen * SpecificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
         }
 
-        deadLAI = 0.0001 * leaves.tissue[3].DM * specificLeafArea;
+        deadLAI = 0.0001 * leaves.tissue[3].DM * SpecificLeafArea;
         totalLAI = greenLAI + deadLAI;
     }
 
     /// <summary>
-    /// Calculates the average herbage digestibility (above ground)
+    /// Calculates the average herbage digestibility (standing herbage)
     /// </summary>
     /// <returns>digestibility</returns>
     internal void EvaluateDigestibility()
@@ -2621,7 +2596,7 @@ public class Species
         {
             result = (leaves.DigestibilityLive * leaves.DMGreen) + (leaves.DigestibilityDead * leaves.DMDead)
                    + (stems.DigestibilityLive * stems.DMGreen) + (stems.DigestibilityDead * stems.DMDead)
-                   + (stolons.DigestibilityLive * stolons.DMGreen * FractionStolonsStanding);
+                   + (stolons.DigestibilityLive * stolons.DMGreen * stolons.FractionStanding);
             result /= StandingWt;
         }
 
@@ -2676,8 +2651,8 @@ public class Species
                 for (int layer = 0; layer < dlayer.Length; layer++)
                 {
                     // Senesced DM is not accounted for here
-                    double newAmountLayer = (prevState.roots.DMGreen * rootFraction[layer]) + (dGrowthRoot * curTarget[layer]);
-                    rootFraction[layer] = newAmountLayer / roots.DMGreen;
+                    double newAmountLayer = (roots.DMGreen * rootFraction[layer]) + (dGrowthRoot * curTarget[layer]);
+                    rootFraction[layer] = newAmountLayer / (roots.DMGreen + dGrowthRoot);
                 }
             }
         }
@@ -2831,9 +2806,7 @@ public class Species
 
     #region Auxiliary classes  ------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Defines a generic organ of a plant
-    /// </summary>
+    /// <summary>Defines a generic organ of a plant</summary>
     /// <remarks>
     /// Each organ (leaf, stem, etc) is defined as a collection of four tissues
     /// Each tissue has a record of DM and N amounts
@@ -2855,8 +2828,7 @@ public class Species
         /// <summary>the collection of tissues for this organ</summary>
         internal Tissue[] tissue;
 
-        /// <summary>Number of tissue pools to create</summary>
-        internal int nTissues;
+        #region Organ specific characteristics
 
         /// <summary>N concentration for optimal growth (kg/kg)</summary>
         internal double NConcOptimum = 4.0;
@@ -2867,7 +2839,29 @@ public class Species
         /// <summary>Minimum N concentration, structural N (kg/kg)</summary>
         internal double NConcMinimum = 1.2;
 
-        /// <summary>The total dry matter in this tissue (kg/ha)</summary>
+        /// <summary>Minimum DM amount of live tissues [kg/ha]</summary>
+        internal double MinimumGreenDM = 0.0;
+
+        /// <summary>Proportion of organ DM that is standing, available to harvest [0-1]</summary>
+        internal double FractionStanding = 1.0;
+
+        /// <summary>Digestibility of cell walls in live tissues [0-1]</summary>
+        internal double DigestLiveCellWall = 0.6;
+
+        /// <summary>Digestibility of cell walls in dead tissues [0-1]</summary>
+        internal double DigestDeadCellWall = 0.2;
+
+        /// <summary>The fraction of DM in sugar form for this organ [0-1]</summary>
+        internal double SugarWt = 0.1;
+
+        #endregion
+
+        #region Organ Properties (summary of tissues)
+
+        /// <summary>Number of tissue pools to create</summary>
+        internal int nTissues;
+
+        /// <summary>The total dry matter in this organ (kg/ha)</summary>
         internal double DMTotal
         {
             get
@@ -2912,7 +2906,37 @@ public class Species
             }
         }
 
-        /// <summary>The total N amount in this tissue (kg/ha)</summary>
+        /// <summary>The total dry matter in this organ available to harvest (kg/ha)</summary>
+        internal double DMTotalHarvestable
+        {
+            get { return DMGreenHarvestable + DMDeadHarvestable; }
+        }
+
+        /// <summary>The dry matter in the live (green) tissues available to harvest (kg/ha)</summary>
+        internal double DMGreenHarvestable
+        {
+            get { return Math.Max(0.0, Math.Min(DMGreen - MinimumGreenDM, DMGreen * FractionStanding)); }
+        }
+
+        /// <summary>The dry matter in the dead tissues available to harvest (kg/ha)</summary>
+        internal virtual double DMDeadHarvestable
+        {
+            get { return DMDead * FractionStanding; }
+        }
+
+        /// <summary>Gets the DM amount added to this organ via growth [kg/ha]</summary>
+        internal double DMGrowth
+        {
+            get { return tissue[0].DMTransferedIn; }
+        }
+
+        /// <summary>Gets the DM amount detached from this organ [kg/ha]</summary>
+        internal double DMDetached
+        {
+            get { return tissue[nTissues - 1].DMTransferedOut; }
+        }
+
+        /// <summary>The total N amount in this organ (kg/ha)</summary>
         internal double NTotal
         {
             get
@@ -2957,7 +2981,7 @@ public class Species
             }
         }
 
-        /// <summary>The average N concentration in this tissue (kg/kg)</summary>
+        /// <summary>The average N concentration in this organ (kg/kg)</summary>
         internal double NconcTotal
         {
             get
@@ -3002,14 +3026,66 @@ public class Species
             }
         }
 
-        /// <summary>The digestibility of live cell walls [0-1]</summary>
-        internal double DigestLiveCellWall = 0.6;
+        /// <summary>The total N amount in the harvestable DM of this organ(kg/ha)</summary>
+        internal double NTotalHarvestable
+        {
+            get { return (DMGreenHarvestable * NconcGreen) + (DMDeadHarvestable * NconcDead); }
+        }
 
-        /// <summary>The digestibility of dead cell walls [0-1]</summary>
-        internal double DigestDeadCellWall = 0.2;
+        /// <summary>Gets the amount of N added to this organ via growth [kg/ha]</summary>
+        internal double NGrowth
+        {
+            get { return tissue[0].NTransferedIn; }
+        }
 
-        /// <summary>The fraction of DM in sugar form for this organ [0-1]</summary>
-        internal double SugarWt = 0.1;
+        /// <summary>Gets the amount of N detached from this organ [kg/ha]</summary>
+        internal double NDetached
+        {
+            get { return tissue[nTissues - 1].NTransferedOut; }
+        }
+
+
+        /// <summary>The total N amount available to remobilise from senesced tissues in this organ (kg/ha)</summary>
+        internal double NSenesced
+        {
+            get { return tissue[nTissues - 1].NRemobilisable; }
+        }
+
+        /// <summary>Gets the amount of senesced N remobilised into new growth [kg/ha]</summary>
+        internal double NSenescedRemobilised
+        {
+            get { return tissue[nTissues - 1].NRemobilised; }
+        }
+
+        /// <summary>The total N amount available to remobilise from luxury N in this organ (kg/ha)</summary>
+        internal double NLuxury
+        {
+            get
+            {
+                double result = 0.0;
+                for (int t = 0; t < nTissues - 1; t++)
+                {
+                    result += tissue[t].NRemobilisable;
+                }
+
+                return result;
+            }
+        }
+        
+        /// <summary>Gets the amount of luxury N remobilised into new growth [kg/ha]</summary>
+        internal double NLuxuryRemobilised
+        {
+            get
+            {
+                double result = 0.0;
+                for (int t = 0; t < nTissues - 1; t++)
+                    result += tissue[t].NRemobilised;
+
+                return result;
+            }
+        }
+
+        #endregion
 
         /// <summary>The digestibility of live plant material</summary>
         /// <remarks>
@@ -3066,6 +3142,38 @@ public class Species
             }
         }
 
+        /// <summary>Updates each tissue, make changes in DM and N effective</summary>
+        /// <returns>A flag whether mass balance was maintained or not</returns>
+        internal bool DoOrganUpdate()
+        {
+            // save current state
+            double previousDM = DMTotal;
+            double previousN = NTotal;
+
+            // update all tissues
+            for (int t = 0; t < nTissues; t++)
+                tissue[t].DoUpdateTissue();
+
+            // check mass balance
+            bool dmIsOk = Math.Abs(previousDM + DMGrowth - DMDetached - DMTotal) <= Epsilon;
+            bool nIsOk = Math.Abs(previousN + NGrowth - NDetached - NSenescedRemobilised - NTotal) <= Epsilon;
+            return (dmIsOk || nIsOk);
+        }
+
+        /// <summary>Reset the transfer amounts in all tissues of this organ</summary>
+        internal void DoCleanTransferAmounts()
+        {
+            for (int t = 0; t < nTissues; t++)
+            {
+                tissue[t].DMTransferedIn = 0.0;
+                tissue[t].DMTransferedOut = 0.0;
+                tissue[t].NTransferedIn = 0.0;
+                tissue[t].NTransferedOut = 0.0;
+                tissue[t].NRemobilisable = 0.0;
+                tissue[t].NRemobilised = 0.0;
+            }
+        }
+
         /// <summary>Defines a generic plant tissue</summary>
         internal class Tissue
         {
@@ -3090,6 +3198,40 @@ public class Species
             {
                 get { return MathUtility.Divide(Pamount, DM, 0.0); }
                 set { Pamount = value * DM; }
+            }
+            
+            // >> Amounts in and out ..................................................................
+
+            /// <summary>Gets or sets the DM amount transfered into this tissue [kg/ha]</summary>
+            internal double DMTransferedIn = 0.0;
+
+            /// <summary>Gets or sets the DM amount transfered out of this tissue [kg/ha]</summary>
+            internal double DMTransferedOut = 0.0;
+
+            /// <summary>Gets or sets the amount of N transfered into this tissue [kg/ha]</summary>
+            internal double NTransferedIn = 0.0;
+
+            /// <summary>Gets or sets the amount of N transfered out of this tissue [kg/ha]</summary>
+            internal double NTransferedOut = 0.0;
+
+            /// <summary>Gets or sets the amount of N available for remobilisation [kg/ha]</summary>
+            internal double NRemobilisable = 0.0;
+
+            /// <summary>Gets or sets the amount of N remobilised into new growth [kg/ha]</summary>
+            internal double NRemobilised = 0.0;
+
+            /// <summary>Removes a fraction of remobilisable N for use into new growth</summary>
+            /// <param name="fraction">fraction to remove [0-1]</param>
+            internal void DoRemobiliseN(double fraction)
+            {
+                NRemobilised += NRemobilisable * fraction;
+            }
+
+            /// <summary>Updates the tissue state, make changes in DM and N effective</summary>
+            internal virtual void DoUpdateTissue()
+            {
+                DM += DMTransferedIn - DMTransferedOut;
+                Namount += NTransferedIn - (NTransferedOut + NRemobilised);
             }
         }
     }
