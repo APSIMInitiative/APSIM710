@@ -440,7 +440,7 @@ public class Species
     internal double referenceRLD = 0.2;
 
     /// <summary>Some Description</summary>
-    internal double NextraSWF = 0.25;
+    internal double exponentSWCuptake = 0.25;
 
     /// <summary>Some Description</summary>
     internal double[] xf;
