@@ -24,7 +24,7 @@ public class Species
         InitialState = new SpeciesBasicState();
     }
 
-    #region Static variables, to assess parameters common for all species  ------------------------
+    #region Links and static variables  ------------------------------------------------------------------------------------
 
     /// <summary>Some Description</summary>
     internal static Clock Clock;
@@ -35,23 +35,23 @@ public class Species
     /// <summary>Some Description</summary>
     internal static double CO2 = 380;
 
-    /// <summary>Some Description</summary>
-    internal static double swardInterceptedRadn; //total Radn intercepted by pasture
+    /// <summary>total Radn intercepted by pasture</summary>
+    internal static double swardInterceptedRadn;
 
     /// <summary>Some Description</summary>
     internal static double swardCoverGreen;
 
     /// <summary>Some Description</summary>
-    internal static double swardLightExtCoeff; //k of mixed pasture
+    internal static double swardLightExtCoeff;
 
     /// <summary>Soil layering</summary>
     internal double[] dlayer;
 
-    #endregion
+    #endregion  ------------------------------------------------------------------------------------------------------------
 
-    #region Model parameters  ---------------------------------------------------------------------
+    #region Model parameters  ----------------------------------------------------------------------------------------------
 
-    //// - General parameters  --------------------------------------------------------------------
+    ////- General parameters (name and type) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal string speciesName;
@@ -62,21 +62,13 @@ public class Species
     /// <summary>Photosynthesis pathways: 3=C3, 4=C4; no consideration for CAM(=3)</summary>
     internal string photoPath;
 
-    //// - Specific parameters  -------------------------------------------------------------------
-
-    //// > Photosysnthesis and growth  >>>
+    ////- Potential growth (photosynthesis) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>reference leaf co2 mg/m^2/s maximum</summary>
     internal double Pm;
 
     /// <summary>Partition factor for intercepted light for each species</summary>
     internal double lightPartitioningFactor;
-
-    /// <summary>Some Description</summary>
-    internal double maintRespiration;
-
-    /// <summary>Some Description</summary>
-    internal double growthEfficiency;
 
     /// <summary>Some Description</summary>
     internal double alphaPhoto;
@@ -90,6 +82,21 @@ public class Species
     /// <summary>Light extinction coefficient</summary>
     internal double lightExtCoeff;
 
+    /// <summary>Some Description</summary>
+    internal double referenceCO2 = 380;
+
+    /// <summary>Some Description</summary>
+    internal double CO2PmaxScale;
+
+    /// <summary>Some Description</summary>
+    internal double CO2NScale;
+
+    /// <summary>Some Description</summary>
+    internal double CO2NMin;
+
+    /// <summary>Some Description</summary>
+    internal double CO2NCurvature;
+
     /// <summary>Minimum temperature for growth</summary>
     internal double growthTmin;
 
@@ -102,7 +109,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal bool usingHeatStress = false;
 
-    /// <summary>onset tempeature for heat effects</summary>
+    /// <summary>onset temperature for heat effects</summary>
     internal double heatOnsetT;
 
     /// <summary>full temperature for heat effects</summary>
@@ -120,35 +127,28 @@ public class Species
     /// <summary>Some Description</summary>
     internal bool usingColdStress = false;
 
-    /// <summary>Some Description</summary>
-    internal double coldOnsetT; //onset tempeature for cold effects
+    /// <summary>onset temperature for cold effects</summary>
+    internal double coldOnsetT;
 
-    /// <summary>Some Description</summary>
-    internal double coldFullT; //full tempeature for cold effects
+    /// <summary>full temperature for cold effects</summary>
+    internal double coldFullT;
 
     /// <summary>Some Description</summary>
     internal double coldTq;
 
-    /// <summary>Some Description</summary>
-    internal double coldSumT; //temperature sum for recovery - sum of means
+    /// <summary>temperature sum for recovery - sum of means</summary>
+    internal double coldSumT;
 
     /// <summary>Some Description</summary>
     internal double coldRecoverT;
 
-    /// <summary>Some Description</summary>
-    internal double referenceCO2 = 380; //ambient CO2 concentration
+    ////- Respiration parameters >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        /// <summary>Some Description</summary>
+    internal double maintRespiration;
 
     /// <summary>Some Description</summary>
-    internal double CO2PmaxScale;
-
-    /// <summary>Some Description</summary>
-    internal double CO2NScale;
-
-    /// <summary>Some Description</summary>
-    internal double CO2NMin;
-
-    /// <summary>Some Description</summary>
-    internal double CO2NCurvature;
+    internal double growthEfficiency;
 
     /// <summary>Some Description</summary>
     internal double maxTempEffectResp = 1.25;
@@ -159,7 +159,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double respExponent;
 
-    //// > Germination and emergence >>>
+    ////- Germination and emergence >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double degreesdayForGermination;
@@ -167,16 +167,16 @@ public class Species
     /// <summary>Some Description</summary>
     internal double[] emergenceDM;
 
-    //// > DM partition >>>
+    ////- Allocation of new growth >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Some Description</summary>
-    internal double TargetSRratio; //Shoot-Root ratio maximum
+    /// <summary>Shoot-Root ratio targeted</summary>
+    internal double TargetSRratio;
 
-    /// <summary>Some Description</summary>
-    internal double MaxRootAllocation; //Root DM allocation maximum (to be deprecated)
+    /// <summary>Maximum allocation of DM to roots</summary>
+    internal double MaxRootAllocation;
 
-    /// <summary>Some Description</summary>
-    internal double allocationSeasonF; //factor for different biomass allocation among seasons
+    /// <summary>factor for different biomass allocation among seasons</summary>
+    internal double allocationSeasonF;
 
     /// <summary>Some Description</summary>
     internal double startHighAllocation;
@@ -268,7 +268,7 @@ public class Species
     /// <summary>Specific root length (m/kg dwt)</summary>
     internal double SpecificRootLength;
 
-    //// > DM turnover and senescence  >>>
+    ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double LiveLeavesPerTiller;
@@ -311,7 +311,7 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal static double stockingRate = 0.0;
-    //stocking rate affacting transfer of dead to little (default as 0 for now)
+    //stocking rate affecting transfer of dead to litter (default as 0 for now)
 
     /// <summary>Fraction of luxury N in tissue 1 that can be remobilised</summary>
     internal double Kappa1 = 0.0;
@@ -325,7 +325,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double Kappa4 = 0.0;
 
-    //// > Nc - N concentration  >>>
+    ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double NcstemFr; //stem Nc as % of leaf Nc
@@ -342,7 +342,7 @@ public class Species
     /// <summary>N concentration in tissue 3 relative to tissue 1</summary>
     internal double NcRel3;
 
-    //// > N fixation  >>>
+    ////- N fixation (for legumes) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>N fixation fraction when no soil N available</summary>
     internal double MaxFix;
@@ -362,7 +362,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal int NFixationCostMethod;
 
-    //// > growth limiting factors  >>>
+    ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double waterStressFactor;
@@ -391,7 +391,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double GLFSFertility;
 
-    //// > Preferences when harvesting  >>>
+    ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Relative preference for green tissues over dead, for DM removal</summary>
     internal double PreferenceGreenOverDead;
@@ -399,7 +399,7 @@ public class Species
     /// <summary>Relative preference for leaves over stem-stolon, for DM removal</summary>
     internal double PreferenceLeafOverStem;
 
-    ////  >> Plant height  >>>
+    ////- Plant height >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double MaxPlantHeight;
@@ -413,7 +413,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double MinimumHeight;
 
-    //// > Root depth and distribution  >>>
+    ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>minimum root depth (mm)</summary>
     internal double minRootDepth;
@@ -445,7 +445,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double[] xf;
 
-    //// > annual species parameters  >>>
+    ////- Parameters for annual species >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Earliest day of year for emergence (for annuals only)</summary>
     internal double dayGermn;
@@ -459,11 +459,11 @@ public class Species
     /// <summary>Days from anthesis to maturity</summary>
     internal double daysAnthToMatur;
 
-    #endregion
+    #endregion  ------------------------------------------------------------------------------------------------------------
 
-    #region Private variables  --------------------------------------------------------------------
+    #region Private variables  ---------------------------------------------------------------------------------------------
 
-    //// > General plant variables >>>
+    ////- Plant parts and state >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Flag whether the species is alive</summary>
     internal bool isAlive = true;
@@ -483,7 +483,7 @@ public class Species
     /// <summary>basic state variables for each species (to be used for reset)</summary>
     internal SpeciesBasicState InitialState;
 
-    // defining the plant type  -------------------------------------------------------------------
+    ////- Defining the plant type >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Flag whether the species is a legume</summary>
     internal bool isLegume;
@@ -491,7 +491,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal bool isAnnual; //Species type (1=annual,0=perennial)
 
-    // Annuals and phenology  ---------------------------------------------------------------------
+    ////- Annuals and phenology >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal int phenoStage = 0; //pheno stages: 0 - pre_emergence, 1 - vegetative, 2 - reproductive
@@ -499,7 +499,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double daysfromEmergence = 0;
 
-    // Photosynthesis, growth, and turnover  ----------------------------------------------------------------------
+    ////- Photosynthesis, growth, and turnover >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double intRadnFrac; //fraction of Radn intercepted by this species = intRadn/Radn
@@ -591,7 +591,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double germinationGDD = 0.0;
 
-    // Plant height, LAI and cover  ---------------------------------------------------------------
+    ////- Plant height, LAI and cover >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Plant height</summary>
     internal double height;
@@ -605,7 +605,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double totalLAI;
 
-    //// > Root depth and distribution  >>>
+    ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>current root depth (mm)</summary>
     internal double rootDepth;
@@ -622,7 +622,7 @@ public class Species
     /// <summary>Some Description</summary>
     internal double[] targetRootAllocation;
 
-    // Amounts and fluxes of N in the plant  ------------------------------------------------------
+    ////- Amounts and fluxes of N in the plant >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double NdemandLux = 0.0; //N demand for new growth, with luxury uptake
@@ -642,7 +642,7 @@ public class Species
     /// <summary>amount of luxury N remobilised from tissue 3</summary>
     internal double NLuxury2NewGrowth = 0.0;
 
-    // N uptake process  --------------------------------------------------------------------------
+    ////- N uptake process >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>N demand from soil</summary>
     internal double soilNdemand = 0.0;
@@ -659,7 +659,7 @@ public class Species
     /// <summary>Amount of N_NO3 taken up</summary>
     internal double soilNO3Uptake;
 
-    // water uptake process  ----------------------------------------------------------------------
+    ////- Water uptake process >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Plant water demand</summary>
     internal double WaterDemand = 0.0;
@@ -673,7 +673,7 @@ public class Species
     /// <summary>Amount of soil water taken up</summary>
     internal double[] soilWaterUptake;
 
-    // growth limiting factors --------------------------------------------------------------------
+    ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double canopyCompetitionFactor;
@@ -696,17 +696,6 @@ public class Species
     /// <summary>Some Description</summary>
     internal double ExtremeTempStress;
 
-    /// <summary>Some Description</summary>
-    internal double glfWater = 1.0; //from water stress
-
-    /// <summary>Some Description</summary>
-    internal double glfAeration = 1.0;
-
-    /// <summary>Some Description</summary>
-    internal double glfN = 1.0; //from N deficit
-
-    // auxiliary variables for temperature stress  ------------------------------------------------
-
     /// <summary>fraction of growth rate due to high temp. effect</summary>
     internal double highTempStress = 1.0;
 
@@ -719,7 +708,16 @@ public class Species
     /// <summary>accumulated temperature from previous cold strike</summary>
     private double accumTCold = 0.0;
 
-    // Harvest and digestibility  -----------------------------------------------------------------
+    /// <summary>Some Description</summary>
+    internal double glfWater = 1.0; //from water stress
+
+    /// <summary>Some Description</summary>
+    internal double glfAeration = 1.0;
+
+    /// <summary>Some Description</summary>
+    internal double glfN = 1.0; //from N deficit
+
+    ////- Harvest and digestibility >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
     internal double dmdefoliated;
@@ -736,20 +734,20 @@ public class Species
     /// <summary>Some Description</summary>
     internal double digestDefoliated;
 
-    #endregion
+    #endregion  ------------------------------------------------------------------------------------------------------------
 
-    #region Internal constants  -------------------------------------------------------------------
+    #region Constants  -----------------------------------------------------------------------------------------------------
 
-    //// - Constants  -----------------------------------------------------------------------------
-
-    /// <summary>DM to C converion</summary>
+    /// <summary>DM to C conversion</summary>
     internal const double CarbonFractionDM = 0.4;
 
     /// <summary>N mols per mol of protein</summary>
-    internal const double N2Protein = 6.25; //this is for plants... (higher amino acids)
+    /// <remarks>This is for plants... (higher in amino acids)</remarks>
+    internal const double N2Protein = 6.25;
 
     /// <summary>CN ratio of proteins</summary>
-    internal const double ProteinCNr = 3.5; //C:N in remobilised material
+    /// <remarks>C:N in remobilised material</remarks>
+    internal const double ProteinCNr = 3.5;
 
     /// <summary>CN ratio of cell wall</summary>
     internal const double CNw = 100;
@@ -757,9 +755,9 @@ public class Species
     /// <summary>Minimum significant difference between two values</summary>
     internal const double Epsilon = 0.000000001;
 
-    #endregion
+    #endregion  ------------------------------------------------------------------------------------------------------------
 
-    #region Model outputs  ------------------------------------------------------------------------
+    #region Model outputs  -------------------------------------------------------------------------------------------------
 
     /// <summary>Dry matter amount aboveground (kg/ha)</summary>
     internal double AboveGroundWt
@@ -855,17 +853,15 @@ public class Species
         }
     }
 
-    #endregion
+    #endregion  ------------------------------------------------------------------------------------------------------------
 
-    #region Initialisation methods  ---------------------------------------------------------------
+    #region Initialisation methods  ----------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Set DM and N values for each species in the sward
-    /// </summary>
+    /// <summary>Set DM and N values for each species in the sward</summary>
     /// <param name="MyState">The collection of basic state defining values</param>
     internal void SetSpeciesState(SpeciesBasicState MyState)
     {
-        //// Shoot DM ....................................................
+        // Shoot DM
         leaves.tissue[0].DM = MyState.DMWeight[0];
         leaves.tissue[1].DM = MyState.DMWeight[1];
         leaves.tissue[2].DM = MyState.DMWeight[2];
@@ -879,12 +875,12 @@ public class Species
         stolons.tissue[2].DM = MyState.DMWeight[10];
         roots.tissue[0].DM = MyState.DMWeight[11];
 
-        //// Root depth and distribution  ................................
+        // Root depth and distribution
         rootDepth = MyState.RootDepth;
         targetRootAllocation = RootDistributionTarget();
         rootFraction = CurrentRootDistributionTarget();
 
-        //// Initial N amount in each pool ...............................
+        // N amount
         leaves.tissue[0].Namount = MyState.NAmount[0];
         leaves.tissue[1].Namount = MyState.NAmount[1];
         leaves.tissue[2].Namount = MyState.NAmount[2];
@@ -898,13 +894,11 @@ public class Species
         stolons.tissue[2].Namount = MyState.NAmount[10];
         roots.tissue[0].Namount = MyState.NAmount[11];
 
-        //// Update the aggregated variables (LAI, height, etc) ..........
+        // Update the aggregated variables (LAI, height, etc.)
         UpdateAggregatedVariables();
     }
 
-    /// <summary>
-    /// Set state
-    /// </summary>
+    /// <summary>Set plant state at emergence</summary>
     internal void SetEmergenceState()
     {
         // init DM for each pool
@@ -950,14 +944,51 @@ public class Species
         UpdateAggregatedVariables();
     }
 
-    #endregion
+    /// <summary>Initialises the parameters to compute factor increasing shoot allocation during reproductive growth</summary>
+    /// <remarks>
+    /// Reproductive phase of perennials is not simulated by the model, the ReproductiveGrowthFactor attempts to mimic the main
+    ///  effect, which is a higher allocation of DM to shoot during this period. The beginning and length of the reproductive
+    ///  phase is computed as function of latitude (it occurs later in spring and is shorter the further the location is from
+    ///  the equator). The extent at which allocation to shoot increases is also a function of latitude, maximum allocation is
+    ///  greater for higher latitudes. Shoulder periods occur before and after the main phase, in these the DM allocation varies
+    ///  between the default allocation and that of the main reproductive phase (allocationIncreaseRepro).
+    /// </remarks>
+    internal void InitReproductiveGrowthFactor()
+    {
+        int yearLength = 365 + (DateTime.IsLeapYear(Clock.year) ? 1 : 0);
+        int doyWinterSolstice = (MetFile.Latitude < 0.0) ? 172 : 355;
+        reproSeasonInterval = new double[3];
 
-    #region Daily processes  ----------------------------------------------------------------------
+        // compute the day to start the period with maximum DM allocation to shoot
+        double doyIniPlateau = doyWinterSolstice;
+        doyIniPlateau += 0.5 * yearLength / (1 + Math.Exp(-ReproSeasonTimingCoeff * (Math.Abs(MetFile.Latitude) - ReproSeasonReferenceLatitude)));
 
-    /// <summary>
-    /// Refresh variables
-    /// </summary>
-    internal void DailyRefresh()
+        // compute the duration of the main phase (with max allocation to shoot)
+        reproSeasonInterval[1] = (yearLength / 24.0);
+        reproSeasonInterval[1] += (yearLength * 11.0 / 24.0) * Math.Pow(1 - (Math.Abs(MetFile.Latitude) / 90.0), ReproSeasonDurationCoeff);
+
+        // compute the duration of the onset and outset phases (shoulders)
+        reproSeasonInterval[0] = reproSeasonInterval[1] * ReproSeasonShouldersLengthFactor * ReproSeasonOnsetDurationFactor;
+        reproSeasonInterval[2] = reproSeasonInterval[1] * ReproSeasonShouldersLengthFactor * (1.0 - ReproSeasonOnsetDurationFactor);
+
+        if (reproSeasonInterval.Sum() > yearLength)
+            throw new Exception("Error on calculating period with high DM allocation, it is greater then one year");
+
+        // get the day for the start of reproductive season
+        doyIniReproSeason = doyIniPlateau - reproSeasonInterval[0];
+        if (doyIniReproSeason < 0.0) doyIniReproSeason += yearLength;
+
+        // compute the factor to augment allocation to shoot at main phase
+        allocationIncreaseRepro = ReproSeasonMaxAllocationIncrease;
+        allocationIncreaseRepro /= (1 + Math.Exp(-ReproSeasonAllocationCoeff * (Math.Abs(MetFile.Latitude) - ReproSeasonReferenceLatitude)));
+    }
+
+    #endregion  ------------------------------------------------------------------------------------------------------------
+
+    #region Daily processes  -----------------------------------------------------------------------------------------------
+
+    /// <summary>Refresh variables</summary>
+    internal void RefreshVariables()
     {
         dmdefoliated = 0.0;
         Ndefoliated = 0.0;
@@ -968,12 +999,10 @@ public class Species
         roots.DoCleanTransferAmounts();
     }
 
-    #region Plant growth and DM partition  --------------------------------------------------------
+    #region - Plant growth processes - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>
-    /// Computation of daily progress through germination
-    /// </summary>
-    /// <returns>Fraction of germination phase completed</returns>
+    /// <summary>Computes the daily progress through germination</summary>
+    /// <returns>Fraction of germination phase completed (0-1)</returns>
     internal double DailyGerminationProgress()
     {
         double result = 0.0;
@@ -982,7 +1011,8 @@ public class Species
         return result;
     }
 
-    /// <summary>Calculates the potential growth.</summary>
+    /// <summary>Calculates the daily potential growth</summary>
+    /// <returns>Plant growth (kg/ha)</returns>
     internal double CalcDailyPotentialGrowth()
     {
         // Get today's gross potential photosynthetic rate (kgC/ha/day)
@@ -991,13 +1021,159 @@ public class Species
         // Get respiration rates (kgC/ha/day)
         DailyPlantRespiration();
 
+        // Get C remobilisation, not explicitly done here as in EM
+        Cremob = 0.0;
+
+        // Get N fixation costs
+        costNFixation = 0.0;
+        if (isLegume && (NFixationCostMethod == 2))
+            costNFixation = NFixationCost_M2();
+
+        // Net potential growth (C) of the day
+        dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
+        dGrowthPot = Math.Max(0.0, dGrowthPot);
+
+        // Get growth reduction for annual species, related to phenology (from IJ)
+        if (isAnnual)
+            dGrowthPot *= AnnualSpeciesGrowthFactor();
+
+        //convert C to DM
+        dGrowthPot /= CarbonFractionDM;
+
         // Net potential growth (kgDM/ha/day)
-        return DailyPotentialGrowth();
+        return dGrowthPot;
     }
 
-    /// <summary>
-    /// Daily potential growth
-    /// </summary>
+    /// <summary>Calculates the daily growth after moisture limitations</summary>
+    /// <returns>Plant growth (kg/ha)</returns>
+    internal double CalcGrowthAfterWaterLimitations()
+    {
+        dGrowthW = dGrowthPot * Math.Pow(Math.Min(glfWater, glfAeration), waterStressFactor);
+
+        return dGrowthW;
+    }
+
+    /// <summary>Calculates the daily growth after nutrient limitations</summary>
+    /// <returns>Plant growth (kg/ha)</returns>
+    internal double CalcGrowthAfterNLimitations()
+    {
+        double gfnit = 0.0;
+        if (isLegume)
+            gfnit = glfN; //legume no dilution, but reducing more DM (therefore LAI)
+        else
+            gfnit = Math.Pow(glfN, NdilutCoeff);
+        // more DM growth than N limited, due to dilution (typically NdilutCoeff = 0.5)
+
+        dGrowth = dGrowthW * Math.Min(gfnit, GLFSFertility);
+        return dGrowth;
+    }
+
+    /// <summary>Daily potential carbon assimilation</summary>
+    internal void DailyPotentialPhotosynthesis()
+    {
+        bool isGrowing = true;
+
+        // annuals phenology
+        if (isAnnual)
+            isGrowing = EvaluatePhenologyOfAnnuals();
+
+        // set basic values for growth factors
+        CO2Factor = 1.0;
+        NcFactor = 1.0;
+        RadnFactor = 1.0;
+
+        if (isGrowing)
+        {
+            //CO2 effects
+            CO2Factor = CO2EffectsOnPhotosynthesis();
+
+            //N concentration effects
+            NcFactor = NEffectOnPhotosynthesis();
+
+            //Temperature effects at dawn/dusk
+            double glfTmean = GFTemperature(Tmean);
+
+            //Temperature growth factor (for reporting purposes only)
+            TempFactor = (0.25 * glfTmean) + (0.75 * glfTemp);
+
+            //Potential photosynthetic rate at dawn/dusk (first and last quarter of the day)
+            double Pm1 = Pm * glfTmean * CO2Factor * NcFactor;
+
+            //Potential photosynthetic rate at bright light (half of sunlight length, middle of day)
+            double Pm2 = Pm * glfTemp * CO2Factor * NcFactor;
+
+            //Sunlight length, converted to seconds
+            double tau = 3600 * MetFile.day_length;
+
+            //Photosynthetic active irradiance - converted from MJ/m2.day to J/m2.s
+            double incidentPAR = MetFile.Radn * fractionPAR * 1000000 / tau;
+
+            //Irradiance at top of canopy in the middle of the day (J/m2 leaf/s)
+            IrradianceTopOfCanopy = lightExtCoeff * incidentPAR * (4.0 / 3.0);
+
+            //Photosynthesis per leaf area under full irradiance at the top of the canopy (mg CO2/m^2 leaf/s)
+            double Pl1 = SingleLeafPhotosynthesis(0.5 * IrradianceTopOfCanopy, Pm1); // early and late parts of the day
+            double Pl2 = SingleLeafPhotosynthesis(IrradianceTopOfCanopy, Pm2); // middle part of the day
+
+            // Radiation effects (for reporting purposes only)
+            RadnFactor = MathUtility.Divide((0.25 * Pl1) + (0.75 * Pl2), (0.25 * Pm1) + (0.75 * Pm2), 1.0);
+
+            // Fraction of total radiation available to this plant
+            canopyCompetitionFactor = MathUtility.Divide(interceptedRadn * lightPartitioningFactor, MetFile.Radn * coverGreen, 1.0);
+
+            //Canopy photosynthesis - Upscaling from 'per leaf' to 'per ground' area
+            double carbon_m2 = 0.5 * (Pl1 + Pl2); // mgCO2/m2 leaf/s
+            carbon_m2 *= coverGreen * canopyCompetitionFactor; // mgCO2/m2 leaf/s - canopy
+            carbon_m2 /= lightExtCoeff; // mgCO2/m2.s - ground area
+            carbon_m2 *= 0.000001; // kgCO2/m2.s
+            carbon_m2 *= tau; // kgCO2/m2.day
+            carbon_m2 *= 12.0 / 44.0; // kgC/m2.day
+            PotPhoto = 10000 * carbon_m2; // kgC/ha.day
+
+            //Add extreme temperature effects;
+            ExtremeTempStress = HeatEffect() * ColdEffect(); // in practice only one temp stress factor is < 1
+            Pgross = PotPhoto * ExtremeTempStress;
+
+            // Consider a generic growth limiting factor
+            Pgross *= GLFGeneric;
+        }
+        else
+        {
+            Pgross = 0.0;
+        }
+    }
+
+    /// <summary>Compute the photosynthetic rate for a single leaf</summary>
+    /// <param name="IL">Instantaneous intercepted radiation (depend on time of day)</param>
+    /// <param name="Pmax">Max photosynthesis rate, given T, CO2 and N concentration</param>
+    /// <returns></returns>
+    private double SingleLeafPhotosynthesis(double IL, double Pmax)
+    {
+        double photoAux1 = alphaPhoto * IL + Pmax;
+        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pmax;
+        double Pl = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
+        return Pl;
+    }
+
+    /// <summary>Compute plant respiration, growth and maintenance</summary>
+    /// <returns>Amount of C lost by respiration</returns>
+    internal void DailyPlantRespiration()
+    {
+        double LiveBiomassC = (AboveGroundLiveWt + roots.DMGreen) * CarbonFractionDM; //converting DM to C    (kgC/ha)
+
+        // maintenance respiration
+        //tempFactorRespiration = TemperatureEffectOnRespirationOld();
+        tempFactorRespiration = TemperatureEffectOnRespiration();
+        if (LiveBiomassC > 0.0)
+            Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveBiomassC;
+        else
+            Resp_m = 0.0;
+
+        // growth respiration
+        Resp_g = Pgross * (1 - growthEfficiency);
+    }
+
+    /// <summary>Daily potential growth</summary>
     /// <returns>Pot growth</returns>
     internal double DailyGrowthPot()
     {
@@ -1008,7 +1184,7 @@ public class Species
         // annuals phenology
         if (isAnnual)
         {
-            bool moreGrowth = AnnualPhenology();
+            bool moreGrowth = EvaluatePhenologyOfAnnuals();
             if (!moreGrowth)
                 return dGrowthPot = 0.0;
         }
@@ -1024,8 +1200,8 @@ public class Species
         TempFactor = (0.25 * GFTemperature(Tmean)) + (0.75 * GFTemperature(Tday));
 
         double glfT = GFTemperature(Tmean);
-        CO2Factor = PCO2Effects();
-        NcFactor = PmxNeffect();
+        CO2Factor = CO2EffectsOnPhotosynthesis();
+        NcFactor = NEffectOnPhotosynthesis();
 
         double Pm_mean = Pm * glfT * CO2Factor * NcFactor;
 
@@ -1094,18 +1270,13 @@ public class Species
 
         // N fixation costs
         costNFixation = 0.0;
-        if (isLegume)
-        {
-            if (NFixationCostMethod == 1)
-                costNFixation = NFixationCost_M1(Pgross);
-            else if (NFixationCostMethod == 2)
-                costNFixation = NFixationCost_M2();
-        }
+        if (isLegume && (NFixationCostMethod == 2))
+            costNFixation = NFixationCost_M2();
 
         // ** C budget is not explicitly done here as in EM
-        Cremob = 0.0; // Nremob* C2N_protein;    // No carbon budget here
+        Cremob = 0.0; // Nremob * C2N_protein;    // No carbon budget here
         // Nu_remob[elC] := C2N_protein * Nu_remob[elN];
-        // need to substract CRemob from dm turnover?
+        // need to subtract CRemob from dm turnover?
 
         // Net potential growth (C) of the day (excluding growth respiration)
         dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
@@ -1121,251 +1292,7 @@ public class Species
         return dGrowthPot;
     }
 
-    /// <summary>
-    /// Daily potential carbon assimilation
-    /// </summary>
-    internal void DailyPotentialPhotosynthesis()
-    {
-        bool isGrowing = true;
-
-        // annuals phenology
-        if (isAnnual)
-            isGrowing = AnnualPhenology();
-
-        // set basic values for growth factors
-        CO2Factor = 1.0;
-        NcFactor = 1.0;
-        RadnFactor = 1.0;
-
-        if (isGrowing)
-        {
-            //CO2 effects
-            CO2Factor = PCO2Effects();
-
-            //N concentration effects
-            NcFactor = PmxNeffect();
-
-            //Temperature effects at dawn/dusk
-            double glfTmean = GFTemperature(Tmean);
-
-            //Temperature growth factor (for reporting purposes only)
-            TempFactor = (0.25 * glfTmean) + (0.75 * glfTemp);
-
-            //Potential photosynthetic rate at dawn/dusk (first and last quarter of the day)
-            double Pm1 = Pm * glfTmean * CO2Factor * NcFactor;
-
-            //Potential photosynthetic rate at bright light (half of sunlight length, middle of day)
-            double Pm2 = Pm * glfTemp * CO2Factor * NcFactor;
-
-            //Sunlight length, converted to seconds
-            double tau = 3600 * MetFile.day_length;
-
-            //Photosynthetic active irradiance - converted from MJ/m2.day to J/m2.s
-            double incidentPAR = MetFile.Radn * fractionPAR * 1000000 / tau;
-
-            //Irradiance at top of canopy in the middle of the day (J/m2 leaf/s)
-            IrradianceTopOfCanopy = lightExtCoeff * incidentPAR * (4.0 / 3.0);
-
-            //Photosynthesis per leaf area under full irradiance at the top of the canopy (mg CO2/m^2 leaf/s)
-            double Pl1 = SingleLeafPhotosynthesis(0.5 * IrradianceTopOfCanopy, Pm1); // early and late parts of the day
-            double Pl2 = SingleLeafPhotosynthesis(IrradianceTopOfCanopy, Pm2); // middle part of the day
-
-            // Radiation effects (for reporting purposes only)
-            RadnFactor = MathUtility.Divide((0.25 * Pl1) + (0.75 * Pl2), (0.25 * Pm1) + (0.75 * Pm2), 1.0);
-
-            // Fraction of total radiation available to this plant
-            canopyCompetitionFactor = MathUtility.Divide(interceptedRadn * lightPartitioningFactor, MetFile.Radn * coverGreen, 1.0);
-
-            //Canopy photosynthesis - Upscaling from 'per leaf' to 'per ground' area
-            double carbon_m2 = 0.5 * (Pl1 + Pl2); // mgCO2/m2 leaf/s
-            carbon_m2 *= coverGreen * canopyCompetitionFactor; // mgCO2/m2 leaf/s - canopy
-            carbon_m2 /= lightExtCoeff; // mgCO2/m2.s - ground area
-            carbon_m2 *= 0.000001; // kgCO2/m2.s
-            carbon_m2 *= tau; // kgCO2/m2.day
-            carbon_m2 *= 12.0 / 44.0; // kgC/m2.day
-            PotPhoto = 10000 * carbon_m2; // kgC/ha.day
-
-            //Add extreme temperature effects;
-            ExtremeTempStress = HeatEffect() * ColdEffect(); // in practice only one temp stress factor is < 1
-            Pgross = PotPhoto * ExtremeTempStress;
-
-            // Consider a generic growth limiting factor
-            Pgross *= GLFGeneric;
-        }
-        else
-        {
-            Pgross = 0.0;
-        }
-    }
-
-    /// <summary>
-    /// Compute the photosynthetic rate for a single leaf
-    /// </summary>
-    /// <param name="IL">Instantaneous intercepted radiation (depend on time of day)</param>
-    /// <param name="Pmax">Max photosyntehsis rate, given T, CO2 and N concentration</param>
-    /// <returns></returns>
-    private double SingleLeafPhotosynthesis(double IL, double Pmax)
-    {
-        double photoAux1 = alphaPhoto * IL + Pmax;
-        double photoAux2 = 4 * thetaPhoto * alphaPhoto * IL * Pmax;
-        double Pl = (0.5 / thetaPhoto) * (photoAux1 - Math.Sqrt(Math.Pow(photoAux1, 2) - photoAux2));
-        return Pl;
-    }
-
-    /// <summary>
-    /// Compute plant respiration, growth and maintenance
-    /// </summary>
-    /// <returns>Amount of C lost by respiration</returns>
-    internal void DailyPlantRespiration()
-    {
-        double LiveBiomassC = (AboveGroundLiveWt + roots.DMGreen) * CarbonFractionDM; //converting DM to C    (kgC/ha)
-
-        // maintenance respiration
-        //tempFactorRespiration = TemperatureEffectOnRespirationOld();
-        tempFactorRespiration = TemperatureEffectOnRespiration();
-        if (LiveBiomassC > 0.0)
-            Resp_m = maintRespiration * tempFactorRespiration * NcFactor * LiveBiomassC;
-        else
-            Resp_m = 0.0;
-
-        // growth respiration
-        Resp_g = Pgross * (1 - growthEfficiency);
-    }
-
-    /// <summary>
-    /// Plant net potential growth
-    /// </summary>
-    /// <returns>net potential growth</returns>
-    internal double DailyPotentialGrowth()
-    {
-        // ** C budget is not explicitly done here as in EM
-        Cremob = 0.0; // Nremob* C2N_protein;    // No carbon budget here
-        // Nu_remob[elC] := C2N_protein * Nu_remob[elN];
-        // need to substract CRemob from dm rutnover?
-
-        // N fixation costs
-        costNFixation = 0.0;
-        if (isLegume)
-        {
-            if (NFixationCostMethod == 1)
-                costNFixation = NFixationCost_M1(Pgross);
-            else if (NFixationCostMethod == 2)
-                costNFixation = NFixationCost_M2();
-        }
-
-        // Net potential growth (C) of the day (excluding growth respiration)
-        dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
-        dGrowthPot = Math.Max(0.0, dGrowthPot);
-
-        if (dGrowthPot > 0.0)
-        {
-            //convert C to DM
-            dGrowthPot /= CarbonFractionDM;
-
-            // phenologically related reduction of annual species (from IJ)
-            if (isAnnual)
-                dGrowthPot *= AnnualSpeciesGrowthFactor();
-        }
-
-        return dGrowthPot;
-    }
-
-    /// <summary>
-    /// Daily growth after moisture factors
-    /// </summary>
-    /// <returns>Pot growth</returns>
-    internal double GrowthAfterWaterLimitations()
-    {
-        dGrowthW = dGrowthPot * Math.Pow(Math.Min(glfWater, glfAeration), waterStressFactor);
-
-        return dGrowthW;
-    }
-
-    /// <summary>
-    /// Daily growth after nutrient factors
-    /// </summary>
-    /// <returns>Actual growth</returns>
-    internal double DailyGrowthAct()
-    {
-        double gfnit = 0.0;
-        if (isLegume)
-            gfnit = glfN; //legume no dilution, but reducing more DM (therefore LAI)
-        else
-            gfnit = Math.Pow(glfN, NdilutCoeff);
-                // more DM growth than N limited, due to dilution (typically NdilutCoeff = 0.5)
-
-        dGrowth = dGrowthW * Math.Min(gfnit, GLFSFertility);
-        return dGrowth;
-
-        //RCichota, Jan/2014: updated the function, added account for Frgr (now GLFSFertility)
-    }
-
-    /// <summary>
-    /// Partition DM from new growth
-    /// </summary>
-    internal void EvaluateAllocationNewGrowth()
-    {
-        if (dGrowth > 0.0) // if no net growth, then skip "partition" part
-        {
-            // fShoot and fLeaf were calculated on CalcNdemand()
-
-            // Fractions of new growth to be allocated to the 1st tissue pools
-            double toRoot = 1.0 - ShootAllocationFactor;
-            double toStolon = ShootAllocationFactor * StolonAllocationFactor;
-            double toLeaf = ShootAllocationFactor * LeafAllocationFactor;
-            double toStem = ShootAllocationFactor * (1.0 - StolonAllocationFactor - LeafAllocationFactor);
-
-            // checking
-            double ToAll = toLeaf + toStem + toStolon + toRoot;
-            if (Math.Abs(ToAll - 1.0) > 0.0001)
-                throw new Exception("Mass balance lost during partition of new growth DM");
-
-            // Allocate the partitioned growth to the 1st tissue pools
-            dGrowthShoot = ShootAllocationFactor * dGrowth;
-            dGrowthRoot = toRoot * dGrowth;
-            leaves.tissue[0].DMTransferedIn = toLeaf * dGrowth;
-            stems.tissue[0].DMTransferedIn = toStem * dGrowth;
-            stolons.tissue[0].DMTransferedIn = toStolon * dGrowth;
-            roots.tissue[0].DMTransferedIn = dGrowthRoot;
-
-            // Set the amount of sugar in each organ
-            double fToSugar = 0.5;
-            leaves.SugarWt = fToSugar * toLeaf * dGrowth;
-            stems.SugarWt = fToSugar * toStem * dGrowth;
-            stolons.SugarWt = fToSugar * toStolon * dGrowth;
-
-            // Partitioing N, based on DM and [N] in each plant part
-            double myNsum = (toLeaf * leaves.NConcMaximum)
-                            + (toStem * stems.NConcMaximum)
-                            + (toStolon * stolons.NConcMaximum)
-                            + (toRoot * roots.NConcMaximum);
-            if (myNsum > 0.0)
-            {
-                double toLeafN = toLeaf * leaves.NConcMaximum / myNsum;
-                double toStemN = toStem * stems.NConcMaximum / myNsum;
-                double toStolN = toStolon * stolons.NConcMaximum / myNsum;
-                double toRootN = toRoot * roots.NConcMaximum / myNsum;
-
-                // checking
-                ToAll = toLeafN + toStemN + toStolN + toRootN;
-                if (Math.Abs(ToAll - 1.0) > 0.0001)
-                    throw new Exception("Mass balance lost during partition of new growth N");
-
-                // Allocate new N to the 1st tissue pools
-                leaves.tissue[0].NTransferedIn = toLeafN * newGrowthN;
-                stems.tissue[0].NTransferedIn = toStemN * newGrowthN;
-                stolons.tissue[0].NTransferedIn = toStolN * newGrowthN;
-                roots.tissue[0].NTransferedIn = toRootN * newGrowthN;
-
-                dGrowthShootN = leaves.tissue[0].NTransferedIn + stems.tissue[0].NTransferedIn + stolons.tissue[0].NTransferedIn;
-                dGrowthRootN = roots.tissue[0].NTransferedIn;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Tissue turnover among the 12 biomass pools
-    /// </summary>
+    /// <summary>Tissue turnover among the 12 biomass pools</summary>
     internal void EvaluateTissueTurnover()
     {
         // The turnover rates are affected by soil water and air temperature
@@ -1477,7 +1404,7 @@ public class Species
             // clear fraction removed, need to do it here to avoid issue with when a removal has happened (onPrepare, onProcess, onPost)
             fractionDefoliated = 0.0;
 
-            //// Get the turnover amounts (DM and N) for each organ  - DM into tissue1 was considered in PartitionDMGrown()
+            // Get the turnover amounts (DM and N) for each organ  - DM into tissue1 was considered in PartitionDMGrown()
 
             // Leaves
             leaves.tissue[0].DMTransferedOut = facGrowingTissue * gama * leaves.tissue[0].DM;
@@ -1572,9 +1499,68 @@ public class Species
         }
     }
 
-    /// <summary>
-    /// Update the DM and N of each tissue
-    /// </summary>
+    /// <summary>Partition DM from new growth</summary>
+    internal void EvaluateAllocationNewGrowth()
+    {
+        if (dGrowth > 0.0) // if no net growth, then skip "partition" part
+        {
+            // fShoot and fLeaf were calculated on CalcNdemand()
+
+            // Fractions of new growth to be allocated to the 1st tissue pools
+            double toRoot = 1.0 - ShootAllocationFactor;
+            double toStolon = ShootAllocationFactor * StolonAllocationFactor;
+            double toLeaf = ShootAllocationFactor * LeafAllocationFactor;
+            double toStem = ShootAllocationFactor * (1.0 - StolonAllocationFactor - LeafAllocationFactor);
+
+            // checking
+            double ToAll = toLeaf + toStem + toStolon + toRoot;
+            if (Math.Abs(ToAll - 1.0) > 0.0001)
+                throw new Exception("Mass balance lost during partition of new growth DM");
+
+            // Allocate the partitioned growth to the 1st tissue pools
+            dGrowthShoot = ShootAllocationFactor * dGrowth;
+            dGrowthRoot = toRoot * dGrowth;
+            leaves.tissue[0].DMTransferedIn = toLeaf * dGrowth;
+            stems.tissue[0].DMTransferedIn = toStem * dGrowth;
+            stolons.tissue[0].DMTransferedIn = toStolon * dGrowth;
+            roots.tissue[0].DMTransferedIn = dGrowthRoot;
+
+            // Set the amount of sugar in each organ
+            double fToSugar = 0.5;
+            leaves.SugarWt = fToSugar * toLeaf * dGrowth;
+            stems.SugarWt = fToSugar * toStem * dGrowth;
+            stolons.SugarWt = fToSugar * toStolon * dGrowth;
+
+            // Partition N, based on DM and [N] in each plant part
+            double myNsum = (toLeaf * leaves.NConcMaximum)
+                            + (toStem * stems.NConcMaximum)
+                            + (toStolon * stolons.NConcMaximum)
+                            + (toRoot * roots.NConcMaximum);
+            if (myNsum > 0.0)
+            {
+                double toLeafN = toLeaf * leaves.NConcMaximum / myNsum;
+                double toStemN = toStem * stems.NConcMaximum / myNsum;
+                double toStolN = toStolon * stolons.NConcMaximum / myNsum;
+                double toRootN = toRoot * roots.NConcMaximum / myNsum;
+
+                // checking
+                ToAll = toLeafN + toStemN + toStolN + toRootN;
+                if (Math.Abs(ToAll - 1.0) > 0.0001)
+                    throw new Exception("Mass balance lost during partition of new growth N");
+
+                // Allocate new N to the 1st tissue pools
+                leaves.tissue[0].NTransferedIn = toLeafN * newGrowthN;
+                stems.tissue[0].NTransferedIn = toStemN * newGrowthN;
+                stolons.tissue[0].NTransferedIn = toStolN * newGrowthN;
+                roots.tissue[0].NTransferedIn = toRootN * newGrowthN;
+
+                dGrowthShootN = leaves.tissue[0].NTransferedIn + stems.tissue[0].NTransferedIn + stolons.tissue[0].NTransferedIn;
+                dGrowthRootN = roots.tissue[0].NTransferedIn;
+            }
+        }
+    }
+
+    /// <summary>Update the DM and N of each tissue</summary>
     internal void DoUpdateTissues()
     {
         // Save some variables for mass balance check
@@ -1601,45 +1587,26 @@ public class Species
         if (Math.Abs(preTotalN + newGrowthN - dNLitter - dNRootSen - NRemobilised2NewGrowth - (AboveGroundN + roots.NTotal)) > Epsilon)
             throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance");
 
-
-        //bool dmIsOk = Math.Abs(previousDM + DMGrowth - DMDetached - DMTotal) <= Epsilon;
-        //bool nIsOk = Math.Abs(previousN + NGrowth - NDetached - NSenescedRemobilised - NTotal) <= Epsilon;
-
+        // update some aggregated variables (LAI, height, etc.)
         UpdateAggregatedVariables();
     }
 
-    /// <summary>
-    /// Update aggregated variables
-    /// </summary>
-    internal void UpdateAggregatedVariables() //update DM, N
+    /// <summary>Update aggregated variables (LAI, height, etc.)</summary>
+    internal void UpdateAggregatedVariables()
     {
-        //// - LAI  ------------------------------------------------------
+        // LAI
         EvaluateLAI();
 
-        //// - Plant height  ---------------------------------------------
+        // Plant height
         height = HeightfromDM();
 
-        //// - Tissue digestibility  -------------------------------------
+        // Tissue digestibility
         EvaluateDigestibility();
     }
 
-    #endregion
-
-    #region - Handling and auxilary processes  -------------------------------------------------------------------------
-
-    /// <summary>
-    /// Set germination
-    /// </summary>
-    internal void SetInGermination()
-    {
-        phenoStage = 0; //before germination
-    }
-
-    /// <summary>
-    /// Annuals phenology
-    /// </summary>
-    /// <returns>true or false</returns>
-    internal bool AnnualPhenology()
+    /// <summary>Computes the phenology of annual species</summary>
+    /// <returns>Whether plant is growing</returns>
+    internal bool EvaluatePhenologyOfAnnuals()
     {
         // check whether germination started
         if (Clock.Today.DayOfYear == dayGermn)
@@ -1670,163 +1637,11 @@ public class Species
         return (phenoStage > 0);
     }
 
-    /// <summary>
-    /// Growth factor for annual species, related to phenology/population
-    /// </summary>
-    /// <returns>Growth factor</returns>
-    public double AnnualSpeciesGrowthFactor()
-    {
-        double rFactor = 1.0;
-        if (phenoStage == 1 && daysfromEmergence < 60)
-        {
-            //decline at the begining due to population effects ???
-            rFactor = 0.5 + 0.5 * daysfromEmergence / 60;
-        }
-        else if (phenoStage == 2)
-        {
-            //decline of photosynthesis when approaching maturity
-            rFactor = 1.0 - (daysfromEmergence - daysEmgToAnth) / daysAnthToMatur;
-        }
+    #endregion  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        return rFactor;
-    }
+    #region - Nitrogen uptake processes  - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - -
 
-    #endregion
-
-    #endregion
-
-    #region Other processes  -------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Move a given amount of DM and N from live to dead pools
-    /// </summary>
-    /// <param name="killFaction">The fraction of each live pool to be moved into dead</param>
-    internal void KillCrop(double killFaction)
-    {
-        double fractionRemaining = Math.Max(0.0, 1.0 - killFaction);
-        leaves.tissue[3].DM += (leaves.tissue[0].DM + leaves.tissue[1].DM + leaves.tissue[2].DM) * killFaction;
-        leaves.tissue[0].DM *= fractionRemaining;
-        leaves.tissue[1].DM *= fractionRemaining;
-        leaves.tissue[2].DM *= fractionRemaining;
-        stems.tissue[3].DM += (stems.tissue[0].DM + stems.tissue[1].DM + stems.tissue[2].DM) * killFaction;
-        stems.tissue[0].DM *= fractionRemaining;
-        stems.tissue[1].DM *= fractionRemaining;
-        stems.tissue[2].DM *= fractionRemaining;
-        stolons.tissue[3].DM += (stolons.tissue[0].DM + stolons.tissue[1].DM + stolons.tissue[2].DM) * killFaction;
-        stolons.tissue[0].DM *= fractionRemaining;
-        stolons.tissue[1].DM *= fractionRemaining;
-        stolons.tissue[2].DM *= fractionRemaining;
-        roots.tissue[1].DM += roots.tissue[0].DM * killFaction;
-        roots.tissue[0].DM *= fractionRemaining;
-
-        // note: N concentration do not change for green material, so do not need to update N amount;
-        leaves.tissue[3].Namount += (leaves.tissue[0].Namount + leaves.tissue[1].Namount + leaves.tissue[2].Namount) * killFaction;
-        leaves.tissue[0].Namount *= fractionRemaining;
-        leaves.tissue[1].Namount *= fractionRemaining;
-        leaves.tissue[2].Namount *= fractionRemaining;
-        stems.tissue[3].Namount += (stems.tissue[0].Namount + stems.tissue[1].Namount + stems.tissue[2].Namount) *killFaction;
-        stems.tissue[0].Namount *= fractionRemaining;
-        stems.tissue[1].Namount *= fractionRemaining;
-        stems.tissue[2].Namount *= fractionRemaining;
-        stolons.tissue[3].Namount += (stolons.tissue[0].Namount + stolons.tissue[1].Namount + stolons.tissue[2].Namount) * killFaction;
-        stolons.tissue[0].Namount *= fractionRemaining;
-        stolons.tissue[1].Namount *= fractionRemaining;
-        stolons.tissue[2].Namount *= fractionRemaining;
-        roots.tissue[1].Namount += roots.tissue[0].Namount * killFaction;
-        roots.tissue[0].Namount *= fractionRemaining;
-
-        UpdateAggregatedVariables();
-    }
-
-    /// <summary>
-    /// Reset variables
-    /// </summary>
-    internal void ResetZero()
-    {
-        //Reset dm pools (kg/ha)
-        leaves.tissue[0].DM = leaves.tissue[1].DM = leaves.tissue[2].DM = leaves.tissue[3].DM = 0.0;
-        stems.tissue[0].DM = stems.tissue[1].DM = stems.tissue[2].DM = stems.tissue[3].DM = 0.0;
-        stolons.tissue[0].DM = stolons.tissue[1].DM = stolons.tissue[2].DM = stolons.tissue[3].DM = 0.0;
-        roots.tissue[0].DM = roots.tissue[1].DM = 0.0;
-
-        //Reset N pools
-        leaves.tissue[0].Namount = leaves.tissue[1].Namount = leaves.tissue[2].Namount = leaves.tissue[3].Namount = 0.0;
-        stems.tissue[0].Namount = stems.tissue[1].Namount = stems.tissue[2].Namount = stems.tissue[3].Namount = 0.0;
-        stolons.tissue[0].Namount = stolons.tissue[1].Namount = stolons.tissue[2].Namount = stolons.tissue[3].Namount = 0.0;
-        roots.tissue[0].Namount = roots.tissue[1].Namount = 0.0;
-
-        //Reset transfer amount
-        leaves.DoCleanTransferAmounts();
-        stems.DoCleanTransferAmounts();
-        stolons.DoCleanTransferAmounts();
-        roots.DoCleanTransferAmounts();
-
-        //Reset harvest amounts
-        dmdefoliated = 0.0;
-        Ndefoliated = 0.0;
-        digestDefoliated = 0.0;
-
-        phenoStage = 0;
-    }
-
-    #endregion
-
-    #region Functions  ----------------------------------------------------------------------------
-
-    /// <summary>
-    /// The mean temperature for the day
-    /// </summary>
-    private double Tmean
-    {
-        get { return 0.5 * (MetFile.MaxT + MetFile.MinT); }
-    }
-
-    /// <summary>
-    /// Effects of atmospheric [CO2] on plant photosynthesis
-    /// </summary>
-    /// <returns>CO2 effect on photosynthesis</returns>
-    private double PCO2Effects()
-    {
-        double termActual = (CO2 + CO2PmaxScale) / CO2;
-        double termReference = (referenceCO2 + CO2PmaxScale) / referenceCO2;
-        return termReference / termActual;
-    }
-
-    /// <summary>
-    /// Plant nitrogen [N] decline due to elevated [CO2]
-    /// </summary>
-    /// <returns>CO2 effect on plant N concentration</returns>
-    private double NCO2Effects()
-    {
-        if (CO2 <= referenceCO2)
-            return 1.0;
-
-        double factorCO2 = Math.Pow((CO2NScale - referenceCO2) / (CO2 - referenceCO2), CO2NCurvature);
-        double Fn = (CO2NMin + factorCO2) / (1 + factorCO2);
-        return Fn;
-    }
-
-    /// <summary>
-    /// Canopy conductance decline to elevated [CO2]
-    /// </summary>
-    /// <returns>CO2 effects on canopy conductance</returns>
-    private double ConductanceCO2Effects()
-    {
-        if (Math.Abs(CO2 - referenceCO2) < 0.5)
-            return 1.0;
-        //Hard coded here, not used, should go to Micromet!
-        double Gmin = 0.2; //Fc = Gmin when CO2->unlimited
-        double Gmax = 1.25; //Fc = Gmax when CO2 = 0;
-        double beta = 2.5; //curvature factor,
-
-        double Fc = Gmin + (Gmax - Gmin) * (1 - Gmin) * Math.Pow(referenceCO2, beta) /
-                    ((Gmax - 1) * Math.Pow(CO2, beta) + (1 - Gmin) * Math.Pow(referenceCO2, beta));
-        return Fc;
-    }
-
-    /// <summary>
-    /// Computes the N demand for potential growth (at optimum and luxury N levels)
-    /// </summary>
+    /// <summary>Computes the N demand for potential growth (at optimum and luxury N levels)</summary>
     internal void CalcTotalNDemand()
     {
         double toRoot = dGrowthW * (1.0 - ShootAllocationFactor);
@@ -1838,7 +1653,7 @@ public class Species
         NdemandOpt = (toLeaf * leaves.NConcOptimum) + (toStem * stems.NConcOptimum)
                    + (toStol * stolons.NConcOptimum) + (toRoot * roots.NConcOptimum);
 
-        NdemandOpt *= NCO2Effects();
+        NdemandOpt *= NVariationDueToCO2();
         //this will reduce the N stress under under elevated [co2] for the same soilN
 
         //N demand for new growth assuming luxury uptake (maximum [N])
@@ -1847,9 +1662,7 @@ public class Species
         //luxury uptake is not affected by [co2]
     }
 
-    /// <summary>
-    /// Computes amount of biologically fixed N
-    /// </summary>
+    /// <summary>Computes the amount of biologically fixed N</summary>
     internal void CalcNFixation()
     {
         double SoilNavailable = soilAvailableNH4.Sum() + soilAvailableNO3.Sum();
@@ -1871,9 +1684,30 @@ public class Species
         }
     }
 
-    /// <summary>
-    /// Computes the amount of N remobilised from senescent material used in new growth
-    /// </summary>
+    /// <summary>Calculates the costs of N fixation</summary>
+    /// <remarks>
+    /// Approach separates maintenance and activity costs, based roughly on results from:
+    /// Rainbird RM, Hitz WD, Hardy RWF 1984. Experimental determination of the respiration associated with soybean/rhizobium nitrogenase 
+    ///    function, nodule maintenance, and total nodule nitrogen fixation. Plant Physiology 75(1): 49-53.
+    /// Voisin AS, Salon C, Jeudy C, Warembourg FR 2003. Symbiotic N2 fixation activity in relation to C economy of Pisum sativum L. as a
+    ///    function of plant phenology. Journal of Experimental Botany 54(393): 2733-2744.
+    /// Minchin FR, Witty JF 2005. Respiratory/carbon costs of symbiotic nitrogen fixation in legumes. In: Lambers H, Ribas-Carbo M eds. 
+    ///    Plant Respiration. Advances in Photosynthesis and Respiration, Springer Netherlands. Pp. 195-205.
+    /// </remarks>
+    /// <returns>Carbon spent on N fixation</returns>
+    private double NFixationCost_M2()
+    {
+        //  respiration cost of symbiont (presence of rhizobia is assumed to be proportional to root mass)
+        double Tfactor = GFTemperature(Tmean);
+        double maintenanceCost = roots.DMGreen * CarbonFractionDM * symbiontCostFactor * Tfactor;
+
+        //  respiration cost of N fixation (assumed as a simple function of N fixed)
+        double activityCost = NFixed * NFixingCostFactor;
+
+        return maintenanceCost + activityCost;
+    }
+
+    /// <summary>Computes the amount of N remobilised from senescent material used in new growth</summary>
     internal void CalcNRemobSenescent()
     {
         if (NdemandLux <= NSenescedRemobilisable + NFixed)
@@ -1897,9 +1731,34 @@ public class Species
         newGrowthN = NRemobilised2NewGrowth + NFixed;
     }
 
-    /// <summary>
-    /// Computes the amount of N remobilisation from luxury N to be used in new growth
-    /// </summary>
+    /// <summary>Computes the amount of N taken up from soil</summary>
+    internal void CalcNUptake()
+    {
+        double soilNavailable = soilAvailableNH4.Sum() + soilAvailableNO3.Sum();
+        double soilNuptake = 0.0;
+        if (soilNavailable >= soilNdemand)
+        {
+            // soil can supply all N needed
+            soilNuptake = soilNdemand;
+        }
+        else
+        {
+            // soil cannot supply all N needed. Uptake the available
+            soilNuptake = soilNavailable;
+        }
+
+        newGrowthN += soilNuptake;
+
+        if (soilNuptake > 0.0)
+        {
+            // values for each N form
+            double nFormFrac = Math.Min(1.0, MathUtility.Divide(soilAvailableNH4.Sum(), soilNavailable, 0.0));
+            soilNH4Uptake = soilNuptake * nFormFrac;
+            soilNO3Uptake = soilNuptake * (1.0 - nFormFrac);
+        }
+    }
+
+    /// <summary>Computes the amount of N remobilisation from luxury N to be used in new growth</summary>
     internal void CalcNRemobLuxury()
     {
         double remainingNdemand = NdemandOpt - newGrowthN;
@@ -1958,121 +1817,18 @@ public class Species
         newGrowthN += NLuxury2NewGrowth;
     }
 
-    /// <summary>
-    /// Computes the amount of N taken up from soil
-    /// </summary>
-    internal void CalcNUptake()
-    {
-        double soilNavailable = soilAvailableNH4.Sum() + soilAvailableNO3.Sum();
-        double soilNuptake = 0.0;
-        if (soilNavailable >= soilNdemand)
-        {
-            // soil can supply all N needed
-            soilNuptake = soilNdemand;
-        }
-        else
-        {
-            // soil cannot supply all N needed. Uptake the available
-            soilNuptake = soilNavailable;
-        }
+    #endregion  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        newGrowthN += soilNuptake;
+    #region - DM allocation and related processes  - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - -
 
-        if (soilNuptake > 0.0)
-        {
-            // values for each N form
-            double nFormFrac = Math.Min(1.0, MathUtility.Divide(soilAvailableNH4.Sum(), soilNavailable, 0.0));
-            soilNH4Uptake = soilNuptake * nFormFrac;
-            soilNO3Uptake = soilNuptake * (1.0 - nFormFrac);
-        }
-    }
-
-    /// <summary>
-    /// N concentration effects on photosyntesis
-    /// </summary>
-    /// <returns>N effect</returns>
-    private double PmxNeffect()
-    {
-        double Fn = NCO2Effects();
-
-        double effect = 1.0;
-        if (!isAnnual) //  &&and FVegPhase and ( VegDay < 10 ) ) then  // need this or it never gets going
-        {
-            if (leaves.DMGreen > 0.0)
-            {
-                if (leaves.NconcGreen < leaves.NConcOptimum * Fn) //Fn
-                {
-                    if (leaves.NconcGreen > leaves.NConcMinimum)
-                    {
-                        //effect = Math.Min(1.0, Ncleaf_green / NcleafOpt*Fn);
-                        effect = Math.Min(1.0,
-                            MathUtility.Divide(leaves.NconcGreen - leaves.NConcMinimum, leaves.NConcOptimum * Fn - leaves.NConcMinimum, 0.0));
-                    }
-                    else
-                    {
-                        effect = 0.0;
-                    }
-                }
-            }
-        }
-        return effect;
-    }
-
-    /// <summary>
-    /// Cost of N fixation
-    /// </summary>
-    /// <remarks>
-    /// Original method (F. Li), modified by RCichota to return an equivalent to respiration
-    /// </remarks>
-    /// <returns>Carbon spent on N fixation</returns>
-    private double NFixationCost_M1(double GrowthC)
-    {
-        //  reduction of net production as cost of N-fixing
-        double costFactor = 0.0;
-        if (NdemandOpt > 0.0)
-        {
-            double actFix = NFixed / NdemandOpt;
-            costFactor = NFixCostMax * (actFix - MinFix) / (MaxFix - MinFix);
-        }
-
-        return GrowthC * Math.Min(1.0, Math.Max(0.0, costFactor));
-    }
-
-    /// <summary>
-    /// Calculates the costs of N fixation
-    /// </summary>
-    /// <remarks>
-    /// Approach separates maintenance and activity costs, based roughly on results from:
-    /// Rainbird RM, Hitz WD, Hardy RWF 1984. Experimental determination of the respiration associated with soybean/rhizobium nitrogenase 
-    ///    function, nodule maintenance, and total nodule nitrogen fixation. Plant Physiology 75(1): 49-53.
-    /// Voisin AS, Salon C, Jeudy C, Warembourg FR 2003. Symbiotic N2 fixation activity in relation to C economy of Pisum sativum L. as a
-    ///    function of plant phenology. Journal of Experimental Botany 54(393): 2733-2744.
-    /// Minchin FR, Witty JF 2005. Respiratory/carbon costs of symbiotic nitrogen fixation in legumes. In: Lambers H, Ribas-Carbo M eds. 
-    ///    Plant Respiration. Advances in Photosynthesis and Respiration, Springer Netherlands. Pp. 195-205.
-    /// </remarks>
-    /// <returns>Carbon spent on N fixation</returns>
-    private double NFixationCost_M2()
-    {
-        //  respiration cost of symbiont (presence of rhizobia is assumed to be proportional to root mass)
-        double Tfactor = GFTemperature(Tmean);
-        double maintenanceCost = roots.DMGreen * CarbonFractionDM * symbiontCostFactor * Tfactor;
-
-        //  respiration cost of N fixation (assumed as a simple function of N fixed)
-        double activityCost = NFixed * NFixingCostFactor;
-
-        return maintenanceCost + activityCost;
-    }
-
-    /// <summary>Computes the allocations into shoot and leaves of todays growth</summary>
-    internal void EvaluateGrowthAllocation()
+    /// <summary>Computes the allocations into shoot and leaves of today's growth</summary>
+    internal void EvaluateAllocationFractions()
     {
         EvaluateAllocationToShoot();
         EvaluateAllocationToLeaf();
     }
 
-    /// <summary>
-    /// Calculate the fraction of new growth allocated to shoot
-    /// </summary>
+    /// <summary>Calculates the fraction of new growth allocated to shoot</summary>
     /// <remarks>
     /// Allocation of new growth to shoot is a function of the current and a target (ideal) Shoot-Root ratio; it is further
     ///  modified according to soil's growth limiting factors (plants favour root growth when water or N are limiting).
@@ -2090,7 +1846,7 @@ public class Species
             // get the actual effect of limiting factors on SR (varies between one and GlfEffectOnSR)
             double glfFactor = 1.0 - GlfEffectOnSR * (1.0 - Math.Pow(glfMin, 1.0 / GlfEffectOnSR));
 
-            // get the current shoot/root ratio (partiton will try to make this value closer to targetSR)
+            // get the current shoot/root ratio (partition will try to make this value closer to targetSR)
             double currentSR = MathUtility.Divide(AboveGroundLiveWt, roots.DMGreen, 1000000.0);
 
             // get the factor for the reproductive season of perennials (increases shoot allocation during spring)
@@ -2101,8 +1857,8 @@ public class Species
             // get today's target SR
             double targetSR = TargetSRratio * reproFac;
 
-            // update todays shoot/root partition
-            double growthSR = targetSR* glfFactor * targetSR / currentSR;
+            // update today's shoot/root partition
+            double growthSR = targetSR * glfFactor * targetSR / currentSR;
 
             // compute fraction to shoot
             ShootAllocationFactor = growthSR / (1.0 + growthSR);
@@ -2118,92 +1874,7 @@ public class Species
             ShootAllocationFactor = 1 - MaxRootAllocation;
     }
 
-    /// <summary>
-    /// Initialise parameters to compute factor increasing shoot allocation during reproductive growth
-    /// </summary>
-    /// <remarks>
-    /// Reproductive phase of perennials is not simulated by the model, the ReproductiveGrowthFactor attempts to mimic the main
-    ///  effect, which is a higher allocation of DM to shoot during this period. The beginning and length of the reproductive
-    ///  phase is computed as function of latitude (it occurs later in spring and is shorter the further the location is from
-    ///  the equator). The extent at which allocation to shoot increases is also a function of latitude, maximum allocation is
-    ///  greater for higher latitudes. Shoulder periods occur before and after the main phase, in these the DM allocation varies
-    ///  between the default allocation and that of the main reproductive phase (allocationIncreaseRepro).
-    /// </remarks>
-    internal void InitReproductiveGrowthFactor()
-    {
-        int yearLength = 365 + (DateTime.IsLeapYear(Clock.year) ? 1 : 0);
-        int doyWinterSolstice = (MetFile.Latitude < 0.0) ? 172 : 355;
-        reproSeasonInterval = new double[3];
-
-        // compute the day to start the period with maximum DM allocation to shoot
-        double doyIniPlateau = doyWinterSolstice;
-        doyIniPlateau += 0.5 * yearLength / (1 + Math.Exp(-ReproSeasonTimingCoeff * (Math.Abs(MetFile.Latitude) - ReproSeasonReferenceLatitude)));
-
-        // compute the duration of the main phase (with max allocation to shoot)
-        reproSeasonInterval[1] = (yearLength / 24.0);
-        reproSeasonInterval[1] += (yearLength * 11.0 / 24.0) * Math.Pow(1 - (Math.Abs(MetFile.Latitude) / 90.0), ReproSeasonDurationCoeff);
-
-        // compute the duration of the onset and outset phases (shoulders)
-        reproSeasonInterval[0] = reproSeasonInterval[1] * ReproSeasonShouldersLengthFactor * ReproSeasonOnsetDurationFactor;
-        reproSeasonInterval[2] = reproSeasonInterval[1] * ReproSeasonShouldersLengthFactor * (1.0 - ReproSeasonOnsetDurationFactor);
-
-        if (reproSeasonInterval.Sum() > yearLength)
-            throw new Exception("Error on calculating period with high DM allocation, it is greater then one year");
-
-        // get the day for the start of reproductive season
-        doyIniReproSeason = doyIniPlateau - reproSeasonInterval[0];
-        if (doyIniReproSeason < 0.0) doyIniReproSeason += yearLength;
-
-        // compute the factor to augment allocation to shoot at main phase
-        allocationIncreaseRepro = ReproSeasonMaxAllocationIncrease;
-        allocationIncreaseRepro /= (1 + Math.Exp(-ReproSeasonAllocationCoeff * (Math.Abs(MetFile.Latitude) - ReproSeasonReferenceLatitude)));
-    }
-
-    /// <summary>
-    /// Calculate the factor increasing DM allocation to shoot during reproductive growth
-    /// </summary>
-    /// <remarks>
-    /// This mimics the changes in DM allocation during reproductive season; allocation to shoot increases up to a maximum
-    ///  value (defined by allocationIncreaseRepro). This value is used during the main phase, two shoulder periods are
-    ///  defined on either side of the main phase (duration is given by reproSeasonInterval, translated into days of year),
-    ///  Onset phase goes between doyA and doyB, main pahse between doyB and doyC, and outset between doyC and doyD.
-    /// NOTE: The days have to be set as doubles or the division operations will be rounded and be sligtly wrong
-    /// </remarks>
-    /// <returns>A factor to correct shoot allocation</returns>
-    private double CalcReproductiveGrowthFactor()
-    {
-        double result = 1.0;
-        int yearLength = 365 + (DateTime.IsLeapYear(Clock.year) ? 1 : 0);
-        double doy = Clock.Today.DayOfYear;
-        double doyC = doyIniReproSeason;
-        double doyF = doyC + reproSeasonInterval[0];
-        double doyD = doyF + reproSeasonInterval[1];
-        double doyE = doyD + reproSeasonInterval[2];
-
-        if (doy > doyC)
-        {
-            if (doy <= doyF)
-                result = 1.0 + allocationIncreaseRepro * (doy - doyC) / (doyF - doyC);
-            else if (doy <= doyD)
-                result = 1.0 + allocationIncreaseRepro;
-            else if (doy <= doyE)
-                result = 1 + allocationIncreaseRepro * (1 - (doy - doyD) / (doyE - doyD));
-        }
-        else
-        {
-            // check whether the high allocation period goes across the year (should only be needed for southern hemisphere)
-            if ((doyD > yearLength) && (doy <= doyD - yearLength))
-                result = 1.0 + allocationIncreaseRepro;
-            else if ((doyE > yearLength) && (doy <= doyE - yearLength))
-                result = 1.0 + allocationIncreaseRepro * (1 - (yearLength + doy - doyD) / (doyE - doyD));
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Computes the fraction of new shoot DM that is allocated to leaves
-    /// </summary>
+    /// <summary>Computes the fraction of new shoot DM that is allocated to leaves</summary>
     /// <remarks>
     /// This method is used to reduce the proportion of leaves as plants grow, this is used for species that 
     ///  allocate proportionally more DM to stolon/stems when the whole plant's DM is high.
@@ -2234,270 +1905,164 @@ public class Species
         LeafAllocationFactor = newLS / (1 + newLS);
     }
 
-    /// <summary>
-    /// Gets the green cover
-    /// </summary>
-    internal double coverGreen
+    /// <summary>Calculates variations in root growth and distribution</summary>
+    internal void EvaluateRootGrowth()
     {
-        get { return (1.0 - Math.Exp(-lightExtCoeff * greenLAI)); }
-    }
-
-    /// <summary>
-    /// Gets the dead cover
-    /// </summary>
-    internal double coverDead
-    {
-        get { return (1.0 - Math.Exp(-lightExtCoeff * deadLAI)); }
-    }
-
-    /// <summary>
-    /// Gets the total cover
-    /// </summary>
-    internal double coverTotal
-    {
-        get { return (1.0 - (Math.Exp(-lightExtCoeff * totalLAI))); }
-    }
-
-    /// <summary>
-    /// Growth limiting factor due to temperature
-    /// </summary>
-    /// <param name="T">Temperature</param>
-    /// <returns>GLFtemp</returns>
-    internal double GFTemperature(double T)
-    {
-        if (photoPath == "C4")
-            return GFTempC4(T);
-        else
-            return GFTempC3(T);
-    }
-
-    /// <summary>
-    ///  Temperature effects on photosynthesis for C3 plants
-    /// </summary>
-    /// <param name="T">Temperature</param>
-    /// <returns>GLFTemp</returns>
-    private double GFTempC3(double T)
-    {
-        double result = 0.0;
-        double growthTmax = growthTopt + ((growthTopt - growthTmin) / growthTq);
-        if ((T > growthTmin) && (T < growthTmax))
+        if (phenoStage > 0)
         {
-            double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
-            double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
-            result = val1 / val2;
-            if (result < 0.0) result = 0.0;
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Temperature effects on photosynthesis for C4 plants
-    /// </summary>
-    /// <param name="T">Temperature</param>
-    /// <returns>GLFTemp</returns>
-    public double GFTempC4(double T)
-    {
-        double result;
-        if (T <= growthTmin)
-        {
-            result = 0.0;
-        }
-        else if (T >= growthTopt)
-        {
-            result = 1.0;
-        }
-        else
-        {
-            double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
-            double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
-            double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
-            result = val1 / val2;
-            if (result < 0.0) result = 0.0;
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Heat effects on photosynthesis
-    /// </summary>
-    /// <returns>Heat effect</returns>
-    private double HeatEffect()
-    {
-        if (usingHeatStress)
-        {
-            double heatFactor;
-            if (MetFile.MaxT > heatFullT)
+            // do root elongation
+            if ((dGrowthRoot > 0.0) && (rootDepth < maxRootDepth))
             {
-                // very high temperature, full stress
-                heatFactor = 0.0;
-                accumTHeat = 0.0;
-            }
-            else if (MetFile.MaxT > heatOnsetT)
-            {
-                // high temperature, add some stress
-                heatFactor = highTempStress * (heatFullT - MetFile.MaxT) / (heatFullT - heatOnsetT);
-                accumTHeat = 0.0;
+                double tempFactor = GFTemperature(Tmean);
+                dRootDepth = rootElongationRate * tempFactor;
+                rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
             }
             else
             {
-                // cool temperature, same stress as yesterday
-                heatFactor = highTempStress;
+                // no root growth, depth does not change
+                dRootDepth = 0.0;
             }
 
-            // check recovery factor
-            double recoveryFactor = 0.0;
-            if (MetFile.MaxT <= heatOnsetT)
-                recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
-
-            // accumulate temperature
-            accumTHeat += Math.Max(0.0, heatRecoverT - Tmean);
-
-            // heat stress
-            highTempStress = Math.Min(1.0, heatFactor + recoveryFactor);
-
-            return highTempStress;
-        }
-        else
-            return 1.0;
-    }
-
-    /// <summary>
-    /// Cold effect on photosynthesis
-    /// </summary>
-    /// <returns>Cold effect</returns>
-    private double ColdEffect()
-    {
-        if (usingColdStress)
-        {
-            double coldFactor;
-            if (MetFile.MinT < coldFullT)
+            // do root distribution
+            if (dRootDepth > 0.0)
             {
-                // very low temperature, full stress
-                coldFactor = 0.0;
-                accumTCold = 0.0;
+                // only need to update root distribution if root depth changed
+                double[] curTarget = CurrentRootDistributionTarget();
+                for (int layer = 0; layer < dlayer.Length; layer++)
+                {
+                    // Senesced DM is not accounted for here
+                    double newAmountLayer = (roots.DMGreen * rootFraction[layer]) + (dGrowthRoot * curTarget[layer]);
+                    rootFraction[layer] = newAmountLayer / (roots.DMGreen + dGrowthRoot);
+                }
             }
-            else if (MetFile.MinT < coldOnsetT)
-            {
-                // low temperature, add some stress
-                coldFactor = lowTempStress * (MetFile.MinT - coldFullT) / (coldOnsetT - coldFullT);
-                accumTCold = 0.0;
-            }
-            else
-            {
-                // warm temperature, same stress as yesterday
-                coldFactor = lowTempStress;
-            }
-
-            // check recovery factor
-            double recoveryFactor = 0.0;
-            if (MetFile.MinT >= coldOnsetT)
-                recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
-
-            // accumulate temperature
-            accumTCold += Math.Max(0.0, Tmean - coldRecoverT);
-
-            // cold stress
-            lowTempStress = Math.Min(1.0, coldFactor + recoveryFactor);
-
-            return lowTempStress;
-        }
-        else
-            return 1.0;
-    }
-
-    /// <summary>Computes the effects of temperature on respiration</summary>
-    /// <returns>Temperature factor</returns>
-    private double TemperatureEffectOnRespiration()
-    {
-        double result;
-        if (Tmean <= 0.0)
-        {
-            // too cold, no respiration
-            result = 0.0;
         }
         else
         {
-            double scalef = 1.0 - Math.Exp(-1.0);
-            double baseEffect = 1.0 - Math.Exp(-Math.Pow(Tmean / respTref, respExponent));
-            result = baseEffect / scalef;
+            dRootDepth = 0.0;
+            rootDepth = 0.0;
+        }
+    }
+
+    /// <summary>Calculates the plant height, as function of DM</summary>
+    /// <returns>Plant height</returns>
+    internal double HeightfromDM()
+    {
+        double TodaysHeight = MaxPlantHeight - MinimumHeight;
+        double standingDM = (leaves.DMTotal + stems.DMTotal);
+
+        if (standingDM <= MassForMaxHeight)
+        {
+            double massRatio = standingDM / MassForMaxHeight;
+            double heightF = ExponentHeightFromMass - (ExponentHeightFromMass * massRatio) + massRatio;
+            heightF *= Math.Pow(massRatio, ExponentHeightFromMass - 1);
+            TodaysHeight *= heightF;
         }
 
-        return result;
+        return TodaysHeight + MinimumHeight;
     }
 
-    /// <summary>
-    ///  Effect of temperature on tissue turnover rate
-    /// </summary>
-    /// <returns>Temperature effect</returns>
-    private double TemperatureEffectOnTissueTurnover()
+    /// <summary>Calculates the LAI values for green and dead material</summary>
+    internal void EvaluateLAI()
     {
-        double result;
-        if (Tmean <= massFluxTmin)
-            result = 0.0;
-        else if (Tmean < massFluxTopt)
-            result = Math.Pow((Tmean - massFluxTmin) / (massFluxTopt - massFluxTmin), massFluxTq);
-        else
-            result = 1.0;
+        greenLAI = (0.0001 * leaves.DMGreen * SpecificLeafArea)
+                   + (0.0001 * stolons.DMTotal * 0.3 * SpecificLeafArea);
+        // 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming stolon = 0.3*SLA
+        // Resilience after unfavoured conditions
+        // Consider cover will be bigger for the same amount of DM when DM is low due to
+        // - light extinction coefficient will be bigger - plant leaves will be more horizontal than in dense high swards
+        // - more parts will turn green for photosynthesis (?)
+        // - quick response of plant shoots to favoured conditions after release of stress
+        // » Specific leaf area should be reduced (RCichota2014)
+        if (!isLegume && AboveGroundLiveWt < 1000)
+        {
+            greenLAI += 0.0001 * stems.DMGreen * SpecificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
+        }
 
-        return result;
+        deadLAI = 0.0001 * leaves.tissue[3].DM * SpecificLeafArea;
+        totalLAI = greenLAI + deadLAI;
     }
 
+    #endregion  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    #endregion  ------------------------------------------------------------------------------------------------------------
+
+    #region Intermittent processes  ----------------------------------------------------------------------------------------
+
     /// <summary>
-    /// Effect of water stress on tissue turnover rate
+    /// Move a given amount of DM and N from live to dead pools
     /// </summary>
-    /// <returns>Moisture effect</returns>
-    private double MoistureEffectOnTissueTurnover()
+    /// <param name="killFaction">The fraction of each live pool to be moved into dead</param>
+    internal void KillCrop(double killFaction)
     {
-        double result = 1.0;
-        if (Math.Min(glfWater, glfAeration) < massFluxWopt)
-            result = 1.0 + (massFluxW0 - 1.0) * ((massFluxWopt - Math.Min(glfWater, glfAeration)) / massFluxWopt);
+        double fractionRemaining = Math.Max(0.0, 1.0 - killFaction);
+        leaves.tissue[3].DM += (leaves.tissue[0].DM + leaves.tissue[1].DM + leaves.tissue[2].DM) * killFaction;
+        leaves.tissue[0].DM *= fractionRemaining;
+        leaves.tissue[1].DM *= fractionRemaining;
+        leaves.tissue[2].DM *= fractionRemaining;
+        stems.tissue[3].DM += (stems.tissue[0].DM + stems.tissue[1].DM + stems.tissue[2].DM) * killFaction;
+        stems.tissue[0].DM *= fractionRemaining;
+        stems.tissue[1].DM *= fractionRemaining;
+        stems.tissue[2].DM *= fractionRemaining;
+        stolons.tissue[3].DM += (stolons.tissue[0].DM + stolons.tissue[1].DM + stolons.tissue[2].DM) * killFaction;
+        stolons.tissue[0].DM *= fractionRemaining;
+        stolons.tissue[1].DM *= fractionRemaining;
+        stolons.tissue[2].DM *= fractionRemaining;
+        roots.tissue[1].DM += roots.tissue[0].DM * killFaction;
+        roots.tissue[0].DM *= fractionRemaining;
 
-        return Math.Max(1.0, Math.Min(massFluxW0, result));
+        // note: N concentration do not change for green material, so do not need to update N amount;
+        leaves.tissue[3].Namount += (leaves.tissue[0].Namount + leaves.tissue[1].Namount + leaves.tissue[2].Namount) * killFaction;
+        leaves.tissue[0].Namount *= fractionRemaining;
+        leaves.tissue[1].Namount *= fractionRemaining;
+        leaves.tissue[2].Namount *= fractionRemaining;
+        stems.tissue[3].Namount += (stems.tissue[0].Namount + stems.tissue[1].Namount + stems.tissue[2].Namount) *killFaction;
+        stems.tissue[0].Namount *= fractionRemaining;
+        stems.tissue[1].Namount *= fractionRemaining;
+        stems.tissue[2].Namount *= fractionRemaining;
+        stolons.tissue[3].Namount += (stolons.tissue[0].Namount + stolons.tissue[1].Namount + stolons.tissue[2].Namount) * killFaction;
+        stolons.tissue[0].Namount *= fractionRemaining;
+        stolons.tissue[1].Namount *= fractionRemaining;
+        stolons.tissue[2].Namount *= fractionRemaining;
+        roots.tissue[1].Namount += roots.tissue[0].Namount * killFaction;
+        roots.tissue[0].Namount *= fractionRemaining;
+
+        UpdateAggregatedVariables();
     }
 
-    /// <summary>
-    /// Remove plant DM
-    /// </summary>
-    /// <param name="AmountToRemove">The DM amount to remove</param>
-    /// <param name="PrefGreen">Preference level for green tissue</param>
-    /// <param name="PrefDead">Preference level for dead tissue</param>
+    /// <summary>Removes some plant DM</summary>
+    /// <param name="amountToRemove">The DM amount to remove</param>
     /// <returns>Amount removed</returns>
-    internal double RemoveDM(double AmountToRemove, double PrefGreen, double PrefDead)
+    internal double RemoveDM(double amountToRemove)
     {
         // save current state
-        double preRemovalDMshoot = AboveGroundWt;
-        double preRemovalNshoot = AboveGroundN;
+        double preRemovalDMShoot = AboveGroundWt;
+        double preRemovalNShoot = AboveGroundN;
 
         // get the weights for each pool, consider preference and available DM
-        double fractionToRemoved = Math.Min(1.0, AmountToRemove / StandingWt);
-
-        double tempPrefGreen = PrefGreen + (PrefDead * fractionToRemoved);
-        double tempPrefDead = PrefDead + (PrefGreen * fractionToRemoved);
+        double tempPrefGreen = PreferenceGreenOverDead + (amountToRemove / StandingWt);
+        double tempPrefDead = 1.0 + (PreferenceGreenOverDead * amountToRemove / StandingWt);
         double tempRemovableGreen = Math.Max(0.0, leaves.DMGreenHarvestable + stems.DMGreenHarvestable + stolons.DMGreenHarvestable);
         double tempRemovableDead = Math.Max(0.0, StandingDeadWt);
 
-        // get partiton between dead and live materials
+        // get partition between dead and live materials
         double tempTotal = tempRemovableGreen * tempPrefGreen + tempRemovableDead * tempPrefDead;
-        double fractionToHarvestGreen = 0.0;
-        double fractionToHarvestDead = 0.0;
-        fractionToHarvestGreen = tempRemovableGreen * tempPrefGreen / tempTotal;
-        fractionToHarvestDead = tempRemovableDead * tempPrefDead / tempTotal;
+        double fractionToHarvestGreen = tempRemovableGreen * tempPrefGreen / tempTotal;
+        double fractionToHarvestDead = tempRemovableDead * tempPrefDead / tempTotal;
 
         // get amounts removed
-        double removingGreenDm = AmountToRemove * fractionToHarvestGreen;
-        double removingDeadDm = AmountToRemove * fractionToHarvestDead;
+        double removingGreenDM = amountToRemove * fractionToHarvestGreen;
+        double removingDeadDM = amountToRemove * fractionToHarvestDead;
+
         // Fraction of DM remaining in the field
         double fractionRemainingGreen = 1.0;
-        if (StandingLiveWt > 0.0)
-            fractionRemainingGreen -= Math.Min(1.0, removingGreenDm / StandingLiveWt);
+        if (StandingLiveWt > Epsilon)
+            fractionRemainingGreen -= Math.Min(1.0, removingGreenDM / StandingLiveWt);
         double fractionRemainingDead = 1.0;
-        if (StandingDeadWt > 0.0)
-            fractionRemainingDead -= Math.Min(1.0, removingDeadDm / StandingDeadWt);
+        if (StandingDeadWt > Epsilon)
+            fractionRemainingDead -= Math.Min(1.0, removingDeadDM / StandingDeadWt);
         double fractionRemainingStolon = 1.0;
-        if (StandingLiveWt > 0.0)
-            fractionRemainingStolon -= Math.Min(1.0, removingGreenDm * stolons.FractionStanding / StandingLiveWt);
+        if (StandingLiveWt > Epsilon)
+            fractionRemainingStolon -= Math.Min(1.0, removingGreenDM * stolons.FractionStanding / StandingLiveWt);
 
         if ((fractionRemainingGreen < -Epsilon) || (fractionRemainingDead < -Epsilon) || (fractionRemainingStolon < -Epsilon))
             throw new Exception(" AgPasture - partition of DM removed resulted in loss of mass balance");
@@ -2542,166 +2107,362 @@ public class Species
             stems.tissue[t].NRemobilisable *= fractionRemainingGreen;
             stolons.tissue[t].NRemobilisable *= fractionRemainingGreen;
         }
-        roots.tissue[0].NRemobilisable *= fractionRemainingGreen;
 
         leaves.tissue[3].NRemobilisable *= fractionRemainingDead;
         stems.tissue[3].NRemobilisable *= fractionRemainingDead;
         stolons.tissue[3].NRemobilisable *= fractionRemainingDead;
-        roots.tissue[1].NRemobilisable *= fractionRemainingDead;
 
-        // Update the aggregated variables (LAI, height, etc)
+        // Update the aggregated variables (LAI, height, etc.)
         UpdateAggregatedVariables();
 
         // Check balance and set outputs
-        dmdefoliated = preRemovalDMshoot - AboveGroundWt;
-        Ndefoliated = preRemovalNshoot - AboveGroundN;
-        fractionDefoliated = dmdefoliated / preRemovalDMshoot;
-        if (Math.Abs(dmdefoliated - AmountToRemove) > 0.00001)
+        dmdefoliated = preRemovalDMShoot - AboveGroundWt;
+        Ndefoliated = preRemovalNShoot - AboveGroundN;
+        fractionDefoliated = dmdefoliated / preRemovalDMShoot;
+        if (Math.Abs(dmdefoliated - amountToRemove) > 0.00001)
             throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
 
         return dmdefoliated;
     }
 
-    /// <summary>
-    /// Calcualtes the LAI values for green and dead material
-    /// </summary>
-    internal void EvaluateLAI()
+    #endregion  ------------------------------------------------------------------------------------------------------------
+
+    #region Auxiliary functions and processes  -----------------------------------------------------------------------------
+
+    /// <summary>Growth factor for annual species, related to phenology/population</summary>
+    /// <returns>Growth factor</returns>
+    public double AnnualSpeciesGrowthFactor()
     {
-        greenLAI = (0.0001 * leaves.DMGreen * SpecificLeafArea)
-                   + (0.0001 * stolons.DMTotal * 0.3 * SpecificLeafArea);
-        // 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming stolon = 0.3*SLA
-        // Resilience after unfavoured conditions
-        // Consider cover will be bigger for the same amount of DM when DM is low due to
-        // - light extinction coefficient will be bigger - plant leaves will be more horizontal than in dense high swards
-        // - more parts will turn green for photosysnthesis (?)
-        // - quick response of plant shoots to favoured conditions after release of stress
-        // » Specific leaf area should be reduced (RCichota2014)
-        if (!isLegume && AboveGroundLiveWt < 1000)
+        double rFactor = 1.0;
+        if (phenoStage == 1 && daysfromEmergence < 60)
         {
-            greenLAI += 0.0001 * stems.DMGreen * SpecificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
+            //decline at the beginning due to population effects ???
+            rFactor = 0.5 + 0.5 * daysfromEmergence / 60;
+        }
+        else if (phenoStage == 2)
+        {
+            //decline of photosynthesis when approaching maturity
+            rFactor = 1.0 - (daysfromEmergence - daysEmgToAnth) / daysAnthToMatur;
         }
 
-        deadLAI = 0.0001 * leaves.tissue[3].DM * SpecificLeafArea;
-        totalLAI = greenLAI + deadLAI;
+        return rFactor;
     }
 
-    /// <summary>
-    /// Calculates the average herbage digestibility (standing herbage)
-    /// </summary>
-    /// <returns>digestibility</returns>
-    internal void EvaluateDigestibility()
+    /// <summary>Effects of atmospheric [CO2] on plant photosynthesis</summary>
+    /// <returns>Growth factor</returns>
+    private double CO2EffectsOnPhotosynthesis()
     {
-        double result = 0.0;
-        if (StandingWt > 0.0)
-        {
-            result = (leaves.DigestibilityLive * leaves.DMGreen) + (leaves.DigestibilityDead * leaves.DMDead)
-                   + (stems.DigestibilityLive * stems.DMGreen) + (stems.DigestibilityDead * stems.DMDead)
-                   + (stolons.DigestibilityLive * stolons.DMGreen * stolons.FractionStanding);
-            result /= StandingWt;
-        }
-
-        digestHerbage = result;
+        double termActual = (CO2 + CO2PmaxScale) / CO2;
+        double termReference = (referenceCO2 + CO2PmaxScale) / referenceCO2;
+        return termReference / termActual;
     }
 
-    /// <summary>
-    /// Calculates the plant height, as function of DM
-    /// </summary>
-    /// <returns>Plant height</returns>
-    internal double HeightfromDM()
+    /// <summary>N concentration effects on photosynthesis</summary>
+    /// <returns>Growth factor</returns>
+    private double NEffectOnPhotosynthesis()
     {
-        double TodaysHeight = MaxPlantHeight - MinimumHeight;
-        double standingDM = (leaves.DMTotal + stems.DMTotal);
+        double Fn = NVariationDueToCO2();
 
-        if (standingDM <= MassForMaxHeight)
+        double effect = 1.0;
+        if (!isAnnual) //  &&and FVegPhase and ( VegDay < 10 ) ) then  // need this or it never gets going
         {
-            double massRatio = standingDM / MassForMaxHeight;
-            double heightF = ExponentHeightFromMass - (ExponentHeightFromMass * massRatio) + massRatio;
-            heightF *= Math.Pow(massRatio, ExponentHeightFromMass - 1);
-            TodaysHeight *= heightF;
-        }
-
-        return TodaysHeight + MinimumHeight;
-    }
-
-    /// <summary>
-    /// Calculates variations in root growth and distribution
-    /// </summary>
-    internal void EvaluateRootGrowth()
-    {
-        if (phenoStage > 0)
-        {
-            // do root elongation
-            if ((dGrowthRoot > 0.0) && (rootDepth < maxRootDepth))
+            if (leaves.DMGreen > 0.0)
             {
-                double tempFactor = GFTemperature(Tmean);
-                dRootDepth = rootElongationRate * tempFactor;
-                rootDepth = Math.Min(maxRootDepth, Math.Max(minRootDepth, rootDepth + dRootDepth));
+                if (leaves.NconcGreen < leaves.NConcOptimum * Fn) //Fn
+                {
+                    if (leaves.NconcGreen > leaves.NConcMinimum)
+                    {
+                        //effect = Math.Min(1.0, Ncleaf_green / NcleafOpt*Fn);
+                        effect = Math.Min(1.0,
+                            MathUtility.Divide(leaves.NconcGreen - leaves.NConcMinimum, leaves.NConcOptimum * Fn - leaves.NConcMinimum, 0.0));
+                    }
+                    else
+                    {
+                        effect = 0.0;
+                    }
+                }
+            }
+        }
+        return effect;
+    }
+
+    /// <summary>Plant nitrogen [N] decline due to elevated [CO2]</summary>
+    /// <returns>Effect on plant N concentration</returns>
+    private double NVariationDueToCO2()
+    {
+        if (CO2 <= referenceCO2)
+            return 1.0;
+
+        double factorCO2 = Math.Pow((CO2NScale - referenceCO2) / (CO2 - referenceCO2), CO2NCurvature);
+        double Fn = (CO2NMin + factorCO2) / (1 + factorCO2);
+        return Fn;
+    }
+
+    /// <summary>Canopy conductance decline to elevated [CO2]</summary>
+    /// <returns>Effects on canopy conductance</returns>
+    private double ConductanceCO2Effects()
+    {
+        if (Math.Abs(CO2 - referenceCO2) < 0.5)
+            return 1.0;
+        //Hard coded here, not used, should go to Micromet!
+        double Gmin = 0.2; //Fc = Gmin when CO2->unlimited
+        double Gmax = 1.25; //Fc = Gmax when CO2 = 0;
+        double beta = 2.5; //curvature factor,
+
+        double Fc = Gmin + (Gmax - Gmin) * (1 - Gmin) * Math.Pow(referenceCO2, beta) /
+                    ((Gmax - 1) * Math.Pow(CO2, beta) + (1 - Gmin) * Math.Pow(referenceCO2, beta));
+        return Fc;
+    }
+
+    /// <summary>
+    /// The mean temperature for the day
+    /// </summary>
+    private double Tmean
+    {
+        get { return 0.5 * (MetFile.MaxT + MetFile.MinT); }
+    }
+
+    /// <summary>Heat effects on photosynthesis</summary>
+    /// <returns>Growth factor</returns>
+    private double HeatEffect()
+    {
+        if (usingHeatStress)
+        {
+            double heatFactor;
+            if (MetFile.MaxT > heatFullT)
+            {
+                // very high temperature, full stress
+                heatFactor = 0.0;
+                accumTHeat = 0.0;
+            }
+            else if (MetFile.MaxT > heatOnsetT)
+            {
+                // high temperature, add some stress
+                heatFactor = highTempStress * (heatFullT - MetFile.MaxT) / (heatFullT - heatOnsetT);
+                accumTHeat = 0.0;
             }
             else
             {
-                // no root growth, depth does not change
-                dRootDepth = 0.0;
+                // cool temperature, same stress as yesterday
+                heatFactor = highTempStress;
             }
 
-            // do root distribution
-            if (dRootDepth > 0.0)
+            // check recovery factor
+            double recoveryFactor = 0.0;
+            if (MetFile.MaxT <= heatOnsetT)
+                recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
+
+            // accumulate temperature
+            accumTHeat += Math.Max(0.0, heatRecoverT - Tmean);
+
+            // heat stress
+            highTempStress = Math.Min(1.0, heatFactor + recoveryFactor);
+
+            return highTempStress;
+        }
+        else
+            return 1.0;
+    }
+
+    /// <summary>Cold effect on photosynthesis</summary>
+    /// <returns>Growth factor</returns>
+    private double ColdEffect()
+    {
+        if (usingColdStress)
+        {
+            double coldFactor;
+            if (MetFile.MinT < coldFullT)
             {
-                // only need to update root distribution if root depht changed
-                double[] curTarget = CurrentRootDistributionTarget();
-                for (int layer = 0; layer < dlayer.Length; layer++)
-                {
-                    // Senesced DM is not accounted for here
-                    double newAmountLayer = (roots.DMGreen * rootFraction[layer]) + (dGrowthRoot * curTarget[layer]);
-                    rootFraction[layer] = newAmountLayer / (roots.DMGreen + dGrowthRoot);
-                }
+                // very low temperature, full stress
+                coldFactor = 0.0;
+                accumTCold = 0.0;
             }
+            else if (MetFile.MinT < coldOnsetT)
+            {
+                // low temperature, add some stress
+                coldFactor = lowTempStress * (MetFile.MinT - coldFullT) / (coldOnsetT - coldFullT);
+                accumTCold = 0.0;
+            }
+            else
+            {
+                // warm temperature, same stress as yesterday
+                coldFactor = lowTempStress;
+            }
+
+            // check recovery factor
+            double recoveryFactor = 0.0;
+            if (MetFile.MinT >= coldOnsetT)
+                recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
+
+            // accumulate temperature
+            accumTCold += Math.Max(0.0, Tmean - coldRecoverT);
+
+            // cold stress
+            lowTempStress = Math.Min(1.0, coldFactor + recoveryFactor);
+
+            return lowTempStress;
+        }
+        else
+            return 1.0;
+    }
+
+    /// <summary>Growth limiting factor due to temperature</summary>
+    /// <param name="T">Temperature</param>
+    /// <returns>Growth factor</returns>
+    internal double GFTemperature(double T)
+    {
+        if (photoPath == "C4")
+            return GFTempC4(T);
+        else
+            return GFTempC3(T);
+    }
+
+    /// <summary>Temperature effects on photosynthesis for C3 plants</summary>
+    /// <param name="T">Temperature</param>
+    /// <returns>Growth factor</returns>
+    private double GFTempC3(double T)
+    {
+        double result = 0.0;
+        double growthTmax = growthTopt + ((growthTopt - growthTmin) / growthTq);
+        if ((T > growthTmin) && (T < growthTmax))
+        {
+            double val1 = Math.Pow((T - growthTmin), growthTq) * (growthTmax - T);
+            double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (growthTmax - growthTopt);
+            result = val1 / val2;
+            if (result < 0.0) result = 0.0;
+        }
+
+        return result;
+    }
+
+    /// <summary>Temperature effects on photosynthesis for C4 plants</summary>
+    /// <param name="T">Temperature</param>
+    /// <returns>Growth factor</returns>
+    public double GFTempC4(double T)
+    {
+        double result;
+        if (T <= growthTmin)
+        {
+            result = 0.0;
+        }
+        else if (T >= growthTopt)
+        {
+            result = 1.0;
         }
         else
         {
-            dRootDepth = 0.0;
-            rootDepth = 0.0;
+            double Tmax = growthTopt + (growthTopt - growthTmin) / growthTq;
+            double val1 = Math.Pow((T - growthTmin), growthTq) * (Tmax - T);
+            double val2 = Math.Pow((growthTopt - growthTmin), growthTq) * (Tmax - growthTopt);
+            result = val1 / val2;
+            if (result < 0.0) result = 0.0;
         }
-    }
-
-    /// <summary>Compute the current target distribution of roots in the soil profile</summary>
-    /// <remarks>
-    /// This distribution is a correction of the target distribution, taking into account the depth of soil
-    /// as well as the current rooting depth
-    /// </remarks>
-    /// <returns>The proportion of root mass in each soil layer</returns>
-    private double[] CurrentRootDistributionTarget()
-    {
-        int nLayers = dlayer.Length;
-        double currentDepth = 0.0;
-        double cumProportion = 0.0;
-        for (int layer = 0; layer < nLayers; layer++)
-        {
-            if (currentDepth < rootDepth)
-            {
-                // layer is within the root zone
-                currentDepth += dlayer[layer];
-                if (currentDepth <= rootDepth)
-                {
-                    // layer is fully in the root zone
-                    cumProportion += targetRootAllocation[layer];
-                }
-                else
-                {
-                    // layer is partially in the root zone
-                    double layerFrac = (rootDepth - (currentDepth - dlayer[layer]))
-                                     / (maxRootDepth - (currentDepth - dlayer[layer]));
-                    cumProportion += targetRootAllocation[layer] * Math.Min(1.0, Math.Max(0.0, layerFrac));
-                }
-            }
-            else
-                layer = nLayers;
-        }
-
-        double[] result = new double[nLayers];
-        for (int layer = 0; layer < nLayers; layer++)
-            result[layer] = targetRootAllocation[layer] / cumProportion;
 
         return result;
+    }
+
+    /// <summary>Computes the effects of temperature on respiration</summary>
+    /// <returns>Respiration factor</returns>
+    private double TemperatureEffectOnRespiration()
+    {
+        double result;
+        if (Tmean <= 0.0)
+        {
+            // too cold, no respiration
+            result = 0.0;
+        }
+        else
+        {
+            double scalef = 1.0 - Math.Exp(-1.0);
+            double baseEffect = 1.0 - Math.Exp(-Math.Pow(Tmean / respTref, respExponent));
+            result = baseEffect / scalef;
+        }
+
+        return result;
+    }
+
+    /// <summary>Effect of temperature on tissue turnover rate</summary>
+    /// <returns>Turnover factor</returns>
+    private double TemperatureEffectOnTissueTurnover()
+    {
+        double result;
+        if (Tmean <= massFluxTmin)
+            result = 0.0;
+        else if (Tmean < massFluxTopt)
+            result = Math.Pow((Tmean - massFluxTmin) / (massFluxTopt - massFluxTmin), massFluxTq);
+        else
+            result = 1.0;
+
+        return result;
+    }
+
+    /// <summary>Effect of water stress on tissue turnover rate</summary>
+    /// <returns>Turnover factor</returns>
+    private double MoistureEffectOnTissueTurnover()
+    {
+        double result = 1.0;
+        if (Math.Min(glfWater, glfAeration) < massFluxWopt)
+            result = 1.0 + (massFluxW0 - 1.0) * ((massFluxWopt - Math.Min(glfWater, glfAeration)) / massFluxWopt);
+
+        return Math.Max(1.0, Math.Min(massFluxW0, result));
+    }
+
+    /// <summary>Calculate the factor increasing DM allocation to shoot during reproductive growth</summary>
+    /// <remarks>
+    /// This mimics the changes in DM allocation during reproductive season; allocation to shoot increases up to a maximum
+    ///  value (defined by allocationIncreaseRepro). This value is used during the main phase, two shoulder periods are
+    ///  defined on either side of the main phase (duration is given by reproSeasonInterval, translated into days of year),
+    ///  Onset phase goes between doyA and doyB, main phase between doyB and doyC, and outset between doyC and doyD.
+    /// NOTE: The days have to be set as doubles or the division operations will be rounded and be slightly wrong
+    /// </remarks>
+    /// <returns>A factor to correct shoot allocation</returns>
+    private double CalcReproductiveGrowthFactor()
+    {
+        double result = 1.0;
+        int yearLength = 365 + (DateTime.IsLeapYear(Clock.year) ? 1 : 0);
+        double doy = Clock.Today.DayOfYear;
+        double doyC = doyIniReproSeason;
+        double doyF = doyC + reproSeasonInterval[0];
+        double doyD = doyF + reproSeasonInterval[1];
+        double doyE = doyD + reproSeasonInterval[2];
+
+        if (doy > doyC)
+        {
+            if (doy <= doyF)
+                result = 1.0 + allocationIncreaseRepro * (doy - doyC) / (doyF - doyC);
+            else if (doy <= doyD)
+                result = 1.0 + allocationIncreaseRepro;
+            else if (doy <= doyE)
+                result = 1 + allocationIncreaseRepro * (1 - (doy - doyD) / (doyE - doyD));
+        }
+        else
+        {
+            // check whether the high allocation period goes across the year (should only be needed for southern hemisphere)
+            if ((doyD > yearLength) && (doy <= doyD - yearLength))
+                result = 1.0 + allocationIncreaseRepro;
+            else if ((doyE > yearLength) && (doy <= doyE - yearLength))
+                result = 1.0 + allocationIncreaseRepro * (1 - (yearLength + doy - doyD) / (doyE - doyD));
+        }
+
+        return result;
+    }
+
+    /// <summary>Gets the green tissues cover</summary>
+    internal double coverGreen
+    {
+        get { return (1.0 - Math.Exp(-lightExtCoeff * greenLAI)); }
+    }
+
+    /// <summary>Gets the dead tissues cover</summary>
+    internal double coverDead
+    {
+        get { return (1.0 - Math.Exp(-lightExtCoeff * deadLAI)); }
+    }
+
+    /// <summary>Gets the total plant cover</summary>
+    internal double coverTotal
+    {
+        get { return (1.0 - (Math.Exp(-lightExtCoeff * totalLAI))); }
     }
 
     /// <summary>Compute the ideal distribution of roots in the soil profile</summary>
@@ -2762,6 +2523,62 @@ public class Species
         return result;
     }
 
+    /// <summary>Compute the current target distribution of roots in the soil profile</summary>
+    /// <remarks>
+    /// This distribution is a correction of the target distribution, taking into account the depth of soil
+    /// as well as the current rooting depth
+    /// </remarks>
+    /// <returns>The proportion of root mass in each soil layer</returns>
+    private double[] CurrentRootDistributionTarget()
+    {
+        int nLayers = dlayer.Length;
+        double currentDepth = 0.0;
+        double cumProportion = 0.0;
+        for (int layer = 0; layer < nLayers; layer++)
+        {
+            if (currentDepth < rootDepth)
+            {
+                // layer is within the root zone
+                currentDepth += dlayer[layer];
+                if (currentDepth <= rootDepth)
+                {
+                    // layer is fully in the root zone
+                    cumProportion += targetRootAllocation[layer];
+                }
+                else
+                {
+                    // layer is partially in the root zone
+                    double layerFrac = (rootDepth - (currentDepth - dlayer[layer]))
+                                     / (maxRootDepth - (currentDepth - dlayer[layer]));
+                    cumProportion += targetRootAllocation[layer] * Math.Min(1.0, Math.Max(0.0, layerFrac));
+                }
+            }
+            else
+                layer = nLayers;
+        }
+
+        double[] result = new double[nLayers];
+        for (int layer = 0; layer < nLayers; layer++)
+            result[layer] = targetRootAllocation[layer] / cumProportion;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Compute how much of the layer is actually explored by roots
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <returns>Fraction of layer explored by roots</returns>
+    internal double LayerFractionWithRoots(int layer)
+    {
+        double depthToTopOfLayer = 0.0;
+        for (int i = 0; i < layer; i++)
+            depthToTopOfLayer += dlayer[i];
+        double fractionInLayer = (rootDepth - depthToTopOfLayer) / dlayer[layer];
+
+        return Math.Min(1.0, Math.Max(0.0, fractionInLayer));
+    }
+
     /// <summary>
     /// Find the layer at the bottom of the root zone
     /// </summary>
@@ -2788,23 +2605,26 @@ public class Species
     }
 
     /// <summary>
-    /// Compute how much of the layer is actually explored by roots
+    /// Calculates the average herbage digestibility (standing herbage)
     /// </summary>
-    /// <param name="layer"></param>
-    /// <returns>Fraction of layer explored by roots</returns>
-    private double LayerFractionWithRoots(int layer)
+    /// <returns>digestibility</returns>
+    internal void EvaluateDigestibility()
     {
-        double depthToTopOfLayer = 0.0;
-        for (int i = 0; i < layer; i++)
-            depthToTopOfLayer += dlayer[i];
-        double fractionInLayer = (rootDepth - depthToTopOfLayer) / dlayer[layer];
+        double result = 0.0;
+        if (StandingWt > 0.0)
+        {
+            result = (leaves.DigestibilityLive * leaves.DMGreen) + (leaves.DigestibilityDead * leaves.DMDead)
+                   + (stems.DigestibilityLive * stems.DMGreen) + (stems.DigestibilityDead * stems.DMDead)
+                   + (stolons.DigestibilityLive * stolons.DMGreen * stolons.FractionStanding);
+            result /= StandingWt;
+        }
 
-        return Math.Min(1.0, Math.Max(0.0, fractionInLayer));
+        digestHerbage = result;
     }
 
     #endregion
 
-    #region Auxiliary classes  ------------------------------------------------------------------------------------
+    #region Auxiliary classes  ---------------------------------------------------------------------------------------------
 
     /// <summary>Defines a generic organ of a plant</summary>
     /// <remarks>
@@ -2828,7 +2648,7 @@ public class Species
         /// <summary>the collection of tissues for this organ</summary>
         internal Tissue[] tissue;
 
-        #region Organ specific characteristics
+        #region Organ specific characteristics  -----------------------------------------------------------------------
 
         /// <summary>N concentration for optimal growth (kg/kg)</summary>
         internal double NConcOptimum = 4.0;
@@ -2854,9 +2674,9 @@ public class Species
         /// <summary>The fraction of DM in sugar form for this organ [0-1]</summary>
         internal double SugarWt = 0.1;
 
-        #endregion
+        #endregion  ---------------------------------------------------------------------------------------------------
 
-        #region Organ Properties (summary of tissues)
+        #region Organ Properties (summary of tissues)  ----------------------------------------------------------------
 
         /// <summary>Number of tissue pools to create</summary>
         internal int nTissues;
@@ -3085,11 +2905,13 @@ public class Species
             }
         }
 
-        #endregion
+        #endregion  ---------------------------------------------------------------------------------------------------
+
+        #region Organ Methods  ----------------------------------------------------------------------------------------
 
         /// <summary>The digestibility of live plant material</summary>
         /// <remarks>
-        /// Assumes fixed CN ratios and digestibilites of various materials
+        /// Assumes fixed CN ratios and digestibilities of various materials
         /// Digestibility of sugars (dissolved carbohydrates) and proteins is assumed to be one
         /// </remarks>
         /// <returns>the digestibility for this organ</returns>
@@ -3117,7 +2939,7 @@ public class Species
 
         /// <summary>The digestibility of dead plant material</summary>
         /// <remarks>
-        /// Assumes fixed CN ratios and digestibilites of various materials
+        /// Assumes fixed CN ratios and digestibilities of various materials
         /// Digestibility of proteins is assumed to be one, assume no sugars in dead material
         /// </remarks>
         /// <returns>the digestibility for this organ</returns>
@@ -3174,6 +2996,20 @@ public class Species
             }
         }
 
+        /// <summary>Reset all amounts to zero in all tissues of this organ</summary>
+        internal void DoResetOrgan()
+        {
+            for (int t = 0; t < nTissues; t++)
+            {
+                tissue[t].DM = 0.0;
+                tissue[t].Namount = 0.0;
+                tissue[t].Pamount = 0.0;
+                DoCleanTransferAmounts();
+            }
+        }
+
+        #endregion  ---------------------------------------------------------------------------------------------------
+
         /// <summary>Defines a generic plant tissue</summary>
         internal class Tissue
         {
@@ -3202,16 +3038,16 @@ public class Species
             
             // >> Amounts in and out ..................................................................
 
-            /// <summary>Gets or sets the DM amount transfered into this tissue [kg/ha]</summary>
+            /// <summary>Gets or sets the DM amount transferred into this tissue [kg/ha]</summary>
             internal double DMTransferedIn = 0.0;
 
-            /// <summary>Gets or sets the DM amount transfered out of this tissue [kg/ha]</summary>
+            /// <summary>Gets or sets the DM amount transferred out of this tissue [kg/ha]</summary>
             internal double DMTransferedOut = 0.0;
 
-            /// <summary>Gets or sets the amount of N transfered into this tissue [kg/ha]</summary>
+            /// <summary>Gets or sets the amount of N transferred into this tissue [kg/ha]</summary>
             internal double NTransferedIn = 0.0;
 
-            /// <summary>Gets or sets the amount of N transfered out of this tissue [kg/ha]</summary>
+            /// <summary>Gets or sets the amount of N transferred out of this tissue [kg/ha]</summary>
             internal double NTransferedOut = 0.0;
 
             /// <summary>Gets or sets the amount of N available for remobilisation [kg/ha]</summary>
@@ -3290,7 +3126,7 @@ public class Species
         internal double Nremob;
     }
 
-    #endregion
+    #endregion  ------------------------------------------------------------------------------------------------------------
 }
 
 /// <summary>Basic values defining the state of a pasture species</summary>
@@ -3314,5 +3150,3 @@ public class SpeciesBasicState
         NAmount = new double[12];
     }
 }
-
-////-----------------------------------------------------------------------------------------------
