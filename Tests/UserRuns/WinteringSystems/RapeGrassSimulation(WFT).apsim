@@ -692,7 +692,7 @@ public class Script
       returned_n = 0.0;
       GrowthRateCalc = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       if (RemoveAmountType.Contains("residual"))
       {
          ResidualDM = HerbageAmount;
@@ -730,7 +730,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
                CutIsAllowed = false;
                Can_Cut = "no";
                nCut += 1;
@@ -754,8 +754,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -879,7 +879,7 @@ public class Script
       returned_n = 0.0;
       GrowthRateCalc = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       if (RemoveAmountType.Contains("residual"))
       {
          ResidualDM = HerbageAmount;
@@ -917,7 +917,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
                CutIsAllowed = false;
                Can_Cut = "no";
                nCut += 1;
@@ -941,8 +941,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -1897,7 +1897,7 @@ public class Script
           <variable>leach_no3 as NO3Leached format 3</variable>
           <variable>canolaSWIM.n_uptake as NUptakeRape1</variable>
           <variable>RapeNUptake as NUptakeRape</variable>
-          <variable>agpasture.NitrogenUptake as NUptakeGrass</variable>
+          <variable>agpasture.SoilUptakeN as NUptakeGrass</variable>
           <variable>urea() as UreaAmount</variable>
           <variable>nh4() as NH4Amount</variable>
           <variable>no3() as NO3Amount</variable>
@@ -1908,21 +1908,21 @@ public class Script
           <variable>dlt_n_min() as NetSoilMineralisation format 3</variable>
           <variable>dlt_n_min_res() as NetResidueMineralisation format 3</variable>
           <variable>canolaSWIM.TotalWt as RapeDM</variable>
-          <variable>agpasture.TotalPlantWt as GrassDM</variable>
+          <variable>agpasture.TotalWt as GrassDM</variable>
           <variable>CanolaSWIM.TopsTotalWt as RapeAboveGroundDM</variable>
           <variable>AgPasture.AboveGroundWt as GrassAboveGroundDM</variable>
           <variable>CanolaSWIM.RootTotalWt as RapeBelowGroundDM</variable>
           <variable>AgPasture.RootWt as GrassBelowGroundDM</variable>
           <variable>canolaSWIM.TotalN as RapeTotalN</variable>
-          <variable>agpasture.TotalPlantN as GrassTotalN</variable>
+          <variable>agpasture.TotalN as GrassTotalN</variable>
           <variable>canolaSWIM.TopsTotalN as RapeTopsN</variable>
           <variable>agpasture.abovegroundN as GrassTopsN</variable>
           <variable>canolaSWIM.RootTotalN as RapeRootN</variable>
           <variable>agpasture.RootN as GrassRootN</variable>
           <variable>canolaSWIM.TopsTotalnconc as RapeNconcTops</variable>
-          <variable>agpasture.AboveGroundNPct as GrassNconcTops</variable>
+          <variable>agpasture.AboveGroundNConc as GrassNconcTops</variable>
           <variable>canolaSWIM.LAI as RapeLAI</variable>
-          <variable>agpasture.LAI_total as GrassLAI</variable>
+          <variable>agpasture.LAITotal as GrassLAI</variable>
           <variable>canolaSWIM.root_depth as RapeRootDepth</variable>
           <variable>agpasture.rootingdepth as GrassRootDepth</variable>
           <variable>RapeDMremoved</variable>

@@ -235,10 +235,10 @@ public class Script
 
    [Input] double[] dlayer;
    
-   [Input(IsOptional=true)] double[] NitrogenSupplyLayers;
-   [Input(IsOptional=true)] double NitrogenUptake;
-   [Input(IsOptional=true)] double TotalPlantN;
-   [Input(IsOptional=true)] double TotalPlantWt;
+   [Input(IsOptional=true)] double[] NSupplyLayers;
+   [Input(IsOptional=true)] double SoilUptakeN;
+   [Input(IsOptional=true)] double TotalN;
+   [Input(IsOptional=true)] double TotalWt;
    [Input(IsOptional=true)] double WaterUptake;
       
    [Output][Units("")] string SoilName;
@@ -272,11 +272,11 @@ public class Script
          PlantTotalC = 0.4 * totalwt;
          PlantTranspiration = ep;
       }
-      else if (NitrogenSupplyLayers != null)
+      else if (NSupplyLayers != null)
       {
-         PlantNUptake = NitrogenUptake;
-         PlantTotalN = TotalPlantN;
-         PlantTotalC = 0.4 * TotalPlantWt;
+         PlantNUptake = SoilUptakeN;
+         PlantTotalN = TotalN;
+         PlantTotalC = 0.4 * TotalWt;
          PlantTranspiration = WaterUptake;
       }
       else
@@ -1092,9 +1092,9 @@ public class Script
          {
             try
             {
-               PlantNuptake_p1 += myPasture[pdk].NitrogenUptake * RelativeArea[pdk];
-               PlantN_p1 += myPasture[pdk].TotalPlantN * RelativeArea[pdk];
-               PlantC_p1 += 0.4 * myPasture[pdk].TotalPlantWt * RelativeArea[pdk];
+               PlantNuptake_p1 += myPasture[pdk].SoilUptakeN * RelativeArea[pdk];
+               PlantN_p1 += myPasture[pdk].TotalN * RelativeArea[pdk];
+               PlantC_p1 += 0.4 * myPasture[pdk].TotalWt * RelativeArea[pdk];
             }
             catch(System.Exception err2)
             {}
@@ -4007,7 +4007,7 @@ endif
           <GDApsimFileReader name="ApsimFileReader" shortcut="/SoilNitrogen_CNPatch_OutputsTests/Test01-BareBare+addStuff/OutputsN/DenitrifiedN/Plot/ApsimFileReader" />
         </Plot>
       </Graph>
-      <Graph name="PlantN">
+      <Graph name="PlantTotalN">
         <Legend>
           <CheckedTitles> Sim03-ExplicitPatches Paddock1-All-LightSoil Results</CheckedTitles>
           <CheckedTitles> Sim03-SoilCNPatches Paddock1-CNpatch-LightSoil Results</CheckedTitles>
@@ -4193,8 +4193,8 @@ If Do_Cut = 'TRUE' then
    if preharvest_dm &gt; [lower_threshold] then
       [AgPasture_type] graze type = 'SetResidueAmount', amount = [lower_threshold]
       Has_Cut = 'TRUE'
-      harvested_dm = [AgPasture_type].HarvestWt
-      harvested_n = [AgPasture_type].HarvestN
+      harvested_dm = [AgPasture_type].HarvestedWt
+      harvested_n = [AgPasture_type].HarvestedN
       GrowthRateCalc = harvested_dm/days_after_cut
       if harvested_dm &gt; 0 then
          n_conc_removed = harvested_n*100/harvested_dm
@@ -4900,7 +4900,7 @@ endif  ! of Do_Cut
           <GDApsimFileReader name="ApsimFileReader" shortcut="/SoilNitrogen_CNPatch_OutputsTests/Test01-BareBare+addStuff/OutputsN/DenitrifiedN/Plot/ApsimFileReader" />
         </Plot>
       </Graph>
-      <Graph name="PlantN">
+      <Graph name="PlantTotalN">
         <Legend>
           <CheckedTitles> Sim04-ExplicitPatches Paddock1-All-LightSoil Results</CheckedTitles>
           <CheckedTitles> Sim04-SoilCNPatches Paddock1-CNpatch-LightSoil Results</CheckedTitles>

@@ -726,7 +726,7 @@ public class Species
     internal double Ndefoliated;
 
     /// <summary>Some Description</summary>
-    private double fractionDefoliated;
+    internal double fractionDefoliated;
 
     /// <summary>Some Description</summary>
     internal double digestHerbage;
@@ -2032,7 +2032,7 @@ public class Species
     /// <summary>Removes some plant DM</summary>
     /// <param name="amountToRemove">The DM amount to remove</param>
     /// <returns>Amount removed</returns>
-    internal double RemoveDM(double amountToRemove)
+    internal double RemoveDMOld(double amountToRemove)
     {
         // save current state
         double preRemovalDMShoot = AboveGroundWt;
@@ -2121,6 +2121,125 @@ public class Species
         fractionDefoliated = dmdefoliated / preRemovalDMShoot;
         if (Math.Abs(dmdefoliated - amountToRemove) > 0.00001)
             throw new Exception("  AgPasture - removal of DM resulted in loss of mass balance");
+
+        return dmdefoliated;
+    }
+
+    /// <summary>Removes a given amount of DM (and N) from this plant.</summary>
+    /// <param name="amountToRemove">The DM amount to remove (kg/ha)</param>
+    /// <returns>The DM amount actually removed (kg/ha)</returns>
+    internal double RemoveDM(double amountToRemove)
+    {
+        // get existing DM and N amounts
+        double preRemovalDMShoot = AboveGroundWt;
+        double preRemovalNShoot = AboveGroundN;
+
+        if (amountToRemove > Epsilon)
+        {
+            // Compute the fraction of each tissue to be removed
+            double[] fracRemoving = new double[5];
+            if (amountToRemove - HarvestableWt > -Epsilon)
+            {
+                // All existing DM is removed
+                for (int i = 0; i < 5; i++)
+                    fracRemoving[i] = 1.0;
+            }
+            else
+            {
+                // Initialise the fractions to be removed (these will be normalised later)
+                fracRemoving[0] = leaves.DMGreenHarvestable * PreferenceGreenOverDead * PreferenceLeafOverStem;
+                fracRemoving[1] = stems.DMGreenHarvestable * PreferenceGreenOverDead;
+                fracRemoving[2] = stolons.DMGreenHarvestable * PreferenceGreenOverDead;
+                fracRemoving[3] = leaves.DMDeadHarvestable * PreferenceLeafOverStem;
+                fracRemoving[4] = stems.DMDeadHarvestable;
+
+                // Get fraction potentially removable (maximum fraction of each tissue in the removing amount)
+                double[] fracRemovable = new double[5];
+                fracRemovable[0] = leaves.DMGreenHarvestable / amountToRemove;
+                fracRemovable[1] = stems.DMGreenHarvestable / amountToRemove;
+                fracRemovable[2] = stolons.DMGreenHarvestable / amountToRemove;
+                fracRemovable[3] = leaves.DMDeadHarvestable / amountToRemove;
+                fracRemovable[4] = stems.DMDeadHarvestable / amountToRemove;
+
+                // Normalise the fractions of each tissue to be removed, they should add to one
+                double totalFrac = fracRemoving.Sum();
+                for (int i = 0; i < 5; i++)
+                    fracRemoving[i] = Math.Min(fracRemovable[i], fracRemoving[i] / totalFrac);
+
+                // Iterate until sum of fractions to remove is equal to one
+                //  The initial normalised fractions are based on preference and existing DM. Because the value of fracRemoving is limited
+                //   to fracRemovable, the sum of fracRemoving may not be equal to one, as it should be. We need to iterate adjusting the
+                //   values of fracRemoving until we get a sum close enough to one. The previous values are used as weighting factors for
+                //   computing new ones at each iteration.
+                int count = 1;
+                totalFrac = fracRemoving.Sum();
+                while (1.0 - totalFrac > Epsilon)
+                {
+                    count += 1;
+                    for (int i = 0; i < 5; i++)
+                        fracRemoving[i] = Math.Min(fracRemovable[i], fracRemoving[i] / totalFrac);
+                    totalFrac = fracRemoving.Sum();
+                    if (count > 1000)
+                    {
+                        Console.WriteLine(" AgPasture could not remove on graze all the DM required for " + speciesName);
+                        break;
+                    }
+                }
+                //mySummary.WriteMessage(this, " AgPasture " + Name + " needed " + count + " iterations to solve partition of removed DM");
+            }
+
+            // Get digestibility of DM being harvested (do this before updating pools)
+            double greenDigestibility = (leaves.DigestibilityLive * fracRemoving[0]) + (stems.DigestibilityLive * fracRemoving[1])
+                                        + (stolons.DigestibilityLive * fracRemoving[2]);
+            double deadDigestibility = (leaves.DigestibilityDead * fracRemoving[3]) + (stems.DigestibilityDead * fracRemoving[4]);
+            digestDefoliated = greenDigestibility + deadDigestibility;
+
+            // Update the various tissues (DM, N and N remobilisable)
+            int t;
+            // Leaves
+            double fracRemaining = Math.Max(0.0, 1.0 - MathUtility.Divide(amountToRemove * fracRemoving[0], leaves.DMGreen, 0.0));
+            for (t = 0; t < 3; t++)
+            {
+                leaves.tissue[t].DM *= fracRemaining;
+                leaves.tissue[t].Namount *= fracRemaining;
+                leaves.tissue[t].NRemobilisable *= fracRemaining;
+            }
+            fracRemaining = Math.Max(0.0, 1.0 - MathUtility.Divide(amountToRemove * fracRemoving[3], leaves.DMDead, 0.0));
+            leaves.tissue[t].DM *= fracRemaining;
+            leaves.tissue[t].Namount *= fracRemaining;
+            leaves.tissue[t].NRemobilisable *= fracRemaining;
+
+            // Stems
+            fracRemaining = Math.Max(0.0, 1.0 - MathUtility.Divide(amountToRemove * fracRemoving[1], stems.DMGreen, 0.0));
+            for (t = 0; t < 3; t++)
+            {
+                stems.tissue[t].DM *= fracRemaining;
+                stems.tissue[t].Namount *= fracRemaining;
+                stems.tissue[t].NRemobilisable *= fracRemaining;
+            }
+            fracRemaining = Math.Max(0.0, 1.0 - MathUtility.Divide(amountToRemove * fracRemoving[4], stems.DMDead, 0.0));
+            stems.tissue[t].DM *= fracRemaining;
+            stems.tissue[t].Namount *= fracRemaining;
+            stems.tissue[t].NRemobilisable *= fracRemaining;
+
+            // Stolons
+            fracRemaining = Math.Max(0.0, 1.0 - MathUtility.Divide(amountToRemove * fracRemoving[2], stolons.DMGreen, 0.0));
+            for (t = 0; t < 3; t++)
+            {
+                stolons.tissue[t].DM *= fracRemaining;
+                stolons.tissue[t].Namount *= fracRemaining;
+                stolons.tissue[t].NRemobilisable *= fracRemaining;
+            }
+        }
+
+        // Set outputs and check balance
+        dmdefoliated = preRemovalDMShoot - AboveGroundWt;
+        fractionDefoliated = dmdefoliated / preRemovalDMShoot;
+        Ndefoliated = preRemovalNShoot - AboveGroundN;
+        if (Math.Abs(dmdefoliated - amountToRemove) > Epsilon)
+            throw new Exception("  AgPasture " + speciesName + " - removal of DM resulted in loss of mass balance");
+        else
+            Console.WriteLine(" Biomass removed from " + speciesName + " by grazing: " + dmdefoliated.ToString("#0.0") + "kg/ha");
 
         return dmdefoliated;
     }
@@ -2564,11 +2683,9 @@ public class Species
         return result;
     }
 
-    /// <summary>
-    /// Compute how much of the layer is actually explored by roots
-    /// </summary>
-    /// <param name="layer"></param>
-    /// <returns>Fraction of layer explored by roots</returns>
+    /// <summary>Computes how much of the layer is actually explored by roots</summary>
+    /// <param name="layer">The layer to be analysed</param>
+    /// <returns>The fraction of layer explored by roots</returns>
     internal double LayerFractionWithRoots(int layer)
     {
         double depthToTopOfLayer = 0.0;
@@ -2579,10 +2696,8 @@ public class Species
         return Math.Min(1.0, Math.Max(0.0, fractionInLayer));
     }
 
-    /// <summary>
-    /// Find the layer at the bottom of the root zone
-    /// </summary>
-    /// <returns>layer at bottom of root zone</returns>
+    /// <summary>Finds the layer at the bottom of the root zone</summary>
+    /// <returns>The layer at bottom of root zone</returns>
     internal int GetRootZoneBottomLayer()
     {
         double depthFromSurface = 0.0;
@@ -2604,10 +2719,8 @@ public class Species
         return result;
     }
 
-    /// <summary>
-    /// Calculates the average herbage digestibility (standing herbage)
-    /// </summary>
-    /// <returns>digestibility</returns>
+    /// <summary>Calculates the average digestibility of standing herbage</summary>
+    /// <returns>The digestibility</returns>
     internal void EvaluateDigestibility()
     {
         double result = 0.0;

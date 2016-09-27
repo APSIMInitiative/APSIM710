@@ -874,10 +874,10 @@ Public Class Script
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Private dlt_org_n_l As Single()
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Private dlt_min_n_l As Single()
    
-   &lt;Input&gt;  Private HarvestWt As Single
-   &lt;Output&gt;&lt;Units("mm")&gt; Private cumHarvestWt As Single
-   &lt;Input&gt;  Private HarvestN As Single
-   &lt;Output&gt;&lt;Units("mm")&gt; Private cumHarvestN As Single
+   &lt;Input&gt;  Private HarvestedWt As Single
+   &lt;Output&gt;&lt;Units("mm")&gt; Private cumHarvestedWt As Single
+   &lt;Input&gt;  Private HarvestedN As Single
+   &lt;Output&gt;&lt;Units("mm")&gt; Private cumHarvestedN As Single
 
    &lt;Input&gt;  Private leach_no3 As Single
    &lt;Output&gt;&lt;Units("mm")&gt; Private cumleach_no3 As Single
@@ -1099,8 +1099,8 @@ Public Class Script
       CumPrecip = 0.0
       CumDrain = 0.0
       
-      cumHarvestWt = 0.0
-      cumHarvestN = 0.0
+      cumHarvestedWt = 0.0
+      cumHarvestedN = 0.0
 
       cumleach_no3 = 0.0
       leach_nh4 = 0.0
@@ -1199,10 +1199,10 @@ Public Class Script
       CumPrecip += rain + Irrigation
       CumDrain += drain
       
-      cumHarvestWt = cumHarvestWt + HarvestWt
-      cumHarvestN = cumHarvestN + HarvestN
-      HarvestWt = 0.0
-      HarvestN = 0.0
+      cumHarvestedWt = cumHarvestedWt + HarvestedWt
+      cumHarvestedN = cumHarvestedN + HarvestedN
+      HarvestedWt = 0.0
+      HarvestedN = 0.0
       
       cumleach_no3 += leach_no3
       cumleach_nh4 += leach_nh4

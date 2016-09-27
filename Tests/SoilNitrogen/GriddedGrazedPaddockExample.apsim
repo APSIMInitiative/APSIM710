@@ -363,8 +363,8 @@ public class Script
             GZ.sender = "DoGrazing";
             AgPasture.Graze(GZ);
 
-            Grazed += AgPasture.HarvestWt;
-            GrazedN += AgPasture.HarvestN;
+            Grazed += AgPasture.HarvestedWt;
+            GrazedN += AgPasture.HarvestedN;
          }
             
          AmountUrineNReturned = GrazedN * (1.0 - PropIngestedNExported) * PropExcretedNAsUrine;  
@@ -749,7 +749,7 @@ public class Script
 
          NHA += AgPasture.HerbageGrowthWt;
          PGR = NHA;  // divide this by the number of days just before reporting
-         Fixation += AgPasture.PlantFixedN;
+         Fixation += AgPasture.FixedN;
          
          double[] tempArray = new double[SoilWat.dlayer.Length];
          SoilWat.Get("flow_no3", out tempArray);

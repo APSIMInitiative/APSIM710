@@ -80,15 +80,15 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         drain
-        HarvestWt
-        TotalPlantWt
+        HarvestedWt
+        TotalWt
         AboveGroundWt
-        StandingPlantWt
+        StandingHerbageWt
         HarvestableWt
         SpeciesAboveGroundWt(1) as RyegrassWt
         SpeciesAboveGroundWt(2) as WhiteCloverWt
         dlayer
-        NitrogenUptakeLayers
+        NUptakeLayers
         RootWtFraction
         rlv as RootDensity
 
@@ -115,10 +115,10 @@ Paddock:
           (today >date('01/07/1900') and account = 21 )) then
        account = 0
        'agpasture' graze type = 'setresidueamount', amount = 1200 (kg/ha)
-       digest = defoliateddigestibility
-       dm_som = harvestwt * (1-digest)
-       n_removed  = harvestn *(1.0-0.85)
-       n_returned = harvestn * 0.85
+       digest = harvesteddigestibility
+       dm_som = harvestedwt * (1-digest)
+       n_removed  = harvestedn *(1.0-0.85)
+       n_returned = harvestedn * 0.85
        n_som      = n_returned * ( 1.0 - 0.6 )
        n_urine    = n_returned *  0.6
        n_urine1 = 0.6 * n_urine
@@ -469,15 +469,15 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         drain
-        HarvestWt
-        TotalPlantWt
+        HarvestedWt
+        TotalWt
         AboveGroundWt
-        StandingPlantWt
+        StandingHerbageWt
         HarvestableWt
         SpeciesAboveGroundWt(1) as RyegrassWt
         SpeciesAboveGroundWt(2) as WhiteCloverWt
         dlayer
-        NitrogenUptakeLayers
+        NUptakeLayers
         RootWtFraction
         rlv as RootDensity
 
@@ -504,10 +504,10 @@ Paddock:
           (today >date('01/07/1900') and account = 21 )) then
        account = 0
        'agpasture' graze type = 'setresidueamount', amount = 1200 (kg/ha)
-       digest = defoliateddigestibility
-       dm_som = harvestwt * (1-digest)
-       n_removed  = harvestn *(1.0-0.85)
-       n_returned = harvestn * 0.85
+       digest = harvesteddigestibility
+       dm_som = harvestedwt * (1-digest)
+       n_removed  = harvestedn *(1.0-0.85)
+       n_returned = harvestedn * 0.85
        n_som      = n_returned * ( 1.0 - 0.6 )
        n_urine    = n_returned *  0.6
        n_urine1 = 0.6 * n_urine
@@ -858,15 +858,15 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         drain
-        HarvestWt
-        TotalPlantWt
+        HarvestedWt
+        TotalWt
         AboveGroundWt
-        StandingPlantWt
+        StandingHerbageWt
         HarvestableWt
         SpeciesAboveGroundWt(1) as RyegrassWt
         SpeciesAboveGroundWt(2) as WhiteCloverWt
         dlayer
-        NitrogenUptakeLayers
+        NUptakeLayers
         RootWtFraction
         rlv as RootDensity
 
@@ -893,10 +893,10 @@ Paddock:
           (today >date('01/07/1900') and account = 21 )) then
        account = 0
        'agpasture' graze type = 'setresidueamount', amount = 1200 (kg/ha)
-       digest = defoliateddigestibility
-       dm_som = harvestwt * (1-digest)
-       n_removed  = harvestn *(1.0-0.85)
-       n_returned = harvestn * 0.85
+       digest = harvesteddigestibility
+       dm_som = harvestedwt * (1-digest)
+       n_removed  = harvestedn *(1.0-0.85)
+       n_returned = harvestedn * 0.85
        n_som      = n_returned * ( 1.0 - 0.6 )
        n_urine    = n_returned *  0.6
        n_urine1 = 0.6 * n_urine
@@ -1247,15 +1247,15 @@ Paddock:
      Output variables:
         dd/mmm/yyyy as Date
         drain
-        HarvestWt
-        TotalPlantWt
+        HarvestedWt
+        TotalWt
         AboveGroundWt
-        StandingPlantWt
+        StandingHerbageWt
         HarvestableWt
         SpeciesAboveGroundWt(1) as RyegrassWt
         SpeciesAboveGroundWt(2) as WhiteCloverWt
         dlayer
-        NitrogenUptakeLayers
+        NUptakeLayers
         RootWtFraction
         rlv as RootDensity
 
@@ -1282,10 +1282,10 @@ Paddock:
           (today >date('01/07/1900') and account = 21 )) then
        account = 0
        'agpasture' graze type = 'setresidueamount', amount = 1200 (kg/ha)
-       digest = defoliateddigestibility
-       dm_som = harvestwt * (1-digest)
-       n_removed  = harvestn *(1.0-0.85)
-       n_returned = harvestn * 0.85
+       digest = harvesteddigestibility
+       dm_som = harvestedwt * (1-digest)
+       n_removed  = harvestedn *(1.0-0.85)
+       n_returned = harvestedn * 0.85
        n_som      = n_returned * ( 1.0 - 0.6 )
        n_urine    = n_returned *  0.6
        n_urine1 = 0.6 * n_urine
@@ -1666,321 +1666,369 @@ Paddock:
      Manager creating a new local real variable : n_urine = 0.00000
      Manager creating a new local real variable : n_urine1 = 0.00000
      Manager creating a new local real variable : n_urine2 = 0.00000
+ Biomass removed from ryegrass by grazing: 643.7kg/ha
+ Biomass removed from whiteclover by grazing: 165.4kg/ha
 21 July 1980(Day of year=203), pad1.Regular harvest or grazing (with return): 
-     Manager creating a new local real variable : digest = 0.68797
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.44945 (kg/ha), n = 9.68582 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.71724 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : digest = 0.68755
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.78925 (kg/ha), n = 9.65382 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.68844 (kg/ha), depth = 50 (mm), type = urea_n
 21 July 1980(Day of year=203), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.72 of N as urea (urea_n)
+         8.69 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.81149 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.79229 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.81 of N as urea (urea_n)
+         5.79 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 643.7kg/ha
+ Biomass removed from whiteclover by grazing: 165.4kg/ha
 21 July 1980(Day of year=203), pad2.Regular harvest or grazing (with return): 
-     Manager creating a new local real variable : digest = 0.68796
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.46626 (kg/ha), n = 9.68600 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.71740 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : digest = 0.68754
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.80608 (kg/ha), n = 9.65400 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.68859 (kg/ha), depth = 50 (mm), type = urea_n
 21 July 1980(Day of year=203), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.72 of N as urea (urea_n)
+         8.69 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.81160 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.79240 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.81 of N as urea (urea_n)
+         5.79 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 643.7kg/ha
+ Biomass removed from whiteclover by grazing: 165.4kg/ha
 21 July 1980(Day of year=203), pad3.Regular harvest or grazing (with return): 
-     Manager creating a new local real variable : digest = 0.68796
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.46709 (kg/ha), n = 9.68606 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.71745 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : digest = 0.68754
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.80690 (kg/ha), n = 9.65406 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.68865 (kg/ha), depth = 50 (mm), type = urea_n
 21 July 1980(Day of year=203), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.72 of N as urea (urea_n)
+         8.69 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.81164 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.79243 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.81 of N as urea (urea_n)
+         5.79 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 643.7kg/ha
+ Biomass removed from whiteclover by grazing: 165.4kg/ha
 21 July 1980(Day of year=203), pad4.Regular harvest or grazing (with return): 
-     Manager creating a new local real variable : digest = 0.68796
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.46848 (kg/ha), n = 9.68616 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.71754 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : digest = 0.68754
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 252.80829 (kg/ha), n = 9.65416 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.68874 (kg/ha), depth = 50 (mm), type = urea_n
 21 July 1980(Day of year=203), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.72 of N as urea (urea_n)
+         8.69 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.81170 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.79249 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.81 of N as urea (urea_n)
+         5.79 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 345.5kg/ha
+ Biomass removed from whiteclover by grazing: 79.5kg/ha
 11 August 1980(Day of year=224), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 123.28971 (kg/ha), n = 5.29967 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.76970 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 125.96399 (kg/ha), n = 5.39009 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.85108 (kg/ha), depth = 50 (mm), type = urea_n
 11 August 1980(Day of year=224), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.77 of N as urea (urea_n)
+         4.85 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.17980 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.23406 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.18 of N as urea (urea_n)
+         3.23 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 345.6kg/ha
+ Biomass removed from whiteclover by grazing: 79.6kg/ha
 11 August 1980(Day of year=224), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 123.32022 (kg/ha), n = 5.30132 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.77119 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 125.99046 (kg/ha), n = 5.39176 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.85258 (kg/ha), depth = 50 (mm), type = urea_n
 11 August 1980(Day of year=224), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.77 of N as urea (urea_n)
+         4.85 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.18079 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.23505 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.18 of N as urea (urea_n)
+         3.24 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 345.6kg/ha
+ Biomass removed from whiteclover by grazing: 79.6kg/ha
 11 August 1980(Day of year=224), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 123.32647 (kg/ha), n = 5.30182 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.77163 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 126.00104 (kg/ha), n = 5.39226 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.85303 (kg/ha), depth = 50 (mm), type = urea_n
 11 August 1980(Day of year=224), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.77 of N as urea (urea_n)
+         4.85 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.18109 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.23536 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.18 of N as urea (urea_n)
+         3.24 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 345.7kg/ha
+ Biomass removed from whiteclover by grazing: 79.6kg/ha
 11 August 1980(Day of year=224), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 123.34431 (kg/ha), n = 5.30267 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.77241 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 126.01489 (kg/ha), n = 5.39312 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.85381 (kg/ha), depth = 50 (mm), type = urea_n
 11 August 1980(Day of year=224), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.77 of N as urea (urea_n)
+         4.85 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.18160 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.23588 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.18 of N as urea (urea_n)
+         3.24 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 476.0kg/ha
+ Biomass removed from whiteclover by grazing: 100.8kg/ha
 1 September 1980(Day of year=245), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 163.85098 (kg/ha), n = 7.47940 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 6.73145 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 168.39226 (kg/ha), n = 7.65897 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.89308 (kg/ha), depth = 50 (mm), type = urea_n
 1 September 1980(Day of year=245), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         6.73 of N as urea (urea_n)
+         6.89 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.48764 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.59538 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         4.49 of N as urea (urea_n)
+         4.60 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 476.6kg/ha
+ Biomass removed from whiteclover by grazing: 100.9kg/ha
 1 September 1980(Day of year=245), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 164.01251 (kg/ha), n = 7.48986 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 6.74088 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 168.56561 (kg/ha), n = 7.67004 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.90304 (kg/ha), depth = 50 (mm), type = urea_n
 1 September 1980(Day of year=245), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         6.74 of N as urea (urea_n)
+         6.90 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.49392 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.60202 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         4.49 of N as urea (urea_n)
+         4.60 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 476.7kg/ha
+ Biomass removed from whiteclover by grazing: 100.9kg/ha
 1 September 1980(Day of year=245), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 164.02965 (kg/ha), n = 7.49103 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 6.74192 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 168.58524 (kg/ha), n = 7.67133 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.90419 (kg/ha), depth = 50 (mm), type = urea_n
 1 September 1980(Day of year=245), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         6.74 of N as urea (urea_n)
+         6.90 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.49462 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.60280 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         4.49 of N as urea (urea_n)
+         4.60 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 476.8kg/ha
+ Biomass removed from whiteclover by grazing: 101.0kg/ha
 1 September 1980(Day of year=245), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 164.05846 (kg/ha), n = 7.49308 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 6.74377 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 168.62416 (kg/ha), n = 7.67359 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.90623 (kg/ha), depth = 50 (mm), type = urea_n
 1 September 1980(Day of year=245), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         6.74 of N as urea (urea_n)
+         6.91 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.49584 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.60416 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         4.50 of N as urea (urea_n)
+         4.60 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 813.4kg/ha
+ Biomass removed from whiteclover by grazing: 168.1kg/ha
 22 September 1980(Day of year=266), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 282.29037 (kg/ha), n = 12.67186 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 11.40468 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 286.65411 (kg/ha), n = 12.70641 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.43577 (kg/ha), depth = 50 (mm), type = urea_n
 22 September 1980(Day of year=266), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        11.40 of N as urea (urea_n)
+        11.44 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 7.60312 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 7.62384 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         7.60 of N as urea (urea_n)
+         7.62 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 735.7kg/ha
+ Biomass removed from whiteclover by grazing: 156.9kg/ha
 22 September 1980(Day of year=266), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 262.92123 (kg/ha), n = 11.36138 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 10.22524 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 263.97772 (kg/ha), n = 11.32799 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.19519 (kg/ha), depth = 50 (mm), type = urea_n
 22 September 1980(Day of year=266), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        10.23 of N as urea (urea_n)
+        10.20 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.81683 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.79679 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.82 of N as urea (urea_n)
+         6.80 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 734.5kg/ha
+ Biomass removed from whiteclover by grazing: 156.8kg/ha
 22 September 1980(Day of year=266), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 262.59525 (kg/ha), n = 11.34680 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 10.21211 (kg/ha), depth = 50 (mm), type = urea_n
-22 September 1980(Day of year=266), Fertiliser: 
-     
-   - Reading Fertiliser Type Parameters
-        10.21 of N as urea (urea_n)
-                                         added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.80808 (kg/ha), depth = 150 (mm), type = urea_n
-     
-   - Reading Fertiliser Type Parameters
-         6.81 of N as urea (urea_n)
-                                         added at depth  150.00 (layer   5)
-22 September 1980(Day of year=266), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 261.85666 (kg/ha), n = 11.31335 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 10.18202 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 263.60101 (kg/ha), n = 11.31220 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.18097 (kg/ha), depth = 50 (mm), type = urea_n
 22 September 1980(Day of year=266), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
         10.18 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.78801 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.78732 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
          6.79 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 731.8kg/ha
+ Biomass removed from whiteclover by grazing: 156.5kg/ha
+22 September 1980(Day of year=266), pad4.Regular harvest or grazing (with return): 
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 262.79776 (kg/ha), n = 11.27690 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 10.14920 (kg/ha), depth = 50 (mm), type = urea_n
+22 September 1980(Day of year=266), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        10.15 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   3)
+     Manager sending message :- fertiliser apply  amount = 6.76614 (kg/ha), depth = 150 (mm), type = urea_n
+     
+   - Reading Fertiliser Type Parameters
+         6.77 of N as urea (urea_n)
+                                         added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 852.2kg/ha
+ Biomass removed from whiteclover by grazing: 189.7kg/ha
 13 October 1980(Day of year=287), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 307.99539 (kg/ha), n = 12.08631 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 10.87768 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 321.30670 (kg/ha), n = 12.29109 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 11.06198 (kg/ha), depth = 50 (mm), type = urea_n
 13 October 1980(Day of year=287), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        10.88 of N as urea (urea_n)
+        11.06 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 7.25178 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 7.37466 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         7.25 of N as urea (urea_n)
+         7.37 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 763.4kg/ha
+ Biomass removed from whiteclover by grazing: 176.4kg/ha
 13 October 1980(Day of year=287), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 287.66190 (kg/ha), n = 10.76379 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 9.68741 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 295.81512 (kg/ha), n = 10.88490 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.79642 (kg/ha), depth = 50 (mm), type = urea_n
 13 October 1980(Day of year=287), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.69 of N as urea (urea_n)
+         9.80 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.45828 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.53094 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.46 of N as urea (urea_n)
+         6.53 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 757.1kg/ha
+ Biomass removed from whiteclover by grazing: 175.2kg/ha
 13 October 1980(Day of year=287), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 286.02432 (kg/ha), n = 10.68500 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 9.61651 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 293.83548 (kg/ha), n = 10.80031 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.72028 (kg/ha), depth = 50 (mm), type = urea_n
 13 October 1980(Day of year=287), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.62 of N as urea (urea_n)
+         9.72 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.41100 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.48018 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.41 of N as urea (urea_n)
+         6.48 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 736.7kg/ha
+ Biomass removed from whiteclover by grazing: 169.3kg/ha
 13 October 1980(Day of year=287), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 281.72699 (kg/ha), n = 10.46089 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 9.41480 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 287.54901 (kg/ha), n = 10.54108 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.48697 (kg/ha), depth = 50 (mm), type = urea_n
 13 October 1980(Day of year=287), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.41 of N as urea (urea_n)
+         9.49 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.27653 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.32465 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.28 of N as urea (urea_n)
+         6.32 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 503.5kg/ha
+ Biomass removed from whiteclover by grazing: 111.0kg/ha
 3 November 1980(Day of year=308), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 219.22922 (kg/ha), n = 7.39264 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 6.65338 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 223.73807 (kg/ha), n = 7.40440 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 6.66396 (kg/ha), depth = 50 (mm), type = urea_n
 3 November 1980(Day of year=308), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         6.65 of N as urea (urea_n)
+         6.66 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 4.43559 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.44264 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
          4.44 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 357.4kg/ha
+ Biomass removed from whiteclover by grazing: 81.2kg/ha
 3 November 1980(Day of year=308), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 167.81039 (kg/ha), n = 5.23831 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.71448 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 167.78552 (kg/ha), n = 5.14372 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.62935 (kg/ha), depth = 50 (mm), type = urea_n
 3 November 1980(Day of year=308), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.71 of N as urea (urea_n)
+         4.63 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.14298 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.08624 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.14 of N as urea (urea_n)
+         3.09 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 351.1kg/ha
+ Biomass removed from whiteclover by grazing: 79.8kg/ha
 3 November 1980(Day of year=308), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 165.19710 (kg/ha), n = 5.12809 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.61528 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 165.34544 (kg/ha), n = 5.05010 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.54510 (kg/ha), depth = 50 (mm), type = urea_n
 3 November 1980(Day of year=308), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.62 of N as urea (urea_n)
+         4.55 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.07685 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.03006 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.08 of N as urea (urea_n)
+         3.03 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 356.3kg/ha
+ Biomass removed from whiteclover by grazing: 80.1kg/ha
 3 November 1980(Day of year=308), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 165.29132 (kg/ha), n = 5.08440 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 4.57596 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 167.95062 (kg/ha), n = 5.11099 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 4.59989 (kg/ha), depth = 50 (mm), type = urea_n
 3 November 1980(Day of year=308), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         4.58 of N as urea (urea_n)
+         4.60 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 3.05064 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 3.06659 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         3.05 of N as urea (urea_n)
+         3.07 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 6 November 1980(Day of year=311), pad2.SWIM: 
      Maximum iterations reached - swim will reduce timestep
@@ -2079,191 +2127,213 @@ Paddock:
      ApsimSwim|apswim_swim - Changing dt value from:           8.276 to:           4.138
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           7.300 to:           3.650
-     Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           5.475 to:           2.737
 8 November 1980(Day of year=313), pad1.SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.444 to:           4.222
+     ApsimSwim|apswim_swim - Changing dt value from:           8.443 to:           4.222
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           9.889 to:           4.944
+     ApsimSwim|apswim_swim - Changing dt value from:           9.889 to:           4.945
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           7.417 to:           3.708
 8 November 1980(Day of year=313), pad2.SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.412 to:           4.206
+     ApsimSwim|apswim_swim - Changing dt value from:           8.411 to:           4.206
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           9.897 to:           4.949
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           7.423 to:           3.711
 8 November 1980(Day of year=313), pad3.SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.411 to:           4.205
+     ApsimSwim|apswim_swim - Changing dt value from:           8.410 to:           4.205
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           9.897 to:           4.949
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           7.423 to:           3.711
+     ApsimSwim|apswim_swim - Changing dt value from:           7.423 to:           3.712
 8 November 1980(Day of year=313), pad4.SWIM: 
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           8.390 to:           4.195
+     ApsimSwim|apswim_swim - Changing dt value from:           8.468 to:           4.234
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           9.902 to:           4.951
+     ApsimSwim|apswim_swim - Changing dt value from:           9.883 to:           4.941
      Maximum iterations reached - swim will reduce timestep
-     ApsimSwim|apswim_swim - Changing dt value from:           7.427 to:           3.713
+     ApsimSwim|apswim_swim - Changing dt value from:           7.412 to:           3.706
+ Biomass removed from ryegrass by grazing: 701.2kg/ha
+ Biomass removed from whiteclover by grazing: 161.8kg/ha
 24 November 1980(Day of year=329), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 291.82965 (kg/ha), n = 9.61456 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.65310 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 289.73764 (kg/ha), n = 9.43471 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.49124 (kg/ha), depth = 50 (mm), type = urea_n
 24 November 1980(Day of year=329), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.65 of N as urea (urea_n)
+         8.49 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.76873 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.66082 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.77 of N as urea (urea_n)
+         5.66 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 617.8kg/ha
+ Biomass removed from whiteclover by grazing: 142.9kg/ha
 24 November 1980(Day of year=329), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 259.87915 (kg/ha), n = 8.36542 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 7.52888 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 258.83188 (kg/ha), n = 8.25374 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.42837 (kg/ha), depth = 50 (mm), type = urea_n
 24 November 1980(Day of year=329), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         7.53 of N as urea (urea_n)
+         7.43 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.01925 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.95225 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.02 of N as urea (urea_n)
+         4.95 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 627.2kg/ha
+ Biomass removed from whiteclover by grazing: 145.8kg/ha
 24 November 1980(Day of year=329), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 264.82584 (kg/ha), n = 8.42212 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 7.57991 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 263.30969 (kg/ha), n = 8.31045 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.47940 (kg/ha), depth = 50 (mm), type = urea_n
 24 November 1980(Day of year=329), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         7.58 of N as urea (urea_n)
+         7.48 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.05327 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.98627 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.05 of N as urea (urea_n)
+         4.99 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 623.2kg/ha
+ Biomass removed from whiteclover by grazing: 143.8kg/ha
 24 November 1980(Day of year=329), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 263.18726 (kg/ha), n = 8.34075 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 7.50667 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 261.72360 (kg/ha), n = 8.23719 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 7.41347 (kg/ha), depth = 50 (mm), type = urea_n
 24 November 1980(Day of year=329), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         7.51 of N as urea (urea_n)
+         7.41 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.00445 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 4.94232 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.00 of N as urea (urea_n)
+         4.94 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 827.2kg/ha
+ Biomass removed from whiteclover by grazing: 227.9kg/ha
 15 December 1980(Day of year=350), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 349.51465 (kg/ha), n = 10.59197 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 9.53278 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 354.47229 (kg/ha), n = 10.55059 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 9.49553 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 1980(Day of year=350), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         9.53 of N as urea (urea_n)
+         9.50 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 6.35518 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 6.33036 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         6.36 of N as urea (urea_n)
+         6.33 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 767.3kg/ha
+ Biomass removed from whiteclover by grazing: 215.9kg/ha
 15 December 1980(Day of year=350), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 330.42526 (kg/ha), n = 9.75994 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.78395 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 331.20007 (kg/ha), n = 9.70282 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.73254 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 1980(Day of year=350), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.78 of N as urea (urea_n)
+         8.73 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.85596 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.82169 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.86 of N as urea (urea_n)
+         5.82 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 763.6kg/ha
+ Biomass removed from whiteclover by grazing: 216.6kg/ha
 15 December 1980(Day of year=350), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 330.00424 (kg/ha), n = 9.67630 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.70868 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 330.91434 (kg/ha), n = 9.63208 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.66887 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 1980(Day of year=350), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.71 of N as urea (urea_n)
+         8.67 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.80578 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.77925 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.81 of N as urea (urea_n)
+         5.78 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 760.1kg/ha
+ Biomass removed from whiteclover by grazing: 214.8kg/ha
 15 December 1980(Day of year=350), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 327.98175 (kg/ha), n = 9.59824 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 8.63842 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 329.18811 (kg/ha), n = 9.56586 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 8.60927 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 1980(Day of year=350), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         8.64 of N as urea (urea_n)
+         8.61 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 5.75895 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 5.73952 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         5.76 of N as urea (urea_n)
+         5.74 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 209.9kg/ha
+ Biomass removed from whiteclover by grazing: 55.5kg/ha
 5 January 1981(Day of year=5), pad1.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 123.10290 (kg/ha), n = 2.62125 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 2.35912 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 122.08649 (kg/ha), n = 2.54842 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.29358 (kg/ha), depth = 50 (mm), type = urea_n
 5 January 1981(Day of year=5), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.36 of N as urea (urea_n)
+         2.29 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 1.57275 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 1.52906 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         1.57 of N as urea (urea_n)
+         1.53 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 221.9kg/ha
+ Biomass removed from whiteclover by grazing: 59.9kg/ha
 5 January 1981(Day of year=5), pad2.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 129.49008 (kg/ha), n = 2.75418 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 2.47876 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 129.13979 (kg/ha), n = 2.71335 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.44201 (kg/ha), depth = 50 (mm), type = urea_n
 5 January 1981(Day of year=5), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.48 of N as urea (urea_n)
+         2.44 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 1.65250 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 1.62801 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         1.65 of N as urea (urea_n)
+         1.63 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 212.4kg/ha
+ Biomass removed from whiteclover by grazing: 57.7kg/ha
 5 January 1981(Day of year=5), pad3.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 125.10662 (kg/ha), n = 2.63939 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 2.37545 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 124.33726 (kg/ha), n = 2.59357 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.33422 (kg/ha), depth = 50 (mm), type = urea_n
 5 January 1981(Day of year=5), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.38 of N as urea (urea_n)
+         2.33 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 1.58364 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 1.55614 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         1.58 of N as urea (urea_n)
+         1.56 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
+ Biomass removed from ryegrass by grazing: 227.3kg/ha
+ Biomass removed from whiteclover by grazing: 61.5kg/ha
 5 January 1981(Day of year=5), pad4.Regular harvest or grazing (with return): 
-     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 132.89249 (kg/ha), n = 2.82518 (kg/ha), cpr = 1.0
-     Manager sending message :- fertiliser apply  amount = 2.54267 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager sending message :- surface organic matter add_surfaceom  name = 'agpasture', type = grass, mass = 132.07645 (kg/ha), n = 2.77639 (kg/ha), cpr = 1.0
+     Manager sending message :- fertiliser apply  amount = 2.49875 (kg/ha), depth = 50 (mm), type = urea_n
 5 January 1981(Day of year=5), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
-         2.54 of N as urea (urea_n)
+         2.50 of N as urea (urea_n)
                                          added at depth   50.00 (layer   3)
-     Manager sending message :- fertiliser apply  amount = 1.69511 (kg/ha), depth = 150 (mm), type = urea_n
+     Manager sending message :- fertiliser apply  amount = 1.66584 (kg/ha), depth = 150 (mm), type = urea_n
      
    - Reading Fertiliser Type Parameters
-         1.70 of N as urea (urea_n)
+         1.67 of N as urea (urea_n)
                                          added at depth  150.00 (layer   5)
 12 January 1981(Day of year=12), pad1.SWIM: 
      Maximum iterations reached - swim will reduce timestep
@@ -2433,6 +2503,11 @@ Paddock:
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:           8.563 to:           4.281
 27 March 1981(Day of year=86), pad3.SWIM: 
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
+     Maximum iterations reached - swim will reduce timestep
+     ApsimSwim|apswim_swim - Changing dt value from:           8.563 to:           4.281
+27 March 1981(Day of year=86), pad4.SWIM: 
      Maximum iterations reached - swim will reduce timestep
      ApsimSwim|apswim_swim - Changing dt value from:          10.000 to:           5.000
      Maximum iterations reached - swim will reduce timestep
