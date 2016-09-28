@@ -1,5 +1,5 @@
 <folder version="32" name="simulations">
-  <simulation name="WF_Millet">
+  <simulation name="WFMillet">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Tests\WFMillet\10104.met</filename>
     </metfile>
@@ -9,17 +9,17 @@
     </clock>
     <summaryfile />
     <area name="paddock">
-      <WF_Millet />
+      <WFMillet />
       <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
             <category description="Sowing criteria" type="category" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">23/9/2004</date>
             <category description="Sowing parameters" type="category" />
-            <crop type="crop" description="Enter name of crop to sow : ">WF_Millet</crop>
+            <crop type="crop" description="Enter name of crop to sow : ">WFMillet</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">22</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">20</depth>
-            <cultivar type="text" description="Enter cultivar : ">WF_Millet</cultivar>
+            <cultivar type="text" description="Enter cultivar : ">WFMillet</cultivar>
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">330</row_spacing>
           </ui>
@@ -35,7 +35,7 @@
         <manager name="Harvesting rule">
           <ui>
             <category description="Harvesting criteria" type="category" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">WF_Millet</crop>
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">WFMillet</crop>
           </ui>
           <script name="end_of_day">
             <text>
@@ -52,7 +52,7 @@
         <manager name="Sowing fertiliser">
           <ui>
             <category description="When should fertiliser be applied" type="category" />
-            <modulename type="modulename" description="On which module should the event come from : ">WF_Millet</modulename>
+            <modulename type="modulename" description="On which module should the event come from : ">WFMillet</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
             <category description="Fertiliser application details" type="category" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
@@ -108,8 +108,8 @@
         <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
       </surfaceom>
       <outputfile name="daily">
-        <filename output="yes">WF_Millet daily.out</filename>
-        <title>WF_Millet daily</title>
+        <filename output="yes">WFMillet daily.out</filename>
+        <title>WFMillet daily</title>
         <variables name="Variables">
           <variable array="No" description="Date (dd/mm/yyyy)">dd/mm/yyyy</variable>
           <variable array="No" description="Days after Sowing">DaysAfterSowing</variable>
@@ -131,8 +131,8 @@
         </events>
       </outputfile>
       <outputfile name="harvest">
-        <filename name="filename" output="yes">WF_Millet harvest.out</filename>
-        <title>WF_Millet harvest</title>
+        <filename name="filename" output="yes">WFMillet harvest.out</filename>
+        <title>WFMillet harvest</title>
         <variables name="Variables">
           <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
           <variable array="No" description="Biomass">biomass</variable>
@@ -144,8 +144,8 @@
         </events>
       </outputfile>
       <outputfile name="water">
-        <filename output="yes">WF_Millet water.out</filename>
-        <title>WF_Millet water</title>
+        <filename output="yes">WFMillet water.out</filename>
+        <title>WFMillet water</title>
         <variables name="Variables">
           <variable description="Date (dd/mm/yyyy)" array="No">dd/mm/yyyy</variable>
           <variable array="No" description="Extractable Soil Water (mm)">esw</variable>
@@ -326,7 +326,7 @@
               <XF>0</XF>
             </Layer>
           </SoilCrop>
-          <SoilCrop name="WF_MIllet">
+          <SoilCrop name="WFMillet">
             <Layer>
               <Thickness units="mm">150</Thickness>
               <LL units="mm/mm">0.18</LL>
@@ -732,7 +732,7 @@
         </script>
         <script name="start_of_day">
           <text> if today= date('18/11/2004') then 
-WF_Millet  end_crop
+WFMillet  end_crop
 endif </text>
           <event>start_of_day</event>
         </script>

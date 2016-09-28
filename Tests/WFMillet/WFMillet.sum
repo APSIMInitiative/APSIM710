@@ -10,7 +10,7 @@
              Copyright(c) APSRU               
 
 Version                = 7.8
-Title                  = WF_Millet
+Title                  = WFMillet
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
@@ -28,7 +28,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component    "clearview 10104) Nitrogen" = %apsim%\Model\SoilN.dll
    Component                           "Cl" = %apsim%\Model\Solute.dll
-   Component                    "WF_Millet" = %apsim%\Model\Plant.dll
+   Component                     "WFMillet" = %apsim%\Model\Plant.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -69,7 +69,7 @@ Paddock:
         stemgreenwt
         leaf_no
 
-     Output file = WF_Millet daily.out
+     Output file = WFMillet daily.out
      Format = normal
 
 ------- harvest Initialisation ------------------------------------------------
@@ -81,7 +81,7 @@ Paddock:
         yield
         esw
 
-     Output file = WF_Millet harvest.out
+     Output file = WFMillet harvest.out
      Format = normal
 
 ------- water Initialisation --------------------------------------------------
@@ -92,7 +92,7 @@ Paddock:
         drain
         runoff
 
-     Output file = WF_Millet water.out
+     Output file = WFMillet water.out
      Format = normal
 
 ------- paddock.accum Initialisation ------------------------------------------
@@ -103,7 +103,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('23/9/2004') then
-       wf_millet sow plants =22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
+       wfmillet sow plants =22, sowing_depth = 20, cultivar = wfmillet, row_spacing = 330, crop_class = plant
               endif
      END of rules
      
@@ -112,9 +112,9 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if wf_millet.stagename = 'harvest_ripe' or wf_millet.plant_status = 'dead' then
-       wf_millet  harvest
-       wf_millet  end_crop
+                if wfmillet.stagename = 'harvest_ripe' or wfmillet.plant_status = 'dead' then
+       wfmillet  harvest
+       wfmillet  end_crop
                 endif
      END of rules
      
@@ -122,7 +122,7 @@ Paddock:
 ------- paddock.Sowing fertiliser Initialisation ------------------------------
      Manager rules:
      
-     SECTION:- wf_millet.sowing
+     SECTION:- wfmillet.sowing
              fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = urea_n
      END of rules
      
@@ -155,7 +155,7 @@ Paddock:
      
      SECTION:- start_of_day
       if today= date('18/11/2004') then
-     wf_millet  end_crop
+     wfmillet  end_crop
      endif
      
      SECTION:- end_of_day
@@ -328,11 +328,11 @@ Paddock:
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
 23 September 2004(Day of year=267), paddock.Sow on a fixed date: 
-     Manager sending message :- wf_millet sow  plants = 22, sowing_depth = 20, cultivar = wf_millet, row_spacing = 330, crop_class = plant
-23 September 2004(Day of year=267), paddock.WF_Millet: 
+     Manager sending message :- wfmillet sow  plants = 22, sowing_depth = 20, cultivar = wfmillet, row_spacing = 330, crop_class = plant
+23 September 2004(Day of year=267), paddock.WFMillet: 
      Crop Sow
         ------------------------------------------------
-        cultivar                   = wf_millet
+        cultivar                   = wfmillet
         Phases:
            out
            sowing
@@ -390,7 +390,7 @@ Paddock:
          Sowing  Depth Plants Spacing Skip  Skip  Cultivar
          Day no   mm     m^2     mm   row   plant name
          ------------------------------------------------
-            267   20.0   22.0  330.0   0.0   0.0 wf_millet
+            267   20.0   22.0  330.0   0.0   0.0 wfmillet
          ------------------------------------------------
      
 23 September 2004(Day of year=267), paddock.Reset water, nitrogen and surfaceOM on fixed date: 
@@ -412,17 +412,17 @@ Paddock:
         - Reading Constants
      Using standard soil mineralisation for soil type Red Chromosol
       stage 2.0 germination
-28 September 2004(Day of year=272), paddock.WF_Millet: 
+28 September 2004(Day of year=272), paddock.WFMillet: 
       stage 3.0 emergence
                      biomass =           0.10 (g/m^2)   lai          =   0.005 (m^2/m^2)
                      stover N conc =     5.85 (%)    extractable sw =   13.21 (mm)
-9 November 2004(Day of year=314), paddock.WF_Millet: 
+9 November 2004(Day of year=314), paddock.WFMillet: 
       stage 4.0 endjuv_to_fi
                      biomass =         166.27 (g/m^2)   lai          =   1.140 (m^2/m^2)
                      stover N conc =     4.62 (%)    extractable sw =   92.39 (mm)
 18 November 2004(Day of year=323), paddock.Logic: 
-     Manager sending message :- wf_millet end_crop
-18 November 2004(Day of year=323), paddock.WF_Millet: 
+     Manager sending message :- wfmillet end_crop
+18 November 2004(Day of year=323), paddock.WFMillet: 
      Crop ended. Yield (dw) =     0.0  (kg/ha)
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
                           DM (kg/ha) =                2996.7                  2711.2
