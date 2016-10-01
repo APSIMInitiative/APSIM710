@@ -294,11 +294,11 @@ public class Species
     /// <summary>Some Description</summary>
     internal double massFluxTq;
 
-    /// <summary>Some Description</summary>
-    internal double massFluxW0; //grfw1        Mass flux scale factor at GLFwater=0 (must be > 1)
+    /// <summary>Mass flux scale factor at GLFwater=0 (must be > 1)</summary>
+    internal double massFluxW0;
 
-    /// <summary>Some Description</summary>
-    internal double massFluxWopt; //grfw2        Mass flux optimum temperature
+    /// <summary>Mass flux optimum temperature</summary>
+    internal double massFluxWopt;
 
     /// <summary>Some Description</summary>
     internal double exponentGLFW2dead;
@@ -353,7 +353,7 @@ public class Species
     /// <summary>Maximum reduction in growth as cost for N fixation</summary>
     internal double NFixCostMax;
 
-    /// <summary>Respiration cost due to the presence of symbiont bacteria (gC/gC roots)</summary>
+    /// <summary>Respiration cost due to the presence of symbiont bacteria (kgC/kgC roots)</summary>
     internal double symbiontCostFactor;
 
     /// <summary>Activity cost of N fixation (gC/gN fixed)</summary>
@@ -499,6 +499,9 @@ public class Species
     /// <summary>Some Description</summary>
     internal double daysfromEmergence = 0;
 
+    /// <summary>Factor describing progress through phenological phases (0-1).</summary>
+    private double phenoFactor;
+
     ////- Photosynthesis, growth, and turnover >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /// <summary>Some Description</summary>
@@ -580,13 +583,16 @@ public class Species
     internal double gama = 0.0; // from tissue 1 to 2, then 3 then 4
 
     /// <summary>Some Description</summary>
-    internal double gamaS = 0.0; // for stolons
-
-    /// <summary>Some Description</summary>
     internal double gamaD = 0.0; // from dead to litter
 
     /// <summary>Some Description</summary>
     internal double gamaR = 0.0; // for roots (to dead/FOM)
+
+    /// <summary>Some Description</summary>
+    internal double gamaS = 0.0; // for stolons
+
+    /// <summary>Effect of defoliation on stolon turnover (0-1).</summary>
+    private double cumDefoliationFraction;
 
     /// <summary>Some Description</summary>
     internal double germinationGDD = 0.0;
@@ -1027,7 +1033,7 @@ public class Species
         // Get N fixation costs
         costNFixation = 0.0;
         if (isLegume && (NFixationCostMethod == 2))
-            costNFixation = NFixationCost_M2();
+            costNFixation = DailyNFixationCosts();
 
         // Net potential growth (C) of the day
         dGrowthPot = Pgross + Cremob - Resp_g - Resp_m - costNFixation;
@@ -1271,7 +1277,7 @@ public class Species
         // N fixation costs
         costNFixation = 0.0;
         if (isLegume && (NFixationCostMethod == 2))
-            costNFixation = NFixationCost_M2();
+            costNFixation = DailyNFixationCosts();
 
         // ** C budget is not explicitly done here as in EM
         Cremob = 0.0; // Nremob * C2N_protein;    // No carbon budget here
@@ -1346,23 +1352,22 @@ public class Species
                 // Adjust turnover rate for annuals
                 if (phenoStage == 1)
                 {
-                    //vegetative
-                    double Kv = daysfromEmergence / daysEmgToAnth;
-                    gama *= Kv;
-                    gamaR *= Kv;
+                    //vegetative, turnover is zero at emergence and increases with age
+                    gama *= Math.Pow(phenoFactor, 0.5);
+                    gamaR *= Math.Pow(phenoFactor, 2.0);
+                    gamaD *= Math.Pow(phenoFactor, 2.0);
                 }
                 else if (phenoStage == 2)
                 {
-                    //reproductive
-                    double Kr = (daysfromEmergence - daysEmgToAnth) / daysAnthToMatur;
-                    //gama = 1 - (1 - gama) * (1 - Kr * Kr);
-                    gama *= 1 - (Kr * Kr);
-                    gama += Kr * Kr;
+                    //reproductive, turnover increases with age and reach one at maturity
+                    gama += (1.0 - gama) * Math.Pow(phenoFactor, 2.0);
+                    gamaR += (1.0 - gamaR) * Math.Pow(phenoFactor, 3.0);
+                    gamaD += (1.0 - gamaD) * Math.Pow(phenoFactor, 3.0);
                 }
             }
 
             // If today's turnover will result in a dmgreenShoot < dmgreen_minimum, then adjust the rates,
-            // Possibly will have to skip this for annuals to allow them to die - phenololgy-related?
+            // Possibly will have to skip this for annuals to allow them to die - phenology-related?
             double dmgreenToBe = AboveGroundLiveWt + dGrowth - (gama * (leaves.tissue[2].DM + stems.tissue[2].DM + stolons.tissue[2].DM));
             double minimumDMgreen = leaves.MinimumGreenDM + stems.MinimumGreenDM + stolons.MinimumGreenDM;
             if (dmgreenToBe < minimumDMgreen)
@@ -1624,10 +1629,18 @@ public class Species
         else if (phenoStage > 0)
         {
             daysfromEmergence += 1;
-            if (daysfromEmergence >= daysEmgToAnth)
-                phenoStage = 2; // reproductive stage
-
-            if (daysfromEmergence >= (daysEmgToAnth + daysAnthToMatur))
+            if (daysfromEmergence < daysEmgToAnth)
+            {
+                //vegetative stage
+                phenoFactor = MathUtility.Divide(daysfromEmergence, daysEmgToAnth, 1.0);
+            }
+            else if (daysfromEmergence >= daysEmgToAnth)
+            {
+                // reproductive stage
+                phenoStage = 2;
+                phenoFactor = MathUtility.Divide(daysfromEmergence - daysEmgToAnth, daysAnthToMatur, 1.0);
+            }
+            else if (daysfromEmergence >= (daysEmgToAnth + daysAnthToMatur))
             {
                 phenoStage = -1; // maturity / death
                 daysfromEmergence = 0;
@@ -1694,14 +1707,14 @@ public class Species
     /// Minchin FR, Witty JF 2005. Respiratory/carbon costs of symbiotic nitrogen fixation in legumes. In: Lambers H, Ribas-Carbo M eds. 
     ///    Plant Respiration. Advances in Photosynthesis and Respiration, Springer Netherlands. Pp. 195-205.
     /// </remarks>
-    /// <returns>Carbon spent on N fixation</returns>
-    private double NFixationCost_M2()
+    /// <returns>The amount of carbon spent on N fixation (kg/ha)</returns>
+    private double DailyNFixationCosts()
     {
         //  respiration cost of symbiont (presence of rhizobia is assumed to be proportional to root mass)
         double Tfactor = GFTemperature(Tmean);
         double maintenanceCost = roots.DMGreen * CarbonFractionDM * symbiontCostFactor * Tfactor;
 
-        //  respiration cost of N fixation (assumed as a simple function of N fixed)
+        //  respiration cost of N fixation (assumed as a simple linear function of N fixed)
         double activityCost = NFixed * NFixingCostFactor;
 
         return maintenanceCost + activityCost;

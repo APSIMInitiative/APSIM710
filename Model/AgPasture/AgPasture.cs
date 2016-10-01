@@ -424,6 +424,47 @@ public class AgPasture
     [Units("")]
     private double[] respExponent;
 
+    ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    [Param]
+    [Description("Optimum N concentration of leaves (no stress)")]
+    [Units("%")]
+    private double[] NconcOptimum_leaves;
+
+    [Param]
+    [Description("Maximum N concentration of leaves (luxury uptake)")]
+    [Units("%")]
+    private double[] NconcMaximum_leaves;
+
+    [Param]
+    [Description("Minimum N concentration of leaves (dead leaves)")]
+    [Units("%")]
+    private double[] NconcMinimum_leaves;
+
+    [Param]
+    [Description("N concentration for stems, relative to leaves")]
+    [Units("0-1")]
+    private double[] RelativeNconc_Stems;
+
+    [Param]
+    [Description("N concentration for stolons, relative to leaves")]
+    [Units("0-1")]
+    private double[] RelativeNconc_Stolons;
+
+    [Param]
+    [Description("N concentration for roots, relative to leaves")]
+    [Units("0-1")]
+    private double[] RelativeNconc_Roots;
+
+    [Param]
+    [Description("N concentration for plants at stage 2 (developing), relative to optimum")]
+    [Units("0-1")]
+    private double[] RelativeNconc_stage2;
+
+    [Param]
+    [Description("N concentration for plants at stage 3 (mature), relative to optimum")]
+    [Units("0-1")]
+    private double[] RelativeNconc_stage3;
+
     ////- Allocation of new growth >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - Shoot:root partition
     [Param]
@@ -441,7 +482,7 @@ public class AgPasture
     [Units("0-1")]
     private double[] GlfEffectsOnSR;
 
-    // - Effect of reproductive season
+    // - Effect of reproductive season ....................................
     [Param]
     [Description("Whether DM allocation (shoot/root) should be adjusted for reproductive period (perennials)")]
     [Units("yes/no")]
@@ -604,47 +645,6 @@ public class AgPasture
     [Description("Coefficient for partitioning non-used Nremob into tissue 4")]
     [Units("0-1")]
     private double[] Kappa4_Remob;
-
-    ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    [Param]
-    [Description("Optimum N concentration of leaves (no stress)")]
-    [Units("%")]
-    private double[] NconcOptimum_leaves;
-
-    [Param]
-    [Description("Maximum N concentration of leaves (luxury uptake)")]
-    [Units("%")]
-    private double[] NconcMaximum_leaves;
-
-    [Param]
-    [Description("Minimum N concentration of leaves (dead leaves)")]
-    [Units("%")]
-    private double[] NconcMinimum_leaves;
-
-    [Param]
-    [Description("N concentration for stems, relative to leaves")]
-    [Units("0-1")]
-    private double[] RelativeNconc_Stems;
-
-    [Param]
-    [Description("N concentration for stolons, relative to leaves")]
-    [Units("0-1")]
-    private double[] RelativeNconc_Stolons;
-
-    [Param]
-    [Description("N concentration for roots, relative to leaves")]
-    [Units("0-1")]
-    private double[] RelativeNconc_Roots;
-
-    [Param]
-    [Description("N concentration for plants at stage 2 (developing), relative to optimum")]
-    [Units("0-1")]
-    private double[] RelativeNconc_stage2;
-
-    [Param]
-    [Description("N concentration for plants at stage 3 (mature), relative to optimum")]
-    [Units("0-1")]
-    private double[] RelativeNconc_stage3;
 
     ////- N fixation (for legumes) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
@@ -908,10 +908,12 @@ public class AgPasture
     // - Passed on by the soil module
     [Param]
     [Description("SW uptake parameter (/day)")]
+    [Units("0-1")]
     private double[] kl = null;
 
     [Param]
     [Description("Crop Lower Limit for water uptake (mm/mm)")]
+    [Units("mm3/mm3")]
     private double[] ll = null;
 
     [Param]
@@ -4936,7 +4938,7 @@ public class AgPasture
     /// <summary>Total amount of C in the plant</summary>
     [Output]
     [Description("Total amount of C in the plant")]
-    [Units("kgDM/ha")]
+    [Units("kgC/ha")]
     public double TotalC
     {
         get { return TotalWt * CarbonFractionDM; }
@@ -4953,7 +4955,7 @@ public class AgPasture
 
     /// <summary>Dry matter weight of plant above ground</summary>
     [Output]
-    [Description("Dry matter weight of plant above ground")]
+    [Description("Dry matter weight of the plant above ground")]
     [Units("kgDM/ha")]
     public double AboveGroundWt
     {
@@ -4998,7 +5000,7 @@ public class AgPasture
 
     /// <summary>Dry matter weight of plant below ground</summary>
     [Output]
-    [Description("Dry matter weight of plant below ground")]
+    [Description("Dry matter weight of the plant below ground")]
     [Units("kgDM/ha")]
     public double BelowGroundWt
     {
@@ -5192,29 +5194,29 @@ public class AgPasture
         get { return StemDeadWt * 0.10; }
     }
 
-    /// <summary>Green Cover</summary>
+    /// <summary>Green Cover (needed by SoilWat)</summary>
     [Output]
     [Description("Fraction of soil covered by plant green tissues")]
     [Units("0-1")]
-    public double cover_green  // this is needed by SoilWat
+    public double cover_green
     {
         get { return CoverGreen; }
     }
 
-    /// <summary>Total Cover</summary>
+    /// <summary>Total Cover (needed by SWIM and SoilWat)</summary>
     [Output]
     [Description("Fraction of soil covered by plant tissues")]
     [Units("0-1")]
-    public double cover_tot  // this is needed by SWIM and SoilWat
+    public double cover_tot
     {
         get { return CoverTotal; }
     }
 
-    /// <summary>N concentration</summary>
+    /// <summary>Plant N concentration (needed by DDRUles)</summary>
     [Output]
     [Description("N concentration above ground")]
     [Units("%")]
-    public double AboveGroundNPct  // this is needed by DDRUles
+    public double AboveGroundNPct
     {
         get { return AboveGroundNConc * 100.0; }
     }
@@ -5223,7 +5225,7 @@ public class AgPasture
     /// <summary>Total amount of N in the plant</summary>
     [Output]
     [Description("Total amount of N in the plant")]
-    [Units("kg/ha")]
+    [Units("kgN/ha")]
     public double TotalN
     {
         get { return AboveGroundN + BelowGroundN; }
@@ -5231,7 +5233,7 @@ public class AgPasture
 
     /// <summary>Amount of N in plant above ground</summary>
     [Output]
-    [Description("Amount of N in plant above ground")]
+    [Description("Amount of N in the plant above ground")]
     [Units("kgN/ha")]
     public double AboveGroundN
     {
@@ -5276,7 +5278,7 @@ public class AgPasture
 
     /// <summary>Amount of N in plant below ground</summary>
     [Output]
-    [Description("Amount of N in plant below ground")]
+    [Description("Amount of N in the plant below ground")]
     [Units("kgN/ha")]
     public double BelowGroundN
     {
@@ -5367,7 +5369,7 @@ public class AgPasture
     ////- N concentration outputs >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     /// <summary>Average N concentration in plant above ground</summary>
     [Output]
-    [Description("Average N concentration in plant above ground")]
+    [Description("Average N concentration in the plant above ground")]
     [Units("kgN/kgDM")]
     public double AboveGroundNConc
     {
@@ -5456,9 +5458,9 @@ public class AgPasture
     }
 
     ////- DM growth and senescence outputs >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Base potential photosynthetic rate, before damages (kg C)</summary>
+    /// <summary>Base potential photosynthetic rate, before damages, in carbon equivalent</summary>
     [Output]
-    [Description("Base potential photosynthetic rate, before damages (kg C)")]
+    [Description("Base potential photosynthetic rate, before damages, in carbon equivalent")]
     [Units("kgC/ha")]
     public double BasePotentialPhotosynthesisC
     {
@@ -5471,9 +5473,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Gross potential photosynthetic rate, after considering damages (kg C)</summary>
+    /// <summary>Gross potential photosynthetic rate, after considering damages, in carbon equivalent</summary>
     [Output]
-    [Description("Gross potential photosynthetic rate, after considering damages (kg C)")]
+    [Description("Gross potential photosynthetic rate, after considering damages, in carbon equivalent")]
     [Units("kgC/ha")]
     public double GrossPotentialPhotosynthesisC
     {
@@ -5741,9 +5743,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Amount of N demanded from soil</summary>
+    /// <summary>Amount of N demanded from the soil</summary>
     [Output]
-    [Description("Amount of N demanded from soil")]
+    [Description("Amount of N demanded from the soil")]
     [Units("kgN/ha")]
     public double SoilDemandN
     {
@@ -5752,16 +5754,16 @@ public class AgPasture
 
     /// <summary>Amount of N available in the soil</summary>
     [Output]
-    [Description("Amount of N available in the soil")]
+    [Description("Amount of plant available N in the soil")]
     [Units("kgN/ha")]
     public double SoilAvailableN
     {
         get { return swardSoilNavailable; }
     }
 
-    /// <summary>Amount of NH4-N available in the soil</summary>
+    /// <summary>Amount of N available in each soil layer</summary>
     [Output]
-    [Description("Amount of NH4-N available in the soil")]
+    [Description("Amount of plant available N in each soil layer")]
     [Units("kgN/ha")]
     public double[] NSupplyLayers
     {
@@ -5783,9 +5785,9 @@ public class AgPasture
         get { return soilNH4Uptake.Sum() + soilNO3Uptake.Sum(); }
     }
 
-    /// <summary>Amount of NH4-N uptake</summary>
+    /// <summary>Amount of N taken up from each soil layer</summary>
     [Output]
-    [Description("Amount of NH4-N uptake")]
+    [Description("Amount of N taken up from each soil layer")]
     [Units("kgN/ha")]
     public double[] NUptakeLayers
     {
@@ -5831,6 +5833,52 @@ public class AgPasture
             }
             return result;
         }
+    }
+
+    ////- Water related outputs >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    /// <summary>Amount of water demanded by the plants</summary>
+    [Output]
+    [Description("Amount of water demanded by the plants")]
+    [Units("mm")]
+    public double WaterDemand
+    {
+        get { return swardWaterDemand; }
+    }
+
+    /// <summary>Amount of plant available water in the soil</summary>
+    [Output]
+    [Description("Amount of plant available water in the soil")]
+    [Units("mm")]
+    public double WaterAvailable
+    {
+        get { return soilAvailableWater.Sum(); }
+    }
+
+    /// <summary>Amount of plant available water in each soil layer</summary>
+    [Output]
+    [Description("Amount of plant available water in each soil layer")]
+    [Units("mm")]
+    public double[] WaterSupplyLayers
+    {
+        get { return soilAvailableWater; }
+    }
+
+    /// <summary>Amount of water taken up from the soil</summary>
+    [Output]
+    [Description("Amount of water taken up from the soil")]
+    [Units("mm")]
+    public double WaterUptake
+    {
+        get { return soilWaterUptake.Sum(); }
+    }
+
+    /// <summary>Amount of water taken up from each soil layer</summary>
+    [Output]
+    [Description("Amount of water taken up from each soil layer")]
+    [Units("mm")]
+    public double[] WaterUptakeLayers
+    {
+        get { return soilWaterUptake; }
     }
 
     ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -5946,9 +5994,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Growth factor due to heat damage stress</summary>
+    /// <summary>Growth factor due to cold damage stress</summary>
     [Output]
-    [Description("Growth factor due to heat damage stress")]
+    [Description("Growth factor due to cold damage stress")]
     [Units("0-1")]
     public double GlfColdDamage
     {
@@ -5991,25 +6039,6 @@ public class AgPasture
 
     private double frgr = 1.0;
 
-    /// <summary>Plant relative growth rate, sent to micromet</summary>
-    [Output]
-    [Description("Plant relative growth rate, sent to micromet")]
-    [Units("0-1")]
-    public double Frgr
-    {
-        get { return frgr; }
-    }
-
-    /// <summary>Effect of vapour pressure on growth (used by micromet)</summary>
-    [Output]
-    [Description("Effect of vapour pressure on growth (used by micromet)")]
-    [Units("0-1")]
-    public double FVPD // VPD effect on Growth Interpolation Set
-    {
-        // mostly = 1 for crop/grass/forage
-        get { return FVPDFunction.Value(VPD()); }
-    }
-
     /// <summary>Growth limiting factor due to water deficit</summary>
     [Output]
     [Description("Growth limiting factor due to water deficit")]
@@ -6037,9 +6066,9 @@ public class AgPasture
         get { return swardGLFN; }
     }
 
-    /// <summary>Generic growth limiting factor due to soil fertility</summary>
+    /// <summary>Generic growth limiting factor due to soil fertility, user set</summary>
     [Output]
-    [Description("Generic growth limiting factor due to soil fertility")]
+    [Description("Generic growth limiting factor due to soil fertility, user set")]
     [Units("0-1")]
     public double GlfSoilFertility
     {
@@ -6058,6 +6087,25 @@ public class AgPasture
             }
             return result;
         }
+    }
+
+    /// <summary>Plant relative growth rate, sent to micromet</summary>
+    [Output]
+    [Description("Plant relative growth rate, sent to micromet")]
+    [Units("0-1")]
+    public double Frgr
+    {
+        get { return frgr; }
+    }
+
+    /// <summary>Effect of vapour pressure on growth (used by micromet)</summary>
+    [Output]
+    [Description("Effect of vapour pressure on growth (used by micromet)")]
+    [Units("0-1")]
+    public double FVPD
+    {
+        // mostly = 1 for crop/grass/forage
+        get { return FVPDFunction.Value(VPD()); }
     }
 
     /// <summary>Temperature factor for respiration</summary>
@@ -6205,13 +6253,13 @@ public class AgPasture
     /// <summary>Solar radiation intercepted by whole sward</summary>
     [Output]
     [Description("Solar radiation intercepted by whole sward")]
-    [Units("MJ")]
+    [Units("MJ/m^2/day")]
     public double InterceptedRadn;
 
     ////- Height and root depth >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Height of plant</summary>
+    /// <summary>Average height of plants in the sward</summary>
     [Output]
-    [Description("Sward average height")] //needed by micromet
+    [Description("Average height of plants in the sward")] //needed by micromet
     [Units("mm")]
     public double Height
     {
@@ -6230,11 +6278,11 @@ public class AgPasture
         }
     }
 
-    /// <summary>Depth of roots</summary>
+    /// <summary>Average depth of root zone in the sward</summary>
     [Output]
-    [Description("Sward average root depth")] //needed by micromet
+    [Description("Average depth of root zone in the sward")]
     [Units("mm")]
-    public double RootingDepth
+    public double RootDepth
     {
         get { return swardRootDepth; }
     }
@@ -6275,52 +6323,6 @@ public class AgPasture
             }
             return result;
         }
-    }
-
-    ////- Water related outputs >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Plant water demand</summary>
-    [Output]
-    [Description("Plant water demand")]
-    [Units("mm")]
-    public double WaterDemand
-    {
-        get { return swardWaterDemand; }
-    }
-
-    /// <summary>Plant available water in soil</summary>
-    [Output]
-    [Description("Plant available water in soil")]
-    [Units("mm")]
-    public double WaterAvailable
-    {
-        get { return soilAvailableWater.Sum(); }
-    }
-
-    /// <summary>Plant available water in each soil layer</summary>
-    [Output]
-    [Description("Plant available water in each soil layer")]
-    [Units("mm")]
-    public double[] WaterSupplyLayers
-    {
-        get { return soilAvailableWater; }
-    }
-
-    /// <summary>Plant water uptake</summary>
-    [Output]
-    [Description("Plant water uptake")]
-    [Units("mm")]
-    public double WaterUptake
-    {
-        get { return soilWaterUptake.Sum(); }
-    }
-
-    /// <summary>Plant water uptake from each soil layer</summary>
-    [Output]
-    [Description("Plant water uptake from each soil layer")]
-    [Units("mm")]
-    public double[] WaterUptakeLayers
-    {
-        get { return soilWaterUptake; }
     }
 
     ////- Harvest outputs >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -6399,7 +6401,7 @@ public class AgPasture
     /// <summary>Average metabolisable energy concentration of harvested material</summary>
     [Output]
     [Description("Average metabolisable energy concentration of harvested material")]
-    [Units("(MJ/kgDM)")]
+    [Units("MJ/kgDM")]
     public double HarvestedME
     {
         get
@@ -6428,7 +6430,7 @@ public class AgPasture
     /// <summary>Average metabolisable energy concentration of standing herbage</summary>
     [Output]
     [Description("Average metabolisable energy concentration of standing herbage")]
-    [Units("(MJ/kgDM)")]
+    [Units("MJ/kgDM")]
     public double HerbageME
     {
         get
@@ -6640,7 +6642,7 @@ public class AgPasture
     /// <summary>Dry matter weight of plant's leaves, for each species</summary>
     [Output]
     [Description("Dry matter weight of plant's leaves, for each species")]
-    [Units("kgN/ha")]
+    [Units("kgDM/ha")]
     public double[] SpeciesLeafWt
     {
         get
@@ -6655,7 +6657,7 @@ public class AgPasture
     /// <summary>Dry matter weight of plant's stems and sheath, for each species</summary>
     [Output]
     [Description("Dry matter weight of plant's stems and sheath, for each species")]
-    [Units("kgN/ha")]
+    [Units("kgDM/ha")]
     public double[] SpeciesStemWt
     {
         get
@@ -6670,7 +6672,7 @@ public class AgPasture
     /// <summary>Dry matter weight of plant's stolons, for each species</summary>
     [Output]
     [Description("Dry matter weight of plant's stolons, for each species")]
-    [Units("kgN/ha")]
+    [Units("kgDM/ha")]
     public double[] SpeciesStolonWt
     {
         get
@@ -6685,7 +6687,7 @@ public class AgPasture
     /// <summary>Dry matter weight of plant's roots, for each species</summary>
     [Output]
     [Description("Dry matter weight of plant's roots, for each species")]
-    [Units("kgN/ha")]
+    [Units("kgDM/ha")]
     public double[] SpeciesRootWt
     {
         get
@@ -6724,6 +6726,21 @@ public class AgPasture
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].AboveGroundN;
+            return result;
+        }
+    }
+
+    /// <summary>Amount of N in plant below ground, for each species</summary>
+    [Output]
+    [Description("Amount of N in plant below ground, for each species")]
+    [Units("kgN/ha")]
+    public double[] SpeciesBelowGroundN
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].roots.NTotal;
             return result;
         }
     }
@@ -6905,9 +6922,9 @@ public class AgPasture
     }
 
     ////- DM growth and senescence outputs >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Base potential photosynthetic rate, before damages (kg C), for each species</summary>
+    /// <summary>Base potential photosynthetic rate, before damages, in carbon equivalent, for each species</summary>
     [Output]
-    [Description("Base potential photosynthetic rate, before damages (kg C), for each species")]
+    [Description("Base potential photosynthetic rate, before damages, in carbon equivalent, for each species")]
     [Units("kgC/ha")]
     public double[] SpeciesBasePotentialPhotosynthesisC
     {
@@ -6920,9 +6937,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Gross potential photosynthetic rate, after considering damages (kg C), for each species</summary>
+    /// <summary>Gross potential photosynthetic rate, after considering damages, in carbon equivalent, for each species</summary>
     [Output]
-    [Description("Gross potential photosynthetic rate, after considering damages (kg C), for each species")]
+    [Description("Gross potential photosynthetic rate, after considering damages, in carbon equivalent, for each species")]
     [Units("kgC/ha")]
     public double[] SpeciesGrossPotentialPhotosynthesisC
     {
@@ -7221,9 +7238,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Amount of N demanded from soil, for each species</summary>
+    /// <summary>Amount of N demanded from the soil, for each species</summary>
     [Output]
-    [Description("Amount of N demanded from soil, for each species")]
+    [Description("Amount of N demanded from the soil, for each species")]
     [Units("kgN/ha")]
     public double[] SpeciesSoilDemandN
     {
@@ -7238,9 +7255,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Amount of NH4-N available in the soil, for each species</summary>
+    /// <summary>Amount of plant available N in the soil, for each species</summary>
     [Output]
-    [Description("Amount of NH4-N available in the soil, for each species")]
+    [Description("Amount of plant available N in the soil, for each species")]
     [Units("kgN/ha")]
     public double[] SpeciesSoilAvailableN
     {
@@ -7255,9 +7272,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Amount of NH4-N uptake, for each species</summary>
+    /// <summary>Amount of N taken up from the soil, for each species</summary>
     [Output]
-    [Description("Amount of NH4-N uptake, for each species")]
+    [Description("Amount of N taken up from the soil, for each species")]
     [Units("kgN/ha")]
     public double[] SpeciesSoilUptakeN
     {
@@ -7319,6 +7336,52 @@ public class AgPasture
             {
                 result[s] = mySpecies[s].newGrowthN;
             }
+            return result;
+        }
+    }
+
+    ////- Water related outputs >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    /// <summary>Amount of water demanded by the plant, for each species</summary>
+    [Output]
+    [Description("Amount of water demanded by the plant, for each species")]
+    [Units("mm")]
+    public double[] SpeciesWaterDemand
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].WaterDemand;
+            return result;
+        }
+    }
+
+    /// <summary>Amount of plant available water in the soil, for each species</summary>
+    [Output]
+    [Description("Amount of plant available water in the soil, for each species")]
+    [Units("mm")]
+    public double[] SpeciesWaterAvailable
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].soilAvailableWater.Sum();
+            return result;
+        }
+    }
+
+    /// <summary>Amount of water taken up from the soil, for each species</summary>
+    [Output]
+    [Description("Amount of water taken up from the soil, for each species")]
+    [Units("mm")]
+    public double[] SpeciesWaterUptake
+    {
+        get
+        {
+            double[] result = new double[mySpecies.Length];
+            for (int s = 0; s < NumSpecies; s++)
+                result[s] = mySpecies[s].soilWaterUptake.Sum();
             return result;
         }
     }
@@ -7399,9 +7462,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Growth factor due to heat stress, for each species</summary>
+    /// <summary>Growth factor due to heat damage stress, for each species</summary>
     [Output]
-    [Description("Growth factor due to heat stress, for each species")]
+    [Description("Growth factor due to heat damage stress, for each species")]
     [Units("0-1")]
     public double[] SpeciesGlfHeatDamage
     {
@@ -7414,9 +7477,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Growth factor due to cold stress, for each species</summary>
+    /// <summary>Growth factor due to cold damage stress, for each species</summary>
     [Output]
-    [Description("Growth factor due to cold stress, for each species")]
+    [Description("Growth factor due to cold damage stress, for each species")]
     [Units("0-1")]
     public double[] SpeciesGlfColdDamage
     {
@@ -7429,9 +7492,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Generic stress factor on photosynthesis, given by user, for each species</summary>
+    /// <summary>Generic limiting factor for photosynthesis, user set, for each species</summary>
     [Output]
-    [Description("Generic stress factor on photosynthesis, given by user, for each species")]
+    [Description("Generic limiting factor for photosynthesis, user set, for each species")]
     [Units("0-1")]
     public double[] SpeciesGlfGeneric
     {
@@ -7489,9 +7552,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Generic growth limiting factor due to soil fertility, for each species</summary>
+    /// <summary>Generic growth limiting factor due to soil fertility, user set, for each species</summary>
     [Output]
-    [Description("Generic growth limiting factor due to soil fertility,  given by user, for each species")]
+    [Description("Generic growth limiting factor due to soil fertility, user set, for each species")]
     [Units("0-1")]
     public double[] SpeciesGlfSoilFertility
     {
@@ -7742,7 +7805,7 @@ public class AgPasture
     /// <summary>Solar radiation intercepted by the plant, for each species</summary>
     [Output]
     [Description("Solar radiation intercepted by the plant, for each species")]
-    [Units("MJ")]
+    [Units("MJ/m^2/day")]
     public double[] SpeciesInterceptedRadn
     {
         get
@@ -7755,9 +7818,9 @@ public class AgPasture
     }
 
     ////- Height and root depth >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Height of plant, for each species</summary>
+    /// <summary>Average canopy height, for each species</summary>
     [Output]
-    [Description("Height of plant, for each species")]
+    [Description("Average canopy height, for each species")]
     [Units("mm")]
     public double[] SpeciesHeight
     {
@@ -7770,63 +7833,17 @@ public class AgPasture
         }
     }
 
-    /// <summary>Depth of roots, for each species</summary>
+    /// <summary>Average depth of root zone, for each species</summary>
     [Output]
-    [Description("Depth of roots, for each species")]
+    [Description("Average depth of root zone, for each species")]
     [Units("mm")]
-    public double[] SpeciesRootingDepth
+    public double[] SpeciesRootDepth
     {
         get
         {
             double[] result = new double[NumSpecies];
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].rootDepth;
-            return result;
-        }
-    }
-
-    ////- Water related outputs >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Plant water demand, for each species</summary>
-    [Output]
-    [Description("Plant water demand, for each species")]
-    [Units("mm")]
-    public double[] SpeciesWaterDemand
-    {
-        get
-        {
-            double[] result = new double[mySpecies.Length];
-            for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].WaterDemand;
-            return result;
-        }
-    }
-
-    /// <summary>Amount of water available in the soil for each species</summary>
-    [Output]
-    [Description("Amount of water available in the soil for each species")]
-    [Units("mm")]
-    public double[] SpeciesWaterSupply
-    {
-        get
-        {
-            double[] result = new double[mySpecies.Length];
-            for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].soilAvailableWater.Sum();
-            return result;
-        }
-    }
-
-    /// <summary>Amount of water uptake for each species</summary>
-    [Output]
-    [Description("Amount of water uptake for each species")]
-    [Units("mm")]
-    public double[] SpeciesWaterUptake
-    {
-        get
-        {
-            double[] result = new double[mySpecies.Length];
-            for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].soilWaterUptake.Sum();
             return result;
         }
     }
@@ -7896,7 +7913,7 @@ public class AgPasture
     /// <summary>Average N concentration in harvested material, for each species</summary>
     [Output]
     [Description("Average N concentration in harvested material, for each species")]
-    [Units("kgN/ha")]
+    [Units("kgN/kgDM")]
     public double[] SpeciesHarvestedNConc
     {
         get
@@ -7970,9 +7987,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>Average metabolisable energy concentration of harvested material, for each species</summary>
+    /// <summary>Average metabolisable energy concentration of standing herbage, for each species</summary>
     [Output]
-    [Description("Average metabolisable energy concentration of harvested material, for each species")]
+    [Description("Average metabolisable energy concentration of standing herbage, for each species")]
     [Units("MJ/kgDM")]
     public double[] SpeciesHerbageME
     {
@@ -8233,9 +8250,9 @@ public class AgPasture
     }
 
     ////- N amount outputs >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>N amount in emerging tissues from all above ground organs</summary>
+    /// <summary>Amount of N in emerging tissues from all above ground organs</summary>
     [Output]
-    [Description("N amount in emerging tissues from all above ground organs")]
+    [Description("Amount of N in emerging tissues from all above ground organs")]
     [Units("kgN/ha")]
     public double EmergingTissuesN
     {
@@ -8248,9 +8265,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in developing tissues from all above ground organs</summary>
+    /// <summary>Amount of N in developing tissues from all above ground organs</summary>
     [Output]
-    [Description("N amount in developing tissues from all above ground organs")]
+    [Description("Amount of N in developing tissues from all above ground organs")]
     [Units("kgN/ha")]
     public double DevelopingTissuesN
     {
@@ -8263,9 +8280,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in mature tissues from all above ground organs</summary>
+    /// <summary>Amount of N in mature tissues from all above ground organs</summary>
     [Output]
-    [Description("N amount in mature tissues from all above ground organs")]
+    [Description("Amount of N in mature tissues from all above ground organs")]
     [Units("kgN/ha")]
     public double MatureTissuesN
     {
@@ -8278,9 +8295,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in dead tissues from all above ground organs</summary>
+    /// <summary>Amount of N in dead tissues from all above ground organs</summary>
     [Output]
-    [Description("N amount in dead tissues from all above ground organs")]
+    [Description("Amount of N in dead tissues from all above ground organs")]
     [Units("kgN/ha")]
     public double DeadTissuesN
     {
@@ -8293,9 +8310,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in emerging tissues of plant's leaves</summary>
+    /// <summary>Amount of N in emerging tissues of plant's leaves</summary>
     [Output]
-    [Description("N amount in emerging tissues of plant's leaves")]
+    [Description("Amount of N in emerging tissues of plant's leaves")]
     [Units("kgN/ha")]
     public double[] SpeciesLeafStage1N
     {
@@ -8308,9 +8325,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in developing tissues of plant's leaves</summary>
+    /// <summary>Amount of N in developing tissues of plant's leaves</summary>
     [Output]
-    [Description("N amount in developing tissues of plant's leaves")]
+    [Description("Amount of N in developing tissues of plant's leaves")]
     [Units("kgN/ha")]
     public double[] SpeciesLeafStage2N
     {
@@ -8323,9 +8340,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in mature tissues of plant's leaves</summary>
+    /// <summary>Amount of N in mature tissues of plant's leaves</summary>
     [Output]
-    [Description("N amount in mature tissues of plant's leaves")]
+    [Description("Amount of N in mature tissues of plant's leaves")]
     [Units("kgN/ha")]
     public double[] SpeciesLeafStage3N
     {
@@ -8338,9 +8355,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in dead tissues of plant's leaves</summary>
+    /// <summary>Amount of N in dead tissues of plant's leaves</summary>
     [Output]
-    [Description("N amount in dead tissues of plant's leaves")]
+    [Description("Amount of N in dead tissues of plant's leaves")]
     [Units("kgN/ha")]
     public double[] SpeciesLeafStage4N
     {
@@ -8353,9 +8370,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in emerging tissues of plant's stems</summary>
+    /// <summary>Amount of N in emerging tissues of plant's stems</summary>
     [Output]
-    [Description("N amount in emerging tissues of plant's stems")]
+    [Description("Amount of N in emerging tissues of plant's stems")]
     [Units("kgN/ha")]
     public double[] SpeciesStemStage1N
     {
@@ -8368,9 +8385,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in developing tissues of plant's stems</summary>
+    /// <summary>Amount of N in developing tissues of plant's stems</summary>
     [Output]
-    [Description("N amount in developing tissues of plant's stems")]
+    [Description("Amount of N in developing tissues of plant's stems")]
     [Units("kgN/ha")]
     public double[] SpeciesStemStage2N
     {
@@ -8383,9 +8400,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in mature tissues of plant's stems</summary>
+    /// <summary>Amount of N in mature tissues of plant's stems</summary>
     [Output]
-    [Description("N amount in mature tissues of plant's stems")]
+    [Description("Amount of N in mature tissues of plant's stems")]
     [Units("kgN/ha")]
     public double[] SpeciesStemStage3N
     {
@@ -8398,9 +8415,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in dead tissues of plant's stems</summary>
+    /// <summary>Amount of N in dead tissues of plant's stems</summary>
     [Output]
-    [Description("N amount in dead tissues of plant's stems")]
+    [Description("Amount of N in dead tissues of plant's stems")]
     [Units("kgN/ha")]
     public double[] SpeciesStemStage4N
     {
@@ -8413,9 +8430,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in emerging tissues of plant's stolons</summary>
+    /// <summary>Amount of N in emerging tissues of plant's stolons</summary>
     [Output]
-    [Description("N amount in emerging tissues of plant's stolons")]
+    [Description("Amount of N in emerging tissues of plant's stolons")]
     [Units("kgN/ha")]
     public double[] SpeciesStolonStage1N
     {
@@ -8428,9 +8445,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in developing tissues of plant's stolons</summary>
+    /// <summary>Amount of N in developing tissues of plant's stolons</summary>
     [Output]
-    [Description("N amount in developing tissues of plant's stolons")]
+    [Description("Amount of N in developing tissues of plant's stolons")]
     [Units("kgN/ha")]
     public double[] SpeciesStolonStage2N
     {
@@ -8443,9 +8460,9 @@ public class AgPasture
         }
     }
 
-    /// <summary>N amount in mature tissues of plant's stolons</summary>
+    /// <summary>Amount of N in mature tissues of plant's stolons</summary>
     [Output]
-    [Description("N amount in mature tissues of plant's stolons")]
+    [Description("Amount of N in mature tissues of plant's stolons")]
     [Units("kgN/ha")]
     public double[] SpeciesStolonStage3N
     {
