@@ -73,7 +73,7 @@ public class AgPasture
     [Param]
     [Description("Name of species to simulate")]
     [Units("")]
-    private string[] speciesToSimulate = null;
+    private string[] SpeciesToSimulate = null;
 
     [Param]
     [Description("Whether water uptake is calculated by agpasture or apsim")]
@@ -231,22 +231,26 @@ public class AgPasture
     [Param(IsOptional = true)]
     [Description("Initial above ground DM weight for each species")]
     [Units("kg/ha")]
-    private double[] iniShootDM;
+    private double[] InitialShootDM;
 
     [Param(IsOptional = true)]
     [Description("Initial below ground DM weight for each species")]
     [Units("kg/ha")]
-    private double[] iniRootDM;
+    private double[] InitialRootDM;
 
     [Param(IsOptional = true)]
     [Description("Initial rooting depth for each species")]
-    [Units("kg/ha")]
-    private double[] iniRootDepth;
+    [Units("mm")]
+    private double[] InitialRootDepth;
 
     [Param(IsOptional = true)]
+    [Description("Initial value for the depth parameter of the root distribution function, for each species")]
+    [Units("mm")]
     private double[] iniRootDepthParam = null;
 
     [Param(IsOptional = true)]
+    [Description("Initial value for the exponent of the root distribution function, for each species")]
+    [Units("mm")]
     private double[] iniRootCurveParam = null;
 
     #region - Values for each parameterised pasture species - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -265,7 +269,7 @@ public class AgPasture
     [Param]
     [Description("Metabolic pathway for C fixation during photosynthesis (C3 or C4)")]
     [Units("3/4")]
-    private double[] photoPath = null;
+    private double[] PhotosyntheticPathway = null;
 
     [Param]
     [Description("Whether the plant is a legume species (1=yes, 0=no)")]
@@ -281,7 +285,7 @@ public class AgPasture
     [Param]
     [Description("Reference leaf CO2 assimilation rate for photosynthesis")]
     [Units("mgCO2/m^2 leaf/s")]
-    private double[] Pm;
+    private double[] ReferencePhotosyntheticRate;
 
     [Param]
     [Description("Relative factor for light partition between species")]
@@ -291,174 +295,174 @@ public class AgPasture
     [Param]
     [Description("Leaf photosynthetic efficiency")]
     [Units("mg CO2/J")]
-    private double[] alphaPhoto;
+    private double[] PhotosyntheticEfficiency;
 
     [Param]
     [Description("Photosynthesis curvature parameter")]
     [Units("J/kg/s")]
-    private double[] thetaPhoto;
+    private double[] PhotosynthesisCurveFactor;
 
     [Param]
     [Description("Fraction of radiation that is photosynthetic active")]
     [Units("0-1")]
-    private double[] fractionPAR;
+    private double[] FractionPAR;
 
     [Param]
     [Description("Light extinction coefficient")]
     [Units("")]
-    private double[] lightExtCoeff;
+    private double[] LightExtinctionCoefficients;
 
     [Param]
     [Description("Reference CO2 concentration for photosynthesis")]
     [Units("ppm")]
-    private double[] referenceCO2;
+    private double[] ReferenceCO2;
 
     [Param]
     [Description("Scaling parameter for the CO2 effect on photosynthesis")]
     [Units("ppm")]
-    private double[] CO2PmaxScale;
+    private double[] CO2EffectScaleFactor;
 
     [Param]
     [Description("Scaling parameter for the CO2 effects on N requirements")]
     [Units("ppm")]
-    private double[] CO2NScale;
+    private double[] CO2EffectOffsetFactor;
 
     [Param]
     [Description("Minimum value for the CO2 effect on N requirements")]
     [Units("0-1")]
-    private double[] CO2NMin;
+    private double[] CO2EffectMinimum;
 
     [Param]
     [Description("Exponent controlling the CO2 effect on N requirements")]
     [Units(">1.0")]
-    private double[] CO2NCurvature;
+    private double[] CO2EffectExponent;
 
     [Param]
     [Description("Minimum temperature for growth")]
     [Units("")]
-    private double[] growthTmin;
+    private double[] GrowthTminimum;
 
     [Param]
     [Description("Optimum temperature for growth")]
     [Units("")]
-    private double[] growthTopt;
+    private double[] GrowthToptimum;
 
     [Param]
     [Description("Curve parameter for growth response to temperature")]
     [Units("")]
-    private double[] growthTq;
+    private double[] GrowthTEffectExponent;
 
     [Param]
     [Description("Whether heat damage stress is enabled")]
     [Units("")]
-    private string[] useHeatStress;
+    private string[] UseHeatStressFactor;
 
     [Param]
     [Description("Onset temperature for heat effects on photosynthesis")]
     [Units("")]
-    private double[] heatOnsetT;
+    private double[] HeatOnsetTemperature;
 
     [Param]
     [Description("Temperature for full heat effect on photosynthesis")]
     [Units("")]
-    private double[] heatFullT;
+    private double[] HeatFullTemperature;
 
     [Param]
     [Description("Cumulative degrees-day for recovery from heat stress")]
     [Units("")]
-    private double[] heatSumT;
+    private double[] HeatRecoverySumDD;
 
     [Param]
     [Description("Reference temperature for recovery from heat stress")]
     [Units("oC")]
-    private double[] heatRecoverT;
+    private double[] HeatRecoveryTReference;
 
     [Param]
     [Description("Whether cold damage stress is enabled")]
     [Units("")]
-    private string[] useColdStress;
+    private string[] UseColdStressFactor;
 
     [Param]
     [Description("Onset temperature for cold effects on photosynthesis")]
     [Units("")]
-    private double[] coldOnsetT;
+    private double[] ColdOnsetTemperature;
 
     [Param]
     [Description("Temperature for full cold effect on photosynthesis")]
     [Units("")]
-    private double[] coldFullT;
+    private double[] ColdFullTemperature;
 
     [Param]
     [Description("Cumulative degrees for recovery from cold stress")]
     [Units("")]
-    private double[] coldSumT;
+    private double[] ColdRecoverySumDD;
 
     [Param]
     [Description("Reference temperature for recovery from cold stress")]
     [Units("oC")]
-    private double[] coldRecoverT;
+    private double[] ColdRecoveryTReference;
 
     ////- Respiration parameters >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Maintenance respiration coefficient")]
     [Units("%")]
-    private double[] maintRespiration;
+    private double[] MaintenanceRespirationCoefficient;
 
     [Param]
     [Description("Growth respiration coefficient")]
     [Units("0-1")]
-    private double[] growthEfficiency;
+    private double[] GrowthRespirationCoefficient;
 
     [Param]
     [Description("Reference temperature for maintenance respiration")]
     [Units("oC")]
-    private double[] respTref;
+    private double[] RespirationTReference;
 
     [Param]
     [Description("Exponent controlling the effect of temperature on respiration")]
     [Units("")]
-    private double[] respExponent;
+    private double[] RespirationExponent;
 
     ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Optimum N concentration of leaves (no stress)")]
     [Units("%")]
-    private double[] NconcOptimum_leaves;
+    private double[] NconcOptimumForLeaves;
 
     [Param]
     [Description("Maximum N concentration of leaves (luxury uptake)")]
     [Units("%")]
-    private double[] NconcMaximum_leaves;
+    private double[] NconcMaximumForLeaves;
 
     [Param]
     [Description("Minimum N concentration of leaves (dead leaves)")]
     [Units("%")]
-    private double[] NconcMinimum_leaves;
+    private double[] NconcMinimumForLeaves;
 
     [Param]
     [Description("N concentration for stems, relative to leaves")]
     [Units("0-1")]
-    private double[] RelativeNconc_Stems;
+    private double[] RelativeNconcForStems;
 
     [Param]
     [Description("N concentration for stolons, relative to leaves")]
     [Units("0-1")]
-    private double[] RelativeNconc_Stolons;
+    private double[] RelativeNconcForStolons;
 
     [Param]
     [Description("N concentration for roots, relative to leaves")]
     [Units("0-1")]
-    private double[] RelativeNconc_Roots;
+    private double[] RelativeNconcForRoots;
 
     [Param]
     [Description("N concentration for plants at stage 2 (developing), relative to optimum")]
     [Units("0-1")]
-    private double[] RelativeNconc_stage2;
+    private double[] RelativeNconcStage2;
 
     [Param]
     [Description("N concentration for plants at stage 3 (mature), relative to optimum")]
     [Units("0-1")]
-    private double[] RelativeNconc_stage3;
+    private double[] RelativeNconcStage3;
 
     ////- Default values for DM >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
@@ -479,18 +483,18 @@ public class AgPasture
     [Param]
     [Description("Initial fractions of DM for each plant part, for non-legumes")]
     [Units("0-1")]
-    private double[] initialDMFractions_grass;
+    private double[] InitialDMFractionsGrasses;
 
     [Param]
     [Description("Initial fractions of DM for each plant part, for legume species")]
     [Units("0-1")]
-    private double[] initialDMFractions_legume;
+    private double[] InitialDMFractionsLegumes;
 
     ////- Germination and emergence >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Cumulative degrees-day needed for seed germination")]
     [Units("oCd")]
-    private double[] DegreesDayForGermination { get; set; }
+    private double[] DegreesDayForGermination;
 
     [Param]
     [Description("The fractions of DM for each plant part at emergence, for all plants")]
@@ -502,7 +506,7 @@ public class AgPasture
     [Param]
     [Description("Target or ideal plant's shoot:root ratio at vegetative stage")]
     [Units("-")]
-    private double[] TargetSRratio;
+    private double[] TargetShootRootRatio;
 
     [Param]
     [Description("Maximum fraction of DM growth that can be allocated to roots")]
@@ -512,7 +516,7 @@ public class AgPasture
     [Param]
     [Description("Maximum effect that soil GLFs have on Shoot-Root ratio")]
     [Units("0-1")]
-    private double[] GlfEffectsOnSR;
+    private double[] ShootRootGlfFactor;
 
     // - Effect of reproductive season ....................................
     [Param]
@@ -584,7 +588,7 @@ public class AgPasture
     [Param]
     [Description("Fraction of new growth to be allocated to stolon")]
     [Units("0-1")]
-    private double[] StolonAllocationFactor;
+    private double[] FractionToStolon;
 
     // - Conversion of DM in organ
     [Param]
@@ -621,98 +625,98 @@ public class AgPasture
     [Param]
     [Description("Reference daily DM turnover rate for shoot tissues")]
     [Units("")]
-    private double[] rateLive2Dead;
+    private double[] TissueTurnoverRateShoot;
 
     [Param]
     [Description("Reference daily DM turnover rate for root tissues")]
     [Units("")]
-    private double[] rateRootSen;
+    private double[] TissueTurnoverRateRoot;
 
     [Param]
     [Description("Relative turnover rate for emerging tissues")]
     [Units("<0.0")]
-    private double[] facGrowingTissue;
+    private double[] RelativeTurnoverEmerging;
 
     [Param]
     [Description("Reference daily detachment rate for dead tissues")]
     [Units("")]
-    private double[] rateDead2Litter;
+    private double[] DetachmentRateShoot;
 
     [Param]
     [Description("Minimum temperature for tissue turnover")]
     [Units("")]
-    private double[] massFluxTmin;
+    private double[] TurnoverTemperatureMin;
 
     [Param]
     [Description("Reference temperature for tissue turnover")]
     [Units("")]
-    private double[] massFluxTopt;
+    private double[] TurnoverTemperatureRef;
 
     [Param]
     [Description("Exponent of function for temperature effect on tissue turnover")]
     [Units("")]
-    private double[] massFluxTq;
+    private double[] TurnoverTemperatureExponent;
 
     [Param(MinVal = 1.0)]
     [Description("Maximum increase in tissue turnover due to water deficit")]
     [Units("")]
-    private double[] massFluxW0;
+    private double[] TurnoverDroughtEffectMax;
 
     [Param]
     [Description("Minimum GLFwater without effect on tissue turnover")]
     [Units("")]
-    private double[] massFluxWopt;
+    private double[] TurnoverDroughtThreshold;
 
     [Param]
     [Description("Coefficient controlling detachment rate as function of moisture")]
     [Units("")]
-    private double[] massFluxDeadWq;
+    private double[] DetachmentDroughtCoefficient;
 
     [Param]
     [Description("Minimum effect of drought on detachment rate")]
     [Units("")]
-    private double[] massFluxDeadWf;
+    private double[] DetachmentDroughtEffectMin;
 
     [Param]
     [Description("Factor increasing tissue turnover rate due to stock trampling")]
     [Units("")]
-    private double[] stockParameter;
+    private double[] TurnoverStockFactor;
 
     [Param]
     [Description("Coefficient of function increasing the stolons turnover rate due to defoliation")]
     [Units("")]
-    private double[] massFluxDefoliationEffect;
+    private double[] TurnoverDefoliationCoefficient;
 
     [Param]
     [Description("Minimum significant daily effect of defoliation on stolons turnover rate")]
     [Units("")]
-    private double[] massFluxMinDefoliationEff;
+    private double[] TurnoverMinDefoliationEffect;
+
+    [Param]
+    [Description("Fraction of luxury N remobilisable from tissue 1 each day")]
+    [Units("0-1")]
+    private double[] FractionNLuxuryRemobStage1;
 
     [Param]
     [Description("Fraction of luxury N remobilisable from tissue 2 each day")]
     [Units("0-1")]
-    private double[] Kappa2_Remob;
+    private double[] FractionNLuxuryRemobStage2;
 
     [Param]
     [Description("Fraction of luxury N remobilisable from tissue 3 each day")]
     [Units("0-1")]
-    private double[] Kappa3_Remob;
-
-    [Param]
-    [Description("Coefficient for partitioning non-used Nremob into tissue 4")]
-    [Units("0-1")]
-    private double[] Kappa4_Remob;
+    private double[] FractionNLuxuryRemobStage3;
 
     ////- N fixation (for legumes) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Minimum fraction of N demand supplied by biologic N fixation")]
     [Units("0-1")]
-    private double[] NMinFix;
+    private double[] MinimumNFixation;
 
     [Param]
     [Description("Maximum fraction of N demand supplied by biologic N fixation")]
     [Units("0-1")]
-    private double[] NMaxFix;
+    private double[] MaximumNFixation;
 
     private int NFixationCostMethod = 0;
 
@@ -728,7 +732,7 @@ public class AgPasture
     [Param]
     [Description("Respiration cost factor due to the presence of symbiont bacteria")]
     [Units("kgC/kgCroots")]
-    private double[] symbiontCostFactor;
+    private double[] SymbiontCostFactor;
 
     [Param]
     [Description("Respiration cost factor due to the activity of symbiont bacteria")]
@@ -739,12 +743,12 @@ public class AgPasture
     [Param]
     [Description("Maximum reduction in plant growth due to water logging (saturated soil)")]
     [Units("0-1")]
-    private double[] soilSatFactor;
+    private double[] SoilSaturationEffectMax;
 
     [Param]
     [Description("Minimum water-free pore space for growth with no limitations")]
     [Units("0-1")]
-    private double[] MinMacroPorosity;
+    private double[] MinimumWaterFreePorosity;
 
     [Param]
     [Description("Daily recovery rate from water logging")]
@@ -754,7 +758,7 @@ public class AgPasture
     [Param]
     [Description("Exponent for modifying the effect of N deficiency on plant growth")]
     [Units("")]
-    private double[] NdilutCoeff;
+    private double[] NDillutionCoefficient;
 
     [Param]
     [Description("Generic factor affecting potential plant growth")]
@@ -764,76 +768,76 @@ public class AgPasture
     [Param]
     [Description("Generic growth limiting factor due to soil fertility")]
     [Units("0-1")]
-    private double[] SFertilityGLF;
+    private double[] SoilFertilityGLF;
 
     ////- Plant height >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Minimum plant height, for each species in the sward")]
     [Units("mm")]
-    private double[] MinimumHeight;
+    private double[] PlantHeightMinimum;
 
     [Param]
     [Description("Maximum plant height, for each species in the sward")]
     [Units("mm")]
-    private double[] MaxPlantHeight;
+    private double[] PlantHeightMaximum;
 
     [Param]
     [Description("DM weight above ground for maximum plant height")]
     [Units("kgDM/ha")]
-    private double[] MassForMaxHeight;
+    private double[] PlantHeightMassForMax;
 
     [Param]
     [Description("Exponent controlling shoot height as function of DM weight")]
     [Units(">1.0")]
-    private double[] ExponentHeightFromMass;
+    private double[] PlantHeightExponent;
 
     ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Minimum rooting depth, at emergence")]
     [Units("mm")]
-    private double[] MinimumRootDepth { get; set; }
+    private double[] RootDepthMinimum;
 
     //[Param]
     [Description("Maximum rooting depth")]
     [Units("mm")]
-    private double[] maxRootDepth; // This is being set as iniRootDepth
+    private double[] RootDepthMaximum; // This is being set as iniRootDepth
 
     [Param]
     [Description("Daily root elongation rate at optimum temperature")]
     [Units("mm/day")]
-    private double[] RootElongationRate { get; set; }
+    private double[] RootElongationRate;
 
-    private double[] rootTopDepthParam;
+    private double[] rootDistributionDepthParam;
 
     [Param]
     [Output]
     [Description("Depth from surface where root proportion starts to decrease")]
     [Units("mm")]
-    private double[] ExpoLinearDepthParam
+    private double[] RootDistributionDepthParam
     {
-        get { return rootTopDepthParam; }
+        get { return rootDistributionDepthParam; }
         set
         {
-            rootTopDepthParam = new double[value.Length];
+            rootDistributionDepthParam = new double[value.Length];
             for (int s = 0; s < value.Length; s++)
-                rootTopDepthParam[s] = value[s];
+                rootDistributionDepthParam[s] = value[s];
         }
     }
 
-    private double[] rootCurveParam;
+    private double[] rootDistributionExponent;
 
     [Param]
     [Output]
     [Description("Exponent controlling the root distribution as function of depth")]
     [Units("")]
-    private double[] ExpoLinearCurveParam
+    private double[] RootDistributionExponent
     {
-        get { return rootCurveParam; }
+        get { return rootDistributionExponent; }
         set
         {
-            rootCurveParam = new double[value.Length];
+            rootDistributionExponent = new double[value.Length];
             for (int s = 0; s < value.Length; s++)
-                rootCurveParam[s] = value[s];
+                rootDistributionExponent[s] = value[s];
         }
     }
 
@@ -841,12 +845,12 @@ public class AgPasture
     [Param]
     [Description("Digestibility of cell wall in live plant tissues (0-1)")]
     [Units("")]
-    private double[] digestLiveCellWall;
+    private double[] DigestibilityCellWallLive;
 
     [Param]
     [Description("Digestibility of cell wall in dead plant tissues (0-1)")]
     [Units("")]
-    private double[] digestDeadCellWall;
+    private double[] DigestibilityCellWallDead;
 
     [Param]
     [Description("Fraction of soluble carbohydrates in newly grown tissues (0-1)")]
@@ -858,7 +862,7 @@ public class AgPasture
     [Output]
     [Description("Minimum above ground green DM")]
     [Units("kgDM/ha")]
-    private double[] dmgreenmin;
+    private double[] MinimumGreenWt;
 
     [Param]
     [Description("Proportion of stolon DM standing, available for removal")]
@@ -868,12 +872,12 @@ public class AgPasture
     [Param]
     [Description("Relative preference for live over dead material during graze")]
     [Units("")]
-    private double[] PreferenceForGreenDM;
+    private double[] PreferenceForGreenOverDead;
 
     [Param]
     [Description("Relative preference for leaf over stem-stolon material during graze")]
     [Units("")]
-    private double[] PreferenceForLeaves;
+    private double[] PreferenceForLeafOverStems;
 
     ////- Soil related (water and N uptake) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
@@ -886,20 +890,20 @@ public class AgPasture
     [Units("ppm/day")]
     private double[] MaximumUptakeRateNO3;
 
-    private double[] refRLD;
+    private double[] ReferenceRLD;
 
     [Param]
     [Description("Reference root length density for water and N uptake")]
     [Units("cm/cm3")]
     private double[] referenceRLD
     {
-        get { return refRLD; }
+        get { return ReferenceRLD; }
         set
         {
             // convert values to mm/mm3
-            refRLD = new double[value.Length];
+            ReferenceRLD = new double[value.Length];
             for (int s = 0; s < value.Length; s++)
-                refRLD[s] = value[s] * 0.01;
+                ReferenceRLD[s] = value[s] * 0.01;
         }
     }
 
@@ -1215,7 +1219,7 @@ public class AgPasture
         //        . added by RCichota, Oct/2014
 
         // get the number of species to be simulated
-        NumSpecies = speciesToSimulate.Length;
+        NumSpecies = SpeciesToSimulate.Length;
 
         // check that the basic parameters have been given to each species
         CheckSpeciesParameters();
@@ -1232,46 +1236,46 @@ public class AgPasture
         {
             for (int s2 = s1 + 1; s2 < NumSpecies; s2++)
             {
-                if (speciesToSimulate[s2].ToLower() == speciesToSimulate[s1].ToLower())
-                    throw new Exception("The name \"" + speciesToSimulate[s1] +
+                if (SpeciesToSimulate[s2].ToLower() == SpeciesToSimulate[s1].ToLower())
+                    throw new Exception("The name \"" + SpeciesToSimulate[s1] +
                                         "\" was given more than once. Only one is allowed");
             }
 
             int myCount = 0;
             for (int s2 = 0; s2 < speciesName.Length; s2++) // s2 = species parameterised, where parameter come from
             {
-                if (speciesToSimulate[s1].ToLower() == speciesName[s2].ToLower())
+                if (SpeciesToSimulate[s1].ToLower() == speciesName[s2].ToLower())
                     myCount += 1;
             }
 
             if (myCount < 1)
-                throw new Exception("The name \"" + speciesToSimulate[s1] +
+                throw new Exception("The name \"" + SpeciesToSimulate[s1] +
                                     "\" does not correspond to any parameterised species, check spelling");
         }
 
         // check whether values for parameters that may have an 'ini' setup (over-write the default ones) were given for each species
         //   assume that the parameter has negative values if not to be used
-        if (iniShootDM != null)
+        if (InitialShootDM != null)
         {
-            if ((iniShootDM.Sum() > 0.0) && (iniShootDM.Length < NumSpecies))
+            if ((InitialShootDM.Sum() > 0.0) && (InitialShootDM.Length < NumSpecies))
                 throw new Exception("Number of values for parameter \"iniShootDM\" is smaller than number of species");
             else
-                Array.Resize(ref iniShootDM, NumSpecies);
+                Array.Resize(ref InitialShootDM, NumSpecies);
         }
-        if (iniRootDM != null)
+        if (InitialRootDM != null)
         {
-            if ((iniRootDepth.Sum() > 0.0) && (iniRootDM.Length < NumSpecies))
+            if ((InitialRootDepth.Sum() > 0.0) && (InitialRootDM.Length < NumSpecies))
                 throw new Exception("Number of values for parameter \"iniRootDM\" is smaller than number of species");
             else
-                Array.Resize(ref iniRootDM, NumSpecies);
+                Array.Resize(ref InitialRootDM, NumSpecies);
         }
 
-        if (iniRootDepth != null)
+        if (InitialRootDepth != null)
         {
-            if ((iniRootDepth.Sum() > 0.0) && (iniRootDepth.Length < NumSpecies))
+            if ((InitialRootDepth.Sum() > 0.0) && (InitialRootDepth.Length < NumSpecies))
                 throw new Exception("Number of values for parameter \"iniRootDepth\" is smaller than number of species");
             else
-                Array.Resize(ref iniRootDepth, NumSpecies);
+                Array.Resize(ref InitialRootDepth, NumSpecies);
         }
 
         if (iniRootDepthParam != null)
@@ -1296,8 +1300,8 @@ public class AgPasture
 
         // make sure that DM fractions for initialisation have the right number of values (delete excess or add zeroes)
         //   there are 12 pools 4 for leaves, 4 for stems, and 3 for stolons
-        Array.Resize(ref initialDMFractions_grass, 11);
-        Array.Resize(ref initialDMFractions_legume, 11);
+        Array.Resize(ref InitialDMFractionsGrasses, 11);
+        Array.Resize(ref InitialDMFractionsLegumes, 11);
         Array.Resize(ref EmergenceDMFractions, 11);
 
         // Number of layers
@@ -1348,13 +1352,13 @@ public class AgPasture
         Species.MetFile = MetData;
         Species.CO2 = co2;
 
-        maxRootDepth = new double[speciesName.Length];
+        RootDepthMaximum = new double[speciesName.Length];
 
         for (int s1 = 0; s1 < NumSpecies; s1++) // s1 = species to simulate, for which parameters are being set
         {
             for (int s2 = 0; s2 < speciesName.Length; s2++) // s2 = species parameterised, where parameter come from
             {
-                if (speciesName[s2].ToLower() == speciesToSimulate[s1].ToLower())
+                if (speciesName[s2].ToLower() == SpeciesToSimulate[s1].ToLower())
                 {
                     // create species and add to array
                     mySpecies[s1] = new Species();
@@ -1364,63 +1368,63 @@ public class AgPasture
                     mySpecies[s1].xf = xf;
 
                     // check max root depth
-                    if (iniRootDepth[s1] > 0.0)
-                        maxRootDepth[s2] = iniRootDepth[s1];
+                    if (InitialRootDepth[s1] > 0.0)
+                        RootDepthMaximum[s2] = InitialRootDepth[s1];
                     else
-                        maxRootDepth[s2] = rootDepth[s2];
+                        RootDepthMaximum[s2] = rootDepth[s2];
 
                     // set the parameters and initialise the species
                     SetSpeciesParameters(s1, s2);
 
                     // save the initial values for the state parameters, will needed this in case of reset
-                    if (iniShootDM[s1] < 0.0)
+                    if (InitialShootDM[s1] < 0.0)
                     {
                         // if iniShootDM is negative, use the default value
-                        iniShootDM[s1] = dmshoot[s2];
+                        InitialShootDM[s1] = dmshoot[s2];
                     }
 
-                    if (iniShootDM[s1] > 0.0)
+                    if (InitialShootDM[s1] > 0.0)
                     {
                         double[] DMFractions;
                         if (mySpecies[s1].isLegume)
-                            DMFractions = initialDMFractions_legume;
+                            DMFractions = InitialDMFractionsLegumes;
                         else
-                            DMFractions = initialDMFractions_grass;
+                            DMFractions = InitialDMFractionsGrasses;
 
                         for (int pool = 0; pool < 11; pool++)
-                            mySpecies[s1].InitialState.DMWeight[pool] = DMFractions[pool] * iniShootDM[s1];
+                            mySpecies[s1].InitialState.DMWeight[pool] = DMFractions[pool] * InitialShootDM[s1];
 
-                        if (iniRootDM[s1] <= 0.0)
+                        if (InitialRootDM[s1] <= 0.0)
                         {
                             // iniRootDM is zero or negative, use the default value
                             if (dmroot[s2] > 0.0)
-                                iniRootDM[s1] = dmroot[s2];
+                                InitialRootDM[s1] = dmroot[s2];
                             else
-                                iniRootDM[s1] = iniShootDM[s1] / mySpecies[s2].TargetSRratio;
+                                InitialRootDM[s1] = InitialShootDM[s1] / mySpecies[s2].myTargetShootRootRatio;
                         }
 
-                        if (iniRootDepth[s1] <= 0.0)
+                        if (InitialRootDepth[s1] <= 0.0)
                         {
                             // iniRootDepth is zero or negative, use the default value
-                            iniRootDepth[s1] = rootDepth[s2];
+                            InitialRootDepth[s1] = rootDepth[s2];
                         }
 
-                        mySpecies[s1].InitialState.DMWeight[11] = iniRootDM[s1];
-                        mySpecies[s1].InitialState.RootDepth = iniRootDepth[s1];
+                        mySpecies[s1].InitialState.DMWeight[11] = InitialRootDM[s1];
+                        mySpecies[s1].InitialState.RootDepth = InitialRootDepth[s1];
                     }
                     else
                     {
                         // shoot DM is zero, so root should also be zero
-                        iniRootDepth[s1] = 0.0;
+                        InitialRootDepth[s1] = 0.0;
                         mySpecies[s1].InitialState.DMWeight[11] = 0.0;
                         mySpecies[s1].InitialState.RootDepth = 0.0;
                     }
 
                     if (iniRootDepthParam[s1] > 0.0)
-                        rootTopDepthParam[s1] = iniRootDepthParam[s1];
+                        rootDistributionDepthParam[s1] = iniRootDepthParam[s1];
 
                     if (iniRootCurveParam[s1] >= 0.0)
-                        rootTopDepthParam[s1] = iniRootDepthParam[s1];
+                        rootDistributionDepthParam[s1] = iniRootDepthParam[s1];
 
                     // assume N concentration is at optimum for green pools and minimum for dead pools
                     mySpecies[s1].InitialState.NAmount[0] = mySpecies[s1].InitialState.DMWeight[0] * mySpecies[s1].leaves.NConcOptimum;
@@ -1448,25 +1452,25 @@ public class AgPasture
         }
 
         // check whether the sward is active (growing) or is yet to be sown
-        if (iniShootDM.Sum() > 0.0)
+        if (InitialShootDM.Sum() > 0.0)
             isAlive = true;
         else
             isAlive = false;
 
         // set the initial state (DM, N, LAI, etc.) for the species
-        double auxLightPartition = mySpecies.Sum(species => species.lightPartitioningFactor);
+        double auxLightPartition = mySpecies.Sum(species => species.myLightPartitioningFactor);
         for (int s = 0; s < NumSpecies; s++)
         {
             if (!usingSpeciesRoot)
             {
                 // only sward is considered, use root system of species1
-                mySpecies[s].InitialState.RootDepth = iniRootDepth[0];
+                mySpecies[s].InitialState.RootDepth = InitialRootDepth[0];
             }
 
             SetSpeciesState(s, mySpecies[s].InitialState);
 
             // update light partitioning factors
-            mySpecies[s].lightPartitioningFactor *= NumSpecies / auxLightPartition;
+            mySpecies[s].myLightPartitioningFactor *= NumSpecies / auxLightPartition;
 
             // get the deepest root as sward depth
             if (mySpecies[s].rootDepth > swardRootDepth)
@@ -1504,7 +1508,7 @@ public class AgPasture
         UpdateAggregatedVariables();
 
         // Weighted average of lightExtCoeff for the sward (should be updated daily)
-        double sumkLAI = mySpecies.Sum(x => x.lightExtCoeff * x.totalLAI);
+        double sumkLAI = mySpecies.Sum(x => x.myLightExtinctionCoefficient * x.totalLAI);
         swardLightExtCoeff = MathUtility.Divide(sumkLAI, LAITotal, 1.0);
 
         FractionToHarvest = new double[NumSpecies];
@@ -1518,84 +1522,102 @@ public class AgPasture
             breakCode("speciesName");
         if (micrometType.Length < NumSpecies)
             breakCode("micrometType");
-        if (photoPath.Length < NumSpecies)
-            breakCode("photoPath");
+        if (PhotosyntheticPathway.Length < NumSpecies)
+            breakCode("PhotosyntheticPathway");
         if (isLegume.Length < NumSpecies)
             breakCode("isLegume");
 
         ////- Potential growth (photosynthesis) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Photosynthesis
-        if (Pm.Length < NumSpecies)
-            breakCode("Pm");
+        if (ReferencePhotosyntheticRate.Length < NumSpecies)
+            breakCode("ReferencePhotosyntheticRate");
         if (LightPartitioningFactor.Length < NumSpecies)
             breakCode("LightPartitioningFactor");
-        if (alphaPhoto.Length < NumSpecies)
-            breakCode("alphaPhoto");
-        if (thetaPhoto.Length < NumSpecies)
-            breakCode("thetaPhoto");
-        if (fractionPAR.Length < NumSpecies)
-            breakCode("fractionPAR");
-        if (lightExtCoeff.Length < NumSpecies)
-            breakCode("lightExtCoeff");
+        if (PhotosyntheticEfficiency.Length < NumSpecies)
+            breakCode("PhotosyntheticEfficiency");
+        if (PhotosynthesisCurveFactor.Length < NumSpecies)
+            breakCode("PhotosynthesisCurveFactor");
+        if (FractionPAR.Length < NumSpecies)
+            breakCode("FractionPAR");
+        if (LightExtinctionCoefficients.Length < NumSpecies)
+            breakCode("LightExtinctionCoefficients");
 
         // CO2 effects
-        if (referenceCO2.Length < NumSpecies)
-            breakCode("referenceCO2");
-        if (CO2PmaxScale.Length < NumSpecies)
-            breakCode("CO2PmaxScale");
-        if (CO2NScale.Length < NumSpecies)
-            breakCode("CO2NScale");
-        if (CO2NMin.Length < NumSpecies)
-            breakCode("CO2NMin");
-        if (CO2NCurvature.Length < NumSpecies)
-            breakCode("CO2NCurvature");
+        if (ReferenceCO2.Length < NumSpecies)
+            breakCode("ReferenceCO2");
+        if (CO2EffectScaleFactor.Length < NumSpecies)
+            breakCode("CO2EffectScaleFactor");
+        if (CO2EffectOffsetFactor.Length < NumSpecies)
+            breakCode("CO2EffectOffsetFactor");
+        if (CO2EffectMinimum.Length < NumSpecies)
+            breakCode("CO2EffectMinimum");
+        if (CO2EffectExponent.Length < NumSpecies)
+            breakCode("CO2EffectExponent");
 
         // Temperature, general and extreme
-        if (growthTmin.Length < NumSpecies)
-            breakCode("growthTmin");
-        if (growthTopt.Length < NumSpecies)
-            breakCode("growthTopt");
-        if (growthTq.Length < NumSpecies)
-            breakCode("growthTq");
-        if (useHeatStress.Length < NumSpecies)
-            breakCode("useHeatStress");
-        if (heatOnsetT.Length < NumSpecies)
-            breakCode("heatOnsetT");
-        if (heatFullT.Length < NumSpecies)
-            breakCode("heatFullT");
-        if (heatSumT.Length < NumSpecies)
-            breakCode("heatSumT");
-        if (heatRecoverT.Length < NumSpecies)
-            breakCode("heatRecoverT");
-        if (useColdStress.Length < NumSpecies)
-            breakCode("useColdStress");
-        if (coldOnsetT.Length < NumSpecies)
-            breakCode("coldOnsetT");
-        if (coldFullT.Length < NumSpecies)
-            breakCode("coldFullT");
-        if (coldSumT.Length < NumSpecies)
-            breakCode("coldSumT");
-        if (coldRecoverT.Length < NumSpecies)
-            breakCode("coldRecoverT");
+        if (GrowthTminimum.Length < NumSpecies)
+            breakCode("GrowthTminimum");
+        if (GrowthToptimum.Length < NumSpecies)
+            breakCode("GrowthToptimum");
+        if (GrowthTEffectExponent.Length < NumSpecies)
+            breakCode("GrowthTEffectExponent");
+        if (UseHeatStressFactor.Length < NumSpecies)
+            breakCode("UseHeatStressFactor");
+        if (HeatOnsetTemperature.Length < NumSpecies)
+            breakCode("HeatOnsetTemperature");
+        if (HeatFullTemperature.Length < NumSpecies)
+            breakCode("HeatFullTemperature");
+        if (HeatRecoverySumDD.Length < NumSpecies)
+            breakCode("HeatRecoverySumDD");
+        if (HeatRecoveryTReference.Length < NumSpecies)
+            breakCode("HeatRecoveryTReference");
+        if (UseColdStressFactor.Length < NumSpecies)
+            breakCode("UseColdStressFactor");
+        if (ColdOnsetTemperature.Length < NumSpecies)
+            breakCode("ColdOnsetTemperature");
+        if (ColdFullTemperature.Length < NumSpecies)
+            breakCode("ColdFullTemperature");
+        if (ColdRecoverySumDD.Length < NumSpecies)
+            breakCode("ColdRecoverySumDD");
+        if (ColdRecoveryTReference.Length < NumSpecies)
+            breakCode("ColdRecoveryTReference");
 
         // respiration
-        if (growthEfficiency.Length < NumSpecies)
-            breakCode("growthEfficiency");
-        if (maintRespiration.Length < NumSpecies)
-            breakCode("maintRespiration");
-        if (respTref.Length < NumSpecies)
-            breakCode("respTref");
-        if (respExponent.Length < NumSpecies)
-            breakCode("respExponent");
+        if (GrowthRespirationCoefficient.Length < NumSpecies)
+            breakCode("GrowthRespirationCoefficient");
+        if (MaintenanceRespirationCoefficient.Length < NumSpecies)
+            breakCode("MaintenanceRespirationCoefficient");
+        if (RespirationTReference.Length < NumSpecies)
+            breakCode("RespirationTReference");
+        if (RespirationExponent.Length < NumSpecies)
+            breakCode("RespirationExponent");
+
+        ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        if (NconcOptimumForLeaves.Length < NumSpecies)
+            breakCode("NconcOptimumForLeaves");
+        if (NconcMaximumForLeaves.Length < NumSpecies)
+            breakCode("NconcMaximumForLeaves");
+        if (NconcMinimumForLeaves.Length < NumSpecies)
+            breakCode("NconcMinimumForLeaves");
+        if (RelativeNconcForStems.Length < NumSpecies)
+            breakCode("RelativeNconcForStems");
+        if (RelativeNconcForStolons.Length < NumSpecies)
+            breakCode("RelativeNconcForStolons");
+        if (RelativeNconcForRoots.Length < NumSpecies)
+            breakCode("RelativeNconcForRoots");
+        if (RelativeNconcStage2.Length < NumSpecies)
+            breakCode("RelativeNconcStage2");
+        if (RelativeNconcStage3.Length < NumSpecies)
+            breakCode("RelativeNconcStage3");
 
         ////- Allocation of new growth >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // General shoot-root
         if (MaxRootAllocation.Length < NumSpecies)
-            breakCode("maxRootFraction");
-        if (TargetSRratio.Length < NumSpecies)
-            breakCode("targetSRratio");
-        if (GlfEffectsOnSR.Length < NumSpecies)
-            breakCode("GlfEffectsOnSR");
+            breakCode("MaxRootAllocation");
+        if (TargetShootRootRatio.Length < NumSpecies)
+            breakCode("TargetShootRootRatio");
+        if (ShootRootGlfFactor.Length < NumSpecies)
+            breakCode("ShootRootGlfFactor");
 
         // Effect of reproductive season
         if (UseReproSeasonFactor.Length < NumSpecies)
@@ -1617,19 +1639,19 @@ public class AgPasture
 
         // Leaf allocation
         if (FractionLeafMaximum.Length < NumSpecies)
-            breakCode("maxFLeaf");
+            breakCode("FractionLeafMaximum");
         if (FractionLeafMinimum.Length < NumSpecies)
-            breakCode("minFLeaf");
+            breakCode("FractionLeafMinimum");
         if (FractionLeafDMThreshold.Length < NumSpecies)
-            breakCode("dmMaxFLeaf");
+            breakCode("FractionLeafDMThreshold");
         if (FractionLeafDMFactor.Length < NumSpecies)
-            breakCode("dmReferenceFLeaf");
+            breakCode("FractionLeafDMFactor");
         if (FractionLeafExponent.Length < NumSpecies)
-            breakCode("exponentFLeaf");
+            breakCode("FractionLeafExponent");
 
         // Others
-        if (StolonAllocationFactor.Length < NumSpecies)
-            breakCode("fStolon");
+        if (FractionToStolon.Length < NumSpecies)
+            breakCode("FractionToStolon");
         if (SpecificLeafArea.Length < NumSpecies)
             breakCode("SpecificLeafArea");
         if (SpecificRootLength.Length < NumSpecies)
@@ -1643,99 +1665,81 @@ public class AgPasture
 
         ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (LiveLeavesPerTiller.Length < NumSpecies)
-            breakCode("liveLeavesPerTiller");
-        if (rateLive2Dead.Length < NumSpecies)
-            breakCode("rateLive2Dead");
-        if (facGrowingTissue.Length < NumSpecies)
-            breakCode("facGrowingTissue");
-        if (rateDead2Litter.Length < NumSpecies)
-            breakCode("rateDead2Litter");
-        if (rateRootSen.Length < NumSpecies)
-            breakCode("rateRootSen");
-        if (massFluxTmin.Length < NumSpecies)
-            breakCode("massFluxTmin");
-        if (massFluxTopt.Length < NumSpecies)
-            breakCode("massFluxTopt");
-        if (massFluxTq.Length < NumSpecies)
-            breakCode("massFluxTq");
-        if (massFluxW0.Length < NumSpecies)
-            breakCode("massFluxW0");
-        if (massFluxWopt.Length < NumSpecies)
-            breakCode("massFluxWopt");
-        if (massFluxDeadWq.Length < NumSpecies)
-            breakCode("massFluxDeadWq");
-        if (massFluxDeadWf.Length < NumSpecies)
-            breakCode("massFluxDeadWf");
-        if (stockParameter.Length < NumSpecies)
-            breakCode("stockParameter");
-        if (Kappa2_Remob.Length < NumSpecies)
-            breakCode("Kappa2_Remob");
-        if (Kappa3_Remob.Length < NumSpecies)
-            breakCode("Kappa3_Remob");
-        if (Kappa4_Remob.Length < NumSpecies)
-            breakCode("Kappa4_Remob");
-
-        ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        if (NconcOptimum_leaves.Length < NumSpecies)
-            breakCode("NconcOptimum_leaves");
-        if (NconcMaximum_leaves.Length < NumSpecies)
-            breakCode("NconcMaximum_leaves");
-        if (NconcMinimum_leaves.Length < NumSpecies)
-            breakCode("NconcMinimum_leaves");
-        if (RelativeNconc_Stems.Length < NumSpecies)
-            breakCode("RelativeNconc_Stems");
-        if (RelativeNconc_Stolons.Length < NumSpecies)
-            breakCode("RelativeNconc_Stolons");
-        if (RelativeNconc_Roots.Length < NumSpecies)
-            breakCode("RelativeNconc_Roots");
-        if (RelativeNconc_stage2.Length < NumSpecies)
-            breakCode("RelativeNconc_stage2");
-        if (RelativeNconc_stage3.Length < NumSpecies)
-            breakCode("RelativeNconc_stage3");
+            breakCode("LiveLeavesPerTiller");
+        if (TissueTurnoverRateShoot.Length < NumSpecies)
+            breakCode("TissueTurnoverRateShoot");
+        if (RelativeTurnoverEmerging.Length < NumSpecies)
+            breakCode("RelativeTurnoverEmerging");
+        if (DetachmentRateShoot.Length < NumSpecies)
+            breakCode("DetachmentRateShoot");
+        if (TissueTurnoverRateRoot.Length < NumSpecies)
+            breakCode("TissueTurnoverRateRoot");
+        if (TurnoverTemperatureMin.Length < NumSpecies)
+            breakCode("TurnoverTemperatureMin");
+        if (TurnoverTemperatureRef.Length < NumSpecies)
+            breakCode("TurnoverTemperatureRef");
+        if (TurnoverTemperatureExponent.Length < NumSpecies)
+            breakCode("TurnoverTemperatureExponent");
+        if (TurnoverDroughtEffectMax.Length < NumSpecies)
+            breakCode("TurnoverDroughtEffectMax");
+        if (TurnoverDroughtThreshold.Length < NumSpecies)
+            breakCode("TurnoverDroughtThreshold");
+        if (DetachmentDroughtCoefficient.Length < NumSpecies)
+            breakCode("DetachmentDroughtCoefficient");
+        if (DetachmentDroughtEffectMin.Length < NumSpecies)
+            breakCode("DetachmentDroughtEffectMin");
+        if (TurnoverStockFactor.Length < NumSpecies)
+            breakCode("TurnoverStockFactor");
+        if (FractionNLuxuryRemobStage1.Length < NumSpecies)
+            breakCode("FractionNLuxuryRemobStage1");
+        if (FractionNLuxuryRemobStage2.Length < NumSpecies)
+            breakCode("FractionNLuxuryRemobStage2");
+        if (FractionNLuxuryRemobStage3.Length < NumSpecies)
+            breakCode("FractionNLuxuryRemobStage3");
 
         ////- N fixation >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        if (NMinFix.Length < NumSpecies)
-            breakCode("NMinFix");
-        if (NMaxFix.Length < NumSpecies)
-            breakCode("NMaxFix");
-        if (symbiontCostFactor.Length < NumSpecies)
-            breakCode("symbiontCostFactor");
+        if (MinimumNFixation.Length < NumSpecies)
+            breakCode("MinimumNFixation");
+        if (MaximumNFixation.Length < NumSpecies)
+            breakCode("MaximumNFixation");
+        if (SymbiontCostFactor.Length < NumSpecies)
+            breakCode("SymbiontCostFactor");
         if (NFixingCostFactor.Length < NumSpecies)
             breakCode("NFixingCostFactor");
 
         ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        if (soilSatFactor.Length < NumSpecies)
-            breakCode("soilSatFactor");
-        if (MinMacroPorosity.Length < NumSpecies)
-            breakCode("MinMacroPorosity");
+        if (SoilSaturationEffectMax.Length < NumSpecies)
+            breakCode("SoilSaturationEffectMax");
+        if (MinimumWaterFreePorosity.Length < NumSpecies)
+            breakCode("MinimumWaterFreePorosity");
         if (SoilSaturationRecoveryFactor.Length < NumSpecies)
             breakCode("SoilSaturationRecoveryFactor");
-        if (NdilutCoeff.Length < NumSpecies)
-            breakCode("NdilutCoeff");
+        if (NDillutionCoefficient.Length < NumSpecies)
+            breakCode("NDillutionCoefficient");
         if (GenericGLF.Length < NumSpecies)
             breakCode("GenericGLF");
-        if (SFertilityGLF.Length < NumSpecies)
-            breakCode("SFertilityGLF");
+        if (SoilFertilityGLF.Length < NumSpecies)
+            breakCode("SoilFertilityGLF");
 
         ////- Plant height >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        if (MaxPlantHeight.Length < NumSpecies)
-            breakCode("MaxPlantHeight");
-        if (MinimumHeight.Length < NumSpecies)
-            breakCode("MinimumHeight");
-        if (MassForMaxHeight.Length < NumSpecies)
-            breakCode("MassForMaxHeight");
-        if (ExponentHeightFromMass.Length < NumSpecies)
-            breakCode("ExponentHeightFromMass");
+        if (PlantHeightMaximum.Length < NumSpecies)
+            breakCode("PlantHeightMaximum");
+        if (PlantHeightMinimum.Length < NumSpecies)
+            breakCode("PlantHeightMinimum");
+        if (PlantHeightMassForMax.Length < NumSpecies)
+            breakCode("PlantHeightMassForMax");
+        if (PlantHeightExponent.Length < NumSpecies)
+            breakCode("PlantHeightExponent");
 
         ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (rootDepth.Length < NumSpecies)
             breakCode("rootDepth");
-        if (ExpoLinearDepthParam.Length < NumSpecies)
+        if (RootDistributionDepthParam.Length < NumSpecies)
             breakCode("ExpoLinearDepthParam");
-        if (ExpoLinearCurveParam.Length < NumSpecies)
-            breakCode("ExpoLinearCurveParam");
-        if (refRLD.Length < NumSpecies)
-            breakCode("referenceRLD");
+        if (RootDistributionExponent.Length < NumSpecies)
+            breakCode("ExpoLinearDistributionExponent");
+        if (ReferenceRLD.Length < NumSpecies)
+            breakCode("ReferenceRLD");
         if (ExponentSWCUptake.Length < NumSpecies)
             breakCode("ExponentSWCUptake");
         if (MaximumUptakeRateNH4.Length < NumSpecies)
@@ -1744,10 +1748,10 @@ public class AgPasture
             breakCode("MaximumUptakeRateNO3");
 
         ////- Digestibility and feed quality >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        if (digestLiveCellWall.Length < NumSpecies)
-            breakCode("digestLive");
-        if (digestDeadCellWall.Length < NumSpecies)
-            breakCode("digestDead");
+        if (DigestibilityCellWallLive.Length < NumSpecies)
+            breakCode("DigestibilityCellWallLive");
+        if (DigestibilityCellWallDead.Length < NumSpecies)
+            breakCode("DigestibilityCellWallDead");
         if (SugarFractionNewGrowth.Length < NumSpecies)
             breakCode("SugarFractionNewGrowth");
 
@@ -1756,14 +1760,14 @@ public class AgPasture
             breakCode("dmshoot");
         if (dmroot.Length < NumSpecies)
             breakCode("dmroot");
-        if (dmgreenmin.Length < NumSpecies)
-            breakCode("dmgreenmin");
+        if (MinimumGreenWt.Length < NumSpecies)
+            breakCode("MinimumGreenWt");
         if (FractionStolonsStanding.Length < NumSpecies)
             breakCode("FractionStolonsStanding");
-        if (PreferenceForGreenDM.Length < NumSpecies)
-            breakCode("PreferenceForGreenDM");
-        if (PreferenceForLeaves.Length < NumSpecies)
-            breakCode("PreferenceForLeaves");
+        if (PreferenceForGreenOverDead.Length < NumSpecies)
+            breakCode("PreferenceForGreenOverDead");
+        if (PreferenceForLeafOverStems.Length < NumSpecies)
+            breakCode("PreferenceForLeafOverStems");
     }
 
     /// <summary>Throw an exception error about wrong parameter set up, with message</summary>
@@ -1783,7 +1787,7 @@ public class AgPasture
         mySpecies[s1].micrometType = micrometType[s2];
 
         mySpecies[s1].isLegume = (int) isLegume[s2] == 1;
-        mySpecies[s1].photoPath = "C" + (int) photoPath[s2];
+        mySpecies[s1].myPhotosyntheticPathway = "C" + (int) PhotosyntheticPathway[s2];
 
         ////- Parameters for germination and annual species >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // NOTE: deactivating all the annual stuff (never really fully implemented)
@@ -1796,178 +1800,179 @@ public class AgPasture
         mySpecies[s1].daysAnthToMatur = 100; //(int)dayAnth[s];
 
         // Parameters for germination and emergence
-        mySpecies[s1].degreesdayForGermination = DegreesDayForGermination[s2];
+        mySpecies[s1].myDegreesDayForGermination = DegreesDayForGermination[s2];
         int nTissues = EmergenceDMFractions.Length;
         mySpecies[s1].emergenceDM = new double[nTissues + 1];
         for (int p = 0; p < nTissues; p++)
-            mySpecies[s1].emergenceDM[p] = EmergenceDMFractions[p] * dmgreenmin[s1];
-        mySpecies[s1].emergenceDM[nTissues] = dmgreenmin[s1]; // rootDM at germination equals shootDM
+            mySpecies[s1].emergenceDM[p] = EmergenceDMFractions[p] * MinimumGreenWt[s1];
+        mySpecies[s1].emergenceDM[nTissues] = MinimumGreenWt[s1]; // rootDM at germination equals shootDM
 
         ////- Potential growth (photosynthesis) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Photosynthesis
-        mySpecies[s1].Pm = Pm[s2];
-        mySpecies[s1].lightPartitioningFactor = LightPartitioningFactor[s2];
-        mySpecies[s1].alphaPhoto = alphaPhoto[s2];
-        mySpecies[s1].thetaPhoto = thetaPhoto[s2];
-        mySpecies[s1].fractionPAR = fractionPAR[s2];
-        mySpecies[s1].lightExtCoeff = lightExtCoeff[s2];
+        mySpecies[s1].myReferencePhotosyntheticRate = ReferencePhotosyntheticRate[s2];
+        mySpecies[s1].myLightPartitioningFactor = LightPartitioningFactor[s2];
+        mySpecies[s1].myPhotosyntheticEfficiency = PhotosyntheticEfficiency[s2];
+        mySpecies[s1].myPhotosynthesisCurveFactor = PhotosynthesisCurveFactor[s2];
+        mySpecies[s1].myFractionPAR = FractionPAR[s2];
+        mySpecies[s1].myLightExtinctionCoefficient = LightExtinctionCoefficients[s2];
 
         // CO2 effects
-        mySpecies[s1].referenceCO2 = referenceCO2[s2];
-        mySpecies[s1].CO2PmaxScale = CO2PmaxScale[s2];
-        mySpecies[s1].CO2NScale = CO2NScale[s2];
-        mySpecies[s1].CO2NMin = CO2NMin[s2];
-        mySpecies[s1].CO2NCurvature = CO2NCurvature[s2];
+        mySpecies[s1].myReferenceCO2 = ReferenceCO2[s2];
+        mySpecies[s1].myCO2EffectScaleFactor = CO2EffectScaleFactor[s2];
+        mySpecies[s1].myCO2EffectOffsetFactor = CO2EffectOffsetFactor[s2];
+        mySpecies[s1].myCO2EffectMinimum = CO2EffectMinimum[s2];
+        mySpecies[s1].myCO2EffectExponent = CO2EffectExponent[s2];
 
         // Temperature, general and extreme
-        mySpecies[s1].growthTmin = growthTmin[s2];
-        mySpecies[s1].growthTopt = growthTopt[s2];
-        mySpecies[s1].growthTq = growthTq[s2];
-        mySpecies[s1].usingHeatStress = useHeatStress[s2].ToLower() == "yes";
-        mySpecies[s1].heatOnsetT = heatOnsetT[s2];
-        mySpecies[s1].heatFullT = heatFullT[s2];
-        mySpecies[s1].heatSumT = heatSumT[s2];
-        mySpecies[s1].heatRecoverT = heatRecoverT[s2];
-        mySpecies[s1].usingColdStress = useColdStress[s2].ToLower() == "yes";
-        mySpecies[s1].coldOnsetT = coldOnsetT[s2];
-        mySpecies[s1].coldFullT = coldFullT[s2];
-        mySpecies[s1].coldSumT = coldSumT[s2];
-        mySpecies[s1].coldRecoverT = coldRecoverT[s2];
+        mySpecies[s1].myGrowthTminimum = GrowthTminimum[s2];
+        mySpecies[s1].myGrowthToptimum = GrowthToptimum[s2];
+        mySpecies[s1].myGrowthTEffectExponent = GrowthTEffectExponent[s2];
+        mySpecies[s1].usingHeatStress = UseHeatStressFactor[s2].ToLower() == "yes";
+        mySpecies[s1].myHeatOnsetTemperature = HeatOnsetTemperature[s2];
+        mySpecies[s1].myHeatFullTemperature = HeatFullTemperature[s2];
+        mySpecies[s1].myHeatRecoverySumDD = HeatRecoverySumDD[s2];
+        mySpecies[s1].myHeatRecoveryTReference = HeatRecoveryTReference[s2];
+        mySpecies[s1].usingColdStress = UseColdStressFactor[s2].ToLower() == "yes";
+        mySpecies[s1].myColdOnsetTemperature = ColdOnsetTemperature[s2];
+        mySpecies[s1].myColdFullTemperature = ColdFullTemperature[s2];
+        mySpecies[s1].myColdRecoverySumDD = ColdRecoverySumDD[s2];
+        mySpecies[s1].myColdRecoveryTReference = ColdRecoveryTReference[s2];
 
         // Respiration
-        mySpecies[s1].maintRespiration = maintRespiration[s2] * 0.01; // converted from %
-        mySpecies[s1].growthEfficiency = growthEfficiency[s2];
-        mySpecies[s1].respExponent = respExponent[s2];
-        mySpecies[s1].respTref = respTref[s2];
+        mySpecies[s1].myMaintenanceRespirationCoefficient = MaintenanceRespirationCoefficient[s2] * 0.01; // converted from %
+        mySpecies[s1].myGrowthRespirationCoefficient = GrowthRespirationCoefficient[s2];
+        mySpecies[s1].myRespirationExponent = RespirationExponent[s2];
+        mySpecies[s1].myRespirationTReference = RespirationTReference[s2];
+
+        ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        mySpecies[s1].NcRel2 = RelativeNconcStage2[s2];
+        mySpecies[s1].NcRel3 = RelativeNconcStage3[s2];
+
+        // Note: 0.01 is for conversion of % to fraction
+        mySpecies[s1].leaves.NConcOptimum = 0.01 * NconcOptimumForLeaves[s2];
+        mySpecies[s1].stems.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconcForStems[s2];
+        mySpecies[s1].stolons.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconcForStolons[s2];
+        mySpecies[s1].roots.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconcForRoots[s2];
+
+        mySpecies[s1].leaves.NConcMaximum = 0.01 * NconcMaximumForLeaves[s2];
+        mySpecies[s1].stems.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconcForStems[s2];
+        mySpecies[s1].stolons.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconcForStolons[s2];
+        mySpecies[s1].roots.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconcForRoots[s2];
+
+        mySpecies[s1].leaves.NConcMinimum = 0.01 * NconcMinimumForLeaves[s2];
+        mySpecies[s1].stems.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconcForStems[s2];
+        mySpecies[s1].stolons.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconcForStolons[s2];
+        mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconcForRoots[s2];
 
         ////- Allocation of new growth >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         mySpecies[s1].MaxRootAllocation = MaxRootAllocation[s2];
-        mySpecies[s1].TargetSRratio = TargetSRratio[s2];
-        mySpecies[s1].GlfEffectOnSR = GlfEffectsOnSR[s2];
+        mySpecies[s1].myTargetShootRootRatio = TargetShootRootRatio[s2];
+        mySpecies[s1].myShootRootGlfFactor = ShootRootGlfFactor[s2];
         mySpecies[s1].UsingReproSeasonFactor = UseReproSeasonFactor[s2].ToLower() == "yes";
-        mySpecies[s1].ReproSeasonReferenceLatitude = ReproSeasonReferenceLatitude[s2];
-        mySpecies[s1].ReproSeasonTimingCoeff = ReproSeasonTimingCoeff[s2];
-        mySpecies[s1].ReproSeasonDurationCoeff = ReproSeasonDurationCoeff[s2];
-        mySpecies[s1].ReproSeasonShouldersLengthFactor = ReproSeasonShouldersLengthFactor[s2];
-        mySpecies[s1].ReproSeasonOnsetDurationFactor = ReproSeasonOnsetDurationFactor[s2];
-        mySpecies[s1].ReproSeasonMaxAllocationIncrease = ReproSeasonMaxAllocationIncrease[s2];
-        mySpecies[s1].ReproSeasonAllocationCoeff = ReproSeasonAllocationCoeff[s2];
+        mySpecies[s1].myReproSeasonReferenceLatitude = ReproSeasonReferenceLatitude[s2];
+        mySpecies[s1].myReproSeasonTimingCoeff = ReproSeasonTimingCoeff[s2];
+        mySpecies[s1].myReproSeasonDurationCoeff = ReproSeasonDurationCoeff[s2];
+        mySpecies[s1].myReproSeasonShouldersLengthFactor = ReproSeasonShouldersLengthFactor[s2];
+        mySpecies[s1].myReproSeasonOnsetDurationFactor = ReproSeasonOnsetDurationFactor[s2];
+        mySpecies[s1].myReproSeasonMaxAllocationIncrease = ReproSeasonMaxAllocationIncrease[s2];
+        mySpecies[s1].myReproSeasonAllocationCoeff = ReproSeasonAllocationCoeff[s2];
         mySpecies[s1].InitReproductiveGrowthFactor();
-        mySpecies[s1].FractionLeafMaximum = FractionLeafMaximum[s2];
-        mySpecies[s1].FractionLeafMinimum = FractionLeafMinimum[s2];
-        mySpecies[s1].FractionLeafDMThreshold = FractionLeafDMThreshold[s2];
-        mySpecies[s1].FractionLeafDMFactor = FractionLeafDMFactor[s2];
-        mySpecies[s1].FractionLeafExponent = FractionLeafExponent[s2];
-        mySpecies[s1].StolonAllocationFactor = StolonAllocationFactor[s2];
+        mySpecies[s1].myFractionLeafMaximum = FractionLeafMaximum[s2];
+        mySpecies[s1].myFractionLeafMinimum = FractionLeafMinimum[s2];
+        mySpecies[s1].myFractionLeafDMThreshold = FractionLeafDMThreshold[s2];
+        mySpecies[s1].myFractionLeafDMFactor = FractionLeafDMFactor[s2];
+        mySpecies[s1].myFractionLeafExponent = FractionLeafExponent[s2];
+        mySpecies[s1].myFractionToStolon = FractionToStolon[s2];
 
-        mySpecies[s1].SpecificLeafArea = SpecificLeafArea[s2];
-        mySpecies[s1].SpecificRootLength = SpecificRootLength[s2];
-        mySpecies[s1].StolonEffectOnLAI = StolonEffectOnLAI[s2];
-        mySpecies[s1].ShootMaxEffectOnLAI = ShootMaxEffectOnLAI[s2];
-        mySpecies[s1].MaxStemEffectOnLAI = MaxStemEffectOnLAI[s2];
+        mySpecies[s1].mySpecificLeafArea = SpecificLeafArea[s2];
+        mySpecies[s1].mySpecificRootLength = SpecificRootLength[s2];
+        mySpecies[s1].myStolonEffectOnLAI = StolonEffectOnLAI[s2];
+        mySpecies[s1].myShootMaxEffectOnLAI = ShootMaxEffectOnLAI[s2];
+        mySpecies[s1].myMaxStemEffectOnLAI = MaxStemEffectOnLAI[s2];
 
         ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].LiveLeavesPerTiller = LiveLeavesPerTiller[s2];
-        mySpecies[s1].refTissueTurnoverRate = rateLive2Dead[s2];
-        mySpecies[s1].facGrowingTissue = facGrowingTissue[s2];
-        mySpecies[s1].refLitteringRate = rateDead2Litter[s2];
-        mySpecies[s1].rateRootSen = rateRootSen[s2];
-        mySpecies[s1].massFluxTmin = massFluxTmin[s2];
-        mySpecies[s1].massFluxTopt = massFluxTopt[s2];
-        mySpecies[s1].massFluxTq = massFluxTq[s2];
-        mySpecies[s1].massFluxW0 = massFluxW0[s2];
-        mySpecies[s1].massFluxWopt = massFluxWopt[s2];
-        mySpecies[s1].exponentGLFW2dead = massFluxDeadWq[s2];
-        mySpecies[s1].factorGLFW2dead = massFluxDeadWf[s2];
-        mySpecies[s1].stockParameter = stockParameter[s2];
-        mySpecies[s1].Kappa2 = Kappa2_Remob[s2];
-        mySpecies[s1].Kappa3 = Kappa3_Remob[s2];
-        mySpecies[s1].Kappa4 = Kappa4_Remob[s2];
-
-        ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].NcRel2 = RelativeNconc_stage2[s2];
-        mySpecies[s1].NcRel3 = RelativeNconc_stage3[s2];
-
-        // Note: 0.01 is for conversion of % to fraction
-        mySpecies[s1].leaves.NConcOptimum = 0.01 * NconcOptimum_leaves[s2];
-        mySpecies[s1].stems.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconc_Stems[s2];
-        mySpecies[s1].stolons.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconc_Stolons[s2];
-        mySpecies[s1].roots.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconc_Roots[s2];
-
-        mySpecies[s1].leaves.NConcMaximum = 0.01 * NconcMaximum_leaves[s2];
-        mySpecies[s1].stems.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconc_Stems[s2];
-        mySpecies[s1].stolons.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconc_Stolons[s2];
-        mySpecies[s1].roots.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconc_Roots[s2];
-
-        mySpecies[s1].leaves.NConcMinimum = 0.01 * NconcMinimum_leaves[s2];
-        mySpecies[s1].stems.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconc_Stems[s2];
-        mySpecies[s1].stolons.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconc_Stolons[s2];
-        mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconc_Roots[s2];
+        mySpecies[s1].myLiveLeavesPerTiller = LiveLeavesPerTiller[s2];
+        mySpecies[s1].myTissueTurnoverRateShoot = TissueTurnoverRateShoot[s2];
+        mySpecies[s1].myTissueTurnoverRateRoot = TissueTurnoverRateRoot[s2];
+        mySpecies[s1].myRelativeTurnoverEmerging = RelativeTurnoverEmerging[s2];
+        mySpecies[s1].myDetachmentRateShoot = DetachmentRateShoot[s2];
+        mySpecies[s1].myTurnoverTemperatureMin = TurnoverTemperatureMin[s2];
+        mySpecies[s1].myTurnoverTemperatureRef = TurnoverTemperatureRef[s2];
+        mySpecies[s1].myTurnoverTemperatureExponent = TurnoverTemperatureExponent[s2];
+        mySpecies[s1].myTurnoverDroughtEffectMax = TurnoverDroughtEffectMax[s2];
+        mySpecies[s1].myTurnoverDroughtThreshold = TurnoverDroughtThreshold[s2];
+        mySpecies[s1].myDetachmentDroughtCoefficient = DetachmentDroughtCoefficient[s2];
+        mySpecies[s1].myDetachmentDroughtEffectMin = DetachmentDroughtEffectMin[s2];
+        mySpecies[s1].myTurnoverStockFactor = TurnoverStockFactor[s2];
+        mySpecies[s1].FractionNLuxuryRemobilisable = new double[3];
+        mySpecies[s1].FractionNLuxuryRemobilisable[0] = FractionNLuxuryRemobStage1[s2];
+        mySpecies[s1].FractionNLuxuryRemobilisable[1] = FractionNLuxuryRemobStage2[s2];
+        mySpecies[s1].FractionNLuxuryRemobilisable[2] = FractionNLuxuryRemobStage3[s2];
 
         ////- N fixation >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].MaxFix = NMaxFix[s2];
-        mySpecies[s1].MinFix = NMinFix[s2];
+        mySpecies[s1].myMinimumNFixation = MinimumNFixation[s2];
+        mySpecies[s1].myMaximumNFixation = MaximumNFixation[s2];
         mySpecies[s1].NFixationCostMethod = NFixationCostMethod;
-        mySpecies[s1].symbiontCostFactor = symbiontCostFactor[s2];
-        mySpecies[s1].NFixingCostFactor = NFixingCostFactor[s2];
+        mySpecies[s1].mySymbiontCostFactor = SymbiontCostFactor[s2];
+        mySpecies[s1].myNFixingCostFactor = NFixingCostFactor[s2];
 
         ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].NdilutCoeff = NdilutCoeff[s2];
-        mySpecies[s1].soilSatFactor = soilSatFactor[s2];
-        mySpecies[s1].minMacroPorosity = MinMacroPorosity[s2];
-        mySpecies[s1].saturationRecoveryFactor = SoilSaturationRecoveryFactor[s2];
-        mySpecies[s1].GLFSFertility = SFertilityGLF[s2];
-        mySpecies[s1].GLFGeneric = GenericGLF[s2];
+        mySpecies[s1].mySoilSaturationEffectMax = SoilSaturationEffectMax[s2];
+        mySpecies[s1].myMinimumWaterFreePorosity = MinimumWaterFreePorosity[s2];
+        mySpecies[s1].mySoilSaturationRecoveryFactor = SoilSaturationRecoveryFactor[s2];
+        mySpecies[s1].myNDillutionCoefficient = NDillutionCoefficient[s2];
+        mySpecies[s1].myGlfGeneric = GenericGLF[s2];
+        mySpecies[s1].myGlfSoilFertility = SoilFertilityGLF[s2];
 
         ////- Plant height >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].MaxPlantHeight = MaxPlantHeight[s2];
-        mySpecies[s1].MassForMaxHeight = MassForMaxHeight[s2];
-        mySpecies[s1].ExponentHeightFromMass = ExponentHeightFromMass[s2];
-        mySpecies[s1].MinimumHeight = MinimumHeight[s2];
+        mySpecies[s1].myPlantHeightMinimum = PlantHeightMinimum[s2];
+        mySpecies[s1].myPlantHeightMaximum = PlantHeightMaximum[s2];
+        mySpecies[s1].myPlantHeightMassForMax = PlantHeightMassForMax[s2];
+        mySpecies[s1].myPlantHeightExponent = PlantHeightExponent[s2];
 
         ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].minRootDepth = MinimumRootDepth[s2];
-        mySpecies[s1].maxRootDepth = maxRootDepth[s2];
-        mySpecies[s1].rootElongationRate = RootElongationRate[s2];
+        mySpecies[s1].myRootDepthMinimum = RootDepthMinimum[s2];
+        mySpecies[s1].myRootDepthMaximum = RootDepthMaximum[s2];
+        mySpecies[s1].myRootElongationRate = RootElongationRate[s2];
         if (usingSpeciesRoot)
         {
             // root specified for each species
-            mySpecies[s1].expoLinearDepthParam = rootTopDepthParam[s2];
-            mySpecies[s1].expoLinearCurveParam = rootCurveParam[s2];
-            mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[s2];
-            mySpecies[s1].MaximumUptakeRateNO3 = MaximumUptakeRateNO3[s2];
-            mySpecies[s1].referenceRLD = refRLD[s2];
-            mySpecies[s1].exponentSWCuptake = ExponentSWCUptake[s2];
+            mySpecies[s1].myRootDistributionDepthParam = rootDistributionDepthParam[s2];
+            mySpecies[s1].myRootDistributionExponent = rootDistributionExponent[s2];
+            mySpecies[s1].myMaximumUptakeRateNH4 = MaximumUptakeRateNH4[s2];
+            mySpecies[s1].myMaximumUptakeRateNO3 = MaximumUptakeRateNO3[s2];
+            mySpecies[s1].myReferenceRLD = ReferenceRLD[s2];
+            mySpecies[s1].myExponentSWCUptake = ExponentSWCUptake[s2];
         }
         else
         {
             // root specified for whole sward (use first species as data entry)
-            mySpecies[s1].expoLinearDepthParam = rootTopDepthParam[0];
-            mySpecies[s1].expoLinearCurveParam = rootCurveParam[0];
-            mySpecies[s1].MaximumUptakeRateNH4 = MaximumUptakeRateNH4[0];
-            mySpecies[s1].MaximumUptakeRateNO3 = MaximumUptakeRateNO3[0];
-            mySpecies[s1].referenceRLD = refRLD[0];
-            mySpecies[s1].exponentSWCuptake = ExponentSWCUptake[0];
+            mySpecies[s1].myRootDistributionDepthParam = rootDistributionDepthParam[0];
+            mySpecies[s1].myRootDistributionExponent = rootDistributionExponent[0];
+            mySpecies[s1].myMaximumUptakeRateNH4 = MaximumUptakeRateNH4[0];
+            mySpecies[s1].myMaximumUptakeRateNO3 = MaximumUptakeRateNO3[0];
+            mySpecies[s1].myReferenceRLD = ReferenceRLD[0];
+            mySpecies[s1].myExponentSWCUptake = ExponentSWCUptake[0];
         }
 
         ////- Digestibility and feed quality >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].leaves.DigestLiveCellWall = digestLiveCellWall[s2];
-        mySpecies[s1].leaves.DigestDeadCellWall = digestDeadCellWall[s2];
-        mySpecies[s1].stems.DigestLiveCellWall = digestLiveCellWall[s2];
-        mySpecies[s1].stems.DigestDeadCellWall = digestDeadCellWall[s2];
-        mySpecies[s1].stolons.DigestLiveCellWall = digestLiveCellWall[s2];
-        mySpecies[s1].stolons.DigestDeadCellWall = digestDeadCellWall[s2];
-        mySpecies[s1].fToSugar = SugarFractionNewGrowth[s2];
+        mySpecies[s1].leaves.DigestLiveCellWall = DigestibilityCellWallLive[s2];
+        mySpecies[s1].leaves.DigestDeadCellWall = DigestibilityCellWallDead[s2];
+        mySpecies[s1].stems.DigestLiveCellWall = DigestibilityCellWallLive[s2];
+        mySpecies[s1].stems.DigestDeadCellWall = DigestibilityCellWallDead[s2];
+        mySpecies[s1].stolons.DigestLiveCellWall = DigestibilityCellWallLive[s2];
+        mySpecies[s1].stolons.DigestDeadCellWall = DigestibilityCellWallDead[s2];
+        mySpecies[s1].mySugarFractionNewGrowth = SugarFractionNewGrowth[s2];
 
         ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].leaves.MinimumGreenDM = dmgreenmin[s2] * 0.80;
-        mySpecies[s1].stems.MinimumGreenDM = dmgreenmin[s2] * 0.20;
+        mySpecies[s1].leaves.MinimumGreenDM = MinimumGreenWt[s2] * 0.80;
+        mySpecies[s1].stems.MinimumGreenDM = MinimumGreenWt[s2] * 0.20;
         mySpecies[s1].stolons.MinimumGreenDM = 0.0;
-        mySpecies[s1].roots.MinimumGreenDM = dmgreenmin[s2] * 0.50;
+        mySpecies[s1].roots.MinimumGreenDM = MinimumGreenWt[s2] * 0.50;
         mySpecies[s1].stolons.FractionStanding = FractionStolonsStanding[s2];
-        mySpecies[s1].PreferenceGreenOverDead = PreferenceForGreenDM[s2];
-        mySpecies[s2].PreferenceLeafOverStem = PreferenceForLeaves[s2];
-        if ((mySpecies[s1].PreferenceGreenOverDead < Epsilon) || (mySpecies[s1].PreferenceGreenOverDead < Epsilon))
+        mySpecies[s1].myPreferenceForGreenOverDead = PreferenceForGreenOverDead[s2];
+        mySpecies[s2].myPreferenceForLeafOverStems = PreferenceForLeafOverStems[s2];
+        if ((mySpecies[s1].myPreferenceForGreenOverDead < Epsilon) || (mySpecies[s1].myPreferenceForGreenOverDead < Epsilon))
             throw new Exception("Relative preferences for green or leaf DM cannot be set to zero");
 
         ////- Additional initialisation bits >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2319,7 +2324,7 @@ public class AgPasture
         double sumkLAI = 0.0;
         for (int s = 0; s < NumSpecies; s++)
         {
-            sumkLAI += mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff;
+            sumkLAI += mySpecies[s].greenLAI * mySpecies[s].myLightExtinctionCoefficient;
         }
 
         for (int s = 0; s < NumSpecies; s++)
@@ -2332,7 +2337,7 @@ public class AgPasture
             }
             else
             {
-                mySpecies[s].intRadnFrac = mySpecies[s].greenLAI * mySpecies[s].lightExtCoeff / sumkLAI;
+                mySpecies[s].intRadnFrac = mySpecies[s].greenLAI * mySpecies[s].myLightExtinctionCoefficient / sumkLAI;
                 mySpecies[s].interceptedRadn = InterceptedRadn * mySpecies[s].intRadnFrac;
                 mySpecies[s].WaterDemand = swardWaterDemand * mySpecies[s].intRadnFrac;
             }
@@ -2400,7 +2405,7 @@ public class AgPasture
             swardSenescedRootN += mySpecies[s].dNRootSen;
 
             //accumulate this for weighted average of lightExtCoeff
-            sumkLAI += mySpecies[s].lightExtCoeff * mySpecies[s].greenLAI;
+            sumkLAI += mySpecies[s].myLightExtinctionCoefficient * mySpecies[s].greenLAI;
         }
 
         // get sward light extinction coefficient
@@ -2685,8 +2690,8 @@ public class AgPasture
                     {
                         nRootSpecies += 1;
                         auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].exponentSWCuptake);
-                        double rldFac = MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 0.0);
+                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].myExponentSWCUptake);
+                        double rldFac = MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].myReferenceRLD, 0.0);
                         double xFac = Math.Min(1.0, kl[layer] * swFac * rldFac);
                         potentialAvailableWater = Math.Max(potentialAvailableWater, auxAvailableWater);
                         mySpecies[s].soilAvailableWater[layer] = auxAvailableWater * xFac;
@@ -2717,7 +2722,7 @@ public class AgPasture
                 double swFac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 swFac = MathUtility.Bound(swFac, 0.0, 1.0);
                 swFac = 1.0 - Math.Pow(1.0 - swFac, ExponentSWCUptake[0]);
-                double rldFac = MathUtility.Divide(rlv[layer], refRLD[0], 0.0);
+                double rldFac = MathUtility.Divide(rlv[layer], ReferenceRLD[0], 0.0);
                 double xFac = Math.Min(1.0, kl[layer] * swFac * rldFac);
                 PAW[layer] = auxAvailableWater * xFac;
                 for (int s = 0; s < NumSpecies; s++)
@@ -2765,9 +2770,9 @@ public class AgPasture
                     {
                         nRootSpecies += 1;
                         double condFac = 1.0 - Math.Pow(10.0, -ks[layer] / ReferenceKSuptake[s]);
-                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].exponentSWCuptake);
+                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].myExponentSWCUptake);
                         auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                        double rldFac = 1.0 - Math.Pow(10.0, MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 0.0));
+                        double rldFac = 1.0 - Math.Pow(10.0, MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].myReferenceRLD, 0.0));
                         double xFac = Math.Min(1.0, condFac * swFac * rldFac);
                         potentialAvailableWater = Math.Max(potentialAvailableWater, auxAvailableWater);
                         mySpecies[s].soilAvailableWater[layer] = auxAvailableWater * xFac;
@@ -2797,7 +2802,7 @@ public class AgPasture
                 double swFac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 swFac = MathUtility.Bound(swFac, 0.0, 1.0);
                 swFac = 1.0 - Math.Pow(1.0 - swFac, ExponentSWCUptake[0]);
-                double rldFac = 1.0 - Math.Pow(10.0, MathUtility.Divide(rlv[layer], refRLD[0], 0.0));
+                double rldFac = 1.0 - Math.Pow(10.0, MathUtility.Divide(rlv[layer], ReferenceRLD[0], 0.0));
 
                 layerFrac = mySpecies[0].LayerFractionWithRoots(layer);
                 auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
@@ -3000,8 +3005,8 @@ public class AgPasture
                     layerFrac = mySpecies[s].LayerFractionWithRoots(layer);
                     mySW += sw_dep[layer] * layerFrac;
                     mySat += SAT_dep[layer] * layerFrac;
-                    if (mySpecies[s].minMacroPorosity > 0.0)
-                        myMPL += SAT_dep[layer] * (1.0 - mySpecies[s].minMacroPorosity) * layerFrac;
+                    if (mySpecies[s].myMinimumWaterFreePorosity > 0.0)
+                        myMPL += SAT_dep[layer] * (1.0 - mySpecies[s].myMinimumWaterFreePorosity) * layerFrac;
                     else
                         myMPL += DUL_dep[layer] * layerFrac;
                 }
@@ -3009,7 +3014,7 @@ public class AgPasture
                 if (mySW > myMPL)
                 {
                     // soil close to saturation
-                    mySpecies[s].glfAeration = 1.0 - (mySpecies[s].soilSatFactor * (mySW - myMPL) / (mySat - myMPL));
+                    mySpecies[s].glfAeration = 1.0 - (mySpecies[s].mySoilSaturationEffectMax * (mySW - myMPL) / (mySat - myMPL));
                 }
                 else
                     mySpecies[s].glfAeration = 1.0;
@@ -3026,8 +3031,8 @@ public class AgPasture
                 layerFrac = mySpecies[0].LayerFractionWithRoots(layer);
                 mySW += sw_dep[layer] * layerFrac;
                 mySat += SAT_dep[layer] * layerFrac;
-                if (mySpecies[0].minMacroPorosity > 0.0)
-                    myMPL += SAT_dep[layer] * (1.0 - mySpecies[0].minMacroPorosity) * layerFrac;
+                if (mySpecies[0].myMinimumWaterFreePorosity > 0.0)
+                    myMPL += SAT_dep[layer] * (1.0 - mySpecies[0].myMinimumWaterFreePorosity) * layerFrac;
                 else
                     myMPL += DUL_dep[layer] * layerFrac;
             }
@@ -3035,7 +3040,7 @@ public class AgPasture
             if (mySW > myMPL)
             {
                 // soil close to saturation
-                swardGLFWLogging = 1.0 - (mySpecies[0].soilSatFactor * (mySW - myMPL) / (mySat - myMPL));
+                swardGLFWLogging = 1.0 - (mySpecies[0].mySoilSaturationEffectMax * (mySW - myMPL) / (mySat - myMPL));
             }
             else
                 swardGLFWLogging = 1.0;
@@ -3110,7 +3115,7 @@ public class AgPasture
             {
                 if (mySpecies[s].isLegume)
                 {
-                    mySpecies[s].NFixed = mySpecies[s].MinFix * mySpecies[s].NdemandOpt;
+                    mySpecies[s].NFixed = mySpecies[s].myMinimumNFixation * mySpecies[s].NdemandOpt;
                     swardNFixed += mySpecies[s].NFixed;
                 }
             }
@@ -3127,7 +3132,7 @@ public class AgPasture
                 {
                     if (mySpecies[s].isLegume)
                     {
-                        double moreNfixation = (mySpecies[s].MaxFix - mySpecies[s].MinFix) * (1.0 - Nstress);
+                        double moreNfixation = (mySpecies[s].myMaximumNFixation - mySpecies[s].myMinimumNFixation) * (1.0 - Nstress);
                         moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation)) * mySpecies[s].NdemandOpt;
                         mySpecies[s].NFixed += moreNfixation;
                         swardNFixed += moreNfixation;
@@ -3371,9 +3376,9 @@ public class AgPasture
                     {
                         double swFac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                         swFac = MathUtility.Bound(swFac, 0.0, 1.0);
-                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].exponentSWCuptake);
-                        MaxUptakeNH4 = mySpecies[s].MaximumUptakeRateNH4 * 0.01 * bd[layer] * dlayer[layer];
-                        MaxUptakeNO3 = mySpecies[s].MaximumUptakeRateNO3 * 0.01 * bd[layer] * dlayer[layer];
+                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].myExponentSWCUptake);
+                        MaxUptakeNH4 = mySpecies[s].myMaximumUptakeRateNH4 * 0.01 * bd[layer] * dlayer[layer];
+                        MaxUptakeNO3 = mySpecies[s].myMaximumUptakeRateNO3 * 0.01 * bd[layer] * dlayer[layer];
                         if (nh4_PlantAvailable == null)
                         {
                             // there are no soilNPatches, use classic approach
@@ -3504,8 +3509,8 @@ public class AgPasture
                     {
                         double swFac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                         swFac = MathUtility.Bound(swFac, 0.0, 1.0);
-                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].exponentSWCuptake);
-                        double rldFac = Math.Min(1.0, MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].referenceRLD, 1.0));
+                        swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].myExponentSWCUptake);
+                        double rldFac = Math.Min(1.0, MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].myReferenceRLD, 1.0));
                         if (nh4_PlantAvailable == null)
                         {
                             // there are no soilNPatches, use classic approach
@@ -3566,7 +3571,7 @@ public class AgPasture
                 double swFac = MathUtility.Divide(sw_dep[layer] - LL_dep[layer], DUL_dep[layer] - LL_dep[layer], 0.0);
                 swFac = MathUtility.Bound(swFac, 0.0, 1.0);
                 swFac = 1.0 - Math.Pow(1.0 - swFac, ExponentSWCUptake[0]);
-                double rldFac = MathUtility.Divide(rlv[layer], refRLD[0], 1.0);
+                double rldFac = MathUtility.Divide(rlv[layer], ReferenceRLD[0], 1.0);
                 if (nh4_PlantAvailable == null)
                 {
                     // there are no soilNPatches, use classic approach
@@ -3635,8 +3640,8 @@ public class AgPasture
                     layerFrac = mySpecies[0].LayerFractionWithRoots(layer);
                     if (layerFrac > 0.0)
                     {
-                        MaxUptakeNH4 = mySpecies[s].MaximumUptakeRateNH4 * 0.01 * bd[layer] * dlayer[layer];
-                        MaxUptakeNO3 = mySpecies[s].MaximumUptakeRateNO3 * 0.01 * bd[layer] * dlayer[layer];
+                        MaxUptakeNH4 = mySpecies[s].myMaximumUptakeRateNH4 * 0.01 * bd[layer] * dlayer[layer];
+                        MaxUptakeNO3 = mySpecies[s].myMaximumUptakeRateNO3 * 0.01 * bd[layer] * dlayer[layer];
                         double spciesF = MathUtility.Divide(mySpecies[s].soilWaterUptake[layer], soilWaterUptake[layer], 0.0);
                         if (nh4_PlantAvailable == null)
                         {
@@ -6022,7 +6027,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].GLFGeneric * mySpecies[s].PotPhoto;
+                    result += mySpecies[s].myGlfGeneric * mySpecies[s].PotPhoto;
                 }
                 result /= BasePotentialPhotosynthesisC;
             }
@@ -6073,7 +6078,7 @@ public class AgPasture
                 result = 0.0;
                 for (int s = 0; s < NumSpecies; s++)
                 {
-                    result += mySpecies[s].GLFSFertility * mySpecies[s].dGrowthW;
+                    result += mySpecies[s].myGlfSoilFertility * mySpecies[s].dGrowthW;
                 }
 
                 result /= NetPotentialGrowthAfterWaterWt;
@@ -6306,10 +6311,10 @@ public class AgPasture
                 if (usingSpeciesRoot)
                 {
                     for (int s = 0; s < NumSpecies; s++)
-                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * mySpecies[s].rootFraction[layer] * mySpecies[s].SpecificRootLength;
+                        Total_Rlength += (mySpecies[s].roots.DMGreen * 0.1) * mySpecies[s].rootFraction[layer] * mySpecies[s].mySpecificRootLength;
                 }
                 else
-                    Total_Rlength += (BelowGroundWt * 0.1) * swardRootFraction[layer] * mySpecies[0].SpecificRootLength;
+                    Total_Rlength += (BelowGroundWt * 0.1) * swardRootFraction[layer] * mySpecies[0].mySpecificRootLength;
 
                 // average root length (m root/m2 soil)
                 result[layer] = Total_Rlength / (dlayer[layer] * 1000); // mm root/mm3 soil
@@ -6459,7 +6464,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += (mySpecies[s].Pgross * mySpecies[s].growthEfficiency) - mySpecies[s].Resp_m;
+                result += (mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m;
             return result;
         }
     }
@@ -6474,7 +6479,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += ((mySpecies[s].Pgross * mySpecies[s].growthEfficiency) - mySpecies[s].Resp_m) *
+                result += ((mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m) *
                           mySpecies[s].ShootAllocationFactor;
             return result;
         }
@@ -6490,7 +6495,7 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += ((mySpecies[s].Pgross * mySpecies[s].growthEfficiency) - mySpecies[s].Resp_m) *
+                result += ((mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m) *
                           (1.0 - mySpecies[s].ShootAllocationFactor);
             return result;
         }
@@ -7495,7 +7500,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].GLFGeneric;
+                result[s] = mySpecies[s].myGlfGeneric;
             return result;
         }
     }
@@ -7555,7 +7560,7 @@ public class AgPasture
         {
             double[] result = new double[mySpecies.Length];
             for (int s = 0; s < NumSpecies; s++)
-                result[s] = mySpecies[s].GLFSFertility;
+                result[s] = mySpecies[s].myGlfSoilFertility;
             return result;
         }
     }
